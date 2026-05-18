@@ -6,6 +6,7 @@ DELETE FROM gn_synthese.synthese CASCADE;
 
 DELETE FROM gn_commons.cor_module_dataset CASCADE;
 DELETE FROM gn_meta.cor_dataset_actor CASCADE;
+DELETE FROM gn_meta.cor_dataset_objectif CASCADE;
 DELETE FROM gn_meta.cor_dataset_territory CASCADE;
 DELETE FROM gn_meta.cor_dataset_protocol CASCADE;
 DELETE FROM gn_meta.t_datasets CASCADE;

@@ -398,7 +398,7 @@ VALUES (
         '2022-09-01 10:35:08',
         null
     );
--- Insérer 2 jeux de données d'exemple
+-- Insérer des jeux de données d'exemple
 INSERT INTO gn_meta.t_datasets (
         id_dataset,
         unique_dataset_id,
@@ -410,7 +410,6 @@ INSERT INTO gn_meta.t_datasets (
         keywords,
         marine_domain,
         terrestrial_domain,
-        id_nomenclature_dataset_objectif,
         bbox_west,
         bbox_east,
         bbox_south,
@@ -439,7 +438,6 @@ VALUES (
         'Aléatoire, hors protocole, faune, flore, fonge',
         false,
         true,
-        ref_nomenclatures.get_id_nomenclature('JDD_OBJECTIFS', '1.1'),
         4.85695,
         6.85654,
         44.5020,
@@ -468,7 +466,6 @@ VALUES (
         'Aléatoire, ATBI, biodiversité, faune, flore, fonge',
         false,
         true,
-        ref_nomenclatures.get_id_nomenclature('JDD_OBJECTIFS', '1.1'),
         4.85695,
         6.85654,
         44.5020,
@@ -497,7 +494,6 @@ VALUES (
         'Aléatoire, hors protocole, faune, flore, fonge',
         false,
         true,
-        ref_nomenclatures.get_id_nomenclature('JDD_OBJECTIFS', '1.1'),
         4.85695,
         6.85654,
         44.5020,
@@ -526,7 +522,6 @@ VALUES (
         'Aléatoire, hors protocole, faune, flore, fonge',
         false,
         true,
-        ref_nomenclatures.get_id_nomenclature('JDD_OBJECTIFS', '1.1'),
         4.85695,
         6.85654,
         44.5020,
