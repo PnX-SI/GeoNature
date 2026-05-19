@@ -167,7 +167,7 @@ gunicorn==23.0.0
     # via
     #   -r requirements-common.in
     #   taxhub
-idna==3.11
+idna==3.15
     # via requests
 importlib-metadata==8.7.1
     # via
@@ -349,6 +349,7 @@ tornado==6.5.5
 typing-extensions==4.15.0
     # via
     #   alembic
+    #   cryptography
     #   exceptiongroup
     #   marshmallow
     #   marshmallow-sqlalchemy
