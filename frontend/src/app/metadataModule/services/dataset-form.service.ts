@@ -46,8 +46,6 @@ export class DatasetFormService {
           marine_domain: false,
           validable: true,
           active: true,
-          modules: [],
-          cor_territories: [],
           cor_dataset_actor: [{ id_nomenclature_actor_role: id_nomenclature }],
         };
       })
