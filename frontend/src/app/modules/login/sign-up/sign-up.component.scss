@@ -70,7 +70,7 @@
 
 #login-body {
   background-size: cover;
-  height: 100%;
+  min-height: 100svh;
 }
 
 form.ng-invalid {

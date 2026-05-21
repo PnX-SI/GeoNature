@@ -39,15 +39,19 @@
   },
 
   "Authentication": {
+    "Authentication": "Authentication",
     "Email": "Email",
     "Username": "Username",
     "Password": "Password",
     "LogIn": "Login",
     "LogOut": "Logout",
     "Actions": {
+      "LogIn": "Log in",
+      "LogOut": "Log out",
       "CreateAccount": "Create an account",
       "ActivateAccount": "Activate my account",
-      "ActivateAccountValidator": "Activate this account"
+      "ActivateAccountValidator": "Activate this account",
+      "Send": "Send"
     },
     "Errors": {
       "WrongLoginOrPassword": "Incorrect username or password.",
@@ -63,13 +67,20 @@
       }
     },
     "Messages": {
-      "ForgotPasswordOrLogin": "Forgot username or password?",
+      "Recovery": {
+        "ForgotPasswordOrLogin": "Forgot username or password?",
+        "MailAsked": "Please enter the email address you used when registering.",
+        "Process": "A message will be sent to this address with your username and the option to reset your password."
+      },
       "ActivateAccountConfirmation": "To activate your account, click on the button below",
       "ActivateAccountConfirmationValidator": "To activate this account, click on the button below",
       "PasswordChanged": "Your password has been changed",
       "ShowPassword": "Show password",
-      "HidePassword": "Hide password"
-    }
+      "HidePassword": "Hide password",
+      "MailMandatory": "Email is mandatory.",
+      "InvalidMail": "Please enter a valid email address."
+    },
+    "OtherAuthProviders": "Other login methods"
   },
   "MyAccount": {
     "MyAccount": "My account",

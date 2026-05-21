@@ -5,4 +5,5 @@ export interface Provider {
   login_url: string;
   logout_url: string;
   logo: string;
+  is_secondary: boolean;
 }
