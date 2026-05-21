@@ -111,6 +111,7 @@
           </p>
         </div>
 
+        {% if data.cor_objectifs: %}
         <div class="information">
           <p class="info-titre">Objectif(s)</p>
           <p class="info-contenu">
@@ -123,6 +124,7 @@
             {%- endfor %}
           </p>
         </div>
+        {% endif %}
 
         <div class="information">
           <p class="info-titre">Territoires</p>
