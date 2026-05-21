@@ -34,6 +34,7 @@ export class LoginComponent implements OnInit {
   public localProviderEnabled: boolean = true;
   public isOtherProviders: boolean = false;
   public errorMsg = '';
+  public showPassword: boolean = false;
 
   constructor(
     public _authService: AuthService, //FIXME : change to private (html must be modified)
@@ -185,5 +186,9 @@ export class LoginComponent implements OnInit {
       this.handleRegister(data);
       dialogRef.close();
     });
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 }
