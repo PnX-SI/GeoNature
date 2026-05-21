@@ -66,7 +66,9 @@
       "ForgotPasswordOrLogin": "Forgot username or password?",
       "ActivateAccountConfirmation": "To activate your account, click on the button below",
       "ActivateAccountConfirmationValidator": "To activate this account, click on the button below",
-      "PasswordChanged": "Your password has been changed"
+      "PasswordChanged": "Your password has been changed",
+      "ShowPassword": "Show password",
+      "HidePassword": "Hide password"
     }
   },
   "MyAccount": {

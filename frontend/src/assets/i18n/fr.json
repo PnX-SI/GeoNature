@@ -67,7 +67,9 @@
       "ActivateAccountConfirmationValidator": "Pour activer ce compte, cliquez sur le bouton ci-dessous",
       "PasswordChanged": "Votre mot de passe a bien été changé",
       "MailMandatory": "L'adresse email est obligatoire.",
-      "InvalidMail": "Veuillez saisir une adresse email valide."
+      "InvalidMail": "Veuillez saisir une adresse email valide.",
+      "ShowPassword": "Afficher le mot de passe",
+      "HidePassword": "Masquer le mot de passe"
     }
   },
   "MyAccount": {

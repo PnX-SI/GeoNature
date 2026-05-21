@@ -46,16 +46,36 @@
                         data-qa="gn-connection-id"
                       />
                     </div>
-                    <div class="form-group">
+                    <div class="form-group password-field">
                       <i class="addon fa fa-lock"></i>
                       <input
-                        type="password"
+                        #password
+                        [type]="showPassword ? 'text' : 'password'"
                         name="password"
                         class="form-control"
                         placeholder="Mot de passe"
                         ngModel
                         data-qa="gn-connection-pwd"
                       />
+                      <button
+                        type="button"
+                        class="password-toggle-btn"
+                        (click)="togglePasswordVisibility()"
+                        [attr.aria-label]="
+                          showPassword
+                            ? ('Authentication.Messages.HidePassword' | translate)
+                            : ('Authentication.Messages.ShowPassword' | translate)
+                        "
+                        [matTooltip]="
+                          showPassword
+                            ? ('Authentication.Messages.HidePassword' | translate)
+                            : ('Authentication.Messages.ShowPassword' | translate)
+                        "
+                        matTooltipPosition="right"
+                        tabindex="-1"
+                      >
+                        <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                      </button>
                     </div>
                     <div
                       *ngIf="enable_user_management"
