@@ -190,7 +190,7 @@ class TestUsers:
         data["password_confirmation"] = "invalid_password"
         response = self.client.post(url_for("users.inscription"), json=data)
         assert response.status_code == 400
-        assert response.json["description"] == "Le mot de passe ne respècte pas les critères"
+        assert response.json["description"] == "Le mot de passe ne respecte pas les critères"
 
     def test_login_recovery_enabled_and_disabled(self, users):
         """
@@ -281,7 +281,7 @@ class TestUsers:
             },
         )
         assert resp.status_code == 400
-        assert resp.json["description"] == "Le mot de passe ne respècte pas les critères"
+        assert resp.json["description"] == "Le mot de passe ne respecte pas les critères"
 
         resp = self.client.put(
             url,
@@ -310,7 +310,7 @@ class TestUsers:
             },
         )
         assert resp.status_code == 400
-        assert resp.json["description"] == "Le mot de passe ne respècte pas les critères"
+        assert resp.json["description"] == "Le mot de passe ne respecte pas les critères"
         resp = self.client.put(
             url,
             json={
