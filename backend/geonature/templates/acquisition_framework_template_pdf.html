@@ -202,9 +202,9 @@
                     <p class="info-contenu">
                         {% for obj in data.cor_objectifs -%}
                         {% if loop.nextitem: %}
-                        {{ obj['mnemonique'] }},
+                        {{ obj['label_default'] }},
                         {% else %}
-                        {{ obj['mnemonique'] }}
+                        {{ obj['label_default'] }}
                         {% endif %}
                         {%- endfor %}
                     </p>
