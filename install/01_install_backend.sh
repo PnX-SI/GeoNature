@@ -62,6 +62,8 @@ if [ -z "$geonature_app_name" ]; then
     geonature_app_name="geonature"
 fi
 
+# TODO later : check if GEONATURE_APP_NAME and USERSHUB_APP_NAME are present in
+# geonature_config.toml and add them with default values if necessary
 
 if [ -f config/geonature_config.toml ]; then
   echo "Utilisation du fichier de configuration GeoNature exisant"
