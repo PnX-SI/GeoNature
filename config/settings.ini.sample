@@ -26,6 +26,10 @@ base_path="/geonature"
 # il faudra leur attribuer des ports différent.
 backend_port=8000
 
+# Usershub (Pour migration.sh, à compléter)
+
+usershub_app_name="usershub"
+
 # PostgreSQL Configuration
 ##########################
 

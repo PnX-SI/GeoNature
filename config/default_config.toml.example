@@ -66,13 +66,18 @@ TRAP_ALL_EXCEPTIONS = false
 PUBLIC_ACCESS_USERNAME = ""
 
 # Active (=true) ou pas (=false) l'envoi d'email pour chaque erreur du backend de GeoNature
-# Attention : si activé, il est nécessaire de remplir la secetion 'MAIL_CONFIG'.
+# Attention : si activé, il est nécessaire de remplir la secetion 'MAIL_CONFIG'.
 MAIL_ON_ERROR = false
 
 # Notifications (true / false)
 NOTIFICATIONS_ENABLED = true
 
 MEDIA_CLEAN_CRONTAB = "0 1 * * *"
+
+# service names (for compatibility with multi-instances)
+
+GEONATURE_APP_NAME = "geonature"
+USERSHUB_APP_NAME = "usershub"
 
 # Configuration de l'envoi d'email pour FlaskMail et l'envoi par email des logs d'erreur
 # Cf. https://flask-mail.readthedocs.io/en/latest/#configuring-flask-mail
