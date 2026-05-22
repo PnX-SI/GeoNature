@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 
-SERVICES=("geonature" "geonature-worker" "usershub")
 
 newdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." &> /dev/null && pwd )"
 if (($# > 0)); then
@@ -48,6 +47,23 @@ if [ "$choice" != 'y' ] && [ "$choice" != 'Y' ]; then
 else
     echo "Lancement de la migration..."
 fi
+
+# Getting services names by loading original settings file:
+
+. ${olddir}/config/settings.ini
+
+# If values are absent set them to default :
+
+if [ -z "$usershub_app_name" ]; then
+    usershub_app_name="usershub"
+fi
+
+if [ -z "$geonature_app_name" ]; then
+    geonature_app_name="geonature"
+fi
+
+
+SERVICES=( ${geonature_app_name} "${geonature_app_name}-worker" ${usershub_app_name} )
 
 echo "Arrêt des services…"
 for service in ${SERVICES[@]}; do
