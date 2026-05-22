@@ -53,6 +53,16 @@ api_endpoint="${host_protocol}://${domain_name}${base_path}/api"
 
 cd "${BASE_DIR}"
 
+# for compatibility with multiple_instances_base_install :
+if [ -z "$usershub_app_name" ]; then
+    usershub_app_name="usershub"
+fi
+
+if [ -z "$geonature_app_name" ]; then
+    geonature_app_name="geonature"
+fi
+
+
 if [ -f config/geonature_config.toml ]; then
   echo "Utilisation du fichier de configuration GeoNature exisant"
 else
@@ -62,6 +72,8 @@ else
   sed -i "s|^SQLALCHEMY_DATABASE_URI = .*$|SQLALCHEMY_DATABASE_URI = \"postgresql:\/\/$user_pg:$user_pg_pass@$db_host:$db_port\/$db_name?application_name=geonature\"|" config/geonature_config.toml
   sed -i "s|^URL_APPLICATION = .*$|URL_APPLICATION = '${my_url}'|" config/geonature_config.toml
   sed -i "s|^API_ENDPOINT = .*$|API_ENDPOINT = '${api_endpoint}'|" config/geonature_config.toml
+  sed -i "s|^GEONATURE_APP_NAME = .*$|GEONATURE_APP_NAME = '${geonature_app_name}'|" config/geonature_config.toml
+  sed -i "s|^USERSHUB_APP_NAME = .*$|USERSHUB_APP_NAME = '${usershub_app_name}'|" config/geonature_config.toml
   sed -i "s|^SECRET_KEY = .*$|SECRET_KEY = '`openssl rand -hex 16`'|" config/geonature_config.toml
   sed -i "s|^DEFAULT_LANGUAGE = .*$|DEFAULT_LANGUAGE = '${default_language}'|" config/geonature_config.toml
   sed -i "s|^SECRET_KEY = .*$|SECRET_KEY = '`openssl rand -hex 32`'|" config/geonature_config.toml
