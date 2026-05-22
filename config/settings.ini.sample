@@ -16,7 +16,7 @@ my_local=fr_FR.UTF-8
 # Protocole pour accéder à GeoNature (http ou https)
 host_protocol=http
 # Nom de domaine pour accéder à GeoNature (sans http ni / à la fin)
-domaine_name="localhost"
+domain_name="localhost"
 # subpath d'accès à GeoNature (ex: /geonature donnera http://<domain_name>/geonature)
 base_path="/geonature"
 
