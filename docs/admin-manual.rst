@@ -1703,6 +1703,8 @@ Exemple : `<https://demo.geonature.fr/geonature/#/synthese?access=public>`_
 
 .. include:: admin/sensitivity.rst
 
+.. include:: admin/notifications.rst
+
 
 Module OCCTAX
 -------------
@@ -2454,24 +2456,10 @@ Gestion de l'affichage des colonnes de la liste via le paramètre ``COLUMN_LIST`
     min_width = 100 # Taille minimale de la colonne
     max_width = 100 # Taille maximale de la colonne
 
-E-mail
-``````
+Notifications
+`````````````
 
-Il est possible de personnaliser le message de l'email envoyé aux observateurs d'une observation quand on clique sur le bouton dédié à cela depuis la fiche détail d'une observation.
-Pour ce faire il faut modifier les  paramètres ``MAIL_BODY`` et ``MAIL_SUBJECT``
-
-Pour afficher dans l'email des données relatives à l'observation ou au taxon il faut respecter la syntaxe suivante :
-``${ d.NOM_PROPRIETE }``
-
-Liste des propriétés disponibles :
-
-- communes : liste des communes
-- medias : Titre, auteur et lien vers le média associée
-- data_link : lien vers l'observation dans son module de saisie
-- tous les champs de la synthèse (acquisition_framework, altitude_max, altitude_min, bio_status, blurring, cd_hab, cd_nom, comment_context, comment_description, date_min, depth_max, depth_min, determiner, diffusion_level, digital_proof, entity_source_pk_value, exist_proof, grp_method, grp_typ, last_action, life_stage, meta_create_date, meta_update_date, meta_v_taxref, meta_validation_date, nat_obj_geo, naturalness, nom_cite, non_digital_proof, obj_count, obs_technique, observation_status, observers, occ_behaviour, occ_stat_biogeo, place_name, precision, sample_number_proof, sensitivity, sex, source, type_count, unique_id_sinp, unique_id_sinp_grp, valid_status, validation_comment)
-- tous les champs du taxon (cd_nom, cd_ref, cd_sup, cd_taxsup, regne, ordre, classe, famille, group1_inpn, group2_inpn, id_rang, nom_complet, nom_habitat, nom_rang, nom_statut, nom_valide, nom_vern)
-
-Il est aussi possible de modifier la structure du message de notification envoyé automatiquement à un observateur quand une de ses observations voit son statut de validation modifié, dans la table `gn_notifications.bib_notifications_templates`.
+Lors du changement du statut de validation d’une observation, une notification est envoyé. Voir la :ref:`section dédiée aux notifications<notifications>` pour plus d’informations.
 
 Validation automatique
 """"""""""""""""""""""

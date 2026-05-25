@@ -45,10 +45,9 @@ def setup_periodic_tasks(sender, **kwargs):
 def get_obs(obs_ids, role, permissions=None):
     stmt = sa.select(Synthese).where(Synthese.id_synthese.in_(obs_ids))
     if permissions:
-        permissions_filter = SyntheseQuery(
-            model=Synthese, query=None, filters=None
-        ).build_permissions_filter(user=role, permissions=permissions)
-        stmt = stmt.where(permissions_filter)
+        query = SyntheseQuery(model=Synthese, query=stmt, filters={})
+        query.apply_all_filters(role, permissions)
+        stmt = query.build_query()
     return db.session.scalars(stmt).all()
 
 
