@@ -66,13 +66,13 @@ Il est possible pour n’importe quelle dépendance ou module GeoNature de fourn
 .. code:: python
 
     setuptools.setup(
-        …,
+        ...,
         entry_points={
             'alembic': [
                 'migrations = my_module:migrations',
             ],
         },
-        …
+        ...
     )
 
 Il est également possible de spécifier l’emplacement de révisions Alembic manuellement dans la configuration de GeoNature. Cela est nécessaire entre autre pour UsersHub afin de pouvoir manipuler son schéma alors que UsersHub n’est usuellement pas installé dans le venv de GeoNature (seul UsersHub-authentification-module l’est) :
@@ -576,7 +576,7 @@ Il est possible de désactiver l'ensemble des fonctionnalités liées aux profil
 .. code:: toml
 
     [FRONTEND]
-      ENABLE_PROFILES = true/false
+    ENABLE_PROFILES = true  # or false
 
 
 Calcul des phénologies
@@ -1027,8 +1027,8 @@ Celery propose `de nombreuses commandes <https://docs.celeryq.dev/en/stable/user
 
 .. note::
 
-- Les commandes Celery doivent être lancées depuis l'environnement de GeoNature, donc après un``source backend/venv/bin/activate``
-- Le nom de l'application, à passer via l'argument ``-A proj``, est celui qui a été utilisé pour lancer le worker
+  - Les commandes Celery doivent être lancées depuis l'environnement de GeoNature, donc après un``source backend/venv/bin/activate``
+  - Le nom de l'application, à passer via l'argument ``-A proj``, est celui qui a été utilisé pour lancer le worker
 
 Pour une analyse d'erreur plus fine, il est possible de relancer le worker en changeant le niveau de log à l'aide du paramètre ``--loglevel`` (https://docs.celeryq.dev/en/main/reference/cli.html#cmdoption-celery-worker-l) dans celery.
 
@@ -1084,13 +1084,13 @@ Si vous souhaitez modifier de manière plus avancée la ligne de commande ``guni
 * Lancez ``sudo systemctl edit geonature`` ce qui va créer le fichier ``/etc/systemd/system/geonature.service.d/override.conf`` et ouvrir un éditeur pour vous permettre de le modifier
 * Indiquez :
 
-  .. code:: conf
+  .. code:: systemd
 
     [Service]
     ExecStart=
     ExecStart=/path/to/venv/bin/unicorn geonature:create_app() …
 
-  Note : le premier ``ExecStart`` permet de réinitialiser la commande de lancement de gunicorn.
+.. note :: Le premier ``ExecStart`` permet de réinitialiser la commande de lancement de gunicorn.
 
 
 Sauvegarde et restauration
@@ -1469,7 +1469,7 @@ Si ``ref_geo.dem_vector`` est remplie, cette table est utilisée pour le calcul 
 Il est également possible de désactiver des éléments des référentiels géographiques sans les supprimer de la base, en passant la valeur de la colonne ``enable`` en `false` dans la table ``ref_geo.l_areas``.
 
 Affichage des référentiels géographiques dans GeoNature
-""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 Il est possible de choisir les éléments des référentiels géographiques pouvant s'afficher sur les cartes. Par exemple si on souhaite modifier l'affichage des communes :
 
@@ -1701,7 +1701,7 @@ Exemple : `<https://demo.geonature.fr/geonature/#/synthese?access=public>`_
 
 
 
-.. include:: sensitivity.rst
+.. include:: admin/sensitivity.rst
 
 
 Module OCCTAX
@@ -1894,7 +1894,7 @@ Par exemple, pour contraindre la saisie à l'affichage de la carte IGN au 1/2500
 
 
 Supprimer le remplissage automatique de la date
-``````````````````````````````
+```````````````````````````````````````````````
 
 Pour éviter les erreurs de saisie lorsque des données sont rentrées longtemps après le retour du terrain, il est possible de supprimer l'ajout automatique de la date du jour au relevé :
 
@@ -2555,4 +2555,4 @@ Depuis la version 2.15, les commandes de TaxHub sont maintenant acessibles depui
 
 
 
-.. include:: admin/import-admin.rst
+.. include:: admin/module-import.rst

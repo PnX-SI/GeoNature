@@ -250,7 +250,7 @@ En effet, l'ajout du floutage des données nuit forcément aux performances.
 
 S'il est activé, une requête SQL est construite comme suit : 
 
-.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/blurring_query.svg
+.. image :: images/blurring_query.svg
 
 Le but est d'ajouter à la requête principale une sous-requête exécutant deux requêtes ``SELECT`` dans 
 la table de synthèse afin de séparer les données précises des données floutées. Ensuite un ``UNION`` 
@@ -292,6 +292,7 @@ Pour rappel la maille de regroupement pour affichage dans le mode maille est dé
 suivant :
 
 .. code-block:: toml
+
    [SYNTHESE]
    AREA_AGGREGATION_TYPE = "M5"
 
