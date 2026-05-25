@@ -1,7 +1,8 @@
+from string import Template
 import pytest
 import logging
 import datetime
-from unittest.mock import patch
+from unittest.mock import patch, call
 
 from flask import url_for
 from werkzeug.exceptions import Forbidden, Unauthorized, BadRequest
@@ -17,9 +18,18 @@ from geonature.core.notifications.models import (
 from geonature.core.notifications import utils
 from geonature.core.notifications.utils import NOTIFY_EVERYONE
 from geonature.tests.utils import assert_mock_called_partial, assert_mock_not_called_partial
-from geonature.tests.fixtures import celery_eager, notifications_enabled
+from geonature.core.gn_synthese.models import Synthese
+from geonature.core.gn_commons.models import TModules
+from geonature.core.gn_permissions.models import PermAction, PermObject, Permission
+from geonature.tests.fixtures import (
+    celery_eager,
+    notifications_enabled,
+    module,
+    source,
+)
 
 from pypnusershub.db.models import User
+from ref_geo.models import BibAreasTypes, LAreas
 
 from sqlalchemy import select, exists, delete
 from .utils import set_logged_user
@@ -77,12 +87,25 @@ def rule_method():
 
 
 @pytest.fixture()
+def rule_default(rule_category, rule_method):
+    with db.session.begin_nested():
+        rule = NotificationRule(
+            id_role=None,
+            code_category=rule_category.code,
+            code_method=rule_method.code,
+            subscribed=True,
+        )
+        db.session.add(rule)
+    return rule
+
+
+@pytest.fixture()
 def rule_template(rule_category, rule_method):
     with db.session.begin_nested():
         new_template = NotificationTemplate(
             code_category=rule_category.code,
             code_method=rule_method.code,
-            content="{% if test == 'ok' %} message {% endif %}",
+            content="{% if test == 'ok' %}message{% endif %}",
         )
         db.session.add(new_template)
     return new_template
@@ -1028,6 +1051,166 @@ class TestNotificationsDispatching:
             assert_mock_called_partial(mock, rule_category, rule_method, user2)
             # default rule have no precedance
             assert_mock_called_partial(mock, rule_category, rule_method, user3)
+
+
+@pytest.mark.usefixtures(
+    "client_class",
+    "temporary_transaction",
+    "notifications_enabled",
+    "clear_notification_rules",
+)
+class TestNotificationsTemplates:
+    def test_notifications_template_if_condition(
+        self, user1, rule_category, rule_method, rule_template, rule_default
+    ):
+        kwargs = {
+            "code_categories": [rule_category.code],
+            "id_roles": [user1.id_role],
+            "title": "test",
+        }
+
+        with patch("geonature.core.notifications.utils.send_notification_to_method") as mock:
+            utils.dispatch_notifications(context={"test": "not ok"}, **kwargs)
+            mock.assert_not_called()
+
+        with patch("geonature.core.notifications.utils.send_notification_to_method") as mock:
+            utils.dispatch_notifications(context={"test": "ok"}, **kwargs)
+            mock.assert_called_once_with(rule_method, user1, "test", None, "message")
+
+    def test_notifications_template_taxon_filter(
+        self, user1, rule_category, rule_method, rule_default, source
+    ):
+        with db.session.begin_nested():
+            obs1 = Synthese(
+                source=source,
+                cd_nom=4330,
+                nom_cite="Gobe-mouche noir",
+                date_min=datetime.datetime.now(),
+                date_max=datetime.datetime.now(),
+            )
+            db.session.add(obs1)
+            obs2 = Synthese(
+                source=source,
+                cd_nom="61098",
+                nom_cite="Bouquetin",
+                date_min=datetime.datetime.now(),
+                date_max=datetime.datetime.now(),
+            )
+            db.session.add(obs2)
+
+        with db.session.begin_nested():
+            template = NotificationTemplate(
+                code_category=rule_category.code,
+                code_method=rule_method.code,
+                content="""
+                {%- set observations = observations | selectattr('taxref_tree', 'le', 185961) | list -%}
+                {%- if observations %} {{ observations | map(attribute="id_synthese") | join(",") }} {% endif -%}
+                """,
+            )
+            db.session.add(template)
+
+        kwargs = {
+            "code_categories": [rule_category.code],
+            "id_roles": [user1.id_role],
+            "title": "test",
+            "context": {
+                "observations": [obs1, obs2],
+            },
+        }
+
+        with patch("geonature.core.notifications.utils.send_notification_to_method") as mock:
+            utils.dispatch_notifications(**kwargs)
+            mock.assert_called_once_with(rule_method, user1, "test", None, f" {obs1.id_synthese} ")
+
+    def test_notifications_template_area_filter(
+        self, user1, user2, rule_category, rule_method, rule_default, source
+    ):
+        gap = db.session.execute(
+            select(LAreas).where(
+                LAreas.area_type.has(BibAreasTypes.type_code == "COM"),
+                LAreas.area_name == "Gap",
+            )
+        ).scalar_one()
+        hautes_alpes = db.session.execute(
+            select(LAreas).where(
+                LAreas.area_type.has(BibAreasTypes.type_code == "DEP"),
+                LAreas.area_name == "Hautes-Alpes",
+            )
+        ).scalar_one()
+        grenoble = db.session.execute(
+            select(LAreas).where(
+                LAreas.area_type.has(BibAreasTypes.type_code == "COM"),
+                LAreas.area_name == "Grenoble",
+            )
+        ).scalar_one()
+        isere = db.session.execute(
+            select(LAreas).where(
+                LAreas.area_type.has(BibAreasTypes.type_code == "DEP"),
+                LAreas.area_name == "Isère",
+            )
+        ).scalar_one()
+        with db.session.begin_nested():
+            obs1 = Synthese(
+                source=source,
+                cd_nom=4330,
+                nom_cite="Gobe-mouche noir",
+                the_geom_local=gap.geom,
+                the_geom_4326=gap.geom_4326,
+                date_min=datetime.datetime.now(),
+                date_max=datetime.datetime.now(),
+            )
+            db.session.add(obs1)
+            obs2 = Synthese(
+                source=source,
+                cd_nom=4330,
+                nom_cite="Gobe-mouche noir",
+                the_geom_local=grenoble.geom,
+                the_geom_4326=grenoble.geom_4326,
+                date_min=datetime.datetime.now(),
+                date_max=datetime.datetime.now(),
+            )
+            db.session.add(obs2)
+
+        TEMPLATE = Template("""
+        {%- set users_area = {
+            "Notification user 1": ${HAUTES_ALPES},
+            "Notification user 2": ${ISERE},
+        } -%}
+        {%- set my_observations = [] -%}
+        {%- for obs in observations -%}
+        {%- if users_area[role.identifiant] in (obs.areas | map(attribute='id_area') | list) -%}
+        {%- set _ = my_observations.append(obs) -%}
+        {%- endif -%}
+        {%- endfor -%}
+        {%- if my_observations %} {{ my_observations | map(attribute="id_synthese") | join(",") }} {% endif -%}
+        """)
+        with db.session.begin_nested():
+            template = NotificationTemplate(
+                code_category=rule_category.code,
+                code_method=rule_method.code,
+                content=TEMPLATE.substitute(
+                    {"HAUTES_ALPES": hautes_alpes.id_area, "ISERE": isere.id_area}
+                ),
+            )
+            db.session.add(template)
+
+        kwargs = {
+            "code_categories": [rule_category.code],
+            "id_roles": [user1.id_role, user2.id_role],
+            "title": "test",
+            "context": {
+                "observations": [obs1, obs2],
+            },
+        }
+
+        with patch("geonature.core.notifications.utils.send_notification_to_method") as mock:
+            utils.dispatch_notifications(**kwargs)
+            mock.assert_has_calls(
+                [
+                    call(rule_method, user1, "test", None, f" {obs1.id_synthese} "),
+                    call(rule_method, user2, "test", None, f" {obs2.id_synthese} "),
+                ]
+            )
 
 
 @pytest.mark.usefixtures(
