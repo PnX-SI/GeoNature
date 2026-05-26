@@ -1,27 +1,33 @@
-import { Component, OnInit, OnDestroy, HostListener, AfterViewInit } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { MatDialog } from '@angular/material/dialog';
-import { Router, NavigationEnd } from '@angular/router';
-import { CommonService } from '@geonature_common/service/common.service';
-import { OcctaxFormService } from './occtax-form.service';
-import { MapService } from '@geonature_common/map/map.service';
-import { OcctaxFormParamService } from './form-param/form-param.service';
-import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/confirmation.dialog';
-import { OcctaxFormReleveService } from './releve/releve.service';
-import { OcctaxFormOccurrenceService } from './occurrence/occurrence.service';
-import { OcctaxTaxaListService } from './taxa-list/taxa-list.service';
-import { OcctaxDataService } from '../services/occtax-data.service';
-import { OcctaxFormCountingsService } from './counting/countings.service';
-import { OcctaxFormMapService } from './map/occtax-map.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { filter } from 'rxjs/operators';
-import { ModuleService } from '@geonature/services/module.service';
-import { ConfigService } from '@geonature/services/config.service';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  HostListener,
+  AfterViewInit,
+} from "@angular/core";
+import { Subscription } from "rxjs";
+import { MatDialog } from "@angular/material/dialog";
+import { Router, NavigationEnd } from "@angular/router";
+import { CommonService } from "@geonature_common/service/common.service";
+import { OcctaxFormService } from "./occtax-form.service";
+import { MapService } from "@geonature_common/map/map.service";
+import { OcctaxFormParamService } from "./form-param/form-param.service";
+import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
+import { OcctaxFormReleveService } from "./releve/releve.service";
+import { OcctaxFormOccurrenceService } from "./occurrence/occurrence.service";
+import { OcctaxTaxaListService } from "./taxa-list/taxa-list.service";
+import { OcctaxDataService } from "../services/occtax-data.service";
+import { OcctaxFormCountingsService } from "./counting/countings.service";
+import { OcctaxFormMapService } from "./map/occtax-map.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { filter } from "rxjs/operators";
+import { ModuleService } from "@geonature/services/module.service";
+import { ConfigService } from "@geonature/services/config.service";
 
 @Component({
-  selector: 'pnx-occtax-form',
-  templateUrl: './occtax-form.component.html',
-  styleUrls: ['./occtax-form.component.scss'],
+  selector: "pnx-occtax-form",
+  templateUrl: "./occtax-form.component.html",
+  styleUrls: ["./occtax-form.component.scss"],
   providers: [
     OcctaxFormService,
     OcctaxFormReleveService,
@@ -53,7 +59,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
     private _commonService: CommonService,
     private _modalService: NgbModal,
     public moduleService: ModuleService,
-    public config: ConfigService
+    public config: ConfigService,
   ) {}
 
   ngOnInit() {
@@ -75,8 +81,12 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   setCurrentTabAndIdReleve(url) {
-    let urlSegments = url.split('/');
-    if (urlSegments[urlSegments.length - 1] === 'taxons') {
+    console.log(url);
+    let urlSegments = url.split("/");
+    if (
+      urlSegments[urlSegments.length - 1] === "taxons" ||
+      urlSegments[urlSegments.length - 1] === "phyto-taxons"
+    ) {
       const idReleve = urlSegments[urlSegments.length - 2];
       if (idReleve && Number.isInteger(Number(idReleve))) {
         this.occtaxFormService.disabled = false;
@@ -86,9 +96,11 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
         this._router.navigate([`${this.currentModulePath}/form/releve`]);
         this.occtaxFormService.id_releve_occtax.next(null);
       }
-      this.occtaxFormService.currentTab = <'releve' | 'taxons'>urlSegments.pop();
+      this.occtaxFormService.currentTab = <
+        "releve" | "taxons" | "phyto-taxons"
+      >urlSegments.pop();
     } else {
-      this.occtaxFormService.currentTab = 'releve';
+      this.occtaxFormService.currentTab = "releve";
       const idReleve = urlSegments[urlSegments.length - 1];
       if (idReleve && Number.isInteger(Number(idReleve))) {
         this.occtaxFormService.disabled = false;
@@ -99,15 +111,25 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
   navigate(tab) {
+    console.log(tab);
     const idReleve = this.occtaxFormService.id_releve_occtax.getValue();
-    if (tab == 'releve') {
+    if (tab == "releve") {
       if (idReleve) {
-        this._router.navigate([`${this.currentModulePath}/form/releve/${idReleve}`]);
-        this.occtaxFormService.currentTab = 'releve';
+        this._router.navigate([
+          `${this.currentModulePath}/form/releve/${idReleve}`,
+        ]);
+        this.occtaxFormService.currentTab = "releve";
       }
+    } else if (tab == "phyto-taxons") {
+      this._router.navigate([
+        `${this.currentModulePath}/form/${idReleve}/phyto-taxons`,
+      ]);
+      this.occtaxFormService.currentTab = "phyto-taxons";
     } else {
-      this._router.navigate([`${this.currentModulePath}/form/${idReleve}/taxons`]);
-      this.occtaxFormService.currentTab = 'taxons';
+      this._router.navigate([
+        `${this.currentModulePath}/form/${idReleve}/taxons`,
+      ]);
+      this.occtaxFormService.currentTab = "taxons";
     }
   }
 
@@ -115,17 +137,23 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
     setTimeout(() => this.calcCardContentHeight(), 500);
   }
 
-  @HostListener('window:resize', ['$event'])
+  @HostListener("window:resize", ["$event"])
   onResize(event) {
     this.calcCardContentHeight();
   }
 
   calcCardContentHeight() {
-    let minusHeight = <HTMLScriptElement>(<any>document.querySelector('pnx-occtax-form .tab'))
-      ? (<HTMLScriptElement>(<any>document.querySelector('pnx-occtax-form .tab'))).offsetHeight
+    let minusHeight = <HTMLScriptElement>(
+      (<any>document.querySelector("pnx-occtax-form .tab"))
+    )
+      ? (<HTMLScriptElement>(
+          (<any>document.querySelector("pnx-occtax-form .tab"))
+        )).offsetHeight
       : 0;
 
-    this.cardContentHeight = this._commonService.calcCardContentHeight(minusHeight + 20);
+    this.cardContentHeight = this._commonService.calcCardContentHeight(
+      minusHeight + 20,
+    );
 
     // resize map after resize container
     if (this._mapService.map) {
@@ -136,7 +164,9 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   openParametersDialog(modalComponent): void {
-    this._modalService.open(modalComponent.modalContent, { windowClass: 'large-modal' });
+    this._modalService.open(modalComponent.modalContent, {
+      windowClass: "large-modal",
+    });
   }
   /**
    *
@@ -155,24 +185,24 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // si le formulair est en cour d'édition
     if (
-      (this.occtaxFormService.currentTab === 'releve' &&
+      (this.occtaxFormService.currentTab === "releve" &&
         this.occtaxFormReleveService.releveForm.dirty) ||
-      (this.occtaxFormService.currentTab === 'taxons' &&
+      (this.occtaxFormService.currentTab === "taxons" &&
         this.occtaxFormOccurrenceService.form.dirty)
     ) {
       //si un des 2 formulaires a été modifié mais non sauvegardé
       const message =
-        'Êtes-vous sûr de vouloir fermer le formulaire ?<br>Des modifications non sauvegardées seront perdues.';
+        "Êtes-vous sûr de vouloir fermer le formulaire ?<br>Des modifications non sauvegardées seront perdues.";
       const dialogRef = this.dialog.open(ConfirmationDialog, {
-        width: 'auto',
-        position: { top: '5%' },
+        width: "auto",
+        position: { top: "5%" },
         data: { message: message },
       });
 
       dialogRef.afterClosed().subscribe((result) => {
         if (result) {
           if (this.occtaxFormService.chainRecording) {
-            this.occtaxFormService.currentTab = 'releve';
+            this.occtaxFormService.currentTab = "releve";
           }
           if (cancel) {
             this.deleteReleveIfNoOcc();
@@ -183,7 +213,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     } else {
       if (this.occtaxFormService.chainRecording) {
-        this.occtaxFormService.currentTab = 'releve';
+        this.occtaxFormService.currentTab = "releve";
       }
       if (cancel) {
         this.deleteReleveIfNoOcc();
