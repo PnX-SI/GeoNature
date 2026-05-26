@@ -18,7 +18,7 @@ interface IStrate {
   templateUrl: "./phyto-strate.component.html",
   styleUrls: ["./phyto-strate.component.scss"],
 })
-export class PhytoStratumComponent implements OnInit, OnDestroy {
+export class PhytoStrateComponent implements OnInit, OnDestroy {
   @ViewChild("strateTable", { static: true }) table: MatTable<any>;
   @Input() parentFormControl: FormArray;
 
