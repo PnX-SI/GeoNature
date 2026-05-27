@@ -72,6 +72,21 @@ export class DatasetFormComponent implements OnInit {
         }
       });
     this.form = this.datasetFormS.form;
+
+    // Patch form with query parameters if they exist as form controls
+    this._route.queryParams.subscribe((queryParams) => {
+      const patchData: { [key: string]: any } = {};
+      Object.keys(queryParams).forEach((key) => {
+        if (this.form.controls[key]) {
+          // Convert to number if the value looks like a number
+          patchData[key] = isNaN(+queryParams[key]) ? queryParams[key] : +queryParams[key];
+        }
+      });
+      if (Object.keys(patchData).length > 0) {
+        this.form.patchValue(patchData);
+      }
+    });
+
     this._dfs.getTaxaBibList().subscribe((d) => (this.taxaBibList = d));
     this.uuidEditionEnabled = this._config.METADATA.ENABLE_UUID_EDITION_FIELD;
     this.entityLabel = this.translation_service.instant('Dataset');

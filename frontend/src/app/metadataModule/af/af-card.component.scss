@@ -80,6 +80,8 @@ div.c {
 }
 
 .card-header {
+  display: flex;
+  gap: 15px;
   padding: 1rem 1.5rem;
   padding-bottom: 0.5rem;
   background-color: transparent;

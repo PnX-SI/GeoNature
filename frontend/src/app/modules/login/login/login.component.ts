@@ -31,9 +31,10 @@ export class LoginComponent implements OnInit {
   login_or_pass_recovery: boolean = false;
   public APP_NAME = null;
   public authProviders: Array<Provider>;
-  public localProviderEnabled: boolean = true;
-  public isOtherProviders: boolean = false;
+  public primaryProviders: Array<Provider>;
+  public secondaryProviders: Array<Provider>;
   public errorMsg = '';
+  public showPassword: boolean = false;
 
   constructor(
     public _authService: AuthService, //FIXME : change to private (html must be modified)
@@ -62,20 +63,31 @@ export class LoginComponent implements OnInit {
     }
     this._authService.getAuthProviders().subscribe((providers) => {
       this.authProviders = providers;
-      this.isOtherProviders = this.authProviders.length > 1;
-      // If local provider is not available in the configuration, disable it
-      if (!this.authProviders.find((p) => p.id_provider === 'local_provider')) {
-        this.localProviderEnabled = false;
-      }
-      // Local provider should not be display in the other providers buttons
-      this.authProviders = this.authProviders.filter((p) => p.id_provider !== 'local_provider');
 
-      // If one provider is declared (except the local one)
-      if (this.authProviders.length === 1 && !this.localProviderEnabled) {
+      // Redirect if the only provider declared isn't the local provider
+      if (
+        this.authProviders.length === 1 &&
+        this.authProviders[0].id_provider !== 'local_provider'
+      ) {
         const provider = this.authProviders[0];
         window.location.href = this.getProviderLoginUrl(provider.id_provider);
+      } else {
+        // Separate primary provider(s) and other provider(s)
+        this.primaryProviders = this.authProviders.filter((p) => p.is_secondary !== true);
+        this.secondaryProviders = this.authProviders.filter((p) => p.is_secondary === true);
       }
     });
+  }
+
+  get hasSecondaryProviders(): boolean {
+    return this.secondaryProviders?.length > 0 ? true : false;
+  }
+
+  get isLocalProviderOnlyPrimaryProvider(): boolean {
+    return this.primaryProviders?.length == 1 &&
+      this.primaryProviders[0].id_provider == 'local_provider'
+      ? true
+      : false;
   }
 
   async register(form) {
@@ -185,5 +197,9 @@ export class LoginComponent implements OnInit {
       this.handleRegister(data);
       dialogRef.close();
     });
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 }

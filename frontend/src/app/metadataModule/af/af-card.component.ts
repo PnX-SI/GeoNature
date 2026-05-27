@@ -7,6 +7,7 @@ import { DataFormService } from '@geonature_common/form/data-form.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { ModuleService } from '@geonature/services/module.service';
+import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 
 @Component({
   selector: 'pnx-af-card',
@@ -79,7 +80,8 @@ export class AfCardComponent implements OnInit, OnDestroy {
     private _router: Router,
     private _commonService: CommonService,
     public config: ConfigService,
-    private _moduleService: ModuleService
+    private _moduleService: ModuleService,
+    public _cruvedStore: CruvedStoreService
   ) {}
 
   ngOnInit() {

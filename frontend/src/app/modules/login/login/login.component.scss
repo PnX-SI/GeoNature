@@ -40,8 +40,8 @@ mat-dialog-content {
 .addon {
   color: #55585a;
   position: absolute;
-  top: 10px;
-  left: 6px;
+  top: 14px;
+  left: 14px;
   z-index: 10;
   font-size: 18px;
 }
@@ -77,7 +77,7 @@ mat-dialog-content {
 }
 
 #login-body {
-  height: 100vh;
+  min-height: 100svh;
   background-size: cover;
 }
 
@@ -150,4 +150,38 @@ i.loader .mat-spinner {
   display: flex;
   align-items: center;
   height: 100vh;
+}
+.password-field {
+  position: relative;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #55585a;
+  transition: color 0.2s;
+  z-index: 10;
+}
+
+.password-toggle-btn:hover {
+  color: #ced4da;
+}
+
+.password-toggle-btn:focus {
+  outline: none;
+}
+
+.password-toggle-btn mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
 }

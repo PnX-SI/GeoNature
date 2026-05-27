@@ -38,15 +38,17 @@
   },
 
   "Authentication": {
-    "Email": "Email",
+    "Authentication": "Authentification",
+    "Email": "Adresse mail",
     "Username": "Nom d'utilisateur",
     "Password": "Mot de passe",
     "Actions": {
-      "LogIn": "Connexion",
+      "LogIn": "Se connecter",
       "LogOut": "Déconnexion",
       "CreateAccount": "Créer un compte",
       "ActivateAccount": "Activer mon compte",
-      "ActivateAccountValidator": "Activer le compte"
+      "ActivateAccountValidator": "Activer le compte",
+      "Send": "Envoyer"
     },
     "Errors": {
       "WrongLoginOrPassword": "Identifiant ou mot de passe incorrect",
@@ -62,13 +64,21 @@
       }
     },
     "Messages": {
-      "ForgotPasswordOrLogin": "Identifiant ou mot de passe oublié ?",
+      "Recovery": {
+        "ForgotPasswordOrLogin": "Identifiant ou mot de passe oublié ?",
+        "MailAsked": "Veuillez renseigner l'adresse email utilisée lors de votre inscription.",
+        "Process": "Un message y sera envoyé avec votre identifiant et la possibilité de renouveler votre mot de passe."
+      },
       "ActivateAccountConfirmation": "Pour activer votre compte, cliquez sur le bouton ci-dessous",
       "ActivateAccountConfirmationValidator": "Pour activer ce compte, cliquez sur le bouton ci-dessous",
       "PasswordChanged": "Votre mot de passe a bien été changé",
       "MailMandatory": "L'adresse email est obligatoire.",
+      "InvalidMail": "Veuillez saisir une adresse email valide.",
+      "ShowPassword": "Afficher le mot de passe",
+      "HidePassword": "Masquer le mot de passe",
       "InvalidMail": "Veuillez saisir une adresse email valide."
-    }
+    },
+    "OtherAuthProviders": "Autres moyens de connexion"
   },
   "MyAccount": {
     "MyAccount": "Mon compte",
