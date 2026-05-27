@@ -442,6 +442,8 @@ def releveHandler(request, *, releve, scope, module_code=None):
             )
         # set id_digitiser
         releve.id_digitiser = g.current_user.id_role
+    if not dataset.acquisition_framework.opened:
+        raise Conflict("Cannot create or update a releve on a closed acquisition framework.")
 
     # Check if Phyto module is installed and called from "phyto" context
     is_phyto_installed = "PHYTO" in current_app.config["ADDITIONAL_FIELDS"]["IMPLEMENTED_MODULES"]

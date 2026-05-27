@@ -54,6 +54,7 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
   public occurrenceAddFields: Array<any> = [];
   public countingAddFields: Array<any> = [];
 
+
   get releve() {
     return this.occtaxData.getValue() ? this.occtaxData.getValue().properties : null;
   }

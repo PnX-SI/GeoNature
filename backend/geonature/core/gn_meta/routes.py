@@ -13,7 +13,7 @@ from sqlalchemy.exc import DatabaseError
 from sqlalchemy.sql import select
 from sqlalchemy.sql.functions import func
 from sqlalchemy.orm import Load, joinedload, undefer
-from werkzeug.exceptions import Conflict, BadRequest, Forbidden, InternalServerError, NotFound
+from werkzeug.exceptions import Conflict, BadRequest, Forbidden, InternalServerError, NotFound, NotFound
 from werkzeug.datastructures import MultiDict, TypeConversionDict
 from marshmallow import ValidationError, EXCLUDE
 from sqlalchemy.exc import IntegrityError
@@ -948,8 +948,8 @@ def call_extended_af_publish(af_id):
             )
 
 
-@routes.route("/acquisition_framework/open/<int:af_id>", methods=["POST"])
-@permissions.check_cruved_scope("U", get_scope=True, module_code="METADATA")
+@routes.route("/acquisition_framework/publish/<int:af_id>", methods=["GET"])
+@permissions.check_cruved_scope("U", module_code="METADATA")
 @json_resp
 def open_acquisition_framework(scope, af_id):
     """
