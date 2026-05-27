@@ -3,6 +3,11 @@ name: Run pytest against GeoNature module
 on:
   workflow_call:
     inputs:
+      geonature_repo:
+        description: "Le dépot de GeoNature à utiliser"
+        default: "pnx-si/geonature"
+        required: false
+        type: string
       geonature_ref:
         description: "La branche, tag ou SHA de GeoNature à utiliser"
         default: "master"
@@ -71,9 +76,9 @@ jobs:
 
     steps:
       - name: Clone GeoNature
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
-          repository: pnx-si/geonature
+          repository: ${{ inputs.geonature_repo }}
           ref: ${{ inputs.geonature_ref }}
           submodules: true
       - name: Clone ${{ github.event.repository.name }} module
