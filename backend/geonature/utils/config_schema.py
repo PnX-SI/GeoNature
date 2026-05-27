@@ -150,7 +150,6 @@ class HomeConfig(Schema):
 
 class MetadataConfig(Schema):
     NB_AF_DISPLAYED = fields.Integer(load_default=50, validate=OneOf([10, 25, 50, 100]))
-    ENABLE_CLOSE_AF = fields.Boolean(load_default=False)
     AF_SHEET_CLOSED_LINK_NAME = fields.String(load_default="Lien du certificat de dépôt")
     CLOSED_AF_TITLE = fields.String(load_default="")
     AF_PDF_TITLE = fields.String(load_default="Cadre d'acquisition: ")
@@ -158,8 +157,7 @@ class MetadataConfig(Schema):
     EXTENDED_AF_PUBLISH_ROUTE_NAME = fields.String(load_default="")
     CLOSED_MODAL_LABEL = fields.String(load_default="Fermer un cadre d'acquisition")
     CLOSED_MODAL_CONTENT = fields.String(
-        load_default="""L'action de fermeture est irréversible. Il ne sera
-    plus possible d'ajouter des jeux de données au cadre d'acquisition par la suite."""
+        load_default="""La fermeture du cadre d'acquisition entraînera l'inactivation de tous les jeux de données associés."""
     )
     CD_NOMENCLATURE_ROLE_TYPE_DS = fields.List(fields.Str(), load_default=[])
     CD_NOMENCLATURE_ROLE_TYPE_AF = fields.List(fields.Str(), load_default=[])
@@ -174,6 +172,7 @@ class MetadataConfig(Schema):
     ENABLE_UUID_EDITION_FIELD = fields.Boolean(load_default=False)
     ROUTE_ADD_AF = fields.String(load_default="/metadata/af")
     DATASETS_DEFAULT_ASSOCIATED_MODULES = fields.List(fields.Str(), load_default=[])
+    AF_OPENABLE = fields.Boolean(load_default=True)
 
 
 class AuthenticationConfig(Schema):

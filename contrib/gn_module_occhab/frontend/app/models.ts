@@ -13,8 +13,15 @@ export interface Station {
   id_station?: number;
   habitats: Array<OccurenceHabitat>;
   cruved: CRUVED;
-}
+    dataset?: Dataset;
 
+}
+export interface AcquistionFramework {
+  opened: boolean;
+}
+export interface Dataset {
+  acquisition_framework: AcquistionFramework;
+}
 export interface StationFeature {
   id?: number;
   type: 'Feature';

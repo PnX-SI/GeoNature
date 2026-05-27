@@ -126,6 +126,18 @@ class ImportActions:
         raise NotImplementedError
 
     @staticmethod
+    def get_dataset_transient_column_name() -> str:
+        """
+        Retrieves the name of the transient column associated with the dataset.
+
+        Returns
+        -------
+        str
+            Always returns "id_dataset" unless overridden.
+        """
+        return "id_dataset"
+
+    @staticmethod
     def remove_data_from_destination(imprt: TImports) -> None:
         """
         Remove data from destination database for a given import.

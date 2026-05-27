@@ -1,7 +1,7 @@
 from datetime import datetime
 from collections.abc import Mapping
 import re
-from typing import Any, Iterable, List, Optional, Set
+from typing import Any, Iterable, List, Optional
 from packaging import version
 
 from flask import g
@@ -16,6 +16,8 @@ from jsonschema.exceptions import ValidationError as JSONValidationError
 from jsonschema import validate as validate_json
 from celery.result import AsyncResult
 import flask_sqlalchemy
+from werkzeug.exceptions import Conflict
+
 
 if version.parse(flask_sqlalchemy.__version__) >= version.parse("3"):
     from flask_sqlalchemy.query import Query
@@ -31,6 +33,8 @@ from geonature.core.gn_permissions.tools import get_scopes_by_action
 from geonature.core.gn_commons.models import TModules
 from pypnnomenclature.models import BibNomenclaturesTypes
 from pypnusershub.db.models import User
+from sqlalchemy import select, exists
+from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
 
 
 class ImportModule(TModules):
@@ -346,8 +350,6 @@ cor_role_import = db.Table(
         "destination.label",
         "destination.statistics_labels",
         "destination.module",
-        "errors.type",
-        "errors.entity",
     ]
 )
 class TImports(InstancePermissionMixin, db.Model):
@@ -408,6 +410,12 @@ class TImports(InstancePermissionMixin, db.Model):
         order_by="ImportUserError.id_type",  # TODO order by type.category
         cascade="all, delete-orphan",
     )
+    datasets = db.relationship(
+        "CorImportDataset",
+        back_populates="imprt",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
 
     @property
     def cruved(self):
@@ -433,6 +441,30 @@ class TImports(InstancePermissionMixin, db.Model):
             return None
         else:
             return -1
+
+    @property
+    def has_closed_af(self):
+        """
+        Check if one AF of the import has been closed.
+        Returns
+        -------
+
+        """
+        return db.session.scalar(
+            select(
+                exists().where(
+                    CorImportDataset.id_import == self.id_import,
+                    CorImportDataset.id_dataset == TDatasets.id_dataset,
+                    TDatasets.id_acquisition_framework
+                    == TAcquisitionFramework.id_acquisition_framework,
+                    TAcquisitionFramework.opened.is_(False),
+                )
+            )
+        )
+
+    def raise_on_closed_af(self):
+        if self.has_closed_af:
+            raise Conflict(description="This import is linked to a closed acquisition framework.")
 
     def has_instance_permission(self, scope, user=None, action_code="C"):
 
@@ -488,6 +520,27 @@ class TImports(InstancePermissionMixin, db.Model):
             if extension in TImports.AVAILABLE_FORMATS:
                 import_as_dict["detected_format"] = extension
         return import_as_dict
+
+
+class CorImportDataset(db.Model):
+    __tablename__ = "cor_import_datasets"
+    __table_args__ = {"schema": "gn_imports"}
+
+    id_import = db.Column(
+        db.Integer,
+        db.ForeignKey("gn_imports.t_imports.id_import", ondelete="CASCADE"),
+        primary_key=True,
+        nullable=False,
+    )
+    id_dataset = db.Column(
+        db.Integer,
+        db.ForeignKey("gn_meta.t_datasets.id_dataset", ondelete="CASCADE"),
+        primary_key=True,
+        nullable=False,
+    )
+
+    imprt = db.relationship("TImports", back_populates="datasets")
+    dataset = db.relationship("TDatasets")
 
 
 @serializable

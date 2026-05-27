@@ -76,6 +76,7 @@ def override_in_importfile(
         "@INACTIVE_DATASET_UUID@": str(import_datasets["user--inactive"].unique_dataset_id),
         "@DATASET_NOT_FOUND@": "03905a03-c7fa-4642-b143-5005fa805377",
         "@COORD_STATION@": to_wkt(coord_station_test_file[0]),
+        "@CLOSED_AF_DATASET_UID@": str(import_datasets["user--closed-af"].unique_dataset_id),
     }
 
 
@@ -171,7 +172,7 @@ def habitat(station):
 )
 class TestImportsOcchab:
 
-    def test_import_valid_file(self, datasets, imported_import):
+    def test_import_valid_file(self, imported_import):
         assert_import_errors(
             imported_import,
             {
@@ -199,6 +200,12 @@ class TestImportsOcchab:
                     "station",
                     "unique_dataset_id",
                     frozenset({44}),
+                ),
+                (
+                    ImportCodeError.CLOSED_ACQUISITION_FRAMEWORK,
+                    "station",
+                    "unique_dataset_id",
+                    frozenset({45}),
                 ),
                 (
                     ImportCodeError.INVALID_UUID,
@@ -259,7 +266,7 @@ class TestImportsOcchab:
                     ImportCodeError.ERRONEOUS_PARENT_ENTITY,
                     "habitat",
                     "",
-                    frozenset({5, 6, 9, 24, 44}),
+                    frozenset({5, 6, 9, 24, 44, 45}),
                 ),
                 (
                     ImportCodeError.NO_PARENT_ENTITY,
@@ -442,6 +449,20 @@ class TestImportsOcchab:
             == imported_import.statistics["habitat_count"]
         )
 
+    def test_remove_import_with_closed_af(self, client, users, imported_import):
+        # We get an imported station, and close its af
+        station = (
+            db.session.execute(
+                sa.select(Station).where(Station.id_import == imported_import.id_import).limit(1)
+            )
+            .scalars()
+            .first()
+        )
+        station.dataset.acquisition_framework.opened = False
+        with logged_user(client, imported_import.authors[0]):
+            r = client.delete(url_for("import.delete_import", import_id=imported_import.id_import))
+        assert r.status_code == Conflict.code, r.data
+
     def test_remove_import_with_manual_children(self, client, users, imported_import):
         """
         This test verifies that it is not possible to remove an import if an imported entity
@@ -515,9 +536,9 @@ class TestImportsOcchab:
     def test_preview_data(self, client, prepared_import):
         valid_numbers = {
             "station_valid": 7,
-            "station_invalid": 8,
+            "station_invalid": 9,
             "habitat_valid": 11,
-            "habitat_invalid": 23,
+            "habitat_invalid": 24,
         }
         imprt = prepared_import
         with logged_user(client, imprt.authors[0]):

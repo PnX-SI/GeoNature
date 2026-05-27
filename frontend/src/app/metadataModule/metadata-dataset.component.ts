@@ -10,6 +10,7 @@ import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/
 import { MetadataService } from './services/metadata.service';
 import { MetadataDataService } from './services/metadata-data.service';
 import { CommonService } from '@geonature_common/service/common.service';
+import { ActionService } from '@geonature/services/action.service';
 
 @Component({
   selector: '[pnx-metadata-dataset]',
@@ -18,6 +19,7 @@ import { CommonService } from '@geonature_common/service/common.service';
 })
 export class MetadataDatasetComponent implements OnInit {
   @Input() dataset: any;
+  @Input() acquisitionFramework: any;
   stateChangeSaving: boolean = false;
 
   constructor(
@@ -27,10 +29,41 @@ export class MetadataDatasetComponent implements OnInit {
     public moduleService: ModuleService,
     public metadataS: MetadataService,
     public metadataDataS: MetadataDataService,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    private actionService: ActionService
   ) {}
 
   ngOnInit() {}
+
+  getSwitchTooltip() {
+    if (
+      !this.actionService.isActionAllowed(
+        this.dataset.cruved,
+        this.acquisitionFramework.opened,
+        'U'
+      )
+    ) {
+      return this.actionService.getActionTooltip(
+        this.dataset.cruved,
+        this.acquisitionFramework.opened,
+        'U',
+        'MetaData'
+      );
+    }
+    if (this.dataset.active) {
+      return this.translate.instant('MetaData.Tooltips.DatasetActive');
+    } else {
+      return this.translate.instant('MetaData.Tooltips.DatasetInactive');
+    }
+  }
+
+  isSwitchable() {
+    return this.actionService.isActionAllowed(
+      this.dataset.cruved,
+      this.acquisitionFramework.opened,
+      'U'
+    );
+  }
 
   switchDatasetState(event) {
     this.stateChangeSaving = true;

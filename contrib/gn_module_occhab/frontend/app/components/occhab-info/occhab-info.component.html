@@ -12,23 +12,24 @@
       <h5 class="card-header bg-primary text-white">
         Station n° {{ station.properties.id_station }}
         <button
-          matTooltip="Editez le relevé {{ station?.id }}"
           mat-mini-fab
           class="button-success float-right"
           type="button"
-          [disabled]="station?.properties.cruved.U == false"
-          [routerLink]="['/occhab/edit', station?.id]"
+          [matTooltip]="getTooltip('U')"
+          [class.disabled-look]="!isActionAllowed('U')"
+          (click)="isActionAllowed('U') ? null : null"
+          [routerLink]="isActionAllowed('U') ? ['/occhab/edit', station?.id] : null"
         >
           <mat-icon>edit</mat-icon>
         </button>
         <button
-          matTooltip="Supprimer le relevé {{ station?.id }}"
           mat-mini-fab
           color="warn"
           type="button"
-          (click)="openDeleteModal(deleteModal)"
+          [matTooltip]="getTooltip('D')"
           class="float-right mr-1"
-          [disabled]="station?.properties.cruved.D == false"
+          [class.disabled-look]="!isActionAllowed('D')"
+          (click)="isActionAllowed('D') ? openDeleteModal(deleteModal) : null"
         >
           <mat-icon>delete</mat-icon>
         </button>

@@ -60,6 +60,7 @@ from sqlalchemy.dialects.postgresql import JSONB
 
 from .geo import set_geom_columns_from_area_codes
 from .plot import taxon_distribution_plot
+from geonature.core.gn_meta.models import TDatasets
 
 
 class SyntheseImportActions(ImportActions):

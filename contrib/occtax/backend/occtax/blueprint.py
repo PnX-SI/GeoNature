@@ -5,16 +5,14 @@ from flask import (
     Blueprint,
     request,
     current_app,
-    session,
     send_from_directory,
-    render_template,
     jsonify,
     g,
 )
-from werkzeug.exceptions import BadRequest, Forbidden, NotFound, Unauthorized
-from sqlalchemy import or_, func, distinct, case, select
+from werkzeug.exceptions import BadRequest, Forbidden, NotFound, Conflict
+from sqlalchemy import func, distinct, select
 from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy.orm import joinedload, Load, raiseload
+from sqlalchemy.orm import joinedload, Load
 from geojson import Feature, FeatureCollection
 from shapely.geometry import shape
 from geoalchemy2.shape import from_shape, to_shape
@@ -24,7 +22,7 @@ from marshmallow import ValidationError
 from geonature.core.gn_commons.models import TAdditionalFields
 from geonature.core.gn_commons.models.base import TModules
 from geonature.core.gn_meta.models import TDatasets
-from geonature.utils.env import DB, db, ROOT_DIR
+from geonature.utils.env import DB, db
 
 from geonature.utils import filemanager
 from .models import (
@@ -40,14 +38,12 @@ from .repositories import (
 )
 from .schemas import OccurrenceSchema, ReleveCruvedSchema, ReleveSchema
 from .utils import as_dict_with_add_cols
-from geonature.utils.errors import GeonatureApiError
 from geonature.utils.utilsgeometrytools import export_as_geo_file
 
-from geonature.core.users.models import UserRigth
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import get_scopes_by_action
 
-from pypnusershub.db.models import User, Organisme
+from pypnusershub.db.models import User
 from utils_flask_sqla_geo.generic import GenericTableGeo
 from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
@@ -87,7 +83,7 @@ def getReleves(scope):
         Load(TRelevesOccurrence).raiseload("*"),
         joinedload(TRelevesOccurrence.observers),
         joinedload(TRelevesOccurrence.digitiser),
-        joinedload(TRelevesOccurrence.dataset),
+        joinedload(TRelevesOccurrence.dataset).joinedload(TDatasets.acquisition_framework),
         joinedload(TRelevesOccurrence.t_occurrences_occtax).options(
             joinedload(TOccurrencesOccurrence.taxref),
             joinedload(TOccurrencesOccurrence.cor_counting_occtax),
@@ -130,6 +126,7 @@ def getReleves(scope):
                 "observers",
                 "digitiser",
                 "dataset",
+                "dataset.acquisition_framework.opened",
                 "t_occurrences_occtax.cor_counting_occtax.medias",
             ]
         )
@@ -208,6 +205,7 @@ def getOneReleve(id_releve, scope):
             "properties": releve,
             "id": releve.id_releve_occtax,
             "geometry": releve.geom_4326,
+            "af_opened": releve.dataset.acquisition_framework.opened,
         },
         "cruved": releve.get_releve_cruved(),
     }
@@ -338,6 +336,7 @@ def releveHandler(request, *, releve, scope):
     except ValidationError as error:
         log.exception(error.messages)
         raise BadRequest(error.messages)
+    dataset = db.session.get(TDatasets, releve.id_dataset)
     # Test des droits d'édition du relevé
     if releve.id_releve_occtax is not None:
         scope = get_scopes_by_action()["U"]
@@ -348,13 +347,14 @@ def releveHandler(request, *, releve, scope):
     # if creation
     else:
         # Check if user can add a releve in the current dataset
-        dataset = db.session.get(TDatasets, releve.id_dataset)
         if not dataset.has_instance_permission(scope):
             raise Forbidden(
                 f"User {g.current_user.id_role} has no right in dataset {releve.id_dataset}"
             )
         # set id_digitiser
         releve.id_digitiser = g.current_user.id_role
+    if not dataset.acquisition_framework.opened:
+        raise Conflict("Cannot create or update a releve on a closed acquisition framework.")
     DB.session.add(releve)
     DB.session.commit()
     return releve
@@ -429,7 +429,8 @@ def occurrenceHandler(request, *, occurrence, scope):
     releve = db.get_or_404(TRelevesOccurrence, occurrence.id_releve_occtax)
     if not releve.has_instance_permission(scope):
         raise Forbidden()
-
+    if not releve.dataset.acquisition_framework.opened:
+        raise Conflict("Cannot create an occurence on a closed acquisition framework.")
     occurrenceSchema = OccurrenceSchema()
     try:
         occurrence = occurrenceSchema.load(request.get_json(), instance=occurrence)
@@ -487,6 +488,8 @@ def deleteOneReleve(id_releve, scope):
     releve = db.get_or_404(TRelevesOccurrence, id_releve)
     if not releve.has_instance_permission(scope):
         raise Forbidden()
+    if not releve.dataset.acquisition_framework.opened:
+        raise Conflict("Cannot deleted a releve on a closed acquisition framework.")
     db.session.delete(releve)
     db.session.commit()
     return jsonify({"message": "deleted with success"})
@@ -507,7 +510,8 @@ def deleteOneOccurence(id_occ, scope):
 
     if not occ.releve.has_instance_permission(scope):
         raise Forbidden()
-
+    if not occ.releve.dataset.acquisition_framework.opened:
+        raise Conflict("Cannot delete an occurence on a closed acquisition framework.")
     DB.session.delete(occ)
     DB.session.commit()
 
@@ -528,6 +532,8 @@ def deleteOneOccurenceCounting(scope, id_count):
     ccc = db.get_or_404(CorCountingOccurrence, id_count)
     if not ccc.occurrence.releve.has_instance_permission(scope):
         raise Forbidden
+    if not ccc.occurrence.releve.dataset.acquisition_framework.opened:
+        raise Conflict("Cannot create an occurence on a closed acquisition framework.")
     DB.session.delete(ccc)
     DB.session.commit()
     return "", 204
@@ -614,8 +620,6 @@ def export(scope):
     file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
     file_name = filemanager.removeDisallowedFilenameChars(file_name)
 
-    # Ajout des colonnes additionnels
-    additional_col_names = []
     query_add_fields = (
         select(TAdditionalFields)
         .where(TAdditionalFields.modules.any(module_code=g.current_module.module_code))

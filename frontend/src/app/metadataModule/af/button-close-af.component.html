@@ -1,0 +1,113 @@
+<ng-container [ngSwitch]="buttonType">
+  <!-- Version Toolbar (petite icone) -->
+  <ng-container *ngSwitchCase="'Toolbar'">
+    <ng-container *ngIf="!opened; else closeButtonToolbar">
+      <span class="float-left">
+        <button
+          type="button"
+          [class.disabled-look]="!isOpenable()"
+          mat-icon-button
+          (click)="isOpenable() ? openAf($event) : null"
+          [matTooltip]="getTooltip()"
+        >
+          <mat-icon>lock_open</mat-icon>
+        </button>
+      </span>
+    </ng-container>
+    <ng-template #closeButtonToolbar>
+      <span class="float-left">
+        <button
+          type="button"
+          mat-icon-button
+          [disabled]="disabled"
+          (click)="openPublishModal($event)"
+          [matTooltip]="getTooltip()"
+        >
+          <mat-icon>lock</mat-icon>
+        </button>
+      </span>
+    </ng-template>
+  </ng-container>
+
+  <!-- Version Floating (bouton plus grand) -->
+  <ng-container *ngSwitchCase="'Floating'">
+    <ng-container *ngIf="!opened; else closeButtonFloating">
+      <button
+        type="button"
+        mat-mini-fab
+        class="mr-2 float-right"
+        color="primary"
+        [class.disabled-look]="!isOpenable()"
+        (click)="isOpenable() ? openAf($event) : null"
+        [matTooltip]="getTooltip()"
+      >
+        <mat-icon class="toolbar-small-icon">lock_open</mat-icon>
+      </button>
+    </ng-container>
+    <ng-template #closeButtonFloating>
+      <button
+        type="button"
+        mat-mini-fab
+        class="mr-2 float-right"
+        color="warn"
+        [disabled]="disabled"
+        (click)="openPublishModal($event)"
+        [matTooltip]="getTooltip()"
+      >
+        <mat-icon class="toolbar-small-icon">lock</mat-icon>
+      </button>
+    </ng-template>
+  </ng-container>
+</ng-container>
+
+<!-- Modal de publication/clôture -->
+<ng-template
+  #publishModal
+  let-c="close"
+  let-d="dismiss"
+>
+  <div class="modal-header">
+    <h5
+      class="modal-title"
+      id="publishModalLabel"
+    >
+      {{ afPublishModalLabel }}
+    </h5>
+  </div>
+
+  <div
+    class="modal-body"
+    style="align-items: flex-end"
+  >
+    <div class="col">
+      <span>
+        <p style="text-align: justify">{{ afPublishModalContent }}</p>
+      </span>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <div class="col"></div>
+    <div
+      mat-dialog-actions
+      align="end"
+    >
+      <button
+        mat-raised-button
+        cdkFocusInitial
+        class="mr-1"
+        (click)="c()"
+      >
+        {{ 'Actions.Cancel' | translate }}
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="publishAf()"
+      >
+        {{ 'Actions.Confirm' | translate }}
+      </button>
+    </div>
+    <br />
+  </div>
+</ng-template>

@@ -5,19 +5,15 @@ from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_permissions.models import PermissionAvailable, PermObject
 import pytest
 
-from datetime import datetime as dt
 
 from flask import Flask, url_for, current_app, g
-from werkzeug.exceptions import Unauthorized, Forbidden, NotFound, BadRequest
-from shapely.geometry import Point
-from geoalchemy2.shape import from_shape
-from sqlalchemy import func, select, exists
+from werkzeug.exceptions import Unauthorized, Forbidden, NotFound, BadRequest, Conflict
+from sqlalchemy import func, select
 from click.testing import CliRunner
 
 from geonature.core.gn_synthese.models import Synthese
 from geonature.utils.env import db
 from geonature.utils.config import config
-from .fixtures import create_module
 from .utils import set_logged_user
 from .fixtures import *
 
@@ -30,7 +26,6 @@ from occtax.models import (
     TOccurrencesOccurrence,
     CorCountingOccurrence,
 )
-from occtax.repositories import ReleveRepository
 from occtax.schemas import OccurrenceSchema, ReleveSchema
 from occtax.commands import add_submodule_permissions
 
@@ -403,6 +398,38 @@ class TestOcctaxReleve:
         data = response.json
         assert data["properties"]["id_module"] == module.id_module
 
+        def test_releve_actions_on_closed_af(self, users: dict, datasets, releve_occtax):
+            """
+            Test that creating, updating and deleting a releve fails when the
+            associated dataset's acquisition framework is closed.
+            """
+
+            af = datasets["own_dataset"].acquisition_framework
+            af.opened = False
+            db.session.flush()
+
+            set_logged_user(self.client, users["user"])
+
+            releve_data = ReleveSchema().dump(releve_occtax)
+
+            # ---- Test CREATE on closed AF ----
+            url_create = url_for("pr_occtax.createReleve")
+            response = self.client.post(url_create, json=releve_data)
+
+            assert response.status_code == Conflict.code
+
+            # ---- Test UPDATE on closed AF ----
+            url_update = url_for("pr_occtax.updateReleve", id_releve=releve_occtax.id_releve_occtax)
+            response = self.client.post(url_update, json=releve_data)
+            assert response.status_code == Conflict.code
+
+            # ---- Test DELETE on closed AF ----
+            url_delete = url_for(
+                "pr_occtax.deleteOneReleve", id_releve=releve_occtax.id_releve_occtax
+            )
+            response = self.client.delete(url_delete)
+            assert response.status_code == Conflict.code
+
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction", "datasets", "module")
 class TestOcctaxOccurrence:
@@ -485,6 +512,50 @@ class TestOcctaxOccurrence:
         occ = db.session.get(TOccurrencesOccurrence, occurrence.id_occurrence_occtax)
         assert response.status_code == 204
         assert not occ
+
+        def test_occurrence_actions_on_closed_af(self, users: dict, datasets, occurrence_data):
+            """
+            Test that creating, updating and deleting an occurrence fails when the
+            associated dataset's acquisition framework is closed.
+            """
+
+            af = datasets["own_dataset"].acquisition_framework
+            af.opened = False
+            db.session.flush()
+
+            set_logged_user(self.client, users["user"])
+
+            # ---- Test CREATE on closed AF ----
+            url_create = url_for(
+                "pr_occtax.createOccurrence", id_releve=occurrence_data["id_releve_occtax"]
+            )
+            response = self.client.post(url_create, json=occurrence_data)
+
+            assert response.status_code == Conflict.code
+
+            # ---- Test UPDATE on closed AF ----
+            # Get the occurrence that was created in the fixture
+            occurrence = (
+                db.session.execute(
+                    select(TOccurrencesOccurrence).filter_by(
+                        id_releve_occtax=occurrence_data["id_releve_occtax"]
+                    )
+                )
+                .unique()
+                .scalar_one()
+            )
+            url_update = url_for(
+                "pr_occtax.updateOccurrence", id_occurrence=occurrence.id_occurrence_occtax
+            )
+            response = self.client.post(url_update, json=occurrence_data)
+            assert response.status_code == Conflict.code
+
+            # ---- Test DELETE on closed AF ----
+            url_delete = url_for(
+                "pr_occtax.deleteOneOccurence", id_occ=occurrence.id_occurrence_occtax
+            )
+            response = self.client.delete(url_delete)
+            assert response.status_code == Conflict.code
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction", "datasets", "module")

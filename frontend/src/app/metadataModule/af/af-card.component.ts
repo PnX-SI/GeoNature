@@ -211,4 +211,12 @@ export class AfCardComponent implements OnInit, OnDestroy {
       'af'
     );
   }
+
+  onAfClosed() {
+    this.getAf();
+  }
+
+  onAfOpened() {
+    this.getAf();
+  }
 }

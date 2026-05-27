@@ -11,6 +11,8 @@ import { ConfigService } from '@geonature/services/config.service';
 import { OccHabMapListService } from '../../services/occhab-map-list.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
+import { TranslateService } from '@ngx-translate/core';
+import {ActionService} from '@geonature/services/action.service';
 
 @Component({
   selector: 'pnx-occhab-map-list',
@@ -40,7 +42,10 @@ export class OccHabMapListComponent implements OnInit {
     public config: ConfigService,
     public mapListFormService: OccHabMapListService,
     private _moduleService: ModuleService,
-    public cruvedStore: CruvedStoreService
+    public cruvedStore: CruvedStoreService,
+    private translate: TranslateService,
+    private actionService: ActionService,
+
   ) {}
 
   ngOnInit() {
@@ -207,5 +212,20 @@ export class OccHabMapListComponent implements OnInit {
   openDeleteModal(station, deleteModal) {
     this.deleteOne = station;
     this._ngbModal.open(deleteModal);
+  }
+  getTooltip(row: any, action: 'U' | 'D'): string {
+    return this.actionService.getActionTooltip(
+      row.cruved,
+      row.dataset?.acquisition_framework.opened,
+      action,
+      'Occhab',
+      'Station',
+      { id: row.id_station },
+      this.translate
+    );
+  }
+
+  isActionAllowed(row: any, action: 'U' | 'D'): boolean {
+    return this.actionService.isActionAllowed(row.cruved, row.dataset.acquisition_framework?.opened, action);
   }
 }

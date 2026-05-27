@@ -118,3 +118,19 @@ div.c {
   vertical-align: middle;
   margin-left: 5px;
 }
+
+#title-actions-block {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+#dataset-title {
+  display: flex;
+  flex-direction: column;
+}
+#action-block {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}

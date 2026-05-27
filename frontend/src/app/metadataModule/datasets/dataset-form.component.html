@@ -21,38 +21,37 @@
         <div class="card-body">
           <div>
             <small>{{ 'AcquisitionFramework' | translate }}</small>
-
-            <div
-              *ngIf="!(acquisitionFrameworks | async)"
-              class="d-flex justify-content-center"
-            >
-              <mat-spinner diameter="20"></mat-spinner>
-            </div>
-
-            <ng-select
-              *ngIf="acquisitionFrameworks | async as frameworks"
-              [formControl]="form.get('id_acquisition_framework')"
-              [items]="frameworks"
-              bindLabel="acquisition_framework_name"
-              bindValue="id_acquisition_framework"
-              [disabled]="true"
-              data-qa="pnx-dataset-form-select-cadre-acq"
-            >
-              <ng-template
-                ng-option-tmp
-                let-item="item"
-                let-index="index"
-                let-search="searchTerm"
+            <ng-container *ngIf="acquisitionFrameworks | async as frameworks">
+              <div
+                *ngIf="!frameworks"
+                class="d-flex justify-content-center"
               >
-                <span
-                  class="pre-wrap"
-                  [attr.data-qa]="'pnx-metadata-jdd-' + item.acquisition_framework_name"
+                <mat-spinner diameter="20"></mat-spinner>
+              </div>
+
+              <ng-select
+                *ngIf="frameworks"
+                [formControl]="form.get('id_acquisition_framework')"
+                [items]="frameworks"
+                bindLabel="acquisition_framework_name"
+                bindValue="id_acquisition_framework"
+                data-qa="pnx-dataset-form-select-cadre-acq"
+              >
+                <ng-template
+                  ng-option-tmp
+                  let-item="item"
+                  let-index="index"
+                  let-search="searchTerm"
                 >
-                  {{ item.acquisition_framework_name }}
-                  <span *ngIf="!item.opened">[Cloturé]</span>
-                </span>
-              </ng-template>
-            </ng-select>
+                  <span
+                    class="pre-wrap"
+                    [attr.data-qa]="'pnx-metadata-jdd-' + item.acquisition_framework_name"
+                  >
+                    {{ item.acquisition_framework_name }}
+                  </span>
+                </ng-template>
+              </ng-select>
+            </ng-container>
           </div>
 
           <div>

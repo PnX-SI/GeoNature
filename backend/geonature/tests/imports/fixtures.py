@@ -106,7 +106,9 @@ def import_dataset(import_datasets):
     return import_datasets["user"]
 
 
-def create_dataset(client, module_code, user, active=True, private=False):
+def create_dataset(
+    client, module_code, user, active=True, private=False, acquisition_framework_opened=True
+):
     """ """
     set_logged_user(client, user)
 
@@ -187,8 +189,17 @@ def create_dataset(client, module_code, user, active=True, private=False):
         url_for("gn_meta.create_dataset"),
         json=json,
     )
+    db.session.flush()
+    assert response.status_code == 200, f"Failed to create dataset: {response.get_json()}"
 
-    return db.session.get(TDatasets, response.get_json()["id_dataset"])
+    dataset = db.session.get(TDatasets, response.get_json()["id_dataset"])
+
+    # Close the acquisition framework AFTER creating the dataset if needed
+    if not acquisition_framework_opened:
+        new_acquisition_framework.opened = False
+        db.session.commit()
+
+    return dataset
 
 
 @pytest.fixture()
@@ -198,6 +209,9 @@ def import_datasets(client, module_code, users):
         "user--private": create_dataset(client, module_code, users["user"], private=True),
         "user--inactive": create_dataset(client, module_code, users["user"], active=False),
         "admin": create_dataset(client, module_code, users["admin_user"]),
+        "user--closed-af": create_dataset(
+            client, module_code, users["user"], acquisition_framework_opened=False
+        ),
     }
     return datasets
 

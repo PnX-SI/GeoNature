@@ -182,6 +182,7 @@
           </ngx-datatable-column>
 
           <!-- ACTION COLUMNS -->
+
           <ngx-datatable-column maxWidth="10">
             <ng-template
               let-row="row"
@@ -190,20 +191,18 @@
               <button
                 class="btn btn-row"
                 [routerLink]="['form/releve', row.id_releve_occtax]"
-                [disabled]="!row.rights.U"
+                [disabled]="!isActionAllowed(row, 'U')"
+                [matTooltip]="getTooltip(row, 'U')"
                 data-qa="edit-releve"
               >
                 <i
-                  matTooltip="{{ 'Occtax.Releve.Actions.Edit' | translate }} {{
-                    row.id_releve_occtax
-                  }}"
                   class="fa fa-pencil-square-o"
+                  [ngClass]="{ disabled: !isActionAllowed(row, 'U') }"
                   aria-hidden="true"
                 ></i>
               </button>
             </ng-template>
           </ngx-datatable-column>
-
           <ngx-datatable-column maxWidth="10">
             <ng-template
               let-row="row"
@@ -232,17 +231,14 @@
             >
               <button
                 class="btn btn-row"
-                [disabled]="!row.rights.D"
+                [disabled]="!isActionAllowed(row, 'D')"
+                [matTooltip]="getTooltip(row, 'D')"
                 (click)="openDeleteModal($event, modalConfirm, iElement, row)"
                 data-qa="pnx-occtax-delete-taxa"
               >
                 <i
-                  [ngClass]="{ disabled: !row.rights.D }"
-                  #iElement
-                  matTooltip="{{ 'Occtax.Releve.Actions.Delete' | translate }} {{
-                    row[mapListService.idName]
-                  }}"
                   class="fa fa-trash-o"
+                  [ngClass]="{ disabled: !isActionAllowed(row, 'D') }"
                   aria-hidden="true"
                 ></i>
               </button>

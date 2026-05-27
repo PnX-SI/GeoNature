@@ -8,8 +8,8 @@
         "Add": "Ajouter un relevé",
         "Save": "Enregistrer le relevé",
         "AddTaxon": "Ajouter un taxon sur ce relevé",
-        "Edit": "Editer le relevé",
-        "Delete": "Supprimer le relevé",
+        "Update": "Éditer le relevé {{ id }}",
+        "Delete": "Supprimer le relevé {{ id }}",
         "Validate": "Valider le relevé",
         "UnValidate": "Invalider le relevé"
       },

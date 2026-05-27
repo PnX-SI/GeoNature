@@ -133,6 +133,7 @@ class GeojsonReleveSchema(MA.Schema):
     id = fields.Integer()
     properties = fields.Nested(ReleveSchema(exclude=("geom_4326",)))
     geometry = GeojsonSerializationField()
+    af_opened = fields.Boolean()
 
     @post_load
     def make_geojsonReleve(self, data, **kwargs):

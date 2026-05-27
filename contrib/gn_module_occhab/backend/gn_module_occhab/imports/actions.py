@@ -1,7 +1,9 @@
 from math import ceil
 from flask import current_app
+
+from geonature.core.gn_meta.models import TDatasets
 from geonature.utils.config import config
-from gn_module_occhab.models import CorStationObserver, Station
+from gn_module_occhab.models import CorStationObserver, Station, OccurenceHabitat
 from werkzeug.exceptions import Conflict
 
 from geonature.core.imports.checks.sql.extra import (
@@ -596,4 +598,19 @@ class OcchabImportActions(ImportActions):
             geom_4326_field_name__transient="geom_4326",
             geom_4326_field_name__destination="geom_4326",
             child_entity_code="habitat",
+        )
+
+    @staticmethod
+    def get_dataset_where_clause(imprt: TImports) -> sa.sql.elements.BinaryExpression:
+        return sa.or_(
+            # Stations
+            sa.and_(
+                Station.id_import == imprt.id_import,
+                Station.id_dataset == TDatasets.id_dataset,
+            ),
+            # Habitats
+            sa.and_(
+                OccurenceHabitat.id_import == imprt.id_import,
+                OccurenceHabitat.station.has(Station.id_dataset == TDatasets.id_dataset),
+            ),
         )

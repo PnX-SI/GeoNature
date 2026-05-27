@@ -100,6 +100,7 @@ def override_in_importfile(import_datasets):
         "@DATASET_NOT_AUTHORIZED@": str(import_datasets["admin"].unique_dataset_id),
         "@DATASET_INACTIVE@": str(import_datasets["user--inactive"].unique_dataset_id),
         "@PRIVATE_DATASET_UUID@": str(import_datasets["user--private"].unique_dataset_id),
+        "@CLOSED_AF_DATASET_UID@": str(import_datasets["user--closed-af"].unique_dataset_id),
     }
 
 
@@ -332,6 +333,17 @@ class TestImportsSynthese:
             .where(transient_table.c.id_import == imprt.id_import)
         )
         assert transient_rows_count == 0
+
+    def test_update_import_on_closed_af(self, users, imported_import):
+        set_logged_user(self.client, users["admin_user"])
+        imprt = imported_import
+        obs = db.session.execute(
+            select(Synthese).where(Synthese.id_import == imprt.id_import).limit(1)
+        ).scalar_one_or_none()
+        obs.dataset.acquisition_framework.opened = False
+        db.session.flush()
+        r = self.client.delete(url_for("import.delete_import", import_id=imprt.id_import))
+        assert r.status_code == 409, r.data
 
     def test_import_upload(self, users):
 
@@ -1327,6 +1339,7 @@ class TestImportsSynthese:
                 (ImportCodeError.DATASET_NOT_FOUND, "unique_dataset_id", frozenset({5})),
                 (ImportCodeError.DATASET_NOT_ACTIVE, "unique_dataset_id", frozenset({6})),
                 (ImportCodeError.DATASET_NOT_AUTHORIZED, "unique_dataset_id", frozenset({7})),
+                (ImportCodeError.CLOSED_ACQUISITION_FRAMEWORK, "unique_dataset_id", frozenset({9})),
                 (
                     ImportCodeError.CONDITIONAL_MANDATORY_FIELD_ERROR,
                     "floutage_dee",

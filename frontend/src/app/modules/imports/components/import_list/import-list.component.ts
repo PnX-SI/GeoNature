@@ -14,6 +14,8 @@ import { ConfigService } from '@geonature/services/config.service';
 import { CsvExportService } from '../../services/csv-export.service';
 import { formatRowCount } from '../../utils/format-row-count';
 import { ModalData } from '../../models/modal-data.model';
+import { TranslateService } from '@librairies/@ngx-translate/core';
+import { ActionService } from '@geonature/services/action.service';
 
 @Component({
   styleUrls: ['import-list.component.scss'],
@@ -44,13 +46,16 @@ export class ImportListComponent implements OnInit {
 
   public editModalData: ModalData;
   public deleteModalData: ModalData;
+
   constructor(
     public _cruvedStore: CruvedStoreService,
     private _ds: ImportDataService,
     private _modalService: NgbModal,
     private importProcessService: ImportProcessService,
     public _csvExport: CsvExportService,
-    public config: ConfigService
+    public config: ConfigService,
+    public translate: TranslateService,
+    private actionService: ActionService
   ) {}
 
   /**
@@ -162,6 +167,7 @@ export class ImportListComponent implements OnInit {
       saveAs(result, row.full_file_name);
     });
   }
+
   /**
    * Downloads a CSV file with the lines that had errors during the import.
    *
@@ -171,14 +177,15 @@ export class ImportListComponent implements OnInit {
     this._ds.setDestination(imprt.destination.code);
     this._csvExport.onCSV(imprt.id_import);
   }
+
   formattedRowCount(row: Import): string {
     return formatRowCount(row);
   }
 
-  openModal(modalTemplate: TemplateRef<any>, actionType: 'edit' | 'delete', row: Import) {
+  openModal(modalTemplate: TemplateRef<any>, actionType: 'U' | 'D', row: Import) {
     this.selectedRow = row;
     // Prépare les données de la modale en fonction de l'action
-    if (actionType === 'edit') {
+    if (actionType === 'U') {
       // Vérifie si l'import est terminé
       if (!this.importProcessService.checkImportDone(this.selectedRow)) {
         this.onFinishImport(this.selectedRow);
@@ -201,7 +208,7 @@ export class ImportListComponent implements OnInit {
         headerDataQa: 'import-modal-edit',
         confirmButtonDataQa: 'modal-edit-validate',
       };
-    } else if (actionType === 'delete') {
+    } else if (actionType === 'D') {
       this._ds.setDestination(this.selectedRow.destination.code);
       this.deleteModalData = {
         title: 'Suppression',
@@ -218,6 +225,7 @@ export class ImportListComponent implements OnInit {
     }
     this._modalService.open(modalTemplate);
   }
+
   handleModalAction(event: { confirmed: boolean; actionType: string; data?: any }) {
     if (event.confirmed) {
       if (event.actionType === 'edit') {
@@ -235,6 +243,7 @@ export class ImportListComponent implements OnInit {
     this.dir = sort.dir;
     this.onImportList(params);
   }
+
   setPage(e) {
     let params = { page: e.offset + 1, search: this.searchString };
     if (this.sort) {
@@ -244,15 +253,6 @@ export class ImportListComponent implements OnInit {
       params['sort_dir'] = this.dir;
     }
     this.onImportList(params);
-  }
-  getTooltip(row, tooltipType) {
-    if (!row?.cruved?.U) {
-      return "Vous n'avez pas les droits";
-    } else if (tooltipType === 'edit') {
-      return "Modifier l'import";
-    } else {
-      return "Supprimer l'import";
-    }
   }
 
   _getStatistics(row) {
@@ -291,5 +291,12 @@ export class ImportListComponent implements OnInit {
 
   private generateDataQaAttribute(columnName: string): string {
     return columnName.replace(/\s+/g, '-').toLowerCase();
+  }
+
+  getTooltip(row: any, action: 'U' | 'D'): string {
+    return this.actionService.getActionTooltip(row.cruved, !row.has_closed_af, action, 'Import');
+  }
+  isActionAllowed(row: any, action: 'U' | 'D'): boolean {
+    return this.actionService.isActionAllowed(row.cruved, !row.has_closed_af, action);
   }
 }

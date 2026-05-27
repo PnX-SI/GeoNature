@@ -806,6 +806,17 @@ class TestGNMeta:
 
         assert set(response.json.keys()) == {"data"}
 
+    def get_test_dataset_json(self, id_acquisition_framework):
+        return {
+            "id_acquisition_framework": id_acquisition_framework,
+            "dataset_name": "test",
+            "dataset_shortname": "test",
+            "dataset_desc": "test",
+            "terrestrial_domain": True,
+            "marine_domain": False,
+            "unique_dataset_id": None,
+        }
+
     def test_create_dataset(self, users, datasets):
         response = self.client.post(url_for("gn_meta.create_dataset"))
         assert response.status_code == Unauthorized.code
@@ -820,6 +831,42 @@ class TestGNMeta:
         ds["id_dataset"] = "takeonme"
         response = self.client.post(url_for("gn_meta.create_dataset"), json=ds)
         assert response.status_code == BadRequest.code
+        ds_json = self.get_test_dataset_json(datasets["own_dataset"].id_acquisition_framework)
+        response = self.client.post(
+            url_for("gn_meta.create_dataset"),
+            json=ds_json,
+        )
+        assert response.status_code == 200
+
+    def test_dataset_with_closed_af(self, users, datasets):
+        set_logged_user(self.client, users["admin_user"])
+        datasets["own_dataset"].acquisition_framework.opened = False
+        db.session.flush()
+        ds_json = self.get_test_dataset_json(datasets["own_dataset"].id_acquisition_framework)
+        response = self.client.post(
+            url_for("gn_meta.create_dataset"),
+            json=ds_json,
+        )
+        assert response.status_code == 400
+        # We check if error is linked to the acquisition framework
+        assert response.json["description"].get("id_acquisition_framework")
+
+        # Now post the dataset with af opened, close it and try to update its active status
+        datasets["own_dataset"].acquisition_framework.opened = True
+        db.session.flush()
+        ds_json["active"] = False
+        response = self.client.post(url_for("gn_meta.create_dataset"), json=ds_json)
+        assert response.status_code == 200
+        id_dataset = response.json["id_dataset"]
+
+        datasets["own_dataset"].acquisition_framework.opened = False
+        db.session.flush()
+        ds_json["active"] = True
+        response = self.client.post(
+            url_for("gn_meta.update_dataset", id_dataset=id_dataset), json=ds_json
+        )
+        assert response.status_code == 400
+        assert response.json["description"].get("active")
 
     def test_get_dataset(self, users, datasets):
         ds = datasets["own_dataset"]
@@ -1256,77 +1303,114 @@ class TestGNMeta:
         assert organismonly.actor == user.organisme
         assert complete.actor == user
 
-    def test_publish_acquisition_framework_no_data(self, users, acquisition_frameworks):
+    def test_close_acquisition_framework_no_data(self, users, acquisition_frameworks):
         set_logged_user(self.client, users["user"])
 
         af = acquisition_frameworks["own_af"]
         response = self.client.get(
             url_for(
-                "gn_meta.publish_acquisition_framework",
+                "gn_meta.close_acquisition_framework",
                 af_id=af.id_acquisition_framework,
             )
         )
         assert response.status_code == Conflict.code, response.json
 
-    def test_publish_acquisition_framework_with_data(
+    def test_close_acquisition_framework_with_data(
         self, users, acquisition_frameworks, synthese_data
     ):
         set_logged_user(self.client, users["stranger_user"])
         af = acquisition_frameworks["af_1"]
         response = self.client.get(
             url_for(
-                "gn_meta.publish_acquisition_framework",
+                "gn_meta.close_acquisition_framework",
                 af_id=af.id_acquisition_framework,
             )
         )
         assert response.status_code == 200, response.json
 
-    def test_publish_acquisition_frameworks_extended(
+    def test_close_acquisition_frameworks_extended(
         self, app, users, acquisition_frameworks, synthese_data
     ):
         """
         We test if the mechanism of extension of acquisition framework publication works
         """
         # We use mock as extended function so we can keep track wether it's called
-        mocked_extended_publish = MagicMock()
-        route_name = "test.extended_af_publish"
+        mocked_extended_close = MagicMock()
+        route_name = "test.extended_af_close"
         app.config["METADATA"]["EXTENDED_AF_PUBLISH_ROUTE_NAME"] = route_name
-        app.view_functions[route_name] = mocked_extended_publish
+        app.view_functions[route_name] = mocked_extended_close
         set_logged_user(self.client, users["stranger_user"])
         af = acquisition_frameworks["af_1"]
         response = self.client.get(
             url_for(
-                "gn_meta.publish_acquisition_framework",
+                "gn_meta.close_acquisition_framework",
                 af_id=af.id_acquisition_framework,
             )
         )
-        mocked_extended_publish.assert_called_once()
+        mocked_extended_close.assert_called_once()
         assert response.status_code == 200, response.json
         assert af.opened == False
 
-    def test_publish_acquisition_frameworks_extended_with_exception(
+    def test_close_acquisition_frameworks_extended_with_exception(
         self, app, users, acquisition_frameworks, synthese_data
     ):
         """
-        We test if when an error occur in the extended af publish, the af stay opened.
+        We test if when an error occur in the extended af closing, the af stay opened.
         """
 
-        def mocked_publish(_=None):
+        def mocked_close(_=None):
             raise GeoNatureError()
 
-        route_name = "test.extended_af_publish"
+        route_name = "test.extended_af_close"
         app.config["METADATA"]["EXTENDED_AF_PUBLISH_ROUTE_NAME"] = route_name
-        app.view_functions[route_name] = mocked_publish
+        app.view_functions[route_name] = mocked_close
         set_logged_user(self.client, users["stranger_user"])
         af = acquisition_frameworks["af_1"]
         response = self.client.get(
             url_for(
-                "gn_meta.publish_acquisition_framework",
+                "gn_meta.close_acquisition_framework",
                 af_id=af.id_acquisition_framework,
             )
         )
         assert response.status_code == 500, response.json
         assert af.opened == True
+
+    def test_open_acquisition_framework(self, app, users, acquisition_frameworks):
+        """
+        Test opening an acquisition framework
+        """
+        set_logged_user(self.client, users["stranger_user"])
+        af = acquisition_frameworks["af_1"]
+        af.opened = False
+        db.session.commit()
+
+        response = self.client.get(
+            url_for(
+                "gn_meta.open_acquisition_framework",
+                af_id=af.id_acquisition_framework,
+            )
+        )
+
+        assert response.status_code == 200
+        af_updated = db.session.get(TAcquisitionFramework, af.id_acquisition_framework)
+        assert af_updated.opened is True
+
+    def test_open_acquisition_framework_not_openable(self, app, users, acquisition_frameworks):
+        """
+        Test opening an acquisition framework when AF_OPENABLE is False
+        """
+        set_logged_user(self.client, users["stranger_user"])
+        af = acquisition_frameworks["af_1"]
+        af.opened = False
+        db.session.commit()
+        app.config["METADATA"]["AF_OPENABLE"] = False
+        response = self.client.get(
+            url_for(
+                "gn_meta.open_acquisition_framework",
+                af_id=af.id_acquisition_framework,
+            )
+        )
+        assert response.status_code == 500
 
 
 @pytest.mark.usefixtures(

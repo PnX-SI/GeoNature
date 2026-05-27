@@ -120,3 +120,10 @@ mat-expansion-panel {
   margin-top: 15px;
   width: 100%;
 }
+
+.tab-title > div {
+  font-weight: bold;
+  font-size: 1vw;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

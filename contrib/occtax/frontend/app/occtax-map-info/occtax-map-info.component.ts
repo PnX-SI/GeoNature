@@ -11,6 +11,8 @@ import { MediaService } from '@geonature_common/service/media.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { TranslateService } from '@ngx-translate/core';
+import { ActionService } from '@geonature/services/action.service';
 
 const NOMENCLATURES = [
   'TECHNIQUE_OBS',
@@ -49,8 +51,13 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
   public occurrenceAddFields: Array<any> = [];
   public countingAddFields: Array<any> = [];
 
+
   get releve() {
     return this.occtaxData.getValue() ? this.occtaxData.getValue().properties : null;
+  }
+
+  get afOpened() {
+    return this.occtaxData.getValue() ? this.occtaxData.getValue().af_opened : false;
   }
 
   get id() {
@@ -88,7 +95,9 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
     private dataFormS: DataFormService,
     public ms: MediaService,
     private _moduleService: ModuleService,
-    public config: ConfigService
+    public config: ConfigService,
+    private translate: TranslateService,
+    private actionService: ActionService,
   ) {}
 
   ngOnInit() {
@@ -250,4 +259,21 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
   sortingFunction = (a, b) => {
     return a.key > b.key ? -1 : 1;
   };
+
+  getTooltip(action: 'U' | 'D'): string {
+    return this.actionService.getActionTooltip(
+      this.userReleveCruved,
+      this.afOpened,
+      action,
+      'Occtax',
+      'Releve',
+      { id: this.id },
+      this.translate
+    );
+  }
+
+
+  isActionAllowed(action: 'U' | 'D'): boolean {
+    return this.actionService.isActionAllowed(this.userReleveCruved, this.afOpened, action);
+  }
 }

@@ -1,14 +1,14 @@
-from io import BytesIO, StringIO
-from typing import List
+from io import StringIO
 from geonature.core.gn_meta.models import TDatasets
 import pytest
 from copy import deepcopy
 import json
+from datetime import datetime
 
 import pandas as pd
 from flask import url_for, current_app, g
 from werkzeug.datastructures import TypeConversionDict
-from werkzeug.exceptions import Unauthorized, Forbidden, BadRequest
+from werkzeug.exceptions import Unauthorized, Forbidden, Conflict
 from shapely.geometry import Point
 from geojson import Feature
 from geoalchemy2.shape import from_shape, to_shape
@@ -28,7 +28,6 @@ occhab = pytest.importorskip("gn_module_occhab")
 
 from gn_module_occhab.models import Station, OccurenceHabitat
 from gn_module_occhab.schemas import StationSchema
-from datetime import datetime
 
 
 def create_habitat(nom_cite, nomenc_tech_collect_NOMENC_TYPE, nomenc_tech_collect_LABEL):
@@ -379,7 +378,6 @@ class TestOcchab:
         data["properties"]["id_station"] = station2.id_station
         data["properties"]["habitats"] = []
         assert len(station2.habitats) == 2
-        id_habitats = [hab.id_habitat for hab in station2.habitats]
         response = self.client.post(url, data=data)
         assert response.status_code == 200, response.json
         FeatureSchema().load(response.json)["id"] == id_station  # not changed because read only
@@ -522,6 +520,36 @@ class TestOcchab:
         response = self.client.delete(url)
         assert response.status_code == Forbidden.code
 
+    def test_station_actions_on_closed_af(self, users, datasets, station):
+        """
+        Test that creating, updating and deleting a station fails when the
+        associated dataset's acquisition framework is closed.
+        """
+
+        af = datasets["own_dataset"].acquisition_framework
+        af.opened = False
+        db.session.flush()
+
+        set_logged_user(self.client, users["user"])
+
+        feature = StationSchema(as_geojson=True, only=["observers", "dataset"]).dump(station)
+
+        # ---- Test CREATE on closed AF ----
+        url_create = url_for("occhab.create_or_update_station")
+        response = self.client.post(url_create, data=feature)
+
+        assert response.status_code == Conflict.code
+
+        # ---- Test UPDATE on closed AF ----
+        url_update = url_for("occhab.create_or_update_station", id_station=station.id_station)
+        response = self.client.post(url_update, data=feature)
+        assert response.status_code == Conflict.code
+
+        # ---- Test DELETE on closed AF ----
+        url_delete = url_for("occhab.delete_station", id_station=station.id_station)
+        response = self.client.delete(url_delete)
+        assert response.status_code == Conflict.code
+
     def test_get_default_nomenclatures(self, users):
         response = self.client.get(url_for("occhab.get_default_nomenclatures"))
         assert response.status_code == Unauthorized.code
@@ -552,7 +580,6 @@ class TestOcchab:
             assert any([habitat.cd_hab == habref.cd_hab for habitat in station.habitats])
 
         # test filter by date max
-        date_format = "%d/%m/%y"
         station_res = query_test_filter_by_params(
             dict(date_up="1981-02-01"),
         )

@@ -255,18 +255,27 @@
       "FiledAF": "Le cadre d'acquisition a déjà été déposé",
       "EmptyAF": "Le cadre d'acquisition est vide",
       "NoMetadata": "Oups ! Il n'y a aucune métadonnée à afficher.",
-      "UUIDFormPlaceHolder": "Si non renseigné, l'identifiant est généré lors de la création du {{ entity }}"
+      "UUIDFormPlaceHolder": "Si non renseigné, l'identifiant est généré lors de la création du {{ entity }}",
+      "ImpossibleActionAFClosed": "Cadre d'acquisition fermé, action impossible",
+      "OpenAFImpossible": "L'ouverture d'un cadre d'acquisition préalablement fermé n'est pas autorisée"
     },
     "Actions": {
       "AddDataset": "Ajouter un jeu de données",
       "AddAF": "Ajouter un cadre d'acquisition",
-      "SubmitAF": "Déposer le cadre d'acquisition",
+      "CloseAF": "Fermer le cadre d'acquisition",
+      "OpenAF": "Ouvrir le cadre d'acquisition",
       "EditAF": "Editer ce cadre d'acquisition",
       "EditDataset": "Éditer le jeu de données",
       "DeleteDataset": "Supprimer le jeu de données",
       "ResetSearch": "Réinitialiser la recherche",
       "SeeAFSheet": "Voir la fiche du cadre d'acquisition",
-      "FillOwnUUID": "Saisie manuelle de l'UUID"
+      "FillOwnUUID": "Saisie manuelle de l'UUID",
+      "Open/Close": "Ouvrir/Fermer",
+      "Activate/Deactivate": "Activer/Désactiver"
+    },
+    "Tooltips": {
+      "DatasetActive": "Le jeu de données est actif",
+      "DatasetInactive": "Le jeu de données est inactif"
     },
     "UUIDField": "UUID du {{ entity }}",
     "AdvancedSearch": "Recherche avancée",
@@ -520,7 +529,9 @@
       "ChooseDataset": "Choisir un jeu de données",
       "ChooseDestination": "Choisir une destination",
       "ImportFile": "Importer un fichier (CSV)",
-      "ChooseFile": "Choisissez votre fichier"
+      "ChooseFile": "Choisissez votre fichier",
+      "Update": "Editer l'import",
+      "Delete": "Supprimer l'import"
     },
     "FileName": "Nom du fichier",
     "Mapping": {

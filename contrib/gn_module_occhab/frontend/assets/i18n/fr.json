@@ -1,1 +1,10 @@
-{}
+{
+  "Occhab": {
+    "Station":{
+      "Actions": {
+        "Update": "Éditer la station {{ id }}",
+        "Delete": "Supprimer la station {{ id }}"
+      }
+    }
+  }
+}

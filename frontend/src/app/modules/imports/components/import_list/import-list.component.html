@@ -202,12 +202,16 @@
               ngx-datatable-cell-template
             >
               <button
-                [disabled]="row.processing || !row?.cruved?.U"
-                [matTooltip]="getTooltip(row, 'edit')"
                 mat-icon-button
                 color="primary"
                 class="Datatable__button"
-                (click)="openModal(editModal, 'edit', row)"
+                [matTooltip]="getTooltip(row, 'U')"
+                [class.disabled-look]="row.processing || !isActionAllowed(row, 'U')"
+                (click)="
+                  !row.processing && isActionAllowed(row, 'U')
+                    ? openModal(editModal, 'U', row)
+                    : null
+                "
                 [attr.data-qa]="'import-list-table-row-' + index + '-actions-edit'"
               >
                 <mat-icon>edit</mat-icon>
@@ -237,12 +241,12 @@
                 ></i>
               </button>
               <button
-                [disabled]="!row?.cruved?.D"
                 mat-icon-button
                 color="warn"
                 class="Datatable__button"
-                (click)="openModal(deleteModal, 'delete', row)"
-                [matTooltip]="getTooltip(row, 'delete')"
+                [class.disabled-look]="!isActionAllowed(row, 'D')"
+                (click)="isActionAllowed(row, 'D') ? openModal(deleteModal, 'D', row) : null"
+                [matTooltip]="getTooltip(row, 'D')"
                 [attr.data-qa]="'import-list-table-row-' + index + '-actions-delete'"
               >
                 <mat-icon>delete</mat-icon>
