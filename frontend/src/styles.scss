@@ -1,6 +1,10 @@
 @import 'conf/names_variables.scss';
 @import 'material-icons/iconfont/material-icons.css';
 
+:root {
+  --green: green;
+}
+
 html,
 body,
 material-app,
@@ -186,7 +190,7 @@ footer {
 }
 
 .success {
-  color: green;
+  color: var(--green);
 }
 
 .btn-no-padding {
@@ -631,4 +635,9 @@ ngb-modal-backdrop {
   max-width: 30vw !important;
   white-space: pre-line !important;
   text-align: left;
+}
+
+.success-btn {
+  background-color: var(--green) !important;
+  color: white !important;
 }
