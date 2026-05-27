@@ -21,44 +21,49 @@
     <div class="col-8">
       <div class="card">
         <div class="card-body">
-          <h5 class="text-muted">{{ 'Dataset' | translate }}</h5>
-          <h4 [attr.data-qa]="'dataset-' + dataset.dataset_name">
-            {{ dataset.dataset_name }}
-          </h4>
-          <div class="d-flex align-items-center justify-content-end">
-            <pnx-dataset-activation-toggle
-              [dataset]="dataset"
-              [acquisitionFramework]="dataset.acquisition_framework"
-            ></pnx-dataset-activation-toggle>
-            <a
-              [disabled]="!dataset?.cruved.U"
-              [routerLink]="['/metadata/dataset', dataset.id_dataset]"
-              mat-mini-fab
-              color="primary"
-              matTooltip="{{ 'MetaData.Actions.EditDataset' | translate }}"
-              class="ml-2"
-            >
-              <mat-icon>create</mat-icon>
-            </a>
-            <button
-              *ngIf="dataset.cruved.D"
-              mat-mini-fab
-              color="warn"
-              [disabled]="nbObservations > 0"
-              (click)="deleteDataset(dataset)"
-              class="ml-2"
-              matTooltip="{{ 'MetaData.Actions.DeleteDataset' | translate }}"
-            >
-              <mat-icon
-                *ngIf="nbObservations > 0; else elseblock"
-                matTooltip="{{ 'MetaData.DatasetCard.Errors.ErrorDeleteDataset' | translate }}"
+          <div id="title-actions-block">
+            <div id="dataset-title">
+              <h5 class="text-muted">{{ 'Dataset' | translate }}</h5>
+              <h4 [attr.data-qa]="'dataset-' + dataset.dataset_name">
+                {{ dataset.dataset_name }}
+              </h4>
+            </div>
+            <div id="action-block">
+              <pnx-dataset-activation-toggle
+                [dataset]="dataset"
+                [acquisitionFramework]="dataset.acquisition_framework"
+                style="align-content: center"
+              ></pnx-dataset-activation-toggle>
+              <a
+                [disabled]="!dataset?.cruved.U"
+                [routerLink]="['/metadata/dataset', dataset.id_dataset]"
+                mat-mini-fab
+                color="primary"
+                matTooltip="{{ 'MetaData.Actions.EditDataset' | translate }}"
+                class="ml-2"
               >
-                delete
-              </mat-icon>
-              <ng-template #elseblock>
-                <mat-icon>delete</mat-icon>
-              </ng-template>
-            </button>
+                <mat-icon>create</mat-icon>
+              </a>
+              <button
+                *ngIf="dataset.cruved.D"
+                mat-mini-fab
+                color="warn"
+                [disabled]="nbObservations > 0"
+                (click)="deleteDataset(dataset)"
+                class="ml-2"
+                matTooltip="{{ 'MetaData.Actions.DeleteDataset' | translate }}"
+              >
+                <mat-icon
+                  *ngIf="nbObservations > 0; else elseblock"
+                  matTooltip="{{ 'MetaData.DatasetCard.Errors.ErrorDeleteDataset' | translate }}"
+                >
+                  delete
+                </mat-icon>
+                <ng-template #elseblock>
+                  <mat-icon>delete</mat-icon>
+                </ng-template>
+              </button>
+            </div>
           </div>
         </div>
       </div>
