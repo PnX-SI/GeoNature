@@ -350,8 +350,6 @@ cor_role_import = db.Table(
         "destination.label",
         "destination.statistics_labels",
         "destination.module",
-        "errors.type",
-        "errors.entity",
     ]
 )
 class TImports(InstancePermissionMixin, db.Model):
@@ -412,7 +410,6 @@ class TImports(InstancePermissionMixin, db.Model):
         order_by="ImportUserError.id_type",  # TODO order by type.category
         cascade="all, delete-orphan",
     )
-
     datasets = db.relationship(
         "CorImportDataset",
         back_populates="imprt",

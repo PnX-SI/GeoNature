@@ -106,37 +106,13 @@
                   style="margin-top: 2.5%; margin-bottom: 1.2%"
                 >
                   <div class="col-md-1">{{ af.id_acquisition_framework }}</div>
-                  <div class="col-md-1">
-                    <ng-container *ngIf="!af.opened; else closeButton">
-                      <span class="float-left">
-                        <button
-                          type="button"
-                          [class.disabled-look]="!isOpenable(af)"
-                          mat-icon-button
-                          (click)="
-                            isOpenable(af) ? openAf($event, af.id_acquisition_framework) : null
-                          "
-                          [matTooltip]="getOpenCloseTooltip(af)"
-                        >
-                          <mat-icon>lock_open</mat-icon>
-                        </button>
-                      </span>
-                    </ng-container>
-                    <ng-template #closeButton>
-                      <span class="float-left">
-                        <button
-                          type="button"
-                          mat-icon-button
-                          [disabled]="!af.cruved.U"
-                          (click)="
-                            openPublishModalAf($event, af.id_acquisition_framework, publishModal)
-                          "
-                          [matTooltip]="getOpenCloseTooltip(af)"
-                        >
-                          <mat-icon>lock</mat-icon>
-                        </button>
-                      </span>
-                    </ng-template>
+                  <div class="col-md-1 d-flex justify-content-center">
+                    <gn-button-close-af
+                      [acquisitionFramework]="af"
+                      buttonType="Toolbar"
+                      (afClosed)="onAfMetadataDataRefresh()"
+                      (afOpened)="onAfMetadataDataRefresh()"
+                    />
                   </div>
                   <div class="col-md-2">
                     <a

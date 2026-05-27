@@ -45,9 +45,6 @@ export class MetadataComponent implements OnInit {
   }
 
   searchTerms: any = {};
-  afPublishModalId: number;
-  afPublishModalLabel: string;
-  afPublishModalContent: string;
 
   acquisitionFrameworksLength: number = 0;
 
@@ -66,9 +63,6 @@ export class MetadataComponent implements OnInit {
     this._dfs.getOrganisms().subscribe((organisms) => (this.organisms = organisms));
 
     this._dfs.getRoles({ group: false }).subscribe((roles) => (this.roles = roles));
-
-    this.afPublishModalLabel = this.config.METADATA.CLOSED_MODAL_LABEL;
-    this.afPublishModalContent = this.config.METADATA.CLOSED_MODAL_CONTENT;
 
     //Combinaison des observables pour afficher les éléments filtrés en fonction de l'état du paginator
     this.acquisitionFrameworks = this.metadataService.acquisitionFrameworks.pipe(
@@ -197,48 +191,6 @@ export class MetadataComponent implements OnInit {
     this._dfs.deleteAf(af_id).subscribe((res) => this.metadataService.getMetadata());
   }
 
-  isOpenable(af: any): boolean {
-    return this.config.METADATA?.AF_OPENABLE && af.cruved.U && !af.opened;
-  }
-
-  getOpenCloseTooltip(af: any): string {
-    if (!af.cruved.U) {
-      return this.translate.instant('Errors.NotAllowed');
-    }
-    if (!this.config.METADATA?.AF_OPENABLE && !af.opened) {
-      return this.translate.instant('MetaData.Messages.OpenAFImpossible');
-    }
-    return af.opened
-      ? this.translate.instant('MetaData.Actions.CloseAF')
-      : this.translate.instant('MetaData.Actions.OpenAF');
-  }
-
-  openPublishModalAf(e, af_id, publishModal) {
-    this.afPublishModalId = af_id;
-    this.modal.open(publishModal, { size: 'lg' });
-  }
-
-  publishAf() {
-    this._dfs.publishAf(this.afPublishModalId).subscribe(
-      (res) => this.metadataService.getMetadata(),
-      (error) => {
-        if (error.error.name == 'mailError') {
-          this._commonService.regularToaster(
-            'warning',
-            "Erreur lors de l'envoi de l'email de confirmation. Le cadre d'acquisition a bien été fermé"
-          );
-        }
-      }
-    );
-
-    this.modal.dismissAll();
-  }
-
-  openAf(click_event: MouseEvent, af_id: number) {
-    click_event.stopPropagation(); // so we don't open/close the accordion
-    this._dfs.openAf(af_id).subscribe((res) => this.metadataService.getMetadata());
-  }
-
   get totalItems(): number {
     return this.metadataService.totalItems.value;
   }
@@ -254,4 +206,8 @@ export class MetadataComponent implements OnInit {
   displayMetaAreaFilters = () =>
     this.config.METADATA?.METADATA_AREA_FILTERS &&
     this.config.METADATA?.METADATA_AREA_FILTERS.length;
+
+  onAfMetadataDataRefresh() {
+    this.metadataService.getMetadata();
+  }
 }
