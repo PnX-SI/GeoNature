@@ -337,7 +337,7 @@
         *ngIf="stats && stats.nb_dataset"
         class="card"
       >
-        <div class="card-header">
+        <div class="card-header d-flex justify-content-between">
           <h3>{{ 'MetaData.AssociatedDatasets' | translate }}</h3>
           <button
             *ngIf="_cruvedStore.cruved?.METADATA?.cruved.C !== 0"
@@ -346,6 +346,7 @@
             class="success-btn"
             mat-mini-fab
             data-qa="pnx-metadata-add-jdd"
+            matTooltip="{{ 'MetaData.Actions.AddDataset' | translate }}"
           >
             <mat-icon>add</mat-icon>
           </button>
