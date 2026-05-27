@@ -172,7 +172,7 @@ def habitat(station):
 )
 class TestImportsOcchab:
 
-    def test_import_valid_file(self, datasets, imported_import):
+    def test_import_valid_file(self, imported_import):
         assert_import_errors(
             imported_import,
             {

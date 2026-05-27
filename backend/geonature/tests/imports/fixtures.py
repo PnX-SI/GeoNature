@@ -124,9 +124,6 @@ def create_dataset(
     new_acquisition_framework = db.session.get(
         TAcquisitionFramework, r_af.get_json()["id_acquisition_framework"]
     )
-    if not acquisition_framework_opened:
-        new_acquisition_framework.opened = False
-        db.session.commit()
 
     # Get module
     r_module = client.get(url_for("gn_commons.get_module", module_code=module_code))
@@ -192,8 +189,17 @@ def create_dataset(
         url_for("gn_meta.create_dataset"),
         json=json,
     )
+    db.session.flush()
+    assert response.status_code == 200, f"Failed to create dataset: {response.get_json()}"
 
-    return db.session.get(TDatasets, response.get_json()["id_dataset"])
+    dataset = db.session.get(TDatasets, response.get_json()["id_dataset"])
+
+    # Close the acquisition framework AFTER creating the dataset if needed
+    if not acquisition_framework_opened:
+        new_acquisition_framework.opened = False
+        db.session.commit()
+
+    return dataset
 
 
 @pytest.fixture()
