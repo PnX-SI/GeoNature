@@ -4,7 +4,7 @@ chardet  # imports
 click>=7.0
 fiona>=1.9.6
 flask<=3.1.1
-flask-admin
+flask-admin<2
 flask-babel
 flask-cors
 flask-mail
