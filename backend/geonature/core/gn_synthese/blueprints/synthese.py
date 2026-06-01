@@ -335,6 +335,23 @@ def get_one_synthese(permissions, id_synthese):
         # Areas associates with the BlurredAreaTypes
         BlurredAreas = aliased(LAreas)
 
+        # Get the blurred area type instance for this observation
+        blurred_area_type_instance = (
+            db.session.query(BlurredObsAreaType)
+            .join(BlurredObsArea, BlurredObsArea.id_type == BlurredObsAreaType.id_type)
+            .join(CorAreaSynthese, CorAreaSynthese.id_area == BlurredObsArea.id_area)
+            .join(
+                cor_sensitivity_area_type,
+                cor_sensitivity_area_type.c.id_area_type == BlurredObsAreaType.id_type,
+            )
+            .filter(
+                CorAreaSynthese.id_synthese == id_synthese,
+                cor_sensitivity_area_type.c.id_nomenclature_sensitivity
+                == synthese.id_nomenclature_sensitivity,
+            )
+            .first()
+        )
+
         # Inner join that retrieve the blurred area of the obs and the bigger areas
         # used for "Zonages" in Synthese. Need to have size_hierarchy from ref_geo
         inner = (
@@ -374,6 +391,19 @@ def get_one_synthese(permissions, id_synthese):
             )
             .order_by(BlurredAreaTypes.size_hierarchy)
         )
+
+        synthese = (
+            db.session.execute(synthese_query.filter(Synthese.id_synthese == id_synthese))
+            .unique()
+            .scalar_one()
+        )
+
+        # Filter areas to only include those with size_hierarchy >= blurred area type
+        synthese.areas = [
+            area
+            for area in synthese.areas
+            if area.area_type.size_hierarchy >= blurred_area_type_instance.size_hierarchy
+        ]
     else:
         synthese_query = synthese_query.options(
             lazyload("areas").options(
@@ -382,11 +412,11 @@ def get_one_synthese(permissions, id_synthese):
             with_expression(Synthese.the_geom_authorized, Synthese.the_geom_4326),
         )
 
-    synthese = (
-        db.session.execute(synthese_query.filter(Synthese.id_synthese == id_synthese))
-        .unique()
-        .scalar_one()
-    )
+        synthese = (
+            db.session.execute(synthese_query.filter(Synthese.id_synthese == id_synthese))
+            .unique()
+            .scalar_one()
+        )
 
     synthese_schema = SyntheseSchema(
         only=Synthese.nomenclature_fields + fields,
