@@ -14,9 +14,9 @@ export CUSTOM_STATIC_FOLDER=$(geonature get-config CUSTOM_STATIC_FOLDER)
 export STATIC_URL=$(geonature get-config STATIC_URL)
 export FRONTEND_FOLDER="${BASE_DIR}"/frontend/dist
 export FRONTEND_PREFIX=$(geonature get-config URL_APPLICATION | python -c "import sys; from urllib.parse import urlsplit; print(urlsplit(sys.stdin.read()).path)")
+export BACKEND_PORT="${backend_port:-8000}"
 export GUNICORN_URL="http://127.0.0.1:${BACKEND_PORT}"
 export GEONATURE_APP_NAME="${geonature_app_name:-"geonature"}"
-export BACKEND_PORT="${backend_port:-8000}"
 export DOMAIN_NAME=${domain_name:-"localhost"}
 
 deactivate
