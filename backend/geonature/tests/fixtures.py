@@ -47,11 +47,11 @@ from pypnusershub.db.models import Application, Organisme
 from pypnusershub.db.models import Profils as Profil
 from pypnusershub.db.models import User, UserApplicationRight
 from ref_geo.models import BibAreasTypes, LAreas
+from ref_geo.utils import get_local_srid
 from utils_flask_sqla.tests.utils import JSONClient
 from werkzeug.datastructures import Headers
 
 from .utils import get_id_nomenclature
-
 
 __all__ = [
     "datasets",
@@ -586,7 +586,7 @@ def create_synthese(
         cd_hab=3,
         the_geom_4326=geom,
         the_geom_point=geom,
-        the_geom_local=func.ST_Transform(geom, 2154),  # FIXME
+        the_geom_local=func.ST_Transform(geom, get_local_srid(db.session)),
         date_min=date_min,
         date_max=date_max,
         altitude_min=altitude_min,
