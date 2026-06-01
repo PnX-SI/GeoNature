@@ -6,7 +6,8 @@ FROM ${PYTHON_IMAGE} AS build
 
 ENV PIP_ROOT_USER_ACTION=ignore
 RUN --mount=type=cache,target=/root/.cache \
-    pip install --upgrade pip setuptools wheel
+    pip install uv && \
+    uv pip install --system --upgrade pip setuptools wheel
 
 FROM build AS build-habref
 WORKDIR /build/
@@ -112,7 +113,8 @@ FROM ${PYTHON_IMAGE} AS base
 
 ENV PIP_ROOT_USER_ACTION=ignore
 RUN --mount=type=cache,target=/root/.cache \
-    pip install --upgrade pip setuptools wheel
+    pip install uv && \
+    uv pip install --system  --upgrade pip setuptools wheel
 
 WORKDIR /dist
 ENV GEONATURE_STATIC_FOLDER=/dist/static/
@@ -150,10 +152,10 @@ WORKDIR /sources/GeoNature
 # rw required by --editable to write .egg-info stuffs
 RUN --mount=type=cache,target=/root/.cache \
     --mount=type=bind,source=.,target=/sources/GeoNature,rw \
-    cd backend && pip install -e .. -r requirements-dev.txt
+    cd backend && uv pip install --system  -e .. -r requirements-dev.txt
 RUN --mount=type=cache,target=/root/.cache \
     --mount=type=bind,source=.,target=/sources/GeoNature,rw \
-    pip install \
+    uv pip install --system \
       -e contrib/occtax \
       -e contrib/gn_module_occhab \
       -e contrib/gn_module_validation
@@ -185,7 +187,7 @@ FROM wheels-light AS prod-light
 
 WORKDIR /dist/geonature
 RUN --mount=type=cache,target=/root/.cache \
-    pip install *.whl
+    uv pip install --system *.whl
 RUN rm -f *.whl
 
 
@@ -193,5 +195,6 @@ FROM wheels AS prod
 
 WORKDIR /dist/geonature
 RUN --mount=type=cache,target=/root/.cache \
-    pip install *.whl
+    uv pip install --system *.whl
+RUN pip uninstall -y uv
 RUN rm -f *.whl
