@@ -258,6 +258,7 @@ class Permission(db.Model):
         nullable=False,
     )
     created_on = db.Column(sa.DateTime, server_default=sa.func.now())
+    start_on = db.Column(db.DateTime)
     expire_on = db.Column(db.DateTime)
     validated = db.Column(sa.Boolean, server_default=sa.true())
 
@@ -365,12 +366,15 @@ class Permission(db.Model):
     @property
     def is_active(self):
         return (
-            self.expire_on is None or self.expire_on > datetime.now()
-        ) and self.validated is True
+            (self.start_on is None or self.start_on <= datetime.now())
+            and (self.expire_on is None or self.expire_on > datetime.now())
+            and self.validated is True
+        )
 
     @classmethod
     def active_filter(cls):
         return sa.and_(
+            sa.or_(cls.start_on.is_(sa.null()), cls.start_on <= datetime.now()),
             sa.or_(cls.expire_on.is_(sa.null()), cls.expire_on > datetime.now()),
             cls.validated.is_(True),
         )

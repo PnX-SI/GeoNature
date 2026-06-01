@@ -354,6 +354,19 @@ class TestPermissions:
 
         assert_cruved("r1", "110100")
 
+    def test_start_on_perm(self, permissions, assert_cruved):
+        """
+        Permissions with a start_on in the future should not be taken into
+        account yet. A start_on in the past or NULL means the permission is
+        active (provided it is validated and not expired).
+        """
+        permissions("r1", "1-----")  # start_on default to NULL -> active
+        permissions("r1", "-1----", start_on=None)  # explicit NULL -> active
+        permissions("r1", "--1---", start_on=datetime.now() - timedelta(days=1))  # started
+        permissions("r1", "---1--", start_on=datetime.now() + timedelta(days=1))  # not yet
+
+        assert_cruved("r1", "111000")
+
     def test_validation_perm(self, permissions, assert_cruved):
         """
         Permission not yet validated or refused should be ignored.
