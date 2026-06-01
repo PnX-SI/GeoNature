@@ -28,7 +28,7 @@ export class SyntheseObsModalWrapperComponent implements OnDestroy {
       });
       this.currentDialog.componentInstance.idSynthese = params.id_synthese;
       this.currentDialog.componentInstance.selectedTab = params.tab;
-      this.currentDialog.componentInstance.useFrom = 'synthese';
+      this.currentDialog.componentInstance.useFrom = route.snapshot.data['useFrom'] || 'synthese';
       this.currentDialog.componentInstance.header = true;
 
       // Go back to home page after the modal is closed
