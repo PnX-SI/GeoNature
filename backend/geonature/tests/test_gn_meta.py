@@ -660,6 +660,22 @@ class TestGNMeta:
         # synthese is at least 1 taxon
         assert data["nb_taxons"] == len(set([s.cd_nom for s in obs]))
 
+    def test_dataset_nb_observations_hybrid_property(self, users, datasets, synthese_data):
+        ds = datasets["own_dataset"]
+        set_logged_user(self.client, users["user"])
+
+        nb_obs = db.session.execute(
+            select(TDatasets.nb_observations)
+            .select_from(TDatasets)
+            .where(TDatasets.id_dataset == ds.id_dataset)
+        ).scalar_one()
+
+        expected_nb_obs_habitats = 0
+        expected_nb_obs_synthese = len([s for s in synthese_data.values() if s.dataset == ds])
+        expected_nb_obs = expected_nb_obs_habitats + expected_nb_obs_synthese
+
+        assert nb_obs == expected_nb_obs
+
     def test_get_acquisition_framework_bbox(self, users, acquisition_frameworks, synthese_data):
         # this AF contains at least 2 obs at different locations
         af = synthese_data["p1_af1"].dataset.acquisition_framework

@@ -23,7 +23,7 @@ from ref_geo.models import LAreas
 from .commons import *
 
 
-@serializable(exclude=["user_actors", "organism_actors"])
+@serializable(exclude=["user_actors", "organism_actors", "nb_observations"])
 class TDatasets(db.Model):
     __tablename__ = "t_datasets"
     __table_args__ = {"schema": "gn_meta"}
@@ -361,3 +361,33 @@ class TDatasets(db.Model):
         for id_area in areas:
             areaFilter.append(LAreas.id_area == id_area)
         return query.where(cls.synthese_records.any(Synthese.areas.any(sa.or_(*areaFilter))))
+
+    @hybrid_property
+    def nb_observations(self):
+        from geonature.core.gn_synthese.models import Synthese
+
+        request_nb_obs_synthese = (
+            select(func.count(Synthese.id_synthese))
+            .where(Synthese.id_dataset == self.id_dataset)
+            .scalar_subquery()
+        )
+        request_nb_observations = request_nb_obs_synthese
+
+        from geonature.utils.module import is_module_installed
+
+        is_module_OCCHAB_installed = is_module_installed(
+            "gn_module_occhab", check_if_all_revisions_have_been_applied=False
+        )
+        if is_module_OCCHAB_installed:
+            from gn_module_occhab.models import OccurenceHabitat, Station
+
+            request_nb_obs_habitats = (
+                select(func.count("*"))
+                .select_from(OccurenceHabitat)
+                .join(Station)
+                .where(Station.id_dataset == self.id_dataset)
+                .scalar_subquery()
+            )
+            request_nb_observations += request_nb_obs_habitats
+
+        return request_nb_observations
