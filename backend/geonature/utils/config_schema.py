@@ -71,6 +71,10 @@ class MailConfig(Schema):
     MAIL_SUPPRESS_SEND = fields.Boolean(required=False)
     MAIL_ASCII_ATTACHMENTS = fields.Boolean(required=False)
     ERROR_MAIL_TO = EmailStrOrListOfEmailStrField(load_default=None)
+    GRAPH_API_MAIL_TENANT_ID = fields.String(required=False)
+    GRAPH_API_MAIL_CLIENT_ID = fields.String(required=False)
+    GRAPH_API_MAIL_CLIENT_SECRET = fields.String(required=False)
+    GRAPH_API_MAIL_SCOPE = fields.String(required=False)
 
 
 class CeleryConfig(Schema):

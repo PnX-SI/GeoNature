@@ -25,7 +25,8 @@ from werkzeug.wrappers import Response
 
 from geonature.utils.config import config
 
-from geonature.utils.env import MAIL, DB, db, MA, migrate, BACKEND_DIR
+from geonature.utils import utilsmails
+from geonature.utils.env import DB, db, MA, migrate, BACKEND_DIR
 from geonature.utils.logs import config_loggers
 from geonature.utils.module import iter_modules_dist
 from geonature.utils.json import MyJSONProvider
@@ -146,7 +147,7 @@ def create_app(with_external_mods=True):
         conf = app.config.copy()
         conf.update(app.config["MAIL_CONFIG"])
         app.config = conf
-        MAIL.init_app(app)
+        utilsmails.init_mailer(app)
 
     # Pass parameters to the usershub authenfication sub-module, DONT CHANGE THIS
     app.config["DB"] = DB

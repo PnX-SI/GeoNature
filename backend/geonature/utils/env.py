@@ -11,12 +11,8 @@ else:
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
-from flask_mail import Mail
 from flask_migrate import Migrate
 
-
-# Must be at top of this file. I don't know why (?)
-MAIL = Mail()
 
 # Define GEONATURE_VERSION before import config_shema module
 # because GEONATURE_VERSION is imported in this module
