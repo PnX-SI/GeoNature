@@ -66,7 +66,7 @@ TRAP_ALL_EXCEPTIONS = false
 PUBLIC_ACCESS_USERNAME = ""
 
 # Active (=true) ou pas (=false) l'envoi d'email pour chaque erreur du backend de GeoNature
-# Attention : si activé, il est nécessaire de remplir la secetion 'MAIL_CONFIG'.
+# Attention : si activé, il est nécessaire de remplir la section 'MAIL_CONFIG'.
 MAIL_ON_ERROR = false
 
 # Notifications (true / false)
