@@ -25,7 +25,7 @@ base_path="/geonature"
 # Port du backend de GeoNature. Si vous installez plusieurs instances de GeoNature sur le même serveur,
 # il faudra leur attribuer des ports différent.
 backend_port=8000
-
+redis_port=0
 # Usershub (Pour migration.sh, à compléter)
 
 usershub_app_name="usershub"

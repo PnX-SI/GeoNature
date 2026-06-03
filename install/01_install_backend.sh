@@ -81,6 +81,9 @@ else
   sed -i "s|^SECRET_KEY = .*$|SECRET_KEY = '`openssl rand -hex 32`'|" config/geonature_config.toml
 fi
 
+# updating redis_port if different from original
+sed -i "s|^REDIS_URL = .*$|REDIS_URL = \"redis://localhost:6379/${redis_port}\"|" backend/geonature/utils/config_schema.py
+
 cd "${BASE_DIR}"/backend
 
 # Installation du virtual env
