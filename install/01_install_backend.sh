@@ -76,7 +76,7 @@ else
   sed -i "s|^API_ENDPOINT = .*$|API_ENDPOINT = '${api_endpoint}'|" config/geonature_config.toml
   sed -i "s|^GEONATURE_APP_NAME = .*$|GEONATURE_APP_NAME = '${geonature_app_name}'|" config/geonature_config.toml
   sed -i "s|^USERSHUB_APP_NAME = .*$|USERSHUB_APP_NAME = '${usershub_app_name}'|" config/geonature_config.toml
-  sed -i "s|^SECRET_KEY = .*$|SECRET_KEY = '`openssl rand -hex 16`'|" config/geonature_config.toml
+#  sed -i "s|^SECRET_KEY = .*$|SECRET_KEY = '`openssl rand -hex 16`'|" config/geonature_config.toml
   sed -i "s|^DEFAULT_LANGUAGE = .*$|DEFAULT_LANGUAGE = '${default_language}'|" config/geonature_config.toml
   sed -i "s|^SECRET_KEY = .*$|SECRET_KEY = '`openssl rand -hex 32`'|" config/geonature_config.toml
 fi
