@@ -399,6 +399,7 @@ def get_one_synthese(permissions, id_synthese):
         )
 
         # Filter areas to only include those with size_hierarchy >= blurred area type
+        # FIXME: should be done by the query
         synthese.areas = [
             area
             for area in synthese.areas
@@ -417,7 +418,9 @@ def get_one_synthese(permissions, id_synthese):
             .unique()
             .scalar_one()
         )
-
+    # FIXME: the_geom_authorized is query_expression and marshmallow does not know how to handle it,
+    #  we need to set it manually before dumping the schema
+    synthese.the_geom_authorized = synthese.the_geom_authorized
     synthese_schema = SyntheseSchema(
         only=Synthese.nomenclature_fields + fields,
         exclude=["areas.geom"],
