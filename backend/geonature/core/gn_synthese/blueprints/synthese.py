@@ -319,11 +319,10 @@ def get_one_synthese(permissions, id_synthese):
 
     _, precise_permissions = split_blurring_precise_permissions(permissions)
 
+    has_precise_permission = synthese.has_instance_permission(precise_permissions)
+
     # If blurring permissions and obs sensitive.
-    if (
-        not synthese.has_instance_permission(precise_permissions)
-        and synthese.nomenclature_sensitivity.cd_nomenclature != "0"
-    ):
+    if not has_precise_permission and synthese.nomenclature_sensitivity.cd_nomenclature != "0":
         # Use a cte to have the areas associated with the current id_synthese
         cte = select(CorAreaSynthese).where(CorAreaSynthese.id_synthese == id_synthese).cte()
         # Blurred area of the observation
@@ -334,6 +333,8 @@ def get_one_synthese(permissions, id_synthese):
         BlurredAreaTypes = aliased(BibAreasTypes)
         # Areas associates with the BlurredAreaTypes
         BlurredAreas = aliased(LAreas)
+        # Area type of BlurredAreas for hierarchy filtering
+        BlurredAreasType = aliased(BibAreasTypes)
 
         # Get the blurred area type instance for this observation
         blurred_area_type_instance = (
@@ -366,7 +367,14 @@ def get_one_synthese(permissions, id_synthese):
                 BlurredAreaTypes.size_hierarchy >= BlurredObsAreaType.size_hierarchy,
             )
             .join(BlurredAreas, BlurredAreaTypes.id_type == BlurredAreas.id_type)
-            .join(cte, cte.c.id_area == BlurredAreas.id_area)
+            .join(BlurredAreasType, BlurredAreasType.id_type == BlurredAreas.id_type)
+            .join(
+                cte,
+                and_(
+                    cte.c.id_area == BlurredAreas.id_area,
+                    BlurredAreasType.size_hierarchy >= BlurredObsAreaType.size_hierarchy,
+                ),
+            )
         )
 
         # Outer join to join CorAreaSynthese taking into account the sensitivity
@@ -397,14 +405,6 @@ def get_one_synthese(permissions, id_synthese):
             .unique()
             .scalar_one()
         )
-
-        # Filter areas to only include those with size_hierarchy >= blurred area type
-        # FIXME: should be done by the query
-        synthese.areas = [
-            area
-            for area in synthese.areas
-            if area.area_type.size_hierarchy >= blurred_area_type_instance.size_hierarchy
-        ]
     else:
         synthese_query = synthese_query.options(
             lazyload("areas").options(
@@ -418,9 +418,7 @@ def get_one_synthese(permissions, id_synthese):
             .unique()
             .scalar_one()
         )
-    # FIXME: the_geom_authorized is query_expression and marshmallow does not know how to handle it,
-    #  we need to set it manually before dumping the schema
-    synthese.the_geom_authorized = synthese.the_geom_authorized
+
     synthese_schema = SyntheseSchema(
         only=Synthese.nomenclature_fields + fields,
         exclude=["areas.geom"],
