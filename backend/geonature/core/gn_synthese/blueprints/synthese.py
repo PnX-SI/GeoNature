@@ -365,7 +365,8 @@ def get_one_synthese(permissions, id_synthese):
             ),
         )
         synthese_query = (
-            synthese_query.outerjoin(*outer)
+            synthese_query.execution_options(populate_existing=True)
+            .outerjoin(*outer)
             # contains_eager: to populate Synthese.areas directly
             .options(contains_eager(Synthese.areas.of_type(BlurredAreas)))
             .options(
