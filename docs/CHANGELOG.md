@@ -4,13 +4,14 @@
 
 ### 🚀 Nouveautés
 
-- [Métadonnées] Ajout de la possibilité de fermer un cadre d'acquisition. La fermeture du cadre d'acquisition à pour conséquence (#3964 #3965 par @christophe-ramet) :
+- [Métadonnées] Ajout de la possibilité de fermer un cadre d'acquisition  (#3963 par @christophe-ramet).  
+La fermeture d'un cadre d'acquisition a pour conséquence :
   - Impossibilité de créer/modifier/supprimer des données dans Occhab et dans Occtax (#3964)
   - Désactivation de tous les jeux de données associés.
-  - Impossibilité d'importer des données dans les CA fermées.
+  - Impossibilité d'importer des données dans des JDD de CA fermés.
 
 - [Métadonnées] Ajout d'un bouton de création de jeu de données directement depuis la fiche du cadre d'acquisition (#4142 par @jacquesfize)
-- [Métadonnées] La date de création de la source est maintenant caché (#4096 par @christophe-ramet)
+- [Métadonnées] La date de création de la source n'est plus affichée (#4096 par @christophe-ramet)
 - [Authentification] Hiérarchisation des fournisseurs d'identité sur la page de connexion. Si un _provider_ est configuré avec `is_secondary=true`, ce dernier sera accessible depuis un menu déroulant. (#3912 par @IdrissaD)
   **Exemple**
   ```toml
@@ -42,7 +43,7 @@
 - [Import] Correction de la prise en compte du paramètre `DEFAULT_GENERATE_MISSING_UUID` (#4115 par @jacquesfize)
 - [Synthèse] Les fixtures `synthese` s'appuient sur le SRID de la base de données de test (#4113 par @bouttier)
 - [Synthèse] Correction des données retournées par la commande `geonature sensitivity info` (#3927 par @jacquesfize)
-- [Synthèse] Correction du tri de l'ordre des zonages dans la fiche Observations (#4041 par @edelclaux)
+- [Synthèse] Correction du tri de l'ordre des zonages dans les fiches Observation (#4041 par @edelclaux)
 - [Sécurité] Ajout de la restriction `login_required` sur les routes `/users/menu`, `/users/menu_from_code` et `/users/liste` (#4110 par @jacquesfize)
 - [Synthèse] Correction de la récupération des zonages pour une observation quand un utilisateur possède une permission floutée et une permission avec un filtre géographique (#4065 par @jacquesfize)
 
