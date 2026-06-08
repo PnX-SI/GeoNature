@@ -117,7 +117,7 @@ flask-babel==4.0.0
     # via
     #   -r requirements-common.in
     #   taxhub
-flask-cors==6.0.2
+flask-cors==6.0.4
     # via
     #   -r requirements-common.in
     #   taxhub
@@ -349,7 +349,9 @@ tornado==6.5.5
 typing-extensions==4.15.0
     # via
     #   alembic
+    #   cryptography
     #   exceptiongroup
+    #   flask-cors
     #   marshmallow
     #   marshmallow-sqlalchemy
     #   referencing
