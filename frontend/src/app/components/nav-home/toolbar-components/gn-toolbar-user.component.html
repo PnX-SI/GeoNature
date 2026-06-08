@@ -1,0 +1,141 @@
+<!-- DESKTOP VERSION -->
+<ng-container *ngIf="!isMobile">
+  <ng-container *ngIf="!isPublicAccess; else publicAccessUserDesktop">
+    <ng-container
+      *ngIf="useLocalProvider && accountManagementEnabled; else noUserManagementDesktop"
+    >
+      <button
+        class="user-button mx-1"
+        mat-raised-button
+        matTooltip="Ouvrir le menu de mon profil"
+        [matMenuTriggerFor]="userMenuDesktop"
+      >
+        <mat-icon>person</mat-icon>
+        <div class="user-info">
+          <div class="user-info__name">{{ displayName }}</div>
+          <div *ngIf="displayOrganism" class="user-info__organism">
+            {{ displayOrganism }}
+          </div>
+        </div>
+      </button>
+
+      <mat-menu #userMenuDesktop>
+        <a
+          mat-menu-item
+          matTooltip="Accéder aux paramètres de mon compte"
+          matTooltipPosition="before"
+          routerLink="/user"
+        >
+          {{ 'MyAccount.MyAccount' | translate }}
+        </a>
+        <a
+          *ngIf="hasObserverSheet"
+          mat-menu-item
+          matTooltip="Accéder à ma fiche observateur"
+          matTooltipPosition="before"
+          [routerLink]="observerSheetUrl"
+        >
+          {{ 'MyAccount.MyObserverSheet' | translate }}
+        </a>
+      </mat-menu>
+    </ng-container>
+
+    <ng-template #noUserManagementDesktop>
+      <ng-container *ngIf="hasObserverSheet; else userDisplayDesktop">
+        <a
+          class="Link"
+          matTooltip="Accéder à ma fiche observateur"
+          [routerLink]="observerSheetUrl"
+        >
+          <ng-container *ngTemplateOutlet="userDisplayDesktop"></ng-container>
+        </a>
+      </ng-container>
+    </ng-template>
+
+    <ng-template #userDisplayDesktop>
+      <div class="UserDisplay">
+        <mat-icon>person</mat-icon>
+        <div class="user-info">
+          <div class="user-info__name">{{ displayName }}</div>
+          <div *ngIf="displayOrganism" class="user-info__organism">
+            {{ displayOrganism }}
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </ng-container>
+
+  <ng-template #publicAccessUserDesktop>
+    <mat-icon>accessibility_new</mat-icon>
+    <span class="user-name">Accès public</span>
+  </ng-template>
+</ng-container>
+
+<!-- MOBILE VERSION -->
+<ng-container *ngIf="isMobile">
+  <ng-container *ngTemplateOutlet="mobileMenuContent"></ng-container>
+</ng-container>
+
+<ng-template #mobileMenuContent>
+  <!-- Content provided via ng-container in parent or used internally -->
+  <ng-container *ngIf="isPublicAccess">
+    <button mat-menu-item disabled>
+      <mat-icon>accessibility_new</mat-icon>
+      <span>Accès public</span>
+    </button>
+    <mat-divider></mat-divider>
+  </ng-container>
+
+  <ng-container *ngIf="!isPublicAccess">
+    <!-- With account management -->
+    <ng-container *ngIf="useLocalProvider && accountManagementEnabled">
+      <button mat-menu-item disabled>
+        <mat-icon>person</mat-icon>
+        <span class="mobile-user-info">
+          <span class="mobile-user-info__name">{{ displayName }}</span>
+          <span *ngIf="displayOrganism" class="mobile-user-info__organism">
+            {{ displayOrganism }}
+          </span>
+        </span>
+      </button>
+      <a mat-menu-item routerLink="/user">
+        <mat-icon>manage_accounts</mat-icon>
+        {{ 'MyAccount.MyAccount' | translate }}
+      </a>
+      <a *ngIf="hasObserverSheet" mat-menu-item [routerLink]="observerSheetUrl">
+        <mat-icon>assignment_ind</mat-icon>
+        {{ 'MyAccount.MyObserverSheet' | translate }}
+      </a>
+    </ng-container>
+
+    <!-- Without account management -->
+    <ng-container
+      *ngIf="!(useLocalProvider && accountManagementEnabled)"
+    >
+      <ng-container *ngIf="hasObserverSheet; else mobileUserDisplayOnly">
+        <a mat-menu-item [routerLink]="observerSheetUrl">
+          <mat-icon>person</mat-icon>
+          <span class="mobile-user-info">
+            <span class="mobile-user-info__name">{{ displayName }}</span>
+            <span *ngIf="displayOrganism" class="mobile-user-info__organism">
+              {{ displayOrganism }}
+            </span>
+          </span>
+        </a>
+      </ng-container>
+      <ng-template #mobileUserDisplayOnly>
+        <button mat-menu-item disabled>
+          <mat-icon>person</mat-icon>
+          <span class="mobile-user-info">
+            <span class="mobile-user-info__name">{{ displayName }}</span>
+            <span *ngIf="displayOrganism" class="mobile-user-info__organism">
+              {{ displayOrganism }}
+            </span>
+          </span>
+        </button>
+      </ng-template>
+    </ng-container>
+
+    <mat-divider></mat-divider>
+  </ng-container>
+</ng-template>

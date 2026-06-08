@@ -2,8 +2,8 @@
   <mat-sidenav
     id="app-sidenav"
     #sidenav
-    mode="side"
-    [opened]="sideNavService.opened"
+    [mode]="isMobile ? 'over' : 'side'"
+    [opened]="isMobile ? false : sideNavService.opened"
   >
     <pnx-sidenav-items data-qa="gn-sidenav"></pnx-sidenav-items>
   </mat-sidenav>
@@ -13,117 +13,55 @@
       id="app-toolbar"
       class="row"
     >
-      <button
-        class="mat-elevation-z1 mr-2"
-        mat-icon-button
-        matTooltip="Ouvrir le menu principal"
-        (click)="closeSideBar()"
-        data-qa="pnx-home-content-sidebar-open-button"
-      >
-        <mat-icon aria-label="Ouvrir le menu principal">menu</mat-icon>
-      </button>
-
-      <span class="mx-2">
-        <a
-          data-qa="nav-home-module-name"
-          class="home-link"
-          [routerLink]="moduleUrl"
+      <div class="left-toolbar-content">
+        <button
+          class="mat-elevation-z1 mr-2"
+          mat-icon-button
+          matTooltip="Ouvrir le menu principal"
+          (click)="closeSideBar()"
+          data-qa="pnx-home-content-sidebar-open-button"
         >
-          {{ moduleName }}
-        </a>
-      </span>
+          <mat-icon aria-label="Ouvrir le menu principal">menu</mat-icon>
+        </button>
 
-      <img
-        id="logo-structure"
-        class="mx-2"
-        src="{{ this.config.API_ENDPOINT }}{{ this.config.STATIC_URL }}/images/logo_structure.png"
-        alt=""
-      />
+        <span class="mx-2">
+          <a
+            data-qa="nav-home-module-name"
+            class="home-link"
+            [routerLink]="moduleUrl"
+          >
+            {{ moduleName }}
+          </a>
+        </span>
 
-      <span class="toolbar-spacer"></span>
+        <img
+          id="logo-structure"
+          class="mx-2"
+          src="{{ this.config.API_ENDPOINT }}{{ this.config.STATIC_URL }}/images/logo_structure.png"
+          alt=""
+        />
+      </div>
 
       <span id="appName">
         <h3>{{ config.appName }}</h3>
       </span>
 
-      <span class="toolbar-spacer"></span>
+      <!-- ── VERSION DESKTOP (≥ 578px) ── -->
+      <ng-container *ngIf="!isMobile">
+        <!-- User Component -->
+        <gn-toolbar-user
+          [isMobile]="false"
+          [currentUser]="currentUser"
+          [displayName]="displayName"
+          [displayOrganism]="displayOrganism"
+          [useLocalProvider]="useLocalProvider"
+          [accountManagementEnabled]="config.ACCOUNT_MANAGEMENT.ENABLE_USER_MANAGEMENT"
+          [hasObserverSheet]="hasObserverSheet()"
+          [observerSheetUrl]="getObserverSheetUrl()"
+          [publicAccessUsername]="config.PUBLIC_ACCESS_USERNAME"
+        ></gn-toolbar-user>
 
-      <ng-container
-        *ngIf="config.PUBLIC_ACCESS_USERNAME != currentUser?.user_login; else publicAccessUser"
-      >
-        <ng-container
-          *ngIf="
-            useLocalProvider && config.ACCOUNT_MANAGEMENT.ENABLE_USER_MANAGEMENT;
-            else noUserManagement
-          "
-        >
-          <button
-            class="user-button mx-1"
-            mat-raised-button
-            matTooltip="Ouvrir le menu de mon profil"
-            [matMenuTriggerFor]="userMenu"
-          >
-            <mat-icon>person</mat-icon>
-            <div class="user-info">
-              <div class="user-info__name">{{ displayName }}</div>
-              <div
-                *ngIf="displayOrganism"
-                class="user-info__organism"
-              >
-                {{ displayOrganism }}
-              </div>
-            </div>
-          </button>
-
-          <mat-menu #userMenu>
-            <a
-              mat-menu-item
-              matTooltip="Accéder aux paramètres de mon compte"
-              matTooltipPosition="before"
-              routerLink="/user"
-            >
-              {{ 'MyAccount.MyAccount' | translate }}
-            </a>
-            <a
-              *ngIf="hasObserverSheet()"
-              mat-menu-item
-              matTooltip="Accéder à ma fiche observateur"
-              matTooltipPosition="before"
-              [routerLink]="getObserverSheetUrl()"
-            >
-              {{ 'MyAccount.MyObserverSheet' | translate }}
-            </a>
-          </mat-menu>
-        </ng-container>
-
-        <ng-template #noUserManagement>
-          <ng-container *ngIf="hasObserverSheet(); else userDisplay">
-            <a
-              class="Link"
-              matTooltip="Accéder à ma fiche observateur"
-              [routerLink]="getObserverSheetUrl()"
-            >
-              <ng-container *ngTemplateOutlet="userDisplay"></ng-container>
-            </a>
-          </ng-container>
-        </ng-template>
-
-        <ng-template #userDisplay>
-          <div class="UserDisplay">
-            <mat-icon>person</mat-icon>
-            <div class="user-info">
-              <div class="user-info__name">{{ displayName }}</div>
-              <div
-                *ngIf="displayOrganism"
-                class="user-info__organism"
-              >
-                {{ displayOrganism }}
-              </div>
-            </div>
-          </div>
-        </ng-template>
-
-        <!-- add notification only if notification enabled -->
+        <!-- Notifications Badge -->
         <ng-container *ngIf="config.NOTIFICATIONS_ENABLED == true">
           <a
             class="mx-2 mat-elevation-z1"
@@ -136,76 +74,92 @@
             <mat-icon>notifications</mat-icon>
           </a>
         </ng-container>
+
+        <!-- Language Component -->
+        <gn-toolbar-language
+          [isMobile]="false"
+          [currentLocale]="locale"
+          [multilingualEnabled]="config.FRONTEND.MULTILINGUAL"
+          (languageChange)="changeLanguage($event)"
+        ></gn-toolbar-language>
+
+        <!-- Actions Component (Documentation & Logout) -->
+        <gn-toolbar-actions
+          [isMobile]="false"
+          [notificationsEnabled]="false"
+          [notificationNumber]="0"
+          [documentationUrl]="currentDocUrl"
+          [isPublicAccess]="config.PUBLIC_ACCESS_USERNAME == currentUser?.user_login"
+          (notificationClick)="openNotification()"
+          (logoutClick)="authService.logout()"
+        ></gn-toolbar-actions>
       </ng-container>
 
-      <ng-template #publicAccessUser>
-        <mat-icon>accessibility_new</mat-icon>
-        <span class="user-name">Accès public</span>
-      </ng-template>
-
-      <ng-container *ngIf="config.FRONTEND.MULTILINGUAL">
-        <button
-          class="mx-2 mat-elevation-z1"
-          mat-icon-button
-          matTooltip="{{ 'LanguageSelection' | translate }}"
-          [matMenuTriggerFor]="languagesMenu"
+      <!-- ── VERSION MOBILE (< 578px) ── -->
+      <ng-container *ngIf="isMobile">
+        <!-- Badge notifications visible en dehors du menu -->
+        <ng-container
+          *ngIf="
+            config.NOTIFICATIONS_ENABLED == true &&
+            config.PUBLIC_ACCESS_USERNAME != currentUser?.user_login
+          "
         >
-          <mat-icon>language</mat-icon>
+          <a
+            class="mx-1 mat-elevation-z1"
+            mat-icon-button
+            matTooltip="Accéder aux notifications"
+            matBadge="{{ notificationNumber }}"
+            matBadgeHidden="{{ notificationNumber == 0 }}"
+            (click)="openNotification()"
+          >
+            <mat-icon>notifications</mat-icon>
+          </a>
+        </ng-container>
+
+        <!-- Bouton menu mobile -->
+        <button
+          class="mx-1 mat-elevation-z1"
+          mat-icon-button
+          matTooltip="Plus d'options"
+          [matMenuTriggerFor]="mobileMenu"
+          data-qa="pnx-home-content-mobile-menu-button"
+        >
+          <mat-icon>more_vert</mat-icon>
         </button>
 
-        <mat-menu #languagesMenu>
-          <button
-            mat-menu-item
-            (click)="changeLanguage('fr')"
-            [disabled]="locale == 'fr'"
-            matTooltip="Afficher l'interface en français"
-            matTooltipPosition="before"
-          >
-            <mat-icon *ngIf="locale == 'fr'">check</mat-icon>
-            {{ 'AvailableLanguages.French' | translate }}
-          </button>
-          <button
-            mat-menu-item
-            (click)="changeLanguage('en')"
-            [disabled]="locale == 'en'"
-            matTooltip="Afficher l'interface en Anglais"
-            matTooltipPosition="before"
-          >
-            <mat-icon *ngIf="locale == 'en'">check</mat-icon>
-            {{ 'AvailableLanguages.English' | translate }}
-          </button>
-          <button
-            mat-menu-item
-            (click)="changeLanguage('zh')"
-            [disabled]="locale == 'zh'"
-            matTooltip="Afficher l'interface en Chinois"
-            matTooltipPosition="before"
-          >
-            <mat-icon *ngIf="locale == 'zh'">check</mat-icon>
-            {{ 'AvailableLanguages.Chinese' | translate }}
-          </button>
+        <mat-menu #mobileMenu>
+          <!-- User Component (Mobile) -->
+          <gn-toolbar-user
+            [isMobile]="true"
+            [currentUser]="currentUser"
+            [displayName]="displayName"
+            [displayOrganism]="displayOrganism"
+            [useLocalProvider]="useLocalProvider"
+            [accountManagementEnabled]="config.ACCOUNT_MANAGEMENT.ENABLE_USER_MANAGEMENT"
+            [hasObserverSheet]="hasObserverSheet()"
+            [observerSheetUrl]="getObserverSheetUrl()"
+            [publicAccessUsername]="config.PUBLIC_ACCESS_USERNAME"
+          ></gn-toolbar-user>
+
+          <!-- Language Component (Mobile) -->
+          <gn-toolbar-language
+            [isMobile]="true"
+            [currentLocale]="locale"
+            [multilingualEnabled]="config.FRONTEND.MULTILINGUAL"
+            (languageChange)="changeLanguage($event)"
+          ></gn-toolbar-language>
+
+          <!-- Actions Component (Mobile) -->
+          <gn-toolbar-actions
+            [isMobile]="true"
+            [notificationsEnabled]="false"
+            [notificationNumber]="0"
+            [documentationUrl]="currentDocUrl"
+            [isPublicAccess]="config.PUBLIC_ACCESS_USERNAME == currentUser?.user_login"
+            (logoutClick)="authService.logout()"
+          ></gn-toolbar-actions>
         </mat-menu>
       </ng-container>
-
-      <a
-        class="mx-2 mat-elevation-z1"
-        mat-icon-button
-        matTooltip="Ouvrir la documentation"
-        [href]="currentDocUrl"
-        target="_blank"
-      >
-        <mat-icon id="documentation_link">library_books</mat-icon>
-      </a>
-
-      <button
-        class="mx-2 mat-elevation-z1"
-        mat-icon-button
-        matTooltip="{{ 'Authentication.Actions.LogOut' | translate }}"
-        (click)="authService.logout()"
-        data-qa="pnx-home-content-exit-button"
-      >
-        <mat-icon>exit_to_app</mat-icon>
-      </button>
     </mat-toolbar>
 
     <div class="app-content">

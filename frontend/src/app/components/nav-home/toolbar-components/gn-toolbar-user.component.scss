@@ -1,0 +1,54 @@
+.user-button {
+  height: 40px;
+  text-align: start;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.2;
+  max-width: 400px;
+
+  &__name,
+  &__organism {
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &__name {
+    font-size: 15px;
+    padding-right: 0.5rem;
+  }
+
+  &__organism {
+    font-size: 0.8em;
+    color: inherit;
+    opacity: 0.5;
+  }
+}
+
+.UserDisplay {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  column-gap: 0.5rem;
+}
+
+.mobile-user-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+
+  &__name {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  &__organism {
+    font-size: 0.75em;
+    opacity: 0.55;
+  }
+}

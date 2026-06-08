@@ -12,6 +12,8 @@ import { ConfigService } from '@geonature/services/config.service';
 import { I18nService } from '@geonature/shared/translate/i18n-service';
 import { getObserverSheetRoute } from '@geonature/syntheseModule/observer-sheet/observer-sheet.route.service';
 
+import { BreakpointObserver } from '@angular/cdk/layout';
+
 @Component({
   selector: 'pnx-nav-home',
   templateUrl: './nav-home.component.html',
@@ -24,6 +26,7 @@ export class NavHomeComponent implements OnInit {
   public moduleUrl: string;
   public notificationNumber: number;
   public useLocalProvider: boolean; // Indicate if the user is logged in using a non local provider
+  public isMobile: boolean;
 
   @ViewChild('sidenav', { static: true }) public sidenav: MatSidenav;
 
@@ -35,7 +38,8 @@ export class NavHomeComponent implements OnInit {
     private notificationDataService: NotificationDataService,
     private router: Router,
     public config: ConfigService,
-    public i18nService: I18nService
+    public i18nService: I18nService,
+    private breakpointObserver: BreakpointObserver
   ) {}
 
   get locale(): string {
@@ -62,6 +66,10 @@ export class NavHomeComponent implements OnInit {
     // Put the user name in navbar
     this.currentUser = this.authService.getCurrentUser();
     this.useLocalProvider = this.authService.canBeLoggedWithLocalProvider();
+
+    this.breakpointObserver.observe(['(max-width: 870px)']).subscribe((result) => {
+      this.isMobile = result.matches;
+    });
   }
 
   changeLanguage(lang) {
