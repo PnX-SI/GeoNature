@@ -1,11 +1,11 @@
 # CHANGELOG
 
-## 2.17.2 (2026-06-05)
+## 2.17.2 (2026-06-08)
 
 ### 🚀 Nouveautés
 
-- [Métadonnées] Ajout de la possibilité de fermer un cadre d'acquisition  (#3963 par @christophe-ramet).  
-La fermeture d'un cadre d'acquisition a pour conséquence :
+- [Métadonnées] Ajout de la possibilité de fermer un cadre d'acquisition (#3963 par @christophe-ramet).  
+  La fermeture d'un cadre d'acquisition a pour conséquence :
   - Impossibilité de créer/modifier/supprimer des données dans Occhab et dans Occtax (#3964)
   - Désactivation de tous les jeux de données associés.
   - Impossibilité d'importer des données dans des JDD de CA fermés.
@@ -77,6 +77,10 @@ La fermeture d'un cadre d'acquisition a pour conséquence :
 - [Fiche Taxon] Correction de la configuration de l'affichage des onglets des fiches (#3997 par @edelclaux)
 - [Métadonnées] Suppression d'un double appel API à l'initialisation du composant des cadres d'acquisition (#3988 par @VincentCauchois)
 - [Métadonnées] Remplacement de l'erreur affichée lors de la création d'un organisme avec un nom déjà utilisé (#3990 par @christophe-ramet)
+
+### ⚠️ Notes de version
+
+- Suppression du paramètre `ENABLE_CLOSE_AF` (#4054 par @christophe-ramet)
 
 ## 2.17.0 - Pipistrellus kuhlii 🦇 (2026-03-12)
 
