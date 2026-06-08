@@ -1,5 +1,59 @@
 # CHANGELOG
 
+## 2.17.2 (2026-06-05)
+
+### 🚀 Nouveautés
+
+- [Métadonnées] Ajout de la possibilité de fermer un cadre d'acquisition. La fermeture du cadre d'acquisition à pour conséquence (#3964 #3965 par @christophe-ramet) :
+  - Impossibilité de créer/modifier/supprimer des données dans Occhab et dans Occtax (#3964)
+  - Désactivation de tous les jeux de données associés.
+  - Impossibilité d'importer des données dans les CA fermées.
+
+- [Métadonnées] Ajout d'un bouton de création de jeu de données directement depuis la fiche du cadre d'acquisition (#4142 par @jacquesfize)
+- [Métadonnées] La date de création de la source est maintenant caché (#4096 par @christophe-ramet)
+- [Authentification] Hiérarchisation des fournisseurs d'identité sur la page de connexion. Si un _provider_ est configuré avec `is_secondary=true`, ce dernier sera accessible depuis un menu déroulant. (#3912 par @IdrissaD)
+  **Exemple**
+  ```toml
+    [[AUTHENTICATION.PROVIDERS]]
+      module = "pypnusershub.auth.providers.default.LocalProvider"
+      id_provider = "local_provider"
+    [[AUTHENTICATION.PROVIDERS]]
+      module = "pypnusershub.auth.providers.openid_provider.OpenIDProvider"
+      id_provider = "test_keycloak"
+      logo = "<i class='fa fa-leaf' aria-hidden='true'></i>"
+      ISSUER = "http://localhost:8080/realms/geonature%20test"
+      CLIENT_ID = "secretID"
+      CLIENT_SECRET = "secret"
+      is_secondary = true # Sera affiché dans le menu déroulant
+  ```
+- [Authentification] Ajout d'une fonctionnalité d'affichage/masquage du mot de passe dans le formulaire de connexion (#3974 par @jacquesfize)
+- [Authentification] Gestion des erreurs de connexion via les paramètres de requête (#3976 par @edelclaux)
+- [Import] Ajout de la priorisation de la géométrie lors des imports. L'ordre de priorisation des géométrie est le suivant : WKT > Long/Lat > CodeMaille > CodeCommune > CodeDepartement (#4099 par @christophe-ramet)
+- [Accueil] Affichage de l'organisme dans la barre de navigation latérale (#4081 par @edelclaux)
+- [Permissions] Ajout du code de département dans le formulaire des filtres géographiques (#4084 par @jacquesfize)
+- [Documentation] Ajout d'une section sur la configuration du worker Celery dans la documentation administrateur (#2894 par @PaulLabruyere)
+- [Général] Mise à jour des dépendances Python (#4080 par @jacquesfize)
+
+### 🐛 Corrections
+
+- [Synthèse] Possibilité de réutiliser la modale d'information d'observation (#4149 par @bouttier)
+- [Métadonnées] Correction de l'affichage du nombre de jeux de données dans l'export PDF (#3985 par @jacquesfize)
+- [Métadonnées] Ajout de la colonne `id_nomenclature_biogeo_status` dans la vue `v_synthese_for_web_app` (#2235 par @christophe-ramet)
+- [Import] Correction de la prise en compte du paramètre `DEFAULT_GENERATE_MISSING_UUID` (#4115 par @jacquesfize)
+- [Synthèse] Les fixtures `synthese` s'appuient sur le SRID de la base de données de test (#4113 par @bouttier)
+- [Synthèse] Correction des données retournées par la commande `geonature sensitivity info` (#3927 par @jacquesfize)
+- [Synthèse] Correction du tri de l'ordre des zonages dans la fiche Observations (#4041 par @edelclaux)
+- [Sécurité] Ajout de la restriction `login_required` sur les routes `/users/menu`, `/users/menu_from_code` et `/users/liste` (#4110 par @jacquesfize)
+- [Synthèse] Correction de la récupération des zonages pour une observation quand un utilisateur possède une permission floutée et une permission avec un filtre géographique (#4065 par @jacquesfize)
+
+### 💻 Développement
+
+- [Développement] Utilisation de `uv` pour accélérer la compilation du Dockerfile backend (#4134 par @christophe-ramet)
+- [Docker] Ajout d'une étape de développement dans le Dockerfile backend (#4114 par @bouttier)
+- [Docker] Correction de la version Python dans le Dockerfile (#4104 par @bouttier)
+- [CI/CD] Amélioration du workflow d'intégration continue avec un paramètre `geonature_repo` (#4144 par @bouttier)
+- [Base de données] Suppression de la vue obsolète `v_releve_list` (#690 par @christophe-ramet)
+
 ## 2.17.1 (2026-04-13)
 
 ### 🚀 Nouveautés
