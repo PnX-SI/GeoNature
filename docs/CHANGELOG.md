@@ -22,7 +22,7 @@
       module = "pypnusershub.auth.providers.openid_provider.OpenIDProvider"
       id_provider = "test_keycloak"
       logo = "<i class='fa fa-leaf' aria-hidden='true'></i>"
-      ISSUER = "http://localhost:8080/realms/geonature%20test"
+      ISSUER = "url"
       CLIENT_ID = "secretID"
       CLIENT_SECRET = "secret"
       is_secondary = true # Sera affiché dans le menu déroulant
