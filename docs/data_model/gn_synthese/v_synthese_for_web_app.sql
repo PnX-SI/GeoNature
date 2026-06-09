@@ -78,7 +78,8 @@ CREATE VIEW gn_synthese.v_synthese_for_web_app AS
     t.classe,
     t.ordre,
     t.famille,
-    t.sous_famille
+    t.sous_famille,
+    s.id_nomenclature_biogeo_status
    FROM (((gn_synthese.synthese s
      JOIN taxonomie.taxref t ON ((t.cd_nom = s.cd_nom)))
      JOIN gn_meta.t_datasets d ON ((d.id_dataset = s.id_dataset)))
