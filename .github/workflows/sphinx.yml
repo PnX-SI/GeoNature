@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - develop
 
 jobs:
   docs:
@@ -27,7 +28,7 @@ jobs:
     steps:
       - uses: actions/setup-python@v4
         with:
-          python-version: 3.9
+          python-version: 3.11
       - uses: actions/checkout@master
         with:
           fetch-depth: 0
@@ -38,13 +39,16 @@ jobs:
           node-version: lts/iron
 
       - name: Build and Commit
-        uses: sphinx-notes/pages@v2
+        uses: sphinx-notes/pages@v3
         with:
           requirements_path: docs/requirements.txt
+          python_version: 3.11
+          publish: false
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
 
       - name: Push changes
+        if: github.ref == 'refs/heads/master'
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
