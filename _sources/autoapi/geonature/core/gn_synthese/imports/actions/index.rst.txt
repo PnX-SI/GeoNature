@@ -12,18 +12,8 @@ Classes
    geonature.core.gn_synthese.imports.actions.SyntheseImportActions
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   geonature.core.gn_synthese.imports.actions.get_boolean_value
-
-
 Module Contents
 ---------------
-
-.. py:function:: get_boolean_value(bib_field: geonature.core.imports.models.BibFields, default_value: bool) -> bool
 
 .. py:class:: SyntheseImportActions
 

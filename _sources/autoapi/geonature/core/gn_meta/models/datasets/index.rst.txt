@@ -20,6 +20,14 @@ Module Contents
    Bases: :py:obj:`geonature.core.gn_meta.models.commons.db.Model`
 
 
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+
    .. py:attribute:: __tablename__
       :value: 't_datasets'
 
@@ -184,18 +192,26 @@ Module Contents
 
 
    .. py:method:: filter_by_scope(scope, *, query, user=None)
+      :classmethod:
+
 
 
    .. py:method:: filter_by_params(params={}, *, _af_search=True, query=None)
+      :classmethod:
+
 
 
    .. py:method:: filter_by_readable(query, user=None)
+      :classmethod:
+
 
       Return the datasets where the user has autorization via its CRUVED
 
 
 
    .. py:method:: filter_by_creatable(module_code, *, query, user=None, object_code=None)
+      :classmethod:
+
 
       Return all dataset where user have read rights minus those who user to not have
       create rigth
@@ -203,5 +219,10 @@ Module Contents
 
 
    .. py:method:: filter_by_areas(areas, *, query)
+      :classmethod:
+
+
+
+   .. py:method:: nb_observations()
 
 

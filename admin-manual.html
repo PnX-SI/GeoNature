@@ -6,11 +6,11 @@
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Recherche" href="search.html"><link rel="next" title="Développement" href="development.html"><link rel="prev" title="Manuel utilisateur" href="user-manual.html">
         <link rel="prefetch" href="_static/LogoGeonature.jpg" as="image">
 
-    <!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 -->
-        <title>Manuel administrateur - Documentation GeoNature 2.17.1</title>
+    <!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>Manuel administrateur - Documentation GeoNature 2.17.2</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
-    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
     
     
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation GeoNature 2.17.1</div></a>
+      <a href="index.html"><div class="brand">Documentation GeoNature 2.17.2</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -187,7 +187,7 @@
     <img class="sidebar-logo" src="_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.17.1</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.17.2</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -900,7 +900,6 @@ geonature<span class="w"> </span>permissions<span class="w"> </span>supergrant<s
 <p>La fonction <code class="docutils literal notranslate"><span class="pre">gn_profiles.refresh_profiles()</span></code> permet de rafraichir ces vues matérialisées.</p>
 <p>Pour lancer manuellement cette fonction, ouvrez une console SQL et exécutez la requête <code class="docutils literal notranslate"><span class="pre">SELECT</span> <span class="pre">gn_profiles.refresh_profiles();</span></code>.</p>
 <p>Cette fonction est aussi diponible en tant que fonction GeoNature qu’il est préférable d’utiliser : <code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">profiles</span> <span class="pre">update</span></code></p>
-<p>Pour automatiser l’exécution de cette fonction (tous les jours à minuit dans cet exemple), <a class="reference internal" href="installation.html#cron"><span class="std std-ref">créer une tâche planfiée</span></a>.</p>
 </section>
 <section id="usage">
 <h4>Usage<a class="headerlink" href="#usage" title="Lien vers cette rubrique">¶</a></h4>
@@ -1367,6 +1366,21 @@ Pour les exécuter, il est nécessaire d’être dans le virtualenv python de Ge
 <li><p>Vérifier que le fichier de logs de GeoNature n’est pas trop volumineux pour la capacité du serveur</p></li>
 <li><p>Vérifier que les services nécessaires au fonctionnement de l’application tournent bien (Apache, PostgreSQL)</p></li>
 </ul>
+</section>
+<section id="supervision-de-celery">
+<h3>Supervision de Celery<a class="headerlink" href="#supervision-de-celery" title="Lien vers cette rubrique">¶</a></h3>
+<p>GeoNature utilise [Celery](<a class="reference external" href="https://docs.celeryq.dev/en/main/getting-started/introduction.html">https://docs.celeryq.dev/en/main/getting-started/introduction.html</a>) pour lancer en arrière-plan des tâches asynchrones, qui peuvent prendre du temps (validation automatique, génération d’exports, import de données, synchronisation des médias, etc.).</p>
+<p>La commande <code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">status</span> <span class="pre">geonature-worker</span></code> permet de connaître l’état du worker Celery et de visualiser la commande qui a été utilisée pour le lancer.</p>
+<p>Celery propose <a class="reference external" href="https://docs.celeryq.dev/en/stable/userguide/monitoring.html#management-command-line-utilities-inspect-control">de nombreuses commandes</a> utiles pour la supervision du worker. Elles peuvent être utilisées pour avoir des stats sur le worker, pour voir la liste des tâches enregistrées, planifiées ou révoquées, ou encore lancer une tâche manuellement.</p>
+<ul class="simple">
+<li><p>Les commandes Celery doivent être lancées depuis l’environnement de GeoNature, donc après un``source backend/venv/bin/activate``</p></li>
+<li><p>Le nom de l’application, à passer via l’argument <code class="docutils literal notranslate"><span class="pre">-A</span> <span class="pre">proj</span></code>, est celui qui a été utilisé pour lancer le worker</p></li>
+</ul>
+<p>Pour une analyse d’erreur plus fine, il est possible de relancer le worker en changeant le niveau de log à l’aide du paramètre <code class="docutils literal notranslate"><span class="pre">--loglevel</span></code> (<a class="reference external" href="https://docs.celeryq.dev/en/main/reference/cli.html#cmdoption-celery-worker-l">https://docs.celeryq.dev/en/main/reference/cli.html#cmdoption-celery-worker-l</a>) dans celery.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>Ne<span class="w"> </span>pas<span class="w"> </span>oublier<span class="w"> </span>de<span class="w"> </span>désactiver<span class="w"> </span>le<span class="w"> </span>worker
+<span class="go">celery -A geonature.celery_app:app worker --beat --logfile=/var/log/geonature/geonature-worker.log --loglevel=DEBUG</span>
+</pre></div>
+</div>
 </section>
 <section id="maintenance">
 <h3>Maintenance<a class="headerlink" href="#maintenance" title="Lien vers cette rubrique">¶</a></h3>
@@ -1933,9 +1947,9 @@ Il s’agit maintenant de gérer ses permissions dans GeoNature.</p>
 <p>Exemple : <a class="reference external" href="https://demo.geonature.fr/geonature/#/synthese?access=public">https://demo.geonature.fr/geonature/#/synthese?access=public</a></p>
 </section>
 </section>
-<section id="se-connecter-a-d-autres-fournisseurs-d-identites">
-<h3>Se connecter à d’autres fournisseurs d’identités<a class="headerlink" href="#se-connecter-a-d-autres-fournisseurs-d-identites" title="Lien vers cette rubrique">¶</a></h3>
-<p>Depuis la version 2.15, il est maintenant possible de se connecter à GeoNature à l’aide de fournisseurs d’identités externes (comme Google, GitHub ou INPN).
+<section id="se-connecter-a-d-autres-fournisseurs-d-identite">
+<h3>Se connecter à d’autres fournisseurs d’identité<a class="headerlink" href="#se-connecter-a-d-autres-fournisseurs-d-identite" title="Lien vers cette rubrique">¶</a></h3>
+<p>Depuis la version 2.15, il est maintenant possible de se connecter à GeoNature à l’aide de fournisseurs d’identité externes (comme Google, GitHub ou INPN).
 Pour cela, il est nécessaire d’implémenter le protocole de connexion pour permettre à GeoNature de communiquer avec ces fournisseurs.
 Actuellement, GeoNature vient avec plusieurs protocoles de connexion implémentés, tels que :</p>
 <ul class="simple">
@@ -1945,10 +1959,10 @@ Actuellement, GeoNature vient avec plusieurs protocoles de connexion implément�
 </ul>
 <section id="ajouter-un-nouveau-fournisseur-d-identite">
 <h4>Ajouter un nouveau fournisseur d’identité<a class="headerlink" href="#ajouter-un-nouveau-fournisseur-d-identite" title="Lien vers cette rubrique">¶</a></h4>
-<p>Pour ajouter un nouveau fournisseur d’identités à votre instance de GeoNature, vous devez ajouter une section <code class="docutils literal notranslate"><span class="pre">[[AUTHENTICATION.PROVIDERS]]</span></code> dans la partie <code class="docutils literal notranslate"><span class="pre">AUTHENTICATION</span></code> de votre fichier de configuration.
+<p>Pour ajouter un nouveau fournisseur d’identité à votre instance de GeoNature, vous devez ajouter une section <code class="docutils literal notranslate"><span class="pre">[[AUTHENTICATION.PROVIDERS]]</span></code> dans la partie <code class="docutils literal notranslate"><span class="pre">AUTHENTICATION</span></code> de votre fichier de configuration.
 Chaque section doit comporter deux variables obligatoires: <code class="docutils literal notranslate"><span class="pre">module</span></code> et <code class="docutils literal notranslate"><span class="pre">id_provider</span></code>. La variable <code class="docutils literal notranslate"><span class="pre">module</span></code> indique le chemin vers la classe Python qui implémente le protocole de connexion, tandis que <code class="docutils literal notranslate"><span class="pre">id_provider</span></code> indique l’identifiant unique du fournisseur d’identité.
 Vous devez également ajouter les variables de configuration spécifiques au protocole de connexion correspondant.</p>
-<p>Dans l’exemple ci-dessous, on déclare deux fournisseurs d’identités : le premier est le fournisseur d’identité par défaut (local) et le deuxième permet de se connecter à l’INPN.</p>
+<p>Dans l’exemple ci-dessous, on déclare deux fournisseurs d’identité : le premier est le fournisseur d’identité par défaut (local) et le deuxième permet de se connecter à l’INPN.</p>
 <div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[AUTHENTICATION]</span>
 <span class="w">    </span><span class="n">DEFAULT_RECONCILIATION_GROUP_ID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span>
 <span class="w">    </span><span class="k">[[AUTHENTICATION.PROVIDERS]]</span>
@@ -2008,7 +2022,7 @@ Vous devez également ajouter les variables de configuration spécifiques au pro
     <span class="n">is_external</span> <span class="o">=</span> <span class="kc">True</span> <span class="c1"># si redirection vers un portail de connexion externe</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">authenticate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Response</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">User</span><span class="p">]:</span>
-        <span class="k">pass</span> <span class="c1"># doit retourner un utilisateur (User) ou rediriger (flask.Redirect) vers le portail de connexion du fournisseur d&#39;identités</span>
+        <span class="k">pass</span> <span class="c1"># doit retourner un utilisateur (User) ou rediriger (flask.Redirect) vers le portail de connexion du fournisseur d&#39;identité</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">authorize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># appeler par /auth/authorize si redirection d&#39;un portail de connexion externe</span>
@@ -2021,7 +2035,7 @@ Vous devez également ajouter les variables de configuration spécifiques au pro
         <span class="k">class</span><span class="w"> </span><span class="nc">SchemaConf</span><span class="p">(</span><span class="n">ProviderConfigurationSchema</span><span class="p">):</span>
             <span class="n">VAR</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">configuration</span> <span class="o">=</span> <span class="n">SchemaConf</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span> <span class="c1"># Si besoin d&#39;un processus de validation</span>
-        <span class="o">...</span><span class="c1"># Configuration du fournisseur d&#39;identités</span>
+        <span class="o">...</span><span class="c1"># Configuration du fournisseur d&#39;identité</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -2031,11 +2045,16 @@ Vous devez également ajouter les variables de configuration spécifiques au pro
 </section>
 <section id="desactiver-l-authentification-par-defaut">
 <h4>Désactiver l’authentification par défaut<a class="headerlink" href="#desactiver-l-authentification-par-defaut" title="Lien vers cette rubrique">¶</a></h4>
-<p>Si vous souhaitez désactiver l’authentification par défaut au profit d’un ou plusieurs autres fournisseurs d’identités, il suffit de ne pas déclarer celui-ci dans la section <cite>[[AUTHENTICATION.PROVIDERS]]</cite> dans la partie <cite>AUTHENTICATION</cite> de la configuration.</p>
+<p>Si vous souhaitez désactiver l’authentification par défaut au profit d’un ou plusieurs autres fournisseurs d’identité, il suffit de ne pas déclarer celui-ci dans la section <code class="docutils literal notranslate"><span class="pre">[[AUTHENTICATION.PROVIDERS]]</span></code> dans la partie <cite>AUTHENTICATION</cite> de la configuration.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Si un seul fournisseur d’identités (différent de l’authentification par défaut) est déclaré dans la section <cite>[[AUTHENTICATION.PROVIDERS]]</cite> de la configuration, l’utilisateur sera redirigé automatiquement vers le portail de connexion de ce dernier.</p>
+<p>Si un seul fournisseur d’identité (différent de l’authentification par défaut) est déclaré dans la section <code class="docutils literal notranslate"><span class="pre">[[AUTHENTICATION.PROVIDERS]]</span></code> de la configuration, l’utilisateur sera redirigé automatiquement vers le portail de connexion de ce dernier.</p>
 </div>
+</section>
+<section id="hierarchiser-differents-fournisseurs-d-identite">
+<h4>Hiérarchiser différents fournisseurs d’identité<a class="headerlink" href="#hierarchiser-differents-fournisseurs-d-identite" title="Lien vers cette rubrique">¶</a></h4>
+<p>L’attribut <code class="docutils literal notranslate"><span class="pre">is_secondary</span></code> permet de hiérarchiser l’affichage des fournisseurs d’identité lorsque plusieurs sont activés. Il suffit d’ajouter la ligne <code class="docutils literal notranslate"><span class="pre">is_secondary</span> <span class="pre">=</span> <span class="pre">true</span></code> à la configuration <code class="docutils literal notranslate"><span class="pre">[[AUTHENTICATION.PROVIDERS]]</span></code> d’un fournisseur d’identité pour qu’il s’affiche derrière un composant <cite>details</cite>.
+Les autres fournisseurs d’identité ont par défaut le paramètre <code class="docutils literal notranslate"><span class="pre">is_secondary</span> <span class="pre">=</span> <span class="pre">false</span></code> et restent visibles. L’ordre d’affichage au sein de chaque section (fournisseurs principaux et fournisseurs secondaires) dépend de leur ordre dans le fichier de configuration.</p>
 </section>
 </section>
 </section>
@@ -2438,14 +2457,17 @@ La valeur 0 pour ses champs revient à mettre la valeur par défaut pour tous le
 <p>La liste des champs affichés par défaut dans le tableau peut être modifiée avec le paramètre <code class="docutils literal notranslate"><span class="pre">default_maplist_columns</span></code>.</p>
 <p>Par défaut :</p>
 <div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="n">default_maplist_columns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">prop</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;taxons&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;Taxon&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">prop</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;date_min&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;Date début&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">prop</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;taxons&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;Taxon(s)&quot;</span><span class="w"> </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">prop</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;observateurs&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;Observateurs&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">prop</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;dataset_name&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;Jeu de données&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">prop</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;date&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;Date&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">prop</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;dataset&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;Jeu de données&quot;</span><span class="w"> </span><span class="p">},</span>
 <span class="p">]</span>
 </pre></div>
 </div>
-<p>Voir la vue <code class="docutils literal notranslate"><span class="pre">occtax.v_releve_list</span></code> pour voir les champs disponibles.</p>
+<p>La clé prop de ces dictionnaire peut prendre les valeurs <code class="docutils literal notranslate"><span class="pre">date</span></code>, <code class="docutils literal notranslate"><span class="pre">nb_taxons</span></code>, <code class="docutils literal notranslate"><span class="pre">taxons</span></code>, <code class="docutils literal notranslate"><span class="pre">observateurs</span></code> et <code class="docutils literal notranslate"><span class="pre">dataset</span></code>.
+Elle peut également prendre le nom de n’importe quelle nom de colonne de la table <code class="docutils literal notranslate"><span class="pre">t_releves_occtax</span></code></p>
+<p>Le paramètre <code class="docutils literal notranslate"><span class="pre">available_maplist_column</span></code> contient quant à lui la liste totale des champs pouvant être affichés ou masqués dans ce tableau.
+Si un élément est présent dans <code class="docutils literal notranslate"><span class="pre">default_maplist_columns</span></code> mais pas dans <code class="docutils literal notranslate"><span class="pre">available_maplist_column</span></code>, il sera toujours affiché et ne pourra pas être masqué.</p>
 </section>
 <section id="ajouter-une-contrainte-d-echelle-de-saisie-sur-la-carte">
 <h4>Ajouter une contrainte d’échelle de saisie sur la carte<a class="headerlink" href="#ajouter-une-contrainte-d-echelle-de-saisie-sur-la-carte" title="Lien vers cette rubrique">¶</a></h4>
@@ -2718,10 +2740,10 @@ Attention : Si des données sont déjà présentes dans la synthèse et que l’
 <span class="w">  </span><span class="p">...</span>
 <span class="w">  </span><span class="n">EXPORT_OBSERVATIONS_CUSTOM_VIEWS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
 <span class="w">      </span><span class="p">{</span>
-<span class="w">          </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;format personnalisé&quot;</span><span class="err">,</span>
-<span class="w">          </span><span class="n">view_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;gn_synthese.v_synthese_for_web_app&quot;</span><span class="err">,</span>
-<span class="w">      </span><span class="err">}</span>
-<span class="w">  </span><span class="err">]</span>
+<span class="w">          </span><span class="n">label</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;format personnalisé&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="n">view_name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;gn_synthese.v_synthese_for_web_app&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
 </pre></div>
 </div>
 <p>Ces vues doivent obligatoirement avoir une colonne <cite>id_synthese</cite>, une colonne <cite>geojson_local</cite> représentant le geojson de la géometrie en projection locale (pour la génération du shapefile et geopackage) et une colonne <cite>geojson_4326</cite> représentant le geojson de la géométrie en projection 4326 (pour la génération du geojson) (utilisez la fonction <cite>st_asgeojson</cite> - voir la vue par défaut <cite>gn_synthese.v_synthese_for_export</cite>).</p>
@@ -3341,6 +3363,17 @@ De manière générale, nous séparons les contrôles de données en deux catég
 </ol>
 </li>
 </ol>
+<p><strong>Priorisation des géométries</strong></p>
+<p>Lorsque plusieurs géométries sont fournies pour une même ligne (par exemple, à la fois des coordonnées X/Y et un WKT, ou une commune ET une maille), un système de priorisation est appliqué pour sélectionner automatiquement la géométrie la plus précise. Un avertissement est généré dans ce cas.</p>
+<p>L’ordre de priorité des géométries est le suivant :</p>
+<ol class="arabic simple">
+<li><p><strong>WKT</strong></p></li>
+<li><p><strong>X/Y</strong></p></li>
+<li><p><strong>Maille</strong></p></li>
+<li><p><strong>Commune</strong></p></li>
+<li><p><strong>Département</strong></p></li>
+</ol>
+<p>La géométrie avec la priorité la plus élevée est alors utilisée pour géoréférencer la ligne, tandis que les autres géométries sont ignorées.</p>
 </section>
 <section id="modele-de-donnees">
 <h3>Modèle de données<a class="headerlink" href="#modele-de-donnees" title="Lien vers cette rubrique">¶</a></h3>
@@ -3446,6 +3479,7 @@ De manière générale, nous séparons les contrôles de données en deux catég
 <li><a class="reference internal" href="#commandes-geonature">Commandes GeoNature</a></li>
 <li><a class="reference internal" href="#demarrer-arreter-les-api">Démarrer / arrêter les API</a></li>
 <li><a class="reference internal" href="#supervision-des-services">Supervision des services</a></li>
+<li><a class="reference internal" href="#supervision-de-celery">Supervision de Celery</a></li>
 <li><a class="reference internal" href="#maintenance">Maintenance</a></li>
 <li><a class="reference internal" href="#parametres-gunicorn">Paramètres Gunicorn</a></li>
 </ul>
@@ -3481,11 +3515,12 @@ De manière générale, nous séparons les contrôles de données en deux catég
 <li><a class="reference internal" href="#acces-public-automatique">Accès public automatique</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#se-connecter-a-d-autres-fournisseurs-d-identites">Se connecter à d’autres fournisseurs d’identités</a><ul>
+<li><a class="reference internal" href="#se-connecter-a-d-autres-fournisseurs-d-identite">Se connecter à d’autres fournisseurs d’identité</a><ul>
 <li><a class="reference internal" href="#ajouter-un-nouveau-fournisseur-d-identite">Ajouter un nouveau fournisseur d’identité</a></li>
 <li><a class="reference internal" href="#se-connecter-a-un-autre-geonature">Se connecter à un autre GeoNature</a></li>
 <li><a class="reference internal" href="#creer-son-propre-module-de-connexion">Créer son propre module de connexion</a></li>
 <li><a class="reference internal" href="#desactiver-l-authentification-par-defaut">Désactiver l’authentification par défaut</a></li>
+<li><a class="reference internal" href="#hierarchiser-differents-fournisseurs-d-identite">Hiérarchiser différents fournisseurs d’identité</a></li>
 </ul>
 </li>
 </ul>
@@ -3598,10 +3633,10 @@ De manière générale, nous séparons les contrôles de données en deux catég
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=c53d93e3"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
+</div><script src="_static/documentation_options.js?v=f2c51989"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>
-    <script src="_static/translations.js?v=041d0952"></script>
+    <script src="_static/translations.js?v=e6b791cb"></script>
     </body>
 </html>

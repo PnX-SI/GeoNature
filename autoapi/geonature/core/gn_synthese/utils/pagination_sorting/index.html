@@ -6,11 +6,11 @@
 <link rel="index" title="Index" href="../../../../../../genindex.html"><link rel="search" title="Recherche" href="../../../../../../search.html"><link rel="next" title="geonature.core.gn_synthese.utils.process" href="../process/index.html"><link rel="prev" title="geonature.core.gn_synthese.utils.orm" href="../orm/index.html">
         <link rel="prefetch" href="../../../../../../_static/LogoGeonature.jpg" as="image">
 
-    <!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 -->
-        <title>geonature.core.gn_synthese.utils.pagination_sorting - Documentation GeoNature 2.17.1</title>
+    <!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>geonature.core.gn_synthese.utils.pagination_sorting - Documentation GeoNature 2.17.2</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?v=7bdb33bb" />
-    <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=fd3f3429" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
     
     
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../../index.html"><div class="brand">Documentation GeoNature 2.17.1</div></a>
+      <a href="../../../../../../index.html"><div class="brand">Documentation GeoNature 2.17.2</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -187,7 +187,7 @@
     <img class="sidebar-logo" src="../../../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.17.1</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.17.2</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -467,10 +467,49 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_synthese.utils.pagination_sorting.</span></span><span class="sig-name descname"><span class="pre">PaginationSortingUtils</span></span><a class="reference internal" href="../../../../../../_modules/geonature/core/gn_synthese/utils/pagination_sorting.html#PaginationSortingUtils"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.utils.pagination_sorting.PaginationSortingUtils" title="Lien vers cette définition">¶</a></dt>
 <dd><dl class="py class">
 <dt class="sig sig-object py" id="geonature.core.gn_synthese.utils.pagination_sorting.PaginationSortingUtils.SortOrder">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SortOrder</span></span><a class="reference internal" href="../../../../../../_modules/geonature/core/gn_synthese/utils/pagination_sorting.html#PaginationSortingUtils.SortOrder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.utils.pagination_sorting.PaginationSortingUtils.SortOrder" title="Lien vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SortOrder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../../_modules/geonature/core/gn_synthese/utils/pagination_sorting.html#PaginationSortingUtils.SortOrder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.utils.pagination_sorting.PaginationSortingUtils.SortOrder" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(disponible dans Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
-<p>Generic enumeration.</p>
-<p>Derive from this class to define new enumerations.</p>
+<p>Create a collection of name/value pairs.</p>
+<p>Example enumeration:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">Color</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">RED</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">... </span>    <span class="n">BLUE</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">... </span>    <span class="n">GREEN</span> <span class="o">=</span> <span class="mi">3</span>
+</pre></div>
+</div>
+<p>Access them by:</p>
+<ul class="simple">
+<li><p>attribute access:</p></li>
+</ul>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span>
+<span class="go">&lt;Color.RED: 1&gt;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>value lookup:</p></li>
+</ul>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">&lt;Color.RED: 1&gt;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>name lookup:</p></li>
+</ul>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="p">[</span><span class="s1">&#39;RED&#39;</span><span class="p">]</span>
+<span class="go">&lt;Color.RED: 1&gt;</span>
+</pre></div>
+</div>
+<p>Enumerations can be iterated over, and know how many members they have:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">Color</span><span class="p">)</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">Color</span><span class="p">)</span>
+<span class="go">[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]</span>
+</pre></div>
+</div>
+<p>Methods can be added to enumerations, and members can have their own
+attributes – see the documentation for details.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_synthese.utils.pagination_sorting.PaginationSortingUtils.SortOrder.ASC">
 <span class="sig-name descname"><span class="pre">ASC</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'asc'</span></em><a class="reference internal" href="../../../../../../_modules/geonature/core/gn_synthese/utils/pagination_sorting.html#PaginationSortingUtils.SortOrder.ASC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_synthese.utils.pagination_sorting.PaginationSortingUtils.SortOrder.ASC" title="Lien vers cette définition">¶</a></dt>
@@ -579,10 +618,10 @@
       
     </aside>
   </div>
-</div><script src="../../../../../../_static/documentation_options.js?v=c53d93e3"></script>
-    <script src="../../../../../../_static/doctools.js?v=9a2dae69"></script>
+</div><script src="../../../../../../_static/documentation_options.js?v=f2c51989"></script>
+    <script src="../../../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../../_static/scripts/furo.js?v=46bd48cc"></script>
-    <script src="../../../../../../_static/translations.js?v=041d0952"></script>
+    <script src="../../../../../../_static/translations.js?v=e6b791cb"></script>
     </body>
 </html>

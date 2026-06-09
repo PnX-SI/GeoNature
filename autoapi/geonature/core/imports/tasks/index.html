@@ -6,11 +6,11 @@
 <link rel="index" title="Index" href="../../../../../genindex.html"><link rel="search" title="Recherche" href="../../../../../search.html"><link rel="next" title="geonature.core.imports.templates" href="../templates/index.html"><link rel="prev" title="geonature.core.imports.schemas" href="../schemas/index.html">
         <link rel="prefetch" href="../../../../../_static/LogoGeonature.jpg" as="image">
 
-    <!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 -->
-        <title>geonature.core.imports.tasks - Documentation GeoNature 2.17.1</title>
+    <!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>geonature.core.imports.tasks - Documentation GeoNature 2.17.2</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=7bdb33bb" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
     
     
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">Documentation GeoNature 2.17.1</div></a>
+      <a href="../../../../../index.html"><div class="brand">Documentation GeoNature 2.17.2</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -187,7 +187,7 @@
     <img class="sidebar-logo" src="../../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.17.1</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.17.2</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -471,7 +471,10 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.imports.tasks.do_import_in_destination" title="geonature.core.imports.tasks.do_import_in_destination"><code class="xref py py-obj docutils literal notranslate"><span class="pre">do_import_in_destination</span></code></a>(self, import_id)</p></td>
 <td><p>Insert valid transient data into the destination of an import.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.imports.tasks.notify_import_done" title="geonature.core.imports.tasks.notify_import_done"><code class="xref py py-obj docutils literal notranslate"><span class="pre">notify_import_done</span></code></a>(imprt)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.imports.tasks._fill_cor_dataset_import" title="geonature.core.imports.tasks._fill_cor_dataset_import"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_fill_cor_dataset_import</span></code></a>(→ None)</p></td>
+<td><p>Fills the correlation dataset for a specific import and its associated transient table.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.imports.tasks.notify_import_done" title="geonature.core.imports.tasks.notify_import_done"><code class="xref py py-obj docutils literal notranslate"><span class="pre">notify_import_done</span></code></a>(imprt)</p></td>
 <td><p>Notify the authors of an import that it has finished.</p></td>
 </tr>
 </tbody>
@@ -512,11 +515,26 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.imports.tasks._fill_cor_dataset_import">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.imports.tasks.</span></span><span class="sig-name descname"><span class="pre">_fill_cor_dataset_import</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imprt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../models/index.html#geonature.core.imports.models.TImports" title="geonature.core.imports.models.TImports"><span class="pre">geonature.core.imports.models.TImports</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">transient_table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sqlalchemy.sql.schema.Table</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/tasks.html#_fill_cor_dataset_import"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.tasks._fill_cor_dataset_import" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Fills the correlation dataset for a specific import and its associated transient table.</p>
+<section id="id2">
+<h3>Parameters<a class="headerlink" href="#id2" title="Lien vers cette rubrique">¶</a></h3>
+<dl class="simple">
+<dt>imprt<span class="classifier">Import</span></dt><dd><p>The import object containing the ID and destination data needed for dataset correlation.</p>
+</dd>
+<dt>transient_table<span class="classifier">sqlalchemy.sql.schema.Table</span></dt><dd><p>The transient table linked to the import, used to fetch dataset IDs.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="geonature.core.imports.tasks.notify_import_done">
 <span class="sig-prename descclassname"><span class="pre">geonature.core.imports.tasks.</span></span><span class="sig-name descname"><span class="pre">notify_import_done</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imprt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../models/index.html#geonature.core.imports.models.TImports" title="geonature.core.imports.models.TImports"><span class="pre">geonature.core.imports.models.TImports</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/tasks.html#notify_import_done"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.tasks.notify_import_done" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Notify the authors of an import that it has finished.</p>
-<section id="id2">
-<h3>Parameters<a class="headerlink" href="#id2" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id3">
+<h3>Parameters<a class="headerlink" href="#id3" title="Lien vers cette rubrique">¶</a></h3>
 <dl class="simple">
 <dt>imprt<span class="classifier">TImports</span></dt><dd><p>The import that has finished.</p>
 </dd>
@@ -589,6 +607,7 @@
 <li><a class="reference internal" href="#geonature.core.imports.tasks.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
 <li><a class="reference internal" href="#geonature.core.imports.tasks.do_import_checks"><code class="docutils literal notranslate"><span class="pre">do_import_checks()</span></code></a></li>
 <li><a class="reference internal" href="#geonature.core.imports.tasks.do_import_in_destination"><code class="docutils literal notranslate"><span class="pre">do_import_in_destination()</span></code></a></li>
+<li><a class="reference internal" href="#geonature.core.imports.tasks._fill_cor_dataset_import"><code class="docutils literal notranslate"><span class="pre">_fill_cor_dataset_import()</span></code></a></li>
 <li><a class="reference internal" href="#geonature.core.imports.tasks.notify_import_done"><code class="docutils literal notranslate"><span class="pre">notify_import_done()</span></code></a></li>
 </ul>
 </li>
@@ -603,10 +622,10 @@
       
     </aside>
   </div>
-</div><script src="../../../../../_static/documentation_options.js?v=c53d93e3"></script>
-    <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
+</div><script src="../../../../../_static/documentation_options.js?v=f2c51989"></script>
+    <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/scripts/furo.js?v=46bd48cc"></script>
-    <script src="../../../../../_static/translations.js?v=041d0952"></script>
+    <script src="../../../../../_static/translations.js?v=e6b791cb"></script>
     </body>
 </html>

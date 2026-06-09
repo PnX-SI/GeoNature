@@ -6,11 +6,11 @@
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Recherche" href="search.html"><link rel="next" title="Manuel administrateur" href="admin-manual.html"><link rel="prev" title="Installation" href="installation.html">
         <link rel="prefetch" href="_static/LogoGeonature.jpg" as="image">
 
-    <!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 -->
-        <title>Manuel utilisateur - Documentation GeoNature 2.17.1</title>
+    <!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>Manuel utilisateur - Documentation GeoNature 2.17.2</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
-    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
     
     
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation GeoNature 2.17.1</div></a>
+      <a href="index.html"><div class="brand">Documentation GeoNature 2.17.2</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -187,7 +187,7 @@
     <img class="sidebar-logo" src="_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.17.1</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.17.2</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -542,6 +542,20 @@ Ainsi les acteurs associés à chaque jeu de données permettront de définir le
 <p>De la même manière, GeoNature permet d’associer un jeu de données à une liste de taxons. Cette association n’est pas obligatoire (par défaut, c’est la liste du module de saisie ou tout Taxref qui seront disponibles).</p>
 <p>Cela permet notamment de réduire le nombre de taxons proposés à la saisie dans des jeux de données dédiés à un groupe d’espèces restreint (protocoles, suivis etc).</p>
 <p>Cette association se fait depuis le formulaire de création/d’édition du jeu de données.</p>
+<p><strong>Désactiver un jeu de données</strong></p>
+<p>Il est possible de désactiver un jeu de données en décochant la case « Actif à la saisie » dans le formulaire d’édition du jeu de données. Un jeu de données désactivé n’apparaîtra plus lors de la saisie et l’import de données.
+Les données d’un jeu de données inactif restent consultables et modifiables ; seule la création de nouvelles données dans ce jeu de données n’est plus proposée aux utilisateurs.</p>
+<p><strong>Fermer un cadre d’acquisition</strong></p>
+<p>GeoNature permet de fermer un cadre d’acquisition afin de rendre ses données non modifiables. La fermeture d’un cadre d’acquisition entraîne les conséquences suivantes :</p>
+<ul class="simple">
+<li><p>Tous les jeux de données associés au cadre d’acquisition sont automatiquement désactivés</p></li>
+<li><p>Il n’est plus possible de créer, modifier ou supprimer des données rattachées au cadre d’acquisition</p></li>
+<li><p>Les jeux de données associés ne peuvent pas être réactivés tant que le cadre reste fermé</p></li>
+</ul>
+<p>La fermeture d’un cadre d’acquisition s’effectue depuis la page d’accueil du module Métadonnées. Dans l’image ci-dessous,
+le verrou ouvert permet d’ouvrir un CA fermé, tandis que celui fermé permet de fermer un CA ouvert.</p>
+<img alt="_images/close_or_open_af.png" src="_images/close_or_open_af.png" />
+<p>Selon la configuration de l’instance (voir paramètre <cite>AF_OPENABLE</cite>), il est possible de ré-ouvrir un cadre d’acquisition fermé. La réouverture permet de débloquer la modification des données, mais ne réactive pas automatiquement les jeux de données : ceux-ci doivent être réactivés manuellement si nécessaire.</p>
 </section>
 </section>
 <section id="occtax">
@@ -1143,10 +1157,10 @@ Il est aussi possible d’exporter une version PDF de ce rapport.</p>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=c53d93e3"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
+</div><script src="_static/documentation_options.js?v=f2c51989"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>
-    <script src="_static/translations.js?v=041d0952"></script>
+    <script src="_static/translations.js?v=e6b791cb"></script>
     </body>
 </html>

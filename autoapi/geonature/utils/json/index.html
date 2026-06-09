@@ -6,11 +6,11 @@
 <link rel="index" title="Index" href="../../../../genindex.html"><link rel="search" title="Recherche" href="../../../../search.html"><link rel="next" title="geonature.utils.logs" href="../logs/index.html"><link rel="prev" title="geonature.utils.filemanager" href="../filemanager/index.html">
         <link rel="prefetch" href="../../../../_static/LogoGeonature.jpg" as="image">
 
-    <!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 -->
-        <title>geonature.utils.json - Documentation GeoNature 2.17.1</title>
+    <!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>geonature.utils.json - Documentation GeoNature 2.17.2</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
     
     
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">Documentation GeoNature 2.17.1</div></a>
+      <a href="../../../../index.html"><div class="brand">Documentation GeoNature 2.17.2</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -187,7 +187,7 @@
     <img class="sidebar-logo" src="../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.17.1</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.17.2</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -454,7 +454,7 @@
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#geonature.utils.json.MyJSONProvider" title="geonature.utils.json.MyJSONProvider"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MyJSONProvider</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Provide JSON operations using Python's built-in <a class="reference external" href="https://docs.python.org/3/library/json.html#module-json" title="(disponible dans Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">json</span></code></a></p></td>
 </tr>
 </tbody>
 </table>
@@ -496,12 +496,27 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="geonature.utils.json.MyJSONProvider">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.utils.json.</span></span><span class="sig-name descname"><span class="pre">MyJSONProvider</span></span><a class="reference internal" href="../../../../_modules/geonature/utils/json.html#MyJSONProvider"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.utils.json.MyJSONProvider" title="Lien vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.utils.json.</span></span><span class="sig-name descname"><span class="pre">MyJSONProvider</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flask.sansio.app.App</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/geonature/utils/json.html#MyJSONProvider"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.utils.json.MyJSONProvider" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask.json.provider.DefaultJSONProvider</span></code></p>
+<p>Provide JSON operations using Python’s built-in <a class="reference external" href="https://docs.python.org/3/library/json.html#module-json" title="(disponible dans Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">json</span></code></a>
+library. Serializes the following additional data types:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(disponible dans Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime.datetime</span></code></a> and <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(disponible dans Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime.date</span></code></a> are
+serialized to <span class="target" id="index-0"></span><a class="rfc reference external" href="https://datatracker.ietf.org/doc/html/rfc822.html"><strong>RFC 822</strong></a> strings. This is the same as the HTTP
+date format.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(disponible dans Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">uuid.UUID</span></code></a> is serialized to a string.</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dataclasses.dataclass</span></code> is passed to
+<a class="reference external" href="https://docs.python.org/3/library/dataclasses.html#dataclasses.asdict" title="(disponible dans Python v3.14)"><code class="xref py py-func docutils literal notranslate"><span class="pre">dataclasses.asdict()</span></code></a>.</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Markup</span></code> (or any object with a <code class="docutils literal notranslate"><span class="pre">__html__</span></code>
+method) will call the <code class="docutils literal notranslate"><span class="pre">__html__</span></code> method to get a string.</p></li>
+</ul>
 <dl class="py method">
 <dt class="sig sig-object py" id="geonature.utils.json.MyJSONProvider.default">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">o</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/geonature/utils/json.html#MyJSONProvider.default"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.utils.json.MyJSONProvider.default" title="Lien vers cette définition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Apply this function to any object that <code class="xref py py-meth docutils literal notranslate"><span class="pre">json.dumps()</span></code> does
+not know how to serialize. It should return a valid JSON type or
+raise a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code>.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -585,10 +600,10 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=c53d93e3"></script>
-    <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+</div><script src="../../../../_static/documentation_options.js?v=f2c51989"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>
-    <script src="../../../../_static/translations.js?v=041d0952"></script>
+    <script src="../../../../_static/translations.js?v=e6b791cb"></script>
     </body>
 </html>

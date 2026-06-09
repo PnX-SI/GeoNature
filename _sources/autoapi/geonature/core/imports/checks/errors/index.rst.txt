@@ -156,6 +156,11 @@ Module Contents
 
 
 
+   .. py:attribute:: CLOSED_ACQUISITION_FRAMEWORK
+      :value: 'CLOSED_ACQUISITION_FRAMEWORK'
+
+
+
    .. py:attribute:: MULTIPLE_ATTACHMENT_TYPE_CODE
       :value: 'MULTIPLE_ATTACHMENT_TYPE_CODE'
 
@@ -163,6 +168,11 @@ Module Contents
 
    .. py:attribute:: MULTIPLE_CODE_ATTACHMENT
       :value: 'MULTIPLE_CODE_ATTACHMENT'
+
+
+
+   .. py:attribute:: MULTIPLE_GEO_INFO_WARNING
+      :value: 'MULTIPLE_GEO_INFO_WARNING'
 
 
 

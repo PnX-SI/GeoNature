@@ -6,11 +6,11 @@
 <link rel="index" title="Index" href="../../../../../genindex.html"><link rel="search" title="Recherche" href="../../../../../search.html"><link rel="next" title="geonature.core.gn_meta.schemas" href="../schemas/index.html"><link rel="prev" title="geonature.core.gn_meta.repositories" href="../repositories/index.html">
         <link rel="prefetch" href="../../../../../_static/LogoGeonature.jpg" as="image">
 
-    <!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 -->
-        <title>geonature.core.gn_meta.routes - Documentation GeoNature 2.17.1</title>
+    <!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>geonature.core.gn_meta.routes - Documentation GeoNature 2.17.2</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=7bdb33bb" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
     
     
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">Documentation GeoNature 2.17.1</div></a>
+      <a href="../../../../../index.html"><div class="brand">Documentation GeoNature 2.17.2</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -187,7 +187,7 @@
     <img class="sidebar-logo" src="../../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.17.1</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.17.2</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -532,8 +532,11 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.call_extended_af_publish" title="geonature.core.gn_meta.routes.call_extended_af_publish"><code class="xref py py-obj docutils literal notranslate"><span class="pre">call_extended_af_publish</span></code></a>(af_id)</p></td>
 <td><p>If a route with the name extended_publish, we call it.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.publish_acquisition_framework" title="geonature.core.gn_meta.routes.publish_acquisition_framework"><code class="xref py py-obj docutils literal notranslate"><span class="pre">publish_acquisition_framework</span></code></a>(af_id)</p></td>
-<td><p>Publish an acquisition framework</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.open_acquisition_framework" title="geonature.core.gn_meta.routes.open_acquisition_framework"><code class="xref py py-obj docutils literal notranslate"><span class="pre">open_acquisition_framework</span></code></a>(af_id)</p></td>
+<td><p>Open an acquisition framework</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_meta.routes.close_acquisition_framework" title="geonature.core.gn_meta.routes.close_acquisition_framework"><code class="xref py py-obj docutils literal notranslate"><span class="pre">close_acquisition_framework</span></code></a>(af_id)</p></td>
+<td><p>close an acquisition framework</p></td>
 </tr>
 </tbody>
 </table>
@@ -727,9 +730,15 @@ Get the GeoNature CRUVED</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.publish_acquisition_framework">
-<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">publish_acquisition_framework</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">af_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#publish_acquisition_framework"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.publish_acquisition_framework" title="Lien vers cette définition">¶</a></dt>
-<dd><p>Publish an acquisition framework
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.open_acquisition_framework">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">open_acquisition_framework</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">af_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#open_acquisition_framework"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.open_acquisition_framework" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Open an acquisition framework</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="geonature.core.gn_meta.routes.close_acquisition_framework">
+<span class="sig-prename descclassname"><span class="pre">geonature.core.gn_meta.routes.</span></span><span class="sig-name descname"><span class="pre">close_acquisition_framework</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">af_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_meta/routes.html#close_acquisition_framework"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_meta.routes.close_acquisition_framework" title="Lien vers cette définition">¶</a></dt>
+<dd><p>close an acquisition framework
 .. :quickref: Metadata;</p>
 </dd></dl>
 
@@ -818,7 +827,8 @@ Get the GeoNature CRUVED</p>
 <li><a class="reference internal" href="#geonature.core.gn_meta.routes.get_acquisition_framework_stats_route"><code class="docutils literal notranslate"><span class="pre">get_acquisition_framework_stats_route()</span></code></a></li>
 <li><a class="reference internal" href="#geonature.core.gn_meta.routes.get_acquisition_framework_bbox"><code class="docutils literal notranslate"><span class="pre">get_acquisition_framework_bbox()</span></code></a></li>
 <li><a class="reference internal" href="#geonature.core.gn_meta.routes.call_extended_af_publish"><code class="docutils literal notranslate"><span class="pre">call_extended_af_publish()</span></code></a></li>
-<li><a class="reference internal" href="#geonature.core.gn_meta.routes.publish_acquisition_framework"><code class="docutils literal notranslate"><span class="pre">publish_acquisition_framework()</span></code></a></li>
+<li><a class="reference internal" href="#geonature.core.gn_meta.routes.open_acquisition_framework"><code class="docutils literal notranslate"><span class="pre">open_acquisition_framework()</span></code></a></li>
+<li><a class="reference internal" href="#geonature.core.gn_meta.routes.close_acquisition_framework"><code class="docutils literal notranslate"><span class="pre">close_acquisition_framework()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -832,10 +842,10 @@ Get the GeoNature CRUVED</p>
       
     </aside>
   </div>
-</div><script src="../../../../../_static/documentation_options.js?v=c53d93e3"></script>
-    <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
+</div><script src="../../../../../_static/documentation_options.js?v=f2c51989"></script>
+    <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/scripts/furo.js?v=46bd48cc"></script>
-    <script src="../../../../../_static/translations.js?v=041d0952"></script>
+    <script src="../../../../../_static/translations.js?v=e6b791cb"></script>
     </body>
 </html>

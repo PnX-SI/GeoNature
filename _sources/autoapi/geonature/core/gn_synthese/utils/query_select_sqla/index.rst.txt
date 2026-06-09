@@ -95,8 +95,6 @@ Module Contents
 
 
    .. py:attribute:: geom_column
-      :value: None
-
 
 
    .. py:attribute:: srid

@@ -19,6 +19,7 @@ Functions
 
    geonature.core.imports.tasks.do_import_checks
    geonature.core.imports.tasks.do_import_in_destination
+   geonature.core.imports.tasks._fill_cor_dataset_import
    geonature.core.imports.tasks.notify_import_done
 
 
@@ -45,6 +46,19 @@ Module Contents
    ----------
    import_id : int
        The ID of the import to insert data into the destination.
+
+
+.. py:function:: _fill_cor_dataset_import(imprt: geonature.core.imports.models.TImports, transient_table: sqlalchemy.sql.schema.Table) -> None
+
+   Fills the correlation dataset for a specific import and its associated transient table.
+
+   Parameters
+   ----------
+   imprt : Import
+       The import object containing the ID and destination data needed for dataset correlation.
+   transient_table : sqlalchemy.sql.schema.Table
+       The transient table linked to the import, used to fetch dataset IDs.
+
 
 
 .. py:function:: notify_import_done(imprt: geonature.core.imports.models.TImports)

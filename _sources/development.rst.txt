@@ -269,6 +269,34 @@ La commande ``geonature`` fournit la sous-commande ``dev-back`` pour lancer un s
 
 L’API est alors accessible à l’adresse http://127.0.0.1:8000.
 
+Arborescence de fichiers
+************************
+
+Présentation rapide de l'arborescence des fichiers depuis la racine du backend `$HOME/geonature/backend`
+
+```
+/dependencies -- sous-modules (Git) des dépendances de GeoNature (UsersHub, Taxhub, RefGeo, etc..)
+/geonature
+    /core -- code du coeur de GeoNature, regroupe les différents modèles dont les noms sont proches des schémas de la BDD
+        /admin --  *Back office* de GeoNature (utilise *Flask-admin*)
+        /command -- Commandes accessibles depuis ``geonature *``
+        /gn_* -- Différents modules principaux
+        /imports -- Module Import
+        /health -- Route permettant vérifier le status de l'instance GeoNature
+        /notifications -- Notifications
+        /sensitivity -- Gestion de la sensibilité des données
+        /taxonomie -- Intégration de Taxhub dans le *back office* 
+        /users -- Gestion des utilisateurs
+    /middleware -- Custom Flask middleware 
+    /migrations -- Ensemble des révisions alembic permettant la mise à jour de la BDD de GeoNature
+    /tasks -- Tâches asynchrones gérées par Celery
+    /templates -- Templates pour surcoucher l'interface d'administration de Flask-Admin
+    /tests -- Tests unitaires du backend
+    /utils -- Différentes fonctions utilitaires (chargement de la configuration, initialisation de la connexion avec la BDD, etc.)
+    app.py -- Création de l'``app`` flask de GeoNature
+    requirements-*.txt -- Liste des dépendances Python de GeoNature
+    Dockerfile -- fichier de création de l'image Docker du backend
+```
 
 Base de données avec Flask-SQLAlchemy
 *************************************
@@ -435,7 +463,7 @@ Le convertisseur de modèle ``NomenclaturesConverter`` permet d’automatiquemen
 
     class MyModel(db.Model):
         id_nomenclature_foo = db.Column(db.Integer, ForeignKey(Nomenclature.id_nomenclature))
-        nomenclature_foo = relationships(Nomenclature, foreign_keys=[id_nomenclature_foo])
+        nomenclature_foo = relationship(Nomenclature, foreign_keys=[id_nomenclature_foo])
 
     class MyModelSchema(ma.SQLAlchemyAutoSchema):
         class Meta:
@@ -444,7 +472,6 @@ Le convertisseur de modèle ``NomenclaturesConverter`` permet d’automatiquemen
             model_converter = NomenclaturesConverter
 
         # automatically added: nomenclature_foo = ma.Nested(NomenclatureSchema)
-
 
 Le mixin ``NomenclaturesMixin`` permet de définir une propriété ``__nomenclatures__`` sur un modèle contenant
 la liste des champs à nomenclature.

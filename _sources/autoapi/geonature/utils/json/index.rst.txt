@@ -38,13 +38,31 @@ Module Contents
            return jsonify(pagination)
 
 
-.. py:class:: MyJSONProvider
+.. py:class:: MyJSONProvider(app: flask.sansio.app.App)
 
    Bases: :py:obj:`flask.json.provider.DefaultJSONProvider`
 
 
+   Provide JSON operations using Python's built-in :mod:`json`
+   library. Serializes the following additional data types:
+
+   -   :class:`datetime.datetime` and :class:`datetime.date` are
+       serialized to :rfc:`822` strings. This is the same as the HTTP
+       date format.
+   -   :class:`uuid.UUID` is serialized to a string.
+   -   :class:`dataclasses.dataclass` is passed to
+       :func:`dataclasses.asdict`.
+   -   :class:`~markupsafe.Markup` (or any object with a ``__html__``
+       method) will call the ``__html__`` method to get a string.
+
+
    .. py:method:: default(o)
       :staticmethod:
+
+
+      Apply this function to any object that :meth:`json.dumps` does
+      not know how to serialize. It should return a valid JSON type or
+      raise a ``TypeError``.
 
 
 

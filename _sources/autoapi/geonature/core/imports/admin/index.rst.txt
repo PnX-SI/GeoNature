@@ -26,9 +26,17 @@ Functions
 Module Contents
 ---------------
 
-.. py:class:: MappingView
+.. py:class:: MappingView(model: type[flask_admin._types.T_SQLALCHEMY_MODEL], session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, name: str | None = None, category: str | None = None, endpoint: str | None = None, url: str | None = None, static_folder: str | None = None, menu_class_name: str | None = None, menu_icon_type: str | None = None, menu_icon_value: str | None = None)
 
    Bases: :py:obj:`geonature.core.admin.admin.CruvedProtectedMixin`, :py:obj:`flask_admin.contrib.sqla.ModelView`
+
+
+   SQLAlchemy model view
+
+   Usage sample::
+
+       admin = Admin()
+       admin.add_view(ModelView(User, db.session))
 
 
    .. py:attribute:: module_code
@@ -45,9 +53,31 @@ Module Contents
       :value: True
 
 
+      Setting this to true will enable the details view. This is recommended
+      when there are too many columns to display in the list_view.
+
+
 
    .. py:attribute:: column_list
       :value: ('label', 'active', 'public', 'destination')
+
+
+      Collection of the model field names for the list view.
+      If set to `None`, will get them from the model.
+
+      For example::
+
+          class MyModelView(BaseModelView):
+              column_list = ('name', 'last_name', 'email')
+
+      (Added in 1.4.0) SQLAlchemy model attributes can be used instead of strings::
+
+          class MyModelView(BaseModelView):
+              column_list = ('name', User.last_name)
+
+      When using SQLAlchemy models, you can reference related columns like this::
+          class MyModelView(BaseModelView):
+              column_list = ('<relationship>.<related column name>',)
 
 
 
@@ -55,9 +85,81 @@ Module Contents
       :value: ('label',)
 
 
+      Collection of the searchable columns.
+
+      Example::
+
+          class MyModelView(ModelView):
+              column_searchable_list = ('name', 'email')
+
+      You can also pass columns::
+
+          class MyModelView(ModelView):
+              column_searchable_list = (User.name, User.email)
+
+      The following search rules apply:
+
+      - If you enter ``ZZZ`` in the UI search field, it will generate
+        ``ILIKE '%ZZZ%'`` statement against searchable columns.
+
+      - If you enter multiple words, each word will be searched separately, but
+        only rows that contain all words will be displayed. For example, searching
+        for ``abc def`` will find all rows that contain ``abc`` and ``def`` in one or
+        more columns.
+
+      - If you prefix your search term with ``^``, it will find all rows
+        that start with ``^``. So, if you entered ``^ZZZ`` then ``ILIKE 'ZZZ%'`` will
+        be used.
+
+      - If you prefix your search term with ``=``, it will perform an exact match.
+        For example, if you entered ``=ZZZ``, the statement ``ILIKE 'ZZZ'`` will be
+        used.
+
+
 
    .. py:attribute:: column_filters
       :value: ('active', 'public')
+
+
+      Collection of the column filters.
+
+      Can contain either field names or instances of
+      :class:`flask_admin.contrib.sqla.filters.BaseSQLAFilter` classes.
+
+      Filters will be grouped by name when displayed in the drop-down.
+
+      For example::
+
+          class MyModelView(BaseModelView):
+              column_filters = ('user', 'email')
+
+      or::
+
+          from flask_admin.contrib.sqla.filters import BooleanEqualFilter
+
+          class MyModelView(BaseModelView):
+              column_filters = (BooleanEqualFilter(column=User.name, name='Name'),)
+
+      or::
+
+          from flask_admin.contrib.sqla.filters import BaseSQLAFilter
+
+          class FilterLastNameBrown(BaseSQLAFilter):
+              def apply(self, query, value, alias=None):
+                  if value == '1':
+                      return query.filter(self.column == "Brown")
+                  else:
+                      return query.filter(self.column != "Brown")
+
+              def operation(self):
+                  return 'is Brown'
+
+          class MyModelView(BaseModelView):
+              column_filters = [
+                  FilterLastNameBrown(
+                      User.last_name, 'Last Name', options=(('1', 'Yes'), ('0', 'No'))
+                  )
+              ]
 
 
 
@@ -65,20 +167,84 @@ Module Contents
       :value: ('label', 'active', 'public', 'owners', 'values', 'destination')
 
 
+      Collection of the model field names for the form. If set to `None` will
+      get them from the model.
+
+      Example::
+
+          class MyModelView(BaseModelView):
+              form_columns = ('name', 'email')
+
+      (Added in 1.4.0) SQLAlchemy model attributes can be used instead of
+      strings::
+
+          class MyModelView(BaseModelView):
+              form_columns = ('name', User.last_name)
+
+      SQLA Note: Model attributes must be on the same model as your ModelView
+      or you will need to use `inline_models`.
+
+
 
    .. py:attribute:: column_details_list
       :value: ('label', 'active', 'public', 'owners', 'values', 'destination')
 
 
+      Collection of the field names included in the details view.
+      If set to `None`, will get them from the model.
+
+
 
    .. py:attribute:: column_labels
+
+      Dictionary where key is column name and value is string to display.
+
+      For example::
+
+          class MyModelView(BaseModelView):
+              column_labels = dict(name='Name', last_name='Last Name')
+
 
 
    .. py:attribute:: column_formatters
 
+      Dictionary of list view column formatters.
+
+      For example, if you want to show price multiplied by
+      two, you can do something like this::
+
+          class MyModelView(BaseModelView):
+              column_formatters = dict(price=lambda v, c, m, p: m.price*2)
+
+      or using Jinja2 `macro` in template::
+
+          from flask_admin.model.template import macro
+
+          class MyModelView(BaseModelView):
+              column_formatters = dict(price=macro('render_price'))
+
+          # in template
+          {% macro render_price(model, column) %}
+              {{ model.price * 2 }}
+          {% endmacro %}
+
+      The Callback function has the prototype::
+
+          def formatter(view, context, model, name):
+              # `view` is current administrative view
+              # `context` is instance of jinja2.runtime.Context
+              # `model` is model instance
+              # `name` is property name
+              pass
+
+
 
    .. py:attribute:: column_export_list
       :value: ('label', 'values')
+
+
+      Collection of the field names included in the export.
+      If set to `None`, will get them from the model.
 
 
 
@@ -86,12 +252,32 @@ Module Contents
 
 .. py:function:: ContentMappingValuesValidator(form, field)
 
-.. py:class:: FieldMappingView
+.. py:class:: FieldMappingView(model: type[flask_admin._types.T_SQLALCHEMY_MODEL], session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, name: str | None = None, category: str | None = None, endpoint: str | None = None, url: str | None = None, static_folder: str | None = None, menu_class_name: str | None = None, menu_icon_type: str | None = None, menu_icon_value: str | None = None)
 
    Bases: :py:obj:`MappingView`
 
 
+   SQLAlchemy model view
+
+   Usage sample::
+
+       admin = Admin()
+       admin.add_view(ModelView(User, db.session))
+
+
    .. py:attribute:: form_args
+
+      Dictionary of form field arguments. Refer to WTForms documentation for
+      list of possible options.
+
+      Example::
+
+          from wtforms.validators import DataRequired
+          class MyModelView(BaseModelView):
+              form_args = dict(
+                  name=dict(label='First Name', validators=[DataRequired()])
+              )
+
 
 
    .. py:attribute:: colmun_labels
@@ -99,18 +285,56 @@ Module Contents
 
    .. py:attribute:: column_formatters_detail
 
+      Dictionary of list view column formatters to be used for the detail view.
 
-.. py:class:: ContentMappingView
+      Defaults to column_formatters when set to None.
+
+      Functions the same way as column_formatters except
+      that macros are not supported.
+      that macros are not supported.
+
+
+
+.. py:class:: ContentMappingView(model: type[flask_admin._types.T_SQLALCHEMY_MODEL], session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, name: str | None = None, category: str | None = None, endpoint: str | None = None, url: str | None = None, static_folder: str | None = None, menu_class_name: str | None = None, menu_icon_type: str | None = None, menu_icon_value: str | None = None)
 
    Bases: :py:obj:`MappingView`
 
 
+   SQLAlchemy model view
+
+   Usage sample::
+
+       admin = Admin()
+       admin.add_view(ModelView(User, db.session))
+
+
    .. py:attribute:: form_args
+
+      Dictionary of form field arguments. Refer to WTForms documentation for
+      list of possible options.
+
+      Example::
+
+          from wtforms.validators import DataRequired
+          class MyModelView(BaseModelView):
+              form_args = dict(
+                  name=dict(label='First Name', validators=[DataRequired()])
+              )
+
 
 
    .. py:attribute:: colmun_labels
 
 
    .. py:attribute:: column_formatters_detail
+
+      Dictionary of list view column formatters to be used for the detail view.
+
+      Defaults to column_formatters when set to None.
+
+      Functions the same way as column_formatters except
+      that macros are not supported.
+      that macros are not supported.
+
 
 

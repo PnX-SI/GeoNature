@@ -5,11 +5,11 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html"><link rel="search" title="Recherche" href="../../../../search.html">
         <link rel="prefetch" href="../../../../_static/LogoGeonature.jpg" as="image">
 
-    <!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 -->
-        <title>geonature.core.gn_meta.routes - Documentation GeoNature 2.17.1</title>
+    <!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>geonature.core.gn_meta.routes - Documentation GeoNature 2.17.2</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
     
     
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">Documentation GeoNature 2.17.1</div></a>
+      <a href="../../../../index.html"><div class="brand">Documentation GeoNature 2.17.2</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -186,7 +186,7 @@
     <img class="sidebar-logo" src="../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.17.1</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.17.2</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -454,7 +454,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">select</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.sql.functions</span><span class="w"> </span><span class="kn">import</span> <span class="n">func</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Load</span><span class="p">,</span> <span class="n">joinedload</span><span class="p">,</span> <span class="n">undefer</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">werkzeug.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Conflict</span><span class="p">,</span> <span class="n">BadRequest</span><span class="p">,</span> <span class="n">Forbidden</span><span class="p">,</span> <span class="n">InternalServerError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">werkzeug.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Conflict</span><span class="p">,</span> <span class="n">BadRequest</span><span class="p">,</span> <span class="n">Forbidden</span><span class="p">,</span> <span class="n">InternalServerError</span><span class="p">,</span> <span class="n">NotFound</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">werkzeug.datastructures</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultiDict</span><span class="p">,</span> <span class="n">TypeConversionDict</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">marshmallow</span><span class="w"> </span><span class="kn">import</span> <span class="n">ValidationError</span><span class="p">,</span> <span class="n">EXCLUDE</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.exc</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntegrityError</span>
@@ -1387,14 +1387,34 @@
 
 
 
+<span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/acquisition_framework/open/&lt;int:af_id&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;U&quot;</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;METADATA&quot;</span><span class="p">)</span>
+<span class="nd">@json_resp</span>
+<div class="viewcode-block" id="open_acquisition_framework">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.open_acquisition_framework">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">open_acquisition_framework</span><span class="p">(</span><span class="n">af_id</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Open an acquisition framework</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;METADATA&quot;</span><span class="p">][</span><span class="s2">&quot;AF_OPENABLE&quot;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="n">GeoNatureError</span><span class="p">(</span><span class="s2">&quot;Acquisition Frameworks are not openable&quot;</span><span class="p">)</span>
+    <span class="n">af</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">TAcquisitionFramework</span><span class="p">,</span> <span class="n">af_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">af</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">NotFound</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Acquisition framework </span><span class="si">{</span><span class="n">af_id</span><span class="si">}</span><span class="s2"> not found&quot;</span><span class="p">)</span>
+    <span class="n">af</span><span class="o">.</span><span class="n">opened</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">af</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span></div>
+
+
+
 <span class="nd">@routes</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/acquisition_framework/publish/&lt;int:af_id&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
 <span class="nd">@permissions</span><span class="o">.</span><span class="n">check_cruved_scope</span><span class="p">(</span><span class="s2">&quot;U&quot;</span><span class="p">,</span> <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;METADATA&quot;</span><span class="p">)</span>
 <span class="nd">@json_resp</span>
-<div class="viewcode-block" id="publish_acquisition_framework">
-<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.publish_acquisition_framework">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">publish_acquisition_framework</span><span class="p">(</span><span class="n">af_id</span><span class="p">):</span>
+<div class="viewcode-block" id="close_acquisition_framework">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/gn_meta/routes/index.html#geonature.core.gn_meta.routes.close_acquisition_framework">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">close_acquisition_framework</span><span class="p">(</span><span class="n">af_id</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Publish an acquisition framework</span>
+<span class="sd">    close an acquisition framework</span>
 <span class="sd">    .. :quickref: Metadata;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1413,7 +1433,7 @@
         <span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">TAcquisitionFramework</span><span class="p">)</span>
         <span class="o">.</span><span class="n">where</span><span class="p">(</span>
             <span class="n">TAcquisitionFramework</span><span class="o">.</span><span class="n">id_acquisition_framework</span> <span class="o">==</span> <span class="n">af_id</span><span class="p">,</span>
-            <span class="n">TAcquisitionFramework</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">TDatasets</span><span class="o">.</span><span class="n">synthese_records</span><span class="o">.</span><span class="n">any</span><span class="p">()),</span>
+            <span class="n">TAcquisitionFramework</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">TDatasets</span><span class="o">.</span><span class="n">nb_observations</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">),</span>
         <span class="p">)</span>
     <span class="p">)</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span>
 
@@ -1475,10 +1495,10 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=c53d93e3"></script>
-    <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+</div><script src="../../../../_static/documentation_options.js?v=f2c51989"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>
-    <script src="../../../../_static/translations.js?v=041d0952"></script>
+    <script src="../../../../_static/translations.js?v=e6b791cb"></script>
     </body>
 </html>

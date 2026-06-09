@@ -23,6 +23,10 @@ Module Contents
    Check functions must yield errors, and return updated_cols
    (or None if no column have been modified).
 
+   The error level (ERROR or WARNING) is determined by the ImportUserErrorType.level column.
+   - If level == "ERROR": the row is marked as invalid
+   - If level == "WARNING": the error is reported but row remains valid
+
 
 .. py:function:: error_replace(old_code, old_columns, new_code, new_column=None)
 
@@ -64,7 +68,7 @@ Module Contents
    Returns
    -------
    set
-       set containing the name of the entity validity column.
+       set containing the name of the entity validity column (only if error level is "ERROR").
 
    Raises
    ------

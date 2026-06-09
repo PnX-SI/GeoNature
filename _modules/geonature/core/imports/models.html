@@ -5,11 +5,11 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html"><link rel="search" title="Recherche" href="../../../../search.html">
         <link rel="prefetch" href="../../../../_static/LogoGeonature.jpg" as="image">
 
-    <!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 -->
-        <title>geonature.core.imports.models - Documentation GeoNature 2.17.1</title>
+    <!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>geonature.core.imports.models - Documentation GeoNature 2.17.2</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
     
     
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">Documentation GeoNature 2.17.1</div></a>
+      <a href="../../../../index.html"><div class="brand">Documentation GeoNature 2.17.2</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -186,7 +186,7 @@
     <img class="sidebar-logo" src="../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.17.1</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.17.2</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -443,7 +443,7 @@
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">packaging</span><span class="w"> </span><span class="kn">import</span> <span class="n">version</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">flask</span><span class="w"> </span><span class="kn">import</span> <span class="n">g</span>
@@ -458,6 +458,8 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">jsonschema</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate</span> <span class="k">as</span> <span class="n">validate_json</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">celery.result</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncResult</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">flask_sqlalchemy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">werkzeug.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Conflict</span>
+
 
 <span class="k">if</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">flask_sqlalchemy</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;3&quot;</span><span class="p">):</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">flask_sqlalchemy.query</span><span class="w"> </span><span class="kn">import</span> <span class="n">Query</span>
@@ -473,6 +475,8 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">geonature.core.gn_commons.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">TModules</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pypnnomenclature.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">BibNomenclaturesTypes</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pypnusershub.db.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">User</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">select</span><span class="p">,</span> <span class="n">exists</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">geonature.core.gn_meta.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">TDatasets</span><span class="p">,</span> <span class="n">TAcquisitionFramework</span>
 
 
 <div class="viewcode-block" id="ImportModule">
@@ -1067,8 +1071,6 @@
         <span class="s2">&quot;destination.label&quot;</span><span class="p">,</span>
         <span class="s2">&quot;destination.statistics_labels&quot;</span><span class="p">,</span>
         <span class="s2">&quot;destination.module&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;errors.type&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;errors.entity&quot;</span><span class="p">,</span>
     <span class="p">]</span>
 <span class="p">)</span>
 <div class="viewcode-block" id="TImports">
@@ -1236,6 +1238,15 @@
         <span class="n">cascade</span><span class="o">=</span><span class="s2">&quot;all, delete-orphan&quot;</span><span class="p">,</span>
     <span class="p">)</span></div>
 
+<div class="viewcode-block" id="TImports.datasets">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.datasets">[docs]</a>
+    <span class="n">datasets</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span>
+        <span class="s2">&quot;CorImportDataset&quot;</span><span class="p">,</span>
+        <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;imprt&quot;</span><span class="p">,</span>
+        <span class="n">cascade</span><span class="o">=</span><span class="s2">&quot;all, delete-orphan&quot;</span><span class="p">,</span>
+        <span class="n">passive_deletes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
 
     <span class="nd">@property</span>
 <div class="viewcode-block" id="TImports.cruved">
@@ -1269,6 +1280,36 @@
             <span class="k">return</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="o">-</span><span class="mi">1</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="TImports.has_closed_af">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.has_closed_af">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_closed_af</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if one AF of the import has been closed.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalar</span><span class="p">(</span>
+            <span class="n">select</span><span class="p">(</span>
+                <span class="n">exists</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                    <span class="n">CorImportDataset</span><span class="o">.</span><span class="n">id_import</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_import</span><span class="p">,</span>
+                    <span class="n">CorImportDataset</span><span class="o">.</span><span class="n">id_dataset</span> <span class="o">==</span> <span class="n">TDatasets</span><span class="o">.</span><span class="n">id_dataset</span><span class="p">,</span>
+                    <span class="n">TDatasets</span><span class="o">.</span><span class="n">id_acquisition_framework</span>
+                    <span class="o">==</span> <span class="n">TAcquisitionFramework</span><span class="o">.</span><span class="n">id_acquisition_framework</span><span class="p">,</span>
+                    <span class="n">TAcquisitionFramework</span><span class="o">.</span><span class="n">opened</span><span class="o">.</span><span class="n">is_</span><span class="p">(</span><span class="kc">False</span><span class="p">),</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TImports.raise_on_closed_af">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.TImports.raise_on_closed_af">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">raise_on_closed_af</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_closed_af</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">Conflict</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;This import is linked to a closed acquisition framework.&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="TImports.has_instance_permission">
@@ -1333,6 +1374,48 @@
             <span class="k">if</span> <span class="n">extension</span> <span class="ow">in</span> <span class="n">TImports</span><span class="o">.</span><span class="n">AVAILABLE_FORMATS</span><span class="p">:</span>
                 <span class="n">import_as_dict</span><span class="p">[</span><span class="s2">&quot;detected_format&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">extension</span>
         <span class="k">return</span> <span class="n">import_as_dict</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CorImportDataset">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.CorImportDataset">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CorImportDataset</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="CorImportDataset.__tablename__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.CorImportDataset.__tablename__">[docs]</a>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;cor_import_datasets&quot;</span></div>
+
+<div class="viewcode-block" id="CorImportDataset.__table_args__">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.CorImportDataset.__table_args__">[docs]</a>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;gn_imports&quot;</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="CorImportDataset.id_import">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.CorImportDataset.id_import">[docs]</a>
+    <span class="n">id_import</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_imports.t_imports.id_import&quot;</span><span class="p">,</span> <span class="n">ondelete</span><span class="o">=</span><span class="s2">&quot;CASCADE&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorImportDataset.id_dataset">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.CorImportDataset.id_dataset">[docs]</a>
+    <span class="n">id_dataset</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;gn_meta.t_datasets.id_dataset&quot;</span><span class="p">,</span> <span class="n">ondelete</span><span class="o">=</span><span class="s2">&quot;CASCADE&quot;</span><span class="p">),</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CorImportDataset.imprt">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.CorImportDataset.imprt">[docs]</a>
+    <span class="n">imprt</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;TImports&quot;</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;datasets&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CorImportDataset.dataset">
+<a class="viewcode-back" href="../../../../autoapi/geonature/core/imports/models/index.html#geonature.core.imports.checks.sql.CorImportDataset.dataset">[docs]</a>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;TDatasets&quot;</span><span class="p">)</span></div>
 </div>
 
 
@@ -1956,10 +2039,10 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=c53d93e3"></script>
-    <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+</div><script src="../../../../_static/documentation_options.js?v=f2c51989"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>
-    <script src="../../../../_static/translations.js?v=041d0952"></script>
+    <script src="../../../../_static/translations.js?v=e6b791cb"></script>
     </body>
 </html>

@@ -55,8 +55,9 @@ Module Contents
 .. py:function:: check_geometry(df: pandas.DataFrame, file_srid: int, geom_4326_field: geonature.core.imports.models.BibFields, geom_local_field: geonature.core.imports.models.BibFields, wkt_field: geonature.core.imports.models.BibFields = None, latitude_field: geonature.core.imports.models.BibFields = None, longitude_field: geonature.core.imports.models.BibFields = None, codecommune_field: geonature.core.imports.models.BibFields = None, codemaille_field: geonature.core.imports.models.BibFields = None, codedepartement_field: geonature.core.imports.models.BibFields = None, id_area: int = None)
 
    What this check do:
-   - check there is at least a wkt, a x/y or a code defined for each row
-     (report NO-GEOM if there are not, or MULTIPLE_ATTACHMENT_TYPE_CODE if several are defined)
+   - check there is at least a wkt, a x/y or a code defined for each row. If multiple are defined, we use this priority:
+   `wkt > x/y> code`
+     (report NO-GEOM if there are not, or MULTIPLE_GEO_INFO_WARNING if several are defined)
    - set geom_local or geom_4326 or both (depending of file_srid) from wkt or x/y
      - check wkt validity
      - check x/y validity

@@ -6,11 +6,11 @@
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Recherche" href="search.html"><link rel="next" title="FAQ" href="FAQ.html"><link rel="prev" title="Manuel administrateur" href="admin-manual.html">
         <link rel="prefetch" href="_static/LogoGeonature.jpg" as="image">
 
-    <!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 -->
-        <title>Développement - Documentation GeoNature 2.17.1</title>
+    <!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>Développement - Documentation GeoNature 2.17.2</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
-    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
     
     
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation GeoNature 2.17.1</div></a>
+      <a href="index.html"><div class="brand">Documentation GeoNature 2.17.2</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -187,7 +187,7 @@
     <img class="sidebar-logo" src="_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.17.1</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.17.2</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -692,6 +692,37 @@ Pour utiliser l’extension vous devez l’installer et passer obligatoirement e
 </div>
 <p>L’API est alors accessible à l’adresse <a class="reference external" href="http://127.0.0.1:8000">http://127.0.0.1:8000</a>.</p>
 </section>
+<section id="arborescence-de-fichiers">
+<h3>Arborescence de fichiers<a class="headerlink" href="#arborescence-de-fichiers" title="Lien vers cette rubrique">¶</a></h3>
+<p>Présentation rapide de l’arborescence des fichiers depuis la racine du backend <cite>$HOME/geonature/backend</cite></p>
+<p><a href="#id3"><span class="problematic" id="id4">``</span></a>`
+/dependencies – sous-modules (Git) des dépendances de GeoNature (UsersHub, Taxhub, RefGeo, etc..)
+/geonature</p>
+<blockquote>
+<div><dl class="simple">
+<dt>/core – code du coeur de GeoNature, regroupe les différents modèles dont les noms sont proches des schémas de la BDD</dt><dd><p>/admin –  <em>Back office</em> de GeoNature (utilise <em>Flask-admin</em>)
+/command – Commandes accessibles depuis <code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">*</span></code>
+/gn_* – Différents modules principaux
+/imports – Module Import
+/health – Route permettant vérifier le status de l’instance GeoNature
+/notifications – Notifications
+/sensitivity – Gestion de la sensibilité des données
+/taxonomie – Intégration de Taxhub dans le <em>back office</em>
+/users – Gestion des utilisateurs</p>
+</dd>
+</dl>
+<p>/middleware – Custom Flask middleware
+/migrations – Ensemble des révisions alembic permettant la mise à jour de la BDD de GeoNature
+/tasks – Tâches asynchrones gérées par Celery
+/templates – Templates pour surcoucher l’interface d’administration de Flask-Admin
+/tests – Tests unitaires du backend
+/utils – Différentes fonctions utilitaires (chargement de la configuration, initialisation de la connexion avec la BDD, etc.)
+app.py – Création de l”<code class="docutils literal notranslate"><span class="pre">app</span></code> flask de GeoNature
+requirements-<a href="#id5"><span class="problematic" id="id6">*</span></a>.txt – Liste des dépendances Python de GeoNature
+Dockerfile – fichier de création de l’image Docker du backend</p>
+</div></blockquote>
+<p><a href="#id7"><span class="problematic" id="id8">``</span></a><a href="#id9"><span class="problematic" id="id10">`</span></a></p>
+</section>
 <section id="base-de-donnees-avec-flask-sqlalchemy">
 <h3>Base de données avec Flask-SQLAlchemy<a class="headerlink" href="#base-de-donnees-avec-flask-sqlalchemy" title="Lien vers cette rubrique">¶</a></h3>
 <p>L’intégration de la base de données à GeoNature repose sur la bibliothèque <a class="reference external" href="https://flask-sqlalchemy.palletsprojects.com">Flask-SQLAlchemy</a>.</p>
@@ -827,7 +858,7 @@ Pour demander la sérialisation d’un sous-schéma, il faut le spécifier avec 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">MyModel</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
     <span class="n">id_nomenclature_foo</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Nomenclature</span><span class="o">.</span><span class="n">id_nomenclature</span><span class="p">))</span>
-    <span class="n">nomenclature_foo</span> <span class="o">=</span> <span class="n">relationships</span><span class="p">(</span><span class="n">Nomenclature</span><span class="p">,</span> <span class="n">foreign_keys</span><span class="o">=</span><span class="p">[</span><span class="n">id_nomenclature_foo</span><span class="p">])</span>
+    <span class="n">nomenclature_foo</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="n">Nomenclature</span><span class="p">,</span> <span class="n">foreign_keys</span><span class="o">=</span><span class="p">[</span><span class="n">id_nomenclature_foo</span><span class="p">])</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">MyModelSchema</span><span class="p">(</span><span class="n">ma</span><span class="o">.</span><span class="n">SQLAlchemyAutoSchema</span><span class="p">):</span>
     <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">:</span>
@@ -961,8 +992,8 @@ Le préfixe <code class="docutils literal notranslate"><span class="pre">+</span
 <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 </pre></div>
 </div>
-<section id="id3">
-<h5>Gestion des relationships<a class="headerlink" href="#id3" title="Lien vers cette rubrique">¶</a></h5>
+<section id="id11">
+<h5>Gestion des relationships<a class="headerlink" href="#id11" title="Lien vers cette rubrique">¶</a></h5>
 <section id="many-to-one">
 <h6>Many-to-One<a class="headerlink" href="#many-to-one" title="Lien vers cette rubrique">¶</a></h6>
 <p>Exemple d’une relation vers une nomenclature :</p>
@@ -1099,8 +1130,8 @@ Le préfixe <code class="docutils literal notranslate"><span class="pre">+</span
 <li><p>augmentation non prévue des données sérialisées lors de l’ajout d’une nouvelle relationship</p></li>
 <li><p>problème n+1 (voir section dédiée)</p></li>
 </ul>
-<section id="id4">
-<h4>Modèles géographiques<a class="headerlink" href="#id4" title="Lien vers cette rubrique">¶</a></h4>
+<section id="id12">
+<h4>Modèles géographiques<a class="headerlink" href="#id12" title="Lien vers cette rubrique">¶</a></h4>
 <p>La bibliothèque maison <a class="reference external" href="https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo">Utils-Flask-SQLAlchemy-Geo</a> fournit des décorateurs supplémentaires pour la sérialisation des modèles contenant des champs géographiques.</p>
 <ul>
 <li><dl>
@@ -1837,7 +1868,7 @@ Si vous souhaitez traiter l’erreur vous-même, et empêcher le toaster par dé
 </section>
 </section>
 <section id="tests-backend">
-<span id="id5"></span><h2>Tests backend<a class="headerlink" href="#tests-backend" title="Lien vers cette rubrique">¶</a></h2>
+<span id="id13"></span><h2>Tests backend<a class="headerlink" href="#tests-backend" title="Lien vers cette rubrique">¶</a></h2>
 <p>Cette documentation a pour objectif d’expliquer comment écrire des tests pour
 le backend de GeoNature.</p>
 <p>Un test se décompose en général en 3 étapes :</p>
@@ -2039,7 +2070,7 @@ possible de générer le coverage au format html en remplaçant <code class="doc
 <section id="evaluer-les-performances-du-backend">
 <h3>Evaluer les performances du backend<a class="headerlink" href="#evaluer-les-performances-du-backend" title="Lien vers cette rubrique">¶</a></h3>
 <p>Les versions de GeoNature &gt;2.14.1 intègrent la possibilité d’évaluer les performances de routes connues pour leur temps de traitement important. Par exemple, l’appel de la route <code class="docutils literal notranslate"><span class="pre">gn_synthese.get_observations_for_web</span></code> avec une géographie non-présente dans le référentiel géographique.</p>
-<p>Cette fonctionnalité s’appuie sur <code class="docutils literal notranslate"><span class="pre">pytest</span></code> et son extension <a href="#id6"><span class="problematic" id="id7">``</span></a>pytest-benchmark``(<a class="reference external" href="https://pytest-benchmark.readthedocs.io/en/latest/">https://pytest-benchmark.readthedocs.io/en/latest/</a>).</p>
+<p>Cette fonctionnalité s’appuie sur <code class="docutils literal notranslate"><span class="pre">pytest</span></code> et son extension <a href="#id14"><span class="problematic" id="id15">``</span></a>pytest-benchmark``(<a class="reference external" href="https://pytest-benchmark.readthedocs.io/en/latest/">https://pytest-benchmark.readthedocs.io/en/latest/</a>).</p>
 <p>Pour lancer les tests de performances, utiliser la commande suivante : <code class="docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">--benchmark-only</span></code></p>
 <p>La création de tests de performance s’effectue à l’aide de la classe <code class="docutils literal notranslate"><span class="pre">geonature.tests.benchmarks.benchmark_generator.BenchmarkTest</span></code>.</p>
 <p>L’objet <code class="docutils literal notranslate"><span class="pre">BenchmarkTest</span></code> prend en argument :</p>
@@ -2098,7 +2129,7 @@ dans l’argument <code class="docutils literal notranslate"><span class="pre">k
 </section>
 </section>
 <section id="tests-frontend">
-<span id="id8"></span><h2>Tests frontend<a class="headerlink" href="#tests-frontend" title="Lien vers cette rubrique">¶</a></h2>
+<span id="id16"></span><h2>Tests frontend<a class="headerlink" href="#tests-frontend" title="Lien vers cette rubrique">¶</a></h2>
 <p>Cette documentation a pour objectif d’expliquer comment écrire des tests pour
 le frontend de GeoNature.</p>
 <p>L’écriture de tests frontend dans GeoNature se base sur l’outil <a class="reference external" href="https://www.cypress.io/">Cypress</a> dont il est nécessaire de maitriser et comprendre le fonctionnement.</p>
@@ -2118,8 +2149,8 @@ Cela permet d’identifier plus précisément le test qui n’a pas fonctionné.
 <p>La nomenclature des fichiers de test est XXXXXXX-spec.js (XXXX correspondant au nom du module testé).</p>
 <p>Afin d’améliorer la lisibilité des fichiers de test si un module contient beaucoup de tests il est nécessaire de séparer les tests end to end en plusieurs fichiers et les placer dans un dossier portant le nom du module.</p>
 </section>
-<section id="id9">
-<h4>Exemple<a class="headerlink" href="#id9" title="Lien vers cette rubrique">¶</a></h4>
+<section id="id17">
+<h4>Exemple<a class="headerlink" href="#id17" title="Lien vers cette rubrique">¶</a></h4>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>e2e
 ├──<span class="w"> </span>import
 │<span class="w">   </span>├──<span class="w"> </span>all-steps-spec.js
@@ -2139,8 +2170,8 @@ Cela permet d’identifier plus précisément le test qui n’a pas fonctionné.
 </li>
 </ul>
 </section>
-<section id="id10">
-<h4>Exemple<a class="headerlink" href="#id10" title="Lien vers cette rubrique">¶</a></h4>
+<section id="id18">
+<h4>Exemple<a class="headerlink" href="#id18" title="Lien vers cette rubrique">¶</a></h4>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">describe</span><span class="p">(</span><span class="s2">&quot;description général de la partie testée&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
 
 <span class="w">    </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;description du test 1&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
@@ -2156,8 +2187,8 @@ Cela permet d’identifier plus précisément le test qui n’a pas fonctionné.
 </div>
 <p>Afin d’homogénéiser les descriptions des tests il est établi que l’on nomme un test en anglais en commençant par should.</p>
 </section>
-<section id="id11">
-<h4>Exemple<a class="headerlink" href="#id11" title="Lien vers cette rubrique">¶</a></h4>
+<section id="id19">
+<h4>Exemple<a class="headerlink" href="#id19" title="Lien vers cette rubrique">¶</a></h4>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should change the state&#39;</span><span class="p">,()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">...</span>
 </pre></div>
 </div>
@@ -2174,8 +2205,8 @@ Angular et Cypress suggèrent l’ajout de tags de ce type:</p>
 </ul>
 <p>Il est recommandé d’utiliser un nom explicite pour éviter toutes confusions.</p>
 </section>
-<section id="id12">
-<h4>Exemple<a class="headerlink" href="#id12" title="Lien vers cette rubrique">¶</a></h4>
+<section id="id20">
+<h4>Exemple<a class="headerlink" href="#id20" title="Lien vers cette rubrique">¶</a></h4>
 <div class="highlight-HTML notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">button</span> <span class="na">data-qa</span><span class="o">=</span><span class="s">&quot;import-list-new&quot;</span><span class="p">&gt;</span>New<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
 </pre></div>
 </div>
@@ -2679,6 +2710,7 @@ Elle est écrites en ReStructuredText et généré avec Sphinx.</p>
 </li>
 <li><a class="reference internal" href="#developpement-backend">Développement Backend</a><ul>
 <li><a class="reference internal" href="#demarrage-du-serveur-de-dev-backend">Démarrage du serveur de dev backend</a></li>
+<li><a class="reference internal" href="#arborescence-de-fichiers">Arborescence de fichiers</a></li>
 <li><a class="reference internal" href="#base-de-donnees-avec-flask-sqlalchemy">Base de données avec Flask-SQLAlchemy</a><ul>
 <li><a class="reference internal" href="#fonctions-de-filtrages">Fonctions de filtrages</a></li>
 </ul>
@@ -2690,7 +2722,7 @@ Elle est écrites en ReStructuredText et généré avec Sphinx.</p>
 <li><a class="reference internal" href="#modeles-geographiques-avec-nomenclatures">Modèles géographiques avec nomenclatures</a></li>
 <li><a class="reference internal" href="#modeles-de-permission">Modèles de permission</a></li>
 <li><a class="reference internal" href="#creation-dun-objet">Création d’un objet</a><ul>
-<li><a class="reference internal" href="#id3">Gestion des relationships</a><ul>
+<li><a class="reference internal" href="#id11">Gestion des relationships</a><ul>
 <li><a class="reference internal" href="#many-to-one">Many-to-One</a></li>
 <li><a class="reference internal" href="#many-to-many">Many-to-Many</a></li>
 <li><a class="reference internal" href="#one-to-many">One-to-Many</a></li>
@@ -2701,7 +2733,7 @@ Elle est écrites en ReStructuredText et généré avec Sphinx.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#serialisation-des-modeles-avec-le-decorateur-serializable">Serialisation des modèles avec le décorateur <code class="docutils literal notranslate"><span class="pre">&#64;serializable</span></code></a><ul>
-<li><a class="reference internal" href="#id4">Modèles géographiques</a></li>
+<li><a class="reference internal" href="#id12">Modèles géographiques</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#reponses">Réponses</a><ul>
@@ -2763,11 +2795,11 @@ Elle est écrites en ReStructuredText et généré avec Sphinx.</p>
 <li><a class="reference internal" href="#pre-requis">Pré-requis</a></li>
 <li><a class="reference internal" href="#redaction">Rédaction</a><ul>
 <li><a class="reference internal" href="#structure">Structure</a></li>
-<li><a class="reference internal" href="#id9">Exemple</a></li>
-<li><a class="reference internal" href="#id10">Exemple</a></li>
-<li><a class="reference internal" href="#id11">Exemple</a></li>
+<li><a class="reference internal" href="#id17">Exemple</a></li>
+<li><a class="reference internal" href="#id18">Exemple</a></li>
+<li><a class="reference internal" href="#id19">Exemple</a></li>
 <li><a class="reference internal" href="#implementation">Implémentation</a></li>
-<li><a class="reference internal" href="#id12">Exemple</a></li>
+<li><a class="reference internal" href="#id20">Exemple</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#lancement">Lancement</a></li>
@@ -2805,10 +2837,10 @@ Elle est écrites en ReStructuredText et généré avec Sphinx.</p>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=c53d93e3"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
+</div><script src="_static/documentation_options.js?v=f2c51989"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>
-    <script src="_static/translations.js?v=041d0952"></script>
+    <script src="_static/translations.js?v=e6b791cb"></script>
     </body>
 </html>

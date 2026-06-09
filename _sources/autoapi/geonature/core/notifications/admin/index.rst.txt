@@ -17,9 +17,17 @@ Classes
 Module Contents
 ---------------
 
-.. py:class:: NotificationTemplateAdmin
+.. py:class:: NotificationTemplateAdmin(model: type[flask_admin._types.T_SQLALCHEMY_MODEL], session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, name: str | None = None, category: str | None = None, endpoint: str | None = None, url: str | None = None, static_folder: str | None = None, menu_class_name: str | None = None, menu_icon_type: str | None = None, menu_icon_value: str | None = None)
 
    Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`flask_admin.contrib.sqla.ModelView`
+
+
+   SQLAlchemy model view
+
+   Usage sample::
+
+       admin = Admin()
+       admin.add_view(ModelView(User, db.session))
 
 
    .. py:attribute:: module_code
@@ -36,21 +44,85 @@ Module Contents
       :value: ('code_category', 'code_method', 'content')
 
 
+      Collection of the model field names for the list view.
+      If set to `None`, will get them from the model.
+
+      For example::
+
+          class MyModelView(BaseModelView):
+              column_list = ('name', 'last_name', 'email')
+
+      (Added in 1.4.0) SQLAlchemy model attributes can be used instead of strings::
+
+          class MyModelView(BaseModelView):
+              column_list = ('name', User.last_name)
+
+      When using SQLAlchemy models, you can reference related columns like this::
+          class MyModelView(BaseModelView):
+              column_list = ('<relationship>.<related column name>',)
+
+
 
    .. py:attribute:: column_labels
+
+      Dictionary where key is column name and value is string to display.
+
+      For example::
+
+          class MyModelView(BaseModelView):
+              column_labels = dict(name='Name', last_name='Last Name')
+
 
 
    .. py:attribute:: form_columns
       :value: ('category', 'method', 'content')
 
 
+      Collection of the model field names for the form. If set to `None` will
+      get them from the model.
+
+      Example::
+
+          class MyModelView(BaseModelView):
+              form_columns = ('name', 'email')
+
+      (Added in 1.4.0) SQLAlchemy model attributes can be used instead of
+      strings::
+
+          class MyModelView(BaseModelView):
+              form_columns = ('name', User.last_name)
+
+      SQLA Note: Model attributes must be on the same model as your ModelView
+      or you will need to use `inline_models`.
+
+
 
    .. py:attribute:: form_args
 
+      Dictionary of form field arguments. Refer to WTForms documentation for
+      list of possible options.
 
-.. py:class:: NotificationCategoryAdmin
+      Example::
+
+          from wtforms.validators import DataRequired
+          class MyModelView(BaseModelView):
+              form_args = dict(
+                  name=dict(label='First Name', validators=[DataRequired()])
+              )
+
+
+
+.. py:class:: NotificationCategoryAdmin(model: type[flask_admin._types.T_SQLALCHEMY_MODEL], session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, name: str | None = None, category: str | None = None, endpoint: str | None = None, url: str | None = None, static_folder: str | None = None, menu_class_name: str | None = None, menu_icon_type: str | None = None, menu_icon_value: str | None = None)
 
    Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`flask_admin.contrib.sqla.ModelView`
+
+
+   SQLAlchemy model view
+
+   Usage sample::
+
+       admin = Admin()
+       admin.add_view(ModelView(User, db.session))
 
 
    .. py:attribute:: module_code
@@ -67,18 +139,74 @@ Module Contents
       :value: ('code', 'label', 'description')
 
 
+      Collection of the model field names for the list view.
+      If set to `None`, will get them from the model.
+
+      For example::
+
+          class MyModelView(BaseModelView):
+              column_list = ('name', 'last_name', 'email')
+
+      (Added in 1.4.0) SQLAlchemy model attributes can be used instead of strings::
+
+          class MyModelView(BaseModelView):
+              column_list = ('name', User.last_name)
+
+      When using SQLAlchemy models, you can reference related columns like this::
+          class MyModelView(BaseModelView):
+              column_list = ('<relationship>.<related column name>',)
+
+
 
    .. py:attribute:: form_columns
       :value: ('code', 'label', 'description')
 
 
+      Collection of the model field names for the form. If set to `None` will
+      get them from the model.
+
+      Example::
+
+          class MyModelView(BaseModelView):
+              form_columns = ('name', 'email')
+
+      (Added in 1.4.0) SQLAlchemy model attributes can be used instead of
+      strings::
+
+          class MyModelView(BaseModelView):
+              form_columns = ('name', User.last_name)
+
+      SQLA Note: Model attributes must be on the same model as your ModelView
+      or you will need to use `inline_models`.
+
+
 
    .. py:attribute:: form_args
 
+      Dictionary of form field arguments. Refer to WTForms documentation for
+      list of possible options.
 
-.. py:class:: NotificationMethodAdmin
+      Example::
+
+          from wtforms.validators import DataRequired
+          class MyModelView(BaseModelView):
+              form_args = dict(
+                  name=dict(label='First Name', validators=[DataRequired()])
+              )
+
+
+
+.. py:class:: NotificationMethodAdmin(model: type[flask_admin._types.T_SQLALCHEMY_MODEL], session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, name: str | None = None, category: str | None = None, endpoint: str | None = None, url: str | None = None, static_folder: str | None = None, menu_class_name: str | None = None, menu_icon_type: str | None = None, menu_icon_value: str | None = None)
 
    Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`flask_admin.contrib.sqla.ModelView`
+
+
+   SQLAlchemy model view
+
+   Usage sample::
+
+       admin = Admin()
+       admin.add_view(ModelView(User, db.session))
 
 
    .. py:attribute:: module_code
@@ -95,12 +223,60 @@ Module Contents
       :value: ('code', 'label', 'description')
 
 
+      Collection of the model field names for the list view.
+      If set to `None`, will get them from the model.
+
+      For example::
+
+          class MyModelView(BaseModelView):
+              column_list = ('name', 'last_name', 'email')
+
+      (Added in 1.4.0) SQLAlchemy model attributes can be used instead of strings::
+
+          class MyModelView(BaseModelView):
+              column_list = ('name', User.last_name)
+
+      When using SQLAlchemy models, you can reference related columns like this::
+          class MyModelView(BaseModelView):
+              column_list = ('<relationship>.<related column name>',)
+
+
 
    .. py:attribute:: form_columns
       :value: ('code', 'label', 'description')
 
 
+      Collection of the model field names for the form. If set to `None` will
+      get them from the model.
+
+      Example::
+
+          class MyModelView(BaseModelView):
+              form_columns = ('name', 'email')
+
+      (Added in 1.4.0) SQLAlchemy model attributes can be used instead of
+      strings::
+
+          class MyModelView(BaseModelView):
+              form_columns = ('name', User.last_name)
+
+      SQLA Note: Model attributes must be on the same model as your ModelView
+      or you will need to use `inline_models`.
+
+
 
    .. py:attribute:: form_args
+
+      Dictionary of form field arguments. Refer to WTForms documentation for
+      list of possible options.
+
+      Example::
+
+          from wtforms.validators import DataRequired
+          class MyModelView(BaseModelView):
+              form_args = dict(
+                  name=dict(label='First Name', validators=[DataRequired()])
+              )
+
 
 

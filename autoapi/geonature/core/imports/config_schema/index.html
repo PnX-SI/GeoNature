@@ -6,11 +6,11 @@
 <link rel="index" title="Index" href="../../../../../genindex.html"><link rel="search" title="Recherche" href="../../../../../search.html"><link rel="next" title="geonature.core.imports.logs" href="../logs/index.html"><link rel="prev" title="geonature.core.imports.commands" href="../commands/index.html">
         <link rel="prefetch" href="../../../../../_static/LogoGeonature.jpg" as="image">
 
-    <!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 -->
-        <title>geonature.core.imports.config_schema - Documentation GeoNature 2.17.1</title>
+    <!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>geonature.core.imports.config_schema - Documentation GeoNature 2.17.2</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=7bdb33bb" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
     
     
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">Documentation GeoNature 2.17.1</div></a>
+      <a href="../../../../../index.html"><div class="brand">Documentation GeoNature 2.17.2</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -187,7 +187,7 @@
     <img class="sidebar-logo" src="../../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.17.1</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.17.2</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -506,7 +506,7 @@
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.imports.config_schema.ImportConfigSchema" title="geonature.core.imports.config_schema.ImportConfigSchema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImportConfigSchema</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Base schema class with which to define schemas.</p></td>
 </tr>
 </tbody>
 </table>
@@ -586,8 +586,62 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="geonature.core.imports.config_schema.ImportConfigSchema">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.imports.config_schema.</span></span><span class="sig-name descname"><span class="pre">ImportConfigSchema</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/config_schema.html#ImportConfigSchema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.config_schema.ImportConfigSchema" title="Lien vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.imports.config_schema.</span></span><span class="sig-name descname"><span class="pre">ImportConfigSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">marshmallow.types.StrSequenceOrSet</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">marshmallow.types.StrSequenceOrSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">many</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(disponible dans Python v3.14)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">marshmallow.types.StrSequenceOrSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dump_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">marshmallow.types.StrSequenceOrSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(disponible dans Python v3.14)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">marshmallow.types.StrSequenceOrSet</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unknown</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">marshmallow.types.UnknownOption</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/config_schema.html#ImportConfigSchema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.config_schema.ImportConfigSchema" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">marshmallow.Schema</span></code></p>
+<p>Base schema class with which to define schemas.</p>
+<p>Example usage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">marshmallow</span><span class="w"> </span><span class="kn">import</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">fields</span>
+
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Album</span><span class="p">:</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">release_date</span><span class="p">:</span> <span class="n">dt</span><span class="o">.</span><span class="n">date</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AlbumSchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">()</span>
+    <span class="n">release_date</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Date</span><span class="p">()</span>
+
+
+<span class="n">album</span> <span class="o">=</span> <span class="n">Album</span><span class="p">(</span><span class="s2">&quot;Beggars Banquet&quot;</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">1968</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">schema</span> <span class="o">=</span> <span class="n">AlbumSchema</span><span class="p">()</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">album</span><span class="p">)</span>
+<span class="n">data</span>  <span class="c1"># {&#39;release_date&#39;: &#39;1968-12-06&#39;, &#39;title&#39;: &#39;Beggars Banquet&#39;}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>only</strong> – Whitelist of the declared fields to select when
+instantiating the Schema. If None, all fields are used. Nested fields
+can be represented with dot delimiters.</p></li>
+<li><p><strong>exclude</strong> – Blacklist of the declared fields to exclude
+when instantiating the Schema. If a field appears in both <cite>only</cite> and
+<cite>exclude</cite>, it is not used. Nested fields can be represented with dot
+delimiters.</p></li>
+<li><p><strong>many</strong> – Should be set to <cite>True</cite> if <code class="docutils literal notranslate"><span class="pre">obj</span></code> is a collection
+so that the object will be serialized to a list.</p></li>
+<li><p><strong>load_only</strong> – Fields to skip during serialization (write-only fields)</p></li>
+<li><p><strong>dump_only</strong> – Fields to skip during deserialization (read-only fields)</p></li>
+<li><p><strong>partial</strong> – Whether to ignore missing fields and not require
+any fields declared. Propagates down to <code class="docutils literal notranslate"><span class="pre">Nested</span></code> fields as well. If
+its value is an iterable, only missing fields listed in that iterable
+will be ignored. Use dot delimiters to specify nested fields.</p></li>
+<li><p><strong>unknown</strong> – Whether to exclude, include, or raise an error for unknown
+fields in the data. Use <cite>EXCLUDE</cite>, <cite>INCLUDE</cite> or <cite>RAISE</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.0.0: </span>Remove <code class="docutils literal notranslate"><span class="pre">prefix</span></code> parameter.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 4.0.0: </span>Remove <code class="docutils literal notranslate"><span class="pre">context</span></code> parameter.</p>
+</div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.imports.config_schema.ImportConfigSchema.LIST_COLUMNS_FRONTEND">
 <span class="sig-name descname"><span class="pre">LIST_COLUMNS_FRONTEND</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/config_schema.html#ImportConfigSchema.LIST_COLUMNS_FRONTEND"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.config_schema.ImportConfigSchema.LIST_COLUMNS_FRONTEND" title="Lien vers cette définition">¶</a></dt>
@@ -850,10 +904,10 @@
       
     </aside>
   </div>
-</div><script src="../../../../../_static/documentation_options.js?v=c53d93e3"></script>
-    <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
+</div><script src="../../../../../_static/documentation_options.js?v=f2c51989"></script>
+    <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/scripts/furo.js?v=46bd48cc"></script>
-    <script src="../../../../../_static/translations.js?v=041d0952"></script>
+    <script src="../../../../../_static/translations.js?v=e6b791cb"></script>
     </body>
 </html>

@@ -29,6 +29,14 @@ Module Contents
    Bases: :py:obj:`geonature.utils.env.db.Model`
 
 
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+
    .. py:attribute:: __tablename__
       :value: 'bib_notifications_methods'
 
@@ -55,6 +63,14 @@ Module Contents
 .. py:class:: NotificationCategory
 
    Bases: :py:obj:`geonature.utils.env.db.Model`
+
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
 
 
    .. py:attribute:: __tablename__
@@ -106,6 +122,14 @@ Module Contents
    Bases: :py:obj:`geonature.utils.env.db.Model`
 
 
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+
    .. py:attribute:: __tablename__
       :value: 'bib_notifications_templates'
 
@@ -135,6 +159,14 @@ Module Contents
 .. py:class:: Notification
 
    Bases: :py:obj:`geonature.utils.env.db.Model`
+
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
 
 
    .. py:attribute:: __tablename__
@@ -174,6 +206,14 @@ Module Contents
    Bases: :py:obj:`geonature.utils.env.db.Model`
 
 
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+
    .. py:attribute:: __tablename__
       :value: 't_notifications_rules'
 
@@ -207,5 +247,7 @@ Module Contents
 
 
    .. py:method:: filter_by_role_with_defaults(*, query, id_role=None)
+      :classmethod:
+
 
 

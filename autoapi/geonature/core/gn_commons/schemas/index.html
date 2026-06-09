@@ -6,11 +6,11 @@
 <link rel="index" title="Index" href="../../../../../genindex.html"><link rel="search" title="Recherche" href="../../../../../search.html"><link rel="next" title="geonature.core.gn_commons.tasks" href="../tasks/index.html"><link rel="prev" title="geonature.core.gn_commons.routes" href="../routes/index.html">
         <link rel="prefetch" href="../../../../../_static/LogoGeonature.jpg" as="image">
 
-    <!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 -->
-        <title>geonature.core.gn_commons.schemas - Documentation GeoNature 2.17.1</title>
+    <!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>geonature.core.gn_commons.schemas - Documentation GeoNature 2.17.2</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=7bdb33bb" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
     
     
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">Documentation GeoNature 2.17.1</div></a>
+      <a href="../../../../../index.html"><div class="brand">Documentation GeoNature 2.17.2</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -187,7 +187,7 @@
     <img class="sidebar-logo" src="../../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.17.1</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.17.2</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -466,25 +466,25 @@
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_commons.schemas.ModuleSchema" title="geonature.core.gn_commons.schemas.ModuleSchema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModuleSchema</span></code></a></p></td>
-<td><p></p></td>
+<td><p>SQLAlchemyAutoSchema that automatically generates marshmallow fields</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_commons.schemas.MediaSchema" title="geonature.core.gn_commons.schemas.MediaSchema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MediaSchema</span></code></a></p></td>
-<td><p></p></td>
+<td><p>SQLAlchemyAutoSchema that automatically generates marshmallow fields</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_commons.schemas.TValidationSchema" title="geonature.core.gn_commons.schemas.TValidationSchema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TValidationSchema</span></code></a></p></td>
-<td><p></p></td>
+<td><p>SQLAlchemyAutoSchema that automatically generates marshmallow fields</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_commons.schemas.BibWidgetSchema" title="geonature.core.gn_commons.schemas.BibWidgetSchema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BibWidgetSchema</span></code></a></p></td>
-<td><p></p></td>
+<td><p>SQLAlchemyAutoSchema that automatically generates marshmallow fields</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_commons.schemas.LabelValueDict" title="geonature.core.gn_commons.schemas.LabelValueDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LabelValueDict</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Base schema class with which to define schemas.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.gn_commons.schemas.CastableField" title="geonature.core.gn_commons.schemas.CastableField"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CastableField</span></code></a></p></td>
 <td><p>A field which tries to cast the value to int or float before returning it.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.gn_commons.schemas.TAdditionalFieldsSchema" title="geonature.core.gn_commons.schemas.TAdditionalFieldsSchema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TAdditionalFieldsSchema</span></code></a></p></td>
-<td><p></p></td>
+<td><p>This mixin automatically exclude from serialization:</p></td>
 </tr>
 </tbody>
 </table>
@@ -499,12 +499,66 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="geonature.core.gn_commons.schemas.ModuleSchema">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.schemas.</span></span><span class="sig-name descname"><span class="pre">ModuleSchema</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#ModuleSchema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.ModuleSchema" title="Lien vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.schemas.</span></span><span class="sig-name descname"><span class="pre">ModuleSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#ModuleSchema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.ModuleSchema" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.MA.SQLAlchemyAutoSchema</span></code></p>
+<p>SQLAlchemyAutoSchema that automatically generates marshmallow fields
+from a SQLAlchemy model’s or table’s column.
+Uses the scoped session from Flask-SQLAlchemy by default.</p>
+<p>See <cite>marshmallow_sqlalchemy.SQLAlchemyAutoSchema</cite> for more details
+on the <cite>SQLAlchemyAutoSchema</cite> API.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="geonature.core.gn_commons.schemas.ModuleSchema.Meta">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Meta</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#ModuleSchema.Meta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.ModuleSchema.Meta" title="Lien vers cette définition">¶</a></dt>
-<dd><dl class="py attribute">
+<dd><p>Options object for a Schema.</p>
+<p>Example usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">marshmallow</span><span class="w"> </span><span class="kn">import</span> <span class="n">Schema</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MySchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;email&quot;</span><span class="p">,</span> <span class="s2">&quot;date_created&quot;</span><span class="p">)</span>
+        <span class="n">exclude</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="s2">&quot;secret_attribute&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition-a-note-on-type-checking admonition">
+<p class="admonition-title">A note on type checking</p>
+<p>Type checkers will only check the attributes of the <cite>Meta &lt;marshmallow.Schema.Meta&gt;</cite>
+class if you explicitly subclass <cite>marshmallow.Schema.Meta</cite>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">marshmallow</span><span class="w"> </span><span class="kn">import</span> <span class="n">Schema</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MySchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="c1"># Not checked by type checkers</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">additional</span> <span class="o">=</span> <span class="kc">True</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MySchema2</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="c1"># Type checkers will check attributes</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">(</span><span class="n">Schema</span><span class="o">.</span><span class="n">Meta</span><span class="p">):</span>
+        <span class="n">additional</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># Incompatible types in assignment</span>
+</pre></div>
+</div>
+</div>
+<div class="versionremoved">
+<p><span class="versionmodified removed">Supprimé dans la version 3.0.0b7: </span>Remove <code class="docutils literal notranslate"><span class="pre">strict</span></code>.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Ajouté dans la version 3.0.0b12: </span>Add <cite>unknown</cite>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.0.0b17: </span>Rename <code class="docutils literal notranslate"><span class="pre">dateformat</span></code> to <cite>datetimeformat</cite>.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Ajouté dans la version 3.9.0: </span>Add <cite>timeformat</cite>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.26.0: </span>Deprecate <code class="docutils literal notranslate"><span class="pre">ordered</span></code>. Field order is preserved by default.</p>
+</div>
+<div class="versionremoved">
+<p><span class="versionmodified removed">Supprimé dans la version 4.0.0: </span>Remove <code class="docutils literal notranslate"><span class="pre">ordered</span></code>.</p>
+</div>
+<dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_commons.schemas.ModuleSchema.Meta.model">
 <span class="sig-name descname"><span class="pre">model</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#ModuleSchema.Meta.model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.ModuleSchema.Meta.model" title="Lien vers cette définition">¶</a></dt>
 <dd></dd></dl>
@@ -525,12 +579,66 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="geonature.core.gn_commons.schemas.MediaSchema">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.schemas.</span></span><span class="sig-name descname"><span class="pre">MediaSchema</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#MediaSchema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.MediaSchema" title="Lien vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.schemas.</span></span><span class="sig-name descname"><span class="pre">MediaSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#MediaSchema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.MediaSchema" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.MA.SQLAlchemyAutoSchema</span></code></p>
+<p>SQLAlchemyAutoSchema that automatically generates marshmallow fields
+from a SQLAlchemy model’s or table’s column.
+Uses the scoped session from Flask-SQLAlchemy by default.</p>
+<p>See <cite>marshmallow_sqlalchemy.SQLAlchemyAutoSchema</cite> for more details
+on the <cite>SQLAlchemyAutoSchema</cite> API.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="geonature.core.gn_commons.schemas.MediaSchema.Meta">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Meta</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#MediaSchema.Meta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.MediaSchema.Meta" title="Lien vers cette définition">¶</a></dt>
-<dd><dl class="py attribute">
+<dd><p>Options object for a Schema.</p>
+<p>Example usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">marshmallow</span><span class="w"> </span><span class="kn">import</span> <span class="n">Schema</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MySchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;email&quot;</span><span class="p">,</span> <span class="s2">&quot;date_created&quot;</span><span class="p">)</span>
+        <span class="n">exclude</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="s2">&quot;secret_attribute&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition-a-note-on-type-checking admonition">
+<p class="admonition-title">A note on type checking</p>
+<p>Type checkers will only check the attributes of the <cite>Meta &lt;marshmallow.Schema.Meta&gt;</cite>
+class if you explicitly subclass <cite>marshmallow.Schema.Meta</cite>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">marshmallow</span><span class="w"> </span><span class="kn">import</span> <span class="n">Schema</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MySchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="c1"># Not checked by type checkers</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">additional</span> <span class="o">=</span> <span class="kc">True</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MySchema2</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="c1"># Type checkers will check attributes</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">(</span><span class="n">Schema</span><span class="o">.</span><span class="n">Meta</span><span class="p">):</span>
+        <span class="n">additional</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># Incompatible types in assignment</span>
+</pre></div>
+</div>
+</div>
+<div class="versionremoved">
+<p><span class="versionmodified removed">Supprimé dans la version 3.0.0b7: </span>Remove <code class="docutils literal notranslate"><span class="pre">strict</span></code>.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Ajouté dans la version 3.0.0b12: </span>Add <cite>unknown</cite>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.0.0b17: </span>Rename <code class="docutils literal notranslate"><span class="pre">dateformat</span></code> to <cite>datetimeformat</cite>.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Ajouté dans la version 3.9.0: </span>Add <cite>timeformat</cite>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.26.0: </span>Deprecate <code class="docutils literal notranslate"><span class="pre">ordered</span></code>. Field order is preserved by default.</p>
+</div>
+<div class="versionremoved">
+<p><span class="versionmodified removed">Supprimé dans la version 4.0.0: </span>Remove <code class="docutils literal notranslate"><span class="pre">ordered</span></code>.</p>
+</div>
+<dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_commons.schemas.MediaSchema.Meta.model">
 <span class="sig-name descname"><span class="pre">model</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#MediaSchema.Meta.model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.MediaSchema.Meta.model" title="Lien vers cette définition">¶</a></dt>
 <dd></dd></dl>
@@ -547,7 +655,7 @@
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_commons.schemas.MediaSchema.Meta.unknown">
-<span class="sig-name descname"><span class="pre">unknown</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#MediaSchema.Meta.unknown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.MediaSchema.Meta.unknown" title="Lien vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">unknown</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'exclude'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#MediaSchema.Meta.unknown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.MediaSchema.Meta.unknown" title="Lien vers cette définition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -571,12 +679,66 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="geonature.core.gn_commons.schemas.TValidationSchema">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.schemas.</span></span><span class="sig-name descname"><span class="pre">TValidationSchema</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#TValidationSchema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.TValidationSchema" title="Lien vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.schemas.</span></span><span class="sig-name descname"><span class="pre">TValidationSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#TValidationSchema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.TValidationSchema" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.MA.SQLAlchemyAutoSchema</span></code></p>
+<p>SQLAlchemyAutoSchema that automatically generates marshmallow fields
+from a SQLAlchemy model’s or table’s column.
+Uses the scoped session from Flask-SQLAlchemy by default.</p>
+<p>See <cite>marshmallow_sqlalchemy.SQLAlchemyAutoSchema</cite> for more details
+on the <cite>SQLAlchemyAutoSchema</cite> API.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="geonature.core.gn_commons.schemas.TValidationSchema.Meta">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Meta</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#TValidationSchema.Meta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.TValidationSchema.Meta" title="Lien vers cette définition">¶</a></dt>
-<dd><dl class="py attribute">
+<dd><p>Options object for a Schema.</p>
+<p>Example usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">marshmallow</span><span class="w"> </span><span class="kn">import</span> <span class="n">Schema</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MySchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;email&quot;</span><span class="p">,</span> <span class="s2">&quot;date_created&quot;</span><span class="p">)</span>
+        <span class="n">exclude</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="s2">&quot;secret_attribute&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition-a-note-on-type-checking admonition">
+<p class="admonition-title">A note on type checking</p>
+<p>Type checkers will only check the attributes of the <cite>Meta &lt;marshmallow.Schema.Meta&gt;</cite>
+class if you explicitly subclass <cite>marshmallow.Schema.Meta</cite>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">marshmallow</span><span class="w"> </span><span class="kn">import</span> <span class="n">Schema</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MySchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="c1"># Not checked by type checkers</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">additional</span> <span class="o">=</span> <span class="kc">True</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MySchema2</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="c1"># Type checkers will check attributes</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">(</span><span class="n">Schema</span><span class="o">.</span><span class="n">Meta</span><span class="p">):</span>
+        <span class="n">additional</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># Incompatible types in assignment</span>
+</pre></div>
+</div>
+</div>
+<div class="versionremoved">
+<p><span class="versionmodified removed">Supprimé dans la version 3.0.0b7: </span>Remove <code class="docutils literal notranslate"><span class="pre">strict</span></code>.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Ajouté dans la version 3.0.0b12: </span>Add <cite>unknown</cite>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.0.0b17: </span>Rename <code class="docutils literal notranslate"><span class="pre">dateformat</span></code> to <cite>datetimeformat</cite>.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Ajouté dans la version 3.9.0: </span>Add <cite>timeformat</cite>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.26.0: </span>Deprecate <code class="docutils literal notranslate"><span class="pre">ordered</span></code>. Field order is preserved by default.</p>
+</div>
+<div class="versionremoved">
+<p><span class="versionmodified removed">Supprimé dans la version 4.0.0: </span>Remove <code class="docutils literal notranslate"><span class="pre">ordered</span></code>.</p>
+</div>
+<dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_commons.schemas.TValidationSchema.Meta.model">
 <span class="sig-name descname"><span class="pre">model</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#TValidationSchema.Meta.model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.TValidationSchema.Meta.model" title="Lien vers cette définition">¶</a></dt>
 <dd></dd></dl>
@@ -607,12 +769,66 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="geonature.core.gn_commons.schemas.BibWidgetSchema">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.schemas.</span></span><span class="sig-name descname"><span class="pre">BibWidgetSchema</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#BibWidgetSchema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.BibWidgetSchema" title="Lien vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.schemas.</span></span><span class="sig-name descname"><span class="pre">BibWidgetSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#BibWidgetSchema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.BibWidgetSchema" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.MA.SQLAlchemyAutoSchema</span></code></p>
+<p>SQLAlchemyAutoSchema that automatically generates marshmallow fields
+from a SQLAlchemy model’s or table’s column.
+Uses the scoped session from Flask-SQLAlchemy by default.</p>
+<p>See <cite>marshmallow_sqlalchemy.SQLAlchemyAutoSchema</cite> for more details
+on the <cite>SQLAlchemyAutoSchema</cite> API.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="geonature.core.gn_commons.schemas.BibWidgetSchema.Meta">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Meta</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#BibWidgetSchema.Meta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.BibWidgetSchema.Meta" title="Lien vers cette définition">¶</a></dt>
-<dd><dl class="py attribute">
+<dd><p>Options object for a Schema.</p>
+<p>Example usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">marshmallow</span><span class="w"> </span><span class="kn">import</span> <span class="n">Schema</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MySchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;email&quot;</span><span class="p">,</span> <span class="s2">&quot;date_created&quot;</span><span class="p">)</span>
+        <span class="n">exclude</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="s2">&quot;secret_attribute&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition-a-note-on-type-checking admonition">
+<p class="admonition-title">A note on type checking</p>
+<p>Type checkers will only check the attributes of the <cite>Meta &lt;marshmallow.Schema.Meta&gt;</cite>
+class if you explicitly subclass <cite>marshmallow.Schema.Meta</cite>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">marshmallow</span><span class="w"> </span><span class="kn">import</span> <span class="n">Schema</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MySchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="c1"># Not checked by type checkers</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">additional</span> <span class="o">=</span> <span class="kc">True</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MySchema2</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="c1"># Type checkers will check attributes</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">(</span><span class="n">Schema</span><span class="o">.</span><span class="n">Meta</span><span class="p">):</span>
+        <span class="n">additional</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># Incompatible types in assignment</span>
+</pre></div>
+</div>
+</div>
+<div class="versionremoved">
+<p><span class="versionmodified removed">Supprimé dans la version 3.0.0b7: </span>Remove <code class="docutils literal notranslate"><span class="pre">strict</span></code>.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Ajouté dans la version 3.0.0b12: </span>Add <cite>unknown</cite>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.0.0b17: </span>Rename <code class="docutils literal notranslate"><span class="pre">dateformat</span></code> to <cite>datetimeformat</cite>.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Ajouté dans la version 3.9.0: </span>Add <cite>timeformat</cite>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.26.0: </span>Deprecate <code class="docutils literal notranslate"><span class="pre">ordered</span></code>. Field order is preserved by default.</p>
+</div>
+<div class="versionremoved">
+<p><span class="versionmodified removed">Supprimé dans la version 4.0.0: </span>Remove <code class="docutils literal notranslate"><span class="pre">ordered</span></code>.</p>
+</div>
+<dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_commons.schemas.BibWidgetSchema.Meta.model">
 <span class="sig-name descname"><span class="pre">model</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#BibWidgetSchema.Meta.model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.BibWidgetSchema.Meta.model" title="Lien vers cette définition">¶</a></dt>
 <dd></dd></dl>
@@ -628,8 +844,62 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="geonature.core.gn_commons.schemas.LabelValueDict">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.schemas.</span></span><span class="sig-name descname"><span class="pre">LabelValueDict</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#LabelValueDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.LabelValueDict" title="Lien vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.schemas.</span></span><span class="sig-name descname"><span class="pre">LabelValueDict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">marshmallow.types.StrSequenceOrSet</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">marshmallow.types.StrSequenceOrSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">many</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(disponible dans Python v3.14)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">marshmallow.types.StrSequenceOrSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dump_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">marshmallow.types.StrSequenceOrSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(disponible dans Python v3.14)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">marshmallow.types.StrSequenceOrSet</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unknown</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">marshmallow.types.UnknownOption</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#LabelValueDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.LabelValueDict" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">marshmallow.Schema</span></code></p>
+<p>Base schema class with which to define schemas.</p>
+<p>Example usage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">marshmallow</span><span class="w"> </span><span class="kn">import</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">fields</span>
+
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Album</span><span class="p">:</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">release_date</span><span class="p">:</span> <span class="n">dt</span><span class="o">.</span><span class="n">date</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AlbumSchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">()</span>
+    <span class="n">release_date</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Date</span><span class="p">()</span>
+
+
+<span class="n">album</span> <span class="o">=</span> <span class="n">Album</span><span class="p">(</span><span class="s2">&quot;Beggars Banquet&quot;</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">1968</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">schema</span> <span class="o">=</span> <span class="n">AlbumSchema</span><span class="p">()</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">album</span><span class="p">)</span>
+<span class="n">data</span>  <span class="c1"># {&#39;release_date&#39;: &#39;1968-12-06&#39;, &#39;title&#39;: &#39;Beggars Banquet&#39;}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>only</strong> – Whitelist of the declared fields to select when
+instantiating the Schema. If None, all fields are used. Nested fields
+can be represented with dot delimiters.</p></li>
+<li><p><strong>exclude</strong> – Blacklist of the declared fields to exclude
+when instantiating the Schema. If a field appears in both <cite>only</cite> and
+<cite>exclude</cite>, it is not used. Nested fields can be represented with dot
+delimiters.</p></li>
+<li><p><strong>many</strong> – Should be set to <cite>True</cite> if <code class="docutils literal notranslate"><span class="pre">obj</span></code> is a collection
+so that the object will be serialized to a list.</p></li>
+<li><p><strong>load_only</strong> – Fields to skip during serialization (write-only fields)</p></li>
+<li><p><strong>dump_only</strong> – Fields to skip during deserialization (read-only fields)</p></li>
+<li><p><strong>partial</strong> – Whether to ignore missing fields and not require
+any fields declared. Propagates down to <code class="docutils literal notranslate"><span class="pre">Nested</span></code> fields as well. If
+its value is an iterable, only missing fields listed in that iterable
+will be ignored. Use dot delimiters to specify nested fields.</p></li>
+<li><p><strong>unknown</strong> – Whether to exclude, include, or raise an error for unknown
+fields in the data. Use <cite>EXCLUDE</cite>, <cite>INCLUDE</cite> or <cite>RAISE</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.0.0: </span>Remove <code class="docutils literal notranslate"><span class="pre">prefix</span></code> parameter.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 4.0.0: </span>Remove <code class="docutils literal notranslate"><span class="pre">context</span></code> parameter.</p>
+</div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_commons.schemas.LabelValueDict.label">
 <span class="sig-name descname"><span class="pre">label</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#LabelValueDict.label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.LabelValueDict.label" title="Lien vers cette définition">¶</a></dt>
@@ -644,25 +914,126 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="geonature.core.gn_commons.schemas.CastableField">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.schemas.</span></span><span class="sig-name descname"><span class="pre">CastableField</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#CastableField"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.CastableField" title="Lien vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.schemas.</span></span><span class="sig-name descname"><span class="pre">CastableField</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">missing_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dump_default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">missing_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">marshmallow.types.Validator</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">marshmallow.types.Validator</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pre_load</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">marshmallow.types.PreLoadCallable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">marshmallow.types.PreLoadCallable</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_load</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">marshmallow.types.PostLoadCallable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">marshmallow.types.PostLoadCallable</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(disponible dans Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_none</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(disponible dans Python v3.14)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(disponible dans Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dump_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(disponible dans Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">marshmallow.types.ErrorMessages</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#CastableField"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.CastableField" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">marshmallow.fields.Field</span></code></p>
 <p>A field which tries to cast the value to int or float before returning it.
 If the value is not castable, the default value is returned.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="geonature.core.gn_commons.schemas.CastableField._serialize">
 <span class="sig-name descname"><span class="pre">_serialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#CastableField._serialize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.CastableField._serialize" title="Lien vers cette définition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Serializes <code class="docutils literal notranslate"><span class="pre">value</span></code> to a basic Python datatype. Noop by default.
+Concrete <code class="xref py py-class docutils literal notranslate"><span class="pre">Field</span></code> classes should implement this method.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">TitleCase</span><span class="p">(</span><span class="n">Field</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – The value to be serialized.</p></li>
+<li><p><strong>attr</strong> – The attribute or key on the object to be serialized.</p></li>
+<li><p><strong>obj</strong> – The object the value was pulled from.</p></li>
+<li><p><strong>kwargs</strong> – Field-specific keyword arguments.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>The serialized value</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="geonature.core.gn_commons.schemas.TAdditionalFieldsSchema">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.schemas.</span></span><span class="sig-name descname"><span class="pre">TAdditionalFieldsSchema</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#TAdditionalFieldsSchema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.TAdditionalFieldsSchema" title="Lien vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.gn_commons.schemas.</span></span><span class="sig-name descname"><span class="pre">TAdditionalFieldsSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#TAdditionalFieldsSchema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.TAdditionalFieldsSchema" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">utils_flask_sqla.schema.SmartRelationshipsMixin</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.utils.env.MA.SQLAlchemyAutoSchema</span></code></p>
+<p>This mixin automatically exclude from serialization:</p>
+<ul class="simple">
+<li><p>Nested, RelatedList and Related fields</p></li>
+<li><p>all fields with exclude=True in their metadata (e.g. <code class="docutils literal notranslate"><span class="pre">fields.String(metadata={'exclude':</span> <span class="pre">True})</span></code>)</p></li>
+<li><p>For SQLAlchemyAutoSchema, all deffered columns</p></li>
+</ul>
+<p>Default marshmallow behaviour is to serialize only fields specified in <code class="docutils literal notranslate"><span class="pre">only</span></code>. This mixin add these:</p>
+<ul class="simple">
+<li><p>If they are only Nested fields in <code class="docutils literal notranslate"><span class="pre">only</span></code>, they are added to serialized fields <em>along with</em> default serialized fields.</p></li>
+<li><p>To serialize Nested fields only and not default serialized fields, add <code class="docutils literal notranslate"><span class="pre">&quot;-&quot;</span></code> special value to <code class="docutils literal notranslate"><span class="pre">only</span></code>.</p></li>
+<li><p>To add excluded fields (through metadata or deffered fields) to the serialization <em>in addition</em> to default serialized fields,
+use “+field_name” syntax.</p></li>
+</ul>
+<p>Examples :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">FooSchema</span><span class="p">(</span><span class="n">SmartRelationshipsMixin</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Int</span><span class="p">()</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Str</span><span class="p">()</span>
+    <span class="n">default_excluded_field</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;exclude&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+    <span class="n">relationship</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">OtherSchema</span><span class="p">)</span> <span class="c1"># or field.RelatedList() / field.Related()</span>
+
+<span class="n">FooSchema</span><span class="p">()</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;toto&quot;</span> <span class="p">}</span>
+<span class="n">FooSchema</span><span class="p">(</span><span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+<span class="n">FooSchema</span><span class="p">(</span><span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;default_excluded_field&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="s2">&quot;default_excluded_field&quot;</span><span class="p">:</span> <span class="s2">&quot;test&quot;</span><span class="p">}</span>
+<span class="n">FooSchema</span><span class="p">(</span><span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;+default_excluded_field&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;toto&quot;</span><span class="p">,</span> <span class="s2">&quot;default_excluded_field&quot;</span><span class="p">:</span> <span class="s2">&quot;test&quot;</span><span class="p">}</span>
+<span class="n">FooSchema</span><span class="p">(</span><span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;relationship&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;toto&quot;</span><span class="p">,</span>  <span class="s2">&quot;relationship&quot;</span><span class="p">:</span> <span class="p">{</span><span class="n">OtherSchema</span><span class="o">...</span><span class="p">}</span> <span class="p">}</span>
+<span class="n">FooSchema</span><span class="p">(</span><span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;relationship&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;relationship&quot;</span><span class="p">:</span> <span class="p">{</span><span class="n">OtherSchema</span><span class="o">...</span><span class="p">}}</span>
+<span class="n">FooSchema</span><span class="p">(</span><span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;relationship&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="s2">&quot;relationship&quot;</span><span class="p">:</span> <span class="p">{</span><span class="n">OtherSchema</span><span class="o">...</span><span class="p">}}</span>
+</pre></div>
+</div>
 <dl class="py class">
 <dt class="sig sig-object py" id="geonature.core.gn_commons.schemas.TAdditionalFieldsSchema.Meta">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Meta</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#TAdditionalFieldsSchema.Meta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.TAdditionalFieldsSchema.Meta" title="Lien vers cette définition">¶</a></dt>
-<dd><dl class="py attribute">
+<dd><p>Options object for a Schema.</p>
+<p>Example usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">marshmallow</span><span class="w"> </span><span class="kn">import</span> <span class="n">Schema</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MySchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;email&quot;</span><span class="p">,</span> <span class="s2">&quot;date_created&quot;</span><span class="p">)</span>
+        <span class="n">exclude</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="s2">&quot;secret_attribute&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition-a-note-on-type-checking admonition">
+<p class="admonition-title">A note on type checking</p>
+<p>Type checkers will only check the attributes of the <cite>Meta &lt;marshmallow.Schema.Meta&gt;</cite>
+class if you explicitly subclass <cite>marshmallow.Schema.Meta</cite>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">marshmallow</span><span class="w"> </span><span class="kn">import</span> <span class="n">Schema</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MySchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="c1"># Not checked by type checkers</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">additional</span> <span class="o">=</span> <span class="kc">True</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MySchema2</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="c1"># Type checkers will check attributes</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">(</span><span class="n">Schema</span><span class="o">.</span><span class="n">Meta</span><span class="p">):</span>
+        <span class="n">additional</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># Incompatible types in assignment</span>
+</pre></div>
+</div>
+</div>
+<div class="versionremoved">
+<p><span class="versionmodified removed">Supprimé dans la version 3.0.0b7: </span>Remove <code class="docutils literal notranslate"><span class="pre">strict</span></code>.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Ajouté dans la version 3.0.0b12: </span>Add <cite>unknown</cite>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.0.0b17: </span>Rename <code class="docutils literal notranslate"><span class="pre">dateformat</span></code> to <cite>datetimeformat</cite>.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Ajouté dans la version 3.9.0: </span>Add <cite>timeformat</cite>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.26.0: </span>Deprecate <code class="docutils literal notranslate"><span class="pre">ordered</span></code>. Field order is preserved by default.</p>
+</div>
+<div class="versionremoved">
+<p><span class="versionmodified removed">Supprimé dans la version 4.0.0: </span>Remove <code class="docutils literal notranslate"><span class="pre">ordered</span></code>.</p>
+</div>
+<dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.gn_commons.schemas.TAdditionalFieldsSchema.Meta.model">
 <span class="sig-name descname"><span class="pre">model</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#TAdditionalFieldsSchema.Meta.model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.TAdditionalFieldsSchema.Meta.model" title="Lien vers cette définition">¶</a></dt>
 <dd></dd></dl>
@@ -712,7 +1083,20 @@ If the value is not castable, the default value is returned.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="geonature.core.gn_commons.schemas.TAdditionalFieldsSchema.load">
 <span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">many</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/gn_commons/schemas.html#TAdditionalFieldsSchema.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.gn_commons.schemas.TAdditionalFieldsSchema.load" title="Lien vers cette définition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Deserialize data. If <code class="docutils literal notranslate"><span class="pre">load_instance</span></code> is set to <cite>True</cite>
+in the schema meta options, load the data as model instance(s).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – The data to deserialize.</p></li>
+<li><p><strong>session</strong> – SQLAlchemy <cite>session &lt;sqlalchemy.orm.Session&gt;</cite>.</p></li>
+<li><p><strong>instance</strong> – Existing model instance to modify.</p></li>
+<li><p><strong>transient</strong> – If <cite>True</cite>, load transient model instance(s).</p></li>
+<li><p><strong>kwargs</strong> – Same keyword arguments as <cite>marshmallow.Schema.load</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
@@ -858,10 +1242,10 @@ If the value is not castable, the default value is returned.</p>
       
     </aside>
   </div>
-</div><script src="../../../../../_static/documentation_options.js?v=c53d93e3"></script>
-    <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
+</div><script src="../../../../../_static/documentation_options.js?v=f2c51989"></script>
+    <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/scripts/furo.js?v=46bd48cc"></script>
-    <script src="../../../../../_static/translations.js?v=041d0952"></script>
+    <script src="../../../../../_static/translations.js?v=e6b791cb"></script>
     </body>
 </html>

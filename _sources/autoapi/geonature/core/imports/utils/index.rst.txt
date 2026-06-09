@@ -38,6 +38,7 @@ Functions
    geonature.core.imports.utils.get_mapping_data
    geonature.core.imports.utils.get_required
    geonature.core.imports.utils.compute_bounding_box
+   geonature.core.imports.utils.get_constant_value_from_mapping
 
 
 Module Contents
@@ -309,4 +310,6 @@ Module Contents
    valid_bbox : dict
        The bounding box of all entities in the given import, in GeoJSON format.
 
+
+.. py:function:: get_constant_value_from_mapping(mapping: Optional[dict], default_value: Any) -> Any
 

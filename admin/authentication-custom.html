@@ -6,11 +6,11 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Recherche" href="../search.html">
         <link rel="prefetch" href="../_static/LogoGeonature.jpg" as="image">
 
-    <!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 -->
-        <title>Se connecter à d’autres fournisseurs d’identités - Documentation GeoNature 2.17.1</title>
+    <!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>Se connecter à d’autres fournisseurs d’identité - Documentation GeoNature 2.17.2</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
-    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
     
     
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Documentation GeoNature 2.17.1</div></a>
+      <a href="../index.html"><div class="brand">Documentation GeoNature 2.17.2</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -187,7 +187,7 @@
     <img class="sidebar-logo" src="../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.17.1</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.17.2</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -446,9 +446,9 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="se-connecter-a-d-autres-fournisseurs-d-identites">
-<h1>Se connecter à d’autres fournisseurs d’identités<a class="headerlink" href="#se-connecter-a-d-autres-fournisseurs-d-identites" title="Lien vers cette rubrique">¶</a></h1>
-<p>Depuis la version 2.15, il est maintenant possible de se connecter à GeoNature à l’aide de fournisseurs d’identités externes (comme Google, GitHub ou INPN).
+          <section id="se-connecter-a-d-autres-fournisseurs-d-identite">
+<h1>Se connecter à d’autres fournisseurs d’identité<a class="headerlink" href="#se-connecter-a-d-autres-fournisseurs-d-identite" title="Lien vers cette rubrique">¶</a></h1>
+<p>Depuis la version 2.15, il est maintenant possible de se connecter à GeoNature à l’aide de fournisseurs d’identité externes (comme Google, GitHub ou INPN).
 Pour cela, il est nécessaire d’implémenter le protocole de connexion pour permettre à GeoNature de communiquer avec ces fournisseurs.
 Actuellement, GeoNature vient avec plusieurs protocoles de connexion implémentés, tels que :</p>
 <ul class="simple">
@@ -458,10 +458,10 @@ Actuellement, GeoNature vient avec plusieurs protocoles de connexion implément�
 </ul>
 <section id="ajouter-un-nouveau-fournisseur-d-identite">
 <h2>Ajouter un nouveau fournisseur d’identité<a class="headerlink" href="#ajouter-un-nouveau-fournisseur-d-identite" title="Lien vers cette rubrique">¶</a></h2>
-<p>Pour ajouter un nouveau fournisseur d’identités à votre instance de GeoNature, vous devez ajouter une section <code class="docutils literal notranslate"><span class="pre">[[AUTHENTICATION.PROVIDERS]]</span></code> dans la partie <code class="docutils literal notranslate"><span class="pre">AUTHENTICATION</span></code> de votre fichier de configuration.
+<p>Pour ajouter un nouveau fournisseur d’identité à votre instance de GeoNature, vous devez ajouter une section <code class="docutils literal notranslate"><span class="pre">[[AUTHENTICATION.PROVIDERS]]</span></code> dans la partie <code class="docutils literal notranslate"><span class="pre">AUTHENTICATION</span></code> de votre fichier de configuration.
 Chaque section doit comporter deux variables obligatoires: <code class="docutils literal notranslate"><span class="pre">module</span></code> et <code class="docutils literal notranslate"><span class="pre">id_provider</span></code>. La variable <code class="docutils literal notranslate"><span class="pre">module</span></code> indique le chemin vers la classe Python qui implémente le protocole de connexion, tandis que <code class="docutils literal notranslate"><span class="pre">id_provider</span></code> indique l’identifiant unique du fournisseur d’identité.
 Vous devez également ajouter les variables de configuration spécifiques au protocole de connexion correspondant.</p>
-<p>Dans l’exemple ci-dessous, on déclare deux fournisseurs d’identités : le premier est le fournisseur d’identité par défaut (local) et le deuxième permet de se connecter à l’INPN.</p>
+<p>Dans l’exemple ci-dessous, on déclare deux fournisseurs d’identité : le premier est le fournisseur d’identité par défaut (local) et le deuxième permet de se connecter à l’INPN.</p>
 <div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[AUTHENTICATION]</span>
 <span class="w">    </span><span class="n">DEFAULT_RECONCILIATION_GROUP_ID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span>
 <span class="w">    </span><span class="k">[[AUTHENTICATION.PROVIDERS]]</span>
@@ -521,7 +521,7 @@ Vous devez également ajouter les variables de configuration spécifiques au pro
     <span class="n">is_external</span> <span class="o">=</span> <span class="kc">True</span> <span class="c1"># si redirection vers un portail de connexion externe</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">authenticate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Response</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">User</span><span class="p">]:</span>
-        <span class="k">pass</span> <span class="c1"># doit retourner un utilisateur (User) ou rediriger (flask.Redirect) vers le portail de connexion du fournisseur d&#39;identités</span>
+        <span class="k">pass</span> <span class="c1"># doit retourner un utilisateur (User) ou rediriger (flask.Redirect) vers le portail de connexion du fournisseur d&#39;identité</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">authorize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># appeler par /auth/authorize si redirection d&#39;un portail de connexion externe</span>
@@ -534,7 +534,7 @@ Vous devez également ajouter les variables de configuration spécifiques au pro
         <span class="k">class</span><span class="w"> </span><span class="nc">SchemaConf</span><span class="p">(</span><span class="n">ProviderConfigurationSchema</span><span class="p">):</span>
             <span class="n">VAR</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">configuration</span> <span class="o">=</span> <span class="n">SchemaConf</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span> <span class="c1"># Si besoin d&#39;un processus de validation</span>
-        <span class="o">...</span><span class="c1"># Configuration du fournisseur d&#39;identités</span>
+        <span class="o">...</span><span class="c1"># Configuration du fournisseur d&#39;identité</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -544,11 +544,16 @@ Vous devez également ajouter les variables de configuration spécifiques au pro
 </section>
 <section id="desactiver-l-authentification-par-defaut">
 <h2>Désactiver l’authentification par défaut<a class="headerlink" href="#desactiver-l-authentification-par-defaut" title="Lien vers cette rubrique">¶</a></h2>
-<p>Si vous souhaitez désactiver l’authentification par défaut au profit d’un ou plusieurs autres fournisseurs d’identités, il suffit de ne pas déclarer celui-ci dans la section <cite>[[AUTHENTICATION.PROVIDERS]]</cite> dans la partie <cite>AUTHENTICATION</cite> de la configuration.</p>
+<p>Si vous souhaitez désactiver l’authentification par défaut au profit d’un ou plusieurs autres fournisseurs d’identité, il suffit de ne pas déclarer celui-ci dans la section <code class="docutils literal notranslate"><span class="pre">[[AUTHENTICATION.PROVIDERS]]</span></code> dans la partie <cite>AUTHENTICATION</cite> de la configuration.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Si un seul fournisseur d’identités (différent de l’authentification par défaut) est déclaré dans la section <cite>[[AUTHENTICATION.PROVIDERS]]</cite> de la configuration, l’utilisateur sera redirigé automatiquement vers le portail de connexion de ce dernier.</p>
+<p>Si un seul fournisseur d’identité (différent de l’authentification par défaut) est déclaré dans la section <code class="docutils literal notranslate"><span class="pre">[[AUTHENTICATION.PROVIDERS]]</span></code> de la configuration, l’utilisateur sera redirigé automatiquement vers le portail de connexion de ce dernier.</p>
 </div>
+</section>
+<section id="hierarchiser-differents-fournisseurs-d-identite">
+<h2>Hiérarchiser différents fournisseurs d’identité<a class="headerlink" href="#hierarchiser-differents-fournisseurs-d-identite" title="Lien vers cette rubrique">¶</a></h2>
+<p>L’attribut <code class="docutils literal notranslate"><span class="pre">is_secondary</span></code> permet de hiérarchiser l’affichage des fournisseurs d’identité lorsque plusieurs sont activés. Il suffit d’ajouter la ligne <code class="docutils literal notranslate"><span class="pre">is_secondary</span> <span class="pre">=</span> <span class="pre">true</span></code> à la configuration <code class="docutils literal notranslate"><span class="pre">[[AUTHENTICATION.PROVIDERS]]</span></code> d’un fournisseur d’identité pour qu’il s’affiche derrière un composant <cite>details</cite>.
+Les autres fournisseurs d’identité ont par défaut le paramètre <code class="docutils literal notranslate"><span class="pre">is_secondary</span> <span class="pre">=</span> <span class="pre">false</span></code> et restent visibles. L’ordre d’affichage au sein de chaque section (fournisseurs principaux et fournisseurs secondaires) dépend de leur ordre dans le fichier de configuration.</p>
 </section>
 </section>
 
@@ -589,11 +594,12 @@ Vous devez également ajouter les variables de configuration spécifiques au pro
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Se connecter à d’autres fournisseurs d’identités</a><ul>
+<li><a class="reference internal" href="#">Se connecter à d’autres fournisseurs d’identité</a><ul>
 <li><a class="reference internal" href="#ajouter-un-nouveau-fournisseur-d-identite">Ajouter un nouveau fournisseur d’identité</a></li>
 <li><a class="reference internal" href="#se-connecter-a-un-autre-geonature">Se connecter à un autre GeoNature</a></li>
 <li><a class="reference internal" href="#creer-son-propre-module-de-connexion">Créer son propre module de connexion</a></li>
 <li><a class="reference internal" href="#desactiver-l-authentification-par-defaut">Désactiver l’authentification par défaut</a></li>
+<li><a class="reference internal" href="#hierarchiser-differents-fournisseurs-d-identite">Hiérarchiser différents fournisseurs d’identité</a></li>
 </ul>
 </li>
 </ul>
@@ -605,10 +611,10 @@ Vous devez également ajouter les variables de configuration spécifiques au pro
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=c53d93e3"></script>
-    <script src="../_static/doctools.js?v=9a2dae69"></script>
+</div><script src="../_static/documentation_options.js?v=f2c51989"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
-    <script src="../_static/translations.js?v=041d0952"></script>
+    <script src="../_static/translations.js?v=e6b791cb"></script>
     </body>
 </html>

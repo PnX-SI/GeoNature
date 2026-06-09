@@ -44,7 +44,8 @@ Functions
    geonature.core.gn_meta.routes.get_acquisition_framework_stats_route
    geonature.core.gn_meta.routes.get_acquisition_framework_bbox
    geonature.core.gn_meta.routes.call_extended_af_publish
-   geonature.core.gn_meta.routes.publish_acquisition_framework
+   geonature.core.gn_meta.routes.open_acquisition_framework
+   geonature.core.gn_meta.routes.close_acquisition_framework
 
 
 Module Contents
@@ -187,9 +188,14 @@ Module Contents
    If a route with the name extended_publish, we call it.
 
 
-.. py:function:: publish_acquisition_framework(af_id)
+.. py:function:: open_acquisition_framework(af_id)
 
-   Publish an acquisition framework
+   Open an acquisition framework
+
+
+.. py:function:: close_acquisition_framework(af_id)
+
+   close an acquisition framework
    .. :quickref: Metadata;
 
 

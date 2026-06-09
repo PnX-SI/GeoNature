@@ -14,6 +14,7 @@ Attributes
    geonature.core.gn_synthese.models.cor_observer_synthese
    geonature.core.gn_synthese.models.corAreaSynthese
    geonature.core.gn_synthese.models.source_subquery
+   geonature.core.gn_synthese.models.request_nb_obs_synthese
 
 
 Classes
@@ -57,6 +58,14 @@ Module Contents
 .. py:class:: TSources
 
    Bases: :py:obj:`geonature.utils.env.DB.Model`
+
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
 
 
    .. py:attribute:: __tablename__
@@ -104,6 +113,14 @@ Module Contents
    Bases: :py:obj:`geonature.utils.env.DB.Model`
 
 
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+
    .. py:attribute:: __tablename__
       :value: 'cor_observer_synthese'
 
@@ -120,9 +137,18 @@ Module Contents
 
 .. py:data:: corAreaSynthese
 
-.. py:class:: SyntheseLogEntryQuery
+.. py:class:: SyntheseLogEntryQuery(entities, session=None)
 
    Bases: :py:obj:`flask_sqlalchemy.query.Query`
+
+
+   SQLAlchemy :class:`~sqlalchemy.orm.query.Query` subclass with some extra methods
+   useful for querying in a web application.
+
+   This is the default query class for :attr:`.Model.query`.
+
+   .. versionchanged:: 3.0
+       Renamed to ``Query`` from ``BaseQuery``.
 
 
    .. py:attribute:: sortable_columns
@@ -157,9 +183,18 @@ Module Contents
    .. py:method:: sort(columns: List[str])
 
 
-.. py:class:: SyntheseQuery
+.. py:class:: SyntheseQuery(entities, session=None)
 
    Bases: :py:obj:`utils_flask_sqla_geo.mixins.GeoFeatureCollectionMixin`, :py:obj:`flask_sqlalchemy.query.Query`
+
+
+   SQLAlchemy :class:`~sqlalchemy.orm.query.Query` subclass with some extra methods
+   useful for querying in a web application.
+
+   This is the default query class for :attr:`.Model.query`.
+
+   .. versionchanged:: 3.0
+       Renamed to ``Query`` from ``BaseQuery``.
 
 
    .. py:method:: join_nomenclatures()
@@ -174,6 +209,14 @@ Module Contents
 .. py:class:: CorAreaSynthese
 
    Bases: :py:obj:`geonature.utils.env.DB.Model`
+
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
 
 
    .. py:attribute:: __tablename__
@@ -195,6 +238,14 @@ Module Contents
    Bases: :py:obj:`geonature.utils.env.DB.Model`
 
 
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+
    .. py:attribute:: __tablename__
       :value: 'synthese'
 
@@ -204,6 +255,10 @@ Module Contents
 
 
    .. py:attribute:: query_class
+
+      Query class used by :attr:`query`. Defaults to :attr:`.SQLAlchemy.Query`, which
+      defaults to :class:`.Query`.
+
 
 
    .. py:attribute:: nomenclature_fields
@@ -521,17 +576,31 @@ Module Contents
 
 
    .. py:method:: join_nomenclatures(**kwargs)
+      :classmethod:
+
 
 
    .. py:method:: lateraljoin_last_validation(**kwargs)
+      :classmethod:
+
 
 
    .. py:method:: filter_by_scope(scope, user=None, **kwargs)
+      :classmethod:
+
 
 
 .. py:class:: DefaultsNomenclaturesValue
 
    Bases: :py:obj:`geonature.utils.env.DB.Model`
+
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
 
 
    .. py:attribute:: __tablename__
@@ -562,6 +631,14 @@ Module Contents
    Bases: :py:obj:`geonature.utils.env.DB.Model`
 
 
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+
    .. py:attribute:: __tablename__
       :value: 'bib_reports_types'
 
@@ -579,6 +656,14 @@ Module Contents
 .. py:class:: TReport
 
    Bases: :py:obj:`geonature.utils.env.DB.Model`
+
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
 
 
    .. py:attribute:: __tablename__
@@ -622,6 +707,14 @@ Module Contents
 .. py:class:: VSyntheseForWebApp
 
    Bases: :py:obj:`geonature.utils.env.DB.Model`
+
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
 
 
    .. py:attribute:: __tablename__
@@ -854,6 +947,9 @@ Module Contents
    .. py:attribute:: id_nomenclature_behaviour
 
 
+   .. py:attribute:: id_nomenclature_biogeo_status
+
+
    .. py:attribute:: reference_biblio
 
 
@@ -891,6 +987,14 @@ Module Contents
 .. py:class:: VColorAreaTaxon
 
    Bases: :py:obj:`geonature.utils.env.DB.Model`
+
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
 
 
    .. py:attribute:: __tablename__
@@ -938,6 +1042,10 @@ Module Contents
 
    .. py:attribute:: query_class
 
+      Query class used by :attr:`query`. Defaults to :attr:`.SQLAlchemy.Query`, which
+      defaults to :class:`.Query`.
+
+
 
    .. py:attribute:: id_synthese
 
@@ -949,9 +1057,13 @@ Module Contents
 
 
    .. py:method:: filter_by_params(params, **kwargs)
+      :classmethod:
+
 
 
    .. py:method:: filter_by_datetime(col, dt: str = None, **kwargs)
+      :classmethod:
+
 
       Filter on date only with operator among "<,>,=<,>="
 
@@ -968,7 +1080,11 @@ Module Contents
 
 
    .. py:method:: sort(columns: List[str], *, query)
+      :classmethod:
+
 
 
 .. py:data:: source_subquery
+
+.. py:data:: request_nb_obs_synthese
 

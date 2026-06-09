@@ -6,11 +6,11 @@
 <link rel="index" title="Index" href="../../../../../genindex.html"><link rel="search" title="Recherche" href="../../../../../search.html"><link rel="next" title="geonature.core.imports.admin" href="../admin/index.html"><link rel="prev" title="geonature.core.imports" href="../index.html">
         <link rel="prefetch" href="../../../../../_static/LogoGeonature.jpg" as="image">
 
-    <!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 -->
-        <title>geonature.core.imports.actions - Documentation GeoNature 2.17.1</title>
+    <!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>geonature.core.imports.actions - Documentation GeoNature 2.17.2</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=7bdb33bb" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
     
     
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">Documentation GeoNature 2.17.1</div></a>
+      <a href="../../../../../index.html"><div class="brand">Documentation GeoNature 2.17.2</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -187,7 +187,7 @@
     <img class="sidebar-logo" src="../../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.17.1</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.17.2</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -649,18 +649,31 @@ database.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="geonature.core.imports.actions.ImportActions.get_dataset_transient_column_name">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_dataset_transient_column_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/actions.html#ImportActions.get_dataset_transient_column_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.actions.ImportActions.get_dataset_transient_column_name" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Retrieves the name of the transient column associated with the dataset.</p>
+<section id="id10">
+<h3>Returns<a class="headerlink" href="#id10" title="Lien vers cette rubrique">¶</a></h3>
+<dl class="simple">
+<dt>str</dt><dd><p>Always returns « id_dataset » unless overridden.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="geonature.core.imports.actions.ImportActions.remove_data_from_destination">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">remove_data_from_destination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imprt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../models/index.html#geonature.core.imports.models.TImports" title="geonature.core.imports.models.TImports"><span class="pre">geonature.core.imports.models.TImports</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/actions.html#ImportActions.remove_data_from_destination"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.actions.ImportActions.remove_data_from_destination" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Remove data from destination database for a given import.</p>
-<section id="id10">
-<h3>Parameters<a class="headerlink" href="#id10" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id11">
+<h3>Parameters<a class="headerlink" href="#id11" title="Lien vers cette rubrique">¶</a></h3>
 <dl class="simple">
 <dt>imprt<span class="classifier">TImports</span></dt><dd><p>The import to remove data from.</p>
 </dd>
 </dl>
 </section>
-<section id="id11">
-<h3>Notes<a class="headerlink" href="#id11" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id12">
+<h3>Notes<a class="headerlink" href="#id12" title="Lien vers cette rubrique">¶</a></h3>
 <p>This method is called when an import is deleted.
 It removes from the destination database all data that was created
 by the import.</p>
@@ -679,22 +692,22 @@ be refused !</p>
 </dl>
 <p>Generate the report plot for the given import. The plot must be realized using the Bokeh library.
 Plot must be return as JSON using the Bokeh <cite>json_item</cite> function.</p>
-<section id="id12">
-<h3>Parameters<a class="headerlink" href="#id12" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id13">
+<h3>Parameters<a class="headerlink" href="#id13" title="Lien vers cette rubrique">¶</a></h3>
 <dl class="simple">
 <dt>imprt<span class="classifier">TImports</span></dt><dd><p>The import object containing information about the import process.</p>
 </dd>
 </dl>
 </section>
-<section id="id13">
-<h3>Returns<a class="headerlink" href="#id13" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id14">
+<h3>Returns<a class="headerlink" href="#id14" title="Lien vers cette rubrique">¶</a></h3>
 <dl class="simple">
 <dt>plot<span class="classifier">StandaloneEmbedJson</span></dt><dd><p>The standalone embed json data for the report plot.</p>
 </dd>
 </dl>
 </section>
-<section id="id14">
-<h3>Notes<a class="headerlink" href="#id14" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id15">
+<h3>Notes<a class="headerlink" href="#id15" title="Lien vers cette rubrique">¶</a></h3>
 <p>The report plot is a visualization of the imported data. It is used
 to provide a quick overview of the import data to the user.</p>
 </section>
@@ -708,15 +721,15 @@ to provide a quick overview of the import data to the user.</p>
 <dd class="field-odd"><p></p></dd>
 </dl>
 <p>Calculate the bounding box for the imported data.</p>
-<section id="id15">
-<h3>Parameters<a class="headerlink" href="#id15" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id16">
+<h3>Parameters<a class="headerlink" href="#id16" title="Lien vers cette rubrique">¶</a></h3>
 <dl class="simple">
 <dt>imprt<span class="classifier">TImports</span></dt><dd><p>The import object containing information about the import process.</p>
 </dd>
 </dl>
 </section>
-<section id="id16">
-<h3>Notes<a class="headerlink" href="#id16" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id17">
+<h3>Notes<a class="headerlink" href="#id17" title="Lien vers cette rubrique">¶</a></h3>
 <p>This method calculates the smallest polygon (bounding box) that contains all the
 geographic data imported. The bounding box is to be displayed in the import report
 once all data has been validated.</p>
@@ -729,8 +742,8 @@ once all data has been validated.</p>
 <dd><p>Check if observer mapping is a allowed for the current destination.</p>
 <p>If not overridden, is_observer_mapping_enabled returns the value
 of ALLOW_USER_MAPPING in the configuration file, which is True by default.</p>
-<section id="id17">
-<h3>Returns<a class="headerlink" href="#id17" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id18">
+<h3>Returns<a class="headerlink" href="#id18" title="Lien vers cette rubrique">¶</a></h3>
 <dl class="simple">
 <dt>bool</dt><dd><p>True if observer mapping is enabled</p>
 </dd>
@@ -822,6 +835,7 @@ of ALLOW_USER_MAPPING in the configuration file, which is True by default.</p>
 <li><a class="reference internal" href="#geonature.core.imports.actions.ImportActions.preprocess_transient_data"><code class="docutils literal notranslate"><span class="pre">ImportActions.preprocess_transient_data()</span></code></a></li>
 <li><a class="reference internal" href="#geonature.core.imports.actions.ImportActions.check_transient_data"><code class="docutils literal notranslate"><span class="pre">ImportActions.check_transient_data()</span></code></a></li>
 <li><a class="reference internal" href="#geonature.core.imports.actions.ImportActions.import_data_to_destination"><code class="docutils literal notranslate"><span class="pre">ImportActions.import_data_to_destination()</span></code></a></li>
+<li><a class="reference internal" href="#geonature.core.imports.actions.ImportActions.get_dataset_transient_column_name"><code class="docutils literal notranslate"><span class="pre">ImportActions.get_dataset_transient_column_name()</span></code></a></li>
 <li><a class="reference internal" href="#geonature.core.imports.actions.ImportActions.remove_data_from_destination"><code class="docutils literal notranslate"><span class="pre">ImportActions.remove_data_from_destination()</span></code></a></li>
 <li><a class="reference internal" href="#geonature.core.imports.actions.ImportActions.report_plot"><code class="docutils literal notranslate"><span class="pre">ImportActions.report_plot()</span></code></a></li>
 <li><a class="reference internal" href="#geonature.core.imports.actions.ImportActions.compute_bounding_box"><code class="docutils literal notranslate"><span class="pre">ImportActions.compute_bounding_box()</span></code></a></li>
@@ -842,10 +856,10 @@ of ALLOW_USER_MAPPING in the configuration file, which is True by default.</p>
       
     </aside>
   </div>
-</div><script src="../../../../../_static/documentation_options.js?v=c53d93e3"></script>
-    <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
+</div><script src="../../../../../_static/documentation_options.js?v=f2c51989"></script>
+    <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/scripts/furo.js?v=46bd48cc"></script>
-    <script src="../../../../../_static/translations.js?v=041d0952"></script>
+    <script src="../../../../../_static/translations.js?v=e6b791cb"></script>
     </body>
 </html>

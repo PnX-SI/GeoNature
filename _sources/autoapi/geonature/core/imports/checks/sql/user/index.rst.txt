@@ -24,9 +24,62 @@ Functions
 Module Contents
 ---------------
 
-.. py:class:: UserMatchingSchema
+.. py:class:: UserMatchingSchema(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: marshmallow.types.UnknownOption | None = None)
 
    Bases: :py:obj:`marshmallow.Schema`
+
+
+   Base schema class with which to define schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       Remove ``prefix`` parameter.
+
+   .. versionchanged:: 4.0.0
+       Remove ``context`` parameter.
 
 
    .. py:attribute:: user_to_match

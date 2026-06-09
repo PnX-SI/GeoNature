@@ -1,13 +1,6 @@
 /*
- * language_data.js
- * ~~~~~~~~~~~~~~~~
- *
  * This script contains the language-specific data used by searchtools.js,
  * namely the list of stopwords, stemmer, scorer and splitter.
- *
- * :copyright: Copyright 2007-2024 by the Sphinx team, see AUTHORS.
- * :license: BSD, see LICENSE for details.
- *
  */
 
 var stopwords = ["ai", "aie", "aient", "aies", "ait", "as", "au", "aura", "aurai", "auraient", "aurais", "aurait", "auras", "aurez", "auriez", "aurions", "aurons", "auront", "aux", "avaient", "avais", "avait", "avec", "avez", "aviez", "avions", "avons", "ayant", "ayez", "ayons", "c", "ce", "ceci", "cela", "cel\u00e0", "ces", "cet", "cette", "d", "dans", "de", "des", "du", "elle", "en", "es", "est", "et", "eu", "eue", "eues", "eurent", "eus", "eusse", "eussent", "eusses", "eussiez", "eussions", "eut", "eux", "e\u00fbmes", "e\u00fbt", "e\u00fbtes", "furent", "fus", "fusse", "fussent", "fusses", "fussiez", "fussions", "fut", "f\u00fbmes", "f\u00fbt", "f\u00fbtes", "ici", "il", "ils", "j", "je", "l", "la", "le", "les", "leur", "leurs", "lui", "m", "ma", "mais", "me", "mes", "moi", "mon", "m\u00eame", "n", "ne", "nos", "notre", "nous", "on", "ont", "ou", "par", "pas", "pour", "qu", "que", "quel", "quelle", "quelles", "quels", "qui", "s", "sa", "sans", "se", "sera", "serai", "seraient", "serais", "serait", "seras", "serez", "seriez", "serions", "serons", "seront", "ses", "soi", "soient", "sois", "soit", "sommes", "son", "sont", "soyez", "soyons", "suis", "sur", "t", "ta", "te", "tes", "toi", "ton", "tu", "un", "une", "vos", "votre", "vous", "y", "\u00e0", "\u00e9taient", "\u00e9tais", "\u00e9tait", "\u00e9tant", "\u00e9tiez", "\u00e9tions", "\u00e9t\u00e9", "\u00e9t\u00e9e", "\u00e9t\u00e9es", "\u00e9t\u00e9s", "\u00eates"];

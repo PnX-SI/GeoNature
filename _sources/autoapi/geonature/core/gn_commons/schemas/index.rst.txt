@@ -31,12 +31,61 @@ Module Contents
 
 .. py:data:: log
 
-.. py:class:: ModuleSchema
+.. py:class:: ModuleSchema(*args, **kwargs)
 
    Bases: :py:obj:`geonature.utils.env.MA.SQLAlchemyAutoSchema`
 
 
+   SQLAlchemyAutoSchema that automatically generates marshmallow fields
+   from a SQLAlchemy model's or table's column.
+   Uses the scoped session from Flask-SQLAlchemy by default.
+
+   See `marshmallow_sqlalchemy.SQLAlchemyAutoSchema` for more details
+   on the `SQLAlchemyAutoSchema` API.
+
+
    .. py:class:: Meta
+
+      Options object for a Schema.
+
+      Example usage: ::
+
+          from marshmallow import Schema
+
+
+          class MySchema(Schema):
+              class Meta:
+                  fields = ("id", "email", "date_created")
+                  exclude = ("password", "secret_attribute")
+
+      .. admonition:: A note on type checking
+
+          Type checkers will only check the attributes of the `Meta <marshmallow.Schema.Meta>`
+          class if you explicitly subclass `marshmallow.Schema.Meta`.
+
+          .. code-block:: python
+
+              from marshmallow import Schema
+
+
+              class MySchema(Schema):
+                  # Not checked by type checkers
+                  class Meta:
+                      additional = True
+
+
+              class MySchema2(Schema):
+                  # Type checkers will check attributes
+                  class Meta(Schema.Meta):
+                      additional = True  # Incompatible types in assignment
+
+      .. versionremoved:: 3.0.0b7 Remove ``strict``.
+      .. versionadded:: 3.0.0b12 Add `unknown`.
+      .. versionchanged:: 3.0.0b17 Rename ``dateformat`` to `datetimeformat`.
+      .. versionadded:: 3.9.0 Add `timeformat`.
+      .. versionchanged:: 3.26.0 Deprecate ``ordered``. Field order is preserved by default.
+      .. versionremoved:: 4.0.0 Remove ``ordered``.
+
 
       .. py:attribute:: model
 
@@ -52,12 +101,61 @@ Module Contents
 
 
 
-.. py:class:: MediaSchema
+.. py:class:: MediaSchema(*args, **kwargs)
 
    Bases: :py:obj:`geonature.utils.env.MA.SQLAlchemyAutoSchema`
 
 
+   SQLAlchemyAutoSchema that automatically generates marshmallow fields
+   from a SQLAlchemy model's or table's column.
+   Uses the scoped session from Flask-SQLAlchemy by default.
+
+   See `marshmallow_sqlalchemy.SQLAlchemyAutoSchema` for more details
+   on the `SQLAlchemyAutoSchema` API.
+
+
    .. py:class:: Meta
+
+      Options object for a Schema.
+
+      Example usage: ::
+
+          from marshmallow import Schema
+
+
+          class MySchema(Schema):
+              class Meta:
+                  fields = ("id", "email", "date_created")
+                  exclude = ("password", "secret_attribute")
+
+      .. admonition:: A note on type checking
+
+          Type checkers will only check the attributes of the `Meta <marshmallow.Schema.Meta>`
+          class if you explicitly subclass `marshmallow.Schema.Meta`.
+
+          .. code-block:: python
+
+              from marshmallow import Schema
+
+
+              class MySchema(Schema):
+                  # Not checked by type checkers
+                  class Meta:
+                      additional = True
+
+
+              class MySchema2(Schema):
+                  # Type checkers will check attributes
+                  class Meta(Schema.Meta):
+                      additional = True  # Incompatible types in assignment
+
+      .. versionremoved:: 3.0.0b7 Remove ``strict``.
+      .. versionadded:: 3.0.0b12 Add `unknown`.
+      .. versionchanged:: 3.0.0b17 Rename ``dateformat`` to `datetimeformat`.
+      .. versionadded:: 3.9.0 Add `timeformat`.
+      .. versionchanged:: 3.26.0 Deprecate ``ordered``. Field order is preserved by default.
+      .. versionremoved:: 4.0.0 Remove ``ordered``.
+
 
       .. py:attribute:: model
 
@@ -73,6 +171,8 @@ Module Contents
 
 
       .. py:attribute:: unknown
+         :value: 'exclude'
+
 
 
 
@@ -85,12 +185,61 @@ Module Contents
    .. py:method:: make_media(data, **kwargs)
 
 
-.. py:class:: TValidationSchema
+.. py:class:: TValidationSchema(*args, **kwargs)
 
    Bases: :py:obj:`geonature.utils.env.MA.SQLAlchemyAutoSchema`
 
 
+   SQLAlchemyAutoSchema that automatically generates marshmallow fields
+   from a SQLAlchemy model's or table's column.
+   Uses the scoped session from Flask-SQLAlchemy by default.
+
+   See `marshmallow_sqlalchemy.SQLAlchemyAutoSchema` for more details
+   on the `SQLAlchemyAutoSchema` API.
+
+
    .. py:class:: Meta
+
+      Options object for a Schema.
+
+      Example usage: ::
+
+          from marshmallow import Schema
+
+
+          class MySchema(Schema):
+              class Meta:
+                  fields = ("id", "email", "date_created")
+                  exclude = ("password", "secret_attribute")
+
+      .. admonition:: A note on type checking
+
+          Type checkers will only check the attributes of the `Meta <marshmallow.Schema.Meta>`
+          class if you explicitly subclass `marshmallow.Schema.Meta`.
+
+          .. code-block:: python
+
+              from marshmallow import Schema
+
+
+              class MySchema(Schema):
+                  # Not checked by type checkers
+                  class Meta:
+                      additional = True
+
+
+              class MySchema2(Schema):
+                  # Type checkers will check attributes
+                  class Meta(Schema.Meta):
+                      additional = True  # Incompatible types in assignment
+
+      .. versionremoved:: 3.0.0b7 Remove ``strict``.
+      .. versionadded:: 3.0.0b12 Add `unknown`.
+      .. versionchanged:: 3.0.0b17 Rename ``dateformat`` to `datetimeformat`.
+      .. versionadded:: 3.9.0 Add `timeformat`.
+      .. versionchanged:: 3.26.0 Deprecate ``ordered``. Field order is preserved by default.
+      .. versionremoved:: 4.0.0 Remove ``ordered``.
+
 
       .. py:attribute:: model
 
@@ -112,12 +261,61 @@ Module Contents
    .. py:attribute:: validator_role
 
 
-.. py:class:: BibWidgetSchema
+.. py:class:: BibWidgetSchema(*args, **kwargs)
 
    Bases: :py:obj:`geonature.utils.env.MA.SQLAlchemyAutoSchema`
 
 
+   SQLAlchemyAutoSchema that automatically generates marshmallow fields
+   from a SQLAlchemy model's or table's column.
+   Uses the scoped session from Flask-SQLAlchemy by default.
+
+   See `marshmallow_sqlalchemy.SQLAlchemyAutoSchema` for more details
+   on the `SQLAlchemyAutoSchema` API.
+
+
    .. py:class:: Meta
+
+      Options object for a Schema.
+
+      Example usage: ::
+
+          from marshmallow import Schema
+
+
+          class MySchema(Schema):
+              class Meta:
+                  fields = ("id", "email", "date_created")
+                  exclude = ("password", "secret_attribute")
+
+      .. admonition:: A note on type checking
+
+          Type checkers will only check the attributes of the `Meta <marshmallow.Schema.Meta>`
+          class if you explicitly subclass `marshmallow.Schema.Meta`.
+
+          .. code-block:: python
+
+              from marshmallow import Schema
+
+
+              class MySchema(Schema):
+                  # Not checked by type checkers
+                  class Meta:
+                      additional = True
+
+
+              class MySchema2(Schema):
+                  # Type checkers will check attributes
+                  class Meta(Schema.Meta):
+                      additional = True  # Incompatible types in assignment
+
+      .. versionremoved:: 3.0.0b7 Remove ``strict``.
+      .. versionadded:: 3.0.0b12 Add `unknown`.
+      .. versionchanged:: 3.0.0b17 Rename ``dateformat`` to `datetimeformat`.
+      .. versionadded:: 3.9.0 Add `timeformat`.
+      .. versionchanged:: 3.26.0 Deprecate ``ordered``. Field order is preserved by default.
+      .. versionremoved:: 4.0.0 Remove ``ordered``.
+
 
       .. py:attribute:: model
 
@@ -128,9 +326,62 @@ Module Contents
 
 
 
-.. py:class:: LabelValueDict
+.. py:class:: LabelValueDict(*, only: marshmallow.types.StrSequenceOrSet | None = None, exclude: marshmallow.types.StrSequenceOrSet = (), many: bool | None = None, load_only: marshmallow.types.StrSequenceOrSet = (), dump_only: marshmallow.types.StrSequenceOrSet = (), partial: bool | marshmallow.types.StrSequenceOrSet | None = None, unknown: marshmallow.types.UnknownOption | None = None)
 
    Bases: :py:obj:`marshmallow.Schema`
+
+
+   Base schema class with which to define schemas.
+
+   Example usage:
+
+   .. code-block:: python
+
+       import datetime as dt
+       from dataclasses import dataclass
+
+       from marshmallow import Schema, fields
+
+
+       @dataclass
+       class Album:
+           title: str
+           release_date: dt.date
+
+
+       class AlbumSchema(Schema):
+           title = fields.Str()
+           release_date = fields.Date()
+
+
+       album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+       schema = AlbumSchema()
+       data = schema.dump(album)
+       data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+
+   :param only: Whitelist of the declared fields to select when
+       instantiating the Schema. If None, all fields are used. Nested fields
+       can be represented with dot delimiters.
+   :param exclude: Blacklist of the declared fields to exclude
+       when instantiating the Schema. If a field appears in both `only` and
+       `exclude`, it is not used. Nested fields can be represented with dot
+       delimiters.
+   :param many: Should be set to `True` if ``obj`` is a collection
+       so that the object will be serialized to a list.
+   :param load_only: Fields to skip during serialization (write-only fields)
+   :param dump_only: Fields to skip during deserialization (read-only fields)
+   :param partial: Whether to ignore missing fields and not require
+       any fields declared. Propagates down to ``Nested`` fields as well. If
+       its value is an iterable, only missing fields listed in that iterable
+       will be ignored. Use dot delimiters to specify nested fields.
+   :param unknown: Whether to exclude, include, or raise an error for unknown
+       fields in the data. Use `EXCLUDE`, `INCLUDE` or `RAISE`.
+
+   .. versionchanged:: 3.0.0
+       Remove ``prefix`` parameter.
+
+   .. versionchanged:: 4.0.0
+       Remove ``context`` parameter.
 
 
    .. py:attribute:: label
@@ -139,7 +390,7 @@ Module Contents
    .. py:attribute:: value
 
 
-.. py:class:: CastableField
+.. py:class:: CastableField(*, load_default: Any = missing_, dump_default: Any = missing_, data_key: str | None = None, attribute: str | None = None, validate: marshmallow.types.Validator | Iterable[marshmallow.types.Validator] | None = None, pre_load: marshmallow.types.PreLoadCallable | Iterable[marshmallow.types.PreLoadCallable] | None = None, post_load: marshmallow.types.PostLoadCallable | Iterable[marshmallow.types.PostLoadCallable] | None = None, required: bool = False, allow_none: bool | None = None, load_only: bool = False, dump_only: bool = False, error_messages: marshmallow.types.ErrorMessages | None = None, metadata: Mapping[str, Any] | None = None)
 
    Bases: :py:obj:`marshmallow.fields.Field`
 
@@ -150,13 +401,104 @@ Module Contents
 
    .. py:method:: _serialize(value, attr, obj, **kwargs)
 
+      Serializes ``value`` to a basic Python datatype. Noop by default.
+      Concrete :class:`Field` classes should implement this method.
 
-.. py:class:: TAdditionalFieldsSchema
+      Example: ::
+
+          class TitleCase(Field):
+              def _serialize(self, value, attr, obj, **kwargs):
+                  if not value:
+                      return ""
+                  return str(value).title()
+
+      :param value: The value to be serialized.
+      :param attr: The attribute or key on the object to be serialized.
+      :param obj: The object the value was pulled from.
+      :param kwargs: Field-specific keyword arguments.
+      :return: The serialized value
+
+
+
+.. py:class:: TAdditionalFieldsSchema(*args, **kwargs)
 
    Bases: :py:obj:`utils_flask_sqla.schema.SmartRelationshipsMixin`, :py:obj:`geonature.utils.env.MA.SQLAlchemyAutoSchema`
 
 
+   This mixin automatically exclude from serialization:
+
+   * Nested, RelatedList and Related fields
+   * all fields with exclude=True in their metadata (e.g. ``fields.String(metadata={'exclude': True})``)
+   * For SQLAlchemyAutoSchema, all deffered columns
+
+   Default marshmallow behaviour is to serialize only fields specified in ``only``. This mixin add these:
+
+   * If they are only Nested fields in ``only``, they are added to serialized fields *along with* default serialized fields.
+   * To serialize Nested fields only and not default serialized fields, add ``"-"`` special value to ``only``.
+   * To add excluded fields (through metadata or deffered fields) to the serialization *in addition* to default serialized fields,
+     use '+field_name' syntax.
+
+   Examples :
+
+   .. code-block:: python
+
+      class FooSchema(SmartRelationshipsMixin):
+          id = fields.Int()
+          name = field.Str()
+          default_excluded_field = fields.Str(metadata={"exclude": True})
+          relationship = fields.Nested(OtherSchema) # or field.RelatedList() / field.Related()
+
+      FooSchema().dump() -> {"id": 1, "name": "toto" }
+      FooSchema(only=["id"]).dump() -> {"id": 1}
+      FooSchema(only=["default_excluded_field"]).dump() -> {"default_excluded_field": "test"}
+      FooSchema(only=["+default_excluded_field"]).dump() -> {"id": 1, "name": "toto", "default_excluded_field": "test"}
+      FooSchema(only=["relationship"]).dump() -> {"id": 1, "name": "toto",  "relationship": {OtherSchema...} }
+      FooSchema(only=["id", "relationship"]).dump() -> {"id": 1, "relationship": {OtherSchema...}}
+      FooSchema(only=["-", "relationship"]).dump() -> {"relationship": {OtherSchema...}}
+
+
    .. py:class:: Meta
+
+      Options object for a Schema.
+
+      Example usage: ::
+
+          from marshmallow import Schema
+
+
+          class MySchema(Schema):
+              class Meta:
+                  fields = ("id", "email", "date_created")
+                  exclude = ("password", "secret_attribute")
+
+      .. admonition:: A note on type checking
+
+          Type checkers will only check the attributes of the `Meta <marshmallow.Schema.Meta>`
+          class if you explicitly subclass `marshmallow.Schema.Meta`.
+
+          .. code-block:: python
+
+              from marshmallow import Schema
+
+
+              class MySchema(Schema):
+                  # Not checked by type checkers
+                  class Meta:
+                      additional = True
+
+
+              class MySchema2(Schema):
+                  # Type checkers will check attributes
+                  class Meta(Schema.Meta):
+                      additional = True  # Incompatible types in assignment
+
+      .. versionremoved:: 3.0.0b7 Remove ``strict``.
+      .. versionadded:: 3.0.0b12 Add `unknown`.
+      .. versionchanged:: 3.0.0b17 Rename ``dateformat`` to `datetimeformat`.
+      .. versionadded:: 3.9.0 Add `timeformat`.
+      .. versionchanged:: 3.26.0 Deprecate ``ordered``. Field order is preserved by default.
+      .. versionremoved:: 4.0.0 Remove ``ordered``.
+
 
       .. py:attribute:: model
 
@@ -189,5 +531,15 @@ Module Contents
 
 
    .. py:method:: load(data, *, many=None, **kwargs)
+
+      Deserialize data. If ``load_instance`` is set to `True`
+      in the schema meta options, load the data as model instance(s).
+
+      :param data: The data to deserialize.
+      :param session: SQLAlchemy `session <sqlalchemy.orm.Session>`.
+      :param instance: Existing model instance to modify.
+      :param transient: If `True`, load transient model instance(s).
+      :param kwargs: Same keyword arguments as `marshmallow.Schema.load`.
+
 
 

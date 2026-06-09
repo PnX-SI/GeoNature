@@ -28,17 +28,39 @@ Module Contents
 
 .. py:data:: log
 
-.. py:class:: TAdditionalFieldsForm
+.. py:class:: TAdditionalFieldsForm(fields, prefix='', meta=_default_meta)
 
    Bases: :py:obj:`flask_admin.form.BaseForm`
 
 
+   Base Form Class.  Provides core behaviour like field construction,
+   validation, and data and error proxying.
+
+
    .. py:method:: validate(extra_validators=None)
 
+      Validates the form by calling `validate` on each field.
 
-.. py:class:: BibFieldAdmin
+      :param extra_validators:
+          If provided, is a dict mapping field names to a sequence of
+          callables which will be passed as extra validators to the field's
+          `validate` method.
+
+      Returns `True` if no errors occur.
+
+
+
+.. py:class:: BibFieldAdmin(model: type[flask_admin._types.T_SQLALCHEMY_MODEL], session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, name: str | None = None, category: str | None = None, endpoint: str | None = None, url: str | None = None, static_folder: str | None = None, menu_class_name: str | None = None, menu_icon_type: str | None = None, menu_icon_value: str | None = None)
 
    Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`flask_admin.contrib.sqla.ModelView`
+
+
+   SQLAlchemy model view
+
+   Usage sample::
+
+       admin = Admin()
+       admin.add_view(ModelView(User, db.session))
 
 
    .. py:attribute:: module_code
@@ -53,9 +75,43 @@ Module Contents
 
    .. py:attribute:: form_base_class
 
+      Base form class. Will be used by form scaffolding function when creating model
+      form.
+
+      Useful if you want to have custom constructor or override some fields.
+
+      Example::
+
+          class MyBaseForm(Form):
+              def do_something(self):
+                  pass
+
+          class MyModelView(BaseModelView):
+              form_base_class = MyBaseForm
+
+
+
 
    .. py:attribute:: form_columns
       :value: ('field_name', 'field_label', 'type_widget', 'modules', 'objects', 'datasets', 'required',...
+
+
+      Collection of the model field names for the form. If set to `None` will
+      get them from the model.
+
+      Example::
+
+          class MyModelView(BaseModelView):
+              form_columns = ('name', 'email')
+
+      (Added in 1.4.0) SQLAlchemy model attributes can be used instead of
+      strings::
+
+          class MyModelView(BaseModelView):
+              form_columns = ('name', User.last_name)
+
+      SQLA Note: Model attributes must be on the same model as your ModelView
+      or you will need to use `inline_models`.
 
 
 
@@ -63,21 +119,63 @@ Module Contents
       :value: ('field_values', 'additional_attributes', 'key_label', 'key_value', 'multiselect', 'api',...
 
 
+      Collection of excluded list column names.
+
+      For example::
+
+          class MyModelView(BaseModelView):
+              column_exclude_list = ('last_name', 'email')
+
+
 
    .. py:attribute:: column_display_all_relations
       :value: True
 
 
+      Controls if list view should display all relations, not only many-to-one.
+
+
 
    .. py:attribute:: form_args
+
+      Dictionary of form field arguments. Refer to WTForms documentation for
+      list of possible options.
+
+      Example::
+
+          from wtforms.validators import DataRequired
+          class MyModelView(BaseModelView):
+              form_args = dict(
+                  name=dict(label='First Name', validators=[DataRequired()])
+              )
+
 
 
    .. py:attribute:: column_descriptions
 
+      Dictionary where key is column name and
+      value is description for `list view` column or add/edit form field.
 
-.. py:class:: TMobileAppsAdmin
+      For example::
+
+          class MyModelView(BaseModelView):
+              column_descriptions = dict(
+                  full_name='First and Last name'
+              )
+
+
+
+.. py:class:: TMobileAppsAdmin(model: type[flask_admin._types.T_SQLALCHEMY_MODEL], session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, name: str | None = None, category: str | None = None, endpoint: str | None = None, url: str | None = None, static_folder: str | None = None, menu_class_name: str | None = None, menu_icon_type: str | None = None, menu_icon_value: str | None = None)
 
    Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`flask_admin.contrib.sqla.ModelView`
+
+
+   SQLAlchemy model view
+
+   Usage sample::
+
+       admin = Admin()
+       admin.add_view(ModelView(User, db.session))
 
 
    .. py:attribute:: module_code
@@ -94,12 +192,56 @@ Module Contents
       :value: ('app_code', 'relative_path_apk', 'url_apk', 'package', 'version_code')
 
 
+      Collection of the model field names for the list view.
+      If set to `None`, will get them from the model.
+
+      For example::
+
+          class MyModelView(BaseModelView):
+              column_list = ('name', 'last_name', 'email')
+
+      (Added in 1.4.0) SQLAlchemy model attributes can be used instead of strings::
+
+          class MyModelView(BaseModelView):
+              column_list = ('name', User.last_name)
+
+      When using SQLAlchemy models, you can reference related columns like this::
+          class MyModelView(BaseModelView):
+              column_list = ('<relationship>.<related column name>',)
+
+
 
    .. py:attribute:: column_labels
+
+      Dictionary where key is column name and value is string to display.
+
+      For example::
+
+          class MyModelView(BaseModelView):
+              column_labels = dict(name='Name', last_name='Last Name')
+
 
 
    .. py:attribute:: form_columns
       :value: ('app_code', 'relative_path_apk', 'url_apk', 'package', 'version_code')
+
+
+      Collection of the model field names for the form. If set to `None` will
+      get them from the model.
+
+      Example::
+
+          class MyModelView(BaseModelView):
+              form_columns = ('name', 'email')
+
+      (Added in 1.4.0) SQLAlchemy model attributes can be used instead of
+      strings::
+
+          class MyModelView(BaseModelView):
+              form_columns = ('name', User.last_name)
+
+      SQLA Note: Model attributes must be on the same model as your ModelView
+      or you will need to use `inline_models`.
 
 
 
@@ -107,10 +249,26 @@ Module Contents
       :value: 'id_mobile_app'
 
 
+      Collection of excluded list column names.
 
-.. py:class:: TModulesAdmin
+      For example::
+
+          class MyModelView(BaseModelView):
+              column_exclude_list = ('last_name', 'email')
+
+
+
+.. py:class:: TModulesAdmin(model: type[flask_admin._types.T_SQLALCHEMY_MODEL], session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, name: str | None = None, category: str | None = None, endpoint: str | None = None, url: str | None = None, static_folder: str | None = None, menu_class_name: str | None = None, menu_icon_type: str | None = None, menu_icon_value: str | None = None)
 
    Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`flask_admin.contrib.sqla.ModelView`
+
+
+   SQLAlchemy model view
+
+   Usage sample::
+
+       admin = Admin()
+       admin.add_view(ModelView(User, db.session))
 
 
    .. py:attribute:: module_code
@@ -127,9 +285,20 @@ Module Contents
       :value: True
 
 
+      Setting this to true will enable the details view. This is recommended
+      when there are too many columns to display in the list_view.
+
+
 
    .. py:attribute:: action_disallowed_list
       :value: ['delete']
+
+
+      Set of disallowed action names. For example, if you want to disable
+      mass model deletion, do something like this:
+
+          class MyModelView(BaseModelView):
+              action_disallowed_list = ['delete']
 
 
 
@@ -137,9 +306,15 @@ Module Contents
       :value: False
 
 
+      Is model creation allowed
+
+
 
    .. py:attribute:: can_delete
       :value: False
+
+
+      Is model deletion allowed
 
 
 
@@ -147,9 +322,60 @@ Module Contents
       :value: ('module_code', 'module_label')
 
 
+      Collection of the searchable columns.
+
+      Example::
+
+          class MyModelView(ModelView):
+              column_searchable_list = ('name', 'email')
+
+      You can also pass columns::
+
+          class MyModelView(ModelView):
+              column_searchable_list = (User.name, User.email)
+
+      The following search rules apply:
+
+      - If you enter ``ZZZ`` in the UI search field, it will generate
+        ``ILIKE '%ZZZ%'`` statement against searchable columns.
+
+      - If you enter multiple words, each word will be searched separately, but
+        only rows that contain all words will be displayed. For example, searching
+        for ``abc def`` will find all rows that contain ``abc`` and ``def`` in one or
+        more columns.
+
+      - If you prefix your search term with ``^``, it will find all rows
+        that start with ``^``. So, if you entered ``^ZZZ`` then ``ILIKE 'ZZZ%'`` will
+        be used.
+
+      - If you prefix your search term with ``=``, it will perform an exact match.
+        For example, if you entered ``=ZZZ``, the statement ``ILIKE 'ZZZ'`` will be
+        used.
+
+
 
    .. py:attribute:: column_default_sort
       :value: [('module_order', False), ('id_module', False)]
+
+
+      Default sort column if no sorting is applied.
+
+      Example::
+
+          class MyModelView(BaseModelView):
+              column_default_sort = 'user'
+
+      You can use tuple to control ascending descending order. In following example,
+      items will be sorted in descending order::
+
+          class MyModelView(BaseModelView):
+              column_default_sort = ('user', True)
+
+      If you want to sort by more than one column,
+      you can pass a list of tuples::
+
+          class MyModelView(BaseModelView):
+              column_default_sort = [('name', True), ('last_name', True)]
 
 
 
@@ -157,9 +383,54 @@ Module Contents
       :value: ('module_order', 'module_code', 'module_label')
 
 
+      Collection of the sortable columns for the list view.
+      If set to `None`, will get them from the model.
+
+      For example::
+
+          class MyModelView(BaseModelView):
+              column_sortable_list = ('name', 'last_name')
+
+      If you want to explicitly specify field/column to be used while
+      sorting, you can use a tuple::
+
+          class MyModelView(BaseModelView):
+              column_sortable_list = ('name', ('user', 'user.username'))
+
+      You can also specify multiple fields to be used while sorting::
+
+          class MyModelView(BaseModelView):
+              column_sortable_list = (
+                  'name', ('user', ('user.first_name', 'user.last_name')))
+
+      When using SQLAlchemy models, model attributes can be used instead
+      of strings::
+
+          class MyModelView(BaseModelView):
+              column_sortable_list = ('name', ('user', User.username))
+
+
 
    .. py:attribute:: column_list
       :value: ('module_code', 'module_label', 'module_picto', 'module_order')
+
+
+      Collection of the model field names for the list view.
+      If set to `None`, will get them from the model.
+
+      For example::
+
+          class MyModelView(BaseModelView):
+              column_list = ('name', 'last_name', 'email')
+
+      (Added in 1.4.0) SQLAlchemy model attributes can be used instead of strings::
+
+          class MyModelView(BaseModelView):
+              column_list = ('name', User.last_name)
+
+      When using SQLAlchemy models, you can reference related columns like this::
+          class MyModelView(BaseModelView):
+              column_list = ('<relationship>.<related column name>',)
 
 
 
@@ -167,12 +438,42 @@ Module Contents
       :value: ('module_code', 'module_label', 'module_desc', 'module_comment', 'module_picto',...
 
 
+      Collection of the field names included in the details view.
+      If set to `None`, will get them from the model.
+
+
 
    .. py:attribute:: form_columns
       :value: ('module_label', 'module_desc', 'module_comment', 'module_picto', 'module_doc_url', 'module_order')
 
 
+      Collection of the model field names for the form. If set to `None` will
+      get them from the model.
+
+      Example::
+
+          class MyModelView(BaseModelView):
+              form_columns = ('name', 'email')
+
+      (Added in 1.4.0) SQLAlchemy model attributes can be used instead of
+      strings::
+
+          class MyModelView(BaseModelView):
+              form_columns = ('name', User.last_name)
+
+      SQLA Note: Model attributes must be on the same model as your ModelView
+      or you will need to use `inline_models`.
+
+
 
    .. py:attribute:: column_labels
+
+      Dictionary where key is column name and value is string to display.
+
+      For example::
+
+          class MyModelView(BaseModelView):
+              column_labels = dict(name='Name', last_name='Last Name')
+
 
 

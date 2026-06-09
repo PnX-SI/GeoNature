@@ -384,6 +384,11 @@ Package Contents
 
 
 
+   .. py:attribute:: CLOSED_ACQUISITION_FRAMEWORK
+      :value: 'CLOSED_ACQUISITION_FRAMEWORK'
+
+
+
    .. py:attribute:: MULTIPLE_ATTACHMENT_TYPE_CODE
       :value: 'MULTIPLE_ATTACHMENT_TYPE_CODE'
 
@@ -391,6 +396,11 @@ Package Contents
 
    .. py:attribute:: MULTIPLE_CODE_ATTACHMENT
       :value: 'MULTIPLE_CODE_ATTACHMENT'
+
+
+
+   .. py:attribute:: MULTIPLE_GEO_INFO_WARNING
+      :value: 'MULTIPLE_GEO_INFO_WARNING'
 
 
 
@@ -664,6 +674,14 @@ Package Contents
    Bases: :py:obj:`geonature.utils.env.db.Model`
 
 
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+
    .. py:attribute:: __tablename__
       :value: 'bib_fields'
 
@@ -743,6 +761,14 @@ Package Contents
    Bases: :py:obj:`geonature.utils.env.db.Model`
 
 
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
+
+
    .. py:attribute:: __tablename__
       :value: 'bib_entities'
 
@@ -817,6 +843,14 @@ Package Contents
 .. py:class:: TImports
 
    Bases: :py:obj:`InstancePermissionMixin`, :py:obj:`geonature.utils.env.db.Model`
+
+
+   The base class of the :attr:`.SQLAlchemy.Model` declarative model class.
+
+   To define models, subclass :attr:`db.Model <.SQLAlchemy.Model>`, not this. To
+   customize ``db.Model``, subclass this and pass it as ``model_class`` to
+   :class:`.SQLAlchemy`. To customize ``db.Model`` at the metaclass level, pass an
+   already created declarative model class as ``model_class``.
 
 
    .. py:attribute:: __tablename__
@@ -930,6 +964,9 @@ Package Contents
    .. py:attribute:: errors
 
 
+   .. py:attribute:: datasets
+
+
    .. py:property:: cruved
 
 
@@ -937,6 +974,18 @@ Package Contents
 
 
    .. py:property:: task_progress
+
+
+   .. py:property:: has_closed_af
+
+      Check if one AF of the import has been closed.
+      Returns
+      -------
+
+
+
+
+   .. py:method:: raise_on_closed_af()
 
 
    .. py:method:: has_instance_permission(scope, user=None, action_code='C')

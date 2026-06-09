@@ -175,6 +175,19 @@ Module Contents
 
 
 
+   .. py:method:: get_dataset_transient_column_name() -> str
+      :staticmethod:
+
+
+      Retrieves the name of the transient column associated with the dataset.
+
+      Returns
+      -------
+      str
+          Always returns "id_dataset" unless overridden.
+
+
+
    .. py:method:: remove_data_from_destination(imprt: geonature.core.imports.models.TImports) -> None
       :staticmethod:
 

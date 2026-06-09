@@ -6,11 +6,11 @@
 <link rel="index" title="Index" href="../../../../../genindex.html"><link rel="search" title="Recherche" href="../../../../../search.html"><link rel="next" title="geonature.core.imports.blueprint" href="../blueprint/index.html"><link rel="prev" title="geonature.core.imports.actions" href="../actions/index.html">
         <link rel="prefetch" href="../../../../../_static/LogoGeonature.jpg" as="image">
 
-    <!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 -->
-        <title>geonature.core.imports.admin - Documentation GeoNature 2.17.1</title>
+    <!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>geonature.core.imports.admin - Documentation GeoNature 2.17.2</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=7bdb33bb" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
     
     
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">Documentation GeoNature 2.17.1</div></a>
+      <a href="../../../../../index.html"><div class="brand">Documentation GeoNature 2.17.2</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -187,7 +187,7 @@
     <img class="sidebar-logo" src="../../../../../_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.17.1</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.17.2</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -454,13 +454,13 @@
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.imports.admin.MappingView" title="geonature.core.imports.admin.MappingView"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MappingView</span></code></a></p></td>
-<td><p></p></td>
+<td><p>SQLAlchemy model view</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#geonature.core.imports.admin.FieldMappingView" title="geonature.core.imports.admin.FieldMappingView"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldMappingView</span></code></a></p></td>
-<td><p></p></td>
+<td><p>SQLAlchemy model view</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#geonature.core.imports.admin.ContentMappingView" title="geonature.core.imports.admin.ContentMappingView"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContentMappingView</span></code></a></p></td>
-<td><p></p></td>
+<td><p>SQLAlchemy model view</p></td>
 </tr>
 </tbody>
 </table>
@@ -485,8 +485,14 @@
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Lien vers cette rubrique">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="geonature.core.imports.admin.MappingView">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.imports.admin.</span></span><span class="sig-name descname"><span class="pre">MappingView</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/admin.html#MappingView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.admin.MappingView" title="Lien vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.imports.admin.</span></span><span class="sig-name descname"><span class="pre">MappingView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(disponible dans Python v3.14)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><span class="pre">flask_admin._types.T_SQLALCHEMY_MODEL</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flask_admin.contrib.sqla._types.T_SESSION_OR_DB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">static_folder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_class_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_icon_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_icon_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/admin.html#MappingView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.admin.MappingView" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">geonature.core.admin.admin.CruvedProtectedMixin</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">flask_admin.contrib.sqla.ModelView</span></code></p>
+<p>SQLAlchemy model view</p>
+<p>Usage sample:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">admin</span> <span class="o">=</span> <span class="n">Admin</span><span class="p">()</span>
+<span class="n">admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span><span class="n">ModelView</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">))</span>
+</pre></div>
+</div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.imports.admin.MappingView.module_code">
 <span class="sig-name descname"><span class="pre">module_code</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'IMPORT'</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/imports/admin.html#MappingView.module_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.admin.MappingView.module_code" title="Lien vers cette définition">¶</a></dt>
@@ -500,47 +506,184 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.imports.admin.MappingView.can_view_details">
 <span class="sig-name descname"><span class="pre">can_view_details</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/imports/admin.html#MappingView.can_view_details"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.admin.MappingView.can_view_details" title="Lien vers cette définition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Setting this to true will enable the details view. This is recommended
+when there are too many columns to display in the list_view.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.imports.admin.MappingView.column_list">
 <span class="sig-name descname"><span class="pre">column_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('label',</span> <span class="pre">'active',</span> <span class="pre">'public',</span> <span class="pre">'destination')</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/imports/admin.html#MappingView.column_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.admin.MappingView.column_list" title="Lien vers cette définition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Collection of the model field names for the list view.
+If set to <cite>None</cite>, will get them from the model.</p>
+<p>For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyModelView</span><span class="p">(</span><span class="n">BaseModelView</span><span class="p">):</span>
+    <span class="n">column_list</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;last_name&#39;</span><span class="p">,</span> <span class="s1">&#39;email&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(Added in 1.4.0) SQLAlchemy model attributes can be used instead of strings:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyModelView</span><span class="p">(</span><span class="n">BaseModelView</span><span class="p">):</span>
+    <span class="n">column_list</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">User</span><span class="o">.</span><span class="n">last_name</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>When using SQLAlchemy models, you can reference related columns like this::</dt><dd><dl class="simple">
+<dt>class MyModelView(BaseModelView):</dt><dd><p>column_list = (“&lt;relationship&gt;.&lt;related column name&gt;”,)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.imports.admin.MappingView.column_searchable_list">
 <span class="sig-name descname"><span class="pre">column_searchable_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('label',)</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/imports/admin.html#MappingView.column_searchable_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.admin.MappingView.column_searchable_list" title="Lien vers cette définition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Collection of the searchable columns.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyModelView</span><span class="p">(</span><span class="n">ModelView</span><span class="p">):</span>
+    <span class="n">column_searchable_list</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;email&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can also pass columns:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyModelView</span><span class="p">(</span><span class="n">ModelView</span><span class="p">):</span>
+    <span class="n">column_searchable_list</span> <span class="o">=</span> <span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">User</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The following search rules apply:</p>
+<ul class="simple">
+<li><p>If you enter <code class="docutils literal notranslate"><span class="pre">ZZZ</span></code> in the UI search field, it will generate
+<code class="docutils literal notranslate"><span class="pre">ILIKE</span> <span class="pre">'%ZZZ%'</span></code> statement against searchable columns.</p></li>
+<li><p>If you enter multiple words, each word will be searched separately, but
+only rows that contain all words will be displayed. For example, searching
+for <code class="docutils literal notranslate"><span class="pre">abc</span> <span class="pre">def</span></code> will find all rows that contain <code class="docutils literal notranslate"><span class="pre">abc</span></code> and <code class="docutils literal notranslate"><span class="pre">def</span></code> in one or
+more columns.</p></li>
+<li><p>If you prefix your search term with <code class="docutils literal notranslate"><span class="pre">^</span></code>, it will find all rows
+that start with <code class="docutils literal notranslate"><span class="pre">^</span></code>. So, if you entered <code class="docutils literal notranslate"><span class="pre">^ZZZ</span></code> then <code class="docutils literal notranslate"><span class="pre">ILIKE</span> <span class="pre">'ZZZ%'</span></code> will
+be used.</p></li>
+<li><p>If you prefix your search term with <code class="docutils literal notranslate"><span class="pre">=</span></code>, it will perform an exact match.
+For example, if you entered <code class="docutils literal notranslate"><span class="pre">=ZZZ</span></code>, the statement <code class="docutils literal notranslate"><span class="pre">ILIKE</span> <span class="pre">'ZZZ'</span></code> will be
+used.</p></li>
+</ul>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.imports.admin.MappingView.column_filters">
 <span class="sig-name descname"><span class="pre">column_filters</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('active',</span> <span class="pre">'public')</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/imports/admin.html#MappingView.column_filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.admin.MappingView.column_filters" title="Lien vers cette définition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Collection of the column filters.</p>
+<p>Can contain either field names or instances of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">flask_admin.contrib.sqla.filters.BaseSQLAFilter</span></code> classes.</p>
+<p>Filters will be grouped by name when displayed in the drop-down.</p>
+<p>For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyModelView</span><span class="p">(</span><span class="n">BaseModelView</span><span class="p">):</span>
+    <span class="n">column_filters</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="s1">&#39;email&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>or:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">flask_admin.contrib.sqla.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">BooleanEqualFilter</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyModelView</span><span class="p">(</span><span class="n">BaseModelView</span><span class="p">):</span>
+    <span class="n">column_filters</span> <span class="o">=</span> <span class="p">(</span><span class="n">BooleanEqualFilter</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="n">User</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Name&#39;</span><span class="p">),)</span>
+</pre></div>
+</div>
+<p>or:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">flask_admin.contrib.sqla.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseSQLAFilter</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">FilterLastNameBrown</span><span class="p">(</span><span class="n">BaseSQLAFilter</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;1&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="o">==</span> <span class="s2">&quot;Brown&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="o">!=</span> <span class="s2">&quot;Brown&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">operation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;is Brown&#39;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyModelView</span><span class="p">(</span><span class="n">BaseModelView</span><span class="p">):</span>
+    <span class="n">column_filters</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">FilterLastNameBrown</span><span class="p">(</span>
+            <span class="n">User</span><span class="o">.</span><span class="n">last_name</span><span class="p">,</span> <span class="s1">&#39;Last Name&#39;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">((</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;Yes&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;No&#39;</span><span class="p">))</span>
+        <span class="p">)</span>
+    <span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.imports.admin.MappingView.form_columns">
 <span class="sig-name descname"><span class="pre">form_columns</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('label',</span> <span class="pre">'active',</span> <span class="pre">'public',</span> <span class="pre">'owners',</span> <span class="pre">'values',</span> <span class="pre">'destination')</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/imports/admin.html#MappingView.form_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.admin.MappingView.form_columns" title="Lien vers cette définition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Collection of the model field names for the form. If set to <cite>None</cite> will
+get them from the model.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyModelView</span><span class="p">(</span><span class="n">BaseModelView</span><span class="p">):</span>
+    <span class="n">form_columns</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;email&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(Added in 1.4.0) SQLAlchemy model attributes can be used instead of
+strings:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyModelView</span><span class="p">(</span><span class="n">BaseModelView</span><span class="p">):</span>
+    <span class="n">form_columns</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">User</span><span class="o">.</span><span class="n">last_name</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>SQLA Note: Model attributes must be on the same model as your ModelView
+or you will need to use <cite>inline_models</cite>.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.imports.admin.MappingView.column_details_list">
 <span class="sig-name descname"><span class="pre">column_details_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('label',</span> <span class="pre">'active',</span> <span class="pre">'public',</span> <span class="pre">'owners',</span> <span class="pre">'values',</span> <span class="pre">'destination')</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/imports/admin.html#MappingView.column_details_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.admin.MappingView.column_details_list" title="Lien vers cette définition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Collection of the field names included in the details view.
+If set to <cite>None</cite>, will get them from the model.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.imports.admin.MappingView.column_labels">
 <span class="sig-name descname"><span class="pre">column_labels</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/admin.html#MappingView.column_labels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.admin.MappingView.column_labels" title="Lien vers cette définition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Dictionary where key is column name and value is string to display.</p>
+<p>For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyModelView</span><span class="p">(</span><span class="n">BaseModelView</span><span class="p">):</span>
+    <span class="n">column_labels</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Name&#39;</span><span class="p">,</span> <span class="n">last_name</span><span class="o">=</span><span class="s1">&#39;Last Name&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.imports.admin.MappingView.column_formatters">
 <span class="sig-name descname"><span class="pre">column_formatters</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/admin.html#MappingView.column_formatters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.admin.MappingView.column_formatters" title="Lien vers cette définition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Dictionary of list view column formatters.</p>
+<p>For example, if you want to show price multiplied by
+two, you can do something like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyModelView</span><span class="p">(</span><span class="n">BaseModelView</span><span class="p">):</span>
+    <span class="n">column_formatters</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">price</span><span class="o">=</span><span class="k">lambda</span> <span class="n">v</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">m</span><span class="o">.</span><span class="n">price</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>or using Jinja2 <cite>macro</cite> in template:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">flask_admin.model.template</span><span class="w"> </span><span class="kn">import</span> <span class="n">macro</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyModelView</span><span class="p">(</span><span class="n">BaseModelView</span><span class="p">):</span>
+    <span class="n">column_formatters</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">price</span><span class="o">=</span><span class="n">macro</span><span class="p">(</span><span class="s1">&#39;render_price&#39;</span><span class="p">))</span>
+
+<span class="c1"># in template</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">macro</span> <span class="n">render_price</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span> <span class="o">%</span><span class="p">}</span>
+    <span class="p">{{</span> <span class="n">model</span><span class="o">.</span><span class="n">price</span> <span class="o">*</span> <span class="mi">2</span> <span class="p">}}</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endmacro</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>The Callback function has the prototype:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">formatter</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="c1"># `view` is current administrative view</span>
+    <span class="c1"># `context` is instance of jinja2.runtime.Context</span>
+    <span class="c1"># `model` is model instance</span>
+    <span class="c1"># `name` is property name</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.imports.admin.MappingView.column_export_list">
 <span class="sig-name descname"><span class="pre">column_export_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('label',</span> <span class="pre">'values')</span></em><a class="reference internal" href="../../../../../_modules/geonature/core/imports/admin.html#MappingView.column_export_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.admin.MappingView.column_export_list" title="Lien vers cette définition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Collection of the field names included in the export.
+If set to <cite>None</cite>, will get them from the model.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -556,12 +699,28 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="geonature.core.imports.admin.FieldMappingView">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.imports.admin.</span></span><span class="sig-name descname"><span class="pre">FieldMappingView</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/admin.html#FieldMappingView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.admin.FieldMappingView" title="Lien vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.imports.admin.</span></span><span class="sig-name descname"><span class="pre">FieldMappingView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(disponible dans Python v3.14)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><span class="pre">flask_admin._types.T_SQLALCHEMY_MODEL</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flask_admin.contrib.sqla._types.T_SESSION_OR_DB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">static_folder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_class_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_icon_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_icon_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/admin.html#FieldMappingView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.admin.FieldMappingView" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#geonature.core.imports.admin.MappingView" title="geonature.core.imports.admin.MappingView"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MappingView</span></code></a></p>
+<p>SQLAlchemy model view</p>
+<p>Usage sample:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">admin</span> <span class="o">=</span> <span class="n">Admin</span><span class="p">()</span>
+<span class="n">admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span><span class="n">ModelView</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">))</span>
+</pre></div>
+</div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.imports.admin.FieldMappingView.form_args">
 <span class="sig-name descname"><span class="pre">form_args</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/admin.html#FieldMappingView.form_args"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.admin.FieldMappingView.form_args" title="Lien vers cette définition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Dictionary of form field arguments. Refer to WTForms documentation for
+list of possible options.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">wtforms.validators</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataRequired</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyModelView</span><span class="p">(</span><span class="n">BaseModelView</span><span class="p">):</span>
+    <span class="n">form_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;First Name&#39;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.imports.admin.FieldMappingView.colmun_labels">
@@ -571,18 +730,39 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.imports.admin.FieldMappingView.column_formatters_detail">
 <span class="sig-name descname"><span class="pre">column_formatters_detail</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/admin.html#FieldMappingView.column_formatters_detail"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.admin.FieldMappingView.column_formatters_detail" title="Lien vers cette définition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Dictionary of list view column formatters to be used for the detail view.</p>
+<p>Defaults to column_formatters when set to None.</p>
+<p>Functions the same way as column_formatters except
+that macros are not supported.
+that macros are not supported.</p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="geonature.core.imports.admin.ContentMappingView">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.imports.admin.</span></span><span class="sig-name descname"><span class="pre">ContentMappingView</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/admin.html#ContentMappingView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.admin.ContentMappingView" title="Lien vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">geonature.core.imports.admin.</span></span><span class="sig-name descname"><span class="pre">ContentMappingView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(disponible dans Python v3.14)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><span class="pre">flask_admin._types.T_SQLALCHEMY_MODEL</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flask_admin.contrib.sqla._types.T_SESSION_OR_DB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">static_folder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_class_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_icon_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu_icon_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(disponible dans Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(disponible dans Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/admin.html#ContentMappingView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.admin.ContentMappingView" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#geonature.core.imports.admin.MappingView" title="geonature.core.imports.admin.MappingView"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MappingView</span></code></a></p>
+<p>SQLAlchemy model view</p>
+<p>Usage sample:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">admin</span> <span class="o">=</span> <span class="n">Admin</span><span class="p">()</span>
+<span class="n">admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span><span class="n">ModelView</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">))</span>
+</pre></div>
+</div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.imports.admin.ContentMappingView.form_args">
 <span class="sig-name descname"><span class="pre">form_args</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/admin.html#ContentMappingView.form_args"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.admin.ContentMappingView.form_args" title="Lien vers cette définition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Dictionary of form field arguments. Refer to WTForms documentation for
+list of possible options.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">wtforms.validators</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataRequired</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyModelView</span><span class="p">(</span><span class="n">BaseModelView</span><span class="p">):</span>
+    <span class="n">form_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;First Name&#39;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.imports.admin.ContentMappingView.colmun_labels">
@@ -592,7 +772,12 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="geonature.core.imports.admin.ContentMappingView.column_formatters_detail">
 <span class="sig-name descname"><span class="pre">column_formatters_detail</span></span><a class="reference internal" href="../../../../../_modules/geonature/core/imports/admin.html#ContentMappingView.column_formatters_detail"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#geonature.core.imports.admin.ContentMappingView.column_formatters_detail" title="Lien vers cette définition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Dictionary of list view column formatters to be used for the detail view.</p>
+<p>Defaults to column_formatters when set to None.</p>
+<p>Functions the same way as column_formatters except
+that macros are not supported.
+that macros are not supported.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -699,10 +884,10 @@
       
     </aside>
   </div>
-</div><script src="../../../../../_static/documentation_options.js?v=c53d93e3"></script>
-    <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
+</div><script src="../../../../../_static/documentation_options.js?v=f2c51989"></script>
+    <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/scripts/furo.js?v=46bd48cc"></script>
-    <script src="../../../../../_static/translations.js?v=041d0952"></script>
+    <script src="../../../../../_static/translations.js?v=e6b791cb"></script>
     </body>
 </html>
