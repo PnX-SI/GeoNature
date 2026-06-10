@@ -21,18 +21,14 @@ check = "(ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclatur
 
 
 def upgrade():
-    op.execute(
-        f"""
+    op.execute(f"""
         ALTER TABLE ONLY {table}
         ADD CONSTRAINT {constraint} CHECK {check} NOT VALID
-        """
-    )
+        """)
 
 
 def downgrade():
-    op.execute(
-        f"""
+    op.execute(f"""
         ALTER TABLE {table}
         DROP CONSTRAINT {constraint};
-        """
-    )
+        """)

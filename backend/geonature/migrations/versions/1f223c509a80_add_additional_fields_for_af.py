@@ -10,7 +10,6 @@ from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
-
 # revision identifiers, used by Alembic.
 revision = "1f223c509a80"
 down_revision = "03ec871fb969"
@@ -21,8 +20,7 @@ depends_on = None
 def upgrade():
     # Ajout d'une entrée 'METADATA_CADRE_ACQUISITION' dans la table `gn_permissions.objects`
     #   nécessaire pour l'ajout et la gestion de champs additionels pour le module Métadonnées
-    op.execute(
-        """
+    op.execute("""
         INSERT INTO 
             gn_permissions.t_objects 
                 (
@@ -35,18 +33,15 @@ def upgrade():
                 'Représente la table gn_meta.t_acquisition_frameworks'
                 )
         ;
-    """
-    )
+    """)
 
 
 def downgrade():
     # Suppression de l'entrée 'METADATA_CADRE_ACQUISITION'
-    op.execute(
-        """
+    op.execute("""
         DELETE FROM
             gn_permissions.t_objects
         WHERE
             code_object = 'METADATA_CADRE_ACQUISITION'
         ;
-    """
-    )
+    """)

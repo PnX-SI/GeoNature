@@ -9,7 +9,6 @@ Create Date: 2023-02-23 22:21:30.039893
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "cec41a6d3a15"
 down_revision = "05a91edb6796"
@@ -22,8 +21,7 @@ def upgrade():
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
         CREATE OR REPLACE VIEW gn_permissions.v_roles_permissions
         AS WITH direct_permissions AS (
                  -- User and group direct permissions
@@ -101,5 +99,4 @@ def downgrade():
              JOIN gn_permissions.t_objects obj ON obj.id_object = v.id_object
              JOIN gn_permissions.bib_filters_type filter_type ON filters.id_filter_type = filter_type.id_filter_type
              JOIN gn_commons.t_modules modules ON modules.id_module = v.id_module;
-        """
-    )
+        """)

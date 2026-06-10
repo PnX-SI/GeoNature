@@ -13,7 +13,6 @@ from geonature.core.imports.checks.sql.utils import report_erroneous_rows
 
 from ref_geo.models import LAreas
 
-
 __all__ = [
     "set_geom_point",
     "convert_geom_columns",

@@ -9,7 +9,6 @@ Create Date: 2023-04-04 00:26:12.030884
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "1b4f44762020"
 down_revision = "0ff94776a962"
@@ -18,8 +17,7 @@ depends_on = None
 
 
 def upgrade():
-    op.execute(
-        """
+    op.execute("""
         CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_releve()
          RETURNS trigger
          LANGUAGE plpgsql
@@ -62,10 +60,8 @@ def upgrade():
                 END;
                 $function$
         ;
-        """
-    )
-    op.execute(
-        """
+        """)
+    op.execute("""
         UPDATE
             gn_synthese.synthese s
         SET
@@ -78,13 +74,11 @@ def upgrade():
         ) releve
         WHERE
             s.id_synthese = releve.id_synthese;
-        """
-    )
+        """)
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
         CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_releve()
          RETURNS trigger
          LANGUAGE plpgsql
@@ -126,5 +120,4 @@ def downgrade():
                 END;
                 $function$
         ;
-        """
-    )
+        """)

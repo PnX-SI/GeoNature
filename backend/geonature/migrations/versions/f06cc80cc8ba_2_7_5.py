@@ -11,7 +11,6 @@ from alembic import op, context
 import sqlalchemy as sa
 from sqlalchemy.sql import text
 
-
 # revision identifiers, used by Alembic.
 revision = "f06cc80cc8ba"
 down_revision = None
@@ -59,12 +58,10 @@ def downgrade():
     op.execute("DROP SCHEMA gn_permissions CASCADE")
     op.execute("DROP SCHEMA gn_sensitivity CASCADE")
 
-    op.execute(
-        """
+    op.execute("""
     DELETE FROM utilisateurs.cor_profil_for_app cor
     USING utilisateurs.t_applications app
     WHERE cor.id_application = app.id_application
     AND app.code_application = 'GN'
-    """
-    )
+    """)
     op.execute("DELETE FROM utilisateurs.t_applications WHERE code_application = 'GN'")

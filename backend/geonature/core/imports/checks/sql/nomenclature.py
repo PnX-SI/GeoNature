@@ -13,7 +13,6 @@ from geonature.core.imports.checks.sql.utils import report_erroneous_rows
 
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
-
 __all__ = [
     "do_nomenclatures_mapping",
     "check_nomenclature_exist_proof",

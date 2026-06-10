@@ -33,7 +33,6 @@ occhab = pytest.importorskip("gn_module_occhab")
 
 from gn_module_occhab.models import Station, OccurenceHabitat
 
-
 # ######################################################################################
 # Fixtures -- override default values
 # ######################################################################################

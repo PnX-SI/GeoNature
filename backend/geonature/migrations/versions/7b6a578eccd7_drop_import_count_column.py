@@ -9,7 +9,6 @@ Create Date: 2024-10-18 16:24:44.145501
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "7b6a578eccd7"
 down_revision = "c49474d2f1f7"
@@ -18,12 +17,10 @@ depends_on = None
 
 
 def upgrade():
-    op.execute(
-        """
+    op.execute("""
         UPDATE gn_imports.t_imports
         SET statistics = statistics::jsonb || jsonb_build_object('import_count', import_count) || jsonb_build_object('nb_line_valid', import_count);
-    """
-    )
+    """)
     op.drop_column(
         schema="gn_imports",
         table_name="t_imports",
@@ -41,8 +38,7 @@ def downgrade():
         ),
     )
 
-    op.execute(
-        """
+    op.execute("""
         WITH count_ AS (
             SELECT
                 id_import as id_import,
@@ -56,11 +52,8 @@ def downgrade():
         SET import_count = count_.import_count
         FROM count_
         where GN.id_import = count_.id_import;
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
         UPDATE gn_imports.t_imports as GN
         SET statistics = statistics::jsonb #- '{import_count}';
-    """
-    )
+    """)

@@ -25,7 +25,6 @@ import glob
 
 from flask.cli import FlaskGroup
 
-
 log = logging.getLogger()
 
 

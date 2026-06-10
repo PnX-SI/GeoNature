@@ -31,7 +31,6 @@ from geonature.core.gn_commons.models.base import TModules
 
 from pypnusershub.db.models import User
 
-
 ### Filters
 
 

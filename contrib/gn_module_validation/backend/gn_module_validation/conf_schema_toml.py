@@ -4,7 +4,6 @@ Spécification du schéma toml des paramètres de configurations
 
 from marshmallow import Schema, fields
 
-
 COLUMN_LIST = [
     {"column_name": "taxref.nom_vern_or_lb_nom", "column_label": "Taxon", "min_width": 250},
     {"column_name": "date_min", "column_label": "Date obs.", "min_width": 100},

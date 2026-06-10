@@ -6,7 +6,6 @@ from geonature.utils.env import db
 from geonature.utils.config import config
 from geonature.utils.celery import celery_app
 
-
 logger = get_task_logger(__name__)
 
 

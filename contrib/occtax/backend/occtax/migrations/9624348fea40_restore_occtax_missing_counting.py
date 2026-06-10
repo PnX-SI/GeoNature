@@ -9,7 +9,6 @@ Create Date: 2022-10-12 16:19:18.065398
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "9624348fea40"
 down_revision = "c26c770b00ae"
@@ -18,8 +17,7 @@ depends_on = None
 
 
 def upgrade():
-    op.execute(
-        """
+    op.execute("""
         WITH
             occ_id (id_occ) as (
                 SELECT DISTINCT o.id_occurrence_occtax
@@ -68,11 +66,9 @@ def upgrade():
             (table_content->>'count_max')::integer,
             (table_content->>'additional_fields')::jsonb
         FROM restauration_occ
-    """
-    )
+    """)
 
-    op.execute(
-        """
+    op.execute("""
         WITH
         observers (id_releve_occtax, observers) as (
             SELECT r.id_releve_occtax, array_to_string(array_agg(concat_ws(' ', obs.nom_role, obs.prenom_role)), ', ')
@@ -135,8 +131,7 @@ def upgrade():
         INNER JOIN pr_occtax.t_releves_occtax rel ON occ.id_releve_occtax = rel.id_releve_occtax
         LEFT JOIN observers ON rel.id_releve_occtax = observers.id_releve_occtax
         WHERE synthese.unique_id_sinp = counting.unique_id_sinp_occtax AND synthese.cd_nom <> occ.cd_nom;
-    """
-    )
+    """)
 
 
 def downgrade():

@@ -11,7 +11,6 @@ import sqlalchemy as sa
 from sqlalchemy.schema import Table, MetaData
 from sqlalchemy.orm.session import Session
 
-
 # revision identifiers, used by Alembic.
 revision = "8a32dfdef27d"
 down_revision = "5fe452b34a79"

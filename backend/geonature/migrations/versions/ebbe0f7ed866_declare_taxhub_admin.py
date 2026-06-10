@@ -9,7 +9,6 @@ Create Date: 2023-08-02 13:15:38.542530
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "ebbe0f7ed866"
 down_revision = "9f4db1786c22"
@@ -20,9 +19,7 @@ from geonature.utils.config import config
 
 
 def upgrade():
-    op.get_bind().execute(
-        sa.text(
-            """
+    op.get_bind().execute(sa.text("""
             INSERT INTO gn_commons.t_modules
             (module_code, module_label, module_picto, module_desc, module_target, module_external_url ,active_frontend, active_backend)
             VALUES('TAXHUB', 'TaxHub', 'fa-sitemap', 'Module TaxHub', '_blank','', false, false);
@@ -88,13 +85,10 @@ def upgrade():
             JOIN
                 gn_permissions.bib_actions a ON a.code_action = v.action_code
             WHERE m.module_code = 'TAXHUB'
-        """
-        )
-    )
+        """))
     # rapatriement des permissions de l'application TaxHub
 
-    op.execute(
-        """
+    op.execute("""
         INSERT INTO gn_permissions.t_permissions
         (id_role, id_action, id_module, id_object)
         SELECT crap.id_role, t.id_action, t.id_module, t.id_object
@@ -121,24 +115,19 @@ def upgrade():
             AND  app.code_application = 'TH'
             AND crap.id_profil in (1,2,3,4,5) 
             AND obj.code_object = 'TAXON';
-        """
-    )
+        """)
 
-    op.execute(
-        """
+    op.execute("""
         DELETE FROM utilisateurs.cor_role_app_profil  where id_application = (select id_application from utilisateurs.t_applications  t where t.code_application = 'TH' );
         DELETE FROM utilisateurs.cor_profil_for_app  where id_application = (select id_application from utilisateurs.t_applications  t where t.code_application = 'TH' );
         DELETE FROM utilisateurs.t_applications where code_application = 'TH';
-        """
-    )
+        """)
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
         DELETE FROM gn_permissions.t_permissions  WHERE id_module  = (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'TAXHUB');
         DELETE FROM gn_permissions.t_permissions_available WHERE id_module = (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'TAXHUB');
         DELETE FROM gn_commons.t_modules where module_code = 'TAXHUB';
         DELETE FROM gn_permissions.t_objects where code_object in ('TAXON', 'ATTRIBUT', 'THEME', 'LISTE');
-        """
-    )
+        """)

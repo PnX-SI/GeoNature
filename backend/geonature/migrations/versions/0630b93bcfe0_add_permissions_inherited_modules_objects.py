@@ -13,7 +13,6 @@ Create Date: 2023-04-13 14:24:21.124669
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "0630b93bcfe0"
 down_revision = "df5a5099e084"
@@ -35,8 +34,7 @@ def upgrade():
     # Backup permissions
     # include Foreign Keys, so that restore is eventually not broken by update/removal
     # of any referenced role, action, filter, module or object
-    op.execute(
-        """
+    op.execute("""
         create or replace function create_backup_table(source_table text, new_table text)
         returns void language plpgsql
         as $$
@@ -62,40 +60,31 @@ def upgrade():
                 'insert into %s select * from %s', 
                 new_table, source_table);
         end $$;
-        """
-    )
-    op.execute(
-        """
+        """)
+    op.execute("""
         SELECT
         create_backup_table(
         'gn_permissions.cor_role_action_filter_module_object',
         'gn_permissions.backup_cor_role_action_filter_module_object'
         );
-        """
-    )
-    op.execute(
-        """
+        """)
+    op.execute("""
         SELECT
         create_backup_table(
         'gn_permissions.t_filters',
         'gn_permissions.backup_t_filters'
         );
-        """
-    )
-    op.execute(
-        """
+        """)
+    op.execute("""
         SELECT
         create_backup_table(
         'gn_permissions.bib_filters_type',
         'gn_permissions.backup_bib_filters_type'
         );
-        """
-    )
-    op.execute(
-        """
+        """)
+    op.execute("""
         DROP FUNCTION create_backup_table;
-        """
-    )
+        """)
     # Associate FK 'fk_backup_cor_r_a_f_m_o_id_filter' to 'backup_t_filters' instead of 't_filters'
     # to be able to delete scope 0 from 't_filters' while keeping the associated rows in backup of permissions
     # ON DELETE and ON UPDATE rules should not matter, as no modification from 'backup_t_filters' is expected
@@ -135,8 +124,7 @@ def upgrade():
     """
     Remove permissions with filters which are not of SCOPE type
     """
-    op.execute(
-        """
+    op.execute("""
         DELETE FROM
             gn_permissions.cor_role_action_filter_module_object p
         USING
@@ -148,10 +136,8 @@ def upgrade():
             f.id_filter_type = t.id_filter_type
         AND
             t.code_filter_type != 'SCOPE'
-        """
-    )
-    op.execute(
-        """
+        """)
+    op.execute("""
         DELETE FROM
             gn_permissions.t_filters f
         USING
@@ -160,16 +146,13 @@ def upgrade():
             f.id_filter_type = t.id_filter_type
         AND
             t.code_filter_type != 'SCOPE'
-        """
-    )
-    op.execute(
-        """
+        """)
+    op.execute("""
         DELETE FROM
             gn_permissions.bib_filters_type t
         WHERE
             t.code_filter_type != 'SCOPE'
-        """
-    )
+        """)
     """
     Thereafter, all permissions are of SCOPE type without requiring verification
     """
@@ -186,8 +169,7 @@ def upgrade():
     #   (id_role_group, id_action, id_filter_group, id_module, id_object), with id_filter_group of type 'SCOPE',
     #   where the role id_role_user is associated to the role id_role_group and where there exists a permission
     #   (id_role_user, id_action, id_filter_user, id_module, id_object) with id_filter_user < id_filter_group).
-    op.execute(
-        """
+    op.execute("""
         INSERT
             INTO
             gn_permissions.cor_role_action_filter_module_object
@@ -254,12 +236,10 @@ def upgrade():
                 perm_exists.id_object = perm_gn.id_object
             )
         ;
-        """
-    )
+        """)
     # For permissions associated to roles which are groups with at least one corresponding user that have a scope
     # restriction for the permission
-    op.execute(
-        """
+    op.execute("""
         INSERT
             INTO
             gn_permissions.cor_role_action_filter_module_object
@@ -350,8 +330,7 @@ def upgrade():
                 perm_user_exists.id_object = perm_gn.id_object
             )
         ;
-        """
-    )
+        """)
 
     """
     Objects inheritance:
@@ -362,8 +341,7 @@ def upgrade():
     """
     # For permissions associated to roles which are users, and roles which are groups with no corresponding user that
     # have a scope restriction for the permission :
-    op.execute(
-        """
+    op.execute("""
         INSERT
             INTO
             gn_permissions.cor_role_action_filter_module_object
@@ -436,12 +414,10 @@ def upgrade():
                 perm_exists.id_object = object_other.id_object
             )
         ;
-    """
-    )
+    """)
     # For permissions associated to roles which are groups with at least one corresponding user that have a scope
     # restriction for the permission
-    op.execute(
-        """
+    op.execute("""
         INSERT
             INTO
             gn_permissions.cor_role_action_filter_module_object
@@ -535,15 +511,13 @@ def upgrade():
                 perm_user_exists.id_object = object_other.id_object
             )
         ;
-    """
-    )
+    """)
 
     """
     Remove scope '0'
     """
     # Remove associated permissions
-    op.execute(
-        """
+    op.execute("""
         DELETE FROM
             gn_permissions.cor_role_action_filter_module_object p
         WHERE
@@ -559,14 +533,12 @@ def upgrade():
                     AND
                     f.value_filter = '0'
             )
-        """
-    )
+        """)
     # Remove filter
     # we assume that we have 'ON DELETE NO ACTION' for 'fk_cor_r_a_f_m_o_id_filter',
     # and thus for 'fk_backup_cor_r_a_f_m_o_id_filter, and that removal of the filter for 'scope 0' will not
     # lead, by cascade, to a suppression of the associated permissions in the backup table of permissions.
-    op.execute(
-        """
+    op.execute("""
         DELETE FROM
             gn_permissions.t_filters
         WHERE
@@ -577,8 +549,7 @@ def upgrade():
                 )
         AND
             value_filter = '0'
-        """
-    )
+        """)
 
 
 def downgrade():
@@ -587,51 +558,43 @@ def downgrade():
     """
 
     # First clear existing data
-    op.execute(
-        """
+    op.execute("""
         DELETE FROM gn_permissions.cor_role_action_filter_module_object;
         DELETE FROM gn_permissions.t_filters;
         DELETE FROM gn_permissions.bib_filters_type;
-        """
-    )
+        """)
 
     """
     Restore filters types from backup table
     """
-    op.execute(
-        """
+    op.execute("""
         INSERT INTO gn_permissions.bib_filters_type
             (id_filter_type, code_filter_type, label_filter_type, description_filter_type)
         SELECT id_filter_type, code_filter_type, label_filter_type, description_filter_type
         FROM gn_permissions.backup_bib_filters_type
-        """
-    )
+        """)
 
     """
     Restore filters from backup table
     
     restores, in particular, the filter for scope 0
     """
-    op.execute(
-        """
+    op.execute("""
         INSERT INTO gn_permissions.t_filters 
             (id_filter, label_filter, value_filter, description_filter, id_filter_type)
         SELECT id_filter, label_filter, value_filter, description_filter, id_filter_type
         FROM gn_permissions.backup_t_filters
-        """
-    )
+        """)
 
     """
     Restore permissions from backup table
     """
-    op.execute(
-        """
+    op.execute("""
         INSERT INTO gn_permissions.cor_role_action_filter_module_object 
             (id_permission, id_role, id_action, id_module, id_object, id_filter)
         SELECT id_permission, id_role, id_action, id_module, id_object, id_filter
         FROM gn_permissions.backup_cor_role_action_filter_module_object;
-        """
-    )
+        """)
 
     """
     Drop backup tables

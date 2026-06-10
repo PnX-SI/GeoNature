@@ -16,7 +16,6 @@ from geonature.core.imports.models import TImports
 
 from .jsonschema_definitions import jsonschema_definitions
 
-
 tests_path = Path(__file__).parent
 
 
@@ -81,7 +80,7 @@ class TestImportsRoute:
         r = self.client.put(
             url_for(
                 "import.update_import",
-                **{"import_id": imprt.id_import, "destination": imprt.destination.code}
+                **{"import_id": imprt.id_import, "destination": imprt.destination.code},
             ),
             data={"id_import": imprt.id_import, "detected_encoding": "utf-8"},
         )

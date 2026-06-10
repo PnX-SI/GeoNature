@@ -9,7 +9,6 @@ from .utils import activate_profiling_sql
 from .benchmark_generator import BenchmarkTest, CLater
 from geonature.tests.fixtures import users
 
-
 logging.basicConfig()
 logger = logging.getLogger("logger-name")
 logger.setLevel(logging.DEBUG)

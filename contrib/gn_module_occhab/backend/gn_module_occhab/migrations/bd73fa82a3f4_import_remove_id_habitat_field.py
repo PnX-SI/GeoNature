@@ -9,7 +9,6 @@ Create Date: 2025-09-17 15:31:03.322596
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "bd73fa82a3f4"
 down_revision = "35bf3f4a80f1"
@@ -18,8 +17,7 @@ depends_on = None
 
 
 def upgrade():
-    op.execute(
-        """
+    op.execute("""
         delete
         from
             gn_imports.bib_fields
@@ -32,13 +30,11 @@ def upgrade():
                 gn_imports.bib_destinations
             where
                 code = 'occhab' );
-        """
-    )
+        """)
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
         insert
             into
             gn_imports.bib_fields(
@@ -60,5 +56,4 @@ def downgrade():
         where
             bd.code = 'occhab'
         limit 1;
-        """
-    )
+        """)

@@ -9,7 +9,6 @@ Create Date: 2022-02-15 12:16:38.003591
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "d80835fb13c8"
 down_revision = "77a3bc6628d2"
@@ -22,8 +21,7 @@ def upgrade():
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
     CREATE TABLE gn_sensitivity.cor_sensitivity_synthese  (
         uuid_attached_row uuid NOT NULL,
         id_nomenclature_sensitivity int NOT NULL,
@@ -64,5 +62,4 @@ def downgrade():
       ON  gn_sensitivity.cor_sensitivity_synthese
       FOR EACH ROW
       EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
-    """
-    )
+    """)

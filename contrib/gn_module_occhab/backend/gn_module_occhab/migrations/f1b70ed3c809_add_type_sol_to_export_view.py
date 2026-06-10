@@ -9,7 +9,6 @@ Create Date: 2025-04-22 11:56:47.992073
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "f1b70ed3c809"
 down_revision = "8a32dfdef27d"
@@ -19,8 +18,7 @@ depends_on = None
 
 def upgrade():
     op.execute("DROP VIEW pr_occhab.v_export_sinp;")
-    op.execute(
-        """
+    op.execute("""
         create or replace view pr_occhab.v_export_sinp as
             select
                 s.id_station,
@@ -84,14 +82,12 @@ def upgrade():
                 nom5.cd_nomenclature,
                 nom6.cd_nomenclature
             ;
-    """
-    )
+    """)
 
 
 def downgrade():
     op.execute("DROP VIEW pr_occhab.v_export_sinp;")
-    op.execute(
-        """
+    op.execute("""
         create or replace view pr_occhab.v_export_sinp as
             select
                 s.id_station,
@@ -151,5 +147,4 @@ def downgrade():
                 h.unique_id_sinp_hab,
                 nom5.cd_nomenclature
             ;
-    """
-    )
+    """)

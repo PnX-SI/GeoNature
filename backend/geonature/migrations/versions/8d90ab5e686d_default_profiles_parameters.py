@@ -9,7 +9,6 @@ Create Date: 2022-08-10 14:07:35.234716
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "8d90ab5e686d"
 down_revision = "f4ffdc68072c"
@@ -18,8 +17,7 @@ depends_on = None
 
 
 def upgrade():
-    op.execute(
-        """
+    op.execute("""
     DELETE FROM
         gn_profiles.cor_taxons_parameters
     WHERE
@@ -30,18 +28,14 @@ def upgrade():
         temporal_precision_days = 10
         AND
         active_life_stage = FALSE
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
     INSERT INTO gn_profiles.t_parameters ("name", "desc", "value") VALUES
         ('default_spatial_precision', 'Précision spatiale par défaut en l’absence de paramètre pour le taxon considéré.', '2000'),
         ('default_temporal_precision_days', 'Précision temporelle par défaut en l’absence de paramètre pour le taxon considéré.', '10'),
         ('default_active_life_stage', 'Valeur par défaut pour la prise en compte du stade de vie en l’absence de paramètre pour le taxon considéré.', 'false')
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
     CREATE OR REPLACE FUNCTION gn_profiles.get_parameters(my_cd_nom integer)
      RETURNS TABLE(cd_ref integer, spatial_precision integer, temporal_precision_days integer, active_life_stage boolean, distance smallint)
      LANGUAGE plpgsql
@@ -82,13 +76,11 @@ def upgrade():
        ;
       END;
     $function$
-    """
-    )
+    """)
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
     CREATE OR REPLACE FUNCTION gn_profiles.get_parameters(my_cd_nom integer)
      RETURNS TABLE(cd_ref integer, spatial_precision integer, temporal_precision_days integer, active_life_stage boolean, distance smallint)
      LANGUAGE plpgsql
@@ -113,10 +105,8 @@ def downgrade():
        ;
       END;
     $function$
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
     DELETE FROM
         gn_profiles.t_parameters
     WHERE
@@ -125,10 +115,8 @@ def downgrade():
             'default_temporal_precision_days',
             'default_active_life_stage'
         )
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
     INSERT INTO gn_profiles.cor_taxons_parameters(
         cd_nom, spatial_precision, temporal_precision_days, active_life_stage
     )
@@ -139,5 +127,4 @@ def downgrade():
         false
     FROM taxonomie.taxref t
     WHERE id_rang='KD'
-    """
-    )
+    """)

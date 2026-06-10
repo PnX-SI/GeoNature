@@ -58,8 +58,7 @@ def upgrade():
     tables = inspector.get_table_names(schema="gn_imports")
     for table_name in list(filter(lambda x: x.startswith("i_"), tables)):
         id_import = int(table_name.rsplit("_", 1)[-1])
-        op.execute(
-            f"""
+        op.execute(f"""
         WITH cte AS (
             SELECT
                 array_agg(gn_pk::int ORDER BY gn_pk::int) erroneous_rows
@@ -78,10 +77,8 @@ def upgrade():
             cte
         WHERE
             id_import = {id_import}
-        """
-        )
-        op.execute(
-            f"""
+        """)
+        op.execute(f"""
         WITH cte AS (
             SELECT EXISTS(
                 SELECT
@@ -102,8 +99,7 @@ def upgrade():
             cte
         WHERE
             id_import = {id_import}
-        """
-        )
+        """)
         op.drop_table(table_name=table_name, schema="gn_imports")
     op.drop_column(
         schema="gn_imports",
@@ -114,17 +110,13 @@ def upgrade():
 
 def downgrade():
     op.execute(f"CREATE SCHEMA {archive_schema}")
-    op.execute(
-        """
+    op.execute("""
         CREATE TABLE gn_import_archives.cor_import_archives(
           id_import integer NOT NULL,
           table_archive character varying(255) NOT NULL
         );
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
             ALTER TABLE gn_imports.t_imports
             ADD COLUMN import_table character varying(255)
-        """
-    )
+        """)

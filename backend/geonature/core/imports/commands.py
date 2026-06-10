@@ -7,7 +7,6 @@ from geonature.utils.env import db
 
 from .models import FieldMapping
 
-
 synthese_fieldmappings = {
     "unique_id_sinp": "uuid_perm_sinp",
     "entity_source_pk_value": "id_synthese",

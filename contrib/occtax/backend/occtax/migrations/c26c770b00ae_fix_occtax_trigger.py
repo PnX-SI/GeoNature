@@ -9,7 +9,6 @@ Create Date: 2022-10-12 16:05:50.816962
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "c26c770b00ae"
 down_revision = "023b0be41829"
@@ -18,8 +17,7 @@ depends_on = None
 
 
 def upgrade():
-    op.execute(
-        """
+    op.execute("""
         CREATE OR REPLACE FUNCTION pr_occtax.insert_in_synthese(my_id_counting integer)
             RETURNS integer[]
             LANGUAGE plpgsql
@@ -170,11 +168,9 @@ def upgrade():
                 RETURN myobservers.observers_id ;
             END;
             $function$;
-        """
-    )
+        """)
 
-    op.execute(
-        """
+    op.execute("""
         CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_counting()
         RETURNS trigger
         LANGUAGE plpgsql
@@ -214,11 +210,9 @@ def upgrade():
         $function$
         ;
         
-        """
-    )
+        """)
 
-    op.execute(
-        """
+    op.execute("""
        CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_occ()
  RETURNS trigger
  LANGUAGE plpgsql
@@ -254,10 +248,8 @@ AS $function$  declare
                 RETURN NULL;
         END;
         $function$;
-        """
-    )
-    op.execute(
-        """
+        """)
+    op.execute("""
         CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_releve()
         RETURNS trigger
         LANGUAGE plpgsql
@@ -298,11 +290,9 @@ AS $function$  declare
         END;
         $function$
         ;
-        """
-    )
+        """)
     # correction des données de synthese suite au bug des dénombrement
-    op.execute(
-        """
+    op.execute("""
         UPDATE gn_synthese.synthese s
         SET additional_data = COALESCE(rel.additional_fields, '{}'::jsonb) || COALESCE(occ.additional_fields, '{}'::jsonb) || COALESCE(cor.additional_fields, '{}'::jsonb)
         FROM pr_occtax.t_releves_occtax rel
@@ -312,11 +302,9 @@ AS $function$  declare
         -- where un des trois additionnal data est null, mais qu'il ne sont pas tous les 3 null
         AND (rel.additional_fields IS NULL OR occ.additional_fields IS NULL OR cor.additional_fields IS NULL) AND NOT 
         (rel.additional_fields IS NULL AND occ.additional_fields IS NULL AND cor.additional_fields IS NULL);
-        """
-    )
+        """)
     # correction des données de synthese suite au bug du trigger d'update occurrence (issue #1821)
-    op.execute(
-        """
+    op.execute("""
         UPDATE gn_synthese.synthese s
         SET
         id_nomenclature_bio_condition = too.id_nomenclature_bio_condition, 
@@ -351,8 +339,7 @@ AS $function$  declare
             OR too.nom_cite != s.nom_cite 
             OR too.sample_number_proof != s.sample_number_proof 
         );
-        """
-    )
+        """)
 
 
 def downgrade():

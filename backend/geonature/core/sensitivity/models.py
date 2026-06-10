@@ -8,7 +8,6 @@ from ref_geo.models import BibAreasTypes, LAreas
 from apptax.taxonomie.models import Taxref
 from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
 
-
 cor_sensitivity_area = db.Table(
     "cor_sensitivity_area",
     db.Column(

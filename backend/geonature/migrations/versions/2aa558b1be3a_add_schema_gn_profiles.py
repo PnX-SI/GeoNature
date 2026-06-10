@@ -11,7 +11,6 @@ import importlib.resources
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "2aa558b1be3a"
 down_revision = "5f4c4b644844"
@@ -21,8 +20,7 @@ depends_on = ("98035939bc0d",)  # taxonomie.find_all_taxons_parents(mycdnom inte
 
 def upgrade():
     op.execute(importlib.resources.read_text("geonature.migrations.data.core", "profiles.sql"))
-    op.execute(
-        """
+    op.execute("""
     DROP VIEW gn_commons.v_synthese_validation_forwebapp;
     CREATE VIEW gn_commons.v_synthese_validation_forwebapp
     WITH(security_barrier=false)
@@ -108,14 +106,12 @@ def upgrade():
             LIMIT 1) v ON true
     WHERE d.validable = true AND NOT s.unique_id_sinp IS NULL;
     
-    """
-    )
+    """)
 
 
 def downgrade():
     op.execute(f"DROP SCHEMA gn_profiles CASCADE")
-    op.execute(
-        """
+    op.execute("""
     DROP VIEW gn_commons.v_synthese_validation_forwebapp;
     CREATE VIEW gn_commons.v_synthese_validation_forwebapp
     WITH (security_barrier=false)
@@ -199,5 +195,4 @@ def downgrade():
     WHERE d.validable = true AND NOT s.unique_id_sinp IS NULL;
 
     COMMENT ON VIEW gn_commons.v_synthese_validation_forwebapp  IS 'Vue utilisée pour le module validation. Prend l''id_nomenclature dans la table synthese ainsi que toutes les colonnes de la synthese pour les filtres. On JOIN sur la vue latest_validation pour voir si la validation est auto';
-    """
-    )
+    """)

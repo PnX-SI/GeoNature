@@ -9,7 +9,6 @@ Create Date: 2023-06-14 11:40:29.580680
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "a89a99f68203"
 down_revision = "5158afe602d2"
@@ -18,27 +17,22 @@ depends_on = ("f1dd984bff97",)
 
 
 def upgrade():
-    op.execute(
-        """
+    op.execute("""
             INSERT INTO gn_permissions.t_objects (code_object, description_object)
             VALUES (
                 'IMPORT', 
                 'Imports de données'
             )
-        """
-    )
-    op.execute(
-        """
+        """)
+    op.execute("""
             INSERT INTO gn_permissions.cor_object_module
                 (id_object, id_module)
             VALUES(
 	            (SELECT id_object FROM gn_permissions.t_objects WHERE code_object = 'IMPORT'),
 	            (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'IMPORT')
             )
-        """
-    )
-    op.execute(
-        """
+        """)
+    op.execute("""
         INSERT INTO
             gn_permissions.t_permissions_available (
                 id_module,
@@ -71,10 +65,8 @@ def upgrade():
             gn_permissions.t_objects o ON o.code_object = v.object_code
         JOIN
             gn_permissions.bib_actions a ON a.code_action = v.action_code
-        """
-    )
-    op.execute(
-        """
+        """)
+    op.execute("""
         WITH new_all_permissions AS (
             SELECT 
 	            p.id_role,
@@ -98,10 +90,8 @@ def upgrade():
         INSERT INTO gn_permissions.t_permissions
             (id_role, id_action, id_module, id_object, scope_value, sensitivity_filter)
         SELECT * FROM new_all_permissions
-        """
-    )
-    op.execute(
-        """
+        """)
+    op.execute("""
         WITH bad_permissions AS (
             SELECT
                 p.id_permission
@@ -127,13 +117,11 @@ def upgrade():
                 USING bad_permissions bp
         WHERE
             bp.id_permission = p.id_permission;
-        """
-    )
+        """)
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
         DELETE FROM
             gn_permissions.t_permissions_available pa
         USING
@@ -142,10 +130,8 @@ def downgrade():
             pa.id_module = m.id_module
             AND
             module_code = 'IMPORT'
-        """
-    )
-    op.execute(
-        """
+        """)
+    op.execute("""
         DELETE FROM
             gn_permissions.t_permissions p
         USING
@@ -159,6 +145,5 @@ def downgrade():
             p.id_object = o.id_object
             AND
             code_object = 'IMPORT'
-        """
-    )
+        """)
     op.execute("DELETE FROM gn_permissions.t_objects WHERE code_object = 'IMPORT'")

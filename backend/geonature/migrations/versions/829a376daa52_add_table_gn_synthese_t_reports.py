@@ -19,8 +19,7 @@ depends_on = None
 
 def upgrade():
     logger.info("Create t_reports table...")
-    op.execute(
-        """
+    op.execute("""
     CREATE TABLE gn_synthese.t_reports (
         id_report SERIAL NOT NULL PRIMARY KEY,
         id_synthese INT NOT NULL,
@@ -42,8 +41,7 @@ def upgrade():
             REFERENCES gn_synthese.synthese(id_synthese)
             ON UPDATE CASCADE ON DELETE CASCADE
     )
-    """
-    )
+    """)
     pass
 
 

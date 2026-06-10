@@ -13,7 +13,6 @@ from sqlalchemy.dialects.postgresql import HSTORE, JSONB, UUID
 from geoalchemy2 import Geometry
 from sqlalchemy.orm.session import Session
 
-
 # revision identifiers, used by Alembic.
 revision = "167d69b42d25"
 down_revision = "f305718b81d3"
@@ -1057,16 +1056,14 @@ def upgrade():
         .values(id_unique_column=id_unique_column_field)
     )
     session.close()
-    op.execute(
-        """
+    op.execute("""
         UPDATE
             gn_commons.t_modules
         SET 
             type = 'occhab'
         WHERE
             module_code = 'OCCHAB'
-        """
-    )
+        """)
     op.add_column(
         "t_stations",
         sa.Column("id_station_source", sa.String, nullable=True),
@@ -1084,8 +1081,7 @@ def upgrade():
             schema="pr_occhab",
         )
         op.execute(f"DROP TRIGGER tri_log_changes_{table_name}_occhab ON pr_occhab.{table_name}")
-        op.execute(
-            f"""
+        op.execute(f"""
             CREATE TRIGGER
                 tri_log_changes_insert_{table_name}_occhab
             AFTER
@@ -1096,10 +1092,8 @@ def upgrade():
                 (NEW.id_import IS NULL)
             EXECUTE
                 FUNCTION gn_commons.fct_trg_log_changes()
-            """
-        )
-        op.execute(
-            f"""
+            """)
+        op.execute(f"""
             CREATE TRIGGER
                 tri_log_changes_delete_{table_name}_occhab
             AFTER
@@ -1110,8 +1104,7 @@ def upgrade():
                 (OLD.id_import IS NULL)
             EXECUTE
                 FUNCTION gn_commons.fct_trg_log_changes()
-            """
-        )
+            """)
     op.alter_column(
         schema="pr_occhab",
         table_name="t_habitats",
@@ -1165,8 +1158,7 @@ def downgrade():
         op.execute(
             f"DROP TRIGGER tri_log_changes_delete_{table_name}_occhab ON pr_occhab.{table_name}"
         )
-        op.execute(
-            f"""
+        op.execute(f"""
             CREATE TRIGGER tri_log_changes_{table_name}_occhab AFTER
             INSERT
                 OR
@@ -1175,19 +1167,16 @@ def downgrade():
             UPDATE
                 ON
                 pr_occhab.{table_name} FOR EACH ROW EXECUTE FUNCTION gn_commons.fct_trg_log_changes()
-            """
-        )
+            """)
         op.drop_column(schema="pr_occhab", table_name=table_name, column_name="id_import")
     op.drop_column(schema="pr_occhab", table_name="t_stations", column_name="id_station_source")
     op.drop_table(schema="gn_imports", table_name="t_imports_occhab")
     op.execute("DELETE FROM gn_imports.bib_destinations WHERE code = 'occhab'")
-    op.execute(
-        """
+    op.execute("""
         UPDATE
             gn_commons.t_modules
         SET 
             type = 'base'
         WHERE
             module_code = 'OCCHAB'
-        """
-    )
+        """)

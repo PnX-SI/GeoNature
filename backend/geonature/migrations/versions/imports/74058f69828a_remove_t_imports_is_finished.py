@@ -9,7 +9,6 @@ Create Date: 2022-04-27 13:51:46.622094
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "74058f69828a"
 down_revision = "61e11414f177"
@@ -34,8 +33,7 @@ def downgrade():
             sa.Boolean,
         ),
     )
-    op.execute(
-        """
+    op.execute("""
     UPDATE
         gn_imports.t_imports i
     SET
@@ -45,5 +43,4 @@ def downgrade():
             JOIN gn_synthese.t_sources source ON synthese.id_source = source.id_source
             WHERE source.name_source = 'Import(id=' || i.id_import || ')'
         )
-    """
-    )
+    """)

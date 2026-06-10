@@ -39,7 +39,6 @@ from geonature.core.sensitivity.models import cor_sensitivity_area_type
 
 from ref_geo.models import LAreas, BibAreasTypes
 
-
 synthese_routes = Blueprint("synthese", __name__)
 
 

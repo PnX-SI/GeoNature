@@ -9,7 +9,6 @@ Create Date: 2025-01-09 15:57:37.476537
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "9df933cc3c7a"
 down_revision = "6734d8f7eb2a"
@@ -28,35 +27,27 @@ NEW_TEMPLATE_MAIL = """<p>Bonjour <i>{{ role.prenom_role }} {{ role.nom_role }}<
 
 def upgrade():
     # Update templates 'EMAIL' and 'DB' for the category 'IMPORT-DONE', IF AND ONLY IF still equal to the original template from "485a659efdcd"
-    op.execute(
-        f"""
+    op.execute(f"""
         UPDATE gn_notifications.bib_notifications_templates 
         SET content = '{NEW_TEMPLATE_DB}' 
         WHERE code_method = 'DB' AND code_category = 'IMPORT-DONE'
-        """
-    )
-    op.execute(
-        f"""
+        """)
+    op.execute(f"""
         UPDATE gn_notifications.bib_notifications_templates 
         SET content = '{NEW_TEMPLATE_MAIL}' 
         WHERE code_method = 'EMAIL' AND code_category = 'IMPORT-DONE'
-        """
-    )
+        """)
 
 
 def downgrade():
     # Set back to the original templates
-    op.execute(
-        f"""
+    op.execute(f"""
         UPDATE gn_notifications.bib_notifications_templates 
         SET content = '{ORIGINAL_TEMPLATE_DB}' 
         WHERE code_method = 'DB' AND code_category = 'IMPORT-DONE'
-        """
-    )
-    op.execute(
-        f"""
+        """)
+    op.execute(f"""
         UPDATE gn_notifications.bib_notifications_templates 
         SET content = '{ORIGINAL_TEMPLATE_MAIL}' 
         WHERE code_method = 'EMAIL' AND code_category = 'IMPORT-DONE'
-        """
-    )
+        """)

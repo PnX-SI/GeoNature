@@ -9,7 +9,6 @@ Create Date: 2022-04-25 13:52:16.016035
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "22c2851bc387"
 down_revision = "944072911ff7"
@@ -18,8 +17,7 @@ depends_on = None
 
 
 def upgrade():
-    op.execute(
-        """
+    op.execute("""
         ALTER TABLE pr_occtax.t_releves_occtax 
         ALTER COLUMN id_nomenclature_tech_collect_campanule SET DEFAULT pr_occtax.get_default_nomenclature_value('TECHNIQUE_OBS');
 
@@ -73,13 +71,11 @@ def upgrade():
        ALTER TABLE pr_occtax.cor_counting_occtax  
        ALTER COLUMN id_nomenclature_type_count SET DEFAULT pr_occtax.get_default_nomenclature_value('TYP_DENBR');
 
-        """
-    )
+        """)
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
         ALTER TABLE pr_occtax.t_releves_occtax 
         ALTER COLUMN id_nomenclature_tech_collect_campanule DROP DEFAULT;
 
@@ -132,5 +128,4 @@ def downgrade():
 
        ALTER TABLE pr_occtax.cor_counting_occtax  
        ALTER COLUMN id_nomenclature_type_count DROP DEFAULT;
-        """
-    )
+        """)

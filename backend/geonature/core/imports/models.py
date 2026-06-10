@@ -18,7 +18,6 @@ from celery.result import AsyncResult
 import flask_sqlalchemy
 from werkzeug.exceptions import Conflict
 
-
 if version.parse(flask_sqlalchemy.__version__) >= version.parse("3"):
     from flask_sqlalchemy.query import Query
 else:  # retro-compatibility Flask-SQLAlchemy 2

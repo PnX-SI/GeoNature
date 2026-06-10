@@ -26,5 +26,4 @@ from .routes import (
 )
 from .commands import fix_mappings
 
-
 blueprint.cli.add_command(fix_mappings)

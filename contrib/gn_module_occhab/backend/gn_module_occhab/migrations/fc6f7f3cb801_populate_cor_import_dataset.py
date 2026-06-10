@@ -9,7 +9,6 @@ Create Date: 2026-05-05 14:50:03.076396
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "fc6f7f3cb801"
 
@@ -19,8 +18,7 @@ depends_on = ("ed1de98c65aa",)
 
 
 def upgrade():
-    op.execute(
-        """
+    op.execute("""
         INSERT INTO gn_imports.cor_import_datasets (id_import, id_dataset)
         SELECT DISTINCT id_import, id_dataset
         FROM (
@@ -41,8 +39,7 @@ def upgrade():
         ) combined
         --  Ignore if already present
         ON CONFLICT (id_import, id_dataset) DO NOTHING
-    """
-    )
+    """)
 
 
 def downgrade():

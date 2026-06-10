@@ -13,7 +13,6 @@ import sqlalchemy as sa
 
 from utils_flask_sqla.utils import strtobool
 
-
 # revision identifiers, used by Alembic.
 revision = "4b137deaf201"
 down_revision = "75e78027227d"

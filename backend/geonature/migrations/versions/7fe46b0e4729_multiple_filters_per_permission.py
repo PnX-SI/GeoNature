@@ -11,7 +11,6 @@ import sqlalchemy as sa
 from sqlalchemy import Column, ForeignKey, Integer, Unicode
 from sqlalchemy.types import ARRAY
 
-
 # revision identifiers, used by Alembic.
 revision = "7fe46b0e4729"
 down_revision = "0630b93bcfe0"
@@ -44,8 +43,7 @@ def upgrade():
         column_name="id_filter",
         nullable=True,
     )
-    op.execute(
-        """
+    op.execute("""
         UPDATE
             gn_permissions.t_permissions
         SET
@@ -63,18 +61,15 @@ def upgrade():
                 AND
                     f.value_filter = '3'
             )
-        """
-    )
-    op.execute(
-        """
+        """)
+    op.execute("""
         DELETE FROM
             gn_permissions.t_filters
         WHERE
             id_filter_type = (SELECT id_filter_type FROM gn_permissions.bib_filters_type WHERE code_filter_type = 'SCOPE')
         AND
             value_filter = '3'
-        """
-    )
+        """)
 
     # Migrate t_permissions.id_filter to t_permissions.filter_scope
     op.create_table(
@@ -84,8 +79,7 @@ def upgrade():
         Column("description", Unicode),
         schema="gn_permissions",
     )
-    op.execute(
-        """
+    op.execute("""
         INSERT INTO
             gn_permissions.bib_filters_scope (
                 value,
@@ -102,8 +96,7 @@ def upgrade():
             gn_permissions.bib_filters_type t USING (id_filter_type)
         WHERE
             t.code_filter_type = 'SCOPE'
-        """
-    )
+        """)
     op.add_column(
         schema="gn_permissions",
         table_name="t_permissions",
@@ -114,8 +107,7 @@ def upgrade():
             nullable=True,
         ),
     )
-    op.execute(
-        """
+    op.execute("""
         UPDATE
             gn_permissions.t_permissions p
         SET
@@ -130,8 +122,7 @@ def upgrade():
             t.code_filter_type = 'SCOPE'
         AND
             p.id_filter = f.id_filter
-        """
-    )
+        """)
     op.drop_column(schema="gn_permissions", table_name="t_permissions", column_name="id_filter")
     op.drop_table(schema="gn_permissions", table_name="t_filters")
 
@@ -153,8 +144,7 @@ def downgrade():
         ),
         schema="gn_permissions",
     )
-    op.execute(
-        """
+    op.execute("""
         INSERT INTO
             gn_permissions.t_filters (
                 label_filter,
@@ -171,8 +161,7 @@ def downgrade():
             gn_permissions.bib_filters_scope s
         JOIN
             gn_permissions.bib_filters_type t ON t.code_filter_type = 'SCOPE'
-        """
-    )
+        """)
     op.add_column(
         schema="gn_permissions",
         table_name="t_permissions",
@@ -184,8 +173,7 @@ def downgrade():
         ),
     )
     # Copy scope_value into id_filter
-    op.execute(
-        """
+    op.execute("""
         UPDATE
             gn_permissions.t_permissions p
         SET
@@ -209,13 +197,11 @@ def downgrade():
         ) f
         WHERE
             p.id_permission = f.id_permission
-        """
-    )
+        """)
     op.drop_column(schema="gn_permissions", table_name="t_permissions", column_name="scope_value")
     op.drop_table(schema="gn_permissions", table_name="bib_filters_scope")
     # Set SCOPE=3 for permissions without any filters
-    op.execute(
-        """
+    op.execute("""
         INSERT INTO
             gn_permissions.t_filters (id_filter_type, label_filter, value_filter, description_filter)
         VALUES (
@@ -224,10 +210,8 @@ def downgrade():
             '3',
             'Toutes les données'
         )
-        """
-    )
-    op.execute(
-        """
+        """)
+    op.execute("""
         UPDATE
             gn_permissions.t_permissions p
         SET
@@ -245,8 +229,7 @@ def downgrade():
            )
         WHERE
             id_filter IS NULL
-        """
-    )
+        """)
     op.alter_column(
         schema="gn_permissions",
         table_name="t_permissions",
@@ -254,8 +237,7 @@ def downgrade():
         nullable=False,
     )
     # op.drop_table(schema="gn_permissions", table_name="t_filters")
-    op.execute(
-        """
+    op.execute("""
         CREATE FUNCTION gn_permissions.fct_tri_does_user_have_already_scope_filter()
          RETURNS trigger
          LANGUAGE plpgsql
@@ -298,17 +280,14 @@ def downgrade():
 
         $function$
         ;
-        """
-    )
-    op.execute(
-        """
+        """)
+    op.execute("""
         CREATE TRIGGER tri_check_no_multiple_scope_perm
         BEFORE INSERT OR UPDATE
         ON gn_permissions.t_permissions
         FOR EACH ROW
         EXECUTE PROCEDURE gn_permissions.fct_tri_does_user_have_already_scope_filter()
-        """
-    )
+        """)
     op.rename_table(
         schema="gn_permissions",
         old_table_name="t_permissions",

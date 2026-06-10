@@ -9,7 +9,6 @@ Create Date: 2025-11-25 15:17:56
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "03ec871fb969"
 down_revision = "b955b6d95d25"
@@ -18,9 +17,7 @@ depends_on = None
 
 
 def upgrade():
-    op.get_bind().execute(
-        sa.text(
-            """
+    op.get_bind().execute(sa.text("""
         -- Insert ORGANISM object into t_objects
         INSERT INTO gn_permissions.t_objects
         (code_object, description_object)
@@ -59,14 +56,11 @@ def upgrade():
         JOIN gn_commons.t_modules m ON m.module_code = v.module_code
         JOIN gn_permissions.t_objects o ON o.code_object = v.object_code
         JOIN gn_permissions.bib_actions a ON a.code_action = v.action_code;
-        """
-        )
-    )
+        """))
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
         -- Remove "C" permission for GEONATURE module and ORGANISM object
         DELETE FROM gn_permissions.t_permissions 
         WHERE id_module = (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'GEONATURE')
@@ -98,5 +92,4 @@ def downgrade():
         
         -- Remove ORGANISM object
         DELETE FROM gn_permissions.t_objects WHERE code_object = 'ORGANISM';
-        """
-    )
+        """)

@@ -9,7 +9,6 @@ Create Date: 2022-09-21 18:11:27.597095
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "4b5478df71cb"
 down_revision = "42040535a20e"
@@ -18,8 +17,7 @@ depends_on = None
 
 
 def upgrade():
-    op.execute(
-        """
+    op.execute("""
     CREATE OR REPLACE FUNCTION gn_synthese.update_sensitivity()
      RETURNS integer
      LANGUAGE plpgsql
@@ -67,13 +65,11 @@ def upgrade():
             END;
         $function$
     ;
-    """
-    )
+    """)
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
     CREATE OR REPLACE FUNCTION gn_synthese.update_sensitivity()
         RETURNS int4
         LANGUAGE plpgsql
@@ -116,5 +112,4 @@ def downgrade():
         END;
     $function$
     ;
-    """
-    )
+    """)

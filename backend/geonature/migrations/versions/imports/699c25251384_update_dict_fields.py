@@ -9,7 +9,6 @@ Create Date: 2022-05-10 20:18:37.214323
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "699c25251384"
 down_revision = "681062ef2939"
@@ -34,77 +33,62 @@ def upgrade():
         schema="gn_imports",
     )
 
-    op.execute(
-        """
+    op.execute("""
     DELETE FROM
         gn_imports.bib_fields
     WHERE
         name_field = 'id_nomenclature_info_geo_type'
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
     UPDATE
         gn_imports.t_fieldmappings
     SET
         values = values::jsonb - 'id_nomenclature_info_geo_type'
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
     UPDATE
         gn_imports.t_contentmappings
     SET
         values = values::jsonb - 'TYP_INF_GEO'
-    """
-    )
+    """)
 
-    op.execute(
-        """
+    op.execute("""
     UPDATE
         gn_imports.bib_fields
     SET
         fr_label = 'Générer les identifiants SINP manquants'
     WHERE
         name_field = 'unique_id_sinp_generate'
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
     UPDATE
         gn_imports.bib_fields
     SET
         fr_label = 'Générer les altitudes manquantes'
     WHERE
         name_field = 'altitudes_generate'
-    """
-    )
+    """)
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
     UPDATE
         gn_imports.bib_fields
     SET
         fr_label = E'Générer l\\'identifiant SINP'
     WHERE
         name_field = 'unique_id_sinp_generate'
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
     UPDATE
         gn_imports.bib_fields
     SET
         fr_label = 'Générer les altitudes'
     WHERE
         name_field = 'altitudes_generate'
-    """
-    )
+    """)
 
-    op.execute(
-        """
+    op.execute("""
     INSERT INTO
         gn_imports.bib_fields
     (
@@ -136,8 +120,7 @@ def downgrade():
         'src_id_nomenclature_info_geo_type',
         'id_nomenclature_info_geo_type'
     )
-    """
-    )
+    """)
 
     op.rename_table(
         new_table_name="dict_fields",

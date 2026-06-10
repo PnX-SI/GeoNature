@@ -13,7 +13,6 @@ from sqlalchemy.sql import table, column
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.ext.mutable import MutableDict
 
-
 # revision identifiers, used by Alembic.
 revision = "650f1d749b3b"
 down_revision = "bd73fa82a3f4"

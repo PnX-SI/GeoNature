@@ -13,7 +13,6 @@ import sqlalchemy as sa
 from sqlalchemy import func
 from sqlalchemy.sql import text
 
-
 # revision identifiers, used by Alembic.
 revision = "2984569d5df6"
 down_revision = None
@@ -30,10 +29,8 @@ def upgrade():
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
     DELETE FROM gn_commons.bib_tables_location
     WHERE schema_name = 'pr_occhab'
-    """
-    )
+    """)
     op.execute("DROP SCHEMA pr_occhab CASCADE")

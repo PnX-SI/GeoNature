@@ -9,7 +9,6 @@ Create Date: 2023-01-04 16:02:45.953579
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "497f52d996dd"
 down_revision = "8888e5cce63b"
@@ -18,31 +17,25 @@ depends_on = None
 
 
 def upgrade():
-    op.execute(
-        """
+    op.execute("""
         ALTER TABLE gn_commons.t_additional_fields
         DROP COLUMN key_label;
         ALTER TABLE gn_commons.t_additional_fields
         DROP COLUMN key_value;
-        """
-    )
-    op.execute(
-        """
+        """)
+    op.execute("""
             UPDATE gn_commons.t_additional_fields
             SET id_widget = (SELECT id_widget FROM gn_commons.bib_widgets  WHERE widget_name = 'radio')
             WHERE id_widget = (SELECT id_widget FROM gn_commons.bib_widgets  WHERE widget_name = 'bool_radio')
-        """
-    )
+        """)
     op.execute("DELETE FROM gn_commons.bib_widgets WHERE widget_name = 'bool_radio'")
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
         ALTER TABLE gn_commons.t_additional_fields
         ADD COLUMN key_label varchar(255);
         ALTER TABLE gn_commons.t_additional_fields
         ADD COLUMN key_value varchar(255);
-        """
-    )
+        """)
     op.execute("INSERT INTO gn_commons.bib_widgets(widget_name) VALUES ('bool_radio')")

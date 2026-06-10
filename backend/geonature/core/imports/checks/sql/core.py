@@ -11,7 +11,6 @@ from geonature.core.imports.models import (
     TImports,
 )
 
-
 __all__ = ["init_rows_validity", "check_orphan_rows"]
 
 

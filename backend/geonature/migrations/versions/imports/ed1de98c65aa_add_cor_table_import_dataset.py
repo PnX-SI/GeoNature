@@ -43,15 +43,13 @@ def upgrade():
         schema="gn_imports",
     )
     # Fill the table for existing synthese imports
-    op.execute(
-        """
+    op.execute("""
         INSERT INTO gn_imports.cor_import_datasets (id_import, id_dataset)
         SELECT DISTINCT s.id_import, s.id_dataset
         FROM gn_synthese.synthese s
         WHERE s.id_import IS NOT NULL
           AND s.id_dataset IS NOT NULL
-    """
-    )
+    """)
 
 
 def downgrade():

@@ -9,7 +9,6 @@ Create Date: 2023-02-22 12:47:26.727855
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "8279ce74006b"
 down_revision = "5d65f9c93a32"
@@ -18,16 +17,14 @@ depends_on = None
 
 
 def upgrade():
-    op.execute(
-        """
+    op.execute("""
         UPDATE
             gn_commons.t_modules
         SET
             type = 'base'
         WHERE
             type IS NULL
-        """
-    )
+        """)
     op.alter_column(
         schema="gn_commons",
         table_name="t_modules",
@@ -45,13 +42,11 @@ def downgrade():
         nullable=True,
         server_default=None,
     )
-    op.execute(
-        """
+    op.execute("""
         UPDATE
             gn_commons.t_modules
         SET
             type = NULL
         WHERE
             type = 'base'
-        """
-    )
+        """)

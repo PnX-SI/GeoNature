@@ -10,7 +10,6 @@ from alembic import op
 from sqlalchemy.orm import Session
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "c49474d2f1f7"
 down_revision = "0e8e1943c215"
@@ -69,14 +68,11 @@ def upgrade():
         .where(t_sources.c.id_source != id_source)
     )
 
-    op.execute(
-        """
+    op.execute("""
         DROP VIEW gn_synthese.v_synthese_for_web_app;
-        """
-    )
+        """)
 
-    op.execute(
-        """
+    op.execute("""
         CREATE VIEW gn_synthese.v_synthese_for_web_app AS
         SELECT s.id_synthese,
             s.unique_id_sinp,
@@ -152,8 +148,7 @@ def upgrade():
             JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
             JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
             JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source;
-        """
-    )
+        """)
 
 
 def downgrade():
@@ -189,19 +184,16 @@ def downgrade():
     )
     op.execute(t_sources.delete().where(t_sources.c.name_source == "Import"))
 
-    op.execute(
-        """
+    op.execute("""
         DROP VIEW gn_synthese.v_synthese_for_web_app;
-        """
-    )
+        """)
 
     op.drop_column(
         schema="gn_synthese",
         table_name="synthese",
         column_name="id_import",
     )
-    op.execute(
-        """
+    op.execute("""
         CREATE VIEW gn_synthese.v_synthese_for_web_app AS
         SELECT s.id_synthese,
             s.unique_id_sinp,
@@ -276,5 +268,4 @@ def downgrade():
             JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
             JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
             JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source;
-        """
-    )
+        """)

@@ -17,14 +17,11 @@ depends_on = ("c4415009f164",)  # Taxref v15 db structure
 
 
 def upgrade():
-    op.execute(
-        """
+    op.execute("""
         DROP VIEW gn_synthese.v_synthese_for_export;
-        """
-    )
+        """)
 
-    op.execute(
-        """
+    op.execute("""
 CREATE VIEW gn_synthese.v_synthese_for_export AS
  SELECT 
     s.id_synthese AS id_synthese,
@@ -141,16 +138,12 @@ CREATE VIEW gn_synthese.v_synthese_for_export AS
      LEFT JOIN ref_nomenclatures.t_nomenclatures n21 ON s.id_nomenclature_valid_status = n21.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n22 ON s.id_nomenclature_biogeo_status = n22.id_nomenclature
      LEFT JOIN ref_habitats.habref hab ON hab.cd_hab = s.cd_hab;
-"""
-    )
+""")
 
-    op.execute(
-        """
+    op.execute("""
         DROP VIEW gn_synthese.v_synthese_taxon_for_export_view;
-        """
-    )
-    op.execute(
-        """
+        """)
+    op.execute("""
 -- Vue export des taxons de la synthèse
 -- Première version qui reste à affiner/étoffer
 CREATE VIEW gn_synthese.v_synthese_taxon_for_export_view AS
@@ -170,19 +163,15 @@ CREATE VIEW gn_synthese.v_synthese_taxon_for_export_view AS
 FROM gn_synthese.synthese  s
 JOIN taxonomie.taxref t ON s.cd_nom = t.cd_nom
 JOIN taxonomie.taxref ref ON t.cd_ref = ref.cd_nom;
-"""
-    )
+""")
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
         DROP VIEW gn_synthese.v_synthese_for_export;
-        """
-    )
+        """)
 
-    op.execute(
-        """
+    op.execute("""
 CREATE VIEW gn_synthese.v_synthese_for_export AS
  SELECT 
     s.id_synthese AS id_synthese,
@@ -299,16 +288,12 @@ CREATE VIEW gn_synthese.v_synthese_for_export AS
      LEFT JOIN ref_nomenclatures.t_nomenclatures n22 ON s.id_nomenclature_biogeo_status = n22.id_nomenclature
      LEFT JOIN ref_habitats.habref hab ON hab.cd_hab = s.cd_hab;
 
-"""
-    )
+""")
 
-    op.execute(
-        """
+    op.execute("""
         DROP VIEW gn_synthese.v_synthese_taxon_for_export_view;
-        """
-    )
-    op.execute(
-        """
+        """)
+    op.execute("""
 -- Vue export des taxons de la synthèse
 -- Première version qui reste à affiner/étoffer
 CREATE VIEW gn_synthese.v_synthese_taxon_for_export_view AS
@@ -327,5 +312,4 @@ CREATE VIEW gn_synthese.v_synthese_taxon_for_export_view AS
 FROM gn_synthese.synthese  s
 JOIN taxonomie.taxref t ON s.cd_nom = t.cd_nom
 JOIN taxonomie.taxref ref ON t.cd_ref = ref.cd_nom;
-"""
-    )
+""")

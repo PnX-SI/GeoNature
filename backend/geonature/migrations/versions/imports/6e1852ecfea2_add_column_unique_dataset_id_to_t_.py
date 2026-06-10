@@ -128,13 +128,11 @@ def upgrade():
         .scalar()
     )
 
-    update_query = sa.text(
-        """
+    update_query = sa.text("""
         UPDATE gn_imports.t_fieldmappings
         SET values = values::jsonb || '{"unique_dataset_id": "unique_dataset_id"}'::jsonb
         WHERE id = :id_t_mapping_synthese
-        """
-    )
+        """)
 
     op.get_bind().execute(update_query, id_t_mapping_synthese=id_t_mapping_synthese)
 
@@ -208,12 +206,10 @@ def downgrade():
         .scalar()
     )
 
-    revert_query = sa.text(
-        """
+    revert_query = sa.text("""
         UPDATE gn_imports.t_fieldmappings
         SET values = values::jsonb - 'unique_dataset_id'
         WHERE id = :id_t_mapping_synthese
-        """
-    )
+        """)
 
     op.get_bind().execute(revert_query, id_t_mapping_synthese=id_t_mapping_synthese)

@@ -9,7 +9,6 @@ Create Date: 2023-10-25 17:18:04.438706
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "9a4b4b6f8fe6"
 down_revision = "df93a68242ee"
@@ -21,9 +20,7 @@ fct_name = "fct_auto_validation"
 
 
 def upgrade():
-    op.execute(
-        sa.text(
-            f"""
+    op.execute(sa.text(f"""
 create or replace function gn_profiles.fct_auto_validation (
         new_validation_status int default 2,
         score int default 3
@@ -79,16 +76,10 @@ end if;
 return 0;
 end;
 $function$;
-    """
-        )
-    )
+    """))
 
 
 def downgrade():
-    op.execute(
-        sa.text(
-            f"""
+    op.execute(sa.text(f"""
             DROP FUNCTION {schema}.{fct_name}
-        """
-        )
-    )
+        """))

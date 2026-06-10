@@ -9,7 +9,6 @@ Create Date: 2025-01-07 14:50:55.877316
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "bc28b69025b3"
 down_revision = "5b61bcaa18da"
@@ -20,8 +19,7 @@ depends_on = None
 def upgrade():
     # Création trigger mise à jour du cd_nom de la table des observations
     #   lors d'une modification d'un cd_nom d'un individu
-    op.execute(
-        """
+    op.execute("""
     CREATE OR REPLACE FUNCTION gn_monitoring.fct_trg_t_individuals_t_observations_cd_nom()
     RETURNS trigger
     LANGUAGE plpgsql
@@ -45,13 +43,11 @@ def upgrade():
         ON gn_monitoring.t_individuals 
         FOR EACH ROW
         EXECUTE PROCEDURE gn_monitoring.fct_trg_t_individuals_t_observations_cd_nom();
-    """
-    )
+    """)
 
     # Création d'un trigger qui peuple le champ cd_nom de la table t_observation à partir
     #   des données de l'individus selectionné
-    op.execute(
-        """
+    op.execute("""
 
     CREATE OR REPLACE FUNCTION gn_monitoring.fct_trg_t_observations_cd_nom()
     RETURNS trigger
@@ -77,20 +73,15 @@ def upgrade():
         ON gn_monitoring.t_observations
         FOR EACH ROW
         EXECUTE PROCEDURE gn_monitoring.fct_trg_t_observations_cd_nom();
-"""
-    )
+""")
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
         DROP TRIGGER trg_update_t_observations_cd_nom ON gn_monitoring.t_individuals;
         DROP FUNCTION gn_monitoring.fct_trg_t_individuals_t_observations_cd_nom();
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
         DROP TRIGGER trg_update_cd_nom ON gn_monitoring.t_observations;
         DROP FUNCTION gn_monitoring.fct_trg_t_observations_cd_nom();
-    """
-    )
+    """)

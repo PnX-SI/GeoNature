@@ -19,23 +19,19 @@ depends_on = None
 
 def upgrade():
     logger.info("Create bib_reports_types table...")
-    op.execute(
-        """
+    op.execute("""
     CREATE TABLE gn_synthese.bib_reports_types (
         id_type SERIAL NOT NULL PRIMARY KEY,
         type VARCHAR NOT NULL
     )
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
     INSERT INTO gn_synthese.bib_reports_types (type)
     VALUES 
         ('discussion'),
         ('alert'),
         ('pin')
-    """
-    )
+    """)
     pass
 
 

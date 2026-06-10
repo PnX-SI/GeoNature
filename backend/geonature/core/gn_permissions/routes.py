@@ -17,7 +17,6 @@ from geonature.core.gn_permissions.decorators import login_required
 from geonature.core.gn_permissions.commands import supergrant
 from werkzeug.exceptions import NotFound
 
-
 routes = Blueprint(
     "gn_permissions", __name__, cli_group="permissions", template_folder="./templates"
 )

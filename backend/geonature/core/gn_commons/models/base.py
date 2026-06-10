@@ -236,14 +236,12 @@ class TValidations(DB.Model):
 
     @staticmethod
     def auto_validation(fct_auto_validation):
-        stmt = text(
-            f"""
+        stmt = text(f"""
             select routine_name, routine_schema 
             from information_schema.routines 
             where routine_name= '{fct_auto_validation}'
             and routine_type='FUNCTION';
-         """
-        )
+         """)
         result = DB.session.execute(stmt).fetchall()
         if not result:
             return

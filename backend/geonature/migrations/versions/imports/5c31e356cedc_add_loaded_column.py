@@ -10,7 +10,6 @@ from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.sql import expression
 
-
 # revision identifiers, used by Alembic.
 revision = "5c31e356cedc"
 down_revision = "0ff8fc0b4233"
@@ -24,16 +23,14 @@ def upgrade():
         table_name="t_imports",
         column=sa.Column("loaded", sa.Boolean, nullable=False, server_default=expression.false()),
     )
-    op.execute(
-        """
+    op.execute("""
     UPDATE
         gn_imports.t_imports
     SET
         loaded = TRUE
     WHERE
         source_count > 0
-    """
-    )
+    """)
     op.alter_column(
         schema="gn_imports",
         table_name="t_imports",

@@ -52,14 +52,10 @@ def import_from_table(schema_name, table_name, field_name, value, limit=50):
         else:
             raise e
     except Exception as e:
-        raise GeonatureApiError(
-            """ Error while executing import_from_table with parameters :
+        raise GeonatureApiError(""" Error while executing import_from_table with parameters :
                 schema_name : {}
                 table_name : {}
                 field_name : {}
                 value : {}.
                 {}
-            """.format(
-                schema_name, table_name, field_name, value, e
-            )
-        )
+            """.format(schema_name, table_name, field_name, value, e))
