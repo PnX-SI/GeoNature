@@ -9,7 +9,6 @@ Create Date: 2024-12-11 15:44:52.912515
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "a94bea44ab56"
 down_revision = "e43b01a18850"
@@ -18,13 +17,10 @@ depends_on = None
 
 
 def upgrade():
-    op.execute(
-        """
+    op.execute("""
         ALTER TABLE gn_imports.bib_fields ADD type_field_params jsonb NULL;
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
         UPDATE gn_imports.bib_fields
         SET type_field = 
             case
@@ -46,14 +42,11 @@ def upgrade():
                 -- Default: garder la valeur actuelle.
                 ELSE NULL
             END;
-    """
-    )
+    """)
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
         ALTER TABLE gn_imports.bib_fields DROP COLUMN type_field_params;
 
-    """
-    )
+    """)

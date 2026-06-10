@@ -9,7 +9,6 @@ Create Date: 2022-11-14 15:39:49.550279
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "0ff94776a962"
 down_revision = "9668b861bdb6"
@@ -18,8 +17,7 @@ depends_on = None
 
 
 def upgrade():
-    op.execute(
-        """
+    op.execute("""
         DROP TRIGGER tri_calculate_altitude ON pr_occtax.t_releves_occtax;
         CREATE TRIGGER tri_calculate_altitude BEFORE
         INSERT OR UPDATE
@@ -33,13 +31,11 @@ def upgrade():
         OF geom_4326
         ON pr_occtax.t_releves_occtax
         FOR EACH ROW EXECUTE FUNCTION ref_geo.fct_trg_calculate_geom_local('geom_4326', 'geom_local');
-        """
-    )
+        """)
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
         DROP TRIGGER tri_calculate_altitude ON pr_occtax.t_releves_occtax;
         CREATE TRIGGER tri_calculate_altitude BEFORE
         INSERT OR UPDATE
@@ -51,5 +47,4 @@ def downgrade():
         INSERT OR UPDATE
         ON pr_occtax.t_releves_occtax
         FOR EACH ROW EXECUTE FUNCTION ref_geo.fct_trg_calculate_geom_local('geom_4326', 'geom_local');
-        """
-    )
+        """)

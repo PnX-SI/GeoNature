@@ -26,7 +26,6 @@ from geonature.core.gn_commons.models import TModules, TMedias
 from geonature.core.gn_meta.models import TDatasets
 from geonature.utils.env import DB
 
-
 cor_visit_observer = DB.Table(
     "cor_visit_observer",
     DB.Column(

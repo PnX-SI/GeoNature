@@ -10,7 +10,6 @@ from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.types import ARRAY
 
-
 # revision identifiers, used by Alembic.
 revision = "6f60b0b934b1"
 down_revision = "cadfdaa42430"
@@ -27,8 +26,7 @@ def upgrade():
             ARRAY(sa.Integer),
         ),
     )
-    op.execute(
-        """
+    op.execute("""
     WITH cte AS (
         SELECT
             id_import,
@@ -50,8 +48,7 @@ def upgrade():
         i.id_import = cte.id_import
         AND
         i.processing = TRUE
-    """
-    )
+    """)
 
 
 def downgrade():

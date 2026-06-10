@@ -45,8 +45,7 @@ def upgrade():
     #     schema=monitorings_schema,
     #     postgresql_not_valid=True
     # )
-    statement = sa.text(
-        f"""
+    statement = sa.text(f"""
         ALTER TABLE {monitorings_schema}.bib_type_site
         ADD
           CONSTRAINT ck_bib_type_site_id_nomenclature_type_site CHECK (
@@ -54,8 +53,7 @@ def upgrade():
               id_nomenclature_type_site, 'TYPE_SITE' :: character varying
             )
           ) NOT VALID
-        """
-    )
+        """)
     op.execute(statement)
     op.create_table_comment(
         "bib_type_site",
@@ -64,13 +62,11 @@ def upgrade():
     )
 
     # Récupération de la liste des types de site avec ceux déja présents dans la table t_base_site
-    op.execute(
-        """
+    op.execute("""
         INSERT INTO gn_monitoring.bib_type_site AS bts  (id_nomenclature_type_site)
         SELECT DISTINCT id_nomenclature_type_site
         FROM gn_monitoring.t_base_sites AS tbs ;
-    """
-    )
+    """)
 
 
 def downgrade():

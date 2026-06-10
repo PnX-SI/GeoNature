@@ -15,18 +15,14 @@ depends_on = None
 
 
 def upgrade():
-    op.execute(
-        """
+    op.execute("""
         INSERT INTO gn_imports.bib_errors_types (error_type, name, description, error_level) VALUES
             ('Cadre d''acquisition fermé', 'CLOSED_ACQUISITION_FRAMEWORK', 'Un cadre d''acquisiton associé est fermé', 'ERROR')
         ;
-        """
-    )
+        """)
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
             DELETE FROM gn_imports.bib_errors_types WHERE name = 'CLOSED_ACQUISITION_FRAMEWORK';
-        """
-    )
+        """)

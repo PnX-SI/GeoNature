@@ -9,7 +9,6 @@ Create Date: 2022-11-09 15:52:14.071528
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "61802a0f83b8"
 down_revision = "576cbd26b012"
@@ -18,18 +17,15 @@ depends_on = ("f4ffdc68072c",)  # add id_module in gn_synthese.t_sources
 
 
 def upgrade():
-    op.execute(
-        """
+    op.execute("""
         UPDATE
             gn_synthese.t_sources
         SET
             id_module = (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'OCCTAX')
         WHERE
             name_source = 'Occtax'
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
         CREATE OR REPLACE FUNCTION pr_occtax.insert_in_synthese(my_id_counting integer)
             RETURNS integer[]
             LANGUAGE plpgsql
@@ -180,10 +176,8 @@ def upgrade():
                 RETURN myobservers.observers_id ;
             END;
             $function$;
-        """
-    )
-    op.execute(
-        """
+        """)
+    op.execute("""
         CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_releve()
         RETURNS trigger
         LANGUAGE plpgsql
@@ -225,13 +219,11 @@ def upgrade():
         END;
         $function$
         ;
-        """
-    )
+        """)
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
         CREATE OR REPLACE FUNCTION pr_occtax.insert_in_synthese(my_id_counting integer)
             RETURNS integer[]
             LANGUAGE plpgsql
@@ -382,10 +374,8 @@ def downgrade():
                 RETURN myobservers.observers_id ;
             END;
             $function$;
-        """
-    )
-    op.execute(
-        """
+        """)
+    op.execute("""
         CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_releve()
         RETURNS trigger
         LANGUAGE plpgsql
@@ -426,5 +416,4 @@ def downgrade():
         END;
         $function$
         ;
-        """
-    )
+        """)

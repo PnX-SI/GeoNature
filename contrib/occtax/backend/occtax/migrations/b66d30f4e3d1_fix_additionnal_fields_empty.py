@@ -9,7 +9,6 @@ Create Date: 2023-12-19 14:46:28.208303
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "b66d30f4e3d1"
 down_revision = "43ecf0836b4a"
@@ -18,8 +17,7 @@ depends_on = None
 
 
 def upgrade():
-    op.execute(
-        """
+    op.execute("""
         CREATE OR REPLACE VIEW pr_occtax.v_export_occtax
         AS SELECT rel.unique_id_sinp_grp AS "idSINPRegroupement",
             ref_nomenclatures.get_cd_nomenclature(rel.id_nomenclature_grp_typ) AS "typGrp",
@@ -92,13 +90,11 @@ def upgrade():
             LEFT JOIN utilisateurs.bib_organismes o ON o.id_organisme = r.id_organisme
             LEFT JOIN ref_habitats.habref hab ON hab.cd_hab = rel.cd_hab
         GROUP BY ccc.id_counting_occtax, occ.id_occurrence_occtax, rel.id_releve_occtax, d.id_dataset, tax.cd_ref, tax.lb_nom, tax.nom_vern, hab.cd_hab, hab.lb_code, hab.lb_hab_fr;
-        """
-    )
+        """)
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
 
     CREATE OR REPLACE VIEW pr_occtax.v_export_occtax
     AS SELECT rel.unique_id_sinp_grp AS "idSINPRegroupement",
@@ -172,5 +168,4 @@ def downgrade():
         LEFT JOIN utilisateurs.bib_organismes o ON o.id_organisme = r.id_organisme
         LEFT JOIN ref_habitats.habref hab ON hab.cd_hab = rel.cd_hab
     GROUP BY ccc.id_counting_occtax, occ.id_occurrence_occtax, rel.id_releve_occtax, d.id_dataset, tax.cd_ref, tax.lb_nom, tax.nom_vern, hab.cd_hab, hab.lb_code, hab.lb_hab_fr;
-    """
-    )
+    """)

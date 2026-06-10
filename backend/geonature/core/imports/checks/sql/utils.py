@@ -13,7 +13,6 @@ from geonature.core.imports.models import (
 from geonature.core.imports.utils import generated_fields
 import pandas as pd
 
-
 __all__ = [
     "get_duplicates_query",
     "report_erroneous_rows",

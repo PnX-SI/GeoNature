@@ -8,7 +8,6 @@ Create Date: 2023-12-18
 
 from alembic import op
 
-
 # revision identifiers, used by Alembic.
 revision = "75e78027227d"
 down_revision = None
@@ -21,8 +20,7 @@ archive_schema = "gn_import_archives"
 
 
 def upgrade():
-    op.execute(
-        """
+    op.execute("""
         INSERT INTO
             gn_commons.t_modules (
                 module_code,
@@ -42,8 +40,7 @@ def upgrade():
             TRUE,
             TRUE
         )
-        """
-    )
+        """)
 
 
 def downgrade():

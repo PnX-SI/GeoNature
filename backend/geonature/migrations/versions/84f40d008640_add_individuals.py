@@ -10,7 +10,6 @@ from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 
-
 # revision identifiers, used by Alembic.
 revision = "84f40d008640"
 down_revision = "d73f74e7b662"
@@ -51,8 +50,7 @@ def upgrade():
     )
 
     # Create new nomenclature type to be used as contraint in marking event
-    op.execute(
-        """
+    op.execute("""
         INSERT INTO ref_nomenclatures.bib_nomenclatures_types (
          mnemonique, label_default, label_fr, 
          "source", statut
@@ -63,8 +61,7 @@ def upgrade():
              'Type de marquage d''individu', 
              'GEONATURE', 'Non validé'
          );
-        """
-    )
+        """)
 
     op.create_table(
         "t_marking_events",
@@ -133,18 +130,15 @@ def upgrade():
         schema=SCHEMA,
     )
 
-    op.execute(
-        """
+    op.execute("""
         ALTER TABLE gn_monitoring.t_marking_events
         ADD CONSTRAINT check_marking_type 
         CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(
             id_nomenclature_marking_type, 'TYP_MARQUAGE'::character varying)
         ) NOT VALID;
-        """
-    )
+        """)
 
-    op.execute(
-        """
+    op.execute("""
         INSERT INTO gn_commons.bib_tables_location (
         table_desc, schema_name, table_name,
         pk_field, uuid_field_name
@@ -155,36 +149,29 @@ def upgrade():
             ('Table centralisant les marquages réalisés sur les individus dans le cadre 
             de protocoles de suivis',
             'gn_monitoring','t_marking_events','id_marking_event','uuid_marking');
-        """
-    )
+        """)
 
 
 def downgrade():
     op.drop_table("cor_individual_module", schema=SCHEMA)
-    op.execute(
-        """
+    op.execute("""
         DELETE FROM gn_commons.t_medias m
         WHERE id_table_location IN (
             SELECT id_table_location FROM gn_commons.bib_tables_location
             WHERE table_name IN ('t_individuals', 't_marking_events')
             );
-        """
-    )
-    op.execute(
-        """
+        """)
+    op.execute("""
         DELETE FROM gn_commons.bib_tables_location
         WHERE table_name IN ('t_individuals', 't_marking_events')
         AND schema_name='gn_monitoring';
-        """
-    )
+        """)
     op.drop_table("t_marking_events", schema=SCHEMA)
-    op.execute(
-        """
+    op.execute("""
         DELETE FROM ref_nomenclatures.t_nomenclatures t
         USING ref_nomenclatures.bib_nomenclatures_types bnt
         WHERE t.id_type = bnt.id_type AND bnt.mnemonique = 'TYP_MARQUAGE';
-        """
-    )
+        """)
     op.execute(
         "DELETE FROM ref_nomenclatures.bib_nomenclatures_types WHERE mnemonique='TYP_MARQUAGE'"
     )

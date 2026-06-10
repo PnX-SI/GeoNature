@@ -8,7 +8,6 @@ Create Date: 2023-02-21 17:17:03.016130
 
 from alembic import op
 
-
 # revision identifiers, used by Alembic.
 revision = "05a91edb6796"
 down_revision = "8279ce74006b"
@@ -26,15 +25,12 @@ def upgrade():
     """
 
     # First deleting the existing view
-    op.execute(
-        """
+    op.execute("""
         DROP VIEW gn_synthese.v_synthese_for_export;
-        """
-    )
+        """)
 
     # Creating the view in its new form
-    op.execute(
-        """
+    op.execute("""
         CREATE VIEW gn_synthese.v_synthese_for_export
         AS
         SELECT
@@ -190,21 +186,17 @@ def upgrade():
             s.id_nomenclature_biogeo_status = n22.id_nomenclature
         LEFT JOIN ref_habitats.habref hab ON
             hab.cd_hab = s.cd_hab;
-        """
-    )
+        """)
 
 
 def downgrade():
     # First deleting the existing view
-    op.execute(
-        """
+    op.execute("""
         DROP VIEW gn_synthese.v_synthese_for_export;
-        """
-    )
+        """)
 
     # Creating the view back in its ancient form
-    op.execute(
-        """
+    op.execute("""
         CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
                 SELECT
             s.id_synthese AS id_synthese,
@@ -360,5 +352,4 @@ def downgrade():
             s.id_nomenclature_biogeo_status = n22.id_nomenclature
         LEFT JOIN ref_habitats.habref hab ON
             hab.cd_hab = s.cd_hab;
-        """
-    )
+        """)

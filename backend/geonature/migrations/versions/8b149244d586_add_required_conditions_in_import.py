@@ -9,7 +9,6 @@ Create Date: 2024-03-20 11:17:57.360785
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "8b149244d586"
 down_revision = "bfc90691737d"
@@ -37,8 +36,7 @@ def upgrade():
         ),
     )
 
-    op.execute(
-        """
+    op.execute("""
         CREATE OR REPLACE FUNCTION gn_imports.isInNameFields (
             fields TEXT[],destination_id INTEGER
         )
@@ -61,23 +59,18 @@ def upgrade():
             return TRUE;
         END;
         $$ LANGUAGE plpgsql;
-        """
-    )
+        """)
 
-    op.execute(
-        """
+    op.execute("""
         ALTER TABLE gn_imports.bib_fields
         ADD CONSTRAINT mandatory_conditions_field_exists CHECK (gn_imports.isInNameFields(mandatory_conditions,id_destination))
         NOT VALID;
-        """
-    )
-    op.execute(
-        """
+        """)
+    op.execute("""
         ALTER TABLE gn_imports.bib_fields
         ADD CONSTRAINT optional_conditions_field_exists CHECK (gn_imports.isInNameFields(optional_conditions,id_destination))
         NOT VALID;
-        """
-    )
+        """)
     conn = op.get_bind()
     metadata = sa.MetaData(bind=conn)
     destination = sa.Table("bib_destinations", metadata, schema="gn_imports", autoload_with=conn)

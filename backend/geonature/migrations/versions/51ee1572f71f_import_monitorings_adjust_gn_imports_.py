@@ -61,8 +61,7 @@ def upgrade():
         )
     )
 
-    op.execute(
-        """
+    op.execute("""
         DO $$
         BEGIN
             -- Vérifier si la colonne existe dans la table
@@ -75,8 +74,7 @@ def upgrade():
                 ALTER TABLE gn_imports.t_imports DROP COLUMN id_dataset;
             END IF;
         END $$;
-        """
-    )
+        """)
 
 
 def downgrade():

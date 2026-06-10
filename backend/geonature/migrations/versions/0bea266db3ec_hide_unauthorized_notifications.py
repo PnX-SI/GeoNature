@@ -10,7 +10,6 @@ from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.sql import column
 
-
 # revision identifiers, used by Alembic.
 revision = "0bea266db3ec"
 down_revision = "4e6ce32305f0"
@@ -46,15 +45,13 @@ def upgrade():
             sa.ForeignKey("gn_permissions.bib_actions.id_action"),
         ),
     )
-    op.execute(
-        """
+    op.execute("""
         UPDATE gn_notifications.bib_notifications_categories
         SET
             id_module = (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'IMPORT'),
             id_object = (SELECT id_object FROM gn_permissions.t_objects WHERE code_object = 'IMPORT')
         WHERE code = 'IMPORT-DONE'
-        """
-    )
+        """)
 
 
 def downgrade():

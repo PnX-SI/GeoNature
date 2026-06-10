@@ -9,7 +9,6 @@ Create Date: 2023-05-16 09:55:41.005029
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "e170d1902137"
 down_revision = "1b4f44762020"
@@ -18,8 +17,7 @@ depends_on = ("f051b88a57fd",)
 
 
 def upgrade():
-    op.execute(
-        """
+    op.execute("""
         INSERT INTO
             gn_permissions.t_permissions_available (
                 id_module,
@@ -49,10 +47,8 @@ def upgrade():
             gn_permissions.t_objects o ON o.code_object = v.object_code
         JOIN
             gn_permissions.bib_actions a ON a.code_action = v.action_code
-        """
-    )
-    op.execute(
-        """
+        """)
+    op.execute("""
         WITH bad_permissions AS (
             SELECT
                 p.id_permission
@@ -78,13 +74,11 @@ def upgrade():
                 USING bad_permissions bp
         WHERE
             bp.id_permission = p.id_permission;
-        """
-    )
+        """)
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
         DELETE FROM
             gn_permissions.t_permissions_available pa
         USING
@@ -93,5 +87,4 @@ def downgrade():
             pa.id_module = m.id_module
             AND
             module_code = 'OCCTAX'
-        """
-    )
+        """)

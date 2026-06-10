@@ -9,7 +9,6 @@ Create Date: 2022-04-04 14:59:57.340518
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "ca0fe5d21ea2"
 down_revision = "829a376daa52"
@@ -22,8 +21,7 @@ def upgrade():
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
     CREATE OR REPLACE VIEW gn_synthese.v_synthese_decode_nomenclatures AS
     SELECT
     s.id_synthese,
@@ -49,5 +47,4 @@ def downgrade():
     ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_behaviour) AS occ_behaviour,
     ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_biogeo_status) AS occ_stat_biogeo
     FROM gn_synthese.synthese s;
-    """
-    )
+    """)

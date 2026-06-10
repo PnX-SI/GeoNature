@@ -23,8 +23,7 @@ def upgrade():
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
         CREATE MATERIALIZED VIEW gn_synthese.vm_min_max_for_taxons AS
             WITH
             s as (
@@ -65,11 +64,9 @@ def downgrade():
             LEFT JOIN alt ON alt.cd_ref = loc.cd_ref
             LEFT JOIN dat ON dat.cd_ref = loc.cd_ref
             ORDER BY loc.cd_ref;
-    """
-    )
+    """)
 
-    op.execute(
-        """
+    op.execute("""
         CREATE FUNCTION gn_synthese.fct_calculate_min_max_for_taxon(mycdnom integer)
             RETURNS TABLE(cd_ref integer, nbobs bigint, daymin integer, daymax integer, altitudemin integer, altitudemax integer, bbox4326 geometry)
             LANGUAGE plpgsql
@@ -84,5 +81,4 @@ def downgrade():
             END;
             $function$
             ;
-        """
-    )
+        """)

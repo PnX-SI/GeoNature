@@ -58,8 +58,7 @@ def upgrade():
         )
     # Create a new additional field for test
     #   named "test_champs_additionnel"
-    op.execute(
-        """
+    op.execute("""
         INSERT INTO 
             gn_commons.t_additional_fields 
                 (
@@ -80,12 +79,10 @@ def upgrade():
                             widget_name = 'text'
                     )
                 )
-    """
-    )
+    """)
 
     # Add the association between the new additional field and the module 'METADATA'
-    op.execute(
-        """
+    op.execute("""
         INSERT INTO 
             gn_commons.cor_field_module
                 (
@@ -112,12 +109,10 @@ def upgrade():
                     )
                 )
         ;
-    """
-    )
+    """)
 
     # Add the association between the new additional field and the object 'METADATA_CADRE_ACQUISITION'
-    op.execute(
-        """
+    op.execute("""
         INSERT INTO 
             gn_commons.cor_field_object
                 (
@@ -144,16 +139,14 @@ def upgrade():
                     )
                 )
         ;
-    """
-    )
+    """)
 
 
 def downgrade():
     # Remove the associations with
     #   the additional field "test_champs_additionnel"
     #   and objects
-    op.execute(
-        f"""
+    op.execute(f"""
         DELETE FROM 
             gn_commons.cor_field_object
         WHERE
@@ -166,14 +159,12 @@ def downgrade():
                     field_name = 'test_champs_additionnel'
             )
         ;
-    """
-    )
+    """)
 
     # Remove the associations with
     #   the additional field "test_champs_additionnel"
     #   and modules
-    op.execute(
-        f"""
+    op.execute(f"""
         DELETE FROM 
             gn_commons.cor_field_module
         WHERE
@@ -186,12 +177,10 @@ def downgrade():
                     field_name = 'test_champs_additionnel'
             )
         ;
-    """
-    )
+    """)
 
     # Remove the additional field "test_champs_additionnel"
-    op.execute(
-        f"""
+    op.execute(f"""
         DELETE FROM 
             gn_commons.t_additional_fields
         WHERE
@@ -204,5 +193,4 @@ def downgrade():
                     field_name = 'test_champs_additionnel'
             )
         ;
-    """
-    )
+    """)

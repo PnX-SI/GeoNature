@@ -17,14 +17,11 @@ depends_on = ("c4415009f164",)  # Taxref v15 db structure
 
 
 def upgrade():
-    op.execute(
-        """
+    op.execute("""
         DROP VIEW gn_synthese.v_synthese_for_web_app;
-        """
-    )
+        """)
 
-    op.execute(
-        """
+    op.execute("""
         CREATE VIEW gn_synthese.v_synthese_for_web_app AS
 SELECT s.id_synthese,
     s.unique_id_sinp,
@@ -99,19 +96,15 @@ SELECT s.id_synthese,
     JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
     JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
     JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source;
-        """
-    )
+        """)
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
         DROP VIEW gn_synthese.v_synthese_for_web_app;
-        """
-    )
+        """)
 
-    op.execute(
-        """
+    op.execute("""
  CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
 SELECT s.id_synthese,
     s.unique_id_sinp,
@@ -182,5 +175,4 @@ SELECT s.id_synthese,
 FROM gn_synthese.synthese s
     JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
     JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
-    JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source;        """
-    )
+    JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source;        """)

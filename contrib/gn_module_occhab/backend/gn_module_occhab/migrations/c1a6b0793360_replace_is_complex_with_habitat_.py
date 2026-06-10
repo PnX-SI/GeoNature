@@ -11,7 +11,6 @@ from pypnnomenclature.models import TNomenclatures
 import sqlalchemy as sa
 from sqlalchemy.orm.session import Session
 
-
 # revision identifiers, used by Alembic.
 revision = "c1a6b0793360"
 down_revision = "aed662bbd88a"
@@ -70,13 +69,11 @@ def upgrade():
         .values(id_nomenclature_type_mosaique_habitat=id_default_type_mosaique_habitat)
     )
     op.drop_column("t_stations", "is_habitat_complex", schema="pr_occhab")
-    op.execute(
-        """
+    op.execute("""
         ALTER TABLE pr_occhab.t_stations ADD CONSTRAINT 
         check_t_stations_type_mosaique_habitat CHECK
         (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_type_mosaique_habitat, 'MOSAIQUE_HAB'::character varying)) NOT VALID
-        """
-    )
+        """)
     ## UPDATE Transient table
     op.add_column(
         "t_imports_occhab",

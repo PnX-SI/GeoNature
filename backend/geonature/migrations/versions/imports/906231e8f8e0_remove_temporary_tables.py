@@ -12,7 +12,6 @@ from sqlalchemy.types import ARRAY
 from sqlalchemy.dialects.postgresql import HSTORE, JSONB, UUID
 from geoalchemy2 import Geometry
 
-
 # revision identifiers, used by Alembic.
 revision = "906231e8f8e0"
 down_revision = "6470a2141c83"
@@ -45,8 +44,7 @@ def upgrade():
         ),
         schema="gn_imports",
     )
-    op.execute(
-        """
+    op.execute("""
     WITH cte as (
         SELECT
             column_name,
@@ -80,25 +78,21 @@ def upgrade():
             AND
             f.name_field NOT IN ('the_geom_4326', 'the_geom_point', 'the_geom_local')
         )
-    """
-    )
+    """)
     op.drop_constraint(
         constraint_name="chk_mandatory",
         table_name="dict_fields",
         schema="gn_imports",
     )
-    op.execute(
-        """
+    op.execute("""
     UPDATE
         gn_imports.dict_fields
     SET
         synthese_field = name_field
     WHERE
         is_synthese_field IS TRUE
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
     INSERT INTO
         gn_imports.dict_fields
     (
@@ -141,10 +135,8 @@ def upgrade():
         (SELECT id_theme FROM gn_imports.dict_fields WHERE name_field = 'date_max'),
         (SELECT order_field FROM gn_imports.dict_fields WHERE name_field = 'date_max')
     )
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
     UPDATE
         gn_imports.dict_fields
     SET
@@ -152,8 +144,7 @@ def upgrade():
         synthese_field = NULL
     WHERE
         name_field IN ('date_min', 'date_max')
-    """
-    )
+    """)
     op.drop_column(table_name="dict_fields", column_name="is_synthese_field", schema="gn_imports")
 
     op.create_table(
@@ -403,41 +394,33 @@ def downgrade():
         ),
         schema="gn_imports",
     )
-    op.execute(
-        """
+    op.execute("""
     UPDATE
         gn_imports.dict_fields
     SET
         is_synthese_field = (synthese_field IS NOT NULL)
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
     DELETE FROM
         gn_imports.dict_fields
     WHERE
         name_field IN ('datetime_min', 'datetime_max')
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
     UPDATE
         gn_imports.dict_fields
     SET
         is_synthese_field = TRUE
     WHERE
         name_field IN ('date_min', 'date_max')
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
     ALTER TABLE gn_imports.dict_fields ADD CONSTRAINT chk_mandatory CHECK (
     CASE
         WHEN ((name_field)::text = ANY ((ARRAY['date_min', 'longitude', 'latitude', 'nom_cite', 'cd_nom', 'wkt'])::text[])) THEN (mandatory = true)
         ELSE NULL::boolean
     END)
-    """
-    )
+    """)
     op.drop_column(
         table_name="dict_fields",
         column_name="source_field",
@@ -460,8 +443,7 @@ def downgrade():
         column=sa.Column("nomenclature", sa.Boolean, nullable=False, server_default=sa.false()),
         schema="gn_imports",
     )
-    op.execute(
-        """
+    op.execute("""
         WITH cte AS (
                 SELECT
                     id_field,
@@ -477,5 +459,4 @@ def downgrade():
             cte
         WHERE
             f.id_field = cte.id_field
-        """
-    )
+        """)

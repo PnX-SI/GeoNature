@@ -13,7 +13,6 @@ from geonature.core.notifications.utils import dispatch_notifications
 
 from geonature.core.imports.models import BibFields, Entity, EntityField, TImports, CorImportDataset
 
-
 logger = get_task_logger(__name__)
 
 

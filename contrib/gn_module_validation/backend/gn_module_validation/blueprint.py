@@ -23,7 +23,6 @@ from gn_module_validation.notifications import *
 from gn_module_validation.schema import *
 import gn_module_validation.tasks  # Dont remove it !!!!!!!!
 
-
 # Blueprint setupt
 blueprint = Blueprint("validation", __name__)
 log = logging.getLogger(__name__)

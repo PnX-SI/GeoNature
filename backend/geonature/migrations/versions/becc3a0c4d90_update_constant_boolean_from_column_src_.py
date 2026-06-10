@@ -9,7 +9,6 @@ Create Date: 2025-03-26 15:32:24.939266
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "becc3a0c4d90"
 down_revision = "f59ccdee8f86"
@@ -24,8 +23,7 @@ VALUES = ["true", "false"]
 def upgrade():
     for key in KEYS:
         for value in VALUES:
-            op.execute(
-                f"""
+            op.execute(f"""
                 UPDATE gn_imports.t_fieldmappings tf
                 SET values =
                     (
@@ -42,15 +40,13 @@ def upgrade():
                     )
                 WHERE
                     (values->>'{key}')::json->>'column_src' = '{value}';
-                """
-            )
+                """)
 
 
 def downgrade():
     for key in KEYS:
         for value in VALUES:
-            op.execute(
-                f"""
+            op.execute(f"""
                 UPDATE gn_imports.t_fieldmappings tf
                 SET values =
                     (
@@ -67,5 +63,4 @@ def downgrade():
                     )
                 WHERE
                     (values->>'{key}')::json->>'constant_value' = '{value}';
-                """
-            )
+                """)

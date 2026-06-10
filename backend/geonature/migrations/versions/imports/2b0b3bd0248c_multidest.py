@@ -14,7 +14,6 @@ from sqlalchemy.schema import Table, MetaData
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.orm.session import Session
 
-
 # revision identifiers, used by Alembic.
 revision = "2b0b3bd0248c"
 down_revision = "2896cf965dd6"
@@ -236,8 +235,7 @@ def upgrade():
 
     ### Permissions
 
-    op.execute(
-        """
+    op.execute("""
         INSERT INTO
             gn_permissions.t_permissions_available (id_module, id_object, id_action, label, scope_filter)
         SELECT
@@ -252,11 +250,9 @@ def upgrade():
             o.code_object = 'ALL'
             AND
             a.code_action = 'C'
-        """
-    )
+        """)
 
-    op.execute(
-        """
+    op.execute("""
         INSERT INTO
             gn_permissions.t_permissions (id_role, id_module, id_object, id_action, scope_value)
         SELECT
@@ -273,8 +269,7 @@ def upgrade():
             a.code_action = 'C' AND m.module_code = 'IMPORT' AND o.code_object = 'IMPORT'
             AND
             new_module.module_code = 'SYNTHESE' AND new_object.code_object = 'ALL';
-        """
-    )
+        """)
 
     # TODO constraint entity_field.entity.id_destination == entity_field.field.id_destination
     ### Remove synthese specific 'id_source' column
@@ -290,16 +285,14 @@ def upgrade():
             server_default=sa.text("'{}'::jsonb"),
         ),
     )
-    op.execute(
-        """
+    op.execute("""
         UPDATE
             gn_imports.t_imports
         SET
             statistics = json_build_object('taxa_count', taxa_count)
         WHERE
             taxa_count IS NOT NULL
-        """
-    )
+        """)
     op.drop_column(schema="gn_imports", table_name="t_imports", column_name="taxa_count")
     # Add new error types
     error_type = Table("bib_errors_types", meta, autoload=True, schema="gn_imports")
@@ -340,46 +333,30 @@ def upgrade():
         )
     )
     # Remove ng_module from import
-    op.execute(
-        """
+    op.execute("""
         UPDATE
             gn_commons.t_modules
         SET
             ng_module = NULL
         WHERE
             module_code = 'IMPORT'
-        """
-    )
+        """)
 
-    ID_MODULE_IMPORT = (
-        op.get_bind()
-        .execute(
-            """
+    ID_MODULE_IMPORT = op.get_bind().execute("""
             SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'IMPORT';
-            """
-        )
-        .first()[0]
-    )
-    ID_MODULE_SYNTHESE = (
-        op.get_bind()
-        .execute(
-            """
+            """).first()[0]
+    ID_MODULE_SYNTHESE = op.get_bind().execute("""
             SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'SYNTHESE';
-            """
-        )
-        .first()[0]
-    )
+            """).first()[0]
 
     ## JDD IMPORT -> JDD Synthese
     # update row with module = import to module=synthese in cor_module_dataset, only if the dataset is not already associated with a synthese
-    op.execute(
-        f"""
+    op.execute(f"""
         UPDATE gn_commons.cor_module_dataset
         SET id_module = {ID_MODULE_SYNTHESE}
         WHERE id_module = {ID_MODULE_IMPORT} 
         AND NOT EXISTS(select 1 from gn_commons.cor_module_dataset b  where b.id_dataset = id_dataset and b.id_module={ID_MODULE_SYNTHESE} );
-        """
-    )
+        """)
 
 
 def downgrade():
@@ -391,29 +368,15 @@ def downgrade():
         "Re-add association between datasets and the import module (!!!!! association between synthese and dataset created previously will remain! !!!!)"
     )
 
-    ID_MODULE_IMPORT = (
-        op.get_bind()
-        .execute(
-            """
+    ID_MODULE_IMPORT = op.get_bind().execute("""
         SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'IMPORT';
-        """
-        )
-        .first()[0]
-    )
-    ID_MODULE_SYNTHESE = (
-        op.get_bind()
-        .execute(
-            """
+        """).first()[0]
+    ID_MODULE_SYNTHESE = op.get_bind().execute("""
         SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'SYNTHESE';
-        """
-        )
-        .first()[0]
-    )
-    op.execute(
-        f"""INSERT INTO gn_commons.cor_module_dataset (id_module, id_dataset) 
+        """).first()[0]
+    op.execute(f"""INSERT INTO gn_commons.cor_module_dataset (id_module, id_dataset) 
         SELECT {ID_MODULE_IMPORT}, id_dataset FROM gn_commons.cor_module_dataset WHERE id_module = {ID_MODULE_SYNTHESE};
-        """
-    )
+        """)
 
     meta = MetaData(bind=op.get_bind())
     # Remove new error types
@@ -441,16 +404,14 @@ def downgrade():
             nullable=True,
         ),
     )
-    op.execute(
-        """
+    op.execute("""
         UPDATE
             gn_imports.t_imports
         SET
             taxa_count = (statistics ->> 'taxa_count')::integer
         WHERE
             to_jsonb(statistics) ? 'taxa_count'
-        """
-    )
+        """)
     op.drop_column(schema="gn_imports", table_name="t_imports", column_name="statistics")
     # Restore 'id_source_synthese'
     op.add_column(
@@ -463,8 +424,7 @@ def downgrade():
             nullable=True,
         ),
     )
-    op.execute(
-        """
+    op.execute("""
         UPDATE
             gn_imports.t_imports i
         SET
@@ -475,10 +435,8 @@ def downgrade():
             s.id_module = (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'IMPORT')
             AND
             s.name_source = 'Import(id=' || i.id_import || ')'
-        """
-    )
-    op.execute(
-        """
+        """)
+    op.execute("""
         DELETE FROM
             gn_permissions.t_permissions p
         USING
@@ -491,10 +449,8 @@ def downgrade():
             p.id_module = m.id_module AND m.module_code = 'SYNTHESE'
             AND
             p.id_object = o.id_object AND o.code_object = 'ALL';
-        """
-    )
-    op.execute(
-        """
+        """)
+    op.execute("""
         DELETE FROM
             gn_permissions.t_permissions_available pa
         USING
@@ -507,8 +463,7 @@ def downgrade():
             pa.id_module = m.id_module AND m.module_code = 'SYNTHESE'
             AND
             pa.id_object = o.id_object AND o.code_object = 'ALL';
-        """
-    )
+        """)
     with op.batch_alter_table(schema="gn_imports", table_name="bib_fields") as batch:
         batch.add_column(sa.Column("desc_field", sa.String(1000)))
         batch.add_column(
@@ -517,8 +472,7 @@ def downgrade():
         batch.add_column(sa.Column("order_field", sa.Integer))
         batch.add_column(sa.Column("comment", sa.String))
     # Note: there should be only synthese observations fields
-    op.execute(
-        """
+    op.execute("""
         UPDATE
             gn_imports.bib_fields f
         SET
@@ -540,8 +494,7 @@ def downgrade():
             d.code = 'synthese'
             AND
             e.code = 'observation'
-        """
-    )
+        """)
     with op.batch_alter_table(schema="gn_imports", table_name="bib_fields") as batch:
         batch.alter_column(column_name="id_theme", nullable=False)
         batch.alter_column(column_name="order_field", nullable=False)

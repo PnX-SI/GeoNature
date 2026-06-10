@@ -9,7 +9,6 @@ Create Date: 2021-10-07 16:01:31.763465
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "494cb2245a43"
 down_revision = "f57107d2d0ad"
@@ -18,8 +17,7 @@ depends_on = None
 
 
 def upgrade():
-    op.execute(
-        """
+    op.execute("""
         CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_occ()
             RETURNS trigger
             LANGUAGE plpgsql
@@ -58,13 +56,11 @@ def upgrade():
         END;
         $function$
         ;
-        """
-    )
+        """)
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
         CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_occ()
             RETURNS trigger
             LANGUAGE plpgsql
@@ -103,5 +99,4 @@ def downgrade():
         END;
         $function$
         ;
-        """
-    )
+        """)

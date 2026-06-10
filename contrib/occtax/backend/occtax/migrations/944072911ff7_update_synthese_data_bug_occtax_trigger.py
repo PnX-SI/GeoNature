@@ -9,7 +9,6 @@ Create Date: 2021-10-07 16:24:09.029496
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "944072911ff7"
 down_revision = "494cb2245a43"
@@ -18,8 +17,7 @@ depends_on = None
 
 
 def upgrade():
-    op.execute(
-        """
+    op.execute("""
         UPDATE gn_synthese.synthese s
         SET id_nomenclature_behaviour = sub.id_nomenclature_behaviour
         FROM (
@@ -29,8 +27,7 @@ def upgrade():
             WHERE NOT id_nomenclature_behaviour IS NULL
         ) sub
         WHERE s.unique_id_sinp_grp = sub.unique_id_sinp_grp
-        """
-    )
+        """)
 
 
 def downgrade():

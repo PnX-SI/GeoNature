@@ -9,7 +9,6 @@ Create Date: 2023-09-25 10:09:39.126531
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "446e902a14e7"
 down_revision = "f1dd984bff97"
@@ -18,14 +17,11 @@ depends_on = None
 
 
 def upgrade():
-    op.execute(
-        """
+    op.execute("""
         DROP VIEW gn_synthese.v_synthese_for_web_app;
-        """
-    )
+        """)
 
-    op.execute(
-        """
+    op.execute("""
         CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
         SELECT s.id_synthese,
             s.unique_id_sinp,
@@ -97,19 +93,15 @@ def upgrade():
             JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
             JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
             JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source;
-        """
-    )
+        """)
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
         DROP VIEW gn_synthese.v_synthese_for_web_app;
-        """
-    )
+        """)
 
-    op.execute(
-        """
+    op.execute("""
         CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
         SELECT s.id_synthese,
             s.unique_id_sinp,
@@ -180,5 +172,4 @@ def downgrade():
             JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
             JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
             JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source;
-        """
-    )
+        """)

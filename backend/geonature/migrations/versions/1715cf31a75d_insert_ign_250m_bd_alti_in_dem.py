@@ -17,7 +17,6 @@ import sqlalchemy as sa
 from geonature.utils.config import config
 from utils_flask_sqla.migrations.utils import logger, open_remote_file
 
-
 # revision identifiers, used by Alembic.
 revision = "1715cf31a75d"
 down_revision = None

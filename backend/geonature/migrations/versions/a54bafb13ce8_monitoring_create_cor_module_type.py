@@ -49,15 +49,13 @@ def upgrade():
     )
 
     # Insertion des données a partir de cor_site_module
-    op.execute(
-        """
+    op.execute("""
         INSERT INTO gn_monitoring.cor_module_type (id_module, id_type_site )
         SELECT DISTINCT csm.id_module, cts.id_type_site
         FROM gn_monitoring.cor_site_module AS csm
         JOIN gn_monitoring.cor_site_type AS cts
         ON Cts.id_base_site = csm.id_base_site ;
-    """
-    )
+    """)
 
 
 def downgrade():

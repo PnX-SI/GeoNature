@@ -9,7 +9,6 @@ Create Date: 2022-04-06 15:39:37.428357
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "9e9218653d6c"
 down_revision = "cec41a6d3a15"
@@ -25,8 +24,7 @@ def upgrade():
         sa.Column("meta_last_action_date", sa.TIMESTAMP, server_default=sa.func.now()),
         schema="gn_synthese",
     )
-    op.execute(
-        """
+    op.execute("""
     CREATE FUNCTION gn_synthese.fct_tri_log_delete_on_synthese() RETURNS TRIGGER AS
     $BODY$
     DECLARE
@@ -53,15 +51,12 @@ def upgrade():
         FOR EACH STATEMENT
         EXECUTE FUNCTION gn_synthese.fct_tri_log_delete_on_synthese()
     ;
-    """
-    )
+    """)
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
     DROP TRIGGER tri_log_delete_synthese ON gn_synthese.synthese;
     DROP FUNCTION gn_synthese.fct_tri_log_delete_on_synthese();
-    """
-    )
+    """)
     op.drop_table("t_log_synthese", schema="gn_synthese")

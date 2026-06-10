@@ -9,7 +9,6 @@ Create Date: 2025-08-14 11:45:48.936704
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "ea261b6185b3"
 down_revision = "33881d849b2b"
@@ -35,8 +34,7 @@ def upgrade():
         schema="gn_imports",
     )
     for name_field, entity_code, dest_code in data:
-        op.execute(
-            f"""
+        op.execute(f"""
         with destinations as (select dest.id_destination as id_dest
         from gn_imports.bib_destinations dest
         where dest.code = '{dest_code}')
@@ -45,8 +43,7 @@ def upgrade():
         from gn_imports.bib_fields field, destinations
         where field.name_field = '{name_field}' and ent.code = '{entity_code}' and ent.id_destination  = destinations.id_dest;
 
-    """
-        )
+    """)
 
 
 def downgrade():

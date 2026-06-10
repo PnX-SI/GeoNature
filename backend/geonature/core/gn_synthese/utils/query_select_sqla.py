@@ -102,13 +102,9 @@ class SyntheseQuery:
             self.model_observers_column = getattr(model_temp, observers_column)
             self.model_id_digitiser_column = getattr(model_temp, id_digitiser_column)
         except AttributeError as e:
-            raise GeonatureApiError(
-                """the {model} table     does not have a column {e}
+            raise GeonatureApiError("""the {model} table     does not have a column {e}
                 If you change the {model} table, please edit your synthese config (cf EXPORT_***_COL)
-                """.format(
-                    e=e, model=model
-                )
-            )
+                """.format(e=e, model=model))
 
         # For aliased models, we need to use inspect() and the class_ attribute
         # to get the real table

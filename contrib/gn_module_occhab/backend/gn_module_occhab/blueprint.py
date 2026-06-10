@@ -45,7 +45,6 @@ from .models import (
 )
 from .schemas import StationSchema
 
-
 blueprint = Blueprint("occhab", __name__)
 
 

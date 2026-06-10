@@ -9,7 +9,6 @@ Create Date: 2022-04-28 16:48:46.664645
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "eb217f32d7d7"
 down_revision = "74058f69828a"
@@ -27,8 +26,7 @@ def upgrade():
             sa.ForeignKey("ref_geo.l_areas.id_area"),
         ),
     )
-    op.execute(
-        """
+    op.execute("""
     INSERT INTO gn_imports.dict_fields (
         name_field,
         synthese_field,
@@ -49,39 +47,32 @@ def upgrade():
         (SELECT order_field FROM gn_imports.dict_fields WHERE name_field = 'WKT'),
         FALSE
     )
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
     UPDATE
         gn_imports.dict_fields
     SET
         mandatory = FALSE
     WHERE
         name_field IN ('WKT', 'codecommune', 'codemaille', 'codedepartement', 'longitude', 'latitude')
-    """
-    )
+    """)
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
     UPDATE
         gn_imports.dict_fields
     SET
         mandatory = TRUE
     WHERE
         name_field IN ('WKT', 'codecommune', 'codemaille', 'codedepartement', 'longitude', 'latitude')
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
     DELETE FROM
         gn_imports.dict_fields
     WHERE
         name_field = 'id_area_attachment'
-    """
-    )
+    """)
     op.drop_column(
         schema="gn_imports",
         table_name="t_imports_synthese",

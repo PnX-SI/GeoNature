@@ -52,25 +52,19 @@ def upgrade():
         schema=monitorings_schema,
     )
 
-    op.execute(
-        """
+    op.execute("""
         INSERT INTO  gn_monitoring.cor_site_type
         SELECT id_nomenclature_type_site , id_base_site d
         FROM gn_monitoring.t_base_sites ;
-    """
-    )
+    """)
 
-    op.execute(
-        """
+    op.execute("""
         ALTER TABLE gn_monitoring.t_base_sites
         DROP CONSTRAINT check_t_base_sites_type_site;
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
         DROP INDEX gn_monitoring.idx_t_base_sites_type_site;
-    """
-    )
+    """)
     op.drop_column(
         table_name="t_base_sites",
         column_name="id_nomenclature_type_site",
@@ -93,8 +87,7 @@ def downgrade():
         schema=monitorings_schema,
     )
 
-    op.execute(
-        """
+    op.execute("""
         WITH ts AS (
             SELECT DISTINCT ON (id_base_site) id_base_site, id_type_site
             FROM gn_monitoring.cor_site_type AS cts
@@ -104,27 +97,20 @@ def downgrade():
             SET id_nomenclature_type_site = id_type_site
         FROM ts
         WHERE ts.id_base_site = tbs.id_base_site;
-    """
-    )
+    """)
 
-    op.execute(
-        """
+    op.execute("""
         ALTER TABLE gn_monitoring.t_base_sites
         ADD CONSTRAINT check_t_base_sites_type_site
         CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_type_site,'TYPE_SITE'))
         NOT VALID;
-    """
-    )
+    """)
 
-    op.execute(
-        """
+    op.execute("""
         CREATE INDEX idx_t_base_sites_type_site ON gn_monitoring.t_base_sites USING btree (id_nomenclature_type_site);
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
         ALTER TABLE gn_monitoring.t_base_sites ALTER COLUMN id_nomenclature_type_site SET NOT NULL;
-    """
-    )
+    """)
 
     op.drop_table("cor_site_type", schema=monitorings_schema)

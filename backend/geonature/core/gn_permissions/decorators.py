@@ -10,7 +10,6 @@ from werkzeug.exceptions import Unauthorized, Forbidden
 
 from geonature.core.gn_permissions.tools import get_permissions, get_scopes_by_action
 
-
 # use login_required from flask_login
 from flask_login import login_required
 

@@ -9,7 +9,6 @@ Create Date: 2022-06-16 15:26:52.658472
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "6070edb31013"
 down_revision = "d80835fb13c8"
@@ -24,13 +23,11 @@ def upgrade():
         schema="gn_meta",
     )
 
-    op.execute(
-        """
+    op.execute("""
         ALTER TABLE gn_meta.cor_acquisition_framework_territory ADD CONSTRAINT check_cor_af_territory
             CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_territory, 'TERRITOIRE'::character varying))
         NOT VALID;
-        """
-    )
+        """)
 
 
 def downgrade():
@@ -40,9 +37,7 @@ def downgrade():
         schema="gn_meta",
     )
 
-    op.execute(
-        """
+    op.execute("""
         ALTER TABLE gn_meta.cor_acquisition_framework_territory ADD CONSTRAINT check_cor_af_territory
             CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_territory, 'TERRITOIRE'::character varying));
-        """
-    )
+        """)

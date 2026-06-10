@@ -10,7 +10,6 @@ from alembic import op
 import sqlalchemy as sa
 from sqlalchemy import Column, Boolean
 
-
 # revision identifiers, used by Alembic.
 revision = "f1dd984bff97"
 down_revision = "f051b88a57fd"
@@ -37,8 +36,7 @@ def upgrade():
             server_default=sa.false(),
         ),
     )
-    op.execute(
-        """
+    op.execute("""
         UPDATE
             gn_permissions.t_permissions_available pa
         SET
@@ -55,8 +53,7 @@ def upgrade():
             pa.id_action = a.id_action
             AND
             m.module_code = 'SYNTHESE' AND o.code_object = 'ALL' and a.code_action = 'R'
-        """
-    )
+        """)
 
 
 def downgrade():

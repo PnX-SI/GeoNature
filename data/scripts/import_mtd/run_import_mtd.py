@@ -11,7 +11,6 @@ import os
 import configparser
 from config import *
 
-
 # Connecting to DB and openning a cursor
 try:
     conn = psycopg2.connect(SQLALCHEMY_DATABASE_URI)

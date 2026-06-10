@@ -9,7 +9,6 @@ Create Date: 2025-02-24 11:53:22.915133
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "54e5b4a96add"
 down_revision = "5cf0ce9e669c"
@@ -18,8 +17,7 @@ depends_on = None
 
 
 def upgrade():
-    op.execute(
-        """
+    op.execute("""
     CREATE OR REPLACE FUNCTION gn_commons.fct_trg_update_synthese_validation_status()
     RETURNS trigger AS
     $BODY$
@@ -36,11 +34,9 @@ def upgrade():
     $BODY$
         LANGUAGE plpgsql VOLATILE
         COST 100;
-    """
-    )
+    """)
 
-    op.execute(
-        """
+    op.execute("""
         WITH cte_max_date AS (
             SELECT
                 uuid_attached_row,
@@ -58,8 +54,7 @@ def upgrade():
             cte_max_date
         WHERE
             gn_synthese.synthese.unique_id_sinp = cte_max_date.uuid_attached_row;
-        """
-    )
+        """)
 
     op.alter_column(
         table_name="t_validations",
@@ -77,8 +72,7 @@ def downgrade():
         schema="gn_commons",
     )
 
-    op.execute(
-        """
+    op.execute("""
     CREATE OR REPLACE FUNCTION fct_trg_update_synthese_validation_status()
     RETURNS trigger AS
     $BODY$
@@ -94,5 +88,4 @@ def downgrade():
     $BODY$
         LANGUAGE plpgsql VOLATILE
         COST 100;
-    """
-    )
+    """)

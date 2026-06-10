@@ -10,7 +10,6 @@ from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.sql import column
 
-
 # revision identifiers, used by Alembic.
 revision = "2894b3c03c66"
 down_revision = "84f40d008640"
@@ -42,11 +41,9 @@ def upgrade():
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
         UPDATE gn_monitoring.t_observations SET cd_nom = ind.cd_nom
         FROM gn_monitoring.t_individuals ind 
         WHERE ind.id_individual = gn_monitoring.t_observations.id_individual;
-    """
-    )
+    """)
     op.drop_column(table_name=table, column_name=column_name, schema=monitorings_schema)

@@ -16,7 +16,6 @@ from geonature.core.gn_commons.models import (
 )
 from geonature.core.gn_permissions.schemas import PermObjectSchema
 
-
 log = logging.getLogger()
 
 

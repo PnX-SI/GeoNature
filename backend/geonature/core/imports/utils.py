@@ -565,7 +565,7 @@ def compute_bounding_box(
     *,
     child_entity_code: str = None,
     transient_where_clause=None,
-    destination_where_clause=None
+    destination_where_clause=None,
 ):
     """
     Compute the bounding box of an entity with a geometry in the given import, based on its

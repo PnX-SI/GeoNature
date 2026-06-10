@@ -9,7 +9,6 @@ Create Date: 2025-01-27 10:27:40.099564
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "4e6ce32305f0"
 down_revision = "bc28b69025b3"
@@ -62,8 +61,7 @@ def upgrade():
     ) VALUES """
     list_nomenclature = []
     for cd_nomenclature, mnemonique, label_default in nomenclature_type_marquage:
-        list_nomenclature.append(
-            f"""(
+        list_nomenclature.append(f"""(
             (ref_nomenclatures.get_id_nomenclature_type('TYP_MARQUAGE')),
             '{cd_nomenclature}', 
             '{mnemonique}', 
@@ -75,8 +73,7 @@ def upgrade():
             (ref_nomenclatures.get_id_nomenclature_type('TYP_MARQUAGE'))||'.00{cd_nomenclature}', 
             true
             )
-    """
-        )
+    """)
 
     op.execute(sql + ",".join(list_nomenclature))
 

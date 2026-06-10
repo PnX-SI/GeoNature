@@ -9,7 +9,6 @@ Create Date: 2025-12-02 14:36:03.650273
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "b955b6d95d25"
 down_revision = "cad98c048b5e"
@@ -18,8 +17,7 @@ depends_on = None
 
 
 def upgrade():
-    op.execute(
-        """
+    op.execute("""
                 CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_l_areas_update_cor_area_synthese_on_each_statement() RETURNS TRIGGER
                     LANGUAGE plpgsql
                 AS
@@ -63,14 +61,11 @@ def upgrade():
                     ON ref_geo.l_areas
                     REFERENCING new TABLE new
                 EXECUTE PROCEDURE gn_synthese.fct_trig_l_areas_update_cor_area_synthese_on_each_statement();
-        """
-    )
+        """)
 
 
 def downgrade():
-    op.execute(
-        """
+    op.execute("""
         DROP TRIGGER tri_update_cor_area_synthese ON ref_geo.l_areas;   
         DROP FUNCTION gn_synthese.fct_trig_l_areas_update_cor_area_synthese_on_each_statement();
-        """
-    )
+        """)

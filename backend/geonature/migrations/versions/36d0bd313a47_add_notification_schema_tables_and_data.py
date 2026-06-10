@@ -12,7 +12,6 @@ from sqlalchemy import Column, ForeignKey, Integer, Unicode, UnicodeText, DateTi
 from sqlalchemy.schema import UniqueConstraint
 from utils_flask_sqla.migrations.utils import logger
 
-
 # revision identifiers, used by Alembic.
 revision = "36d0bd313a47"
 down_revision = "2d7edda45dd4"

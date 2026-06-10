@@ -11,7 +11,6 @@ from alembic import op, context
 from utils_flask_sqla.utils import strtobool
 from utils_flask_sqla.migrations.utils import logger
 
-
 # revision identifiers, used by Alembic.
 revision = "ac08dcf3f27b"
 down_revision = "dfec5f64ac73"
@@ -38,28 +37,19 @@ def upgrade():
     else:
         clear_diffusion_level = True
 
-    op.execute(
-        """
+    op.execute("""
         DROP TRIGGER tri_insert_calculate_sensitivity ON gn_synthese.synthese
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
         DROP TRIGGER tri_update_calculate_sensitivity ON gn_synthese.synthese
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
         DROP FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_statement
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
         DROP FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_row
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
         CREATE FUNCTION gn_synthese.fct_tri_calculate_sensitivity_on_each_statement()
          RETURNS trigger
          LANGUAGE plpgsql
@@ -94,10 +84,8 @@ def upgrade():
             END;
           $function$
         ;
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
         CREATE FUNCTION gn_synthese.fct_tri_update_sensitivity_on_each_row()
          RETURNS trigger
          LANGUAGE plpgsql
@@ -117,10 +105,8 @@ def upgrade():
             END;
           $function$
         ;
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
         CREATE TRIGGER
             tri_insert_calculate_sensitivity
         AFTER
@@ -133,10 +119,8 @@ def upgrade():
             STATEMENT
         EXECUTE PROCEDURE
             gn_synthese.fct_tri_calculate_sensitivity_on_each_statement()
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
         CREATE TRIGGER
             tri_update_calculate_sensitivity
         BEFORE UPDATE OF
@@ -152,15 +136,11 @@ def upgrade():
             ROW
         EXECUTE PROCEDURE
             gn_synthese.fct_tri_update_sensitivity_on_each_row()
-    """
-    )
+    """)
 
     if clear_diffusion_level:
         logger.info("Clearing diffusion level…")
-        count = (
-            op.get_bind()
-            .execute(
-                """
+        count = op.get_bind().execute("""
             WITH cleared_rows AS (
                 UPDATE
                     gn_synthese.synthese s
@@ -179,10 +159,7 @@ def upgrade():
                 count(*)
             FROM
                 cleared_rows;
-        """
-            )
-            .scalar()
-        )
+        """).scalar()
         logger.info("Cleared diffusion level on {} rows.".format(count))
 
 
@@ -197,10 +174,7 @@ def downgrade():
 
     if restore_diffusion_level:
         logger.info("Restore diffusion level…")
-        count = (
-            op.get_bind()
-            .execute(
-                """
+        count = op.get_bind().execute("""
             WITH restored_rows AS (
                 UPDATE 
                     gn_synthese.synthese s
@@ -223,34 +197,22 @@ def downgrade():
                 count(*)
             FROM
                 restored_rows
-        """
-            )
-            .scalar()
-        )
+        """).scalar()
         logger.info("Restored diffusion level on {} rows.".format(count))
 
-    op.execute(
-        """
+    op.execute("""
         DROP TRIGGER tri_insert_calculate_sensitivity ON gn_synthese.synthese
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
         DROP TRIGGER tri_update_calculate_sensitivity ON gn_synthese.synthese
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
         DROP FUNCTION gn_synthese.fct_tri_calculate_sensitivity_on_each_statement
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
         DROP FUNCTION gn_synthese.fct_tri_update_sensitivity_on_each_row
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
         CREATE FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_statement()
          RETURNS trigger
          LANGUAGE plpgsql
@@ -290,18 +252,14 @@ def downgrade():
             END;
           $function$
         ;
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
         CREATE TRIGGER tri_insert_calculate_sensitivity AFTER
         INSERT
             ON
             gn_synthese.synthese REFERENCING NEW TABLE AS NEW FOR EACH STATEMENT EXECUTE PROCEDURE gn_synthese.fct_tri_cal_sensi_diff_level_on_each_statement()
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
         CREATE FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_row()
          RETURNS trigger
          LANGUAGE plpgsql
@@ -337,10 +295,8 @@ def downgrade():
             END;
           $function$
         ;
-    """
-    )
-    op.execute(
-        """
+    """)
+    op.execute("""
         CREATE TRIGGER tri_update_calculate_sensitivity AFTER
         UPDATE
             OF date_min,
@@ -349,5 +305,4 @@ def downgrade():
             the_geom_local,
             id_nomenclature_bio_status ON
             gn_synthese.synthese FOR EACH ROW EXECUTE PROCEDURE gn_synthese.fct_tri_cal_sensi_diff_level_on_each_row()
-    """
-    )
+    """)
