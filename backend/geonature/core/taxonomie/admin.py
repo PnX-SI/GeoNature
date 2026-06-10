@@ -51,7 +51,7 @@ def load_admin_views(app, admin):
     admin.add_view(
         CruvedProtectedTaxrefView(
             Taxref,
-            db.session,
+            db,
             name="Taxref",
             endpoint="taxons",
             category="TaxHub",
@@ -61,7 +61,7 @@ def load_admin_views(app, admin):
     admin.add_view(
         CruvedProtectedBibListesView(
             BibListes,
-            db.session,
+            db,
             name="Listes",
             category="TaxHub",
             static_folder=static_folder,
@@ -71,7 +71,7 @@ def load_admin_views(app, admin):
     admin.add_view(
         CruvedProtectedBibAttributsView(
             BibAttributs,
-            db.session,
+            db,
             name="Attributs",
             category="TaxHub",
             static_folder=static_folder,
@@ -80,7 +80,7 @@ def load_admin_views(app, admin):
     admin.add_view(
         CruvedProtectedBibThemes(
             BibThemes,
-            db.session,
+            db,
             name="Thèmes",
             category="TaxHub",
             static_folder=static_folder,
@@ -90,7 +90,7 @@ def load_admin_views(app, admin):
     admin.add_view(
         CruvedProtectedTMediasView(
             TMedias,
-            db.session,
+            db,
             name="Médias",
             category="TaxHub",
             static_folder=static_folder,

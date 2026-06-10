@@ -5,6 +5,7 @@ from werkzeug.exceptions import Unauthorized
 from flask_admin import Admin, AdminIndexView, expose
 from flask_admin.menu import MenuLink
 from flask_admin.contrib.sqla import ModelView
+from flask_admin.theme import Bootstrap4Theme
 
 from geonature.utils.env import db
 from geonature.utils.config import config
@@ -58,9 +59,8 @@ class ProtectedTNomenclaturesAdmin(
 
 ## déclaration de la page d'admin
 admin = Admin(
-    template_mode="bootstrap4",
     name="Administration GeoNature",
-    base_template="layout.html",
+    theme=Bootstrap4Theme(base_template="layout.html"),
     index_view=MyHomeView(
         name="Accueil",
         menu_icon_type="fa",
