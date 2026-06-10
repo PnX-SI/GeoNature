@@ -1,7 +1,6 @@
 import setuptools
 from pathlib import Path
 
-
 root_dir = Path(__file__).absolute().parent
 with (root_dir / "VERSION").open() as f:
     version = f.read().strip()
@@ -17,7 +16,7 @@ setuptools.setup(
     maintainer="Parcs nationaux des Écrins et des Cévennes",
     maintainer_email="geonature@ecrins-parcnational.fr",
     url="https://github.com/PnX-SI/GeoNature/",
-    python_requires=">=3.9",
+    python_requires=">=3.10",
     version=version,
     packages=setuptools.find_packages(where="backend", include=["geonature*"]),
     package_dir={
@@ -51,7 +50,10 @@ setuptools.setup(
     classifiers=[
         "Framework :: Flask",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
     ],
     entry_points={
         "console_scripts": [
