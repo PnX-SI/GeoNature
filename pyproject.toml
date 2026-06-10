@@ -1,3 +1,59 @@
+[build-system]
+requires = ["setuptools>=77.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "geonature"
+description = "Application de saisie et de synthèse des observations faune et flore"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+  { name = "Parcs nationaux des Écrins et des Cévennes", email = "geonature@ecrins-parcnational.fr" },
+]
+urls = { Homepage = "https://github.com/PnX-SI/GeoNature/" }
+classifiers = [
+  "Framework :: Flask",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+dynamic = ["version"]
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+
+[project.scripts]
+geonature = "geonature.core.command:main"
+
+[tool.setuptools]
+package-dir = { "" = "backend" }
+
+[tool.setuptools.packages.find]
+where = ["backend"]
+include = ["geonature*"]
+
+[tool.setuptools.package-data]
+geonature = ["**/templates/**/*.html"]
+"geonature.tests" = ["data/*.sql"]
+"geonature.migrations" = ["alembic.ini", "script.py.mako", "data/**/*.sql"]
+
+[tool.setuptools.dynamic]
+version = { file = "VERSION" }
+dependencies = { file = "backend/requirements.txt" }
+
+[project.optional-dependencies]
+tests = [
+  "pandas",
+  "pytest",
+  "pytest-flask",
+  "pytest-benchmark",
+  "pytest-cov",
+  "jsonschema",
+  "pandas",
+]
+doc = ["sphinx", "furo", "myst-parser", "sphinx-autoapi", "sphinx-copybutton"]
+
 [tool.pytest.ini_options]
 minversion = "6.0"
 testpaths = ["backend/geonature/tests/"]
