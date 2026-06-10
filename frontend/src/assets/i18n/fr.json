@@ -8,6 +8,10 @@
     "French": "Français",
     "Chinese": "中文 (Chinois)"
   },
+  "Calendar": {
+    "Weekdays": ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
+    "Months": ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]
+  },
   "Actions": {
     "Singular": "Action",
     "Plural": "Actions",
