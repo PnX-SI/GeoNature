@@ -45,9 +45,9 @@ RUN npm run build
 
 FROM nginx:mainline-alpine AS prod-base
 
-ENV NGINX_PORT 80
-ENV NGINX_HOST localhost
-ENV NGINX_LOCATION /
+ENV NGINX_PORT=80
+ENV NGINX_HOST=localhost
+ENV NGINX_LOCATION=/
 
 COPY ./frontend/50-set-api-endpoint.sh /docker-entrypoint.d/
 
