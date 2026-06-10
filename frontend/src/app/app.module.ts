@@ -1,6 +1,6 @@
 // Angular core
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, APP_INITIALIZER, Injector } from '@angular/core';
+import { NgModule, APP_INITIALIZER, Injector, LOCALE_ID } from '@angular/core';
 
 import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 
@@ -9,6 +9,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateModule, TranslateLoader, MissingTranslationHandler } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+import localeEn from '@angular/common/locales/en';
+import { TranslateService } from '@ngx-translate/core';
+import { NgbDatepickerI18n } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDatepickerI18nTranslate } from './shared/translate/ngb-datepicker-i18n-translate.service';
 
 // Modules
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
@@ -80,6 +86,9 @@ export function initApp(injector) {
   };
 }
 
+registerLocaleData(localeFr);
+registerLocaleData(localeEn);
+
 @NgModule({
   imports: [
     BrowserModule,
@@ -145,7 +154,24 @@ export function initApp(injector) {
       multi: true,
     },
     I18nService,
+    { provide: NgbDatepickerI18n, useClass: NgbDatepickerI18nTranslate },
+    {
+      provide: LOCALE_ID,
+      useFactory: (translate: TranslateService) => translate.currentLang || 'fr',
+      deps: [TranslateService],
+    },
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(translate: TranslateService) {
+    // Re-register locale data on language change if needed
+    translate.onLangChange.subscribe(({ lang }) => {
+      if (lang === 'fr') {
+        registerLocaleData(localeFr);
+      } else if (lang === 'en') {
+        registerLocaleData(localeEn);
+      }
+    });
+  }
+}
