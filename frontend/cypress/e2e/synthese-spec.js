@@ -48,13 +48,13 @@ describe('Tests gn_synthese', () => {
     // select datemin
     cy.get('[data-qa="synthese-form-date-min"]').click();
     cy.get('[aria-label="Select year"]').select('2016');
-    cy.get('[aria-label="Select month"]').select('Dec');
-    cy.get('[aria-label="Saturday, December 24, 2016"]').click();
+    cy.get('[aria-label="Select month"]').select('Déc');
+    cy.get('[aria-label="Samedi, 24 Décembre 2016"]').click();
     // select datemax
     cy.get('[data-qa="synthese-form-date-max"]').click();
     cy.get('[aria-label="Select year"]').select('2017');
     cy.get('[aria-label="Select month"]').select('Jan');
-    cy.get('[aria-label="Monday, January 2, 2017"]').click();
+    cy.get('[aria-label="Lundi, 2 Janvier 2017"]').click();
 
     // search
     cy.get('[data-qa="synthese-search-btn"]').click();
