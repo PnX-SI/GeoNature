@@ -6,55 +6,48 @@ FROM ${PYTHON_IMAGE} AS build
 
 ENV PIP_ROOT_USER_ACTION=ignore
 RUN --mount=type=cache,target=/root/.cache \
-    pip install uv && \
+    pip install uv build && \
     uv pip install --system --upgrade pip setuptools wheel
 
 FROM build AS build-habref
 WORKDIR /build/
 COPY /backend/dependencies/Habref-api-module .
-RUN python setup.py bdist_wheel
-
+RUN python -m build --wheel
 
 FROM build AS build-nomenclature
 WORKDIR /build/
 COPY /backend/dependencies/Nomenclature-api-module .
-RUN python setup.py bdist_wheel
-
+RUN python -m build --wheel
 
 FROM build AS build-refgeo
 WORKDIR /build/
 COPY /backend/dependencies/RefGeo .
-RUN python setup.py bdist_wheel
-
+RUN python -m build --wheel
 
 FROM build AS build-taxhub
 WORKDIR /build/
 COPY /backend/dependencies/TaxHub .
-RUN python setup.py bdist_wheel
-
+RUN python -m build --wheel
 
 FROM build AS build-usershub
 WORKDIR /build/
 COPY /backend/dependencies/UsersHub .
-RUN python setup.py bdist_wheel
-
+RUN python -m build --wheel
 
 FROM build AS build-usershub-module
 WORKDIR /build/
 COPY /backend/dependencies/UsersHub-authentification-module .
-RUN python setup.py bdist_wheel
-
+RUN python -m build --wheel
 
 FROM build AS build-utils
 WORKDIR /build/
 COPY /backend/dependencies/Utils-Flask-SQLAlchemy .
-RUN python setup.py bdist_wheel
-
+RUN python -m build --wheel
 
 FROM build AS build-utils-geo
 WORKDIR /build/
 COPY /backend/dependencies/Utils-Flask-SQLAlchemy-Geo .
-RUN python setup.py bdist_wheel
+RUN python -m build --wheel
 
 
 FROM build AS build-geonature
@@ -130,7 +123,7 @@ WORKDIR /dist/geonature
 COPY --chmod=755 /install/03b_populate_db.sh /populate_db.sh
 COPY --chmod=755 /install/assets/docker_entrypoint.sh /entrypoint.sh
 
-ENV GEONATURE_CONFIG_FILE ""
+ENV GEONATURE_CONFIG_FILE=""
 
 EXPOSE 8000
 
@@ -142,7 +135,7 @@ CMD [ "gunicorn", "geonature:create_app()", \
     "--threads=2", \
     "--access-logfile=-", \
     "--bind=0.0.0.0:8000" \
-]
+    ]
 
 
 FROM base AS dev
@@ -156,9 +149,9 @@ RUN --mount=type=cache,target=/root/.cache \
 RUN --mount=type=cache,target=/root/.cache \
     --mount=type=bind,source=.,target=/sources/GeoNature,rw \
     uv pip install --system \
-      -e contrib/occtax \
-      -e contrib/gn_module_occhab \
-      -e contrib/gn_module_validation
+    -e contrib/occtax \
+    -e contrib/gn_module_occhab \
+    -e contrib/gn_module_validation
 
 CMD [ "geonature", "dev-back" ]
 
