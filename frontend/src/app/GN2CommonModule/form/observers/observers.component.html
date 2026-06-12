@@ -7,7 +7,7 @@
   [compareWith]="compareWith"
   [multiple]="multiSelect"
   [clearable]="clearable"
-  placeholder="Observateur(s)"
+  [placeholder]="placeHolder || label"
   data-qa="gn-common-form-observers-select"
   [virtualScroll]="true"
   [formControl]="parentFormControl"

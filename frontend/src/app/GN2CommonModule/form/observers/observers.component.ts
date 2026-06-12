@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { OnInit, Component, Input, ViewEncapsulation, SimpleChanges } from '@angular/core';
 import { DataFormService } from '../data-form.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -22,7 +22,9 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
   styleUrls: ['./observers.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class ObserversComponent extends GenericFormComponent {
+export class ObserversComponent 
+  extends GenericFormComponent
+  implements OnInit {
   /**
    *  Id de la liste d'utilisateur (table ``utilisateur.t_menus``) (obligatoire)
    */
@@ -35,6 +37,7 @@ export class ObserversComponent extends GenericFormComponent {
     return c1.id_role === c2.id_role;
   };
   @Input() observers: Observable<Array<any>>;
+  @Input() placeHolder: string = null;
 
   constructor(private _dfService: DataFormService) {
     super();
@@ -44,6 +47,8 @@ export class ObserversComponent extends GenericFormComponent {
     super.ngOnInit();
     this.bindValue = this.bindAllItem ? null : this.bindValue;
     this.multiSelect = this.multiSelect ? true : this.multiSelect;
+    this.placeHolder ??= this.label;
+
     // uniformise as IdList the id of list
     // retrocompat: keep idMenu
     if (this.idList) {
