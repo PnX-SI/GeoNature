@@ -147,7 +147,7 @@ WORKDIR /sources/GeoNature
 # [tool.uv.sources] in the root pyproject.toml (uv workspace).
 RUN --mount=type=cache,target=/root/.cache \
     --mount=type=bind,source=.,target=/sources/GeoNature,rw \
-    cd backend && uv pip install --system -e ..
+    cd backend && uv pip install --system -e '..[tests]'
 RUN --mount=type=cache,target=/root/.cache \
     --mount=type=bind,source=.,target=/sources/GeoNature,rw \
     uv pip install --system \
