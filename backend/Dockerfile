@@ -145,7 +145,7 @@ WORKDIR /sources/GeoNature
 # rw required by --editable to write .egg-info stuffs
 RUN --mount=type=cache,target=/root/.cache \
     --mount=type=bind,source=.,target=/sources/GeoNature,rw \
-    cd backend && uv pip install --system  -e .. -r requirements-dev.txt
+    cd backend && uv pip install --system  -e '..[tests]' -r requirements-dev.txt
 RUN --mount=type=cache,target=/root/.cache \
     --mount=type=bind,source=.,target=/sources/GeoNature,rw \
     uv pip install --system \
