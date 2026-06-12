@@ -22,9 +22,7 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
   styleUrls: ['./observers.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class ObserversComponent 
-  extends GenericFormComponent
-  implements OnInit {
+export class ObserversComponent extends GenericFormComponent implements OnInit {
   /**
    *  Id de la liste d'utilisateur (table ``utilisateur.t_menus``) (obligatoire)
    */
