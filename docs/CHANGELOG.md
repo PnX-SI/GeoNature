@@ -11,6 +11,7 @@
   - Impossibilité d'importer des données dans des JDD de CA fermés.
 - [Métadonnées] Ajout d'un bouton de création de jeu de données directement depuis la fiche du cadre d'acquisition (#4142 par @jacquesfize)
 - [Métadonnées] La date de création de la source n'est plus affichée (#4096 par @christophe-ramet)
+- [Métadonnées] Ajout de la propriété `TDatasets.nb_observations` qui somme le nombre d'observations et d'habitats saisies dans un JDD (#3958 par @VincentCauchois)
 - [Authentification] Hiérarchisation des fournisseurs d'identité sur la page de connexion. Si un _provider_ est configuré avec `is_secondary=true`, ce dernier sera accessible depuis un bloc déroulant. (#3912 par @IdrissaD)
 - [Authentification] Ajout d'une fonctionnalité d'affichage/masquage du mot de passe dans le formulaire de connexion (#3974 par @jacquesfize)
 - [Authentification] Gestion des erreurs de connexion via les paramètres de requête (#3976 par @edelclaux)
