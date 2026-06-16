@@ -78,7 +78,7 @@ jobs:
           ref: ${{ inputs.geonature_ref }}
           submodules: true
       - name: Clone ${{ github.event.repository.name }} module
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: ${{ env.MODULE_DIR }}
       - name: Add database extensions
@@ -87,7 +87,7 @@ jobs:
         env:
           PGPASSWORD: "geonatadmin"
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
@@ -151,7 +151,7 @@ jobs:
         working-directory: ${{ env.MODULE_DIR }}
       - name: Upload coverage to Codecov
         if: ${{ inputs.upload_coverage && matrix.debian-version == '12' }}
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.codecov_token }}
           flags: pytest
