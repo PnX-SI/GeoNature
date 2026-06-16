@@ -56,6 +56,7 @@ import { NotificationDataService } from './components/notification/notification-
 import { UserPublicGuard } from '@geonature/modules/login/routes-guard.service';
 import { I18nService } from './shared/translate/i18n-service';
 import { CustomMissingTranslationHandler } from './utils/error';
+import { NgSelectConfig } from '@ng-select/ng-select';
 
 export function loadConfig(injector) {
   const configService = injector.get(ConfigService);
@@ -148,4 +149,8 @@ export function initApp(injector) {
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(ngSelectConfig: NgSelectConfig) {
+    ngSelectConfig.appendTo = 'body';
+  }
+}

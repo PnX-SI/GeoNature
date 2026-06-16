@@ -75,39 +75,25 @@ describe('Testing adding an observation in OccTax', { testIsolation: false }, ()
 
     // Test de la liste déroulante observateurs
     // Tester si la liste déroulante du champ observateur s'ouvre bien
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] ng-dropdown-panel"
-    ).should('not.exist');
+    cy.get('ng-dropdown-panel').should('not.exist');
     cy.get(
       "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] .ng-select-container"
     ).click();
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] ng-dropdown-panel"
-    ).should('exist');
+    cy.get('ng-dropdown-panel').should('exist');
     //Tester s'il ya des valeurs dans la liste
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] ng-dropdown-panel div.ng-option"
-    ).should('exist');
+    cy.get('ng-dropdown-panel div.ng-option').should('exist');
     //Tester si la valeur par défaut dans le input est bien indiquée selectionnée dans la liste
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] ng-dropdown-panel div.ng-option.ng-option-selected"
-    ).should('have.length', 1);
+    cy.get('ng-dropdown-panel div.ng-option.ng-option-selected').should('have.length', 1);
     //Tester la deselection d'un observateur déjà selectionné
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] ng-dropdown-panel div.ng-option.ng-option-selected"
-    ).click();
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] ng-dropdown-panel div.ng-option.ng-option-selected"
-    ).should('have.length', 0);
+    cy.get('ng-dropdown-panel div.ng-option.ng-option-selected').click();
+    cy.get('ng-dropdown-panel div.ng-option.ng-option-selected').should('have.length', 0);
     cy.get(
       "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select']"
     )
       .find('.ng-value-container .ng-value')
       .should('have.length', 0);
     //Tester la selection de deux observateurs
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] ng-dropdown-panel div.ng-option:nth-child(1)"
-    ).click();
+    cy.get('ng-dropdown-panel div.ng-option:nth-child(1)').click();
     cy.get(
       "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select']"
     )
@@ -116,12 +102,8 @@ describe('Testing adding an observation in OccTax', { testIsolation: false }, ()
     cy.get(
       "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] .ng-select-container"
     ).click(); //recouverture de la liste
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] ng-dropdown-panel div.ng-option.ng-option-selected"
-    ).should('have.length', 1); //1 valeur selectionnée dans la liste
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] ng-dropdown-panel div.ng-option:nth-child(2)"
-    ).click(); //click sur une deuxième valeur
+    cy.get('ng-dropdown-panel div.ng-option.ng-option-selected').should('have.length', 1); //1 valeur selectionnée dans la liste
+    cy.get('ng-dropdown-panel div.ng-option:nth-child(2)').click(); //click sur une deuxième valeur
     cy.get(
       "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select']"
     )
@@ -137,17 +119,11 @@ describe('Testing adding an observation in OccTax', { testIsolation: false }, ()
 
     // Tester l'ouverture de la liste
     cy.get("[data-qa='pnx-occtax-releve-form-datasets'] ng-select").click();
-    cy.get("[data-qa='pnx-occtax-releve-form-datasets'] ng-select ng-dropdown-panel").should(
-      'exist'
-    );
+    cy.get('ng-dropdown-panel').should('exist');
     // Check des valeurs présentes
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-datasets'] ng-select ng-dropdown-panel .ng-dropdown-panel-items .ng-option"
-    ).should('exist');
+    cy.get('ng-dropdown-panel .ng-dropdown-panel-items .ng-option').should('exist');
     // Sélection de la première valeur
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-datasets'] ng-select ng-dropdown-panel .ng-dropdown-panel-items .ng-option:nth-child(1)"
-    ).click();
+    cy.get('ng-dropdown-panel .ng-dropdown-panel-items .ng-option:nth-child(1)').click();
     cy.get("[data-qa='pnx-occtax-releve-form-datasets'] ng-select .ng-value-container")
       .find('.ng-value')
       .should('have.length', 1);

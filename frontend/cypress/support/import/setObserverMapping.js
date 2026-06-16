@@ -9,7 +9,7 @@ Cypress.Commands.add('configureImportObserverMapping', (datasetName) => {
       .first()
       .click()
       .then(() => {
-        cy.wrap($form).find('ng-dropdown-panel').find('.ng-option').first().click();
+        cy.get('ng-dropdown-panel').find('.ng-option').first().click();
       });
   });
   cy.get('[data-qa="import-observersmapping-model-validate"]').should('exist').click();
