@@ -154,4 +154,6 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.codecov_token }}
+          files: ${{ env.MODULE_DIR }}/coverage.xml
           flags: pytest
+          root_dir: ${{ env.MODULE_DIR }}
