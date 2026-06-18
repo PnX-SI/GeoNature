@@ -1,3 +1,5 @@
 docs/images/*.png filter=lfs diff=lfs merge=lfs -text
 docs/utilisateur/imgs/*.jpg filter=lfs diff=lfs merge=lfs -text
 docs/utilisateur/imgs/*.png filter=lfs diff=lfs merge=lfs -text
+docs/utilisateur/imgs/occhab/* filter=lfs diff=lfs merge=lfs -text
+docs/utilisateur/imgs/occtax/* filter=lfs diff=lfs merge=lfs -text
