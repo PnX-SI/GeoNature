@@ -12,8 +12,8 @@ from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
 revision = "f3a8e2b1c904"
-down_revision = "1f223c509a80"
-branch_labels = None
+down_revision = None # Adjust to last geonature revision when we remove branch
+branch_labels = ("tmp-geonature-individuals",) # Put to none when we remove branch
 depends_on = None
 
 
