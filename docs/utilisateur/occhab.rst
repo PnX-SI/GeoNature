@@ -1,10 +1,10 @@
 .. Module OccHab : Saisir des occurences d'habitats
 
 Module OccHab : Saisir des occurences d'habitats
-================================================
+------------------------------------------------
 
 1. Description du module
-------------------------
+""""""""""""""""""""""""
 
 Ce module permet de saisir des données selon le standard Occurrence d'habitat du SINP.
 
@@ -38,10 +38,10 @@ Selon les droits dont vous disposez, il est possible d’afficher, de modifier o
 
 
 2. Fonctionnalités du module
-----------------------------
+""""""""""""""""""""""""
 
 Ajouter un relevé
-"""""""""""""""""
+*****************
 
 Depuis la liste des relevés, cliquer sur le bouton de création d'une nouvelle station d'habitat : 
 
@@ -110,7 +110,7 @@ Vous pouvez alors :
 Pour ajouter un habitat à la station, il faut cliquer sur ``Ajouter un habitat sur cette station`` et le renseigner comme le précédent. 
 
 Afficher un relevé
-""""""""""""""""""
+******************
 
 Pour afficher une station, cliquer sur le bouton d'information. Vous accéderez à la fiche complète.
 
@@ -125,7 +125,7 @@ Selon les droits dont vous disposez, il est possible de modifier et de supprimer
 .. image:: ../../../_static/img/occhab/occhab_6_actions.png
 
 Modifier un relevé
-""""""""""""""""""
+******************
 
 Si vous modifiez un relevé existant, vous accédez à sa fiche renseignée, sur laquelle vous pouvez modifier 
 
@@ -138,7 +138,7 @@ Si vous modifiez un relevé existant, vous accédez à sa fiche renseignée, sur
 
 
 Exporter un relevé
-""""""""""""""""""
+******************
 
 Une fois que vous avez saisi vos stations et observations depuis le formulaire, vous pouvez exporter ces données en CSV selon le standard Occurrence d'habitat du SINP.
 

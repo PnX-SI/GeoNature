@@ -391,6 +391,6 @@ Pour les utilisateurs sont listées les permissions qui lui sont attribués dire
 
 .. image :: https://github.com/PnX-SI/GeoNature/assets/4418840/75486b5c-a571-4c3a-9fd5-ff57328776c7
 
-.. include:: utilisateur/3-occhab.rst
+.. include:: utilisateur/occhab.rst
 
 .. include:: utilisateur/import.rst
