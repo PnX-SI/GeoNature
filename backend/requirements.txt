@@ -79,7 +79,7 @@ cligj==0.7.2
     # via fiona
 contourpy==1.3.0
     # via bokeh
-cryptography==46.0.5
+cryptography==48.0.1
     # via authlib
 cssselect2==0.8.0
     # via weasyprint
@@ -349,6 +349,7 @@ tornado==6.5.7
 typing-extensions==4.15.0
     # via
     #   alembic
+    #   cryptography
     #   exceptiongroup
     #   flask-cors
     #   marshmallow
