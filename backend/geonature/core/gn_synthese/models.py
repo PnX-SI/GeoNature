@@ -14,6 +14,7 @@ from sqlalchemy.orm import (
     contains_eager,
     deferred,
     query_expression,
+    synonym,
 )
 from sqlalchemy.sql import select, func
 from sqlalchemy.schema import FetchedValue
@@ -427,6 +428,7 @@ class Synthese(DB.Model):
     determiner = DB.Column(DB.Unicode(length=1000))
     id_digitiser = DB.Column(DB.Integer, ForeignKey(User.id_role))
     digitiser = db.relationship(User, foreign_keys=[id_digitiser])
+    id_digitizer = synonym("id_digitiser")
     comment_context = DB.Column(DB.UnicodeText)
     comment_description = DB.Column(DB.UnicodeText)
     additional_data = DB.Column(JSONB)
