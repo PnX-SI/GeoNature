@@ -42,6 +42,7 @@ from geonature.core.imports.models import TImports as Import
 from ref_geo.models import LAreas
 
 from geonature.core.gn_meta.models import TDatasets
+from geonature.core.gn_monitoring.models import TIndividuals
 from geonature.core.gn_commons.models import (
     TValidations,
     last_validation,
@@ -270,6 +271,8 @@ class Synthese(DB.Model):
         TDatasets,
         backref=DB.backref("synthese_records", lazy="dynamic", cascade_backrefs=False),
     )
+    id_individual = DB.Column(DB.Integer, ForeignKey(TIndividuals.id_individual))
+    individual = DB.relationship(TIndividuals)
     grp_method = DB.Column(DB.Unicode(length=255))
 
     id_nomenclature_geo_object_nature = db.Column(
