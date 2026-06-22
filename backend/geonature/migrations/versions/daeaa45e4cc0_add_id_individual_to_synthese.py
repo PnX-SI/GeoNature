@@ -1,7 +1,7 @@
 """add id_individual to synthese
 
 Revision ID: daeaa45e4cc0
-Revises: f6a1feb3f297
+Revises: 1f223c509a80
 Create Date: 2026-06-22 00:00:00.000000
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = "daeaa45e4cc0"
-down_revision = "ae0b6362fb22"
+down_revision = "1f223c509a80"
 branch_labels = None
 depends_on = None
 
