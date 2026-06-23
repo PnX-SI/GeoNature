@@ -8,11 +8,17 @@ from urllib.parse import urlencode
 from marshmallow.exceptions import ValidationError
 
 
+def json_preferred():
+    return (
+        request.accept_mimetypes.best_match(["application/json", "text/html"]) == "application/json"
+    )
+
+
 # Unauthorized means disconnected
 # (logged but not allowed to perform an action = Forbidden)
 @current_app.errorhandler(Unauthorized)
 def handle_unauthenticated_request(e):
-    if request.accept_mimetypes.best == "application/json":
+    if json_preferred():
         response = e.get_response()
         response.data = json.dumps(
             {
@@ -43,7 +49,7 @@ def handle_validation_error(e):
 @current_app.errorhandler(HTTPException)
 def handle_http_exception(e):
     response = e.get_response()
-    if request.accept_mimetypes.best == "application/json":
+    if json_preferred():
         response.data = json.dumps(
             {
                 "code": e.code,
@@ -68,7 +74,7 @@ def handle_internal_server_error(e):
     else:
         description = e.description
     response = e.get_response()
-    if request.accept_mimetypes.best == "application/json":
+    if json_preferred():
         response.data = json.dumps(
             {
                 "code": e.code,
@@ -82,7 +88,7 @@ def handle_internal_server_error(e):
 
 @current_app.errorhandler(Exception)
 def handle_exception(e):
-    if request.accept_mimetypes.best == "application/json":
+    if json_preferred():
         # exceptions are logged by flask when not handled or when re-raised.
         # as here we construct a json error response, we have to log the exception our-self.
         current_app.log_exception(sys.exc_info())
