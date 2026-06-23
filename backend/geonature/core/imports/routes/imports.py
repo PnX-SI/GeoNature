@@ -107,6 +107,7 @@ def get_import_list(scope, destination=None):
         .options(
             contains_eager(TImports.authors),
             contains_eager(TImports.destination).contains_eager(Destination.module),
+            joinedload(TImports.datasets),
         )
         .join(TImports.authors, isouter=True)
         .join(Destination)

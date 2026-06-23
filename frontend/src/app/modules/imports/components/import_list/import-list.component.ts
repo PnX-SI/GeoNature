@@ -182,6 +182,25 @@ export class ImportListComponent implements OnInit {
     return formatRowCount(row);
   }
 
+  getDatasetLinks(datasets: any[]): { name: string; link: any[] }[] {
+    if (!datasets || !datasets.length) {
+      return [];
+    }
+
+    return datasets
+      .filter((item) => item?.id_dataset && item?.dataset?.dataset_shortname)
+      .map((item) => ({
+        name: item.dataset.dataset_shortname,
+        link: ['/metadata/dataset', item.id_dataset],
+      }));
+  }
+
+  getDatasetTooltip(datasets: any[]): string {
+    return this.getDatasetLinks(datasets)
+      .map((link) => link.name)
+      .join(', ');
+  }
+
   openModal(modalTemplate: TemplateRef<any>, actionType: 'U' | 'D', row: Import) {
     this.selectedRow = row;
     // Prépare les données de la modale en fonction de l'action
