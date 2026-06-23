@@ -578,12 +578,15 @@ class SyntheseQuery:
                         areas.append(value)
 
             if len(areas) > 0:
-                self.query = self.query.where(
-                    sa.exists(CorAreaSynthese).where(
+                area_subq = (
+                    select(CorAreaSynthese.id_synthese)
+                    .where(
                         CorAreaSynthese.id_synthese == self.model.id_synthese,
                         CorAreaSynthese.id_area.in_(areas),
                     )
+                    .correlate(self.model)
                 )
+                self.query = self.query.where(area_subq.exists())
 
     def apply_all_filters(self, user, permissions):
         if type(permissions) == int:  # scope
@@ -595,7 +598,7 @@ class SyntheseQuery:
 
     def build_query(self):
         if self.query_joins is not None:
-            self.query = self.query.select_from(self.query_joins)
+            self.query = self.query.select_from(self.query_joins).correlate(None)
         return self.query
 
     def filter_query_all_filters(self, user, permissions):
