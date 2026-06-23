@@ -1,10 +1,8 @@
 // @ts-ignore
 
 import { Component, OnInit, TemplateRef } from '@angular/core';
-import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { saveAs } from 'file-saver';
-import { CommonService } from '@geonature_common/service/common.service';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 import { ImportDataService } from '../../services/data.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -180,25 +178,6 @@ export class ImportListComponent implements OnInit {
 
   formattedRowCount(row: Import): string {
     return formatRowCount(row);
-  }
-
-  getDatasetLinks(datasets: any[]): { name: string; link: any[] }[] {
-    if (!datasets || !datasets.length) {
-      return [];
-    }
-
-    return datasets
-      .filter((item) => item?.id_dataset && item?.dataset?.dataset_shortname)
-      .map((item) => ({
-        name: item.dataset.dataset_shortname,
-        link: ['/metadata/dataset', item.id_dataset],
-      }));
-  }
-
-  getDatasetTooltip(datasets: any[]): string {
-    return this.getDatasetLinks(datasets)
-      .map((link) => link.name)
-      .join(', ');
   }
 
   openModal(modalTemplate: TemplateRef<any>, actionType: 'U' | 'D', row: Import) {

@@ -111,15 +111,11 @@
                     </p>
                   </ng-container>
                   <ng-container *ngSwitchCase="'datasets'">
-                    <p matTooltip="{{ getDatasetTooltip(row.datasets) }}">
-                      <ng-container
-                        *ngFor="let datasetLink of getDatasetLinks(row.datasets); let last = last"
-                      >
-                        <a [routerLink]="datasetLink.link">
-                          {{ datasetLink.name }}
-                        </a>
-                        <span *ngIf="!last">,</span>
-                      </ng-container>
+                    <p [matTooltip]="datasetLinksRef.tooltip">
+                      <app-dataset-links
+                        #datasetLinksRef
+                        [datasets]="row.datasets"
+                      ></app-dataset-links>
                     </p>
                   </ng-container>
                 </ng-container>

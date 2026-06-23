@@ -26,6 +26,17 @@ export interface ImportStatistics {
   [propName: string]: any;
 }
 
+export interface Dataset {
+  dataset_shortname: string;
+  unique_dataset_id: string;
+}
+
+export interface Datasets {
+  dataset: Dataset;
+  id_dataset: number;
+  id_import: number;
+}
+
 export interface Import {
   id_import: number;
   format_source_file: string;
@@ -65,6 +76,7 @@ export interface Import {
   id_source?: number;
   id_destination: number;
   destination?: Destination;
+  datasets?: [Dataset];
 }
 
 export interface NomenclatureType {
