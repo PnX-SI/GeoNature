@@ -56,7 +56,6 @@
         {% endif %}
       </div>
     </div>
-
     {% if data.processed %}
     <div class="card card50">
       <div class="card-header">Zone géographique</div>
@@ -70,7 +69,6 @@
       </div>
     </div>
     {% endif %}
-
 
     {% if data.date_end_import is not none %}
     <div class="row card">
@@ -105,6 +103,19 @@
         </div>
 
     </div>
+          <div class="card row">
+      <div class="card-header">Jeux de données liés</div>
+      <div class="card-body">
+        <ul id="description-list">
+          {% for dataset in data.datasets %}
+          <li>
+            <b>{{ dataset.dataset.dataset_shortname }}</b><small>({{ dataset.dataset.unique_dataset_id }})</small>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
     {% endif %}
     {% if data.processed %}
     <div class="row card">
