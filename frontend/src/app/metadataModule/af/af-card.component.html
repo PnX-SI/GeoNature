@@ -346,7 +346,7 @@
         <div class="card-header d-flex justify-content-between">
           <h3>{{ 'MetaData.AssociatedDatasets' | translate }}</h3>
           <button
-            *ngIf="_cruvedStore.cruved?.METADATA?.cruved.C !== 0"
+            *ngIf="_cruvedStore.cruved?.METADATA?.cruved.C !== 0 && af?.opened"
             [routerLink]="['/metadata/dataset']"
             [queryParams]="{ id_acquisition_framework: af?.id_acquisition_framework }"
             class="success-btn"
