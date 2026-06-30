@@ -259,7 +259,9 @@ def create_app(with_external_mods=True):
                 if module_code in config["DISABLED_MODULES"]:
                     continue
                 module_name = module_dist.name
-                dict_modules_is_installed[module_name] = is_module_installed(module_name)
+                dict_modules_is_installed[module_name] = is_module_installed(
+                    module_name, check_if_all_revisions_have_been_applied=False
+                )
                 app.dict_modules_is_installed = dict_modules_is_installed
                 try:
                     module_blueprint = module_dist.entry_points["blueprint"].load()
