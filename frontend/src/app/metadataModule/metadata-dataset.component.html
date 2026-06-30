@@ -47,13 +47,18 @@
   </ng-template>
 </td>
 <td [attr.data-qa]="'pnx-metadata-jdd-nb-obs-' + dataset.unique_dataset_id">
-  {{ dataset?.dict_stats.total_nb_obs }}
-  <mat-icon
-    *ngIf="dataset.dict_stats.total_nb_obs"
-    [matTooltip]="getObservationsCountsTooltip(dataset.dict_stats.dict_nb_obs)"
-  >
-    more_horiz
-  </mat-icon>
+  <div>
+    <div style="display: inline-block; padding-right: 1%">
+      {{ dataset?.dict_stats.total_nb_obs }}
+    </div>
+    <mat-icon
+      *ngIf="dataset.dict_stats.total_nb_obs"
+      [matTooltip]="getObservationsCountsTooltip(dataset.dict_stats.dict_nb_obs)"
+      style="vertical-align: bottom"
+    >
+      analytics
+    </mat-icon>
+  </div>
 </td>
 <td>
   <a
