@@ -855,7 +855,7 @@ def get_dataset_stats(id_dataset):
 
     for module_dist in iter_modules_dist():
         module_name = module_dist.name
-        is_current_module_installed = current_app.dict_modules_is_installed[module_name]
+        is_current_module_installed = current_app.dict_modules_is_installed.get(module_name, False)
         if is_current_module_installed:
             module_statistics = None
             try:
@@ -864,7 +864,9 @@ def get_dataset_stats(id_dataset):
                 pass
             if module_statistics:
                 statistics = __import__(module_name + ".statistics", fromlist=["statistics"])
-                nb_observations = statistics.get_dataset_nb_observations(id_dataset)
+                nb_observations = statistics.MetadataStatistics.get_dataset_nb_observations(
+                    id_dataset
+                )
                 module_code = module_dist.entry_points["code"].load()
                 dict_nb_obs[module_code] = nb_observations
 
