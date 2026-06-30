@@ -12,6 +12,22 @@ from flask import current_app
 if "OCCHAB" in config:
     from gn_module_occhab.models import OccurenceHabitat, Station
 
+import abc
+
+
+class AbstractMetadataStatistics(abc.ABC):
+    @abc.abstractmethod
+    def get_dataset_nb_observations(id_dataset):
+        """
+        Retourne le nombre d'occurrences d'habitats pour un JDD donné.
+        """
+
+    @abc.abstractmethod
+    def get_acquisition_framework_nb_observations(id_acquisition_framework):
+        """
+        Retourne le nombre d'occurrences d'habitats pour un CA donné.
+        """
+
 
 def get_acquisition_framework_stats(id_acquisition_framework):
     dataset_ids = db.session.scalars(
@@ -51,9 +67,11 @@ def get_acquisition_framework_stats(id_acquisition_framework):
                 pass
             if module_statistics:
                 statistics = __import__(module_name + ".statistics", fromlist=["statistics"])
-                nb_observations = 0
-                for id_dataset in dataset_ids:
-                    nb_observations += statistics.get_dataset_nb_observations(id_dataset)
+                nb_observations = (
+                    statistics.MetadataStatistics.get_acquisition_framework_nb_observations(
+                        id_acquisition_framework
+                    )
+                )
                 module_code = module_dist.entry_points["code"].load()
                 dict_nb_obs[module_code] = nb_observations
 
