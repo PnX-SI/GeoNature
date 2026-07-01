@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2.17.3 (2026-07-01)
+
+### 🐛 Corrections
+
+- [Docker] L'image Docker backend s'appuie maintenant sur les fichiers de requirements compilés (#4219 par @christophe-ramet)
+
 ## 2.17.2 (2026-06-09)
 
 ### 🚀 Nouveautés
