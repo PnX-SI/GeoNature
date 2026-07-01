@@ -274,7 +274,7 @@ pypnusershub==3.2.2
     # via
     #   -r requirements-dependencies.in
     #   taxhub
-pyproj==3.6.1 ; python_version >= "3.10"
+pyproj==3.7.1 ; python_version >= "3.10"
     # via -r requirements-common.in
 python-dateutil==2.9.0.post0
     # via
