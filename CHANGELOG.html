@@ -7,7 +7,7 @@
         <link rel="prefetch" href="_static/LogoGeonature.jpg" as="image">
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
-        <title>CHANGELOG - Documentation GeoNature 2.17.2</title>
+        <title>CHANGELOG - Documentation GeoNature 2.17.3</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation GeoNature 2.17.2</div></a>
+      <a href="index.html"><div class="brand">Documentation GeoNature 2.17.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -187,7 +187,7 @@
     <img class="sidebar-logo" src="_static/LogoGeonature.jpg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation GeoNature 2.17.2</span>
+  <span class="sidebar-brand-text">Documentation GeoNature 2.17.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
@@ -449,7 +449,16 @@
           <section id="changelog">
 <h1>CHANGELOG<a class="headerlink" href="#changelog" title="Lien vers cette rubrique">¶</a></h1>
 <section id="id1">
-<h2>2.17.2 (2026-06-09)<a class="headerlink" href="#id1" title="Lien vers cette rubrique">¶</a></h2>
+<h2>2.17.3 (2026-07-01)<a class="headerlink" href="#id1" title="Lien vers cette rubrique">¶</a></h2>
+<section id="corrections">
+<h3>🐛 Corrections<a class="headerlink" href="#corrections" title="Lien vers cette rubrique">¶</a></h3>
+<ul class="simple">
+<li><p>[Docker] L’image Docker backend s’appuie maintenant sur les fichiers de requirements compilés (#4219 par &#64;christophe-ramet)</p></li>
+</ul>
+</section>
+</section>
+<section id="id2">
+<h2>2.17.2 (2026-06-09)<a class="headerlink" href="#id2" title="Lien vers cette rubrique">¶</a></h2>
 <section id="nouveautes">
 <h3>🚀 Nouveautés<a class="headerlink" href="#nouveautes" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
@@ -473,8 +482,8 @@ La fermeture d’un cadre d’acquisition a pour conséquence :</p>
 <li><p>[Général] Mise à jour des dépendances Python (#4080 par &#64;jacquesfize)</p></li>
 </ul>
 </section>
-<section id="corrections">
-<h3>🐛 Corrections<a class="headerlink" href="#corrections" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id3">
+<h3>🐛 Corrections<a class="headerlink" href="#id3" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[Métadonnées] Correction de l’affichage du nombre de jeux de données dans l’export PDF des CA (#3985 par &#64;jacquesfize)</p></li>
 <li><p>[Métadonnées] Ajout de la colonne <code class="docutils literal notranslate"><span class="pre">id_nomenclature_biogeo_status</span></code> dans la vue <code class="docutils literal notranslate"><span class="pre">v_synthese_for_web_app</span></code> (#2235 par &#64;christophe-ramet)</p></li>
@@ -499,10 +508,10 @@ La fermeture d’un cadre d’acquisition a pour conséquence :</p>
 </ul>
 </section>
 </section>
-<section id="id2">
-<h2>2.17.1 (2026-04-13)<a class="headerlink" href="#id2" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id3">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id3" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id4">
+<h2>2.17.1 (2026-04-13)<a class="headerlink" href="#id4" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id5">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id5" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[Métadonnées] Amélioration de la page de détail des cadres d’acquisition (#4063 et #4050 par &#64;jacquesfize)</p></li>
 <li><p>[Synthèse] Ajout d’une clé étrangère sur la colonne <code class="docutils literal notranslate"><span class="pre">id_import</span></code> de <code class="docutils literal notranslate"><span class="pre">gn_synthese.synthese</span></code> vers <code class="docutils literal notranslate"><span class="pre">gn_imports.t_imports</span></code> (#4000 par &#64;jacquesfize)</p></li>
@@ -512,8 +521,8 @@ La fermeture d’un cadre d’acquisition a pour conséquence :</p>
 <li><p>[Documentation] Compléments concernant UsersHub dans la section du passage en HTTPS (#4073 par &#64;tsevere-cenpaca)</p></li>
 </ul>
 </section>
-<section id="id4">
-<h3>🐛 Corrections<a class="headerlink" href="#id4" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id6">
+<h3>🐛 Corrections<a class="headerlink" href="#id6" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[Occtax] Correction du filtre sur <code class="docutils literal notranslate"><span class="pre">id_module</span></code> (#4048 par &#64;TheoLechemia)</p></li>
 <li><p>[Import] La valeur booléenne <code class="docutils literal notranslate"><span class="pre">false</span></code> n’est plus interprétée comme <code class="docutils literal notranslate"><span class="pre">null</span></code> dans le formulaire de type checkbox (#4039 par &#64;edelclaux)</p></li>
@@ -550,8 +559,8 @@ La fermeture d’un cadre d’acquisition a pour conséquence :</p>
 <li><p>Ajout du support de Debian 13 (le support de Debian 11 sera arrêté dans la prochaine version 2.18.0)</p></li>
 </ul>
 </section>
-<section id="id5">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id5" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id7">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id7" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[Import] Ajout de fonctionnalités pour importer des données dans le module Monitoring (https://github.com/PnX-SI/gn_module_monitoring/issues/457)</p></li>
 <li><p>[Import] Possibilité de choisir des valeurs fixes pour les champs que l’on souhaite (https://github.com/PnX-SI/gn_module_import/issues/500, #3289 par &#64;20cents)</p></li>
@@ -580,8 +589,8 @@ La fermeture d’un cadre d’acquisition a pour conséquence :</p>
 <li><p>[TaxHub] Mise à jour de la version 2.2.3 vers la version <a class="reference external" href="https://github.com/PnX-SI/TaxHub/releases">2.3.1</a> (intégration des commandes d’imports de médias Wikidata et GBIF, amélioration et documentation du stockage des médias sur un serveur S3, amélioration des filtres et corrections diverses)</p></li>
 </ul>
 </section>
-<section id="id6">
-<h3>🐛 Corrections<a class="headerlink" href="#id6" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id8">
+<h3>🐛 Corrections<a class="headerlink" href="#id8" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[Synthèse] Correction de l’ordre d’affichage des messages dans les discussions des fiches observation (#3872 par &#64;PaulLabruyere)</p></li>
 <li><p>[Synthèse] Possibilité de rechercher en combinant des zonages de différents types (#3918 par &#64;jacquesfize)</p></li>
@@ -604,8 +613,8 @@ La fermeture d’un cadre d’acquisition a pour conséquence :</p>
 <li><p>[Général] Correction de l’affichage des modules selon les permissions quand on a accès au module Admin (#3862 par &#64;jacquesfize)</p></li>
 </ul>
 </section>
-<section id="id7">
-<h3>💻 Développement<a class="headerlink" href="#id7" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id9">
+<h3>💻 Développement<a class="headerlink" href="#id9" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Avec la nouvelle version de <em>Utils-Flask-SQLAlchemy</em>, la mise à jour de marshmallow (<a class="reference external" href="https://marshmallow.readthedocs.io/en/latest/changelog.html#id8">&gt;4.0</a>) apporte son lot de modifications. Faites les vérifications nécessaires sur vos modules GeoNature, concernant la compatibilité de cette nouvelle version.</p></li>
 <li><p>Suppression de la dépendance à <em>marshmallow-geojson</em>. Les schémas de validation de GeoJSON sont maintenant disponibles dans <code class="docutils literal notranslate"><span class="pre">utils_flask_sqla_geo.schema</span></code> (voir <a class="reference external" href="https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo/pull/49">Utils-Flask-SQLAlchemy-Geo#89</a> pour plus de détails).</p></li>
@@ -614,8 +623,8 @@ La fermeture d’un cadre d’acquisition a pour conséquence :</p>
 <li><p>[CI] Les tests backend ne sont plus lancés automatiquement quand seul le frontend est modifié (#3832 par &#64;jacquesfize)</p></li>
 </ul>
 </section>
-<section id="id8">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id8" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id10">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id10" title="Lien vers cette rubrique">¶</a></h3>
 <p><strong>Modules externes 🌪️</strong></p>
 <p>Certains modules externes doivent être mis à jour dans ces versions minimales :</p>
 <ul class="simple">
@@ -637,25 +646,25 @@ La fermeture d’un cadre d’acquisition a pour conséquence :</p>
 <p>&#64;jacquesfize, &#64;Pierre-Narcisi, &#64;christophe-ramet, &#64;VincentCauchois, &#64;camillemonchicourt, &#64;amandine-sahl, &#64;lpofredc, &#64;edelclaux, &#64;PaulLabruyere, &#64;CynthiaBorotPNV, &#64;20cents, &#64;JulienCorny, &#64;andriacap, &#64;bouttier, &#64;IdrissaD, &#64;TheoLechemia, &#64;pierre56, &#64;MoulinZ</p>
 </section>
 </section>
-<section id="id9">
-<h2>2.16.4 (2025-11-17)<a class="headerlink" href="#id9" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id10">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id10" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id11">
+<h2>2.16.4 (2025-11-17)<a class="headerlink" href="#id11" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id12">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id12" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Mise à jour de UsersHub-authentification-module en 3.1.0 (par &#64;jacquesfize)</p></li>
 </ul>
 </section>
-<section id="id11">
-<h3>🐛 Corrections<a class="headerlink" href="#id11" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id13">
+<h3>🐛 Corrections<a class="headerlink" href="#id13" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Amélioration de la sécurité du processus de création de compte GeoNature ainsi que du renouvellement de mot de passe (<a class="reference external" href="https://github.com/PnX-SI/UsersHub-authentification-module/pull/124">UsersHub-authentification-module#124</a>, <a class="reference external" href="https://github.com/PnX-SI/UsersHub-authentification-module/pull/125">#125</a> par &#64;Christophe-Ramet et &#64;jacquesfize)</p></li>
 </ul>
 </section>
 </section>
-<section id="id12">
-<h2>2.16.3 (2025-09-26)<a class="headerlink" href="#id12" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id13">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id13" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id14">
+<h2>2.16.3 (2025-09-26)<a class="headerlink" href="#id14" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id15">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id15" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[TaxHub] Mise à jour de TaxHub en version <a class="reference external" href="https://github.com/PnX-SI/TaxHub/releases">2.2.3</a> incluant diverses évolutions et corrections</p></li>
 <li><p>[Général] Affichage des versions des modules et des référentiels dans le bas du menu latéral (#3664 par &#64;Christophe-Ramet)</p></li>
@@ -665,8 +674,8 @@ La fermeture d’un cadre d’acquisition a pour conséquence :</p>
 <li><p>[TaxHub] Ajout d’une fiche d’info sur TaxHub et Taxref dans un nouvel onglet « Informations » (#3717 par &#64;amandine-sahl)</p></li>
 </ul>
 </section>
-<section id="id14">
-<h3>🐛 Corrections<a class="headerlink" href="#id14" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id16">
+<h3>🐛 Corrections<a class="headerlink" href="#id16" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[Général] Amélioration de l’affichage responsive de la liste des modules dans la barre de navigation latérale (#3690 par &#64;Christophe-Ramet)</p></li>
 <li><p>[Général] Suppression de la variable <code class="docutils literal notranslate"><span class="pre">homePage.stats</span></code> dans le local storage à la déconnexion (#3687 par &#64;Christophe-Ramet)</p></li>
@@ -684,17 +693,17 @@ La fermeture d’un cadre d’acquisition a pour conséquence :</p>
 <li><p>[Développement] Mise à jour du fichier <code class="docutils literal notranslate"><span class="pre">.editorconfig</span></code> (#3683 par &#64;jpm-cbna)</p></li>
 </ul>
 </section>
-<section id="id15">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id15" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id17">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id17" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>La version 2.2.3 de TaxHub inclut des corrections de commandes qu’il peut être nécessaire que vous appliquiez depuis le venv de GeoNature (voir les notes de version de TaxHub sur https://github.com/PnX-SI/TaxHub/releases)</p></li>
 </ul>
 </section>
 </section>
-<section id="id16">
-<h2>2.16.2 (2025-08-11)<a class="headerlink" href="#id16" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id17">
-<h3>🐛 Corrections<a class="headerlink" href="#id17" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id18">
+<h2>2.16.2 (2025-08-11)<a class="headerlink" href="#id18" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id19">
+<h3>🐛 Corrections<a class="headerlink" href="#id19" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[Synthèse] Correction de la navigation avec les flèches dans les fiches taxon (#3639 par &#64;edelclaux)</p></li>
 <li><p>[Général] Correction de l’affichage du bouton de suppression d’un média (#3641 par &#64;amandine-sahl)</p></li>
@@ -704,17 +713,17 @@ La fermeture d’un cadre d’acquisition a pour conséquence :</p>
 </ul>
 </section>
 </section>
-<section id="id18">
-<h2>2.16.1 (2025-07-22)<a class="headerlink" href="#id18" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id19">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id19" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id20">
+<h2>2.16.1 (2025-07-22)<a class="headerlink" href="#id20" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id21">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id21" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[Métadonnées] Amélioration des performances du chargement des informations des jeux de données et des cadres d’acquisitions (#3617 par &#64;TheoLechemia)</p></li>
 <li><p>[Synthèse] Ajout d’un lien vers les détails d’une observation dans l’onglet « Observations » de la fiche Taxon (#3610 par &#64;jacquesfize)</p></li>
 </ul>
 </section>
-<section id="id20">
-<h3>🐛 Corrections<a class="headerlink" href="#id20" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id22">
+<h3>🐛 Corrections<a class="headerlink" href="#id22" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[Occtax] Correction du filtre « Observateurs » avec un R=2 (#3616 par &#64;TheoLechemia)</p></li>
 <li><p>[Occtax] Correction d’un lien vers la page d’accueil dans le contexte d’un module dupliqué de Occtax (#3610 &#64;ch-cbna)</p></li>
@@ -728,8 +737,8 @@ La fermeture d’un cadre d’acquisition a pour conséquence :</p>
 </section>
 <section id="bombina-variegata-2025-07-08">
 <h2>2.16.0 - <a class="reference external" href="https://inpn.mnhn.fr/espece/cd_nom/212">Bombina variegata</a> 🐸 (2025-07-08)<a class="headerlink" href="#bombina-variegata-2025-07-08" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id21">
-<h3>⏩ En bref<a class="headerlink" href="#id21" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id23">
+<h3>⏩ En bref<a class="headerlink" href="#id23" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Multilingue étendu, par module et surcouchable</p></li>
 <li><p>Enrichissement des fiches taxon</p></li>
@@ -738,8 +747,8 @@ La fermeture d’un cadre d’acquisition a pour conséquence :</p>
 <li><p>Nouvelle section « Dernières validations » sur la page d’accueil</p></li>
 </ul>
 </section>
-<section id="id22">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id22" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id24">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id24" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[Synthèse] Enrichissement des fiches taxon (#3479 par &#64;edelclaux et &#64;jules-jean-louis1)</p>
 <ul>
@@ -788,8 +797,8 @@ La fermeture d’un cadre d’acquisition a pour conséquence :</p>
 <li><p>[Métadonnées] Ajout des champs <code class="docutils literal notranslate"><span class="pre">additional_data</span></code> dans les tables des JDD et des CA (#3422 par &#64;lpofredc)</p></li>
 </ul>
 </section>
-<section id="id23">
-<h3>🐛 Corrections<a class="headerlink" href="#id23" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id25">
+<h3>🐛 Corrections<a class="headerlink" href="#id25" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[Synthèse] Correction de l’affichage des observations sensibles floutées lorsqu’un filtre par zonage est appliqué (#3566 par &#64;jpm-cbna,#3324)</p></li>
 <li><p>[Synthèse] Correction de l’apparition de doublons dans l’export des observations sensibles (#3375 par &#64;Pierre-Narcisi)</p></li>
@@ -817,18 +826,18 @@ La fermeture d’un cadre d’acquisition a pour conséquence :</p>
 <p>Cette version de GeoNature est incompatible avec les versions du module Export inférieures à la 1.8.0 !</p>
 </section>
 </section>
-<section id="id24">
-<h2>2.15.4 (2025-02-25)<a class="headerlink" href="#id24" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id25">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id25" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id26">
+<h2>2.15.4 (2025-02-25)<a class="headerlink" href="#id26" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id27">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id27" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[Import] Accélération du temps de suppression d’un import avec l’ajout d’un index sur les colonnes <code class="docutils literal notranslate"><span class="pre">id_import</span></code> des tables <code class="docutils literal notranslate"><span class="pre">pr_occhab.t_stations</span></code>, <code class="docutils literal notranslate"><span class="pre">pr_occhab.t_habitats</span></code> et <code class="docutils literal notranslate"><span class="pre">gn_synthese.synthese</span></code> (#3390 par &#64;jacquesfize et &#64;dba-sig-sfepm).</p></li>
 <li><p>[Synthese] La mise à jour de la date de validation dans la synthèse est effective (#3371, #1040 par &#64;jacquesfize)</p></li>
 <li><p>[Import] Le paramètre <code class="docutils literal notranslate"><span class="pre">CHECK_PRIVATE_JDD_BLURING</span></code> est maintenant désactivé par défaut (#3391 par &#64;camillemonchicourt)</p></li>
 </ul>
 </section>
-<section id="id26">
-<h3>🐛 Corrections<a class="headerlink" href="#id26" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id28">
+<h3>🐛 Corrections<a class="headerlink" href="#id28" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[Synthese] Correction de la prise en compte de <code class="docutils literal notranslate"><span class="pre">size_hierarchy</span></code> dans le mode maille de la Synthèse lorsque le floutage est activé (#3380 par &#64;Pierre-Narcisi)</p></li>
 <li><p>[Benchmark] Correction des <em>fixtures</em> de benchmark des routes de la Synthèse avec floutage (#3381 par &#64;jacquesfize)</p></li>
@@ -837,10 +846,10 @@ La fermeture d’un cadre d’acquisition a pour conséquence :</p>
 </ul>
 </section>
 </section>
-<section id="id27">
-<h2>2.15.3 (2025-02-14)<a class="headerlink" href="#id27" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id28">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id28" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id29">
+<h2>2.15.3 (2025-02-14)<a class="headerlink" href="#id29" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id30">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id30" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[Synthese] Affichage des <code class="docutils literal notranslate"><span class="pre">cd_nom</span></code>, <code class="docutils literal notranslate"><span class="pre">cd_ref</span></code> et du <code class="docutils literal notranslate"><span class="pre">nom_cite</span></code> dans les fiches d’observation et les fiches taxon (#3334 par &#64;edelclaux).</p></li>
 <li><p>[Documentation] La compilation de documentation est effectuée à chaque merge dans la branche principale (<code class="docutils literal notranslate"><span class="pre">master</span></code>) (#3338 par &#64;jacquesfize)</p></li>
@@ -849,8 +858,8 @@ La fermeture d’un cadre d’acquisition a pour conséquence :</p>
 <li><p>[Authentification] Mise à jour UsersHub-autentification-module en version 3.0.2</p></li>
 </ul>
 </section>
-<section id="id29">
-<h3>🐛 Corrections<a class="headerlink" href="#id29" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id31">
+<h3>🐛 Corrections<a class="headerlink" href="#id31" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[TaxHub] Correction de la synchonisation avec Occtax-mobile (https://github.com/PnX-SI/TaxHub/pull/599 par &#64;amandine-sahl)</p></li>
 <li><p>[TaxHub] Ajout d’un bouton TaxHub dans le menu latéral (#3368 par &#64;jacquesfize)</p></li>
@@ -867,15 +876,15 @@ La fermeture d’un cadre d’acquisition a pour conséquence :</p>
 <li><p>[Développement] Correction des modèles SQLAlchemy pour pouvoir utiliser le mode debug (#3346 par &#64;jacquesfize)</p></li>
 </ul>
 </section>
-<section id="id30">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id30" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id32">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id32" title="Lien vers cette rubrique">¶</a></h3>
 <p>Si vous les aviez défini, enlevez les paramètres <code class="docutils literal notranslate"><span class="pre">INSTANCE_BOUNDING_BOX</span></code>, <code class="docutils literal notranslate"><span class="pre">ENABLE_BOUNDING_BOX_CHECK</span></code>, <code class="docutils literal notranslate"><span class="pre">ALLOW_FIELD_MAPPING</span></code>, <code class="docutils literal notranslate"><span class="pre">DEFAULT_FIELD_MAPPING_ID</span></code>, <code class="docutils literal notranslate"><span class="pre">DISPLAY_CHECK_BOX_MAPPED_FIELD</span></code> de votre fichier de configuration <code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code>. Ces derniers ne sont plus pris en compte depuis la version 2.15.x.</p>
 </section>
 </section>
-<section id="id31">
-<h2>2.15.2 (2025-01-16)<a class="headerlink" href="#id31" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id32">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id32" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id33">
+<h2>2.15.2 (2025-01-16)<a class="headerlink" href="#id33" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id34">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id34" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[Accueil] Optimisation du calcul des statistiques (#3309, par &#64;dba-sig-sfepm et &#64;jacquesfize)</p></li>
 <li><p>[Profils de taxon] Amélioration, homogénéisation et mise en cohérence des paramètres d’activation ou non des profils de taxons (#3311, par &#64;edelclaux)</p></li>
@@ -884,8 +893,8 @@ La fermeture d’un cadre d’acquisition a pour conséquence :</p>
 <li><p>[Développement] Redémarrage automatique du backend quand un fichier de configuration <code class="docutils literal notranslate"><span class="pre">.toml</span></code> est modifié (#3316, par &#64;jacquesfize)</p></li>
 </ul>
 </section>
-<section id="id33">
-<h3>🐛 Corrections<a class="headerlink" href="#id33" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id35">
+<h3>🐛 Corrections<a class="headerlink" href="#id35" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[Accueil] Correction de la prise en compte de la portée des permissions dans le calcul des statistiques (#3166, par &#64;jacquesfize et &#64;edelclaux)</p></li>
 <li><p>[Sensibilité] Correction du comptage du nombre de règles supprimées dans la commande <code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">sensitivity</span> <span class="pre">remove-referential</span></code> (#3323, par &#64;jacquesfize)</p></li>
@@ -897,10 +906,10 @@ La fermeture d’un cadre d’acquisition a pour conséquence :</p>
 </ul>
 </section>
 </section>
-<section id="id34">
-<h2>2.15.1 (2025-01-10)<a class="headerlink" href="#id34" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id35">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id35" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id36">
+<h2>2.15.1 (2025-01-10)<a class="headerlink" href="#id36" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id37">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id37" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[Métadonnées] Amélioration de la recherche libre des métadonnées en cherchant chaque mot indépendamment (#3295, par &#64;jbrieuclp)</p></li>
 <li><p>[FicheTaxon] Amélioration de l’affichage de la photo du taxon sur les fiches taxon (#3287, par &#64;edelclaux)</p></li>
@@ -910,8 +919,8 @@ La fermeture d’un cadre d’acquisition a pour conséquence :</p>
 <li><p>[Installation] Ajout des nouvelles mailles INPN lors de l’installation de GeoNature (#3293, par &#64;jacquesfize)</p></li>
 </ul>
 </section>
-<section id="id36">
-<h3>🐛 Corrections<a class="headerlink" href="#id36" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id38">
+<h3>🐛 Corrections<a class="headerlink" href="#id38" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[Discussions] Correction de la pagination quand on filtre les discussions de la page d’accueil sur « Mes discussions » (#3288, par &#64;edelclaux)</p></li>
 <li><p>[Discussions] Correction des performances de la requête de récupération des discussions (#3307, par &#64;jacquesfize)</p></li>
@@ -927,8 +936,8 @@ La fermeture d’un cadre d’acquisition a pour conséquence :</p>
 </section>
 <section id="pavo-cristatus-2024-12-11">
 <h2>2.15.0 - Pavo cristatus 🦚 (2024-12-11)<a class="headerlink" href="#pavo-cristatus-2024-12-11" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id37">
-<h3>⏩ En bref<a class="headerlink" href="#id37" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id39">
+<h3>⏩ En bref<a class="headerlink" href="#id39" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Nouvelle version de TaxHub (2.0.0) intégrée à GeoNature</p></li>
 <li><p>Fiche de taxon enrichie intégrant l’actuel profil mais aussi une synthèse géographique, les informations taxonomiques ainsi qu’une liste des statuts de protection</p></li>
@@ -937,8 +946,8 @@ La fermeture d’un cadre d’acquisition a pour conséquence :</p>
 <li><p>Dernières discussions listées sur la page d’accueil</p></li>
 </ul>
 </section>
-<section id="id38">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id38" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id40">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id40" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[TaxHub] Intégration de TaxHub (<a class="reference external" href="https://github.com/PnX-SI/TaxHub/releases/tag/2.0.0">2.0.0 Release Note</a>) à GeoNature (#3280)</p>
 <ul>
@@ -985,8 +994,8 @@ La fermeture d’un cadre d’acquisition a pour conséquence :</p>
 <li><p>La synchronisation avec le service MTD de l’INPN n’est plus intégrée dans le code de GeoNature, elle a été déplacée dans un module externe (https://github.com/PnX-SI/mtd_sync)</p></li>
 </ul>
 </section>
-<section id="id39">
-<h3>🐛 Corrections<a class="headerlink" href="#id39" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id41">
+<h3>🐛 Corrections<a class="headerlink" href="#id41" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Correction de l’URL des modules externes dans le menu latéral (#3093)</p></li>
 <li><p>Correction des erreurs d’exécution de la commande <code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">sensitivity</span> <span class="pre">info</span></code> (#3216)</p></li>
@@ -1010,8 +1019,8 @@ La fermeture d’un cadre d’acquisition a pour conséquence :</p>
 <li><p>Lancement de <code class="docutils literal notranslate"><span class="pre">pytest</span></code> sans <em>benchmark</em> ne nécessite plus l’ajout de <code class="docutils literal notranslate"><span class="pre">--benchmark-skip</span></code> (#3183)</p></li>
 </ul>
 </section>
-<section id="id40">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id40" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id42">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id42" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Si vous utilisez GeoNature-citizen, attendez qu’une version de celui-ci compatible avec TaxHub 2.x soit disponible.</p></li>
 <li><p>Si vous mettez à jour GeoNature :</p></li>
@@ -1067,17 +1076,17 @@ TaxHub est désormais un « module » GeoNature et dispose des objets de permi
 <p>&#64;amandine-sahl, &#64;Pierre-Narcisi, &#64;jacquesfize, &#64;TheoLechemia, &#64;bouttier, &#64;andriacap, &#64;edelclaux, &#64;JulienCorny, &#64;VincentCauchois, &#64;CynthiaBorotPNV, &#64;JeromeMaruejouls, &#64;jbrieuclp, &#64;blaisegeo, &#64;lpofredc, &#64;amillemonchicourt, &#64;ch-cbna</p>
 </section>
 </section>
-<section id="id41">
-<h2>2.14.2 (2024-05-28)<a class="headerlink" href="#id41" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id42">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id42" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id43">
+<h2>2.14.2 (2024-05-28)<a class="headerlink" href="#id43" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id44">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id44" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Mise à jour de dépendances critiques (#3054)</p></li>
 <li><p>Mise à jour de NodeJS en version 20 (#2997)</p></li>
 </ul>
 </section>
-<section id="id43">
-<h3>🐛 Corrections<a class="headerlink" href="#id43" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id45">
+<h3>🐛 Corrections<a class="headerlink" href="#id45" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Correction d’erreurs dans les fichiers de traductions du frontend (#3026)</p></li>
 <li><p>Correction de la fermeture des sessions SQLAlchemy lancées par Celery (#3050, #3062 )</p></li>
@@ -1088,10 +1097,10 @@ TaxHub est désormais un « module » GeoNature et dispose des objets de permi
 </ul>
 </section>
 </section>
-<section id="id44">
-<h2>2.14.1 (2024-04-29)<a class="headerlink" href="#id44" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id45">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id45" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id46">
+<h2>2.14.1 (2024-04-29)<a class="headerlink" href="#id46" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id47">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id47" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[Synthèse] Possibilité d’ajouter des colonnes supplémentaires à la liste de résultats via le paramètre <code class="docutils literal notranslate"><span class="pre">ADDITIONAL_COLUMNS_FRONTEND</span></code>. Ces champs sont masqués par défaut et controlables depuis l’interface (#2946)</p></li>
 <li><p>[Synthèse] Possiblité d’ajouter des exports personnalisés basés sur des vues SQL via le paramètre <code class="docutils literal notranslate"><span class="pre">EXPORT_OBSERVATIONS_CUSTOM_VIEWS</span></code> (#2955)</p></li>
@@ -1101,8 +1110,8 @@ TaxHub est désormais un « module » GeoNature et dispose des objets de permi
 <li><p>[TaxHub] Mise à jour de TaxHub en version 1.14.0, incluant par défaut Taxref v17, BDC statuts v17 et référentiel de sensibilité v17</p></li>
 </ul>
 </section>
-<section id="id46">
-<h3>🐛 Corrections<a class="headerlink" href="#id46" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id48">
+<h3>🐛 Corrections<a class="headerlink" href="#id48" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[Occtax] Correction de l’inversion des valeurs par défaut de 2 nomenclatures (#2822)</p></li>
 <li><p>[Synthèse] Correction du lien de renvoi vers le module de saisie d’une observation (#2907)</p></li>
@@ -1116,8 +1125,8 @@ TaxHub est désormais un « module » GeoNature et dispose des objets de permi
 <li><p>Correction d’une mauvaise synchronisation du cookie et du JWT via une MAJ de pypnusershub (PnX-SI/UsersHub-authentification-module#94)</p></li>
 </ul>
 </section>
-<section id="id47">
-<h3>💻 Développement<a class="headerlink" href="#id47" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id49">
+<h3>💻 Développement<a class="headerlink" href="#id49" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Suppression de l’utilisation du composant <code class="docutils literal notranslate"><span class="pre">ngx-mat-select-search</span></code> (#2826 &amp; #2827)</p></li>
 <li><p>[Occtax] Il n’est plus obligatoire de poster le champs <code class="docutils literal notranslate"><span class="pre">additionnal_fields</span></code> au niveau de l’API des relevés, taxons et dénombrements (#2937)</p></li>
@@ -1128,8 +1137,8 @@ TaxHub est désormais un « module » GeoNature et dispose des objets de permi
 <li><p>Utilisation de <code class="docutils literal notranslate"><span class="pre">marshmallow</span></code> pour la validation des données renvoyées par la route <code class="docutils literal notranslate"><span class="pre">get_observations_for_web</span></code> et ajout du contrôle de la présence des champs obligatoires (#2950)</p></li>
 </ul>
 </section>
-<section id="id48">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id48" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id50">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id50" title="Lien vers cette rubrique">¶</a></h3>
 <p>Si vous mettez à jour GeoNature :</p>
 <ul class="simple">
 <li><p>Les paramètres de la synthèse permettant de spécifier le nom de certaines colonnes de la vue d’export sont dépréciés (<code class="docutils literal notranslate"><span class="pre">EXPORT_ID_SYNTHESE_COL</span></code>, <code class="docutils literal notranslate"><span class="pre">EXPORT_ID_DIGITISER_COL</span></code>, <code class="docutils literal notranslate"><span class="pre">EXPORT_OBSERVERS_COL</span></code>, <code class="docutils literal notranslate"><span class="pre">EXPORT_GEOJSON_4326_COL</span></code>, <code class="docutils literal notranslate"><span class="pre">EXPORT_GEOJSON_LOCAL_COL</span></code>).</p></li>
@@ -1143,8 +1152,8 @@ TaxHub est désormais un « module » GeoNature et dispose des objets de permi
 <h2>2.14.0 - Talpa europaea 👓 (2024-02-28)<a class="headerlink" href="#talpa-europaea-2024-02-28" title="Lien vers cette rubrique">¶</a></h2>
 <p>Cette nouvelle version de GeoNature propose de nouvelles fonctionnalités comme le floutage de données sensibles dans le module Synthèse ainsi qu’un système de validation automatique des données basé sur les profils de taxons.<br />
 Elle intégre aussi plusieurs mises à jour des versions des librairies python utilisées comme Flask (3.0) et SQLAlchemy (1.4).</p>
-<section id="id49">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id49" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id51">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id51" title="Lien vers cette rubrique">¶</a></h3>
 <p>Si vous mettez à jour GeoNature :</p>
 <ul class="simple">
 <li><p>Le support de Debian 10 a été arrêté, votre serveur doit être en Debian 11 ou 12</p></li>
@@ -1155,8 +1164,8 @@ Elle intégre aussi plusieurs mises à jour des versions des librairies python u
 <li><p>Si vous utilisez les fonds IGN, mettez à jour les URL des flux dans votre fichier de configuration <code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code> (#2789)</p></li>
 </ul>
 </section>
-<section id="id50">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id50" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id52">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id52" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[Synthèse] Floutage des données sensibles (#2558)</p>
 <ul>
@@ -1178,8 +1187,8 @@ Elle intégre aussi plusieurs mises à jour des versions des librairies python u
 <li><p>[Documentation] Ajout de diagrammes d’architecture dans la documentation (#2760)</p></li>
 </ul>
 </section>
-<section id="id51">
-<h3>🐛 Corrections<a class="headerlink" href="#id51" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id53">
+<h3>🐛 Corrections<a class="headerlink" href="#id53" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Correction de l’affichage du nom du module quand on revient à la page d’accueil (#2795)</p></li>
 <li><p>[Synthèse] Correction de l’affichage du nom du taxon observé quand les profils de taxons sont désactivés (#2820)</p></li>
@@ -1189,8 +1198,8 @@ Elle intégre aussi plusieurs mises à jour des versions des librairies python u
 <li><p>[Occtax] Correction de la suppression d’un champ additionnel (#2923)</p></li>
 </ul>
 </section>
-<section id="id52">
-<h3>💻 Développement<a class="headerlink" href="#id52" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id54">
+<h3>💻 Développement<a class="headerlink" href="#id54" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Mise à jour vers SQLAlchemy 1.4 (#1812)</p></li>
 <li><p>Mise à jour vers Flask 3 (#2751)</p></li>
@@ -1210,16 +1219,16 @@ Elle intégre aussi plusieurs mises à jour des versions des librairies python u
 <p>&#64;amandine-sahl, &#64;Pierre-Narcisi, &#64;jacquesfize, &#64;TheoLechemia, &#64;bouttier, &#64;mvergez, &#64;andriacap, &#64;edelclaux, &#64;VincentCauchois, &#64;MoulinZ, &#64;pierre56, &#64;camillemonchicourt</p>
 </section>
 </section>
-<section id="id53">
-<h2>2.13.4 (2023-12-15)<a class="headerlink" href="#id53" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id54">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id54" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id55">
+<h2>2.13.4 (2023-12-15)<a class="headerlink" href="#id55" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id56">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id56" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[Synthèse] Ajout des colonnes <code class="docutils literal notranslate"><span class="pre">group[1,2,3]_inpn</span></code> à la vue <code class="docutils literal notranslate"><span class="pre">gn_synthese.v_synthese_for_web_app</span></code> (#2798, par &#64;andriacap)</p></li>
 </ul>
 </section>
-<section id="id55">
-<h3>🐛 Corrections<a class="headerlink" href="#id55" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id57">
+<h3>🐛 Corrections<a class="headerlink" href="#id57" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[Métadonnées] Masquage des références bibliograhpiques dans le formulaire des cadres d’acquisition en attendant la finalisation du développement du backend (#2562, par &#64;DonovanMaillard)</p></li>
 <li><p>[Occtax] Correction du problème de chargement de la liste de JDD lors de la création d’un relevé (#2815, par &#64;andriacap)</p></li>
@@ -1234,10 +1243,10 @@ Elle intégre aussi plusieurs mises à jour des versions des librairies python u
 </ul>
 </section>
 </section>
-<section id="id56">
-<h2>2.13.3 (2023-10-17)<a class="headerlink" href="#id56" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id57">
-<h3>🐛 Corrections<a class="headerlink" href="#id57" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id58">
+<h2>2.13.3 (2023-10-17)<a class="headerlink" href="#id58" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id59">
+<h3>🐛 Corrections<a class="headerlink" href="#id59" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[Métadonnées] Correction de l’affichage des descriptions dans les fiches des cadres d’acquisition (#2716, par &#64;mvergez)</p></li>
 <li><p>[Admin] Correction de la modification des permissions sensibles (#2697, par &#64;Pierre-Narcisi)</p></li>
@@ -1245,8 +1254,8 @@ Elle intégre aussi plusieurs mises à jour des versions des librairies python u
 <li><p>[Médias] Conservation de la rotation des images des vignettes (#2742, par &#64;MathRdt)</p></li>
 </ul>
 </section>
-<section id="id58">
-<h3>💻 Développement<a class="headerlink" href="#id58" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id60">
+<h3>💻 Développement<a class="headerlink" href="#id60" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Utilisation du fichier <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> pour les tests automatiques des contributions dans la branche <code class="docutils literal notranslate"><span class="pre">master</span></code> (#2739, par &#64;Pierre-Narcisi)</p></li>
 <li><p>Déplacement des dépendances de développement des types Leaflet vers les dépendances de production (#2744, par &#64;TheoLechemia)</p></li>
@@ -1254,16 +1263,16 @@ Elle intégre aussi plusieurs mises à jour des versions des librairies python u
 </ul>
 </section>
 </section>
-<section id="id59">
-<h2>2.13.2 (2023-09-28)<a class="headerlink" href="#id59" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id60">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id60" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id61">
+<h2>2.13.2 (2023-09-28)<a class="headerlink" href="#id61" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id62">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id62" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[Synthèse] Ajout d’un filtre par module de provenance (#2670, par &#64;andriacap)</p></li>
 </ul>
 </section>
-<section id="id61">
-<h3>🐛 Corrections<a class="headerlink" href="#id61" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id63">
+<h3>🐛 Corrections<a class="headerlink" href="#id63" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Correction des déconnexions non effectives dans les versions 2.13.0 et 2.13.1 (#2682, par &#64;TheoLechemia)</p></li>
 <li><p>Correction des permissions vérifiées pour pouvoir supprimer un signalement en prenant en compte le C du module Validation, et non pas le R qui n’existe pas sur ce module (#2710, par &#64;Pierre-Narcisi)</p></li>
@@ -1274,8 +1283,8 @@ Elle intégre aussi plusieurs mises à jour des versions des librairies python u
 <li><p>Correction de l’affichage du bouton permettant d’importer directement depuis la fiche d’un JDD, nécessitant la version 2.2.3 du module Import (#2713, par &#64;bouttier)</p></li>
 </ul>
 </section>
-<section id="id62">
-<h3>💻 Développement<a class="headerlink" href="#id62" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id64">
+<h3>💻 Développement<a class="headerlink" href="#id64" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Ajout du thème Bootstrap au composant <code class="docutils literal notranslate"><span class="pre">datalist</span></code> (#2727, par &#64;TheoLechemia)</p></li>
 <li><p>Docker : utilisation de python 3.11 (#2728, par &#64;bouttier)</p></li>
@@ -1290,12 +1299,12 @@ Elle intégre aussi plusieurs mises à jour des versions des librairies python u
 </ul>
 </section>
 </section>
-<section id="id63">
-<h2>2.13.1 (2023-09-15)<a class="headerlink" href="#id63" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id65">
+<h2>2.13.1 (2023-09-15)<a class="headerlink" href="#id65" title="Lien vers cette rubrique">¶</a></h2>
 <p>L’installation de GeoNature (ainsi que ses 4 modules externes principaux, TaxHub et UsersHub) avec Docker est désormais complet et fonctionnel. Voir la documentation sur https://docs.geonature.fr/installation.html#docker.<br />
 C’est la manière la plus simple de déployer GeoNature avec ses 4 modules externes principaux (Import, Export, Dashboard, Monitoring) mais aussi de les mettre à jour, avec seulement quelques lignes de commandes, à partir des images construites automatiquement et du fichier <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code> global, fourni dans le dépôt <a class="reference external" href="https://github.com/PnX-SI/GeoNature-Docker-services">GeoNature-Docker-services</a>.</p>
-<section id="id64">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id64" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id66">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id66" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Amélioration de l’affichage des taxons en passant à la ligne quand ils sont trop longs (#2690, par &#64;JulienCorny)</p></li>
 <li><p>Amélioration du <code class="docutils literal notranslate"><span class="pre">Dockerfile</span></code> de GeoNature (#2623, par &#64;joelclems et &#64;bouttier)</p></li>
@@ -1305,8 +1314,8 @@ C’est la manière la plus simple de déployer GeoNature avec ses 4 modules ext
 <li><p>Mise à jour de différentes dépendances Python (#2704, par &#64;TheoLechemia)</p></li>
 </ul>
 </section>
-<section id="id65">
-<h3>🐛 Corrections<a class="headerlink" href="#id65" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id67">
+<h3>🐛 Corrections<a class="headerlink" href="#id67" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Correction des déconnexions non effectives sur la 2.13.0 (#2682, par &#64;TheoLechemia)</p></li>
 <li><p>Correction de la configuration NGINX des préfixes quand GeoNature est déployé avec Docker (#2698, par &#64;bouttier)</p></li>
@@ -1316,8 +1325,8 @@ C’est la manière la plus simple de déployer GeoNature avec ses 4 modules ext
 <li><p>[Synthèse] Correction des couleurs des mailles quand on clique sur différentes mailles successivement en mode maille (#2677, par &#64;Pierre-Narcisi)</p></li>
 </ul>
 </section>
-<section id="id66">
-<h3>📝 Documentation<a class="headerlink" href="#id66" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id68">
+<h3>📝 Documentation<a class="headerlink" href="#id68" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Documentation de la nouvelle interface d’administration des permissions (#2605, par &#64;camillemonchicourt), disponible sur https://docs.geonature.fr/user-manual.html#admin</p></li>
 <li><p>Mise à jour de la documentation d’installation Docker suite à la sortie d’un Docker Compose complet et fonctionnel sur <a class="reference external" href="https://github.com/PnX-SI/GeoNature-Docker-services/">GeoNature-Docker-services</a> (#2703)</p></li>
@@ -1334,8 +1343,8 @@ C’est la manière la plus simple de déployer GeoNature avec ses 4 modules ext
 <li><p>Vérifiez que vos modules soient compatibles avec le nouveau mécanisme de déclaration des permissions disponibles. C’est le cas pour les modules Import, Export, Dashboard, Monitorings et Zones humides.</p></li>
 <li><p>Cette nouvelle version est compatible avec Debian 12. Le support de Debian 10 sera arrêté prochainement.</p></li>
 </ul>
-<section id="id67">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id67" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id69">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id69" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Refonte complète des permissions (#2487)</p>
 <ul>
@@ -1364,8 +1373,8 @@ C’est la manière la plus simple de déployer GeoNature avec ses 4 modules ext
 <li><p>Ajout d’une documentation utilisateur sur le module Métadonnées - https://docs.geonature.fr/user-manual.html#metadonnees (#2662)</p></li>
 </ul>
 </section>
-<section id="id68">
-<h3>🐛 Corrections<a class="headerlink" href="#id68" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id70">
+<h3>🐛 Corrections<a class="headerlink" href="#id70" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[Occtax] Correction du déplacement du marqueur de localisation poncutelle d’un relevé (#2554 et #2552)</p></li>
 <li><p>[Occtax] Correction du centrage sur la carte quand on modifie un relevé</p></li>
@@ -1382,8 +1391,8 @@ C’est la manière la plus simple de déployer GeoNature avec ses 4 modules ext
 <li><p>[Métadonnées] Correction de l’affichage du formulaire de filtres avancés (#2649)</p></li>
 </ul>
 </section>
-<section id="id69">
-<h3>💻 Développement<a class="headerlink" href="#id69" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id71">
+<h3>💻 Développement<a class="headerlink" href="#id71" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Découpage du script <code class="docutils literal notranslate"><span class="pre">install/03_create_db.sh</span></code> en 2 (avec la création du fichier <code class="docutils literal notranslate"><span class="pre">install/03b_populate_db.sh</span></code>) notamment pour améliorer la dockerisation de GeoNature (#2544)</p></li>
 <li><p>Ajout d’un script <code class="docutils literal notranslate"><span class="pre">install/03b_populate_db_for_test.sh</span></code> pouvant être utilisé par la CI de test des modules GeoNature (#2544)</p></li>
@@ -1396,8 +1405,8 @@ C’est la manière la plus simple de déployer GeoNature avec ses 4 modules ext
 <li><p>Documentation de développement des permissions (#2585)</p></li>
 </ul>
 </section>
-<section id="id70">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id70" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id72">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id72" title="Lien vers cette rubrique">¶</a></h3>
 <p>Si vous mettez à jour GeoNature :</p>
 <ul class="simple">
 <li><p>Mettre à jour TaxHub en version 1.12.0 (ou plus) et optionnellement UsersHub</p></li>
@@ -1412,10 +1421,10 @@ C’est la manière la plus simple de déployer GeoNature avec ses 4 modules ext
 <p>&#64;bouttier / &#64;TheoLechemia / &#64;VincentCauchois / &#64;Pierre-Narcisi / &#64;joelclems / &#64;andriacap / &#64;mvergez / &#64;JulienCorny / &#64;MathRdt / &#64;DonovanMaillard / &#64;camillemonchicourt</p>
 </section>
 </section>
-<section id="id71">
-<h2>2.12.3 (2023-05-09)<a class="headerlink" href="#id71" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id72">
-<h3>🐛 Corrections<a class="headerlink" href="#id72" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id73">
+<h2>2.12.3 (2023-05-09)<a class="headerlink" href="#id73" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id74">
+<h3>🐛 Corrections<a class="headerlink" href="#id74" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[Synthèse] Correction du filtre des observations épinglées pour ne remonter que celles de l’utilisateur connecté (#2507 par &#64;mvergez)</p></li>
 <li><p>[Synthèse] Correction de la recherche géographique avec chargement d’un fichier local (#2522 par &#64;bouttier et &#64;mvergez)</p></li>
@@ -1428,28 +1437,28 @@ C’est la manière la plus simple de déployer GeoNature avec ses 4 modules ext
 <li><p>Correction de la synchronisation des JDD et de l’association aux modules (#2532 par &#64;VincentCauchois)</p></li>
 </ul>
 </section>
-<section id="id73">
-<h3>💻 Développement<a class="headerlink" href="#id73" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id75">
+<h3>💻 Développement<a class="headerlink" href="#id75" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>La fonction <code class="docutils literal notranslate"><span class="pre">geonature.core.gn_permissions.tools.cruved_scope_for_user_in_module</span></code> est remplacée par <code class="docutils literal notranslate"><span class="pre">geonature.core.gn_permissions.tools.get_scopes_by_action</span></code></p></li>
 </ul>
 </section>
-<section id="id74">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id74" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id76">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id76" title="Lien vers cette rubrique">¶</a></h3>
 <p>Si vous utilisez la page de maintenance, celle-ci a été revue, <a class="reference external" href="https://docs.geonature.fr/installation.html#configuration-apache">référez vous à la documentation</a> afin de la mettre à jour.</p>
 <p>Si vous utilisiez des champs additionnels avec des checkbox, lors de leur changement de type (recommandé dans les notes de version de la 2.12.0) il est important que les valeurs du champ <code class="docutils literal notranslate"><span class="pre">field_values</span></code> continue à avoir des « string » dans la clé values : [{« label »: « Un », « value »: « 1 »}] sans quoi il y aura des problème à l’édition. Pour les nouveaux champs additionnels, il est cependant bien possible de mettre des entiers dans la clé <code class="docutils literal notranslate"><span class="pre">value</span></code> [{« label »: « Un », « value »: 1}]</p>
 </section>
 </section>
-<section id="id75">
-<h2>2.12.2 (2023-04-18)<a class="headerlink" href="#id75" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id76">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id76" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id77">
+<h2>2.12.2 (2023-04-18)<a class="headerlink" href="#id77" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id78">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id78" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Synthèse : ajout d’un filtre sur les observations avec ou sans commentaire (#2469, par &#64;mvergez)</p></li>
 </ul>
 </section>
-<section id="id77">
-<h3>🐛 Corrections<a class="headerlink" href="#id77" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id79">
+<h3>🐛 Corrections<a class="headerlink" href="#id79" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Synthèse - mode maille : récupération des observations hors référentiel de mailles pour affichage dans la liste, garantissant ainsi un nombre d’observations indentique entre le mode point et le mode maille (#2495, par &#64;TheoLechemia)</p></li>
 <li><p>Synthèse : correction des filtres médias / épinglage / signalement / commentaires pour fonctionner également de manière négative (#2469)</p></li>
@@ -1473,17 +1482,17 @@ C’est la manière la plus simple de déployer GeoNature avec ses 4 modules ext
 </ul>
 </section>
 </section>
-<section id="id78">
-<h2>2.12.1 (2023-04-11)<a class="headerlink" href="#id78" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id79">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id79" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id80">
+<h2>2.12.1 (2023-04-11)<a class="headerlink" href="#id80" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id81">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id81" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Mise à jour de quelques dépendances python (#2438, par &#64;MathRdt)</p></li>
 <li><p>Mise à jour de Utils-Flask-SQLAlchemy en version 0.3.3</p></li>
 </ul>
 </section>
-<section id="id80">
-<h3>🐛 Corrections<a class="headerlink" href="#id80" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id82">
+<h3>🐛 Corrections<a class="headerlink" href="#id82" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Correction et ations des performances des recherches par statut de protection, notamment quand elles sont associées à une recherche géographique (#2450, par &#64;amandine-sahl)</p></li>
 <li><p>Correction d’une régression des performances lors de la récupération des JDD (#2462, par &#64;mvergez)</p></li>
@@ -1497,8 +1506,8 @@ C’est la manière la plus simple de déployer GeoNature avec ses 4 modules ext
 </section>
 <section id="cyathea-borbonica-2023-03-27">
 <h2>2.12.0 - Cyathea borbonica 🌴 (2023-03-27)<a class="headerlink" href="#cyathea-borbonica-2023-03-27" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id81">
-<h3>⏩ En bref<a class="headerlink" href="#id81" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id83">
+<h3>⏩ En bref<a class="headerlink" href="#id83" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Affichage agrégé des observations dans la Synthèse (performances et lisibilité) (#1847 et #1878)</p></li>
 <li><p>Filtres par défaut dans la Synthèse (#2261)</p></li>
@@ -1516,8 +1525,8 @@ C’est la manière la plus simple de déployer GeoNature avec ses 4 modules ext
 <li><p>Mise à jour d’Angular en version 15 (#2154)</p></li>
 </ul>
 </section>
-<section id="id82">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id82" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id84">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id84" title="Lien vers cette rubrique">¶</a></h3>
 <p>Si vous mettez à jour GeoNature :</p>
 <ul class="simple">
 <li><p>Si vous utilisez des modules spécifiques (hors Import, Export, Dashboard, Monitoring), vérifiez qu’ils disposent d’une version compatible avec GeoNature 2.12 (compatibilité Angular 15, révision des permissions, configuration dynamique)</p></li>
@@ -1552,8 +1561,8 @@ Pour conserver le bon affichage lors de l’édition des données, renseignez l�
 </ul>
 <p>✅ Exemple de procédure de mise à jour depuis une version 2.11 : https://geonature.fr/documents/procedures/2023-04-GN-211to212.txt</p>
 </section>
-<section id="id83">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id83" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id85">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id85" title="Lien vers cette rubrique">¶</a></h3>
 <ul>
 <li><p>Configuration dynamique du frontend : le frontend récupère dynamiquement sa configuration depuis le backend. Pour cela, il nécessite uniquement l’adresse de l’<code class="docutils literal notranslate"><span class="pre">API_ENDPOINT</span></code> qui doit être renseignée dans le fichier <code class="docutils literal notranslate"><span class="pre">frontend/src/assets/config.json</span></code>. En conséquence, il n’est plus nécessaire de rebuilder le frontend lors d’une modification de la configuration de GeoNature ou de ses modules (#2205)</p></li>
 <li><p>Personnalisation de la page d’accueil : ajout d’une section <code class="docutils literal notranslate"><span class="pre">[HOME]</span></code> contenant les paramètres <code class="docutils literal notranslate"><span class="pre">TITLE</span></code>, <code class="docutils literal notranslate"><span class="pre">INTRODUCTION</span></code> et <code class="docutils literal notranslate"><span class="pre">FOOTER</span></code>. Ceux-ci peuvent contenir du code HTML qui est chargé dynamiquement avec la configuration, évitant ainsi la nécessité d’un rebuild du frontend (#2300)</p></li>
@@ -1648,8 +1657,8 @@ Une API <code class="docutils literal notranslate"><span class="pre">/synthese/l
 <li><p>Amélioration du composant générique de selection d’un jeu de données, en selectionnant automatiquement le JDD si la liste n’en contient qu’un et que le champs est obligatoire (#1049)</p></li>
 </ul>
 </section>
-<section id="id84">
-<h3>🐛 Corrections<a class="headerlink" href="#id84" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id86">
+<h3>🐛 Corrections<a class="headerlink" href="#id86" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Synthèse : changement du type de <code class="docutils literal notranslate"><span class="pre">entity_source_pk_value</span></code> de <code class="docutils literal notranslate"><span class="pre">Integer</span></code> à <code class="docutils literal notranslate"><span class="pre">Unicode</span></code> dans le modèle pour correspondre à la base de données</p></li>
 <li><p>Correction de l’accès public automatique activable avec <code class="docutils literal notranslate"><span class="pre">?access=public</span></code> dans l’URL (#1650)</p></li>
@@ -1671,8 +1680,8 @@ Une API <code class="docutils literal notranslate"><span class="pre">/synthese/l
 <li><p>Correction de la récupération des emails dans l’interface « Mon compte » (#2346)</p></li>
 </ul>
 </section>
-<section id="id85">
-<h3>💻 Développement<a class="headerlink" href="#id85" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id87">
+<h3>💻 Développement<a class="headerlink" href="#id87" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Suppression du support du paramètre <code class="docutils literal notranslate"><span class="pre">get_role</span></code> du décorateur <code class="docutils literal notranslate"><span class="pre">check_cruved_scope</span></code> (#2162)</p></li>
 <li><p>Suppression des paramètres <code class="docutils literal notranslate"><span class="pre">redirect_on_expiration</span></code> et <code class="docutils literal notranslate"><span class="pre">redirect_on_invalid_token</span></code> du décorateur <code class="docutils literal notranslate"><span class="pre">check_cruved_scope</span></code> (#2360)</p></li>
@@ -1704,20 +1713,20 @@ Module de référence pour les développements et documentation associée (#2331
 <p>&#64;ch-cbna / &#64;bouttier / &#64;TheoLechemia / &#64;jpm-cbna / &#64;bastyen / &#64;Gaetanbrl / &#64;VincentCauchois / &#64;joelclems / &#64;amandine-sahl / &#64;andriacap / &#64;mvergez / &#64;DonovanMaillard / &#64;dece / &#64;lpofredc / &#64;MathRdt / &#64;gildeluermoz / &#64;maximetoma / &#64;pierre56 / &#64;cecchi-a / &#64;jbrieuclp / &#64;camillemonchicourt</p>
 </section>
 </section>
-<section id="id86">
-<h2>2.11.2 (2023-01-19)<a class="headerlink" href="#id86" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id87">
-<h3>🐛 Corrections<a class="headerlink" href="#id87" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id88">
+<h2>2.11.2 (2023-01-19)<a class="headerlink" href="#id88" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id89">
+<h3>🐛 Corrections<a class="headerlink" href="#id89" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Correction d’un import manquant dans un fichier de migration des données d’exemple d’Occtax (#2285)</p></li>
 <li><p>Correction d’un problème de l’installation globale en mode développement</p></li>
 </ul>
 </section>
 </section>
-<section id="id88">
-<h2>2.11.1 (2023-01-18)<a class="headerlink" href="#id88" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id89">
-<h3>🐛 Corrections<a class="headerlink" href="#id89" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id90">
+<h2>2.11.1 (2023-01-18)<a class="headerlink" href="#id90" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id91">
+<h3>🐛 Corrections<a class="headerlink" href="#id91" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Correction de la documentation de la sensibilité (#2234)</p></li>
 <li><p>Correction de l’accès aux notifications lorsque la gestion des comptes utilisateurs est activée</p></li>
@@ -1728,8 +1737,8 @@ Module de référence pour les développements et documentation associée (#2331
 </section>
 <section id="ilex-aquifolium-2022-12-21">
 <h2>2.11.0 - Ilex aquifolium 🎄 (2022-12-21)<a class="headerlink" href="#ilex-aquifolium-2022-12-21" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id90">
-<h3>⏩ En bref<a class="headerlink" href="#id90" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id92">
+<h3>⏩ En bref<a class="headerlink" href="#id92" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Utilisation de la BDC statuts dans la Synthèse pour les filtres et infos sur les statuts des espèces</p></li>
 <li><p>Mise à jour des règles de sensibilité du SINP</p></li>
@@ -1742,8 +1751,8 @@ Module de référence pour les développements et documentation associée (#2331
 <li><p>Nettoyage du frontend et amélioration de la séparation backend/frontend</p></li>
 </ul>
 </section>
-<section id="id91">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id91" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id93">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id93" title="Lien vers cette rubrique">¶</a></h3>
 <p>Si vous mettez à jour GeoNature :</p>
 <ul>
 <li><p>Mettre à jour TaxHub en version 1.10.7</p></li>
@@ -1813,8 +1822,8 @@ geonature<span class="w"> </span>db<span class="w"> </span>downgrade<span class=
 </ul>
 <p>✅ Exemple de procédure de mise à jour depuis une version 2.9 : https://geonature.fr/documents/procedures/2023-01-GN-29to211.txt</p>
 </section>
-<section id="id92">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id92" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id94">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id94" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[Synthèse] Ajout de filtres sur les statuts de protection et les listes rouges dans le fenêtre de recherche avancée basés sur la <a class="reference external" href="https://inpn.mnhn.fr/programme/base-de-connaissance-statuts/presentation">BDC Statuts</a>.
 Ajout des paramètres de configuration <code class="docutils literal notranslate"><span class="pre">STATUS_FILTERS</span></code> et <code class="docutils literal notranslate"><span class="pre">RED_LISTS_FILTERS</span></code> dans la section <code class="docutils literal notranslate"><span class="pre">SYNTHESE</span></code>. Il est possible de modifier les listes et statuts affichés comme indiqué dans la documentation de la configuration du module SYNTHESE. (#1492)</p></li>
@@ -1883,8 +1892,8 @@ Il n’est pas nécessaire de lancer cette commande manuellement pour les module
 </li>
 </ul>
 </section>
-<section id="id93">
-<h3>🐛 Corrections<a class="headerlink" href="#id93" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id95">
+<h3>🐛 Corrections<a class="headerlink" href="#id95" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Installation d’une dépendance Debian manquante pour Cypress (#2125)</p></li>
 <li><p>Les fichiers de service systemd ont été corrigés pour fonctionner sur une machine sans PostgreSQL (BDD sur un autre hôte)</p></li>
@@ -1896,8 +1905,8 @@ Il n’est pas nécessaire de lancer cette commande manuellement pour les module
 <li><p>Rafraîchissement du cache des règles de sensibilité en fin d’installation</p></li>
 </ul>
 </section>
-<section id="id94">
-<h3>💻 Développement<a class="headerlink" href="#id94" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id96">
+<h3>💻 Développement<a class="headerlink" href="#id96" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Nettoyage du frontend : dépendances, configuration Angular</p></li>
 <li><p>Révision importante de la documentation, de développement notamment</p></li>
@@ -1913,10 +1922,10 @@ Il n’est pas nécessaire de lancer cette commande manuellement pour les module
 <p>&#64;jpm-cbna / &#64;pierrejego / &#64;Gaetanbrl / &#64;amandine-sahl / &#64;VincentCauchois / &#64;antoinececchimnhn / &#64;metourneau / &#64;bouttier / &#64;TheoLechemia / &#64;camillemonchicourt</p>
 </section>
 </section>
-<section id="id95">
-<h2>2.10.4 (2022-11-30)<a class="headerlink" href="#id95" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id96">
-<h3>🐛 Corrections<a class="headerlink" href="#id96" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id97">
+<h2>2.10.4 (2022-11-30)<a class="headerlink" href="#id97" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id98">
+<h3>🐛 Corrections<a class="headerlink" href="#id98" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Mise à jour du RefGeo en version 1.2.1 afin de corriger une
 régression des performances dans la synthèse</p></li>
@@ -1932,17 +1941,17 @@ corriger un problème aléatoire lors du passage des migrations
 </ul>
 </section>
 </section>
-<section id="id97">
-<h2>2.10.3 (2022-11-15)<a class="headerlink" href="#id97" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id98">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id98" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id99">
+<h2>2.10.3 (2022-11-15)<a class="headerlink" href="#id99" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id100">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id100" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Optimisation d’une migration Occtax particulièrement lente en
 désactivant temporairement les triggers (#2138)</p></li>
 </ul>
 </section>
-<section id="id99">
-<h3>🐛 Corrections<a class="headerlink" href="#id99" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id101">
+<h3>🐛 Corrections<a class="headerlink" href="#id101" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Correction de la fonctionnalité d’inscription des utilisateurs
 (#1874)</p></li>
@@ -1951,16 +1960,16 @@ désactivant temporairement les triggers (#2138)</p></li>
 </ul>
 </section>
 </section>
-<section id="id100">
-<h2>2.10.2 (2022-11-09)<a class="headerlink" href="#id100" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id101">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id101" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id102">
+<h2>2.10.2 (2022-11-09)<a class="headerlink" href="#id102" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id103">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id103" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Documentation de la fonctionnalité de duplication d’Occtax</p></li>
 </ul>
 </section>
-<section id="id102">
-<h3>🐛 Corrections<a class="headerlink" href="#id102" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id104">
+<h3>🐛 Corrections<a class="headerlink" href="#id104" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Correction du script de migration pour générer la configuration
 frontend des modules</p></li>
@@ -1969,18 +1978,18 @@ bonne source</p></li>
 </ul>
 </section>
 </section>
-<section id="id103">
-<h2>2.10.1 (2022-11-08)<a class="headerlink" href="#id103" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id104">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id104" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id105">
+<h2>2.10.1 (2022-11-08)<a class="headerlink" href="#id105" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id106">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id106" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Ajout du paramètre de configuration <code class="docutils literal notranslate"><span class="pre">DISABLED_MODULES</span></code></p></li>
 <li><p>Installation des dépendances frontend des modules dans le dossier
 frontend des modules eux-mêmes</p></li>
 </ul>
 </section>
-<section id="id105">
-<h3>🐛 Corrections<a class="headerlink" href="#id105" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id107">
+<h3>🐛 Corrections<a class="headerlink" href="#id107" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>La commande <code class="docutils literal notranslate"><span class="pre">geonature</span></code> ignore les modules dont le chargement a
 rencontré une erreur (#2109)</p></li>
@@ -1994,8 +2003,8 @@ d’acquisition (#2108)</p></li>
 récupération des jeux de données impactant Occtax-mobile</p></li>
 </ul>
 </section>
-<section id="id106">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id106" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id108">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id108" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Passez directement à cette version plutôt que la 2.10.0, mais en
 suivant les notes de version de la 2.10.0, en vous aidant
@@ -2021,8 +2030,8 @@ GeoNature :</p>
 <li><p>Dashboard</p></li>
 <li><p>Monitoring</p></li>
 </ul>
-<section id="id107">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id107" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id109">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id109" title="Lien vers cette rubrique">¶</a></h3>
 <ul>
 <li><p><strong>Avant</strong> de mettre à jour GeoNature :</p>
 <ul>
@@ -2064,8 +2073,8 @@ la BDD)</p></li>
 dépendances et ses modules principaux est disponible</a>
 (pour information et à adapter à votre contexte).</p>
 </section>
-<section id="id108">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id108" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id110">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id110" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Possibilité de dupliquer le module Occtax (#621)</p></li>
 <li><p>Amélioration des fiches des observations dans les modules Synthèse
@@ -2150,8 +2159,8 @@ parents (#2097)</p></li>
 statistiques (#2085)</p></li>
 </ul>
 </section>
-<section id="id109">
-<h3>🐛 Corrections<a class="headerlink" href="#id109" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id111">
+<h3>🐛 Corrections<a class="headerlink" href="#id111" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Remise en place de la rotation automatique des fichiers de logs
 (#1627)</p></li>
@@ -2210,8 +2219,8 @@ d’un JDD et d’un CA seulement si l’utilisateur en a les droits
 (#1822)</p></li>
 </ul>
 </section>
-<section id="id110">
-<h3>💻 Développement<a class="headerlink" href="#id110" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id112">
+<h3>💻 Développement<a class="headerlink" href="#id112" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Mise à jour d’Angular de la version 7 à 12 à répercuter dans les
 modules spécifiques (<a class="reference external" href="https://update.angular.io/?v=7.2-12.0">https://update.angular.io/?v=7.2-12.0</a>)</p></li>
@@ -2269,10 +2278,10 @@ de l’import du module <code class="docutils literal notranslate"><span class="
 &#64;gildeluermoz / &#64;camillemonchicourt</p>
 </section>
 </section>
-<section id="id111">
-<h2>2.9.2 (2022-02-15)<a class="headerlink" href="#id111" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id112">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id112" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id113">
+<h2>2.9.2 (2022-02-15)<a class="headerlink" href="#id113" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id114">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id114" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Optimisation du nombre d’informations renvoyées par l’API pour les
 utilisateurs et les organismes</p></li>
@@ -2291,8 +2300,8 @@ la synthèse (trigger <code class="docutils literal notranslate"><span class="pr
 sensibilité</p></li>
 </ul>
 </section>
-<section id="id113">
-<h3>🐛 Corrections<a class="headerlink" href="#id113" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id115">
+<h3>🐛 Corrections<a class="headerlink" href="#id115" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Correction d’une régression sur la récupération de la liste des
 taxons (#1672)</p></li>
@@ -2307,8 +2316,8 @@ s’appliquent</p></li>
 </li>
 </ul>
 </section>
-<section id="id114">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id114" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id116">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id116" title="Lien vers cette rubrique">¶</a></h3>
 <ul>
 <li><p>La correction de la fonction de calcul de la sensibilité est suivie
 d’un recalcul automatique du niveau de sensibilité des données
@@ -2340,10 +2349,10 @@ sensibilité ; vous pouvez éviter ceci avec
 </ul>
 </section>
 </section>
-<section id="id115">
-<h2>2.9.1 (2022-01-27)<a class="headerlink" href="#id115" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id116">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id116" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id117">
+<h2>2.9.1 (2022-01-27)<a class="headerlink" href="#id117" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id118">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id118" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Utilisation du paramètre <code class="docutils literal notranslate"><span class="pre">page</span></code> de Flask à la place du paramètre
 maison <code class="docutils literal notranslate"><span class="pre">offset</span></code> pour la pagination des routes (rétro-compatible)</p></li>
@@ -2353,8 +2362,8 @@ défaut</p></li>
 <code class="docutils literal notranslate"><span class="pre">GN</span></code>) (#1635)</p></li>
 </ul>
 </section>
-<section id="id117">
-<h3>🐛 Corrections<a class="headerlink" href="#id117" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id119">
+<h3>🐛 Corrections<a class="headerlink" href="#id119" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Correction de l’URL de réinitialisation de mot passe envoyée par
 email (#1620)</p></li>
@@ -2379,8 +2388,8 @@ TaxHub lorsque celui-ci est mal configuré (#1438, #1616)</p></li>
 <section id="actias-luna-2022-01-13">
 <h2>2.9.0 - Actias luna 🦋 (2022-01-13)<a class="headerlink" href="#actias-luna-2022-01-13" title="Lien vers cette rubrique">¶</a></h2>
 <p><strong>Profils de taxons</strong></p>
-<section id="id118">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id118" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id120">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id120" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Construction automatique d’une fiche d’identité (profil) par taxon
 grâce aux observations validées présentes dans la base de données
@@ -2449,8 +2458,8 @@ différents modules (et non plus le R du CRUVED sur GeoNature)
 (#659)</p></li>
 </ul>
 </section>
-<section id="id119">
-<h3>🐛 Corrections<a class="headerlink" href="#id119" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id121">
+<h3>🐛 Corrections<a class="headerlink" href="#id121" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>[OCCTAX] Correction de l’enregistrement des dénombrements lors de
 l’enchainement des relevés (#1479 par &#64;jbrieuclp)</p></li>
@@ -2481,8 +2490,8 @@ cookie corrompu (#1550 par &#64;antoinececchimnhn)</p></li>
 certaines données d’Habref</p></li>
 </ul>
 </section>
-<section id="id120">
-<h3>💻 Développement<a class="headerlink" href="#id120" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id122">
+<h3>💻 Développement<a class="headerlink" href="#id122" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Migration vers la librairie <code class="docutils literal notranslate"><span class="pre">gn-select2</span></code> pour les listes déroulantes
 des formulaires (#616 / #1285 par &#64;jbrieuclp)</p></li>
@@ -2509,8 +2518,8 @@ performant (par &#64;antoinececchimnhn)</p></li>
 <li><p>Mise à jour de nombreuses dépendances</p></li>
 </ul>
 </section>
-<section id="id121">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id121" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id123">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id123" title="Lien vers cette rubrique">¶</a></h3>
 <ul>
 <li><p>La liste des JDD dans les modules de saisie (Occtax, Occhab,
 Monitoring et Import) se base désormais sur le C du CRUVED de
@@ -2590,10 +2599,10 @@ Monitoring dans leurs dernières versions compatibles avec le version
 </ul>
 </section>
 </section>
-<section id="id122">
-<h2>2.8.1 (2021-10-17)<a class="headerlink" href="#id122" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id123">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id123" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id124">
+<h2>2.8.1 (2021-10-17)<a class="headerlink" href="#id124" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id125">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id125" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Ajout de l’indication du département au formulaire des communes
 (#1480)</p></li>
@@ -2601,8 +2610,8 @@ Monitoring dans leurs dernières versions compatibles avec le version
 nomenclatures (#1481)</p></li>
 </ul>
 </section>
-<section id="id124">
-<h3>🐛 Corrections<a class="headerlink" href="#id124" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id126">
+<h3>🐛 Corrections<a class="headerlink" href="#id126" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Correction de la commande <code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">db</span> <span class="pre">autoupgrade</span></code></p></li>
 <li><p>Mise-à-jour corrective de <a class="reference external" href="https://github.com/PnX-SI/UsersHub-authentification-module/releases/tag/1.5.7">UsersHub-authentification-module
@@ -2616,8 +2625,8 @@ nomenclatures (#1481)</p></li>
 <p>⚠️ Avant de mettre à jour GeoNature, vérifiez que les modules que vous
 utilisez disposent d’une version compatible avec la 2.8.0, suite au
 passage à la version 3 de Marshmallow.</p>
-<section id="id125">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id125" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id127">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id127" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Support de Debian 11 / Python 3.9</p></li>
 <li><p>Passage de <code class="docutils literal notranslate"><span class="pre">supervisor</span></code> à <code class="docutils literal notranslate"><span class="pre">systemd</span></code></p></li>
@@ -2649,8 +2658,8 @@ déterminé à partir de la base de données et du code de l’application</p></
 </li>
 </ul>
 </section>
-<section id="id126">
-<h3>🐛 Corrections<a class="headerlink" href="#id126" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id128">
+<h3>🐛 Corrections<a class="headerlink" href="#id128" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Corrections et améliorations des formulaires dynamiques et des
 champs additionnels</p></li>
@@ -2696,8 +2705,8 @@ module packagé</p></li>
 <li><p>Correction d’un bug lors de l’ajout d’un cadre d’acquisition</p></li>
 </ul>
 </section>
-<section id="id127">
-<h3>💻 Développement<a class="headerlink" href="#id127" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id129">
+<h3>💻 Développement<a class="headerlink" href="#id129" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Mise à jour de plusieurs dépendances</p></li>
 <li><p>Packetage des modules fournis avec GeoNature</p></li>
@@ -2706,8 +2715,8 @@ module packagé</p></li>
 <li><p>Nettoyage et refactoring divers</p></li>
 </ul>
 </section>
-<section id="id128">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id128" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id130">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id130" title="Lien vers cette rubrique">¶</a></h3>
 <ul>
 <li><p>Mettre à jour <a class="reference external" href="https://github.com/PnX-SI/UsersHub/releases/tag/2.2.1">UsersHub en version
 2.2.1</a> et
@@ -2807,18 +2816,18 @@ GeoNature</a>.</p>
 </ul>
 </section>
 </section>
-<section id="id129">
-<h2>2.7.5 (2021-07-28)<a class="headerlink" href="#id129" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id130">
-<h3>🐛 Corrections<a class="headerlink" href="#id130" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id131">
+<h2>2.7.5 (2021-07-28)<a class="headerlink" href="#id131" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id132">
+<h3>🐛 Corrections<a class="headerlink" href="#id132" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Compatibilité avec Occtax-mobile 1.3. Possibilité d’ajouter la
 query string <code class="docutils literal notranslate"><span class="pre">fields</span></code> sur la route <code class="docutils literal notranslate"><span class="pre">meta/datasets</span></code> pour choisir les
 champs renvoyés par l’API</p></li>
 </ul>
 </section>
-<section id="id131">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id131" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id133">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id133" title="Lien vers cette rubrique">¶</a></h3>
 <p>Si vous mettez à jour GeoNature :</p>
 <ul class="simple">
 <li><p>Vous pouvez passer directement à cette version mais en suivant les
@@ -2826,17 +2835,17 @@ notes des versions intermédiaires</p></li>
 </ul>
 </section>
 </section>
-<section id="id132">
-<h2>2.7.4 (2021-07-23)<a class="headerlink" href="#id132" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id133">
-<h3>🐛 Corrections<a class="headerlink" href="#id133" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id134">
+<h2>2.7.4 (2021-07-23)<a class="headerlink" href="#id134" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id135">
+<h3>🐛 Corrections<a class="headerlink" href="#id135" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Correction d’un import manquant entrainant un problème de
 compilation du frontend (#1424)</p></li>
 </ul>
 </section>
-<section id="id134">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id134" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id136">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id136" title="Lien vers cette rubrique">¶</a></h3>
 <p>Si vous mettez à jour GeoNature :</p>
 <ul class="simple">
 <li><p>Vous pouvez passer directement à cette version mais en suivant les
@@ -2844,10 +2853,10 @@ notes des versions intermédiaires</p></li>
 </ul>
 </section>
 </section>
-<section id="id135">
-<h2>2.7.3 (2021-07-22)<a class="headerlink" href="#id135" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id136">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id136" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id137">
+<h2>2.7.3 (2021-07-22)<a class="headerlink" href="#id137" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id138">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id138" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Métadonnées : ajout des paramètres <code class="docutils literal notranslate"><span class="pre">CD_NOMENCLATURE_ROLE_TYPE_DS</span></code> et
 <code class="docutils literal notranslate"><span class="pre">CD_NOMENCLATURE_ROLE_TYPE_AF</span></code> pour limiter les rôles utilisables au
@@ -2856,8 +2865,8 @@ niveau des jeux de données et des cadres d’acquisition (#1417)</p></li>
 métadonnées de toute une instance depuis le flux MTD du SINP</p></li>
 </ul>
 </section>
-<section id="id137">
-<h3>🐛 Corrections<a class="headerlink" href="#id137" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id139">
+<h3>🐛 Corrections<a class="headerlink" href="#id139" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Correction de l’affichage des jeux de données sur les fiches des
 cadres d’acquisition (#1410)</p></li>
@@ -2865,8 +2874,8 @@ cadres d’acquisition (#1410)</p></li>
 production)</p></li>
 </ul>
 </section>
-<section id="id138">
-<h3>💻 Développement<a class="headerlink" href="#id138" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id140">
+<h3>💻 Développement<a class="headerlink" href="#id140" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Support des commandes Flask au niveau de la commande <code class="docutils literal notranslate"><span class="pre">geonature</span></code>
 (<code class="docutils literal notranslate"><span class="pre">run</span></code>, <code class="docutils literal notranslate"><span class="pre">db</span></code>, <code class="docutils literal notranslate"><span class="pre">routes</span></code>, <code class="docutils literal notranslate"><span class="pre">shell</span></code>…)</p></li>
@@ -2874,8 +2883,8 @@ production)</p></li>
 <li><p>Ajout d’une commande <code class="docutils literal notranslate"><span class="pre">install_packaged_gn_module</span></code></p></li>
 </ul>
 </section>
-<section id="id139">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id139" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id141">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id141" title="Lien vers cette rubrique">¶</a></h3>
 <p>Si vous mettez à jour GeoNature :</p>
 <ul class="simple">
 <li><p>Vous pouvez passer directement à cette version mais en suivant les
@@ -2883,10 +2892,10 @@ notes des versions intermédiaires</p></li>
 </ul>
 </section>
 </section>
-<section id="id140">
-<h2>2.7.2 (2021-07-05)<a class="headerlink" href="#id140" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id141">
-<h3>🐛 Corrections<a class="headerlink" href="#id141" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id142">
+<h2>2.7.2 (2021-07-05)<a class="headerlink" href="#id142" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id143">
+<h3>🐛 Corrections<a class="headerlink" href="#id143" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>OCCTAX : correction de la vérification du CRUVED (#1413)</p></li>
 <li><p>OCCTAX : correction du dégrisement du formulaire au chargement de la
@@ -2897,8 +2906,8 @@ avant les médias (#1409)</p></li>
 n’étaient pas supportés</p></li>
 </ul>
 </section>
-<section id="id142">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id142" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id144">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id144" title="Lien vers cette rubrique">¶</a></h3>
 <p>Si vous mettez à jour GeoNature :</p>
 <ul class="simple">
 <li><p>Vous pouvez passer directement à cette version mais en suivant les
@@ -2908,10 +2917,10 @@ notes des versions intermédiaires</p></li>
 </ul>
 </section>
 </section>
-<section id="id143">
-<h2>2.7.1 (2021-07-02)<a class="headerlink" href="#id143" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id144">
-<h3>🐛 Corrections<a class="headerlink" href="#id144" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id145">
+<h2>2.7.1 (2021-07-02)<a class="headerlink" href="#id145" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id146">
+<h3>🐛 Corrections<a class="headerlink" href="#id146" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Installation des dépendances javascript des modules lors de la
 migration de version de GeoNature (#1252)</p></li>
@@ -2921,8 +2930,8 @@ la 1.8.0</p></li>
 l’accès public à GeoNature</p></li>
 </ul>
 </section>
-<section id="id145">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id145" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id147">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id147" title="Lien vers cette rubrique">¶</a></h3>
 <p>Si vous mettez à jour GeoNature :</p>
 <ul class="simple">
 <li><p>Vous pouvez passer directement à cette version mais en suivant les
@@ -2933,8 +2942,8 @@ notes des versions intermédiaires</p></li>
 <section id="androsace-delphinensis-2021-06-30">
 <h2>2.7.0 - Androsace delphinensis 🌼 (2021-06-30)<a class="headerlink" href="#androsace-delphinensis-2021-06-30" title="Lien vers cette rubrique">¶</a></h2>
 <p>Nécessite la version 1.8.x de TaxHub.</p>
-<section id="id146">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id146" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id148">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id148" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Compatible avec TaxHub 1.8.x qui inclut notamment la migration
 (optionnelle) vers Taxref version 14 et l’ajout de la BDC statuts</p></li>
@@ -3020,8 +3029,8 @@ nommé <code class="docutils literal notranslate"><span class="pre">COLUMN_LIST<
 <code class="docutils literal notranslate"><span class="pre">contrib/gn_module_validation/config/conf_gn_module.toml.example</span></code></p></li>
 </ul>
 </section>
-<section id="id147">
-<h3>🐛 Corrections<a class="headerlink" href="#id147" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id149">
+<h3>🐛 Corrections<a class="headerlink" href="#id149" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Occtax : Correction d’un bug sur le champs observateur lors de la
 modification d’un relevé (#1177)</p></li>
@@ -3059,8 +3068,8 @@ d’inactivité (#1193)</p></li>
 <code class="docutils literal notranslate"><span class="pre">gn_errors.log</span></code> (#1003)</p></li>
 </ul>
 </section>
-<section id="id148">
-<h3>💻 Développement<a class="headerlink" href="#id148" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id150">
+<h3>💻 Développement<a class="headerlink" href="#id150" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Possibilité d’utiliser la commande <code class="docutils literal notranslate"><span class="pre">flask</span></code> (eg <code class="docutils literal notranslate"><span class="pre">flask</span> <span class="pre">shell</span></code>)</p></li>
 <li><p>Préparation de l’utilisation d’Alembic pour la gestion des
@@ -3079,8 +3088,8 @@ table <code class="docutils literal notranslate"><span class="pre">gn_commons.t_
 <li><p>Diverses améliorations mineures de l’architecture du code</p></li>
 </ul>
 </section>
-<section id="id149">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id149" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id151">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id151" title="Lien vers cette rubrique">¶</a></h3>
 <p>Si vous mettez à jour GeoNature :</p>
 <ul>
 <li><p>Mettez à jour TaxHub 1.8.x avant d’effectuer la mise à jour de
@@ -3131,10 +3140,10 @@ sudo<span class="w"> </span>supervisorctl<span class="w"> </span>reload
 </ul>
 </section>
 </section>
-<section id="id150">
-<h2>2.6.2 (2021-02-15)<a class="headerlink" href="#id150" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id151">
-<h3>🐛 Corrections<a class="headerlink" href="#id151" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id152">
+<h2>2.6.2 (2021-02-15)<a class="headerlink" href="#id152" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id153">
+<h3>🐛 Corrections<a class="headerlink" href="#id153" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Metadonnées : correction d’un bug sur la fiche JDD si le module
 d’import n’est pas installé</p></li>
@@ -3145,10 +3154,10 @@ casse</p></li>
 </ul>
 </section>
 </section>
-<section id="id152">
-<h2>2.6.1 (2021-02-11)<a class="headerlink" href="#id152" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id153">
-<h3>🐛 Corrections<a class="headerlink" href="#id153" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id154">
+<h2>2.6.1 (2021-02-11)<a class="headerlink" href="#id154" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id155">
+<h3>🐛 Corrections<a class="headerlink" href="#id155" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Correction de la fonction
 <code class="docutils literal notranslate"><span class="pre">gn_synthese.fct_tri_cal_sensi_diff_level_on_each_statement()</span></code> non
@@ -3164,8 +3173,8 @@ d’exemple de configuration (#1066 par &#64;jbdesbas)</p></li>
 <li><p>Correction de l’URL de la doc sur la page d’accueil</p></li>
 </ul>
 </section>
-<section id="id154">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id154" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id156">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id156" title="Lien vers cette rubrique">¶</a></h3>
 <p>Si vous mettez à jour GeoNature :</p>
 <ul class="simple">
 <li><p>Vous pouvez passer directement à cette version mais en suivant les
@@ -3185,8 +3194,8 @@ https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.5to
 <p>Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10
 minimum (qui n’est pas fourni par défaut avec Debian 9) pour les
 triggers déclenchés « on each statement », plus performants.</p>
-<section id="id155">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id155" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id157">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id157" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Sensibilité : Ajout d’un trigger sur la synthèse déclenchant
 automatiquement le calcul de la sensibilité des observations et
@@ -3285,8 +3294,8 @@ retient par défaut dans GeoNature (#413)</p></li>
 référentiel géographique (<code class="docutils literal notranslate"><span class="pre">data/migrations/insert_reg.sh</span></code>)</p></li>
 </ul>
 </section>
-<section id="id156">
-<h3>🐛 Corrections<a class="headerlink" href="#id156" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id158">
+<h3>🐛 Corrections<a class="headerlink" href="#id158" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Occhab : Export SIG (GPKG ou SHP) corrigé (#898)</p></li>
 <li><p>Meilleur nettoyage des sessions enregistrées dans le navigateur
@@ -3320,8 +3329,8 @@ la table <code class="docutils literal notranslate"><span class="pre">gn_synthes
 <li><p>Sensibilité : Corrections des contraintes NOT VALID (#1245)</p></li>
 </ul>
 </section>
-<section id="id157">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id157" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id159">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id159" title="Lien vers cette rubrique">¶</a></h3>
 <p>Si vous mettez à jour GeoNature :</p>
 <ul class="simple">
 <li><p>Vous pouvez passer directement à cette version mais en suivant les
@@ -3355,10 +3364,10 @@ version 1.1.1</p></li>
 </ul>
 </section>
 </section>
-<section id="id158">
-<h2>2.5.5 (2020-11-19)<a class="headerlink" href="#id158" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id159">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id159" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id160">
+<h2>2.5.5 (2020-11-19)<a class="headerlink" href="#id160" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id161">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id161" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Ajout d’un composant fil d’ariane (#1143)</p></li>
 <li><p>Ajout de la possiblité de désactiver les composants <code class="docutils literal notranslate"><span class="pre">pnx-taxa</span></code> et
@@ -3367,8 +3376,8 @@ version 1.1.1</p></li>
 applications mobiles</p></li>
 </ul>
 </section>
-<section id="id160">
-<h3>🐛 Corrections<a class="headerlink" href="#id160" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id162">
+<h3>🐛 Corrections<a class="headerlink" href="#id162" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Correction d’un bug de récupération du CRUVED sur les modules
 (#1146)</p></li>
@@ -3380,10 +3389,10 @@ lorsqu’on est connecté via le CAS INPN</p></li>
 </ul>
 </section>
 </section>
-<section id="id161">
-<h2>2.5.4 (2020-11-17)<a class="headerlink" href="#id161" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id162">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id162" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id163">
+<h2>2.5.4 (2020-11-17)<a class="headerlink" href="#id163" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id164">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id164" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Ajout de scripts <code class="docutils literal notranslate"><span class="pre">sql</span></code> et <code class="docutils literal notranslate"><span class="pre">sh</span></code> de restauration des medias dans
 <code class="docutils literal notranslate"><span class="pre">data/medias</span></code> (#1148)</p></li>
@@ -3391,8 +3400,8 @@ lorsqu’on est connecté via le CAS INPN</p></li>
 l’utilisateur connecté</p></li>
 </ul>
 </section>
-<section id="id163">
-<h3>🐛 Corrections<a class="headerlink" href="#id163" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id165">
+<h3>🐛 Corrections<a class="headerlink" href="#id165" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Correction des médias qui sont actuellement tous supprimés
 automatiquement après 24h, et non pas seulement ceux orphelins
@@ -3402,8 +3411,8 @@ Occtax avec la désactivation du bouton de modification du relevé
 quand l’utilisateur n’en a pas les droits</p></li>
 </ul>
 </section>
-<section id="id164">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id164" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id166">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id166" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Si vous aviez associé des médias à des observations dans Occtax ou
 autre et qu’ils ont été supprimés, vous pouvez les retrouver dans
@@ -3423,10 +3432,10 @@ supprimant le préfixe <code class="docutils literal notranslate"><span class="p
 </ul>
 </section>
 </section>
-<section id="id165">
-<h2>2.5.3 (2020-11-04)<a class="headerlink" href="#id165" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id166">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id166" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id167">
+<h2>2.5.3 (2020-11-04)<a class="headerlink" href="#id167" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id168">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id168" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Mise en place de l’héritage du CRUVED au niveau des objets des
 modules (#1028)</p></li>
@@ -3463,8 +3472,8 @@ du composant <code class="docutils literal notranslate"><span class="pre">pnx-ma
 développement</p></li>
 </ul>
 </section>
-<section id="id167">
-<h3>🐛 Corrections<a class="headerlink" href="#id167" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id169">
+<h3>🐛 Corrections<a class="headerlink" href="#id169" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Correction de l’affichage des noms des validateurs sur la liste
 dans le module validation (#1091 par &#64;lpofredc)</p></li>
@@ -3491,8 +3500,8 @@ par &#64;etot)</p></li>
 l’installation d’un module</p></li>
 </ul>
 </section>
-<section id="id168">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id168" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id170">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id170" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Désormais les objets des modules (par exemple les objets
 ’Permissions’ et ’Nomenclatures’ du module ’ADMIN’) héritent
@@ -3525,10 +3534,10 @@ de Taxref (11.0 ou 13.0).</p></li>
 </ul>
 </section>
 </section>
-<section id="id169">
-<h2>2.5.2 (2020-10-13)<a class="headerlink" href="#id169" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id170">
-<h3>🐛 Corrections<a class="headerlink" href="#id170" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id171">
+<h2>2.5.2 (2020-10-13)<a class="headerlink" href="#id171" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id172">
+<h3>🐛 Corrections<a class="headerlink" href="#id172" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Occtax : correction du problème d’installation du module dans le
 fichier <code class="docutils literal notranslate"><span class="pre">schemas.py</span></code></p></li>
@@ -3537,8 +3546,8 @@ fichier <code class="docutils literal notranslate"><span class="pre">schemas.py<
 <code class="docutils literal notranslate"><span class="pre">gn_synthese/process.py</span></code></p></li>
 </ul>
 </section>
-<section id="id171">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id171" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id173">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id173" title="Lien vers cette rubrique">¶</a></h3>
 <p>Si vous mettez à jour GeoNature :</p>
 <ul class="simple">
 <li><p>Vous pouvez passer directement à cette version mais en suivant les
@@ -3548,10 +3557,10 @@ notes des versions intermédiaires</p></li>
 </ul>
 </section>
 </section>
-<section id="id172">
-<h2>2.5.1 (2020-10-06)<a class="headerlink" href="#id172" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id173">
-<h3>🐛 Corrections<a class="headerlink" href="#id173" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id174">
+<h2>2.5.1 (2020-10-06)<a class="headerlink" href="#id174" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id175">
+<h3>🐛 Corrections<a class="headerlink" href="#id175" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Ajout d’un paramètre <code class="docutils literal notranslate"><span class="pre">DISPLAY_EMAIL_INFO_OBS</span></code> définissant si les
 adresses email des observateurs sont affichées ou non dans les
@@ -3573,8 +3582,8 @@ l’autre (#1060)</p></li>
 <li><p>Verification des UUID : autoriser toutes les versions (#1063)</p></li>
 </ul>
 </section>
-<section id="id174">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id174" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id176">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id176" title="Lien vers cette rubrique">¶</a></h3>
 <p>Si vous mettez à jour GeoNature :</p>
 <ul class="simple">
 <li><p>Vous pouvez passer directement à cette version mais en suivant les
@@ -3585,8 +3594,8 @@ notes des versions intermédiaires</p></li>
 <section id="manidae-2020-09-30">
 <h2>2.5.0 - Manidae (2020-09-30)<a class="headerlink" href="#manidae-2020-09-30" title="Lien vers cette rubrique">¶</a></h2>
 <p>Occtax v2 et médias</p>
-<section id="id175">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id175" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id177">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id177" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Refonte de l’ergonomie et du fonctionnement du module de saisie
 Occtax (#758 et #860 par &#64;jbrieuclp et &#64;TheoLechemia)</p>
@@ -3708,8 +3717,8 @@ des geojson dans PostGIS 3</p></li>
 ordres des modules dans le menu de navigation latéral</p></li>
 </ul>
 </section>
-<section id="id176">
-<h3>🐛 Corrections<a class="headerlink" href="#id176" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id178">
+<h3>🐛 Corrections<a class="headerlink" href="#id178" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Module Validation : Affichage des commentaires du relevé et de
 l’observation (#978 et #854)</p></li>
@@ -3740,8 +3749,8 @@ la récupération des critères de sensibilité au niveau de la fonction
 <li><p>Typo sur le terme « Preuve d’existence » (par &#64;RomainBaghi)</p></li>
 </ul>
 </section>
-<section id="id177">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id177" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id179">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id179" title="Lien vers cette rubrique">¶</a></h3>
 <p>Si vous mettez à jour GeoNature :</p>
 <ul class="simple">
 <li><p>Nomenclatures : Commencer par exécuter le script SQL de mise à jour
@@ -3789,10 +3798,10 @@ standard Occurrence de taxons)</p></li>
 </ul>
 </section>
 </section>
-<section id="id178">
-<h2>2.4.1 (2020-06-25)<a class="headerlink" href="#id178" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id179">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id179" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id180">
+<h2>2.4.1 (2020-06-25)<a class="headerlink" href="#id180" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id181">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id181" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Occurrences sans géométrie précise : Ajout d’un champs
 <code class="docutils literal notranslate"><span class="pre">id_area_attachment</span></code> dans la table <code class="docutils literal notranslate"><span class="pre">gn_synthese.synthese</span></code> permettant
@@ -3808,8 +3817,8 @@ GeoNature (en plus des actuelles communes et grilles)</p></li>
 d’Admin express IGN pour les nouvelles installations</p></li>
 </ul>
 </section>
-<section id="id180">
-<h3>🐛 Corrections<a class="headerlink" href="#id180" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id182">
+<h3>🐛 Corrections<a class="headerlink" href="#id182" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Correction d’un bug d’affichage des fonds de carte WMTS de l’IGN,
 apparu dans la version 2.4.0 avec l’ajout du support des fonds WMS
@@ -3818,8 +3827,8 @@ apparu dans la version 2.4.0 avec l’ajout du support des fonds WMS
 des commandes d’un module</p></li>
 </ul>
 </section>
-<section id="id181">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id181" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id183">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id183" title="Lien vers cette rubrique">¶</a></h3>
 <p>Si vous mettez à jour GeoNature :</p>
 <ul class="simple">
 <li><p>Vous pouvez passer directement à cette version mais en suivant les
@@ -3838,8 +3847,8 @@ Vérifier le déroulement de l’import dans le fichier
 </section>
 <section id="fiches-de-metadonnees-2020-06-22">
 <h2>2.4.0 - Fiches de métadonnées (2020-06-22)<a class="headerlink" href="#fiches-de-metadonnees-2020-06-22" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id182">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id182" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id184">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id184" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Métadonnées : Ajout d’une fiche pour chaque jeu de données et
 cadres d’acquisition, incluant une carte de l’étendue des
@@ -3924,8 +3933,8 @@ de mettre en place les exports au format GeoPackage et corrigeant
 les exports de SHP contenant des géométries multiples</p></li>
 </ul>
 </section>
-<section id="id183">
-<h3>🐛 Corrections<a class="headerlink" href="#id183" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id185">
+<h3>🐛 Corrections<a class="headerlink" href="#id185" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Mise à jour des URL de la documentation utilisateur des modules,
 renvoyant vers <a class="reference external" href="http://docs.geonature.fr">http://docs.geonature.fr</a></p></li>
@@ -3950,8 +3959,8 @@ par &#64;jbrieuclp)</p></li>
 <li><p>Correction de l’utilisation des paramètres du proxy (#944)</p></li>
 </ul>
 </section>
-<section id="id184">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id184" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id186">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id186" title="Lien vers cette rubrique">¶</a></h3>
 <p>Si vous mettez à jour GeoNature.</p>
 <ul>
 <li><p>Vous devez d’abord mettre à jour TaxHub en version 1.7.0</p></li>
@@ -4007,10 +4016,10 @@ d’observations sans géométrie (#719) :</p>
 </ul>
 </section>
 </section>
-<section id="id185">
-<h2>2.3.2 (2020-02-24)<a class="headerlink" href="#id185" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id186">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id186" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id187">
+<h2>2.3.2 (2020-02-24)<a class="headerlink" href="#id187" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id188">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id188" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Possibilité de charger les commandes d’un module dans les commandes
 de GeoNature</p></li>
@@ -4018,8 +4027,8 @@ de GeoNature</p></li>
 <code class="docutils literal notranslate"><span class="pre">config/default_config.toml.example</span></code></p></li>
 </ul>
 </section>
-<section id="id187">
-<h3>🐛 Corrections<a class="headerlink" href="#id187" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id189">
+<h3>🐛 Corrections<a class="headerlink" href="#id189" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Correction d’une incohérence dans le décompte des JDD sur la page
 d’accueil en leur appliquant le CRUVED (#752)</p></li>
@@ -4028,10 +4037,10 @@ compatibilité avec la version 1.0.0 du module d’export</p></li>
 </ul>
 </section>
 </section>
-<section id="id188">
-<h2>2.3.1 (2020-02-18)<a class="headerlink" href="#id188" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id189">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id189" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id190">
+<h2>2.3.1 (2020-02-18)<a class="headerlink" href="#id190" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id191">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id191" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Installation globale : Compatibilité Debian 10 (PostgreSQL 11,
 PostGIS 2.5)</p></li>
@@ -4049,8 +4058,8 @@ lors de requêtes longues</p></li>
 d’Occtax (par &#64;FloVollmer / #826)</p></li>
 </ul>
 </section>
-<section id="id190">
-<h3>🐛 Corrections<a class="headerlink" href="#id190" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id192">
+<h3>🐛 Corrections<a class="headerlink" href="#id192" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Correction de l’installation de Node.js et npm par l’utilisation
 généralisée de nvm (#832 et #837)</p></li>
@@ -4064,8 +4073,8 @@ Leaflet <code class="docutils literal notranslate"><span class="pre">MouseEvent<
 (#840 - par &#64;sogalgeeko)</p></li>
 </ul>
 </section>
-<section id="id191">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id191" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id193">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id193" title="Lien vers cette rubrique">¶</a></h3>
 <ul>
 <li><p>Vous pouvez passer directement à cette version depuis la 2.2.x, mais
 en suivant les notes des versions intermédiaires (NB : il n’est pas
@@ -4088,8 +4097,8 @@ augmenter, si vous avez déjà rencontré des problèmes de timeout.</p></li>
 </section>
 <section id="occhab-de-noel-2019-12-27">
 <h2>2.3.0 - Occhab de Noël (2019-12-27)<a class="headerlink" href="#occhab-de-noel-2019-12-27" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id192">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id192" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id194">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id194" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Développement du module Occhab (Occurrences d’habitats) basé sur
 une version minimale du standard SINP du même nom et s’appuyant sur
@@ -4193,8 +4202,8 @@ un proxy (<code class="docutils literal notranslate"><span class="pre">proxy_htt
 liste à partir de son code (par &#64;joelclems)</p></li>
 </ul>
 </section>
-<section id="id193">
-<h3>🐛 Corrections<a class="headerlink" href="#id193" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id195">
+<h3>🐛 Corrections<a class="headerlink" href="#id195" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>MENU Side nav : Correction pour ne pas afficher les modules pour
 lesquels le paramètre <code class="docutils literal notranslate"><span class="pre">active_frontend</span></code> est False (#822)</p></li>
@@ -4236,8 +4245,8 @@ CHARACTER(n) en CHARACTER VARYING(n) (<code class="docutils literal notranslate"
 (<code class="docutils literal notranslate"><span class="pre">data/migrations/v1tov2/</span></code>) : ajustements mineurs</p></li>
 </ul>
 </section>
-<section id="id194">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id194" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id196">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id196" title="Lien vers cette rubrique">¶</a></h3>
 <p>NB: La version 2.3.0 n’est pas compatible avec le module Dashboard. Si
 vous avez le module Dashboard installé, ne passez pas à cette nouvelle
 version. Compatibilité dans la 2.3.1.</p>
@@ -4274,10 +4283,10 @@ utiliser le module Occhab, vous devez y associer au moins un JDD.</p></li>
 </ul>
 </section>
 </section>
-<section id="id195">
-<h2>2.2.1 (2019-10-09)<a class="headerlink" href="#id195" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id196">
-<h3>🐛 Corrections<a class="headerlink" href="#id196" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id197">
+<h2>2.2.1 (2019-10-09)<a class="headerlink" href="#id197" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id198">
+<h3>🐛 Corrections<a class="headerlink" href="#id198" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>La route de changement de mot de passe était désactivée par le
 mauvais paramètre (<code class="docutils literal notranslate"><span class="pre">ENABLE_SIGN_UP</span></code> au lieu de
@@ -4294,8 +4303,8 @@ pas de JDD pour des raisons de droit (#743)</p></li>
 </section>
 <section id="module-utilisateurs-2019-09-18">
 <h2>2.2.0 - Module utilisateurs (2019-09-18)<a class="headerlink" href="#module-utilisateurs-2019-09-18" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id197">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id197" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id199">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id199" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Ajout d’interfaces et de paramètres de création de compte, de
 récupération de son mot de passe et d’administration de son profil,
@@ -4320,8 +4329,8 @@ compatible avec UsersHub 2.1.0</p></li>
 (<a class="reference external" href="https://www.youtube.com/watch?v=JYgH7cV9AjE">https://www.youtube.com/watch?v=JYgH7cV9AjE</a>, par &#64;olivier8064)</p></li>
 </ul>
 </section>
-<section id="id198">
-<h3>🐛 Corrections<a class="headerlink" href="#id198" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id200">
+<h3>🐛 Corrections<a class="headerlink" href="#id200" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Correction d’un bug sur les export CSV en utilisant la librairie
 Python standard <code class="docutils literal notranslate"><span class="pre">csv</span></code> (#733)</p></li>
@@ -4347,8 +4356,8 @@ des listes de taxons et de sauvegarde et restauration de la BDD
 <li><p>Correction de la rotation des logs</p></li>
 </ul>
 </section>
-<section id="id199">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id199" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id201">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id201" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Passer le script de migration suivant:
 <a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.1.2to2.2.0.sql">https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.1.2to2.2.0.sql</a></p></li>
@@ -4363,10 +4372,10 @@ version</a>.</p></li>
 </ul>
 </section>
 </section>
-<section id="id200">
-<h2>2.1.2 (2019-07-25)<a class="headerlink" href="#id200" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id201">
-<h3>🐛 Corrections<a class="headerlink" href="#id201" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id202">
+<h2>2.1.2 (2019-07-25)<a class="headerlink" href="#id202" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id203">
+<h3>🐛 Corrections<a class="headerlink" href="#id203" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>SYNTHESE : Correction d’une URL en dur pour la recherche de rangs
 taxonomiques</p></li>
@@ -4381,17 +4390,17 @@ suppression d’un paramètre inutile</p></li>
 <li><p>BACKOFFICE : Correction d’une URL incorrecte et customisation</p></li>
 </ul>
 </section>
-<section id="id202">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id202" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id204">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id204" title="Lien vers cette rubrique">¶</a></h3>
 <p>Ceci est une version corrective mineure. Si vous migrez depuis la 2.1.0,
 passez directement à cette version en suivant les notes de version de la
 2.1.1.</p>
 </section>
 </section>
-<section id="id203">
-<h2>2.1.1 (2019-07-18)<a class="headerlink" href="#id203" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id204">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id204" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id205">
+<h2>2.1.1 (2019-07-18)<a class="headerlink" href="#id205" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id206">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id206" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>SYNTHESE: Factorisation du formulaire de recherche (utilisé dans le
 module synthese et validation)</p></li>
@@ -4434,8 +4443,8 @@ l’INPN (&#64;DonovanMaillard)</p></li>
 migration <code class="docutils literal notranslate"><span class="pre">data/migrations/v1tov2</span></code></p></li>
 </ul>
 </section>
-<section id="id205">
-<h3>🐛 Corrections<a class="headerlink" href="#id205" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id207">
+<h3>🐛 Corrections<a class="headerlink" href="#id207" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Nombreuses corrections du module de validation (non utilisation des
 id_nomenclature, simplification des vues et de la table
@@ -4471,8 +4480,8 @@ zonages ayant le champs <code class="docutils literal notranslate"><span class="
 nouveau module export</p></li>
 </ul>
 </section>
-<section id="id206">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id206" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id208">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id208" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Passer TaxHub en version 1.6.3
 (<a class="reference external" href="https://github.com/PnX-SI/TaxHub/releases/tag/1.6.3">https://github.com/PnX-SI/TaxHub/releases/tag/1.6.3</a>)</p></li>
@@ -4488,8 +4497,8 @@ maintenant sur les <code class="docutils literal notranslate"><span class="pre">
 </section>
 <section id="module-validation-2019-06-01">
 <h2>2.1.0 - Module validation (2019-06-01)<a class="headerlink" href="#module-validation-2019-06-01" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id207">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id207" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id209">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id209" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Intégration du module Validation dans GeoNature (développé par
 &#64;JulienCorny, financé par &#64;sig-pnrnm)</p></li>
@@ -4515,8 +4524,8 @@ MultiLigne) dans la synthèse et Occtax (#609)</p></li>
 (#579)</p></li>
 </ul>
 </section>
-<section id="id208">
-<h3>🐛 Corrections<a class="headerlink" href="#id208" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id210">
+<h3>🐛 Corrections<a class="headerlink" href="#id210" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Révision complète des scripts de migration de GeoNature v1 à v2
 (<code class="docutils literal notranslate"><span class="pre">data/migrations/v1tov2</span></code>)</p></li>
@@ -4538,8 +4547,8 @@ partir de coordonnées X et Y (#624)</p></li>
 <li><p>Mise à jour de sécurité de Jinja2 et SQLAlchemy</p></li>
 </ul>
 </section>
-<section id="id209">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id209" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id211">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id211" title="Lien vers cette rubrique">¶</a></h3>
 <ul>
 <li><p>Vous pouvez passer directement à cette version, mais en suivant les
 notes des versions intermédiaires</p></li>
@@ -4574,10 +4583,10 @@ deactivate
 </ul>
 </section>
 </section>
-<section id="id210">
-<h2>2.0.1 (2019-03-18)<a class="headerlink" href="#id210" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id211">
-<h3>🚀 Nouveautés<a class="headerlink" href="#id211" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id212">
+<h2>2.0.1 (2019-03-18)<a class="headerlink" href="#id212" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id213">
+<h3>🚀 Nouveautés<a class="headerlink" href="#id213" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Développement : ajout d’une fonction de génération dynamique de
 requête SQL (avec vérification et cast des types)</p></li>
@@ -4585,8 +4594,8 @@ requête SQL (avec vérification et cast des types)</p></li>
 dernières observations par défaut</p></li>
 </ul>
 </section>
-<section id="id212">
-<h3>🐛 Corrections<a class="headerlink" href="#id212" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id214">
+<h3>🐛 Corrections<a class="headerlink" href="#id214" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Synthese : correction du filtre CRUVED pour les portées 1 et 2 sur
 la route <code class="docutils literal notranslate"><span class="pre">synthese/for_web</span></code> (#584)</p></li>
@@ -4616,8 +4625,8 @@ d’acquisition imbriqués</p></li>
 <li><p>Ajouts de tests automatisés complémentaires</p></li>
 </ul>
 </section>
-<section id="id213">
-<h3>⚠️ Notes de version<a class="headerlink" href="#id213" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id215">
+<h3>⚠️ Notes de version<a class="headerlink" href="#id215" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Vous pouvez passer directement à cette version, mais en suivant les
 notes des versions intermédiaires</p></li>
@@ -5818,370 +5827,374 @@ générique des sites et visites de suivi</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">CHANGELOG</a><ul>
-<li><a class="reference internal" href="#id1">2.17.2 (2026-06-09)</a><ul>
-<li><a class="reference internal" href="#nouveautes">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id1">2.17.3 (2026-07-01)</a><ul>
 <li><a class="reference internal" href="#corrections">🐛 Corrections</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id2">2.17.2 (2026-06-09)</a><ul>
+<li><a class="reference internal" href="#nouveautes">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id3">🐛 Corrections</a></li>
 <li><a class="reference internal" href="#developpement">💻 Développement</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id2">2.17.1 (2026-04-13)</a><ul>
-<li><a class="reference internal" href="#id3">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id4">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id4">2.17.1 (2026-04-13)</a><ul>
+<li><a class="reference internal" href="#id5">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id6">🐛 Corrections</a></li>
 <li><a class="reference internal" href="#notes-de-version">⚠️ Notes de version</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#pipistrellus-kuhlii-2026-03-12">2.17.0 - Pipistrellus kuhlii 🦇 (2026-03-12)</a><ul>
 <li><a class="reference internal" href="#en-bref">▶️ En bref</a></li>
-<li><a class="reference internal" href="#id5">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id6">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id7">💻 Développement</a></li>
-<li><a class="reference internal" href="#id8">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id7">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id8">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id9">💻 Développement</a></li>
+<li><a class="reference internal" href="#id10">⚠️ Notes de version</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id9">2.16.4 (2025-11-17)</a><ul>
-<li><a class="reference internal" href="#id10">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id11">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id11">2.16.4 (2025-11-17)</a><ul>
+<li><a class="reference internal" href="#id12">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id13">🐛 Corrections</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id12">2.16.3 (2025-09-26)</a><ul>
-<li><a class="reference internal" href="#id13">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id14">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id15">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id14">2.16.3 (2025-09-26)</a><ul>
+<li><a class="reference internal" href="#id15">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id16">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id17">⚠️ Notes de version</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id16">2.16.2 (2025-08-11)</a><ul>
-<li><a class="reference internal" href="#id17">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id18">2.16.2 (2025-08-11)</a><ul>
+<li><a class="reference internal" href="#id19">🐛 Corrections</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id18">2.16.1 (2025-07-22)</a><ul>
-<li><a class="reference internal" href="#id19">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id20">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id20">2.16.1 (2025-07-22)</a><ul>
+<li><a class="reference internal" href="#id21">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id22">🐛 Corrections</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#bombina-variegata-2025-07-08">2.16.0 - Bombina variegata 🐸 (2025-07-08)</a><ul>
-<li><a class="reference internal" href="#id21">⏩ En bref</a></li>
-<li><a class="reference internal" href="#id22">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id23">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id23">⏩ En bref</a></li>
+<li><a class="reference internal" href="#id24">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id25">🐛 Corrections</a></li>
 <li><a class="reference internal" href="#suivi-de-l-evolution-de-la-base-de-donnees">📊 Suivi de l’évolution de la base de données</a></li>
 <li><a class="reference internal" href="#note-de-version">⚠️ Note de version</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id24">2.15.4 (2025-02-25)</a><ul>
-<li><a class="reference internal" href="#id25">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id26">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id26">2.15.4 (2025-02-25)</a><ul>
+<li><a class="reference internal" href="#id27">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id28">🐛 Corrections</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id27">2.15.3 (2025-02-14)</a><ul>
-<li><a class="reference internal" href="#id28">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id29">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id30">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id29">2.15.3 (2025-02-14)</a><ul>
+<li><a class="reference internal" href="#id30">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id31">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id32">⚠️ Notes de version</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id31">2.15.2 (2025-01-16)</a><ul>
-<li><a class="reference internal" href="#id32">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id33">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id33">2.15.2 (2025-01-16)</a><ul>
+<li><a class="reference internal" href="#id34">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id35">🐛 Corrections</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id34">2.15.1 (2025-01-10)</a><ul>
-<li><a class="reference internal" href="#id35">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id36">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id36">2.15.1 (2025-01-10)</a><ul>
+<li><a class="reference internal" href="#id37">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id38">🐛 Corrections</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#pavo-cristatus-2024-12-11">2.15.0 - Pavo cristatus 🦚 (2024-12-11)</a><ul>
-<li><a class="reference internal" href="#id37">⏩ En bref</a></li>
-<li><a class="reference internal" href="#id38">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id39">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id40">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id39">⏩ En bref</a></li>
+<li><a class="reference internal" href="#id40">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id41">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id42">⚠️ Notes de version</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id41">2.14.2 (2024-05-28)</a><ul>
-<li><a class="reference internal" href="#id42">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id43">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id43">2.14.2 (2024-05-28)</a><ul>
+<li><a class="reference internal" href="#id44">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id45">🐛 Corrections</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id44">2.14.1 (2024-04-29)</a><ul>
-<li><a class="reference internal" href="#id45">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id46">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id47">💻 Développement</a></li>
-<li><a class="reference internal" href="#id48">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id46">2.14.1 (2024-04-29)</a><ul>
+<li><a class="reference internal" href="#id47">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id48">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id49">💻 Développement</a></li>
+<li><a class="reference internal" href="#id50">⚠️ Notes de version</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#talpa-europaea-2024-02-28">2.14.0 - Talpa europaea 👓 (2024-02-28)</a><ul>
-<li><a class="reference internal" href="#id49">⚠️ Notes de version</a></li>
-<li><a class="reference internal" href="#id50">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id51">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id52">💻 Développement</a></li>
+<li><a class="reference internal" href="#id51">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id52">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id53">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id54">💻 Développement</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id53">2.13.4 (2023-12-15)</a><ul>
-<li><a class="reference internal" href="#id54">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id55">🐛 Corrections</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#id56">2.13.3 (2023-10-17)</a><ul>
+<li><a class="reference internal" href="#id55">2.13.4 (2023-12-15)</a><ul>
+<li><a class="reference internal" href="#id56">🚀 Nouveautés</a></li>
 <li><a class="reference internal" href="#id57">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id58">💻 Développement</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id59">2.13.2 (2023-09-28)</a><ul>
-<li><a class="reference internal" href="#id60">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id61">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id62">💻 Développement</a></li>
+<li><a class="reference internal" href="#id58">2.13.3 (2023-10-17)</a><ul>
+<li><a class="reference internal" href="#id59">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id60">💻 Développement</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id61">2.13.2 (2023-09-28)</a><ul>
+<li><a class="reference internal" href="#id62">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id63">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id64">💻 Développement</a></li>
 <li><a class="reference internal" href="#documentation">📝 Documentation</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id63">2.13.1 (2023-09-15)</a><ul>
-<li><a class="reference internal" href="#id64">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id65">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id66">📝 Documentation</a></li>
+<li><a class="reference internal" href="#id65">2.13.1 (2023-09-15)</a><ul>
+<li><a class="reference internal" href="#id66">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id67">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id68">📝 Documentation</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#carpodacus-erythrinus-2023-08-23">2.13.0 - Carpodacus erythrinus 🐤 (2023-08-23)</a><ul>
-<li><a class="reference internal" href="#id67">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id68">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id69">💻 Développement</a></li>
-<li><a class="reference internal" href="#id70">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id69">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id70">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id71">💻 Développement</a></li>
+<li><a class="reference internal" href="#id72">⚠️ Notes de version</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id71">2.12.3 (2023-05-09)</a><ul>
-<li><a class="reference internal" href="#id72">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id73">💻 Développement</a></li>
-<li><a class="reference internal" href="#id74">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id73">2.12.3 (2023-05-09)</a><ul>
+<li><a class="reference internal" href="#id74">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id75">💻 Développement</a></li>
+<li><a class="reference internal" href="#id76">⚠️ Notes de version</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id75">2.12.2 (2023-04-18)</a><ul>
-<li><a class="reference internal" href="#id76">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id77">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id77">2.12.2 (2023-04-18)</a><ul>
+<li><a class="reference internal" href="#id78">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id79">🐛 Corrections</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id78">2.12.1 (2023-04-11)</a><ul>
-<li><a class="reference internal" href="#id79">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id80">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id80">2.12.1 (2023-04-11)</a><ul>
+<li><a class="reference internal" href="#id81">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id82">🐛 Corrections</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#cyathea-borbonica-2023-03-27">2.12.0 - Cyathea borbonica 🌴 (2023-03-27)</a><ul>
-<li><a class="reference internal" href="#id81">⏩ En bref</a></li>
-<li><a class="reference internal" href="#id82">⚠️ Notes de version</a></li>
-<li><a class="reference internal" href="#id83">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id84">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id85">💻 Développement</a></li>
+<li><a class="reference internal" href="#id83">⏩ En bref</a></li>
+<li><a class="reference internal" href="#id84">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id85">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id86">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id87">💻 Développement</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id86">2.11.2 (2023-01-19)</a><ul>
-<li><a class="reference internal" href="#id87">🐛 Corrections</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#id88">2.11.1 (2023-01-18)</a><ul>
+<li><a class="reference internal" href="#id88">2.11.2 (2023-01-19)</a><ul>
 <li><a class="reference internal" href="#id89">🐛 Corrections</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#id90">2.11.1 (2023-01-18)</a><ul>
+<li><a class="reference internal" href="#id91">🐛 Corrections</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#ilex-aquifolium-2022-12-21">2.11.0 - Ilex aquifolium 🎄 (2022-12-21)</a><ul>
-<li><a class="reference internal" href="#id90">⏩ En bref</a></li>
-<li><a class="reference internal" href="#id91">⚠️ Notes de version</a></li>
-<li><a class="reference internal" href="#id92">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id93">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id94">💻 Développement</a></li>
+<li><a class="reference internal" href="#id92">⏩ En bref</a></li>
+<li><a class="reference internal" href="#id93">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id94">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id95">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id96">💻 Développement</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id95">2.10.4 (2022-11-30)</a><ul>
-<li><a class="reference internal" href="#id96">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id97">2.10.4 (2022-11-30)</a><ul>
+<li><a class="reference internal" href="#id98">🐛 Corrections</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id97">2.10.3 (2022-11-15)</a><ul>
-<li><a class="reference internal" href="#id98">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id99">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id99">2.10.3 (2022-11-15)</a><ul>
+<li><a class="reference internal" href="#id100">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id101">🐛 Corrections</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id100">2.10.2 (2022-11-09)</a><ul>
-<li><a class="reference internal" href="#id101">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id102">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id102">2.10.2 (2022-11-09)</a><ul>
+<li><a class="reference internal" href="#id103">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id104">🐛 Corrections</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id103">2.10.1 (2022-11-08)</a><ul>
-<li><a class="reference internal" href="#id104">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id105">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id106">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id105">2.10.1 (2022-11-08)</a><ul>
+<li><a class="reference internal" href="#id106">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id107">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id108">⚠️ Notes de version</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#alouatta-macconnelli-2022-11-02">2.10.0 - Alouatta macconnelli 🐒 (2022-11-02)</a><ul>
-<li><a class="reference internal" href="#id107">⚠️ Notes de version</a></li>
-<li><a class="reference internal" href="#id108">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id109">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id110">💻 Développement</a></li>
+<li><a class="reference internal" href="#id109">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id110">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id111">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id112">💻 Développement</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id111">2.9.2 (2022-02-15)</a><ul>
-<li><a class="reference internal" href="#id112">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id113">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id114">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id113">2.9.2 (2022-02-15)</a><ul>
+<li><a class="reference internal" href="#id114">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id115">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id116">⚠️ Notes de version</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id115">2.9.1 (2022-01-27)</a><ul>
-<li><a class="reference internal" href="#id116">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id117">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id117">2.9.1 (2022-01-27)</a><ul>
+<li><a class="reference internal" href="#id118">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id119">🐛 Corrections</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#actias-luna-2022-01-13">2.9.0 - Actias luna 🦋 (2022-01-13)</a><ul>
-<li><a class="reference internal" href="#id118">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id119">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id120">💻 Développement</a></li>
-<li><a class="reference internal" href="#id121">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id120">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id121">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id122">💻 Développement</a></li>
+<li><a class="reference internal" href="#id123">⚠️ Notes de version</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id122">2.8.1 (2021-10-17)</a><ul>
-<li><a class="reference internal" href="#id123">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id124">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id124">2.8.1 (2021-10-17)</a><ul>
+<li><a class="reference internal" href="#id125">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id126">🐛 Corrections</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#vaccinium-myrtillus-2021-10-18">2.8.0 - Vaccinium myrtillus 🌿 (2021-10-18)</a><ul>
-<li><a class="reference internal" href="#id125">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id126">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id127">💻 Développement</a></li>
-<li><a class="reference internal" href="#id128">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id127">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id128">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id129">💻 Développement</a></li>
+<li><a class="reference internal" href="#id130">⚠️ Notes de version</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id129">2.7.5 (2021-07-28)</a><ul>
-<li><a class="reference internal" href="#id130">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id131">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id131">2.7.5 (2021-07-28)</a><ul>
+<li><a class="reference internal" href="#id132">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id133">⚠️ Notes de version</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id132">2.7.4 (2021-07-23)</a><ul>
-<li><a class="reference internal" href="#id133">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id134">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id134">2.7.4 (2021-07-23)</a><ul>
+<li><a class="reference internal" href="#id135">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id136">⚠️ Notes de version</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id135">2.7.3 (2021-07-22)</a><ul>
-<li><a class="reference internal" href="#id136">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id137">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id138">💻 Développement</a></li>
-<li><a class="reference internal" href="#id139">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id137">2.7.3 (2021-07-22)</a><ul>
+<li><a class="reference internal" href="#id138">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id139">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id140">💻 Développement</a></li>
+<li><a class="reference internal" href="#id141">⚠️ Notes de version</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id140">2.7.2 (2021-07-05)</a><ul>
-<li><a class="reference internal" href="#id141">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id142">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id142">2.7.2 (2021-07-05)</a><ul>
+<li><a class="reference internal" href="#id143">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id144">⚠️ Notes de version</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id143">2.7.1 (2021-07-02)</a><ul>
-<li><a class="reference internal" href="#id144">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id145">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id145">2.7.1 (2021-07-02)</a><ul>
+<li><a class="reference internal" href="#id146">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id147">⚠️ Notes de version</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#androsace-delphinensis-2021-06-30">2.7.0 - Androsace delphinensis 🌼 (2021-06-30)</a><ul>
-<li><a class="reference internal" href="#id146">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id147">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id148">💻 Développement</a></li>
-<li><a class="reference internal" href="#id149">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id148">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id149">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id150">💻 Développement</a></li>
+<li><a class="reference internal" href="#id151">⚠️ Notes de version</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id150">2.6.2 (2021-02-15)</a><ul>
-<li><a class="reference internal" href="#id151">🐛 Corrections</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#id152">2.6.1 (2021-02-11)</a><ul>
+<li><a class="reference internal" href="#id152">2.6.2 (2021-02-15)</a><ul>
 <li><a class="reference internal" href="#id153">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id154">⚠️ Notes de version</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id154">2.6.1 (2021-02-11)</a><ul>
+<li><a class="reference internal" href="#id155">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id156">⚠️ Notes de version</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#saxifraga-2021-02-04">2.6.0 - Saxifraga 🌸 (2021-02-04)</a><ul>
-<li><a class="reference internal" href="#id155">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id156">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id157">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id157">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id158">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id159">⚠️ Notes de version</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id158">2.5.5 (2020-11-19)</a><ul>
-<li><a class="reference internal" href="#id159">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id160">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id160">2.5.5 (2020-11-19)</a><ul>
+<li><a class="reference internal" href="#id161">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id162">🐛 Corrections</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id161">2.5.4 (2020-11-17)</a><ul>
-<li><a class="reference internal" href="#id162">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id163">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id164">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id163">2.5.4 (2020-11-17)</a><ul>
+<li><a class="reference internal" href="#id164">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id165">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id166">⚠️ Notes de version</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id165">2.5.3 (2020-11-04)</a><ul>
-<li><a class="reference internal" href="#id166">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id167">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id168">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id167">2.5.3 (2020-11-04)</a><ul>
+<li><a class="reference internal" href="#id168">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id169">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id170">⚠️ Notes de version</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id169">2.5.2 (2020-10-13)</a><ul>
-<li><a class="reference internal" href="#id170">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id171">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id171">2.5.2 (2020-10-13)</a><ul>
+<li><a class="reference internal" href="#id172">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id173">⚠️ Notes de version</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id172">2.5.1 (2020-10-06)</a><ul>
-<li><a class="reference internal" href="#id173">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id174">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id174">2.5.1 (2020-10-06)</a><ul>
+<li><a class="reference internal" href="#id175">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id176">⚠️ Notes de version</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#manidae-2020-09-30">2.5.0 - Manidae (2020-09-30)</a><ul>
-<li><a class="reference internal" href="#id175">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id176">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id177">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id177">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id178">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id179">⚠️ Notes de version</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id178">2.4.1 (2020-06-25)</a><ul>
-<li><a class="reference internal" href="#id179">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id180">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id181">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id180">2.4.1 (2020-06-25)</a><ul>
+<li><a class="reference internal" href="#id181">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id182">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id183">⚠️ Notes de version</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#fiches-de-metadonnees-2020-06-22">2.4.0 - Fiches de métadonnées (2020-06-22)</a><ul>
-<li><a class="reference internal" href="#id182">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id183">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id184">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id184">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id185">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id186">⚠️ Notes de version</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id185">2.3.2 (2020-02-24)</a><ul>
-<li><a class="reference internal" href="#id186">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id187">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id187">2.3.2 (2020-02-24)</a><ul>
+<li><a class="reference internal" href="#id188">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id189">🐛 Corrections</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id188">2.3.1 (2020-02-18)</a><ul>
-<li><a class="reference internal" href="#id189">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id190">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id191">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id190">2.3.1 (2020-02-18)</a><ul>
+<li><a class="reference internal" href="#id191">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id192">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id193">⚠️ Notes de version</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#occhab-de-noel-2019-12-27">2.3.0 - Occhab de Noël (2019-12-27)</a><ul>
-<li><a class="reference internal" href="#id192">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id193">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id194">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id194">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id195">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id196">⚠️ Notes de version</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id195">2.2.1 (2019-10-09)</a><ul>
-<li><a class="reference internal" href="#id196">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id197">2.2.1 (2019-10-09)</a><ul>
+<li><a class="reference internal" href="#id198">🐛 Corrections</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-utilisateurs-2019-09-18">2.2.0 - Module utilisateurs (2019-09-18)</a><ul>
-<li><a class="reference internal" href="#id197">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id198">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id199">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id199">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id200">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id201">⚠️ Notes de version</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id200">2.1.2 (2019-07-25)</a><ul>
-<li><a class="reference internal" href="#id201">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id202">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id202">2.1.2 (2019-07-25)</a><ul>
+<li><a class="reference internal" href="#id203">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id204">⚠️ Notes de version</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id203">2.1.1 (2019-07-18)</a><ul>
-<li><a class="reference internal" href="#id204">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id205">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id206">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id205">2.1.1 (2019-07-18)</a><ul>
+<li><a class="reference internal" href="#id206">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id207">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id208">⚠️ Notes de version</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-validation-2019-06-01">2.1.0 - Module validation (2019-06-01)</a><ul>
-<li><a class="reference internal" href="#id207">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id208">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id209">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id209">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id210">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id211">⚠️ Notes de version</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id210">2.0.1 (2019-03-18)</a><ul>
-<li><a class="reference internal" href="#id211">🚀 Nouveautés</a></li>
-<li><a class="reference internal" href="#id212">🐛 Corrections</a></li>
-<li><a class="reference internal" href="#id213">⚠️ Notes de version</a></li>
+<li><a class="reference internal" href="#id212">2.0.1 (2019-03-18)</a><ul>
+<li><a class="reference internal" href="#id213">🚀 Nouveautés</a></li>
+<li><a class="reference internal" href="#id214">🐛 Corrections</a></li>
+<li><a class="reference internal" href="#id215">⚠️ Notes de version</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#la-refonte-2019-02-28">2.0.0 - La refonte (2019-02-28)</a></li>
@@ -6209,7 +6222,7 @@ générique des sites et visites de suivi</p></li>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=f2c51989"></script>
+</div><script src="_static/documentation_options.js?v=56bd9d90"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>
