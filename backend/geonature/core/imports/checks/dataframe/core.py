@@ -152,6 +152,11 @@ def check_counts(
             other=default_count,
         )
         if count_max_col in df:
+            # Complete empty count_max cells
+            df[count_max_col] = df[count_max_col].where(
+                df[count_max_col].notna(),
+                other=df[count_min_col],
+            )
             yield from map(
                 lambda error: {
                     "column": count_min_col,
@@ -159,11 +164,6 @@ def check_counts(
                     **error,
                 },
                 _check_ordering(df, count_min_col, count_max_col),
-            )
-            # Complete empty count_max cells
-            df[count_max_col] = df[count_max_col].where(
-                df[count_max_col].notna(),
-                other=df[count_min_col],
             )
         else:
             df[count_max_col] = df[count_min_col]
