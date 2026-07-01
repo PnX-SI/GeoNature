@@ -7,7 +7,7 @@ with (root_dir / "VERSION").open() as f:
     version = f.read()
 with (root_dir / "README.rst").open() as f:
     long_description = f.read()
-with (root_dir / "requirements.in").open() as f:
+with (root_dir / "requirements.txt").open() as f:
     requirements = f.read().splitlines()
 
 

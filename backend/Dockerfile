@@ -72,7 +72,7 @@ FROM build AS build-occtax
 WORKDIR /build/
 COPY /contrib/occtax/backend ./backend
 COPY /contrib/occtax/setup.py .
-COPY /contrib/occtax/requirements.in .
+COPY /contrib/occtax/requirements.txt .
 COPY /contrib/occtax/MANIFEST.in .
 COPY /contrib/occtax/VERSION .
 COPY /contrib/occtax/README.rst .
@@ -83,7 +83,7 @@ FROM build AS build-occhab
 WORKDIR /build/
 COPY /contrib/gn_module_occhab/backend ./backend
 COPY /contrib/gn_module_occhab/setup.py .
-COPY /contrib/gn_module_occhab/requirements.in .
+COPY /contrib/gn_module_occhab/requirements.txt .
 COPY /contrib/gn_module_occhab/MANIFEST.in .
 COPY /contrib/gn_module_occhab/VERSION .
 COPY /contrib/gn_module_occhab/README.rst .
@@ -94,7 +94,7 @@ FROM build AS build-validation
 WORKDIR /build/
 COPY /contrib/gn_module_validation/backend ./backend
 COPY /contrib/gn_module_validation/setup.py .
-COPY /contrib/gn_module_validation/requirements.in .
+COPY /contrib/gn_module_validation/requirements.txt .
 COPY /contrib/gn_module_validation/MANIFEST.in .
 COPY /contrib/gn_module_validation/VERSION .
 COPY /contrib/gn_module_validation/README.rst .
@@ -187,7 +187,8 @@ FROM wheels-light AS prod-light
 
 WORKDIR /dist/geonature
 RUN --mount=type=cache,target=/root/.cache \
-    uv pip install --system *.whl
+    uv pip install --system *.whl --find-links=. *.whl
+RUN pip uninstall -y uv
 RUN rm -f *.whl
 
 
@@ -195,6 +196,6 @@ FROM wheels AS prod
 
 WORKDIR /dist/geonature
 RUN --mount=type=cache,target=/root/.cache \
-    uv pip install --system *.whl
+    uv pip install --system *.whl --find-links=. *.whl
 RUN pip uninstall -y uv
 RUN rm -f *.whl
