@@ -1,7 +1,7 @@
 """add fk to t_habitats cd_hab
 
 Revision ID: 53e6505aaaa9
-Revises: 6f0ac37e9bc4
+Revises: fc6f7f3cb801
 Create Date: 2026-06-28 19:16:58.760718
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = '53e6505aaaa9'
-down_revision = '6f0ac37e9bc4'
+down_revision = 'fc6f7f3cb801'
 branch_labels = None
 depends_on = None
 
