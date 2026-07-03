@@ -310,6 +310,7 @@
     "SpeciesDistribution": "Répartition des espèces",
     "AssociatedDatasets": "Jeux de données associés",
     "Reference": "Référence",
+    "AdditionalInformation": "Informations additionnelles",
 
     "DatasetCard": {
       "Actions": {
@@ -378,9 +379,6 @@
       "FacultativeTaxaList": "Liste de taxons (facultatif)",
       "SpecificGeonature": "Spécifique GeoNature",
       "RequiredToImportAndEnterData": "Requis pour saisir et importer des données dans le jeu de données"
-    },
-    "AcquisitionFrameworkCard": {
-      "AdditionalInformation": "Informations additionnelles"
     },
     "AcquisitionFrameworkForm": {},
     "Actors": {
