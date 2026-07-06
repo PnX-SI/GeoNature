@@ -1140,7 +1140,7 @@ class TestGNMeta:
 
         assert response.status_code == Forbidden.code
 
-    def test_dataset_pdf_export(self, users, datasets):
+    def test_dataset_pdf_export(self, users, datasets, additional_fields):
         unexisting_id = (
             db.session.scalar(select(func.max(TDatasets.id_dataset)).select_from(TDatasets)) + 1
         )
