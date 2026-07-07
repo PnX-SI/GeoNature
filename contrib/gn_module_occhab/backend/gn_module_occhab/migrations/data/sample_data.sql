@@ -43,6 +43,7 @@ INSERT INTO gn_meta.t_datasets (
     dataset_desc,
     id_nomenclature_data_type,
     keywords,
+    -- TODO: change here
     marine_domain,
     terrestrial_domain,
     id_nomenclature_dataset_objectif,

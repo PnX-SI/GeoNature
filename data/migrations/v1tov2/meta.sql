@@ -108,6 +108,7 @@ INSERT INTO gn_meta.t_datasets (
   dataset_shortname,
   dataset_desc,
   id_nomenclature_data_type,
+  -- # TODO: change here
   marine_domain,
   terrestrial_domain,
   id_nomenclature_dataset_objectif,
@@ -123,6 +124,7 @@ SELECT DISTINCT
   nom_lot,
   desc_lot,
   ref_nomenclatures.get_id_nomenclature('DATA_TYP','1') AS id_nomenclature_data_type, --nomenclature 103 = "donnée source"
+  -- # TODO: change here
   false AS marine_domain,
   true AS terrestrial_domain,
   ref_nomenclatures.get_id_nomenclature('JDD_OBJECTIFS','1.1') AS id_nomenclature_dataset_objectif, --nomenclature 114 à reprendre lot par lot
@@ -142,6 +144,7 @@ INSERT INTO gn_meta.t_datasets (
     dataset_desc,
     id_nomenclature_data_type,
     keywords,
+    -- # TODO: change here
     marine_domain,
     terrestrial_domain,
     id_nomenclature_dataset_objectif,
@@ -223,6 +226,7 @@ SET id_nomenclature = ref_nomenclatures.get_id_nomenclature('NATURALITE', '0')
 WHERE mnemonique_type = 'NATURALITE';
 
  -- création d'un nouveau dataset pour les pièges photo
+-- # TODO: change here "terrestrial_domain" and "marine_domain"
 INSERT INTO gn_meta.t_datasets (unique_dataset_id,id_acquisition_framework,dataset_name,dataset_shortname,dataset_desc,id_nomenclature_data_type,keywords,marine_domain,terrestrial_domain,id_nomenclature_dataset_objectif,bbox_west,bbox_east,bbox_south,bbox_north,id_nomenclature_collecting_method,id_nomenclature_data_origin,id_nomenclature_source_status,id_nomenclature_resource_type,active,validable,meta_create_date,meta_update_date) VALUES 
 ('fb775bf0-2a38-4d08-aa5c-5b13ba0bf131',1,'Piège photo','Piège photo','Données d''observation recueillies grâce à des pièges photo',325,'Piège photo',false,true,414,NULL,NULL,NULL,NULL,403,78,75,323,true,true,'2019-10-07 16:23:05.120','2019-10-07 16:29:10.575')
 ;

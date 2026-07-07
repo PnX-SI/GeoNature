@@ -471,6 +471,7 @@ def datasets(users, acquisition_frameworks, module):
                 dataset_name=name,
                 dataset_shortname=name,
                 dataset_desc="lorem ipsum" * 22,
+                # TODO: change here
                 marine_domain=True,
                 terrestrial_domain=True,
                 id_digitizer=digitizer.id_role if digitizer else None,

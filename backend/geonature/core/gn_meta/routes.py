@@ -694,7 +694,6 @@ def get_acquisition_framework(scope, id_acquisition_framework):
                 "cor_af_actor.nomenclature_actor_role",
                 "cor_af_actor.organism",
                 "cor_af_actor.role",
-                "cor_volets_sinp",
                 "cor_objectifs",
                 "cor_territories",
                 "datasets",
@@ -760,7 +759,8 @@ def acquisitionFrameworkHandler(request, *, acquisition_framework):
         acquisition_framework.id_digitizer = g.current_user.id_role
 
     acquisitionFrameworkSchema = AcquisitionFrameworkSchema(
-        only=["cor_af_actor", "cor_volets_sinp", "cor_objectifs", "cor_territories"],
+        # Adapt to get rid of "cor_volets_sinp" and use new fields "terrestrial_domain" and "marine_domain"
+        only=["cor_af_actor", "cor_objectifs", "cor_territories"],
         unknown=EXCLUDE,
     )
     try:
