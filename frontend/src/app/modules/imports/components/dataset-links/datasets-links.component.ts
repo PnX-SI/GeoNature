@@ -24,9 +24,9 @@ export class DatasetLinksComponent {
     }
 
     return this.datasets
-      .filter((item) => item?.id_dataset && item?.dataset?.dataset_shortname)
+      .filter((item) => item?.id_dataset && item?.dataset?.dataset_name)
       .map((item) => ({
-        name: item.dataset.dataset_shortname,
+        name: item.dataset.dataset_name,
         link: ['/metadata/dataset', item.id_dataset],
       }));
   }

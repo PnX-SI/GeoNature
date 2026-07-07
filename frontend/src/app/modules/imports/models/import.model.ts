@@ -27,7 +27,7 @@ export interface ImportStatistics {
 }
 
 export interface Dataset {
-  dataset_shortname: string;
+  dataset_name: string;
   unique_dataset_id: string;
 }
 

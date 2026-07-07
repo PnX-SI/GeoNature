@@ -350,7 +350,7 @@ cor_role_import = db.Table(
         "destination.statistics_labels",
         "destination.module",
         "datasets.dataset.unique_dataset_id",
-        "datasets.dataset.dataset_shortname",
+        "datasets.dataset.dataset_name",
     ]
 )
 class TImports(InstancePermissionMixin, db.Model):
