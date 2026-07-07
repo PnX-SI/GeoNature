@@ -43,15 +43,13 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: "3.9"
 
       - name: Install dependencies
         run: |
           echo 'Installation des requirements de prod'
           python -m pip install --upgrade pip
-          python -m pip install \
-            -e ..[tests] \
-            -r requirements.txt
+          python -m pip install -e ..[tests]
         working-directory: ./backend
       - name: Install core modules backend
         run: |

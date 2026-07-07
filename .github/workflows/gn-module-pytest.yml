@@ -104,18 +104,15 @@ jobs:
         run: |
           echo 'Installation des requirements de prod'
           python -m pip install --upgrade pip
-          python -m pip install \
-            -e ..[tests] \
-            -r requirements.txt
+          python -m pip install -e ..[tests]
         working-directory: ./backend
       - name: Install dependencies
         if: github.action_ref != 'master'
         run: |
           echo 'Installation des requirements de dev'
           python -m pip install --upgrade pip
-          python -m pip install \
-            -e ..[tests] \
-            -r requirements-dev.txt
+          python -m pip install -e ..[tests]
+          pip install -r requirements-dev.txt
         working-directory: ./backend
 
       - name: Install core modules backend
