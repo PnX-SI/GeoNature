@@ -10,9 +10,9 @@ on:
       - hotfixes
       - develop
   pull_request:
-    # paths:
-    # - "backend/**"
-    # - "contrib/**/backend/**"
+    paths:
+      - "backend/**"
+      - "contrib/**/backend/**"
     branches:
       - master
       - hotfixes
