@@ -69,26 +69,6 @@ cor_acquisition_framework_objectif = Table(
     schema="gn_meta",
 )
 
-
-cor_acquisition_framework_voletsinp = Table(
-    "cor_acquisition_framework_voletsinp",
-    DB.metadata,
-    Column(
-        "id_acquisition_framework",
-        Integer,
-        ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
-        primary_key=True,
-    ),
-    Column(
-        "id_nomenclature_voletsinp",
-        Integer,
-        ForeignKey(TNomenclatures.id_nomenclature),
-        primary_key=True,
-    ),
-    schema="gn_meta",
-)
-
-
 cor_acquisition_framework_territory = Table(
     "cor_acquisition_framework_territory",
     DB.metadata,

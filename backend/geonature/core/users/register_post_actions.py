@@ -133,14 +133,12 @@ def create_dataset_user(user):
         id_role=user["id_role"],
         id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature("ROLE_ACTEUR", "1"),
     )
-    # add new JDD: terrestrial and marine = True as default
+    # add new JDD:
     new_dataset = TDatasets(
         acquisition_framework=new_af,
         dataset_name=ds_desc_and_name,
         dataset_shortname=ds_desc_and_name + " - auto-créé via la demande de création de compte",
         dataset_desc=ds_desc_and_name,
-        marine_domain=True,
-        terrestrial_domain=True,
     )
     new_dataset.cor_dataset_actor = [ds_productor, ds_contact]
     db.session.add(new_dataset)

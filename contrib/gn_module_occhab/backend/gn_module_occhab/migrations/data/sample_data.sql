@@ -19,7 +19,9 @@ INSERT INTO gn_meta.t_acquisition_frameworks (
     acquisition_framework_parent_id, 
     is_parent, 
     acquisition_framework_start_date, 
-    acquisition_framework_end_date
+    acquisition_framework_end_date,
+    marine_domain,
+    terrestrial_domain
     ) VALUES (
     'Données d''habitats',
     'Données d''habitats',
@@ -31,7 +33,9 @@ INSERT INTO gn_meta.t_acquisition_frameworks (
     null,
     false,
     '1973-03-27',
-    null
+    null,
+    false,
+    true
     )
 ;
 
@@ -44,8 +48,6 @@ INSERT INTO gn_meta.t_datasets (
     dataset_desc,
     id_nomenclature_data_type,
     keywords,
-    marine_domain,
-    terrestrial_domain,
     bbox_west,
     bbox_east,
     bbox_south,
@@ -68,8 +70,6 @@ INSERT INTO gn_meta.t_datasets (
     'Carto d''habitat X',
     ref_nomenclatures.get_id_nomenclature('DATA_TYP', '1'),
     'Habitat',
-    false,
-    true,
     4.85695,
     6.85654,
     44.5020,

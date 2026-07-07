@@ -170,7 +170,6 @@ class AcquisitionFrameworkActorSchema(SmartRelationshipsMixin, MA.SQLAlchemyAuto
     role = MA.Nested(UserSchema, dump_only=True)
     nomenclature_actor_role = MA.Nested(NomenclatureSchema, dump_only=True)
     organism = MA.Nested(OrganismeSchema, dump_only=True)
-    cor_volets_sinp = MA.Nested(OrganismeSchema, dump_only=True)
     # id_nomenclature_actor_role is NOT NULL but auto-filled server-side (ROLE_ACTEUR default)
     id_nomenclature_actor_role = MA.auto_field(required=False)
     # id_acquisition_framework is NOT NULL but set by the parent
@@ -203,7 +202,6 @@ class AcquisitionFrameworkSchema(
     t_datasets = MA.Nested(DatasetSchema, many=True)
     datasets = MA.Nested(DatasetSchema, many=True)
     cor_af_actor = MA.Nested(AcquisitionFrameworkActorSchema, many=True, unknown=EXCLUDE)
-    cor_volets_sinp = MA.Nested(NomenclatureSchema, many=True, unknown=EXCLUDE)
     cor_objectifs = MA.Nested(NomenclatureSchema, many=True, unknown=EXCLUDE)
     cor_territories = MA.Nested(NomenclatureSchema, many=True, unknown=EXCLUDE)
     nomenclature_territorial_level = MA.Nested(NomenclatureSchema, dump_only=True)
