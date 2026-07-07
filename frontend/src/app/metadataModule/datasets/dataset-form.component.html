@@ -109,32 +109,6 @@
             />
           </div>
 
-          <div>
-            <small>{{ 'MetaData.DatasetForm.Field' | translate }}</small>
-            <div>
-              <div class="checkbox">
-                <input
-                  [formControl]="form.get('terrestrial_domain')"
-                  type="checkbox"
-                  id="terrestrial_domain"
-                />
-                <label for="terrestrial_domain">
-                  {{ 'MetaData.DatasetForm.LandField' | translate }}
-                </label>
-              </div>
-              <div class="checkbox">
-                <input
-                  [formControl]="form.get('marine_domain')"
-                  type="checkbox"
-                  id="marine_domain"
-                />
-                <label for="marine_domain">
-                  {{ 'MetaData.DatasetForm.MarineField' | translate }}
-                </label>
-              </div>
-            </div>
-          </div>
-
           <div class="row">
             <div class="col-md-6">
               <pnx-nomenclature

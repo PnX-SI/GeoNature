@@ -43,7 +43,8 @@ export class AcquisitionFrameworkFormService {
         return {
           is_parent: false,
           cor_objectifs: [],
-          cor_volets_sinp: [],
+          terrestrial_domain: true,
+          marine_domain: false,
           cor_territories: [],
           cor_af_actor: [{ id_nomenclature_actor_role: id_nomenclature }],
           additional_data: {},
@@ -68,7 +69,8 @@ export class AcquisitionFrameworkFormService {
       acquisition_framework_start_date: [null, Validators.required],
       acquisition_framework_end_date: null,
       cor_objectifs: [[], Validators.required],
-      cor_volets_sinp: [[]],
+      terrestrial_domain: null,
+      marine_domain: null,
       cor_territories: [[], Validators.required],
       cor_af_actor: this.fb.array(
         [],

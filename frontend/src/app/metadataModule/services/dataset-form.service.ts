@@ -42,8 +42,6 @@ export class DatasetFormService {
       map((id_nomenclature: number): any => {
         //formate les donnés par défauts envoyées au formulaire
         return {
-          terrestrial_domain: true,
-          marine_domain: false,
           validable: true,
           active: true,
           modules: [],

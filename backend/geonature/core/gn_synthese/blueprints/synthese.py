@@ -270,7 +270,6 @@ def get_one_synthese(permissions, id_synthese):
         "dataset.acquisition_framework.cor_af_actor",
         "dataset.acquisition_framework.cor_objectifs",
         "dataset.acquisition_framework.cor_territories",
-        "dataset.acquisition_framework.cor_volets_sinp",
         "dataset.acquisition_framework.creator",
         "dataset.acquisition_framework.nomenclature_territorial_level",
         "dataset.acquisition_framework.nomenclature_financing_type",

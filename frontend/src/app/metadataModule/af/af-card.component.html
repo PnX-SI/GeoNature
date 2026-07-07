@@ -195,6 +195,14 @@
               <b>{{ 'MetaData.TerritorialExtent' | translate }} :</b>
               {{ af?.nomenclature_territorial_level?.label_default }}
             </div>
+            <div class="a">
+              <b>{{ 'MetaData.DatasetCard.LandCoverage' | translate }} :</b>
+              {{ af?.terrestrial_domain ? 'oui' : 'non' }}
+            </div>
+            <div class="a">
+              <b>{{ 'MetaData.DatasetCard.MarineAreaCoverage' | translate }} :</b>
+              {{ af?.marine_domain ? 'oui' : 'non' }}
+            </div>
 
             <br />
           </div>

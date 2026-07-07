@@ -104,6 +104,32 @@
             ></textarea>
           </div>
 
+          <div>
+            <small>{{ 'MetaData.DatasetForm.Field' | translate }}</small>
+            <div>
+              <div class="checkbox">
+                <input
+                  [formControl]="form.get('terrestrial_domain')"
+                  type="checkbox"
+                  id="terrestrial_domain"
+                />
+                <label for="terrestrial_domain">
+                  {{ 'MetaData.DatasetForm.LandField' | translate }}
+                </label>
+              </div>
+              <div class="checkbox">
+                <input
+                  [formControl]="form.get('marine_domain')"
+                  type="checkbox"
+                  id="marine_domain"
+                />
+                <label for="marine_domain">
+                  {{ 'MetaData.DatasetForm.MarineField' | translate }}
+                </label>
+              </div>
+            </div>
+          </div>
+
           <pnx-nomenclature
             [multiSelect]="true"
             label="Objectifs du cadre d'acquisition"
@@ -112,15 +138,6 @@
             [bindAllItem]="true"
             [keyValue]="null"
             data-qa="pnx-metadata-af-form-objectif"
-          ></pnx-nomenclature>
-
-          <pnx-nomenclature
-            label="Volets SINP"
-            [multiSelect]="true"
-            [parentFormControl]="form.get('cor_volets_sinp')"
-            codeNomenclatureType="VOLET_SINP"
-            [bindAllItem]="true"
-            [keyValue]="null"
           ></pnx-nomenclature>
 
           <pnx-nomenclature

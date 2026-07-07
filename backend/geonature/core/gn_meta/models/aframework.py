@@ -77,11 +77,8 @@ class TAcquisitionFramework(db.Model):
         backref=DB.backref("objectif_af"),
     )
 
-    cor_volets_sinp = DB.relationship(
-        TNomenclatures,
-        secondary=cor_acquisition_framework_voletsinp,
-        backref=DB.backref("volet_sinp_af"),
-    )
+    marine_domain = DB.Column(DB.Boolean)
+    terrestrial_domain = DB.Column(DB.Boolean)
 
     cor_territories = DB.relationship(
         TNomenclatures,
