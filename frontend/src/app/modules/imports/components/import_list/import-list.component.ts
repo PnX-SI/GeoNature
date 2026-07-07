@@ -1,10 +1,8 @@
 // @ts-ignore
 
 import { Component, OnInit, TemplateRef } from '@angular/core';
-import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { saveAs } from 'file-saver';
-import { CommonService } from '@geonature_common/service/common.service';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 import { ImportDataService } from '../../services/data.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';

@@ -11,6 +11,7 @@ DEFAULT_LIST_COLUMN = [
         "name": "Format",
         "show": False,
         "filter": False,
+        "maxWidth": 60,
     },
     {
         "prop": "full_file_name",
@@ -23,6 +24,7 @@ DEFAULT_LIST_COLUMN = [
         "name": "Lignes importées",
         "show": True,
         "filter": False,
+        "maxWidth": 100,
     },
     {
         "prop": "date_create_import",
@@ -33,6 +35,12 @@ DEFAULT_LIST_COLUMN = [
     {
         "prop": "authors_name",
         "name": "Auteur",
+        "show": True,
+        "filter": False,
+    },
+    {
+        "prop": "datasets",
+        "name": "Jeux de données",
         "show": True,
         "filter": False,
     },

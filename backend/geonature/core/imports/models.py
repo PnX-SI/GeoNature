@@ -349,6 +349,8 @@ cor_role_import = db.Table(
         "destination.label",
         "destination.statistics_labels",
         "destination.module",
+        "datasets.dataset.unique_dataset_id",
+        "datasets.dataset.dataset_name",
     ]
 )
 class TImports(InstancePermissionMixin, db.Model):
@@ -521,6 +523,7 @@ class TImports(InstancePermissionMixin, db.Model):
         return import_as_dict
 
 
+@serializable
 class CorImportDataset(db.Model):
     __tablename__ = "cor_import_datasets"
     __table_args__ = {"schema": "gn_imports"}
