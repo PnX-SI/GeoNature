@@ -17,7 +17,7 @@ Classes
 Module Contents
 ---------------
 
-.. py:class:: NotificationTemplateAdmin(model: type[flask_admin._types.T_SQLALCHEMY_MODEL], session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, name: str | None = None, category: str | None = None, endpoint: str | None = None, url: str | None = None, static_folder: str | None = None, menu_class_name: str | None = None, menu_icon_type: str | None = None, menu_icon_value: str | None = None)
+.. py:class:: NotificationTemplateAdmin(model, session, name=None, category=None, endpoint=None, url=None, static_folder=None, menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
 
    Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`flask_admin.contrib.sqla.ModelView`
 
@@ -112,7 +112,7 @@ Module Contents
 
 
 
-.. py:class:: NotificationCategoryAdmin(model: type[flask_admin._types.T_SQLALCHEMY_MODEL], session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, name: str | None = None, category: str | None = None, endpoint: str | None = None, url: str | None = None, static_folder: str | None = None, menu_class_name: str | None = None, menu_icon_type: str | None = None, menu_icon_value: str | None = None)
+.. py:class:: NotificationCategoryAdmin(model, session, name=None, category=None, endpoint=None, url=None, static_folder=None, menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
 
    Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`flask_admin.contrib.sqla.ModelView`
 
@@ -196,7 +196,7 @@ Module Contents
 
 
 
-.. py:class:: NotificationMethodAdmin(model: type[flask_admin._types.T_SQLALCHEMY_MODEL], session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, name: str | None = None, category: str | None = None, endpoint: str | None = None, url: str | None = None, static_folder: str | None = None, menu_class_name: str | None = None, menu_icon_type: str | None = None, menu_icon_value: str | None = None)
+.. py:class:: NotificationMethodAdmin(model, session, name=None, category=None, endpoint=None, url=None, static_folder=None, menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
 
    Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`flask_admin.contrib.sqla.ModelView`
 

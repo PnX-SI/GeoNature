@@ -28,7 +28,7 @@ Functions
 Module Contents
 ---------------
 
-.. py:class:: CruvedProtectedBibListesView(model: type[flask_admin._types.T_SQLALCHEMY_MODEL], session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, name: str | None = None, category: str | None = None, endpoint: str | None = None, url: str | None = None, static_folder: str | None = None, menu_class_name: str | None = None, menu_icon_type: str | None = None, menu_icon_value: str | None = None)
+.. py:class:: CruvedProtectedBibListesView(model, session, name=None, category=None, endpoint=None, url=None, static_folder=None, menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
 
    Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`apptax.admin.admin_view.BibListesView`
 
@@ -54,7 +54,7 @@ Module Contents
    .. py:attribute:: extra_actions_perm
 
 
-.. py:class:: CruvedProtectedTaxrefView(model: type[flask_admin._types.T_SQLALCHEMY_MODEL], session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, name: str | None = None, category: str | None = None, endpoint: str | None = None, url: str | None = None, static_folder: str | None = None, menu_class_name: str | None = None, menu_icon_type: str | None = None, menu_icon_value: str | None = None)
+.. py:class:: CruvedProtectedTaxrefView(model, session, name=None, category=None, endpoint=None, url=None, static_folder=None, menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
 
    Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`apptax.admin.admin_view.TaxrefView`
 
@@ -77,7 +77,7 @@ Module Contents
 
 
 
-.. py:class:: CruvedProtectedTMediasView(model: type[flask_admin._types.T_SQLALCHEMY_MODEL], session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, name: str | None = None, category: str | None = None, endpoint: str | None = None, url: str | None = None, static_folder: str | None = None, menu_class_name: str | None = None, menu_icon_type: str | None = None, menu_icon_value: str | None = None)
+.. py:class:: CruvedProtectedTMediasView(model, session, name=None, category=None, endpoint=None, url=None, static_folder=None, menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
 
    Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`apptax.admin.admin_view.TMediasView`
 
@@ -100,7 +100,7 @@ Module Contents
 
 
 
-.. py:class:: CruvedProtectedBibAttributsView(model: type[flask_admin._types.T_SQLALCHEMY_MODEL], session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, name: str | None = None, category: str | None = None, endpoint: str | None = None, url: str | None = None, static_folder: str | None = None, menu_class_name: str | None = None, menu_icon_type: str | None = None, menu_icon_value: str | None = None)
+.. py:class:: CruvedProtectedBibAttributsView(model, session, name=None, category=None, endpoint=None, url=None, static_folder=None, menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
 
    Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`apptax.admin.admin_view.BibAttributsView`
 
@@ -123,7 +123,7 @@ Module Contents
 
 
 
-.. py:class:: CruvedProtectedBibThemes(model: type[flask_admin._types.T_SQLALCHEMY_MODEL], session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, name: str | None = None, category: str | None = None, endpoint: str | None = None, url: str | None = None, static_folder: str | None = None, menu_class_name: str | None = None, menu_icon_type: str | None = None, menu_icon_value: str | None = None)
+.. py:class:: CruvedProtectedBibThemes(model, session, name=None, category=None, endpoint=None, url=None, static_folder=None, menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
 
    Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`apptax.admin.admin_view.BibThemesView`
 
@@ -146,15 +146,14 @@ Module Contents
 
 
 
-.. py:class:: CruvedProtectedSummaryView(name: str | None = None, category: str | None = None, endpoint: str | None = None, url: str | None = None, static_folder: str | None = None, static_url_path: str | None = None, menu_class_name: str | None = None, menu_icon_type: str | None = None, menu_icon_value: str | None = None)
+.. py:class:: CruvedProtectedSummaryView(name=None, category=None, endpoint=None, url=None, static_folder=None, static_url_path=None, menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
 
    Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`apptax.admin.admin_view.SummaryView`
 
 
    Base administrative view.
 
-   Derive from this class to implement your administrative interface piece. For
-   example::
+   Derive from this class to implement your administrative interface piece. For example::
 
        from flask_admin import BaseView, expose
        class MyView(BaseView):
@@ -162,14 +161,9 @@ Module Contents
            def index(self):
                return 'Hello World!'
 
-   Icons can be added to the menu by using `menu_icon_type` and `menu_icon_value`. For
-   example::
+   Icons can be added to the menu by using `menu_icon_type` and `menu_icon_value`. For example::
 
-       admin.add_view(
-           MyView(
-               name='My View', menu_icon_type='glyph', menu_icon_value='glyphicon-home'
-           )
-       )
+       admin.add_view(MyView(name='My View', menu_icon_type='glyph', menu_icon_value='glyphicon-home'))
 
 
    .. py:attribute:: module_code

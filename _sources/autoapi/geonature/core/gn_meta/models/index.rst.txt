@@ -637,7 +637,7 @@ Package Contents
 
               class MySchema2(Schema):
                   # Type checkers will check attributes
-                  class Meta(Schema.Meta):
+                  class Meta(Schema.Opts):
                       additional = True  # Incompatible types in assignment
 
       .. versionremoved:: 3.0.0b7 Remove ``strict``.
@@ -1231,7 +1231,7 @@ Package Contents
 
               class MySchema2(Schema):
                   # Type checkers will check attributes
-                  class Meta(Schema.Meta):
+                  class Meta(Schema.Opts):
                       additional = True  # Incompatible types in assignment
 
       .. versionremoved:: 3.0.0b7 Remove ``strict``.
@@ -1606,7 +1606,7 @@ Package Contents
 
               class MySchema2(Schema):
                   # Type checkers will check attributes
-                  class Meta(Schema.Meta):
+                  class Meta(Schema.Opts):
                       additional = True  # Incompatible types in assignment
 
       .. versionremoved:: 3.0.0b7 Remove ``strict``.

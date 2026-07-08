@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2.17.4 (2026-07-08)
+
+### 🐛 Corrections
+
+- [Docker] Le `setup.py` s'appuie sur le requirement.txt (#4237 par @jacquesfize)
+
 ## 2.17.3 (2026-07-01)
 
 ### 🐛 Corrections

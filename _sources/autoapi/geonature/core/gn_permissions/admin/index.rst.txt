@@ -44,181 +44,56 @@ Functions
 Module Contents
 ---------------
 
-.. py:class:: RoleFilter(column: flask_admin._types.T_COLUMN, name: str, options: flask_admin._types.T_OPTIONS = None, data_type: flask_admin._types.T_WIDGET_TYPE = None)
+.. py:class:: RoleFilter(column, name, options=None, data_type=None)
 
    Bases: :py:obj:`geonature.core.admin.utils.DynamicOptionsMixin`, :py:obj:`flask_admin.contrib.sqla.filters.FilterEqual`
 
 
    Base SQLAlchemy filter.
-
-   The ``column`` argument accepts either a SQLAlchemy column /
-   ``InstrumentedAttribute`` or a dotted-path string that walks
-   relationships on the view's model. String paths are resolved when the
-   filter is attached to a view, and any joins required to reach the
-   target column are added automatically.
-
-   .. note::
-
-       A filter constructed with a dotted-path string caches its
-       resolved attribute and join path against the first model it
-       sees. Re-using the same filter instance across views with
-       *different* models raises ``RuntimeError`` -- construct a new
-       filter instance per view in that case. Filters constructed with
-       a real column / ``InstrumentedAttribute`` are freely shareable.
-
-   Example::
-
-       class PostAdmin(ModelView):
-           column_filters = [
-               # Pass a column object directly:
-               FilterEqual(column=Post.title, name="Title"),
-               # Or use a dotted path resolved against the view's model:
-               FilterLike(column="author.account.email", name="Author Email"),
-           ]
 
 
    .. py:method:: get_dynamic_options(view)
 
 
-.. py:class:: ModuleFilter(column: flask_admin._types.T_COLUMN, name: str, options: flask_admin._types.T_OPTIONS = None, data_type: flask_admin._types.T_WIDGET_TYPE = None)
+.. py:class:: ModuleFilter(column, name, options=None, data_type=None)
 
    Bases: :py:obj:`geonature.core.admin.utils.DynamicOptionsMixin`, :py:obj:`flask_admin.contrib.sqla.filters.FilterEqual`
 
 
    Base SQLAlchemy filter.
-
-   The ``column`` argument accepts either a SQLAlchemy column /
-   ``InstrumentedAttribute`` or a dotted-path string that walks
-   relationships on the view's model. String paths are resolved when the
-   filter is attached to a view, and any joins required to reach the
-   target column are added automatically.
-
-   .. note::
-
-       A filter constructed with a dotted-path string caches its
-       resolved attribute and join path against the first model it
-       sees. Re-using the same filter instance across views with
-       *different* models raises ``RuntimeError`` -- construct a new
-       filter instance per view in that case. Filters constructed with
-       a real column / ``InstrumentedAttribute`` are freely shareable.
-
-   Example::
-
-       class PostAdmin(ModelView):
-           column_filters = [
-               # Pass a column object directly:
-               FilterEqual(column=Post.title, name="Title"),
-               # Or use a dotted path resolved against the view's model:
-               FilterLike(column="author.account.email", name="Author Email"),
-           ]
 
 
    .. py:method:: get_dynamic_options(view)
 
 
-.. py:class:: ObjectFilter(column: flask_admin._types.T_COLUMN, name: str, options: flask_admin._types.T_OPTIONS = None, data_type: flask_admin._types.T_WIDGET_TYPE = None)
+.. py:class:: ObjectFilter(column, name, options=None, data_type=None)
 
    Bases: :py:obj:`geonature.core.admin.utils.DynamicOptionsMixin`, :py:obj:`flask_admin.contrib.sqla.filters.FilterEqual`
 
 
    Base SQLAlchemy filter.
-
-   The ``column`` argument accepts either a SQLAlchemy column /
-   ``InstrumentedAttribute`` or a dotted-path string that walks
-   relationships on the view's model. String paths are resolved when the
-   filter is attached to a view, and any joins required to reach the
-   target column are added automatically.
-
-   .. note::
-
-       A filter constructed with a dotted-path string caches its
-       resolved attribute and join path against the first model it
-       sees. Re-using the same filter instance across views with
-       *different* models raises ``RuntimeError`` -- construct a new
-       filter instance per view in that case. Filters constructed with
-       a real column / ``InstrumentedAttribute`` are freely shareable.
-
-   Example::
-
-       class PostAdmin(ModelView):
-           column_filters = [
-               # Pass a column object directly:
-               FilterEqual(column=Post.title, name="Title"),
-               # Or use a dotted path resolved against the view's model:
-               FilterLike(column="author.account.email", name="Author Email"),
-           ]
 
 
    .. py:method:: get_dynamic_options(view)
 
 
-.. py:class:: ActionFilter(column: flask_admin._types.T_COLUMN, name: str, options: flask_admin._types.T_OPTIONS = None, data_type: flask_admin._types.T_WIDGET_TYPE = None)
+.. py:class:: ActionFilter(column, name, options=None, data_type=None)
 
    Bases: :py:obj:`geonature.core.admin.utils.DynamicOptionsMixin`, :py:obj:`flask_admin.contrib.sqla.filters.FilterEqual`
 
 
    Base SQLAlchemy filter.
-
-   The ``column`` argument accepts either a SQLAlchemy column /
-   ``InstrumentedAttribute`` or a dotted-path string that walks
-   relationships on the view's model. String paths are resolved when the
-   filter is attached to a view, and any joins required to reach the
-   target column are added automatically.
-
-   .. note::
-
-       A filter constructed with a dotted-path string caches its
-       resolved attribute and join path against the first model it
-       sees. Re-using the same filter instance across views with
-       *different* models raises ``RuntimeError`` -- construct a new
-       filter instance per view in that case. Filters constructed with
-       a real column / ``InstrumentedAttribute`` are freely shareable.
-
-   Example::
-
-       class PostAdmin(ModelView):
-           column_filters = [
-               # Pass a column object directly:
-               FilterEqual(column=Post.title, name="Title"),
-               # Or use a dotted path resolved against the view's model:
-               FilterLike(column="author.account.email", name="Author Email"),
-           ]
 
 
    .. py:method:: get_dynamic_options(view)
 
 
-.. py:class:: ScopeFilter(column: flask_admin._types.T_COLUMN, name: str, options: flask_admin._types.T_OPTIONS = None, data_type: flask_admin._types.T_WIDGET_TYPE = None)
+.. py:class:: ScopeFilter(column, name, options=None, data_type=None)
 
    Bases: :py:obj:`geonature.core.admin.utils.DynamicOptionsMixin`, :py:obj:`flask_admin.contrib.sqla.filters.FilterEqual`
 
 
    Base SQLAlchemy filter.
-
-   The ``column`` argument accepts either a SQLAlchemy column /
-   ``InstrumentedAttribute`` or a dotted-path string that walks
-   relationships on the view's model. String paths are resolved when the
-   filter is attached to a view, and any joins required to reach the
-   target column are added automatically.
-
-   .. note::
-
-       A filter constructed with a dotted-path string caches its
-       resolved attribute and join path against the first model it
-       sees. Re-using the same filter instance across views with
-       *different* models raises ``RuntimeError`` -- construct a new
-       filter instance per view in that case. Filters constructed with
-       a real column / ``InstrumentedAttribute`` are freely shareable.
-
-   Example::
-
-       class PostAdmin(ModelView):
-           column_filters = [
-               # Pass a column object directly:
-               FilterEqual(column=Post.title, name="Title"),
-               # Or use a dotted path resolved against the view's model:
-               FilterLike(column="author.account.email", name="Author Email"),
-           ]
 
 
    .. py:method:: apply(query, value, alias=None)
@@ -328,7 +203,7 @@ Module Contents
 
 
 
-.. py:class:: UserAjaxModelLoader(name: str, session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, model: type[flask_admin._types.T_SQLALCHEMY_MODEL], **options: Any)
+.. py:class:: UserAjaxModelLoader(name, session, model, **options)
 
    Bases: :py:obj:`flask_admin.contrib.sqla.ajax.QueryAjaxModelLoader`
 
@@ -351,7 +226,7 @@ Module Contents
    .. py:method:: get_query()
 
 
-.. py:class:: AreaAjaxModelLoader(name: str, session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, model: type[flask_admin._types.T_SQLALCHEMY_MODEL], **options: Any)
+.. py:class:: AreaAjaxModelLoader(name, session, model, **options)
 
    Bases: :py:obj:`flask_admin.contrib.sqla.ajax.QueryAjaxModelLoader`
 
@@ -392,7 +267,7 @@ Module Contents
 
 
 
-.. py:class:: TaxrefAjaxModelLoader(name: str, session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, model: type[flask_admin._types.T_SQLALCHEMY_MODEL], **options: Any)
+.. py:class:: TaxrefAjaxModelLoader(name, session, model, **options)
 
    Bases: :py:obj:`flask_admin.contrib.sqla.ajax.QueryAjaxModelLoader`
 
@@ -418,7 +293,7 @@ Module Contents
 
 
 
-.. py:class:: ObjectAdmin(model: type[flask_admin._types.T_SQLALCHEMY_MODEL], session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, name: str | None = None, category: str | None = None, endpoint: str | None = None, url: str | None = None, static_folder: str | None = None, menu_class_name: str | None = None, menu_icon_type: str | None = None, menu_icon_value: str | None = None)
+.. py:class:: ObjectAdmin(model, session, name=None, category=None, endpoint=None, url=None, static_folder=None, menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
 
    Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`flask_admin.contrib.sqla.ModelView`
 
@@ -510,8 +385,8 @@ Module Contents
           class MyModelView(BaseModelView):
               column_default_sort = 'user'
 
-      You can use tuple to control ascending descending order. In following example,
-      items will be sorted in descending order::
+      You can use tuple to control ascending descending order. In following example, items
+      will be sorted in descending order::
 
           class MyModelView(BaseModelView):
               column_default_sort = ('user', True)
@@ -557,7 +432,7 @@ Module Contents
 
 
 
-.. py:class:: PermissionAdmin(model: type[flask_admin._types.T_SQLALCHEMY_MODEL], session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, name: str | None = None, category: str | None = None, endpoint: str | None = None, url: str | None = None, static_folder: str | None = None, menu_class_name: str | None = None, menu_icon_type: str | None = None, menu_icon_value: str | None = None)
+.. py:class:: PermissionAdmin(model, session, name=None, category=None, endpoint=None, url=None, static_folder=None, menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
 
    Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`flask_admin.contrib.sqla.ModelView`
 
@@ -618,8 +493,8 @@ Module Contents
       :value: ('availability',)
 
 
-      List of parameters for SQLAlchemy `subqueryload`. Overrides
-      `column_auto_select_related` property.
+      List of parameters for SQLAlchemy `subqueryload`. Overrides `column_auto_select_related`
+      property.
 
       For example::
 
@@ -653,8 +528,8 @@ Module Contents
 
       The following search rules apply:
 
-      - If you enter ``ZZZ`` in the UI search field, it will generate
-        ``ILIKE '%ZZZ%'`` statement against searchable columns.
+      - If you enter ``ZZZ`` in the UI search field, it will generate ``ILIKE '%ZZZ%'``
+        statement against searchable columns.
 
       - If you enter multiple words, each word will be searched separately, but
         only rows that contain all words will be displayed. For example, searching
@@ -662,12 +537,10 @@ Module Contents
         more columns.
 
       - If you prefix your search term with ``^``, it will find all rows
-        that start with ``^``. So, if you entered ``^ZZZ`` then ``ILIKE 'ZZZ%'`` will
-        be used.
+        that start with ``^``. So, if you entered ``^ZZZ`` then ``ILIKE 'ZZZ%'`` will be used.
 
       - If you prefix your search term with ``=``, it will perform an exact match.
-        For example, if you entered ``=ZZZ``, the statement ``ILIKE 'ZZZ'`` will be
-        used.
+        For example, if you entered ``=ZZZ``, the statement ``ILIKE 'ZZZ'`` will be used.
 
 
 
@@ -803,8 +676,8 @@ Module Contents
           class MyModelView(BaseModelView):
               column_default_sort = 'user'
 
-      You can use tuple to control ascending descending order. In following example,
-      items will be sorted in descending order::
+      You can use tuple to control ascending descending order. In following example, items
+      will be sorted in descending order::
 
           class MyModelView(BaseModelView):
               column_default_sort = ('user', True)
@@ -886,9 +759,8 @@ Module Contents
 
       Use AJAX for foreign key model loading.
 
-      Should contain dictionary, where key is field name and value is either a
-      dictionary which configures AJAX lookups or backend-specific `AjaxModelLoader`
-      class instance.
+      Should contain dictionary, where key is field name and value is either a dictionary which
+      configures AJAX lookups or backend-specific `AjaxModelLoader` class instance.
 
       For example, it can look like::
 
@@ -906,13 +778,11 @@ Module Contents
 
           class MyModelView(BaseModelView):
               form_ajax_refs = {
-                  'user': QueryAjaxModelLoader(
-                      'user', db.session, User, fields=['email'], page_size=10
-                  )
+                  'user': QueryAjaxModelLoader('user', db.session, User, fields=['email'], page_size=10)
               }
 
-      If you need custom loading functionality, you can implement your custom loading
-      behavior in your `AjaxModelLoader` class.
+      If you need custom loading functionality, you can implement your custom loading behavior
+      in your `AjaxModelLoader` class.
 
 
 
@@ -926,14 +796,11 @@ Module Contents
 
           class MyView(ModelView):
               def get_query(self):
-                  return super(MyView, self).get_query().filter(
-                      User.username == current_user.username
-                  )
+                  return super(MyView, self).get_query().filter(User.username == current_user.username)
 
 
-      If you override this method, don't forget to also override `get_count_query`,
-      for displaying the correct item count in the list view, and `get_one`, which is
-      used when retrieving records for the edit view.
+      If you override this method, don't forget to also override `get_count_query`, for displaying the correct
+      item count in the list view, and `get_one`, which is used when retrieving records for the edit view.
 
 
 
@@ -967,7 +834,7 @@ Module Contents
 
 
 
-.. py:class:: PermissionAvailableAdmin(model: type[flask_admin._types.T_SQLALCHEMY_MODEL], session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, name: str | None = None, category: str | None = None, endpoint: str | None = None, url: str | None = None, static_folder: str | None = None, menu_class_name: str | None = None, menu_icon_type: str | None = None, menu_icon_value: str | None = None)
+.. py:class:: PermissionAvailableAdmin(model, session, name=None, category=None, endpoint=None, url=None, static_folder=None, menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
 
    Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`flask_admin.contrib.sqla.ModelView`
 
@@ -1145,8 +1012,8 @@ Module Contents
           class MyModelView(BaseModelView):
               column_default_sort = 'user'
 
-      You can use tuple to control ascending descending order. In following example,
-      items will be sorted in descending order::
+      You can use tuple to control ascending descending order. In following example, items
+      will be sorted in descending order::
 
           class MyModelView(BaseModelView):
               column_default_sort = ('user', True)
@@ -1182,7 +1049,7 @@ Module Contents
 
 
 
-.. py:class:: RolePermAdmin(model: type[flask_admin._types.T_SQLALCHEMY_MODEL], session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, name: str | None = None, category: str | None = None, endpoint: str | None = None, url: str | None = None, static_folder: str | None = None, menu_class_name: str | None = None, menu_icon_type: str | None = None, menu_icon_value: str | None = None)
+.. py:class:: RolePermAdmin(model, session, name=None, category=None, endpoint=None, url=None, static_folder=None, menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
 
    Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`flask_admin.contrib.sqla.ModelView`
 
@@ -1258,8 +1125,8 @@ Module Contents
       :value: ('permissions',)
 
 
-      List of parameters for SQLAlchemy `subqueryload`. Overrides
-      `column_auto_select_related` property.
+      List of parameters for SQLAlchemy `subqueryload`. Overrides `column_auto_select_related`
+      property.
 
       For example::
 
@@ -1304,8 +1171,8 @@ Module Contents
 
       The following search rules apply:
 
-      - If you enter ``ZZZ`` in the UI search field, it will generate
-        ``ILIKE '%ZZZ%'`` statement against searchable columns.
+      - If you enter ``ZZZ`` in the UI search field, it will generate ``ILIKE '%ZZZ%'``
+        statement against searchable columns.
 
       - If you enter multiple words, each word will be searched separately, but
         only rows that contain all words will be displayed. For example, searching
@@ -1313,12 +1180,10 @@ Module Contents
         more columns.
 
       - If you prefix your search term with ``^``, it will find all rows
-        that start with ``^``. So, if you entered ``^ZZZ`` then ``ILIKE 'ZZZ%'`` will
-        be used.
+        that start with ``^``. So, if you entered ``^ZZZ`` then ``ILIKE 'ZZZ%'`` will be used.
 
       - If you prefix your search term with ``=``, it will perform an exact match.
-        For example, if you entered ``=ZZZ``, the statement ``ILIKE 'ZZZ'`` will be
-        used.
+        For example, if you entered ``=ZZZ``, the statement ``ILIKE 'ZZZ'`` will be used.
 
 
 
@@ -1363,7 +1228,6 @@ Module Contents
 
       Functions the same way as column_formatters except
       that macros are not supported.
-      that macros are not supported.
 
 
 
@@ -1377,14 +1241,11 @@ Module Contents
 
           class MyView(ModelView):
               def get_query(self):
-                  return super(MyView, self).get_query().filter(
-                      User.username == current_user.username
-                  )
+                  return super(MyView, self).get_query().filter(User.username == current_user.username)
 
 
-      If you override this method, don't forget to also override `get_count_query`,
-      for displaying the correct item count in the list view, and `get_one`, which is
-      used when retrieving records for the edit view.
+      If you override this method, don't forget to also override `get_count_query`, for displaying the correct
+      item count in the list view, and `get_one`, which is used when retrieving records for the edit view.
 
 
 
@@ -1399,7 +1260,7 @@ Module Contents
 
 
 
-.. py:class:: GroupPermAdmin(model: type[flask_admin._types.T_SQLALCHEMY_MODEL], session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, name: str | None = None, category: str | None = None, endpoint: str | None = None, url: str | None = None, static_folder: str | None = None, menu_class_name: str | None = None, menu_icon_type: str | None = None, menu_icon_value: str | None = None)
+.. py:class:: GroupPermAdmin(model, session, name=None, category=None, endpoint=None, url=None, static_folder=None, menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
 
    Bases: :py:obj:`RolePermAdmin`
 
@@ -1454,14 +1315,11 @@ Module Contents
 
           class MyView(ModelView):
               def get_query(self):
-                  return super(MyView, self).get_query().filter(
-                      User.username == current_user.username
-                  )
+                  return super(MyView, self).get_query().filter(User.username == current_user.username)
 
 
-      If you override this method, don't forget to also override `get_count_query`,
-      for displaying the correct item count in the list view, and `get_one`, which is
-      used when retrieving records for the edit view.
+      If you override this method, don't forget to also override `get_count_query`, for displaying the correct
+      item count in the list view, and `get_one`, which is used when retrieving records for the edit view.
 
 
 
@@ -1476,7 +1334,7 @@ Module Contents
 
 
 
-.. py:class:: UserPermAdmin(model: type[flask_admin._types.T_SQLALCHEMY_MODEL], session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, name: str | None = None, category: str | None = None, endpoint: str | None = None, url: str | None = None, static_folder: str | None = None, menu_class_name: str | None = None, menu_icon_type: str | None = None, menu_icon_value: str | None = None)
+.. py:class:: UserPermAdmin(model, session, name=None, category=None, endpoint=None, url=None, static_folder=None, menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
 
    Bases: :py:obj:`RolePermAdmin`
 
@@ -1542,14 +1400,11 @@ Module Contents
 
           class MyView(ModelView):
               def get_query(self):
-                  return super(MyView, self).get_query().filter(
-                      User.username == current_user.username
-                  )
+                  return super(MyView, self).get_query().filter(User.username == current_user.username)
 
 
-      If you override this method, don't forget to also override `get_count_query`,
-      for displaying the correct item count in the list view, and `get_one`, which is
-      used when retrieving records for the edit view.
+      If you override this method, don't forget to also override `get_count_query`, for displaying the correct
+      item count in the list view, and `get_one`, which is used when retrieving records for the edit view.
 
 
 

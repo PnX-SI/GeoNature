@@ -76,7 +76,7 @@ Module Contents
 
               class MySchema2(Schema):
                   # Type checkers will check attributes
-                  class Meta(Schema.Meta):
+                  class Meta(Schema.Opts):
                       additional = True  # Incompatible types in assignment
 
       .. versionremoved:: 3.0.0b7 Remove ``strict``.
@@ -146,7 +146,7 @@ Module Contents
 
               class MySchema2(Schema):
                   # Type checkers will check attributes
-                  class Meta(Schema.Meta):
+                  class Meta(Schema.Opts):
                       additional = True  # Incompatible types in assignment
 
       .. versionremoved:: 3.0.0b7 Remove ``strict``.
@@ -230,7 +230,7 @@ Module Contents
 
               class MySchema2(Schema):
                   # Type checkers will check attributes
-                  class Meta(Schema.Meta):
+                  class Meta(Schema.Opts):
                       additional = True  # Incompatible types in assignment
 
       .. versionremoved:: 3.0.0b7 Remove ``strict``.
@@ -306,7 +306,7 @@ Module Contents
 
               class MySchema2(Schema):
                   # Type checkers will check attributes
-                  class Meta(Schema.Meta):
+                  class Meta(Schema.Opts):
                       additional = True  # Incompatible types in assignment
 
       .. versionremoved:: 3.0.0b7 Remove ``strict``.
@@ -390,7 +390,7 @@ Module Contents
    .. py:attribute:: value
 
 
-.. py:class:: CastableField(*, load_default: Any = missing_, dump_default: Any = missing_, data_key: str | None = None, attribute: str | None = None, validate: marshmallow.types.Validator | Iterable[marshmallow.types.Validator] | None = None, pre_load: marshmallow.types.PreLoadCallable | Iterable[marshmallow.types.PreLoadCallable] | None = None, post_load: marshmallow.types.PostLoadCallable | Iterable[marshmallow.types.PostLoadCallable] | None = None, required: bool = False, allow_none: bool | None = None, load_only: bool = False, dump_only: bool = False, error_messages: marshmallow.types.ErrorMessages | None = None, metadata: Mapping[str, Any] | None = None)
+.. py:class:: CastableField(*, load_default: Any = missing_, dump_default: Any = missing_, data_key: str | None = None, attribute: str | None = None, validate: marshmallow.types.Validator | Iterable[marshmallow.types.Validator] | None = None, required: bool = False, allow_none: bool | None = None, load_only: bool = False, dump_only: bool = False, error_messages: dict[str, str] | None = None, metadata: Mapping[str, Any] | None = None)
 
    Bases: :py:obj:`marshmallow.fields.Field`
 
@@ -489,7 +489,7 @@ Module Contents
 
               class MySchema2(Schema):
                   # Type checkers will check attributes
-                  class Meta(Schema.Meta):
+                  class Meta(Schema.Opts):
                       additional = True  # Incompatible types in assignment
 
       .. versionremoved:: 3.0.0b7 Remove ``strict``.

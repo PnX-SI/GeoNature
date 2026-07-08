@@ -28,29 +28,34 @@ Module Contents
 
 .. py:data:: log
 
-.. py:class:: TAdditionalFieldsForm(fields, prefix='', meta=_default_meta)
+.. py:class:: TAdditionalFieldsForm(formdata=None, obj=None, prefix='', **kwargs)
 
    Bases: :py:obj:`flask_admin.form.BaseForm`
 
 
-   Base Form Class.  Provides core behaviour like field construction,
-   validation, and data and error proxying.
+   Declarative Form base class. Extends BaseForm's core behaviour allowing
+   fields to be defined on Form subclasses as class attributes.
+
+   In addition, form and instance input data are taken at construction time
+   and passed to `process()`.
 
 
    .. py:method:: validate(extra_validators=None)
 
-      Validates the form by calling `validate` on each field.
+      Validate the form by calling ``validate`` on each field.
+      Returns ``True`` if validation passes.
 
-      :param extra_validators:
-          If provided, is a dict mapping field names to a sequence of
-          callables which will be passed as extra validators to the field's
-          `validate` method.
+      If the form defines a ``validate_<fieldname>`` method, it is
+      appended as an extra validator for the field's ``validate``.
 
-      Returns `True` if no errors occur.
+      :param extra_validators: A dict mapping field names to lists of
+          extra validator methods to run. Extra validators run after
+          validators passed when creating the field. If the form has
+          ``validate_<fieldname>``, it is the last extra validator.
 
 
 
-.. py:class:: BibFieldAdmin(model: type[flask_admin._types.T_SQLALCHEMY_MODEL], session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, name: str | None = None, category: str | None = None, endpoint: str | None = None, url: str | None = None, static_folder: str | None = None, menu_class_name: str | None = None, menu_icon_type: str | None = None, menu_icon_value: str | None = None)
+.. py:class:: BibFieldAdmin(model, session, name=None, category=None, endpoint=None, url=None, static_folder=None, menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
 
    Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`flask_admin.contrib.sqla.ModelView`
 
@@ -75,8 +80,7 @@ Module Contents
 
    .. py:attribute:: form_base_class
 
-      Base form class. Will be used by form scaffolding function when creating model
-      form.
+      Base form class. Will be used by form scaffolding function when creating model form.
 
       Useful if you want to have custom constructor or override some fields.
 
@@ -165,7 +169,7 @@ Module Contents
 
 
 
-.. py:class:: TMobileAppsAdmin(model: type[flask_admin._types.T_SQLALCHEMY_MODEL], session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, name: str | None = None, category: str | None = None, endpoint: str | None = None, url: str | None = None, static_folder: str | None = None, menu_class_name: str | None = None, menu_icon_type: str | None = None, menu_icon_value: str | None = None)
+.. py:class:: TMobileAppsAdmin(model, session, name=None, category=None, endpoint=None, url=None, static_folder=None, menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
 
    Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`flask_admin.contrib.sqla.ModelView`
 
@@ -258,7 +262,7 @@ Module Contents
 
 
 
-.. py:class:: TModulesAdmin(model: type[flask_admin._types.T_SQLALCHEMY_MODEL], session: flask_admin.contrib.sqla._types.T_SESSION_OR_DB, name: str | None = None, category: str | None = None, endpoint: str | None = None, url: str | None = None, static_folder: str | None = None, menu_class_name: str | None = None, menu_icon_type: str | None = None, menu_icon_value: str | None = None)
+.. py:class:: TModulesAdmin(model, session, name=None, category=None, endpoint=None, url=None, static_folder=None, menu_class_name=None, menu_icon_type=None, menu_icon_value=None)
 
    Bases: :py:obj:`geonature.core.admin.utils.CruvedProtectedMixin`, :py:obj:`flask_admin.contrib.sqla.ModelView`
 
@@ -336,8 +340,8 @@ Module Contents
 
       The following search rules apply:
 
-      - If you enter ``ZZZ`` in the UI search field, it will generate
-        ``ILIKE '%ZZZ%'`` statement against searchable columns.
+      - If you enter ``ZZZ`` in the UI search field, it will generate ``ILIKE '%ZZZ%'``
+        statement against searchable columns.
 
       - If you enter multiple words, each word will be searched separately, but
         only rows that contain all words will be displayed. For example, searching
@@ -345,12 +349,10 @@ Module Contents
         more columns.
 
       - If you prefix your search term with ``^``, it will find all rows
-        that start with ``^``. So, if you entered ``^ZZZ`` then ``ILIKE 'ZZZ%'`` will
-        be used.
+        that start with ``^``. So, if you entered ``^ZZZ`` then ``ILIKE 'ZZZ%'`` will be used.
 
       - If you prefix your search term with ``=``, it will perform an exact match.
-        For example, if you entered ``=ZZZ``, the statement ``ILIKE 'ZZZ'`` will be
-        used.
+        For example, if you entered ``=ZZZ``, the statement ``ILIKE 'ZZZ'`` will be used.
 
 
 
@@ -365,8 +367,8 @@ Module Contents
           class MyModelView(BaseModelView):
               column_default_sort = 'user'
 
-      You can use tuple to control ascending descending order. In following example,
-      items will be sorted in descending order::
+      You can use tuple to control ascending descending order. In following example, items
+      will be sorted in descending order::
 
           class MyModelView(BaseModelView):
               column_default_sort = ('user', True)
