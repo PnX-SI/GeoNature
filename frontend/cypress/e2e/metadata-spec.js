@@ -18,6 +18,7 @@ describe('Testing metadata', () => {
     name: 'Mon jeu de données',
     shortname: 'Mon jdd',
     description: 'description de mon jdd',
+    testAdditionalFieldValue: 'test de valeur',
   };
 
   let newOrganism = {
@@ -213,8 +214,16 @@ describe('Testing metadata', () => {
     cy.get('[data-qa="pnx-dataset-form-resource-type"] > ng-select > div').click();
     cy.get('[data-qa="1"]').click();
 
+    cy.get("[data-qa='field-text-test_champs_additionnel']")
+      .click()
+      .type(newJdd.testAdditionalFieldValue);
+
     cy.get('[data-qa="pnx-dataset-form-save-jdd"]').click();
+
     cy.get('[data-qa="pnx-metadata-dataset-name"]').contains(newJdd.name);
+    cy.get('[data-qa="pnx-metadata-additional-field-test_champs_additionnel"]').contains(
+      newJdd.testAdditionalFieldValue
+    );
     cy.get('[data-qa="pnx-metadata-exit-jdd"]').click();
   });
 

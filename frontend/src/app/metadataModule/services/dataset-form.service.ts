@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { UntypedFormGroup, UntypedFormArray, UntypedFormBuilder, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { tap, filter, switchMap, map } from 'rxjs/operators';
 
 import { ActorFormService } from './actor-form.service';
 import { FormService } from '@geonature_common/form/form.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { ActivatedRoute } from '@librairies/@angular/router';
+import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ModuleService } from '@geonature/services/module.service';
 
 @Injectable()
@@ -18,6 +19,9 @@ export class DatasetFormService {
   public dataset: BehaviorSubject<any> = new BehaviorSubject(null);
   public otherActorGroupForms: BehaviorSubject<any> = new BehaviorSubject({});
 
+  // Custom additional fields
+  public additionalFieldsForm: Array<any> = [];
+
   constructor(
     private fb: UntypedFormBuilder,
     private _toaster: ToastrService,
@@ -25,6 +29,7 @@ export class DatasetFormService {
     private formS: FormService,
     private _config: ConfigService,
     private _route: ActivatedRoute,
+    private dataFormService: DataFormService,
     public moduleService: ModuleService
   ) {
     this.initForm();
@@ -49,6 +54,7 @@ export class DatasetFormService {
           modules: [],
           cor_territories: [],
           cor_dataset_actor: [{ id_nomenclature_actor_role: id_nomenclature }],
+          additional_data: {},
         };
       })
     );
@@ -83,11 +89,24 @@ export class DatasetFormService {
         ]
       ),
       unique_dataset_id: [null, [this.formS.uuidValidator()]],
+      additional_data: this.fb.group({}),
     });
     this.genericActorForm = this.fb.array(
       [],
       [this.actorFormS.checkDoublonsValidator.bind(this.actorFormS)]
     );
+  }
+
+  getAdditionalFields(object_code: Array<string>): Observable<any> {
+    return this.dataFormService
+      .getadditionalFields({
+        module_code: [this.moduleService.currentModule.module_code],
+        object_code: object_code,
+      })
+      .catch((error) => {
+        console.error('Error while getting additional fields', error);
+        return of([]);
+      });
   }
 
   /**
@@ -99,6 +118,9 @@ export class DatasetFormService {
       .asObservable()
       .pipe(
         tap(() => this.reset()),
+        tap(() => {
+          this.additionalFieldsForm = [];
+        }),
         switchMap((dataset) =>
           dataset !== null ? this.dataset.asObservable() : this.initialValues
         ),
@@ -125,7 +147,32 @@ export class DatasetFormService {
             }
           });
           return value;
-        })
+        }),
+        // Get additional fields from datasets
+        switchMap((dataset) => {
+          let additionnalFieldsObservable: Observable<any>;
+          additionnalFieldsObservable = this.getAdditionalFields(['METADATA_JEU_DE_DONNEES']);
+          return forkJoin([of(dataset), additionnalFieldsObservable]);
+        }),
+        map(([dataset, additional_data]) => {
+          additional_data.forEach((field) => {
+            // Set value of field
+            if (
+              dataset.additional_data &&
+              dataset.additional_data[field.attribut_name] !== undefined
+            ) {
+              field.value = dataset.additional_data[field.attribut_name];
+            }
+          });
+
+          return [dataset, additional_data];
+        }),
+        // Set the additional fields form
+        tap(([dataset, additional_data]) => {
+          this.additionalFieldsForm = additional_data;
+        }),
+        // Map to return acquisition framework data only
+        map(([dataset, additional_data]) => dataset)
       )
       .subscribe((value: any) => this.form.patchValue(value));
 

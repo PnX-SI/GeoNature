@@ -97,13 +97,16 @@ def synthese_corr():
     }
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="class")
 def additional_fields(app):
     module = db.session.execute(
         select(TModules).where(TModules.module_code == "METADATA")
     ).scalar_one()
-    obj = db.session.execute(
+    obj_af = db.session.execute(
         select(PermObject).where(PermObject.code_object == "METADATA_CADRE_ACQUISITION")
+    ).scalar_one()
+    obj_ds = db.session.execute(
+        select(PermObject).where(PermObject.code_object == "METADATA_JEU_DE_DONNEES")
     ).scalar_one()
 
     # Retrieve widget IDs from database
@@ -122,16 +125,17 @@ def additional_fields(app):
         ("number_field_used", "number"),
         ("text_field_not_used", "text"),
     ]:
-        additional_field = TAdditionalFields(
-            field_name=name,
-            field_label=name,
-            required=True,
-            id_widget=widget_ids[widget_name],
-            modules=[module],
-            objects=[obj],
-        )
-        with db.session.begin_nested():
-            db.session.add(additional_field)
+        for obj in [obj_af, obj_ds]:
+            additional_field = TAdditionalFields(
+                field_name=name,
+                field_label=name,
+                required=True,
+                id_widget=widget_ids[widget_name],
+                modules=[module],
+                objects=[obj],
+            )
+            with db.session.begin_nested():
+                db.session.add(additional_field)
     return None
 
 
@@ -884,7 +888,7 @@ class TestGNMeta:
         assert response.status_code == 400
         assert response.json["description"].get("active")
 
-    def test_get_dataset(self, users, datasets):
+    def test_get_dataset(self, users, datasets, additional_fields):
         ds = datasets["own_dataset"]
 
         response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=ds.id_dataset))
@@ -904,6 +908,13 @@ class TestGNMeta:
         assert response.status_code == 200
 
         assert DatasetSchema().validate(response.json)
+        assert response.json["additional_data"] == {
+            "select_field_used": "value1",
+            "nomenclature_field_used": "Valeur De Nomenclature",
+            "text_field_used": "test",
+            "date_field_used": {"day": 31, "year": 2025, "month": 10},
+            "number_field_used": 1,
+        }
         assert response.json["id_dataset"] == ds.id_dataset
 
     def test_get_datasets_synthese_records_count(self, users):
@@ -1129,7 +1140,7 @@ class TestGNMeta:
 
         assert response.status_code == Forbidden.code
 
-    def test_dataset_pdf_export(self, users, datasets):
+    def test_dataset_pdf_export(self, users, datasets, additional_fields):
         unexisting_id = (
             db.session.scalar(select(func.max(TDatasets.id_dataset)).select_from(TDatasets)) + 1
         )

@@ -52,6 +52,8 @@ export class DatasetCardComponent implements OnInit {
 
   public spinner = true;
 
+  public additionalFields: Array<any> = [];
+
   constructor(
     private _route: ActivatedRoute,
     private _dfs: DataFormService,
@@ -88,7 +90,27 @@ export class DatasetCardComponent implements OnInit {
       .getObsBbox({ id_dataset: this.id_dataset })
       .subscribe((res: any) => (this.bbox = res));
 
-    this._dfs.getDataset(this.id_dataset).subscribe((dataset) => (this.dataset = dataset));
+    this._dfs.getDataset(this.id_dataset).subscribe((dataset) => {
+      this.dataset = dataset;
+      this._dfs
+        .getadditionalFields({
+          module_code: [this.moduleService.currentModule.module_code],
+        })
+        .subscribe((additionalFields) => {
+          additionalFields.forEach((field) => {
+            const map = {
+              METADATA_JEU_DE_DONNEES: this.additionalFields,
+            };
+            if (field.type_widget != 'html') {
+              field.objects.forEach((object) => {
+                if (object.code_object in map) {
+                  map[object.code_object].push(field);
+                }
+              });
+            }
+          });
+        });
+    });
 
     this._dfs
       .getTaxaDistribution('group2_inpn', { id_dataset: this.id_dataset })

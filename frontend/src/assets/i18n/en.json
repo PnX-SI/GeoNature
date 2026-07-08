@@ -314,6 +314,7 @@
     "SpeciesDistribution": "Species distribution",
     "AssociatedDatasets": "Associated datasets",
     "Reference": "Reference",
+    "AdditionalInformation": "Additional information",
 
     "DatasetCard": {
       "Actions": {
@@ -382,9 +383,6 @@
       "FacultativeTaxaList": "Taxon list (optional)",
       "SpecificGeonature": "Specific GeoNature",
       "RequiredToImportAndEnterData": "Required to enter or import data in the dataset"
-    },
-    "AcquisitionFrameworkCard": {
-      "AdditionalInformation": "Additional information"
     },
     "AcquisitionFrameworkForm": {},
     "Actors": {

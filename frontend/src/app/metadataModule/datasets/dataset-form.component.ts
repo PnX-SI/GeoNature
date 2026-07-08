@@ -14,6 +14,8 @@ import { MetadataDataService } from '../services/metadata-data.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { TranslateService } from '@librairies/@ngx-translate/core';
 
+import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
+
 @Component({
   selector: 'pnx-datasets-form',
   templateUrl: './dataset-form.component.html',
@@ -40,7 +42,8 @@ export class DatasetFormComponent implements OnInit {
     private metadataS: MetadataService,
     private metadataDataS: MetadataDataService,
     private _config: ConfigService,
-    public translation_service: TranslateService
+    public translation_service: TranslateService,
+    private dateParser: NgbDateParserFormatter
   ) {}
 
   ngOnInit() {
@@ -50,7 +53,9 @@ export class DatasetFormComponent implements OnInit {
         switchMap((params) => {
           if (params['id']) {
             // Update
-            return this._dfs.getDataset(params['id']);
+            return this._dfs
+              .getDataset(params['id'])
+              .pipe(tap((dataset) => this.handleDates(dataset, true)));
           }
           // Creation
           return of(null);
@@ -90,6 +95,27 @@ export class DatasetFormComponent implements OnInit {
     this._dfs.getTaxaBibList().subscribe((d) => (this.taxaBibList = d));
     this.uuidEditionEnabled = this._config.METADATA.ENABLE_UUID_EDITION_FIELD;
     this.entityLabel = this.translation_service.instant('Dataset');
+  }
+
+  handleDates(dataset, isParseElseFormat = false) {
+    const handlingFunction = isParseElseFormat ? this.dateParser.parse : this.dateParser.format;
+
+    // Additional fields - Format dates
+    this.additionalFieldsForm.forEach((fieldForm: any) => {
+      if (fieldForm.type_widget == 'date') {
+        dataset.additional_data[fieldForm.attribut_name] = handlingFunction(
+          dataset.additional_data[fieldForm.attribut_name]
+        );
+      }
+    });
+  }
+
+  get propertiesForm(): any {
+    return this.form;
+  }
+
+  get additionalFieldsForm(): any[] {
+    return this.datasetFormS.additionalFieldsForm;
   }
 
   updateFormControlsState(dataset: any): void {
@@ -139,6 +165,9 @@ export class DatasetFormComponent implements OnInit {
             unique_dataset_id: this.form.value.unique_dataset_id,
           }
         : base;
+
+    this.handleDates(dataset);
+
     this.mergeActors(dataset, this.datasetFormS.genericActorForm.value);
 
     //UPDATE
