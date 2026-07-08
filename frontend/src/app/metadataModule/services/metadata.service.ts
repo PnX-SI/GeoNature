@@ -156,6 +156,11 @@ export class MetadataService {
       )
       .subscribe((datasets) => {
         af.t_datasets = datasets;
+        for (const dataset of af.t_datasets) {
+          this.dataFormService
+            .getDatasetStats(dataset.id_dataset)
+            .subscribe((stats) => (dataset.dict_stats = stats));
+        }
       });
   }
 

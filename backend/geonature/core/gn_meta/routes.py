@@ -113,9 +113,9 @@ def get_datasets():
         "cor_dataset_actor.role",
     ]
 
-    if params.get("synthese_records_count", type=int, default=0):
-        query = query.options(undefer(TDatasets.synthese_records_count))
-        only.append("+synthese_records_count")
+    if params.get("nb_observations_synthese", type=int, default=0):
+        query = query.options(undefer(TDatasets.nb_observations_synthese))
+        only.append("+nb_observations_synthese")
 
     if "modules" in fields:
         query = query.options(joinedload(TDatasets.modules))
@@ -831,6 +831,51 @@ def get_acquisition_framework_stats_route(id_acquisition_framework):
     :param type: int
     """
     return get_acquisition_framework_stats(id_acquisition_framework)
+
+
+@routes.route("/dataset/<id_dataset>/stats", methods=["GET"])
+@permissions.check_cruved_scope("R", module_code="METADATA")
+@json_resp
+def get_dataset_stats(id_dataset):
+    """
+    Get stats from one DS
+    .. :quickref: Metadata;
+    :param id_dataset: the id_dataset
+    :param type: int
+    """
+    dict_nb_obs = {}
+
+    nb_obs_synthese = db.session.execute(
+        select(func.count(Synthese.id_synthese)).where(Synthese.id_dataset == id_dataset)
+    ).scalar_one()
+
+    dict_nb_obs["SYNTHESE"] = nb_obs_synthese
+
+    from geonature.utils.module import iter_modules_dist
+
+    for module_dist in iter_modules_dist():
+        module_name = module_dist.name
+        is_current_module_installed = current_app.dict_modules_is_installed.get(module_name, False)
+        if is_current_module_installed:
+            module_statistics = None
+            try:
+                module_statistics = module_dist.entry_points["statistics"]
+            except KeyError:
+                pass
+            if module_statistics:
+                statistics = __import__(module_name + ".statistics", fromlist=["statistics"])
+                nb_observations = statistics.MetadataStatistics.get_dataset_nb_observations(
+                    id_dataset
+                )
+                module_code = module_dist.entry_points["code"].load()
+                dict_nb_obs[module_code] = nb_observations
+
+    total_nb_obs = sum(dict_nb_obs.values())
+
+    return dict(
+        dict_nb_obs=dict_nb_obs,
+        total_nb_obs=total_nb_obs,
+    )
 
 
 @routes.route("/acquisition_framework/<id_acquisition_framework>/bbox", methods=["GET"])

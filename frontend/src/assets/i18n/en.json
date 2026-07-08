@@ -292,7 +292,7 @@
     "Stakeholders": "Stakeholders",
     "DatasetName": "Dataset name",
     "AFName": "Acquisition framework name",
-    "DataAmount": "Amount of data",
+    "CountObservations": "Number of observations",
     "StakeholderOrganization": "Stakeholder (organization)",
     "DataSources": "Data sources",
     "DescriptiveForm": "Descriptive form",
@@ -314,7 +314,13 @@
     "SpeciesDistribution": "Species distribution",
     "AssociatedDatasets": "Associated datasets",
     "Reference": "Reference",
-
+    "ObservationsSyntheseTooltip": "Synthese",
+    "ObservationsOcchabTooltip": "Habitats",
+    "DatasetSyntheseButtonTooltipNoData": "There is no data in Synthese for this dataset",
+    "DatasetSyntheseButtonTooltipExistData": "Display data in Synthese",
+    "DatasetDeleteButtonTooltipNotPossibleExistData": "This dataset contains data and thus cannot be deleted",
+    "DatasetDeleteButtonTooltipNotPossibleMissingPermissions": "You do not have the necessary permissions to delete this dataset",
+    "DatasetDeleteButtonTooltipPossible": "Delete the dataset",
     "DatasetCard": {
       "Actions": {
         "DisplayData": "Display data"
@@ -417,6 +423,10 @@
       "Of": "of",
       "PreviousPage": "Previous page",
       "NextPage": "Next page"
+    },
+    "Statistics": {
+      "OccurrencesSynthese": "Taxon(s) occurrence(s)",
+      "OccurrencesOcchab": "Habitat(s) occurrence(s)"
     }
   },
   "Filters": {

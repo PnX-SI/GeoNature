@@ -109,8 +109,8 @@
                 </div>
                 <div class="etiquette-bas">
                     <p class="stat-etiquette">
-                        {% if data.stats: %}
-                        {{ data.stats["nb_habitats"]}}
+                        {% if "OCCHAB" in data.stats.dict_nb_obs: %}
+                        {{ data.stats.dict_nb_obs["OCCHAB"]}}
                         {% endif %}
                     </p>
                 </div>
@@ -122,12 +122,12 @@
                         src="{{url_for('static', filename='images/Donnee_icon.svg')}}"
                         alt="donnee-icon"
                     >
-                    <p class="titre-etiquette">Nombre d'observations</p>
+                    <p class="titre-etiquette">Nombre d'observations de Synthèse</p>
                 </div>
                 <div class="etiquette-bas">
                     <p class="stat-etiquette">
-                        {% if data.stats: %}
-                        {{ data.stats["nb_observations"]}}
+                        {% if "SYNTHESE" in data.stats.dict_nb_obs: %}
+                        {{ data.stats.dict_nb_obs["SYNTHESE"]}}
                         {% endif %}
                     </p>
                 </div>

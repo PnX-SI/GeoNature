@@ -871,12 +871,10 @@ TDatasets.sources = db.relationship(
     secondary=source_subquery,
     viewonly=True,
 )
-request_nb_obs_synthese = (
+TDatasets.nb_observations_synthese = column_property(
     select(func.count(Synthese.id_synthese))
     .where(Synthese.id_dataset == TDatasets.id_dataset)
     .scalar_subquery()
-)
-TDatasets.synthese_records_count = column_property(
-    request_nb_obs_synthese.label("synthese_records_count"),
+    .label("nb_observations_synthese"),
     deferred=True,
 )

@@ -11,6 +11,7 @@ import { MetadataService } from './services/metadata.service';
 import { MetadataDataService } from './services/metadata-data.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { ActionService } from '@geonature/services/action.service';
+import { TitleCasePipe } from '@librairies/@angular/common';
 
 @Component({
   selector: '[pnx-metadata-dataset]',
@@ -94,5 +95,33 @@ export class MetadataDatasetComponent implements OnInit {
           );
       }
     });
+  }
+
+  getObservationsCountsTooltip(dictNbObs) {
+    return Object.keys(dictNbObs)
+      .filter((moduleCode) => dictNbObs[moduleCode] > 0)
+      .map(
+        (moduleCode) =>
+          `${this.translate.instant('MetaData.Observations' + TitleCasePipe.prototype.transform(moduleCode) + 'Tooltip')}` +
+          ': ' +
+          dictNbObs[moduleCode]
+      )
+      .join('\n');
+  }
+
+  getDatasetSyntheseButtonTooltip(nbObservationsSynthese: number) {
+    if (nbObservationsSynthese == 0) {
+      return 'MetaData.DatasetSyntheseButtonTooltipNoData';
+    } else {
+      return 'MetaData.DatasetSyntheseButtonTooltipExistData';
+    }
+  }
+
+  getDatasetDeleteButtonTooltip(isForExistData: boolean) {
+    if (isForExistData) {
+      return 'MetaData.DatasetDeleteButtonTooltipNotPossibleExistData';
+    } else {
+      return 'MetaData.DatasetDeleteButtonTooltipNotPossibleMissingPermissions';
+    }
   }
 }

@@ -17,6 +17,7 @@ from geonature.utils.env import db, CONFIG_FILE
 from geonature.core.gn_commons.models import TModules
 
 from sqlalchemy import exists, select
+from sqlalchemy.exc import ProgrammingError
 
 
 def iter_modules_dist():
@@ -169,9 +170,19 @@ def exists_in_t_modules(module_code: str):
     module_code : str
         The code of the module (for ex. : SYNTHESE, OCCHAB, etc...)
     """
-    return db.session.execute(
-        exists(TModules).where(TModules.module_code == module_code).select()
-    ).scalar()
+    try:
+        return db.session.execute(
+            exists(TModules).where(TModules.module_code == module_code).select()
+        ).scalar()
+    except ProgrammingError as e:
+        db.session.rollback()
+        if (
+            '(psycopg2.errors.UndefinedTable) relation "gn_commons.t_modules" does not exist'
+            in str(e)
+        ):
+            return False
+        else:
+            raise e
 
 
 def is_module_installed(

@@ -47,7 +47,18 @@
   </ng-template>
 </td>
 <td [attr.data-qa]="'pnx-metadata-jdd-nb-obs-' + dataset.unique_dataset_id">
-  {{ dataset?.synthese_records_count }}
+  <div>
+    <div style="display: inline-block; padding-right: 1%">
+      {{ dataset?.dict_stats.total_nb_obs }}
+    </div>
+    <mat-icon
+      *ngIf="dataset.dict_stats.total_nb_obs"
+      [matTooltip]="getObservationsCountsTooltip(dataset.dict_stats.dict_nb_obs)"
+      style="vertical-align: bottom"
+    >
+      analytics
+    </mat-icon>
+  </div>
 </td>
 <td>
   <a
@@ -60,14 +71,14 @@
 
   <a
     mat-icon-button
-    [disabled]="dataset?.synthese_records_count == 0"
+    [disabled]="dataset?.nb_observations_synthese == 0"
     [routerLink]="['/synthese']"
     [queryParams]="{ id_dataset: dataset.id_dataset }"
     [attr.data-qa]="'pnx-metadata-jdd-display-data-' + dataset.unique_dataset_id"
   >
     <mat-icon
-      *ngIf="dataset?.synthese_records_count == 0; else elseSynthese"
-      matTooltip="Ce jeu de données ne comporte aucune donnée"
+      *ngIf="dataset?.nb_observations_synthese == 0; else elseSynthese"
+      matTooltip="Ce jeu de données ne comporte aucune donnée dans la Synthèse"
     >
       room
     </mat-icon>
@@ -98,23 +109,21 @@
   </ng-template>
 
   <ng-container
-    *ngIf="!dataset.cruved.D || (dataset?.synthese_records_count || 0) > 0; else elseblock"
+    *ngIf="!dataset.cruved.D || (dataset?.dict_stats.total_nb_obs || 0) > 0; else elseblock"
   >
-    <button
-      mat-icon-button
-      [disabled]="true"
-      [attr.data-qa]="'pnx-metadata-jdd-delete-' + dataset.unique_dataset_id"
+    <span
+      [matTooltip]="
+        getDatasetDeleteButtonTooltip((dataset?.dict_stats.total_nb_obs || 0) > 0) | translate
+      "
     >
-      <mat-icon
-        [matTooltip]="
-          (dataset?.synthese_records_count || 0) > 0
-            ? 'Ce jeu de données contient des données et ne peut pas être supprimé'
-            : 'Vous n\'avez pas les droits nécessaires pour supprimer ce jeu de données'
-        "
+      <button
+        mat-icon-button
+        [disabled]="true"
+        [attr.data-qa]="'pnx-metadata-jdd-delete-' + dataset.unique_dataset_id"
       >
-        delete
-      </mat-icon>
-    </button>
+        <mat-icon>delete</mat-icon>
+      </button>
+    </span>
   </ng-container>
   <ng-template #elseblock>
     <button
@@ -122,8 +131,9 @@
       class="delete-btn"
       (click)="deleteDs(dataset)"
       [attr.data-qa]="'pnx-metadata-jdd-delete-' + dataset.unique_dataset_id"
+      matTooltip="{{ 'MetaData.DatasetDeleteButtonTooltipPossible' | translate }}"
     >
-      <mat-icon matTooltip="Supprimer le jeu de données">delete</mat-icon>
+      <mat-icon>delete</mat-icon>
     </button>
   </ng-template>
 </td>

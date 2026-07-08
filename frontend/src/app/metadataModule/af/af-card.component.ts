@@ -8,6 +8,8 @@ import { CommonService } from '@geonature_common/service/common.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
+import { TranslateService } from '@ngx-translate/core';
+import { TitleCasePipe } from '@librairies/@angular/common';
 
 @Component({
   selector: 'pnx-af-card',
@@ -81,7 +83,8 @@ export class AfCardComponent implements OnInit, OnDestroy {
     private _commonService: CommonService,
     public config: ConfigService,
     private _moduleService: ModuleService,
-    public _cruvedStore: CruvedStoreService
+    public _cruvedStore: CruvedStoreService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit() {
@@ -218,5 +221,13 @@ export class AfCardComponent implements OnInit, OnDestroy {
 
   onAfOpened() {
     this.getAf();
+  }
+
+  getObservationCountTooltip(moduleCode) {
+    return `${this.translate.instant('MetaData.Statistics.Occurrences' + TitleCasePipe.prototype.transform(moduleCode))}`;
+  }
+
+  getNumberOfObservationsCountsDetails(dictNbObs) {
+    return Object.keys(dictNbObs).filter((moduleCode) => dictNbObs[moduleCode] > 0).length;
   }
 }

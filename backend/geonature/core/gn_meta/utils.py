@@ -7,9 +7,26 @@ from geonature.core.gn_synthese.models import Synthese
 from geonature.core.gn_meta.models import TDatasets
 from geonature.utils.config import config
 import geonature.utils.filemanager as fm
+from flask import current_app
 
 if "OCCHAB" in config:
     from gn_module_occhab.models import OccurenceHabitat, Station
+
+import abc
+
+
+class AbstractMetadataStatistics(abc.ABC):
+    @abc.abstractmethod
+    def get_dataset_nb_observations(id_dataset):
+        """
+        Retourne le nombre d'occurrences d'habitats pour un JDD donné.
+        """
+
+    @abc.abstractmethod
+    def get_acquisition_framework_nb_observations(id_acquisition_framework):
+        """
+        Retourne le nombre d'occurrences d'habitats pour un CA donné.
+        """
 
 
 def get_acquisition_framework_stats(id_acquisition_framework):
@@ -27,32 +44,45 @@ def get_acquisition_framework_stats(id_acquisition_framework):
         )
     ).scalar_one()
 
-    nb_observations = db.session.execute(
+    dict_nb_obs = {}
+
+    nb_observations_synthese = db.session.execute(
         select(func.count("*"))
         .select_from(Synthese)
         .where(Synthese.dataset.has(TDatasets.id_acquisition_framework == id_acquisition_framework))
     ).scalar_one()
 
-    nb_habitats = 0
+    dict_nb_obs["SYNTHESE"] = nb_observations_synthese
 
-    if (
-        is_module_installed("gn_module_occhab", check_if_all_revisions_have_been_applied=False)
-        and nb_datasets > 0
-    ):
+    from geonature.utils.module import iter_modules_dist
 
-        nb_habitats = db.session.execute(
-            select(func.count("*"))
-            .select_from(OccurenceHabitat)
-            .join(Station)
-            .where(Station.id_dataset.in_(dataset_ids))
-        ).scalar_one()
+    for module_dist in iter_modules_dist():
+        module_name = module_dist.name
+        is_current_module_installed = current_app.dict_modules_is_installed[module_name]
+        if is_current_module_installed:
+            module_statistics = None
+            try:
+                module_statistics = module_dist.entry_points["statistics"]
+            except KeyError:
+                pass
+            if module_statistics:
+                statistics = __import__(module_name + ".statistics", fromlist=["statistics"])
+                nb_observations = (
+                    statistics.MetadataStatistics.get_acquisition_framework_nb_observations(
+                        id_acquisition_framework
+                    )
+                )
+                module_code = module_dist.entry_points["code"].load()
+                dict_nb_obs[module_code] = nb_observations
 
-    return {
-        "nb_dataset": nb_datasets,
-        "nb_taxons": nb_taxons,
-        "nb_observations": nb_observations,
-        "nb_habitats": nb_habitats,
-    }
+    total_nb_obs = sum(dict_nb_obs.values())
+
+    return dict(
+        nb_dataset=nb_datasets,
+        nb_taxons=nb_taxons,
+        dict_nb_obs=dict_nb_obs,
+        total_nb_obs=total_nb_obs,
+    )
 
 
 class MetadataPdfBuilder:

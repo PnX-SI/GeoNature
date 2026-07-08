@@ -84,13 +84,16 @@
                 <span>{{ 'Datasets' | translate }}</span>
                 <span class="af-stat-badge__value">{{ stats.nb_dataset }}</span>
               </span>
-              <span class="badge badge-pill badge-light border mr-2 mb-2 af-stat-badge">
+              <span
+                class="badge badge-pill badge-light border mr-2 mb-2 af-stat-badge"
+                *ngFor="let item of stats.dict_nb_obs | keyvalue"
+              >
                 <img
                   src="./assets/images/Donnee_icon.svg"
                   alt="Icône Donnée"
                 />
-                <span>{{ 'Observations' | translate }}</span>
-                <span class="af-stat-badge__value">{{ stats.nb_observations }}</span>
+                <span>{{ getObservationCountTooltip(item.key) }}</span>
+                <span class="af-stat-badge__value">{{ item.value }}</span>
               </span>
               <span
                 *ngIf="stats.nb_taxons"
@@ -102,17 +105,6 @@
                 />
                 <span>{{ 'Taxons' | translate }}</span>
                 <span class="af-stat-badge__value">{{ stats.nb_taxons }}</span>
-              </span>
-              <span
-                *ngIf="stats.nb_habitats"
-                class="badge badge-pill badge-light border mr-2 mb-2 af-stat-badge"
-              >
-                <img
-                  src="./assets/images/Habitat_icon.svg"
-                  alt="Icône Habitat"
-                />
-                <span>{{ 'Habitats' | translate }}</span>
-                <span class="af-stat-badge__value">{{ stats.nb_habitats }}</span>
               </span>
             </div>
           </div>

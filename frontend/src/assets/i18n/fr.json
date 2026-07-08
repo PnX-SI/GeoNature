@@ -288,7 +288,7 @@
     "Stakeholders": "Acteurs",
     "DatasetName": "Nom du jeu de données",
     "AFName": "Nom du cadre d'acquisition",
-    "DataAmount": "Nombre de données",
+    "CountObservations": "Nombre d'observations",
     "StakeholderOrganization": "Acteur (organisme)",
     "DataSources": "Sources des données",
     "DescriptiveForm": "Fiche descriptive",
@@ -310,7 +310,13 @@
     "SpeciesDistribution": "Répartition des espèces",
     "AssociatedDatasets": "Jeux de données associés",
     "Reference": "Référence",
-
+    "ObservationsSyntheseTooltip": "Synthèse ",
+    "ObservationsOcchabTooltip": "Habitats ",
+    "DatasetSyntheseButtonTooltipNoData": "Ce jeu de données ne comporte aucune donnée dans la Synthèse",
+    "DatasetSyntheseButtonTooltipExistData": "Afficher les données dans la Synthèse",
+    "DatasetDeleteButtonTooltipNotPossibleExistData": "Ce jeu de données contient des données et ne peut donc pas être supprimé",
+    "DatasetDeleteButtonTooltipNotPossibleMissingPermissions": "Vous n'avez pas les droits nécessaires pour supprimer ce jeu de données",
+    "DatasetDeleteButtonTooltipPossible": "Supprimer le jeu de données",
     "DatasetCard": {
       "Actions": {
         "DisplayData": "Afficher les données"
@@ -414,6 +420,10 @@
       "Of": "sur",
       "PreviousPage": "Page précédente",
       "NextPage": "Page suivante"
+    },
+    "Statistics": {
+      "OccurrencesSynthese": "Occurrence(s) de taxon(s)",
+      "OccurrencesOcchab": "Occurrence(s) d'habitat(s)"
     }
   },
   "Filters": {
