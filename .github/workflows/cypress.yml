@@ -63,11 +63,10 @@ jobs:
             ${{ runner.os }}-pip-
       - name: Install python dependencies
         run: |
+          echo 'Installation des requirements de dev'
           python -m pip install --upgrade pip
-          python -m pip install \
-            pytest-cov \
-            -e ..[tests] \
-            -r requirements-dev.txt
+          python -m pip install -e ..[tests]
+          pip install -r requirements-dev.txt
         working-directory: ./backend
         # FRONTEND
       - name: Cache node modules

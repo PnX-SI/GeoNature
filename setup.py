@@ -1,7 +1,6 @@
 import setuptools
 from pathlib import Path
 
-
 root_dir = Path(__file__).absolute().parent
 with (root_dir / "VERSION").open() as f:
     version = f.read().strip()
@@ -28,8 +27,7 @@ setuptools.setup(
         "geonature.tests": ["data/*.sql"],
         "geonature.migrations": ["alembic.ini", "script.py.mako", "data/**/*.sql"],
     },
-    install_requires=list(open("backend/requirements-common.in", "r"))
-    + list(open("backend/requirements-dependencies.in", "r")),
+    install_requires=list(open("backend/requirements.txt", "r")),
     extras_require={
         "tests": [
             "pandas",
