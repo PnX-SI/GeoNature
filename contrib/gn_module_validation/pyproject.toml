@@ -1,3 +1,40 @@
 [build-system]
-requires = ["setuptools >= 64"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "gn_module_validation"
+description = "Module GeoNature de validation"
+readme = "README.rst"
+authors = [
+    { name = "Parcs nationaux des Écrins et des Cévennes", email = "geonature@ecrins-parcnational.fr" },
+]
+urls = { Homepage = "https://github.com/PnX-SI/GeoNature" }
+dynamic = ["version"]
+license = "AGPL-3.0-or-later"
+license-files = ["LICENSE"]
+classifiers = [
+    "Development Status :: 1 - Planning",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+dependencies = []
+
+[project.entry-points."gn_module"]
+code = "gn_module_validation:MODULE_CODE"
+picto = "gn_module_validation:MODULE_PICTO"
+blueprint = "gn_module_validation.blueprint:blueprint"
+config_schema = "gn_module_validation.conf_schema_toml:GnModuleSchemaConf"
+migrations = "gn_module_validation:migrations"
+tasks = "gn_module_validation.tasks"
+
+[tool.setuptools]
+package-dir = { "" = "backend" }
+
+[tool.setuptools.packages.find]
+where = ["backend"]
+
+[tool.setuptools.dynamic]
+version = { file = "VERSION" }
