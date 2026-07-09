@@ -1,4 +1,4 @@
-/var/log/geonature/geonature.log {
+/var/log/${GEONATURE_APP_NAME}/${GEONATURE_APP_NAME}.log {
     su ${USER} ${USER}
     daily
     rotate 8
@@ -6,10 +6,10 @@
     create
     compress
     postrotate
-    systemctl reload geonature || true
+    systemctl reload ${GEONATURE_APP_NAME} || true
     endscript
 }
-/var/log/geonature/geonature-worker.log {
+/var/log/${GEONATURE_APP_NAME}/${GEONATURE_APP_NAME}-worker.log {
     su ${USER} ${USER}
     daily
     rotate 8
@@ -17,6 +17,6 @@
     create
     compress
     postrotate
-    systemctl reload geonature-worker || true
+    systemctl reload ${GEONATURE_APP_NAME}-worker || true
     endscript
 }

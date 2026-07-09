@@ -2,18 +2,33 @@
 
 # Set mode to 'dev' to install GeoNature in dev mode
 MODE=prod
+geonature_app_name="geonature"
 
-# Langue du serveur
-# valeur possible : fr_FR.UTF-8, en_US.utf8 
+
+# Langue du serveur - Valeurs possibles : fr_FR.UTF-8, en_US.utf8 
 # locale -a pour voir la liste des locales disponible
+
 my_local=fr_FR.UTF-8
 
 # URL Configuration
 ###################
 
-# My host URL or IP, starting with http and with / at the end
-my_url=http://url.com/
+# Protocole pour accéder à GeoNature (http ou https)
+host_protocol=http
+# Nom de domaine pour accéder à GeoNature (sans http ni / à la fin)
+domain_name="localhost"
+# subpath d'accès à GeoNature (ex: /geonature donnera http://<domain_name>/geonature)
+base_path="/geonature"
 
+# Backend 
+#########
+# Port du backend de GeoNature. Si vous installez plusieurs instances de GeoNature sur le même serveur,
+# il faudra leur attribuer des ports différent.
+backend_port=8000
+
+# Usershub (Pour migration.sh, à compléter)
+
+usershub_app_name="usershub"
 
 # PostgreSQL Configuration
 ##########################
