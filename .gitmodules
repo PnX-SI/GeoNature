@@ -19,6 +19,3 @@
 [submodule "backend/dependencies/RefGeo"]
 	path = backend/dependencies/RefGeo
 	url = ../RefGeo.git
-[submodule "backend/dependencies/UsersHub"]
-	path = backend/dependencies/UsersHub
-	url = ../UsersHub.git

@@ -67,6 +67,19 @@ dependencies = [
   "xmltodict>=1.0.4",
 ]
 
+[project.optional-dependencies]
+dev = [
+  "pandas",
+  "pytest",
+  "pytest-flask",
+  "pytest-benchmark",
+  "pytest-cov",
+  "jsonschema",
+  "pandas",
+  'black>=26.1.0',
+]
+doc = ["sphinx", "furo", "myst-parser", "sphinx-autoapi", "sphinx-copybutton"]
+
 [project.scripts]
 geonature = "geonature.core.command:main"
 
@@ -85,19 +98,6 @@ geonature = ["**/templates/**/*.html"]
 [tool.setuptools.dynamic]
 version = { file = "VERSION" }
 dependencies = { file = "backend/requirements.txt" }
-
-[project.optional-dependencies]
-dev = [
-  "pandas",
-  "pytest",
-  "pytest-flask",
-  "pytest-benchmark",
-  "pytest-cov",
-  "jsonschema",
-  "pandas",
-  'black>=26.1.0',
-]
-doc = ["sphinx", "furo", "myst-parser", "sphinx-autoapi", "sphinx-copybutton"]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -141,6 +141,7 @@ profile = "black"
 [tool.pylint.format]
 max-line-length = "100"
 
+# UV workspace configuration
 [tool.uv.sources]
 pypn-habref-api = { workspace = true }
 pypnnomenclature = { workspace = true }
