@@ -17,7 +17,8 @@ Installer les paquets suivants :
 Récupération de l'application
 -----------------------------
 
-* Se placer dans le répertoire de l'utilisateur (``/home/geonatureadmin/`` dans notre cas) 
+* Se placer dans le répertoire d'installation choisi.
+  Recommandation Debian pour une application de ce type : ``/opt``.
 
 * Récupérer l'application (``X.Y.Z`` à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_).
 
@@ -36,8 +37,11 @@ Récupération de l'application
 
   .. code:: shell 
 
-    mv GeoNature-X.Y.Z /home/`whoami`/geonature/
-    cd geonature
+    sudo mkdir -p /opt/geonature
+    sudo chown <app_user>:<app_group> /opt/geonature
+    cp -a GeoNature-X.Y.Z/. /opt/geonature/
+    rm -rf GeoNature-X.Y.Z
+    cd /opt/geonature
 
 * Copier puis mettre à jour le fichier de configuration (``config/settings.ini``) comportant les informations relatives à votre environnement serveur :
 
@@ -59,6 +63,7 @@ Rendez vous dans le dossier ``install`` et lancez successivement dans l’ordre 
 * ``04_install_gn_modules.sh`` : Installation des modules Occtax, Occhab et Validation (si activé dans le fichier `settings.ini`).
 * ``05_install_frontend.sh`` : Création des dossiers et liens symboliques nécessaires, création des fichiers custom à partir des fichiers d’exemple, génération des fichiers de configuration grâce à la commande ``geonature``, installation de nvm, npm et node ainsi que toutes les dépendances javascript nécessaires puis build du frontend, génération du fichier ``src/assets/config.json`` qui permet de connecter le frontend au backend.
 * ``06_configure_apache.sh`` : Installation du fichier de configuration Apache ``/etc/apache2/conf-available/geonature.conf`` et activation des modules Apache nécessaires.
+Par défaut, ``00_install_nvm.sh`` installe NVM dans ``/usr/local/nvm`` (partagé au niveau système) et ajoute ``/etc/profile.d/geonature-nvm.sh``.
 
 Vous pouvez alors démarrer le backend de GeoNature : ``sudo systemctl start geonature``
 
