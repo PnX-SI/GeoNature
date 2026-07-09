@@ -2,6 +2,7 @@ from geonature.utils.env import db, ma
 from geonature.utils.config import config
 
 from geonature.core.gn_commons.schemas import ModuleSchema, MediaSchema, TValidationSchema
+from geonature.core.gn_monitoring.schema import TIndividualsSchema
 from geonature.core.gn_synthese.models import (
     BibReportsTypes,
     TReport,
@@ -60,6 +61,7 @@ class SyntheseSchema(SmartRelationshipsMixin, GeoAlchemyAutoSchema):
     source = ma.Nested(SourceSchema, dump_only=True)
     module = ma.Nested(ModuleSchema, dump_only=True)
     dataset = ma.Nested("DatasetSchema", dump_only=True)
+    individual = ma.Nested(TIndividualsSchema, dump_only=True)
     habitat = ma.Nested(HabrefSchema, dump_only=True)
     digitiser = ma.Nested(UserSchema, dump_only=True)
     cor_observers = ma.Nested(UserSchema, many=True, dump_only=True)
