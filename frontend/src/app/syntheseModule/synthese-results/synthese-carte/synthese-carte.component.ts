@@ -286,10 +286,16 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     this.layerEvent(feature, layer, feature.properties.observations.id_synthese);
   }
 
-  /**
-   *
-   */
-  clusterCountOverrideFn(cluster) {
+  private getDisableClusterZoom() {
+    let output_zoom: number | null = null;
+    const config_zoom = this.config.SYNTHESE.LEALET_CLUSTER_DISABLE_ZOOM;
+    if (config_zoom && config_zoom === parseInt(config_zoom, 10)) {
+      output_zoom = this.config.SYNTHESE.LEALET_CLUSTER_DISABLE_ZOOM;
+    }
+    return output_zoom;
+  }
+
+  overrideClusterCount(cluster) {
     const obsChildCount = cluster
       .getAllChildMarkers()
       .map((layer) => {
@@ -317,7 +323,8 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
       // regenerate the featuregroup
       this.cluserOrSimpleFeatureGroup = this.config.SYNTHESE.ENABLE_LEAFLET_CLUSTER
         ? (L as any).markerClusterGroup({
-            iconCreateFunction: this.clusterCountOverrideFn,
+            iconCreateFunction: this.overrideClusterCount,
+            disableClusteringAtZoom: this.getDisableClusterZoom(),
           })
         : new L.FeatureGroup();
       const geojsonLayer = new L.GeoJSON(change.inputSyntheseData.currentValue, {
