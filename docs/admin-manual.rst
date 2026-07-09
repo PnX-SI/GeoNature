@@ -2415,6 +2415,8 @@ Exemple de filtres par défaut :
       cd_nomenclature_valid_status = ['0', '1', '2', '3', '5', '6']
       # Seulement les données de présence
       cd_nomenclature_observation_status = ['Pr']
+      # Cibler uniquement les observations de l'utilisateur courant
+      my_observations = false
 
 
 D'autres élements sont paramètrables dans le module Synthese. La liste complète est disponible dans le fichier ``config/default_config.toml.example`` rubrique ``SYNTHESE``.

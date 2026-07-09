@@ -446,6 +446,8 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
         cd_nomenclature_valid_status = ['0', '1', '2', '3', '5', '6']
         # Seulement les données de présence
         cd_nomenclature_observation_status = ['Pr']
+        # Uniquement les observations de l'utilisateur courant
+        my_observations = false
 
     # Activer l'affichage des informations liées à la fiche taxon dans la synthèse
     ENABLE_TAXON_SHEETS = true
