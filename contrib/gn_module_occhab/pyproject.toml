@@ -1,3 +1,42 @@
 [build-system]
-requires = ["setuptools >= 64"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "gn_module_occhab"
+description = "Module GeoNature d'Occurences des Habitats"
+readme = "README.rst"
+authors = [
+    { name = "Parcs nationaux des Écrins et des Cévennes", email = "geonature@ecrins-parcnational.fr" },
+]
+urls = { Homepage = "https://github.com/PnX-SI/GeoNature" }
+dynamic = ["version"]
+license = "AGPL-3.0-or-later"
+license-files = ["LICENSE"]
+classifiers = [
+    "Development Status :: 1 - Planning",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+dependencies = []
+
+[project.entry-points."gn_module"]
+code = "gn_module_occhab:MODULE_CODE"
+picto = "gn_module_occhab:MODULE_PICTO"
+blueprint = "gn_module_occhab.blueprint:blueprint"
+config_schema = "gn_module_occhab.conf_schema_toml:GnModuleSchemaConf"
+migrations = "gn_module_occhab:migrations"
+
+[tool.setuptools]
+package-dir = { "" = "backend" }
+
+[tool.setuptools.packages.find]
+where = ["backend"]
+
+[tool.setuptools.package-data]
+"gn_module_occhab.migrations" = ["data/*.sql"]
+
+[tool.setuptools.dynamic]
+version = { file = "VERSION" }

@@ -61,56 +61,52 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
           python-version: ${{ matrix.python-version }}
-          cache: "pip"
+          enable-cache: true
+          cache-dependency-glob: |
+            **/pyproject.toml
+            **/uv.lock
+
       - name: Install GDAL
         run: |
           sudo apt update
           sudo apt install -y libgdal-dev
-      - name: Install dependencies
-        if: github.base_ref == 'master'
+
+      - name: Sync project dependencies
         run: |
-          echo 'Installation des requirements de prod'
-          python -m pip install --upgrade pip
-          python -m pip install \
-            -e ..[tests] \
-            -r requirements.txt
-        working-directory: ./backend
-      - name: Install dependencies
-        if: github.base_ref != 'master'
-        run: |
-          echo 'Installation des requirements de dev'
-          python -m pip install --upgrade pip
-          python -m pip install \
-            -e ..[tests] \
-            -r requirements-dev.txt
-        working-directory: ./backend
+          uv sync --locked --extra dev ${{ github.base_ref != 'master' && ' --no-install-workspace' || '' }}
 
       - name: Install core modules backend
+        # Not part of the uv workspace, install as editable into the synced venv
         run: |
-          pip install -e contrib/occtax
-          pip install -e contrib/gn_module_occhab
-          pip install -e contrib/gn_module_validation
+          uv pip install -e contrib/occtax
+          uv pip install -e contrib/gn_module_occhab
+          uv pip install -e contrib/gn_module_validation
+
       - name: Install core modules database
         run: |
-          geonature db autoupgrade
-          geonature upgrade-modules-db
-          geonature db downgrade ref_geo_inpn_grids_50@base
+          uv run geonature db autoupgrade
+          uv run geonature upgrade-modules-db
+          uv run geonature db downgrade ref_geo_inpn_grids_50@base
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
+
       - name: Show database status
         run: |
-          geonature db status --dependencies
+          uv run geonature db status --dependencies
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
+
       - name: Test with pytest
         run: |
-          pytest -v --cov --cov-report xml
+          uv run pytest -v --cov --cov-report xml
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
+
       - name: Upload coverage to Codecov
         if: ${{ matrix.debian-version == '12' }}
         uses: codecov/codecov-action@v4

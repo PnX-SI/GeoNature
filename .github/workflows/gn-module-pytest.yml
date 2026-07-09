@@ -86,68 +86,56 @@ jobs:
           psql -h localhost -U geonatadmin -d geonature2db -f install/assets/db/add_pg_extensions.sql
         env:
           PGPASSWORD: "geonatadmin"
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v6
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
           python-version: ${{ matrix.python-version }}
-          cache: "pip"
+          enable-cache: true
+          cache-dependency-glob: |
+            **/pyproject.toml
+            **/uv.lock
       - name: Install GDAL
         run: |
           sudo apt update
           sudo apt install -y libgdal-dev
-      - name: Install dependencies
-        if: github.action_ref == 'master'
+      - name: Sync project dependencies
         run: |
-          echo 'Installation des requirements de prod'
-          python -m pip install --upgrade pip
-          python -m pip install \
-            -e ..[tests] \
-            -r requirements.txt
-        working-directory: ./backend
-      - name: Install dependencies
-        if: github.action_ref != 'master'
-        run: |
-          echo 'Installation des requirements de dev'
-          python -m pip install --upgrade pip
-          python -m pip install \
-            -e ..[tests] \
-            -r requirements-dev.txt
-        working-directory: ./backend
+          uv sync --locked --extra dev ${{ inputs.geonature_ref != 'master' && ' --no-install-workspace' || '' }}
 
       - name: Install core modules backend
         run: |
-          pip install -e contrib/occtax
-          pip install -e contrib/gn_module_occhab
-          pip install -e contrib/gn_module_validation
+          uv pip install -e contrib/occtax
+          uv pip install -e contrib/gn_module_occhab
+          uv pip install -e contrib/gn_module_validation
       - name: Install ${{ github.event.repository.name }} module backend
         run: |
-          pip install -e .
+          uv pip install -e .
         working-directory: ${{ env.MODULE_DIR }}
       - name: Show database status
         run: |
-          geonature db status
+          uv run geonature db status
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Install modules database
         run: |
-          geonature db autoupgrade
-          geonature upgrade-modules-db
+          uv run geonature db autoupgrade
+          uv run geonature upgrade-modules-db
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Show database status
         run: |
-          geonature db status --dependencies
+          uv run geonature db status --dependencies
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Test with pytest
         run: |
-          pytest -v --cov=${{ env.MODULE_DIR }} --cov-report xml
+          uv run pytest -v --cov=${{ env.MODULE_DIR }} --cov-report xml
         working-directory: ${{ env.MODULE_DIR }}
         env:
           GEONATURE_CONFIG_FILE: ${{ github.workspace }}/config/test_config.toml
       - name: Show coverage
         run: |
-          coverage report
+          uv run coverage report
         working-directory: ${{ env.MODULE_DIR }}
       - name: Upload coverage to Codecov
         if: ${{ inputs.upload_coverage && matrix.debian-version == '12' }}

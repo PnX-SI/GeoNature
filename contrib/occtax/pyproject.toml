@@ -1,3 +1,43 @@
 [build-system]
-requires = ["setuptools >= 64"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "occtax"
+description = "OccTax"
+readme = "README.rst"
+authors = [
+    { name = "Parcs nationaux des Écrins et des Cévennes", email = "geonature@ecrins-parcnational.fr" },
+]
+urls = { Homepage = "https://github.com/PnX-SI/GeoNature" }
+dynamic = ["version"]
+license = "AGPL-3.0-or-later"
+license-files = ["LICENSE"]
+classifiers = [
+    "Development Status :: 1 - Planning",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+dependencies = []
+
+[project.entry-points."gn_module"]
+code = "occtax:MODULE_CODE"
+picto = "occtax:MODULE_PICTO"
+doc_url = "occtax:MODULE_DOC_URL"
+blueprint = "occtax.blueprint:blueprint"
+config_schema = "occtax.conf_schema_toml:GnModuleSchemaConf"
+migrations = "occtax:migrations"
+
+[tool.setuptools]
+package-dir = { "" = "backend" }
+
+[tool.setuptools.packages.find]
+where = ["backend"]
+
+[tool.setuptools.package-data]
+"occtax.migrations" = ["data/*.sql"]
+
+[tool.setuptools.dynamic]
+version = { file = "VERSION" }
