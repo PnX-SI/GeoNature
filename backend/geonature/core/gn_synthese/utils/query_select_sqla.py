@@ -191,7 +191,9 @@ class SyntheseQuery:
             if perm.scope_value:
                 if perm.scope_value not in datasets_by_scope:
                     datasets_t = (
-                        DB.session.scalars(TDatasets.filter_by_scope(perm.scope_value))
+                        DB.session.scalars(
+                            TDatasets.filter_by_scope(scope=perm.scope_value, user=user)
+                        )
                         .unique()
                         .all()
                     )

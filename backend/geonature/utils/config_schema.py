@@ -483,6 +483,10 @@ class Synthese(Schema):
     ENABLE_OBSERVER_SHEETS = fields.Boolean(load_default=True)
     OBSERVER_SHEET = fields.Nested(ObserverSheet, load_default=ObserverSheet().load({}))
 
+    # --------------------------------------------------------------------
+    # SYNTHESE - NOTIFY OBSERVATIONS CREATED AND UPDATED
+    NOTIFICATIONS_CRONTAB = fields.String(load_default="0 2 * * *")
+
     @pre_load
     def warn_deprecated(self, data, **kwargs):
         deprecated = {

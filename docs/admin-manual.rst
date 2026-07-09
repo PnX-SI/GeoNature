@@ -66,13 +66,13 @@ Il est possible pour n’importe quelle dépendance ou module GeoNature de fourn
 .. code:: python
 
     setuptools.setup(
-        …,
+        ...,
         entry_points={
             'alembic': [
                 'migrations = my_module:migrations',
             ],
         },
-        …
+        ...
     )
 
 Il est également possible de spécifier l’emplacement de révisions Alembic manuellement dans la configuration de GeoNature. Cela est nécessaire entre autre pour UsersHub afin de pouvoir manipuler son schéma alors que UsersHub n’est usuellement pas installé dans le venv de GeoNature (seul UsersHub-authentification-module l’est) :
@@ -576,7 +576,7 @@ Il est possible de désactiver l'ensemble des fonctionnalités liées aux profil
 .. code:: toml
 
     [FRONTEND]
-      ENABLE_PROFILES = true/false
+    ENABLE_PROFILES = true  # or false
 
 
 Calcul des phénologies
@@ -1027,8 +1027,8 @@ Celery propose `de nombreuses commandes <https://docs.celeryq.dev/en/stable/user
 
 .. note::
 
-- Les commandes Celery doivent être lancées depuis l'environnement de GeoNature, donc après un``source backend/venv/bin/activate``
-- Le nom de l'application, à passer via l'argument ``-A proj``, est celui qui a été utilisé pour lancer le worker
+  - Les commandes Celery doivent être lancées depuis l'environnement de GeoNature, donc après un``source backend/venv/bin/activate``
+  - Le nom de l'application, à passer via l'argument ``-A proj``, est celui qui a été utilisé pour lancer le worker
 
 Pour une analyse d'erreur plus fine, il est possible de relancer le worker en changeant le niveau de log à l'aide du paramètre ``--loglevel`` (https://docs.celeryq.dev/en/main/reference/cli.html#cmdoption-celery-worker-l) dans celery.
 
@@ -1084,13 +1084,13 @@ Si vous souhaitez modifier de manière plus avancée la ligne de commande ``guni
 * Lancez ``sudo systemctl edit geonature`` ce qui va créer le fichier ``/etc/systemd/system/geonature.service.d/override.conf`` et ouvrir un éditeur pour vous permettre de le modifier
 * Indiquez :
 
-  .. code:: conf
+  .. code:: systemd
 
     [Service]
     ExecStart=
     ExecStart=/path/to/venv/bin/unicorn geonature:create_app() …
 
-  Note : le premier ``ExecStart`` permet de réinitialiser la commande de lancement de gunicorn.
+.. note :: Le premier ``ExecStart`` permet de réinitialiser la commande de lancement de gunicorn.
 
 
 Sauvegarde et restauration
@@ -1469,7 +1469,7 @@ Si ``ref_geo.dem_vector`` est remplie, cette table est utilisée pour le calcul 
 Il est également possible de désactiver des éléments des référentiels géographiques sans les supprimer de la base, en passant la valeur de la colonne ``enable`` en `false` dans la table ``ref_geo.l_areas``.
 
 Affichage des référentiels géographiques dans GeoNature
-""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 Il est possible de choisir les éléments des référentiels géographiques pouvant s'afficher sur les cartes. Par exemple si on souhaite modifier l'affichage des communes :
 
@@ -1701,7 +1701,9 @@ Exemple : `<https://demo.geonature.fr/geonature/#/synthese?access=public>`_
 
 
 
-.. include:: sensitivity.rst
+.. include:: admin/sensitivity.rst
+
+.. include:: admin/notifications.rst
 
 
 Module OCCTAX
@@ -1894,7 +1896,7 @@ Par exemple, pour contraindre la saisie à l'affichage de la carte IGN au 1/2500
 
 
 Supprimer le remplissage automatique de la date
-``````````````````````````````
+```````````````````````````````````````````````
 
 Pour éviter les erreurs de saisie lorsque des données sont rentrées longtemps après le retour du terrain, il est possible de supprimer l'ajout automatique de la date du jour au relevé :
 
@@ -2454,24 +2456,10 @@ Gestion de l'affichage des colonnes de la liste via le paramètre ``COLUMN_LIST`
     min_width = 100 # Taille minimale de la colonne
     max_width = 100 # Taille maximale de la colonne
 
-E-mail
-``````
+Notifications
+`````````````
 
-Il est possible de personnaliser le message de l'email envoyé aux observateurs d'une observation quand on clique sur le bouton dédié à cela depuis la fiche détail d'une observation.
-Pour ce faire il faut modifier les  paramètres ``MAIL_BODY`` et ``MAIL_SUBJECT``
-
-Pour afficher dans l'email des données relatives à l'observation ou au taxon il faut respecter la syntaxe suivante :
-``${ d.NOM_PROPRIETE }``
-
-Liste des propriétés disponibles :
-
-- communes : liste des communes
-- medias : Titre, auteur et lien vers le média associée
-- data_link : lien vers l'observation dans son module de saisie
-- tous les champs de la synthèse (acquisition_framework, altitude_max, altitude_min, bio_status, blurring, cd_hab, cd_nom, comment_context, comment_description, date_min, depth_max, depth_min, determiner, diffusion_level, digital_proof, entity_source_pk_value, exist_proof, grp_method, grp_typ, last_action, life_stage, meta_create_date, meta_update_date, meta_v_taxref, meta_validation_date, nat_obj_geo, naturalness, nom_cite, non_digital_proof, obj_count, obs_technique, observation_status, observers, occ_behaviour, occ_stat_biogeo, place_name, precision, sample_number_proof, sensitivity, sex, source, type_count, unique_id_sinp, unique_id_sinp_grp, valid_status, validation_comment)
-- tous les champs du taxon (cd_nom, cd_ref, cd_sup, cd_taxsup, regne, ordre, classe, famille, group1_inpn, group2_inpn, id_rang, nom_complet, nom_habitat, nom_rang, nom_statut, nom_valide, nom_vern)
-
-Il est aussi possible de modifier la structure du message de notification envoyé automatiquement à un observateur quand une de ses observations voit son statut de validation modifié, dans la table `gn_notifications.bib_notifications_templates`.
+Lors du changement du statut de validation d’une observation, une notification est envoyé. Voir la :ref:`section dédiée aux notifications<notifications>` pour plus d’informations.
 
 Validation automatique
 """"""""""""""""""""""
@@ -2555,4 +2543,4 @@ Depuis la version 2.15, les commandes de TaxHub sont maintenant acessibles depui
 
 
 
-.. include:: admin/import-admin.rst
+.. include:: admin/module-import.rst

@@ -435,6 +435,7 @@ class Synthese(DB.Model):
     meta_validation_date = DB.Column(DB.DateTime)
     meta_create_date = DB.Column(DB.DateTime, server_default=FetchedValue())
     meta_update_date = DB.Column(DB.DateTime, server_default=FetchedValue())
+    meta_notification_date = DB.Column(DB.DateTime)
     last_action = DB.Column(DB.Unicode)
 
     areas = relationship(
