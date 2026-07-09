@@ -70,24 +70,21 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y libgdal-dev
-      - name: Install dependencies
-        if: github.base_ref == 'master'
-        run: |
-          echo 'Installation des requirements de prod'
-          python -m pip install --upgrade pip
-          python -m pip install \
-            -e ..[tests] \
-            -r requirements.txt
-        working-directory: ./backend
-      - name: Install dependencies
+      - name: Install workspace dependencies (develop only)
         if: github.base_ref != 'master'
         run: |
-          echo 'Installation des requirements de dev'
+          pip install \
+            -e backend/dependencies/Utils-Flask-SQLAlchemy \
+            -e backend/dependencies/Utils-Flask-SQLAlchemy-Geo \
+            -e backend/dependencies/RefGeo \
+            -e backend/dependencies/Nomenclature-api-module \
+            -e backend/dependencies/Habref-api-module \
+            -e backend/dependencies/TaxHub \
+            -e backend/dependencies/UsersHub-authentification-module
+      - name: Install dependencies
+        run: |
           python -m pip install --upgrade pip
-          python -m pip install \
-            -e ..[tests] \
-            -r requirements-dev.txt
-        working-directory: ./backend
+          python -m pip install -e .[dev]
 
       - name: Install core modules backend
         run: |
