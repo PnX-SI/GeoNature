@@ -140,3 +140,23 @@ profile = "black"
 
 [tool.pylint.format]
 max-line-length = "100"
+
+[tool.uv.sources]
+pypn-habref-api = { workspace = true }
+pypnnomenclature = { workspace = true }
+pypn-ref-geo = { workspace = true }
+pypnusershub = { workspace = true }
+utils-flask-sqlalchemy = { workspace = true }
+utils-flask-sqlalchemy-geo = { workspace = true }
+taxhub = { workspace = true }
+
+[tool.uv.workspace]
+members = [
+  "backend/dependencies/TaxHub",
+  "backend/dependencies/UsersHub-authentification-module",
+  "backend/dependencies/Nomenclature-api-module",
+  "backend/dependencies/Habref-api-module",
+  "backend/dependencies/Utils-Flask-SQLAlchemy",
+  "backend/dependencies/Utils-Flask-SQLAlchemy-Geo",
+  "backend/dependencies/RefGeo",
+]
