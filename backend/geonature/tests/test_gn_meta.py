@@ -924,16 +924,19 @@ class TestGNMeta:
 
         assert response.status_code == 200
 
-    @pytest.mark.skip(reason="Works localy but not on GH actions ! ")
     def test_get_datasets_fields(self, users):
         set_logged_user(self.client, users["admin_user"])
-        response = self.client.get(url_for("gn_meta.get_datasets", fields="id_dataset"))
+
+        url_for_get_id_dataset = url_for("gn_meta.get_datasets", fields="id_dataset")
+        url_for_get_modules = url_for("gn_meta.get_datasets", fields="modules")
+
+        response = self.client.get(url_for_get_id_dataset)
         assert response.status_code == 200
 
         for dataset in response.json:
-            assert not "id_dataset" in dataset or len(dataset.keys()) > 1
+            assert not "id_dataset" in dataset or len(dataset.keys()) == 1
 
-        response = self.client.get(url_for("gn_meta.get_datasets", fields="modules"))
+        response = self.client.get(url_for_get_modules)
         assert response.status_code == 200
 
         # Test if modules non empty
