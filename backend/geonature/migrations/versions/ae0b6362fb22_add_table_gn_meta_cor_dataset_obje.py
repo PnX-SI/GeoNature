@@ -7,11 +7,13 @@ Create Date: 2026-04-27 12:58:35.383337
 """
 
 from alembic import op
+import psycopg2
 import sqlalchemy as sa
+import click
 
 # revision identifiers, used by Alembic.
 revision = "ae0b6362fb22"
-down_revision = "f6a1feb3f297"
+down_revision = "1ebab31227b8"
 branch_labels = None
 depends_on = None
 
@@ -71,7 +73,19 @@ def upgrade():
         """)
 
     # Remove "old" field
-    op.drop_column("t_datasets", "id_nomenclature_dataset_objectif", schema="gn_meta")
+    try:
+        op.drop_column("t_datasets", "id_nomenclature_dataset_objectif", schema="gn_meta")
+    except (psycopg2.errors.DependentObjectsStillExist, sa.exc.InternalError) as e:
+        click.secho(
+            """
+            Error while dropping column `id_nomenclature_dataset_objectif` from table `t_datasets` in schema `gn_meta`. This is likely due to existing foreign key constraints or dependencies.
+            Please ensure that there are no dependent objects (like foreign keys, views, or triggers)
+            that reference this column before attempting to drop it again.
+            """,
+            fg="red",
+        )
+        click.secho(f"Original error message: {e}", fg="yellow")
+        raise
 
     # Add a trigger that add a new entry in the new table for each new entry in t_datasets
     op.execute("""
