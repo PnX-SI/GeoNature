@@ -44,6 +44,7 @@ Configuration
 * Renseignez à minima :
 
   * ``my_url`` : l'URL (ou IP) de votre serveur (avec un ``/`` à la fin)
+  * ``url_application_prefix_path`` : préfixe d'URL de GeoNature (``geonature`` par défaut, vide pour ``/``)
   * ``user_pg`` : l'utilisateur PostgreSQL que vous souhaitez voir créé
   * ``user_pg_pass`` : mot de passe de l'utilisateur PostgreSQL
   
