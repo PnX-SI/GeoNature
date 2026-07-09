@@ -79,16 +79,11 @@ jobs:
           ./install/05_install_frontend.sh --ci
         env:
           GEONATURE_CONFIG_FILE: "${{ github.workspace }}/config/test_config.toml"
-      - name: Install core modules
-        run: |
-          uv pip install -e contrib/occtax
-          uv pip install -e contrib/gn_module_occhab
-          uv pip install -e contrib/gn_module_validation
       - name: Setup core modules
         run: |
-          uv run geonature install-gn-module contrib/occtax OCCTAX --build=false --upgrade-db=false
-          uv run geonature install-gn-module contrib/gn_module_occhab OCCHAB --build=false --upgrade-db=false
-          uv run geonature install-gn-module contrib/gn_module_validation VALIDATION --build=false --upgrade-db=false
+          uv run geonature install-gn-module contrib/occtax OCCTAX --build=false --upgrade-db=false --with-uv=true
+          uv run geonature install-gn-module contrib/gn_module_occhab OCCHAB --build=false --upgrade-db=false --with-uv=true
+          uv run geonature install-gn-module contrib/gn_module_validation VALIDATION --build=false --upgrade-db=false --with-uv=true
           uv run geonature db upgrade cypress-samples-test@head
           uv run geonature db autoupgrade
           uv run geonature permissions supergrant --group --nom "Grp_admin" --yes

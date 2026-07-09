@@ -28,7 +28,8 @@ from geonature.utils.module import get_dist_from_code, iter_modules_dist, module
 @click.argument("module_code", required=False)
 @click.option("--build", type=bool, required=False, default=True)
 @click.option("--upgrade-db", type=bool, required=False, default=True)
-def install_gn_module(x_arg, module_path, module_code, build, upgrade_db):
+@click.option("--with-uv", type=bool, required=False, default=False, help="Use uv to run commands")
+def install_gn_module(x_arg, module_path, module_code, build, upgrade_db, with_uv):
     """
     Command definition to install a GeoNature module
 
@@ -53,7 +54,8 @@ def install_gn_module(x_arg, module_path, module_code, build, upgrade_db):
         No module code was detected in the code
     """
     click.echo("Installation du backend…")
-    subprocess.run(f"pip install -e '{module_path}'", shell=True, check=True)
+    uv_ = "uv " if with_uv else ""
+    subprocess.run(f"{uv_}pip install -e '{module_path}'", shell=True, check=True)
 
     # refresh list of entry points
     importlib.reload(site)
