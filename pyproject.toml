@@ -87,7 +87,7 @@ version = { file = "VERSION" }
 dependencies = { file = "backend/requirements.txt" }
 
 [project.optional-dependencies]
-tests = [
+dev = [
   "pandas",
   "pytest",
   "pytest-flask",
@@ -95,6 +95,7 @@ tests = [
   "pytest-cov",
   "jsonschema",
   "pandas",
+  'black>=26.1.0',
 ]
 doc = ["sphinx", "furo", "myst-parser", "sphinx-autoapi", "sphinx-copybutton"]
 
