@@ -111,14 +111,20 @@
           </p>
         </div>
 
+        {% if data.cor_objectifs: %}
         <div class="information">
-          <p class="info-titre">Objectifs</p>
+          <p class="info-titre">Objectif(s)</p>
           <p class="info-contenu">
-            {% if data.nomenclature_dataset_objectif.label_default: %}
-            {{ data.nomenclature_dataset_objectif.label_default }}
-            {% endif %}
+            {% for obj in data.cor_objectifs -%}
+              {% if loop.nextitem: %}
+                {{ obj['label_default'] }},<br />
+              {% else %}
+                {{ obj['label_default'] }}
+              {% endif %}
+            {%- endfor %}
           </p>
         </div>
+        {% endif %}
 
         <div class="information">
           <p class="info-titre">Territoires</p>

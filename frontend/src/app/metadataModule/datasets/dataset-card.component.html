@@ -162,9 +162,12 @@
           </div>
           <br />
 
-          <div class="b">{{ 'Aims' | translate }}</div>
-          <div class="a">
-            {{ dataset?.nomenclature_dataset_objectif.label_default || 'Non renseigné' }}
+          <div class="b">{{ 'Objective(s)' | translate }}</div>
+          <div
+            *ngFor="let objectif of dataset?.cor_objectifs"
+            class="a"
+          >
+            {{ objectif?.label_default }}
           </div>
           <br />
 

@@ -37,6 +37,7 @@ INSERT INTO gn_meta.t_acquisition_frameworks (
 
 -- Insérer 1 jeux de données d'exemple
 INSERT INTO gn_meta.t_datasets (
+    unique_dataset_id,
     id_acquisition_framework,
     dataset_name,
     dataset_shortname,
@@ -45,7 +46,6 @@ INSERT INTO gn_meta.t_datasets (
     keywords,
     marine_domain,
     terrestrial_domain,
-    id_nomenclature_dataset_objectif,
     bbox_west,
     bbox_east,
     bbox_south,
@@ -61,7 +61,8 @@ INSERT INTO gn_meta.t_datasets (
     )
     VALUES
     (
-     (SELECT id_acquisition_framework FROM gn_meta.t_acquisition_frameworks WHERE acquisition_framework_name='Données d''habitats' LIMIT 1),
+    '81caa78c-178f-476b-a8e6-fa322f9ac048',
+    (SELECT id_acquisition_framework FROM gn_meta.t_acquisition_frameworks WHERE acquisition_framework_name='Données d''habitats' LIMIT 1),
     'Carto d''habitat X',
     'Carto d''habitat X',
     'Carto d''habitat X',
@@ -69,7 +70,6 @@ INSERT INTO gn_meta.t_datasets (
     'Habitat',
     false,
     true,
-    ref_nomenclatures.get_id_nomenclature('JDD_OBJECTIFS', '1.1'),
     4.85695,
     6.85654,
     44.5020,
@@ -94,7 +94,6 @@ INSERT INTO gn_meta.cor_dataset_actor (id_dataset, id_role, id_organism, id_nome
     (SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ma structure test'),
     ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '1')
 );
-
 
 INSERT INTO gn_commons.cor_module_dataset (id_module, id_dataset)
 SELECT gn_commons.get_id_module_bycode('OCCHAB'), id_dataset

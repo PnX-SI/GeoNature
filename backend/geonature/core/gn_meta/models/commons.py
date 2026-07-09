@@ -184,6 +184,24 @@ class CorDatasetProtocol(DB.Model):
     id_protocol = DB.Column(DB.Integer, ForeignKey("gn_meta.sinp_datatype_protocols.id_protocol"))
 
 
+cor_dataset_objectif = db.Table(
+    "cor_dataset_objectif",
+    db.Column(
+        "id_dataset",
+        db.Integer,
+        ForeignKey("gn_meta.t_datasets.id_dataset"),
+        primary_key=True,
+    ),
+    db.Column(
+        "id_nomenclature_objectif",
+        db.Integer,
+        ForeignKey(TNomenclatures.id_nomenclature),
+        primary_key=True,
+    ),
+    schema="gn_meta",
+)
+
+
 cor_dataset_territory = db.Table(
     "cor_dataset_territory",
     db.Column(

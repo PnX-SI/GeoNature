@@ -166,11 +166,11 @@ def get_dataset(scope, id_dataset):
             "cor_dataset_actor.role",
             "modules",
             "nomenclature_data_type",
-            "nomenclature_dataset_objectif",
             "nomenclature_collecting_method",
             "nomenclature_data_origin",
             "nomenclature_source_status",
             "nomenclature_resource_type",
+            "cor_objectifs",
             "cor_territories",
             "acquisition_framework",
             "acquisition_framework.creator",
@@ -384,7 +384,8 @@ def my_csv_resp(filename, data, columns, _header, separator=";"):
 
 def datasetHandler(dataset, data):
     datasetSchema = DatasetSchema(
-        only=["cor_dataset_actor", "modules", "cor_territories"], unknown=EXCLUDE
+        only=["cor_dataset_actor", "modules", "cor_objectifs", "cor_territories"],
+        unknown=EXCLUDE,
     )
     try:
         dataset = datasetSchema.load(data, instance=dataset)
@@ -450,12 +451,12 @@ def get_export_pdf_dataset(id_dataset, scope):
     dataset_schema = DatasetSchema(
         only=[
             "nomenclature_data_type",
-            "nomenclature_dataset_objectif",
             "nomenclature_collecting_method",
             "acquisition_framework",
             "cor_dataset_actor.nomenclature_actor_role",
             "cor_dataset_actor.organism",
             "cor_dataset_actor.role",
+            "cor_objectifs",
         ]
     )
     dataset = dataset_schema.dump(dataset)
