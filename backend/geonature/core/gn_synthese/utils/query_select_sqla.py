@@ -561,7 +561,16 @@ class SyntheseQuery:
             elif hasattr(self.model, colname):
                 col = getattr(self.model, colname)
                 if str(col.type) == "INTEGER":
-                    if colname in ["precision"]:
+                    if isinstance(value, list):
+                        where = []
+                        if None in value:
+                            value.remove(None)
+                            where += [col.is_(None)]
+                        where += [col.in_(value)]
+                        self.query = self.query.where(sa.or_(*where))
+                    elif value == "*":
+                        self.query = self.query.where(sa.not_(col.is_(None)))
+                    elif colname in ["precision"]:
                         self.query = self.query.where(col <= value)
                     else:
                         self.query = self.query.where(col == value)
