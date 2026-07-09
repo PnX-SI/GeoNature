@@ -100,7 +100,7 @@ jobs:
           sudo apt install -y libgdal-dev
       - name: Sync project dependencies
         run: |
-          uv sync --locked --extra dev${{ inputs.geonature_ref != 'master' && ' --no-install-workspace' || '' }}
+          uv sync --locked --extra dev ${{ inputs.geonature_ref != 'master' && ' --no-install-workspace' || '' }}
 
       - name: Install core modules backend
         run: |

@@ -78,7 +78,7 @@ jobs:
 
       - name: Sync project dependencies
         run: |
-          uv sync --locked --extra dev{{ github.base_ref != 'master' && ' --no-install-workspace' || '' }}
+          uv sync --locked --extra dev ${{ github.base_ref != 'master' && ' --no-install-workspace' || '' }}
 
       - name: Install core modules backend
         # Not part of the uv workspace, install as editable into the synced venv

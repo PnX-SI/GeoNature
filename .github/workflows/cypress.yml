@@ -60,7 +60,7 @@ jobs:
 
       - name: Sync project dependencies
         run: |
-          uv sync --locked --extra dev${{ github.base_ref != 'master' && ' --no-install-workspace' || '' }}
+          uv sync --locked --extra dev ${{ github.base_ref != 'master' && ' --no-install-workspace' || '' }}
         # FRONTEND
       - name: Cache node modules
         uses: actions/cache@v3
