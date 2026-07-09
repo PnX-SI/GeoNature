@@ -196,7 +196,8 @@
     "DISPLAY_EMAIL_INFO_OBS": true,
     "DISPLAY_STAT_BLOC": true,
     "PROD_MOD": true,
-    "DISPLAY_MAP_LAST_OBS": true
+    "DISPLAY_MAP_LAST_OBS": true,
+    "DISPLAY_LIST_LAST_OBS": false
   },
   "DEFAULT_LANGUAGE": "fr",
   "ACCOUNT_MANAGEMENT": {

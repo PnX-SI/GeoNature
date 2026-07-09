@@ -4,7 +4,6 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { SyntheseInfoObsComponent } from './synthese-info-obs/synthese-info-obs.component';
-import { Location } from '@angular/common';
 
 @Component({
   selector: 'pnx-synthese-info-obs-modal-container',
@@ -16,7 +15,7 @@ export class SyntheseObsModalWrapperComponent implements OnDestroy {
   dialogResult: any;
   constructor(
     private modalService: NgbModal,
-    private location: Location,
+    private router: Router,
     route: ActivatedRoute
   ) {
     route.params.pipe(takeUntil(this.destroy)).subscribe((params) => {
@@ -34,10 +33,10 @@ export class SyntheseObsModalWrapperComponent implements OnDestroy {
       // Go back to home page after the modal is closed
       this.dialogResult = this.currentDialog.result.then(
         (result) => {
-          this.location.back();
+          this.router.navigate(['/synthese'], { replaceUrl: true });
         },
         (reason) => {
-          this.location.back();
+          this.router.navigate(['/synthese'], { replaceUrl: true });
         }
       );
     });

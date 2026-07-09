@@ -175,7 +175,6 @@ export class MapService {
     const geojsonLayer = L.geoJSON(geojson?.features || geojson, {
       style: (feature) => {
         switch (feature.geometry.type) {
-          // No color nor opacity for linestrings
           case 'LineString':
             return style || this.lineStyle();
           default:
@@ -183,7 +182,7 @@ export class MapService {
         }
       },
       pointToLayer: (feature, latlng) => {
-        return L.circleMarker(latlng);
+        return L.circleMarker(latlng, style || this.defaultStyle());
       },
       onEachFeature: onEachFeature,
     });

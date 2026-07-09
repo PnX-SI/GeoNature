@@ -204,6 +204,32 @@ class AuthenticationFrontendConfig(AuthenticationConfig):
         return data
 
 
+class ListLastObsColumnConfig(Schema):
+    prop = fields.String(required=True)
+    name = fields.String(required=True)
+
+
+class ListLastObsFiltersConfig(Schema):
+    TAXONOMY_GROUP2_INPN = fields.Boolean(load_default=True)
+    TAXONOMY_GROUP3_INPN = fields.Boolean(load_default=True)
+
+
+class ListLastObsConfig(Schema):
+
+    COLUMNS = fields.List(
+        fields.Nested(ListLastObsColumnConfig),
+        load_default=[
+            {"prop": "nom_vern_or_lb_nom", "name": "Taxon"},
+            {"prop": "date_min", "name": "Date"},
+            {"prop": "observers", "name": "Observateur"},
+        ],
+    )
+    FILTERS = fields.Nested(
+        ListLastObsFiltersConfig,
+        load_default=ListLastObsFiltersConfig().load({}),
+    )
+
+
 class GnPySchemaConf(Schema):
     SQLALCHEMY_DATABASE_URI = fields.String(
         required=True,
@@ -281,6 +307,11 @@ class GnFrontEndConf(Schema):
     DISPLAY_STAT_BLOC = fields.Boolean(load_default=True)
     STAT_BLOC_TTL = fields.Integer(load_default=3600)
     DISPLAY_MAP_LAST_OBS = fields.Boolean(load_default=True)
+    DISPLAY_LIST_LAST_OBS = fields.Boolean(load_default=False)
+    LIST_LAST_OBS_CONFIG = fields.Nested(
+        ListLastObsConfig,
+        load_default=ListLastObsConfig().load({}),
+    )
     MULTILINGUAL = fields.Boolean(load_default=False)
     ENABLE_PROFILES = fields.Boolean(load_default=True)
 

@@ -1,10 +1,28 @@
-<div
-  *ngIf="isLoading; else content"
-  class="SpinnerContainer"
->
-  <mat-spinner></mat-spinner>
-  <p *ngIf="message">{{ message }}</p>
-</div>
-<ng-template #content>
-  <ng-content />
+<ng-container *ngIf="mode === LoadableLayoutMode.Replace; else overlayMode">
+  <div
+    *ngIf="isLoading; else replaceContent"
+    class="SpinnerContainer"
+  >
+    <mat-spinner></mat-spinner>
+    <p *ngIf="message">{{ message }}</p>
+  </div>
+  <ng-template #replaceContent>
+    <ng-content></ng-content>
+  </ng-template>
+</ng-container>
+
+<ng-template #overlayMode>
+  <div class="LoadableLayout">
+    <div class="LoadableLayout__content">
+      <ng-content></ng-content>
+    </div>
+
+    <div
+      *ngIf="isLoading"
+      class="SpinnerContainer SpinnerContainer--overlay"
+    >
+      <mat-spinner></mat-spinner>
+      <p *ngIf="message">{{ message }}</p>
+    </div>
+  </div>
 </ng-template>

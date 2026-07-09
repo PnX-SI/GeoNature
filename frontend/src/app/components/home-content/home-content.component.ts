@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 
@@ -21,7 +21,6 @@ import { HomeValidationsService } from './home-validations/home-validations.serv
   providers: [MapService, SyntheseDataService, HomeDiscussionsService, HomeValidationsService],
 })
 export class HomeContentComponent implements OnInit, AfterViewInit {
-  public showLastObsMap: boolean = false;
   public showGeneralStat: boolean = false;
   public generalStat: any;
   public locale: string;
@@ -43,9 +42,6 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
     let synthese_module = this._moduleService.getModule('SYNTHESE');
     let synthese_read_scope = synthese_module ? synthese_module.cruved['R'] : 0;
 
-    if (this.config.FRONTEND.DISPLAY_MAP_LAST_OBS && synthese_read_scope > 0) {
-      this.showLastObsMap = true;
-    }
     if (this.config.FRONTEND.DISPLAY_STAT_BLOC && synthese_read_scope > 0) {
       this.showGeneralStat = true;
     }
@@ -81,6 +77,23 @@ export class HomeContentComponent implements OnInit, AfterViewInit {
 
   get isExistBlockToDisplay(): boolean {
     return this.displayDiscussions || this.displayValidations;
+  }
+
+  get showLastObsMap(): boolean {
+    return this.hasSyntheseReadScope && this.config.FRONTEND.DISPLAY_MAP_LAST_OBS;
+  }
+
+  get showLastObsList(): boolean {
+    return (
+      this.hasSyntheseReadScope &&
+      !this.config.FRONTEND.DISPLAY_MAP_LAST_OBS &&
+      this.config.FRONTEND.DISPLAY_LIST_LAST_OBS
+    );
+  }
+
+  get hasSyntheseReadScope(): boolean {
+    const syntheseModule = this._moduleService.getModule('SYNTHESE');
+    return (syntheseModule ? syntheseModule.cruved['R'] : 0) > 0;
   }
 
   get displayDiscussions(): boolean {
