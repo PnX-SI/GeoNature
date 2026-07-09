@@ -83,7 +83,8 @@ class PermObject(db.Model):
     __tablename__ = "t_objects"
     __table_args__ = {"schema": "gn_permissions"}
     id_object = db.Column(db.Integer, primary_key=True)
-    code_object = db.Column(db.Unicode)
+    code_object = db.Column(db.Unicode(50))
+    label_object = db.Column(db.Unicode(50))
     description_object = db.Column(db.Unicode)
 
     def __str__(self):
@@ -153,7 +154,9 @@ class PermissionAvailable(db.Model):
 
     def __str__(self):
         s = self.module.module_label
-        if self.object.code_object != "ALL":
+        if self.object.label_object:
+            s += f" | {self.object.label_object}"
+        elif self.object.code_object != "ALL":
             object_label = self.object.code_object.title().replace("_", " ")
             s += f" | {object_label}"
         s += f" | {self.label}"
