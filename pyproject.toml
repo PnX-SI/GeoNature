@@ -152,12 +152,4 @@ utils-flask-sqlalchemy-geo = { workspace = true }
 taxhub = { workspace = true }
 
 [tool.uv.workspace]
-members = [
-  "backend/dependencies/TaxHub",
-  "backend/dependencies/UsersHub-authentification-module",
-  "backend/dependencies/Nomenclature-api-module",
-  "backend/dependencies/Habref-api-module",
-  "backend/dependencies/Utils-Flask-SQLAlchemy",
-  "backend/dependencies/Utils-Flask-SQLAlchemy-Geo",
-  "backend/dependencies/RefGeo",
-]
+members = ["backend/dependencies/*"]
