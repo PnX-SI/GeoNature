@@ -139,6 +139,7 @@ def create_dataset_user(user):
         dataset_name=ds_desc_and_name,
         dataset_shortname=ds_desc_and_name + " - auto-créé via la demande de création de compte",
         dataset_desc=ds_desc_and_name,
+        # TODO: change here
         marine_domain=True,
         terrestrial_domain=True,
     )

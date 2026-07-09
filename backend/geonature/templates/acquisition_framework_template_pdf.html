@@ -187,7 +187,16 @@
                     <p class="info-titre">Territoires concernés</p>
                     <p class="info-contenu">
                         {% if data['id_nomenclature_territorial_level']: %}
-                        Étendue territoriale : {{ data['nomenclature_territorial_level']['label_fr'] }}
+                            Étendue territoriale : {{ data['nomenclature_territorial_level']['label_fr'] }}
+                            <br>
+                        {% endif %}
+                        {% if data['terrestrial_domain']: %}
+                            Domaine continental
+                            <br>
+                        {% endif %}
+                        {% if data['marine_domain']: %}
+                            Domaine marin
+                            <br>
                         {% endif %}
                         <!-- <br>
                         Territoires : ??

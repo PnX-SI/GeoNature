@@ -48,8 +48,6 @@ class TDatasets(db.Model):
         default=lambda: TNomenclatures.get_default_nomenclature("DATA_TYP"),
     )
     keywords = DB.Column(DB.Unicode)
-    marine_domain = DB.Column(DB.Boolean)
-    terrestrial_domain = DB.Column(DB.Boolean)
     id_nomenclature_dataset_objectif = DB.Column(
         DB.Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),

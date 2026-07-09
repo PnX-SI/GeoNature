@@ -155,6 +155,7 @@ class AcquisitionFrameworkActorSchema(SmartRelationshipsMixin, MA.SQLAlchemyAuto
     role = MA.Nested(UserSchema, dump_only=True)
     nomenclature_actor_role = MA.Nested(NomenclatureSchema, dump_only=True)
     organism = MA.Nested(OrganismeSchema, dump_only=True)
+    # Adapt to get rid of "cor_volets_sinp" and use new fields "terrestrial_domain" and "marine_domain"
     cor_volets_sinp = MA.Nested(OrganismeSchema, dump_only=True)
 
     @pre_load
@@ -180,7 +181,6 @@ class AcquisitionFrameworkSchema(
     datasets = MA.Nested(DatasetSchema, many=True)
     bibliographical_references = MA.Nested(BibliographicReferenceSchema, many=True)
     cor_af_actor = MA.Nested(AcquisitionFrameworkActorSchema, many=True, unknown=EXCLUDE)
-    cor_volets_sinp = MA.Nested(NomenclatureSchema, many=True, unknown=EXCLUDE)
     cor_objectifs = MA.Nested(NomenclatureSchema, many=True, unknown=EXCLUDE)
     cor_territories = MA.Nested(NomenclatureSchema, many=True, unknown=EXCLUDE)
     nomenclature_territorial_level = MA.Nested(NomenclatureSchema, dump_only=True)

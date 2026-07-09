@@ -168,18 +168,11 @@
           </div>
           <br />
 
+          <!-- TODO: decide whether to display this section even when there is no territory to be displayed -->
           <div class="b">{{ 'Geo.Territories' | translate }}</div>
           <ul class="a">
             <li *ngFor="let ter of dataset?.cor_territories">- {{ ter.label_default }}</li>
           </ul>
-          <div class="a">
-            <b>{{ 'MetaData.DatasetCard.LandCoverage' | translate }} :</b>
-            {{ dataset.terrestrial_domain ? 'oui' : 'non' }}
-          </div>
-          <div class="a">
-            <b>{{ 'MetaData.DatasetCard.MarineAreaCoverage' | translate }} :</b>
-            {{ dataset.marine_domain ? 'oui' : 'non' }}
-          </div>
 
           <br />
 

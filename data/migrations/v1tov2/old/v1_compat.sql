@@ -400,6 +400,7 @@ INSERT INTO gn_meta.t_datasets (
   dataset_shortname,
   dataset_desc,
   id_nomenclature_data_type,
+  -- # TODO: change here
   marine_domain,
   terrestrial_domain,
   id_nomenclature_dataset_objectif,
@@ -415,6 +416,7 @@ SELECT DISTINCT
   nom_lot,
   desc_lot,
   ref_nomenclatures.get_id_nomenclature('DATA_TYP','1') AS id_nomenclature_data_type, --nomenclature 103 = "donnée source"
+  -- # TODO: change here
   false AS marine_domain,
   true AS terrestrial_domain,
   ref_nomenclatures.get_id_nomenclature('JDD_OBJECTIFS','1.1') AS id_nomenclature_dataset_objectif, --nomenclature 114 à reprendre lot par lot

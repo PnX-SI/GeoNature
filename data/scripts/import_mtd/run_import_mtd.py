@@ -643,6 +643,7 @@ def insert_update_t_datasets(action, cur_ds_uuid):
         .replace('"', "")
         + "'"
     )
+    # TODO: change here "terrestrial_domain" and "marine_domain"
     marine_domain = get_single_data(ds_main, "domaineMarin")
     terrestrial_domain = get_single_data(ds_main, "domaineTerrestre")
     default_validity = "true"
@@ -691,6 +692,7 @@ def insert_update_t_datasets(action, cur_ds_uuid):
         )
     # If action is CREATE
     if action == "create":
+        # TODO: change here "terrestrial_domain" and "marine_domain"
         cur_query = (
             "INSERT INTO gn_meta.t_datasets(unique_dataset_id, id_acquisition_framework, dataset_name, dataset_shortname, "
             + "dataset_desc, id_nomenclature_data_type, keywords, marine_domain, terrestrial_domain, id_nomenclature_dataset_objectif, "
@@ -744,6 +746,7 @@ def insert_update_t_datasets(action, cur_ds_uuid):
         )
         result = "New dataset created..."
     elif action == "update":
+        # TODO: change here "terrestrial_domain" and "marine_domain"
         cur_query = (
             "UPDATE gn_meta.t_datasets SET id_acquisition_framework="
             + id_acquisition_framework
