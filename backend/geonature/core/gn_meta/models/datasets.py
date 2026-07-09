@@ -1,6 +1,6 @@
 import datetime
 
-from flask import g
+from flask import g, current_app
 import sqlalchemy as sa
 from sqlalchemy import ForeignKey, or_, func
 from sqlalchemy.sql import select, func
@@ -373,12 +373,7 @@ class TDatasets(db.Model):
         )
         request_nb_observations = request_nb_obs_synthese
 
-        from geonature.utils.module import is_module_installed
-
-        is_module_OCCHAB_installed = is_module_installed(
-            "gn_module_occhab", check_if_all_revisions_have_been_applied=False
-        )
-        if is_module_OCCHAB_installed:
+        if "OCCHAB" in current_app.config:
             from gn_module_occhab.models import OccurenceHabitat, Station
 
             request_nb_obs_habitats = (
