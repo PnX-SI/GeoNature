@@ -399,11 +399,11 @@ class TIndividuals(DB.Model):
 
     taxon = DB.relationship(
         Taxref,
-        primaryjoin= (cd_nom == Taxref.cd_nom),
+        primaryjoin=(cd_nom == Taxref.cd_nom),
         foreign_keys=[cd_nom],
         lazy="select",
-        viewonly=True
-)
+        viewonly=True,
+    )
 
     @classmethod
     def filter_by_scope(cls, query, scope, user=None):
