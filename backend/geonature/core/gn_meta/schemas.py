@@ -23,6 +23,8 @@ from utils_flask_sqla.schema import SmartRelationshipsMixin
 from pypnusershub.schemas import UserSchema, OrganismeSchema
 from pypnnomenclature.schemas import NomenclatureSchema
 
+from .models.remotedatabase import TRemoteDatabase
+
 
 class DatasetActorSchema(SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
     class Meta:
@@ -43,6 +45,18 @@ class DatasetActorSchema(SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
         if data.get("id_cda") is None:
             data.pop("id_cda", None)
         return data
+
+
+class RemoteDatabaseSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
+    class Meta:
+        model = TRemoteDatabase
+        include_fk = True
+        load_instance = True
+        sqla_session = db.session
+
+    name = fields.String()
+    id_contact = fields.Integer(allow_none=True)
+    contact = MA.Nested(UserSchema, dump_only=True, allow_none=True)
 
 
 class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
@@ -81,6 +95,8 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
     acquisition_framework = MA.Nested("AcquisitionFrameworkSchema", dump_only=True)
     sources = MA.Nested(SourceSchema, many=True, dump_only=True)
     publications = MA.Nested("PublicationSchema", many=True, dump_only=True, exclude=("datasets",))
+    id_remote_database = fields.Integer(allow_none=True)
+    remote_database = MA.Nested(RemoteDatabaseSchema, dump_only=True, allow_none=True)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
