@@ -349,6 +349,7 @@ class TIndividuals(DB.Model):
     )
     active = DB.Column(DB.Boolean, default=True)
     comment = DB.Column(DB.Text)
+    additional_data = DB.Column(JSONB)
     id_digitiser = DB.Column(
         DB.ForeignKey("utilisateurs.t_roles.id_role"),
         nullable=False,
