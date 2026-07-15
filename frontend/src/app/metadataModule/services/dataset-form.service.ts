@@ -79,6 +79,7 @@ export class DatasetFormService {
       modules: [[]],
       cor_objectifs: [[], Validators.required],
       cor_territories: [[], Validators.required],
+      id_remote_database: null,
       cor_dataset_actor: this.fb.array(
         [],
         [
