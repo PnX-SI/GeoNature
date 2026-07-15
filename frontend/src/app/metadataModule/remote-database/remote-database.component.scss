@@ -1,0 +1,27 @@
+:host {
+  display: block;
+}
+
+.d-flex {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.flex-grow-1 {
+  flex: 1;
+}
+
+small {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #666;
+}
+
+button {
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  min-width: 40px;
+}

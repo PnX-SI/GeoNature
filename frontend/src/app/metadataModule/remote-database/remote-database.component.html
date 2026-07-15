@@ -1,0 +1,23 @@
+<div>
+  <small>{{ 'MetaData.RemoteDatabase.RemoteDatabase' | translate }}</small>
+  <div class="d-flex gap-2">
+    <ng-container *ngIf="remoteDatabases | async as databases">
+      <ng-select
+        class="flex-grow-1"
+        [formControl]="formControl.get('id_remote_database')"
+        [items]="databases"
+        bindLabel="name"
+        bindValue="id_remote_database"
+        placeholder="{{ 'MetaData.DatasetCard.None' | translate }}"
+      ></ng-select>
+    </ng-container>
+    <button
+      type="button"
+      class="btn-success"
+      matTooltip="{{ 'MetaData.RemoteDatabase.AddDatabase' | translate }}"
+      (click)="openRemoteDatabaseDialog()"
+    >
+      <strong>+</strong>
+    </button>
+  </div>
+</div>
