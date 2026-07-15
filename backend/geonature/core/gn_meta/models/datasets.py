@@ -21,6 +21,7 @@ from geonature.core.gn_commons.models import cor_field_dataset, cor_module_datas
 
 from ref_geo.models import LAreas
 from .commons import *
+from .remotedatabase import TRemoteDatabase
 
 
 @serializable(exclude=["user_actors", "organism_actors", "nb_observations"])
@@ -136,6 +137,12 @@ class TDatasets(db.Model):
     )
     additional_fields = DB.relationship(
         "TAdditionalFields", secondary=cor_field_dataset, back_populates="datasets"
+    )
+    id_remote_database = DB.Column(
+        DB.Integer, ForeignKey("gn_meta.remote_database.id_remote_database"), nullable=True
+    )
+    remote_database = DB.relationship(
+        "TRemoteDatabase", lazy="joined", foreign_keys=[id_remote_database]
     )
 
     @hybrid_property
