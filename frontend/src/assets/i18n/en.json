@@ -378,7 +378,9 @@
       "MarineAreaCoverage": "Marine territory coverage",
       "TermsReference": "Reference framework",
       "TitleAF": "Title of the acquisition framework",
-      "IDAF": "ID of the acquisition framework"
+      "IDAF": "ID of the acquisition framework",
+      "Contact": "Contact",
+      "None": "None"
     },
     "DatasetForm": {
       "Actions": {
@@ -417,6 +419,17 @@
         "DeleteActor": "Delete this stakeholder",
         "CreateOrganism": "Add an organism"
       }
+    },
+    "RemoteDatabase": {
+      "RemoteDatabase": "Production Database",
+      "AddDatabase": "Add a Production Database",
+      "Name": "Name",
+      "NameRequired": "Name Required",
+      "AssociatedActor": "Associated Actor",
+      "CreateTitle": "Create Production Database",
+      "CreatedSuccess": "Production Database Created Successfully",
+      "CreatedError": "Production Database Could Not Be Created",
+      "NameAlreadyExists": "This Name Already Exists"
     },
     "Organisms": {
       "CreateOrganism": "Add an organism",

@@ -1,7 +1,7 @@
 """Create remote_database table
 
 Revision ID: 21fe37188895
-Revises: 21fe37188895
+Revises: 0444c425fa27
 Create Date: 2026-07-15 11:10:00
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = "21fe37188895"
-down_revision = "ae0b6362fb22"
+down_revision = "0444c425fa27"
 branch_labels = None
 depends_on = None
 
