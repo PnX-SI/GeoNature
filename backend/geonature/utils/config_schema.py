@@ -171,6 +171,7 @@ class MetadataConfig(Schema):
         ],
     )
     ENABLE_UUID_EDITION_FIELD = fields.Boolean(load_default=False)
+    ENABLE_REMOTE_DATABASE_EDITION_FIELD = fields.Boolean(load_default=True)
     ROUTE_ADD_AF = fields.String(load_default="/metadata/af")
     DATASETS_DEFAULT_ASSOCIATED_MODULES = fields.List(fields.Str(), load_default=[])
     AF_OPENABLE = fields.Boolean(load_default=True)
@@ -509,6 +510,8 @@ BASEMAP = [
     {
         "name": "OpenStreetMap",
         "url": "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+        "maxZoom": 19,
+        "maxNativeZoom": 19,
         "options": {
             "attribution": "<a href='https://www.openstreetmap.org/copyright' target='_blank'>© OpenStreetMap contributors</a>",
         },
@@ -519,6 +522,8 @@ BASEMAP = [
         "options": {
             "attribution": "Map data: © <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap contributors</a>, SRTM | Map style: © <a href='https://opentopomap.org' target='_blank'>OpenTopoMap</a> (<a href='https://creativecommons.org/licenses/by-sa/3.0/' target='_blank'>CC-BY-SA</a>)",
         },
+        "maxZoom": 18,
+        "maxNativeZoom": 16,
     },
     {
         "name": "GoogleSatellite",
@@ -527,6 +532,8 @@ BASEMAP = [
             "subdomains": ["mt0", "mt1", "mt2", "mt3"],
             "attribution": "© Google Maps",
         },
+        "maxZoom": 18,
+        "maxNativeZoom": 15,
     },
 ]
 

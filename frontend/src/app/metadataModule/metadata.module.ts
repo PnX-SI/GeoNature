@@ -22,6 +22,7 @@ import { ButtonDeleteAfComponent } from './af/button-delete-af.component';
 import { ButtonCloseAfComponent } from './af/button-close-af.component';
 import { OrganismFormDialogComponent } from './organisms/organism-form-dialog.component';
 import { DatasetActivationToggleComponent } from './datasets/dataset-activation-toggle.component';
+import { RemoteDatabaseComponent } from './remote-database/remote-database.component';
 
 const routes: Routes = [
   { path: '', component: MetadataComponent },
@@ -78,6 +79,7 @@ export class MetadataPaginator extends MatPaginatorIntl {
     ButtonCloseAfComponent,
     DatasetActivationToggleComponent,
     OrganismFormDialogComponent,
+    RemoteDatabaseComponent,
   ],
   providers: [
     MetadataService,

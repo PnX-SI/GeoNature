@@ -1,0 +1,61 @@
+<h2 mat-dialog-title>{{ 'MetaData.RemoteDatabase.CreateTitle' | translate }}</h2>
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <br />
+    <mat-form-field
+      appearance="outline"
+      class="full-width"
+    >
+      <mat-label>{{ 'MetaData.RemoteDatabase.Name' | translate }}</mat-label>
+      <input
+        matInput
+        formControlName="name"
+        data-qa="pnx-remote-database-form-dialog-name"
+        required
+      />
+      <mat-error *ngIf="form.get('name').hasError('required')">
+        {{ 'MetaData.RemoteDatabase.NameRequired' | translate }}
+      </mat-error>
+      <mat-error *ngIf="form.get('name').hasError('nameExists')">
+        {{ 'MetaData.RemoteDatabase.NameAlreadyExists' | translate }}
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="outline"
+      class="full-width"
+    >
+      <mat-label>{{ 'MetaData.RemoteDatabase.AssociatedActor' | translate }}</mat-label>
+      <mat-select formControlName="id_contact">
+        <mat-option [value]="null">{{ 'MetaData.DatasetCard.None' | translate }}</mat-option>
+        <mat-option
+          *ngFor="let role of roles"
+          [value]="role.id_role"
+        >
+          {{ role.nom_complet }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button
+    mat-raised-button
+    color="warn"
+    (click)="onCancel()"
+    data-qa="remote-database-dialog-cancel"
+  >
+    {{ 'Actions.Cancel' | translate }}
+  </button>
+  <button
+    mat-raised-button
+    color="primary"
+    class="button-success"
+    (click)="onSubmit()"
+    [disabled]="!form.valid || isSubmitting"
+    data-qa="remote-database-dialog-save"
+  >
+    {{ 'Actions.Validate' | translate }}
+  </button>
+</mat-dialog-actions>

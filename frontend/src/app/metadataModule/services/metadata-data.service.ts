@@ -33,4 +33,12 @@ export class MetadataDataService {
   patchDataset(id_dataset, value) {
     return this._api.patch<any>(`${this.config.API_ENDPOINT}/meta/dataset/${id_dataset}`, value);
   }
+
+  getRemoteDatabases() {
+    return this._api.get<any>(`${this.config.API_ENDPOINT}/meta/remote_database`);
+  }
+
+  createRemoteDatabase(data: any) {
+    return this._api.post<any>(`${this.config.API_ENDPOINT}/meta/remote_database`, data);
+  }
 }
