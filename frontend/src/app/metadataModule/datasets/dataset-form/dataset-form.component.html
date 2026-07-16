@@ -207,11 +207,11 @@
             <div class="col-12">
               <gn-advanced-section *ngIf="uuidEditionEnabled || remoteDatabaseEditionEnabled">
                 <pnx-metadata-remote-database
-                  [formControl]="form"
+                  [parentForm]="form"
                   [remoteDatabases]="remoteDatabases"
                 ></pnx-metadata-remote-database>
                 <gn-uuid
-                  [formControl]="form.get('unique_dataset_id')"
+                  [parentFormControl]="form.get('unique_dataset_id')"
                   [placeholder]="
                     translation_service.instant('MetaData.Messages.UUIDFormPlaceHolder', {
                       entity: entityLabel

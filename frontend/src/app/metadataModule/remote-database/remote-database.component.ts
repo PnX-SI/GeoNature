@@ -13,7 +13,7 @@ import { CommonService } from '@geonature_common/service/common.service';
   styleUrls: ['./remote-database.component.scss'],
 })
 export class RemoteDatabaseComponent implements OnInit {
-  @Input() formControl: UntypedFormGroup;
+  @Input() parentForm: UntypedFormGroup;
   @Input() remoteDatabases: Observable<any[]>;
   @Output() remoteDatabaseRefreshed = new EventEmitter<Observable<any[]>>();
 
@@ -33,13 +33,15 @@ export class RemoteDatabaseComponent implements OnInit {
     const dialogRef = this.dialog.open(RemoteDatabaseFormDialogComponent, {
       width: '600px',
       disableClose: false,
+      data: { remoteDatabases: this.remoteDatabases },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
+        // Get updated remote databases after adding one
         this.remoteDatabases = this.metadataDataS.getRemoteDatabases();
         this.remoteDatabaseRefreshed.emit(this.remoteDatabases);
-        this.formControl.patchValue({ id_remote_database: result.id_remote_database });
+        this.parentForm.patchValue({ id_remote_database: result.id_remote_database });
         this.commonService.translateToaster('success', 'MetaData.RemoteDatabase.CreatedSuccess');
       }
     });
