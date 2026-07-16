@@ -37,7 +37,7 @@ def imports_all(all_modules_destination, users):
     }
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction", "celery_eager")
+@pytest.mark.usefixtures("client_class", "celery_eager")
 class TestImportsRoute:
     def test_list_imports(self, imports_all, all_modules_destination, users):
         r = self.client.get(url_for("import.get_import_list"))

@@ -14,7 +14,7 @@ from .utils import CLIENT_GET
 
 
 @pytest.mark.benchmark(group="ref_geo")
-@pytest.mark.usefixtures("client_class", "temporary_transaction", "activate_profiling_sql")
+@pytest.mark.usefixtures("client_class", "activate_profiling_sql")
 class TestBenchmarkRefGeo:
 
     test_get_areas_with_geom = BenchmarkTest(

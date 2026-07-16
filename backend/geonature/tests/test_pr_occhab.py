@@ -22,7 +22,6 @@ from pypnnomenclature.models import TNomenclatures
 from utils_flask_sqla_geo.schema import FeatureSchema, FeatureCollectionSchema
 
 from .utils import set_logged_user
-from .fixtures import *
 
 occhab = pytest.importorskip("gn_module_occhab")
 
@@ -173,7 +172,7 @@ def station2(stations):
     return stations["station_2"]
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 class TestOcchab:
     def test_list_stations(self, users, datasets, station):
         url = url_for("occhab.list_stations")

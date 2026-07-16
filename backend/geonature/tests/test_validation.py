@@ -17,7 +17,6 @@ from geonature.utils.config import config
 
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
-from .fixtures import *
 from .utils import set_logged_user
 from datetime import timezone
 from zoneinfo import ZoneInfo
@@ -212,7 +211,7 @@ def synthese_data_with_validations(synthese_data, users, validation_status_nomen
     }
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction", "app")
+@pytest.mark.usefixtures("client_class", "app")
 class TestValidationRoutes:
     """Test suite for validation module routes."""
 

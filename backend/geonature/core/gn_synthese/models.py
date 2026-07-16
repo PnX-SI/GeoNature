@@ -1,6 +1,6 @@
 from collections import OrderedDict
 from packaging import version
-from typing import List
+from typing import List, Optional, Any
 
 import sqlalchemy as sa
 import datetime
@@ -15,6 +15,8 @@ from sqlalchemy.orm import (
     deferred,
     query_expression,
     synonym,
+    Mapped,
+    mapped_column,
 )
 from sqlalchemy.sql import select, func
 from sqlalchemy.schema import FetchedValue
@@ -60,14 +62,14 @@ filterable_columns = ["id_synthese", "last_action", "meta_last_action_date"]
 class TSources(DB.Model):
     __tablename__ = "t_sources"
     __table_args__ = {"schema": "gn_synthese"}
-    id_source = DB.Column(DB.Integer, primary_key=True)
-    name_source = DB.Column(DB.Unicode)
-    desc_source = DB.Column(DB.Unicode)
-    entity_source_pk_field = DB.Column(DB.Unicode)
-    url_source = DB.Column(DB.Unicode)
-    meta_create_date = DB.Column(DB.DateTime)
-    meta_update_date = DB.Column(DB.DateTime)
-    id_module = DB.Column(DB.Integer, ForeignKey(TModules.id_module))
+    id_source: Mapped[int] = mapped_column(DB.Integer, primary_key=True)
+    name_source: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    desc_source: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    entity_source_pk_field: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    url_source: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    meta_create_date: Mapped[Optional[datetime.datetime]] = mapped_column(DB.DateTime)
+    meta_update_date: Mapped[Optional[datetime.datetime]] = mapped_column(DB.DateTime)
+    id_module: Mapped[Optional[int]] = mapped_column(DB.Integer, ForeignKey(TModules.id_module))
     module = DB.relationship(TModules, backref=DB.backref("sources", cascade_backrefs=False))
 
     @property
@@ -92,10 +94,10 @@ cor_observer_synthese = DB.Table(
 class CorObserverSynthese(DB.Model):
     __tablename__ = "cor_observer_synthese"
     __table_args__ = {"schema": "gn_synthese", "extend_existing": True}
-    id_synthese = DB.Column(
+    id_synthese: Mapped[int] = mapped_column(
         DB.Integer, ForeignKey("gn_synthese.synthese.id_synthese"), primary_key=True
     )
-    id_role = DB.Column(DB.Integer, ForeignKey(User.id_role), primary_key=True)
+    id_role: Mapped[int] = mapped_column(DB.Integer, ForeignKey(User.id_role), primary_key=True)
 
 
 corAreaSynthese = DB.Table(
@@ -203,9 +205,7 @@ class SyntheseQuery(GeoFeatureCollectionMixin, Query):
         if scope == 0:
             self = self.where(sa.false())
         elif scope in (1, 2):
-            datasets = db.session.scalars(
-                TDatasets.filter_by_readable(user).with_entities(TDatasets.id_dataset)
-            ).all()
+            datasets = db.session.scalars(TDatasets.filter_by_readable(user)).all()
             self = self.where(
                 or_(
                     Synthese.id_digitizer == user.id_role,
@@ -220,10 +220,12 @@ class SyntheseQuery(GeoFeatureCollectionMixin, Query):
 class CorAreaSynthese(DB.Model):
     __tablename__ = "cor_area_synthese"
     __table_args__ = {"schema": "gn_synthese", "extend_existing": True}
-    id_synthese = DB.Column(
+    id_synthese: Mapped[int] = mapped_column(
         DB.Integer, ForeignKey("gn_synthese.synthese.id_synthese"), primary_key=True
     )
-    id_area = DB.Column(DB.Integer, ForeignKey("ref_geo.l_areas.id_area"), primary_key=True)
+    id_area: Mapped[int] = mapped_column(
+        DB.Integer, ForeignKey("ref_geo.l_areas.id_area"), primary_key=True
+    )
 
 
 @serializable
@@ -257,185 +259,193 @@ class Synthese(DB.Model):
         "nomenclature_determination_method",
     ]
 
-    id_synthese = DB.Column(DB.Integer, primary_key=True)
-    unique_id_sinp = DB.Column(UUID(as_uuid=True))
-    unique_id_sinp_grp = DB.Column(UUID(as_uuid=True))
-    id_source = DB.Column(DB.Integer, ForeignKey(TSources.id_source), nullable=False)
+    id_synthese: Mapped[int] = mapped_column(DB.Integer, primary_key=True)
+    unique_id_sinp: Mapped[Optional[Any]] = mapped_column(UUID(as_uuid=True))
+    unique_id_sinp_grp: Mapped[Optional[Any]] = mapped_column(UUID(as_uuid=True))
+    id_source: Mapped[int] = mapped_column(DB.Integer, ForeignKey(TSources.id_source))
     source = relationship(TSources)
-    id_module = DB.Column(DB.Integer, ForeignKey(TModules.id_module))
-    id_import = db.Column(db.Integer, ForeignKey(Import.id_import), nullable=True)
+    id_module: Mapped[Optional[int]] = mapped_column(DB.Integer, ForeignKey(TModules.id_module))
+    id_import: Mapped[Optional[int]] = mapped_column(db.Integer, ForeignKey(Import.id_import))
     module = DB.relationship(TModules)
-    entity_source_pk_value = DB.Column(DB.Unicode)
-    id_dataset = DB.Column(DB.Integer, ForeignKey(TDatasets.id_dataset))
+    entity_source_pk_value: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    id_dataset: Mapped[Optional[int]] = mapped_column(DB.Integer, ForeignKey(TDatasets.id_dataset))
     dataset = DB.relationship(
         TDatasets,
         backref=DB.backref("synthese_records", lazy="dynamic", cascade_backrefs=False),
     )
-    grp_method = DB.Column(DB.Unicode(length=255))
+    grp_method: Mapped[Optional[str]] = mapped_column(DB.Unicode(length=255))
 
-    id_nomenclature_geo_object_nature = db.Column(
+    id_nomenclature_geo_object_nature: Mapped[Optional[int]] = mapped_column(
         db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
     )
     nomenclature_geo_object_nature = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_geo_object_nature]
     )
-    id_nomenclature_grp_typ = db.Column(
+    id_nomenclature_grp_typ: Mapped[Optional[int]] = mapped_column(
         db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_grp_typ = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_grp_typ])
-    id_nomenclature_obs_technique = db.Column(
+    id_nomenclature_obs_technique: Mapped[Optional[int]] = mapped_column(
         db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_obs_technique = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_obs_technique]
     )
-    id_nomenclature_bio_status = db.Column(
+    id_nomenclature_bio_status: Mapped[Optional[int]] = mapped_column(
         db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_bio_status = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_bio_status]
     )
-    id_nomenclature_bio_condition = db.Column(
+    id_nomenclature_bio_condition: Mapped[Optional[int]] = mapped_column(
         db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_bio_condition = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_bio_condition]
     )
-    id_nomenclature_naturalness = db.Column(
+    id_nomenclature_naturalness: Mapped[Optional[int]] = mapped_column(
         db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_naturalness = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_naturalness]
     )
-    id_nomenclature_valid_status = db.Column(
+    id_nomenclature_valid_status: Mapped[Optional[int]] = mapped_column(
         db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_valid_status = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_valid_status]
     )
-    id_nomenclature_exist_proof = db.Column(
+    id_nomenclature_exist_proof: Mapped[Optional[int]] = mapped_column(
         db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_exist_proof = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_exist_proof]
     )
-    id_nomenclature_diffusion_level = db.Column(
+    id_nomenclature_diffusion_level: Mapped[Optional[int]] = mapped_column(
         db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
     )
     nomenclature_diffusion_level = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_diffusion_level]
     )
-    id_nomenclature_life_stage = db.Column(
+    id_nomenclature_life_stage: Mapped[Optional[int]] = mapped_column(
         db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_life_stage = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_life_stage]
     )
-    id_nomenclature_sex = db.Column(
+    id_nomenclature_sex: Mapped[Optional[int]] = mapped_column(
         db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_sex = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_sex])
-    id_nomenclature_obj_count = db.Column(
+    id_nomenclature_obj_count: Mapped[Optional[int]] = mapped_column(
         db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_obj_count = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_obj_count]
     )
-    id_nomenclature_type_count = db.Column(
+    id_nomenclature_type_count: Mapped[Optional[int]] = mapped_column(
         db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_type_count = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_type_count]
     )
-    id_nomenclature_sensitivity = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+    id_nomenclature_sensitivity: Mapped[Optional[int]] = mapped_column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+    )
     nomenclature_sensitivity = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_sensitivity]
     )
-    id_nomenclature_observation_status = db.Column(
+    id_nomenclature_observation_status: Mapped[Optional[int]] = mapped_column(
         db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_observation_status = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_observation_status]
     )
-    id_nomenclature_blurring = db.Column(
+    id_nomenclature_blurring: Mapped[Optional[int]] = mapped_column(
         db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_blurring = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_blurring])
-    id_nomenclature_source_status = db.Column(
+    id_nomenclature_source_status: Mapped[Optional[int]] = mapped_column(
         db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_source_status = db.relationship(
         TNomenclatures,
         foreign_keys=[id_nomenclature_source_status],
     )
-    id_nomenclature_info_geo_type = db.Column(
+    id_nomenclature_info_geo_type: Mapped[Optional[int]] = mapped_column(
         db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_info_geo_type = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_info_geo_type]
     )
-    id_nomenclature_behaviour = db.Column(
+    id_nomenclature_behaviour: Mapped[Optional[int]] = mapped_column(
         db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_behaviour = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_behaviour]
     )
-    id_nomenclature_biogeo_status = db.Column(
+    id_nomenclature_biogeo_status: Mapped[Optional[int]] = mapped_column(
         db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_biogeo_status = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_biogeo_status]
     )
-    id_nomenclature_determination_method = db.Column(
+    id_nomenclature_determination_method: Mapped[Optional[int]] = mapped_column(
         db.Integer, ForeignKey(TNomenclatures.id_nomenclature), server_default=FetchedValue()
     )
     nomenclature_determination_method = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_determination_method]
     )
 
-    reference_biblio = DB.Column(DB.Unicode(length=5000))
-    count_min = DB.Column(DB.Integer)
-    count_max = DB.Column(DB.Integer)
-    cd_nom = DB.Column(DB.Integer, ForeignKey(Taxref.cd_nom))
+    reference_biblio: Mapped[Optional[str]] = mapped_column(DB.Unicode(length=5000))
+    count_min: Mapped[Optional[int]]
+    count_max: Mapped[Optional[int]]
+    cd_nom: Mapped[Optional[int]] = mapped_column(DB.Integer, ForeignKey(Taxref.cd_nom))
     taxref = relationship(Taxref)
     taxref_tree = relationship(
         TaxrefTree, primaryjoin=foreign(cd_nom) == remote(TaxrefTree.cd_nom), viewonly=True
     )
-    cd_hab = DB.Column(DB.Integer, ForeignKey(Habref.cd_hab))
+    cd_hab: Mapped[Optional[int]] = mapped_column(DB.Integer, ForeignKey(Habref.cd_hab))
     habitat = relationship(Habref)
-    nom_cite = DB.Column(DB.Unicode(length=1000), nullable=False)
-    meta_v_taxref = DB.Column(DB.Unicode(length=50))
-    sample_number_proof = DB.Column(DB.UnicodeText)
-    digital_proof = DB.Column(DB.UnicodeText)
-    non_digital_proof = DB.Column(DB.UnicodeText)
-    altitude_min = DB.Column(DB.Integer)
-    altitude_max = DB.Column(DB.Integer)
-    depth_min = DB.Column(DB.Integer)
-    depth_max = DB.Column(DB.Integer)
-    place_name = DB.Column(DB.Unicode(length=500))
-    the_geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
+    nom_cite: Mapped[str] = mapped_column(DB.Unicode(length=1000))
+    meta_v_taxref: Mapped[Optional[str]] = mapped_column(DB.Unicode(length=50))
+    sample_number_proof: Mapped[Optional[str]] = mapped_column(DB.UnicodeText)
+    digital_proof: Mapped[Optional[str]] = mapped_column(DB.UnicodeText)
+    non_digital_proof: Mapped[Optional[str]] = mapped_column(DB.UnicodeText)
+    altitude_min: Mapped[Optional[int]]
+    altitude_max: Mapped[Optional[int]]
+    depth_min: Mapped[Optional[int]]
+    depth_max: Mapped[Optional[int]]
+    place_name: Mapped[Optional[str]] = mapped_column(DB.Unicode(length=500))
+    the_geom_4326: Mapped[Optional[Any]] = mapped_column(Geometry("GEOMETRY", 4326))
     the_geom_4326_geojson = column_property(func.ST_AsGeoJSON(the_geom_4326), deferred=True)
-    the_geom_point = deferred(DB.Column(Geometry("GEOMETRY", 4326)))
-    the_geom_local = deferred(DB.Column(Geometry("GEOMETRY")))
+    the_geom_point: Mapped[Optional[Any]] = deferred(mapped_column(Geometry("GEOMETRY", 4326)))
+    the_geom_local: Mapped[Optional[Any]] = deferred(mapped_column(Geometry("GEOMETRY")))
     the_geom_authorized = query_expression()
-    precision = DB.Column(DB.Integer)
-    id_area_attachment = DB.Column(DB.Integer, ForeignKey(LAreas.id_area))
-    date_min = DB.Column(DB.DateTime, nullable=False)
-    date_max = DB.Column(DB.DateTime, nullable=False)
-    validator = DB.Column(DB.Unicode(length=1000))
-    validation_comment = DB.Column(DB.Unicode)
-    observers = DB.Column(DB.Unicode(length=1000))
-    determiner = DB.Column(DB.Unicode(length=1000))
-    id_digitiser = DB.Column(DB.Integer, ForeignKey(User.id_role))
+    precision: Mapped[Optional[int]]
+    id_area_attachment: Mapped[Optional[int]] = mapped_column(
+        DB.Integer, ForeignKey(LAreas.id_area)
+    )
+    date_min: Mapped[datetime.datetime] = mapped_column(DB.DateTime)
+    date_max: Mapped[datetime.datetime] = mapped_column(DB.DateTime)
+    validator: Mapped[Optional[str]] = mapped_column(DB.Unicode(length=1000))
+    validation_comment: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    observers: Mapped[Optional[str]] = mapped_column(DB.Unicode(length=1000))
+    determiner: Mapped[Optional[str]] = mapped_column(DB.Unicode(length=1000))
+    id_digitiser: Mapped[Optional[int]] = mapped_column(DB.Integer, ForeignKey(User.id_role))
     digitiser = db.relationship(User, foreign_keys=[id_digitiser])
     id_digitizer = synonym("id_digitiser")
-    comment_context = DB.Column(DB.UnicodeText)
-    comment_description = DB.Column(DB.UnicodeText)
-    additional_data = DB.Column(JSONB)
-    meta_validation_date = DB.Column(DB.DateTime)
-    meta_create_date = DB.Column(DB.DateTime, server_default=FetchedValue())
-    meta_update_date = DB.Column(DB.DateTime, server_default=FetchedValue())
-    last_action = DB.Column(DB.Unicode)
+    comment_context: Mapped[Optional[str]] = mapped_column(DB.UnicodeText)
+    comment_description: Mapped[Optional[str]] = mapped_column(DB.UnicodeText)
+    additional_data: Mapped[Optional[Any]] = mapped_column(JSONB)
+    meta_validation_date: Mapped[Optional[datetime.datetime]] = mapped_column(DB.DateTime)
+    meta_create_date: Mapped[Optional[datetime.datetime]] = mapped_column(
+        DB.DateTime, server_default=FetchedValue()
+    )
+    meta_update_date: Mapped[Optional[datetime.datetime]] = mapped_column(
+        DB.DateTime, server_default=FetchedValue()
+    )
+    last_action: Mapped[Optional[str]] = mapped_column(DB.Unicode)
 
     areas = relationship(
         LAreas,
@@ -534,9 +544,7 @@ class Synthese(DB.Model):
         if scope == 0:
             query = query.where(sa.false())
         elif scope in (1, 2):
-            datasets = db.session.scalars(
-                TDatasets.filter_by_readable(user).with_entities(TDatasets.id_dataset)
-            ).all()
+            datasets = db.session.scalars(TDatasets.filter_by_readable(user)).all()
             query = query.where(
                 or_(
                     Synthese.id_digitizer == user.id_role,
@@ -551,11 +559,11 @@ class Synthese(DB.Model):
 class DefaultsNomenclaturesValue(DB.Model):
     __tablename__ = "defaults_nomenclatures_value"
     __table_args__ = {"schema": "gn_synthese"}
-    mnemonique_type = DB.Column(DB.Integer, primary_key=True)
-    id_organism = DB.Column(DB.Integer, primary_key=True)
-    regne = DB.Column(DB.Unicode, primary_key=True)
-    group2_inpn = DB.Column(DB.Unicode, primary_key=True)
-    id_nomenclature = DB.Column(DB.Integer)
+    mnemonique_type: Mapped[int] = mapped_column(DB.Integer, primary_key=True)
+    id_organism: Mapped[int] = mapped_column(DB.Integer, primary_key=True)
+    regne: Mapped[str] = mapped_column(DB.Unicode, primary_key=True)
+    group2_inpn: Mapped[str] = mapped_column(DB.Unicode, primary_key=True)
+    id_nomenclature: Mapped[Optional[int]]
 
 
 # Type library to list every report types
@@ -563,8 +571,8 @@ class DefaultsNomenclaturesValue(DB.Model):
 class BibReportsTypes(DB.Model):
     __tablename__ = "bib_reports_types"
     __table_args__ = {"schema": "gn_synthese"}
-    id_type = DB.Column(DB.Integer(), primary_key=True)
-    type = DB.Column(DB.Text())
+    id_type: Mapped[int] = mapped_column(DB.Integer(), primary_key=True)
+    type: Mapped[Optional[str]] = mapped_column(DB.Text())
 
 
 # Relation report model with User and BibReportsTypes to get every infos about a report
@@ -573,13 +581,19 @@ class TReport(DB.Model):
     __tablename__ = "t_reports"
 
     __table_args__ = {"schema": "gn_synthese"}
-    id_report = DB.Column(DB.Integer(), primary_key=True)
-    id_synthese = DB.Column(DB.Integer(), ForeignKey("gn_synthese.synthese.id_synthese"))
-    id_role = DB.Column(DB.Integer(), ForeignKey(User.id_role))
-    id_type = DB.Column(DB.Integer(), ForeignKey(BibReportsTypes.id_type))
-    content = DB.Column(DB.Text())
-    creation_date = DB.Column(DB.DateTime(), default=datetime.datetime.utcnow)
-    deleted = DB.Column(DB.Boolean(), default=False)
+    id_report: Mapped[int] = mapped_column(DB.Integer(), primary_key=True)
+    id_synthese: Mapped[Optional[int]] = mapped_column(
+        DB.Integer(), ForeignKey("gn_synthese.synthese.id_synthese")
+    )
+    id_role: Mapped[Optional[int]] = mapped_column(DB.Integer(), ForeignKey(User.id_role))
+    id_type: Mapped[Optional[int]] = mapped_column(
+        DB.Integer(), ForeignKey(BibReportsTypes.id_type)
+    )
+    content: Mapped[Optional[str]] = mapped_column(DB.Text())
+    creation_date: Mapped[Optional[datetime.datetime]] = mapped_column(
+        DB.DateTime(), default=datetime.datetime.utcnow
+    )
+    deleted: Mapped[Optional[bool]] = mapped_column(DB.Boolean(), default=False)
 
     synthese = relationship(Synthese, backref=db.backref("reports", order_by=creation_date))
     report_type = relationship(BibReportsTypes)
@@ -592,89 +606,89 @@ class VSyntheseForWebApp(DB.Model):
     __tablename__ = "v_synthese_for_web_app"
     __table_args__ = {"schema": "gn_synthese"}
 
-    id_synthese = DB.Column(
+    id_synthese: Mapped[int] = mapped_column(
         DB.Integer,
         ForeignKey("gn_synthese.synthese.id_synthese"),
         primary_key=True,
     )
-    unique_id_sinp = DB.Column(UUID(as_uuid=True))
-    unique_id_sinp_grp = DB.Column(UUID(as_uuid=True))
-    id_source = DB.Column(DB.Integer, nullable=False)
-    id_import = DB.Column(DB.Integer, nullable=True)
-    id_module = DB.Column(DB.Integer)
-    entity_source_pk_value = DB.Column(DB.Integer)
-    id_dataset = DB.Column(DB.Integer)
-    dataset_name = DB.Column(DB.String)
-    id_acquisition_framework = DB.Column(DB.Integer)
-    count_min = DB.Column(DB.Integer)
-    count_max = DB.Column(DB.Integer)
-    cd_nom = DB.Column(DB.Integer)
-    cd_ref = DB.Column(DB.Unicode)
-    nom_cite = DB.Column(DB.Unicode)
-    nom_valide = DB.Column(DB.Unicode)
-    nom_vern = DB.Column(DB.Unicode)
-    lb_nom = DB.Column(DB.Unicode)
-    meta_v_taxref = DB.Column(DB.Unicode)
-    id_statut = DB.Column(DB.Unicode)
-    id_rang = DB.Column(DB.Unicode)
-    regne = DB.Column(DB.Unicode)
-    phylum = DB.Column(DB.Unicode)
-    classe = DB.Column(DB.Unicode)
-    ordre = DB.Column(DB.Unicode)
-    famille = DB.Column(DB.Unicode)
-    sous_famille = DB.Column(DB.Unicode)
-    group1_inpn = DB.Column(DB.Unicode)
-    group2_inpn = DB.Column(DB.Unicode)
-    group3_inpn = DB.Column(DB.Unicode)
-    sample_number_proof = DB.Column(DB.Unicode)
-    digital_proof = DB.Column(DB.Unicode)
-    non_digital_proof = DB.Column(DB.Unicode)
-    altitude_min = DB.Column(DB.Integer)
-    altitude_max = DB.Column(DB.Integer)
-    depth_min = DB.Column(DB.Integer)
-    depth_max = DB.Column(DB.Integer)
-    place_name = DB.Column(DB.Unicode)
-    precision = DB.Column(DB.Integer)
-    the_geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
-    date_min = DB.Column(DB.DateTime)
-    date_max = DB.Column(DB.DateTime)
-    validator = DB.Column(DB.Unicode)
-    validation_comment = DB.Column(DB.Unicode)
-    observers = DB.Column(DB.Unicode)
-    determiner = DB.Column(DB.Unicode)
-    id_digitiser = DB.Column(DB.Integer)
-    comment_context = DB.Column(DB.Unicode)
-    comment_description = DB.Column(DB.Unicode)
-    meta_validation_date = DB.Column(DB.DateTime)
-    meta_create_date = DB.Column(DB.DateTime)
-    meta_update_date = DB.Column(DB.DateTime)
-    last_action = DB.Column(DB.Unicode)
-    id_nomenclature_geo_object_nature = DB.Column(DB.Integer)
-    id_nomenclature_info_geo_type = DB.Column(DB.Integer)
-    id_nomenclature_grp_typ = DB.Column(DB.Integer)
-    grp_method = DB.Column(DB.Unicode)
-    id_nomenclature_obs_technique = DB.Column(DB.Integer)
-    id_nomenclature_bio_status = DB.Column(DB.Integer)
-    id_nomenclature_bio_condition = DB.Column(DB.Integer)
-    id_nomenclature_naturalness = DB.Column(DB.Integer)
-    id_nomenclature_exist_proof = DB.Column(DB.Integer)
-    id_nomenclature_valid_status = DB.Column(DB.Integer)
-    id_nomenclature_diffusion_level = DB.Column(DB.Integer)
-    id_nomenclature_life_stage = DB.Column(DB.Integer)
-    id_nomenclature_sex = DB.Column(DB.Integer)
-    id_nomenclature_obj_count = DB.Column(DB.Integer)
-    id_nomenclature_type_count = DB.Column(DB.Integer)
-    id_nomenclature_sensitivity = DB.Column(DB.Integer)
-    id_nomenclature_observation_status = DB.Column(DB.Integer)
-    id_nomenclature_blurring = DB.Column(DB.Integer)
-    id_nomenclature_source_status = DB.Column(DB.Integer)
-    id_nomenclature_determination_method = DB.Column(DB.Integer)
-    id_nomenclature_behaviour = DB.Column(DB.Integer)
-    id_nomenclature_biogeo_status = DB.Column(DB.Integer)
-    reference_biblio = DB.Column(DB.Unicode)
-    name_source = DB.Column(DB.Unicode)
-    url_source = DB.Column(DB.Unicode)
-    st_asgeojson = DB.Column(DB.Unicode)
+    unique_id_sinp: Mapped[Optional[Any]] = mapped_column(UUID(as_uuid=True))
+    unique_id_sinp_grp: Mapped[Optional[Any]] = mapped_column(UUID(as_uuid=True))
+    id_source: Mapped[int]
+    id_import: Mapped[Optional[int]]
+    id_module: Mapped[Optional[int]]
+    entity_source_pk_value: Mapped[Optional[int]]
+    id_dataset: Mapped[Optional[int]]
+    dataset_name: Mapped[Optional[str]] = mapped_column(DB.String)
+    id_acquisition_framework: Mapped[Optional[int]]
+    count_min: Mapped[Optional[int]]
+    count_max: Mapped[Optional[int]]
+    cd_nom: Mapped[Optional[int]] = mapped_column(DB.Integer)
+    cd_ref: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    nom_cite: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    nom_valide: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    nom_vern: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    lb_nom: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    meta_v_taxref: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    id_statut: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    id_rang: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    regne: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    phylum: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    classe: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    ordre: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    famille: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    sous_famille: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    group1_inpn: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    group2_inpn: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    group3_inpn: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    sample_number_proof: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    digital_proof: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    non_digital_proof: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    altitude_min: Mapped[Optional[int]]
+    altitude_max: Mapped[Optional[int]]
+    depth_min: Mapped[Optional[int]]
+    depth_max: Mapped[Optional[int]]
+    place_name: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    precision: Mapped[Optional[int]]
+    the_geom_4326: Mapped[Optional[Any]] = mapped_column(Geometry("GEOMETRY", 4326))
+    date_min: Mapped[Optional[datetime.datetime]] = mapped_column(DB.DateTime)
+    date_max: Mapped[Optional[datetime.datetime]] = mapped_column(DB.DateTime)
+    validator: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    validation_comment: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    observers: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    determiner: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    id_digitiser: Mapped[Optional[int]]
+    comment_context: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    comment_description: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    meta_validation_date: Mapped[Optional[datetime.datetime]] = mapped_column(DB.DateTime)
+    meta_create_date: Mapped[Optional[datetime.datetime]] = mapped_column(DB.DateTime)
+    meta_update_date: Mapped[Optional[datetime.datetime]] = mapped_column(DB.DateTime)
+    last_action: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    id_nomenclature_geo_object_nature: Mapped[Optional[int]]
+    id_nomenclature_info_geo_type: Mapped[Optional[int]]
+    id_nomenclature_grp_typ: Mapped[Optional[int]]
+    grp_method: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    id_nomenclature_obs_technique: Mapped[Optional[int]]
+    id_nomenclature_bio_status: Mapped[Optional[int]]
+    id_nomenclature_bio_condition: Mapped[Optional[int]]
+    id_nomenclature_naturalness: Mapped[Optional[int]]
+    id_nomenclature_exist_proof: Mapped[Optional[int]]
+    id_nomenclature_valid_status: Mapped[Optional[int]]
+    id_nomenclature_diffusion_level: Mapped[Optional[int]]
+    id_nomenclature_life_stage: Mapped[Optional[int]]
+    id_nomenclature_sex: Mapped[Optional[int]]
+    id_nomenclature_obj_count: Mapped[Optional[int]]
+    id_nomenclature_type_count: Mapped[Optional[int]]
+    id_nomenclature_sensitivity: Mapped[Optional[int]]
+    id_nomenclature_observation_status: Mapped[Optional[int]]
+    id_nomenclature_blurring: Mapped[Optional[int]]
+    id_nomenclature_source_status: Mapped[Optional[int]]
+    id_nomenclature_determination_method: Mapped[Optional[int]]
+    id_nomenclature_behaviour: Mapped[Optional[int]]
+    id_nomenclature_biogeo_status: Mapped[Optional[int]]
+    reference_biblio: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    name_source: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    url_source: Mapped[Optional[str]] = mapped_column(DB.Unicode)
+    st_asgeojson: Mapped[Optional[str]] = mapped_column(DB.Unicode)
 
     areas = relationship(
         LAreas,
@@ -760,11 +774,11 @@ def synthese_export_serialization(cls):
 class VColorAreaTaxon(DB.Model):
     __tablename__ = "v_color_taxon_area"
     __table_args__ = {"schema": "gn_synthese"}
-    cd_nom = DB.Column(DB.Integer(), ForeignKey(Taxref.cd_nom), primary_key=True)
-    id_area = DB.Column(DB.Integer(), ForeignKey(LAreas.id_area), primary_key=True)
-    nb_obs = DB.Column(DB.Integer())
-    last_date = DB.Column(DB.DateTime())
-    color = DB.Column(DB.Unicode())
+    cd_nom: Mapped[int] = mapped_column(DB.Integer(), ForeignKey(Taxref.cd_nom), primary_key=True)
+    id_area: Mapped[int] = mapped_column(DB.Integer(), ForeignKey(LAreas.id_area), primary_key=True)
+    nb_obs: Mapped[Optional[int]]
+    last_date: Mapped[Optional[datetime.datetime]] = mapped_column(DB.DateTime())
+    color: Mapped[Optional[str]] = mapped_column(DB.Unicode())
 
 
 @serializable
@@ -780,9 +794,9 @@ class SyntheseLogEntry(DB.Model):
     __table_args__ = {"schema": "gn_synthese"}
     query_class = SyntheseLogEntryQuery
 
-    id_synthese = DB.Column(DB.Integer(), primary_key=True)
-    last_action = DB.Column(DB.String(length=1))
-    meta_last_action_date = DB.Column(DB.DateTime)
+    id_synthese: Mapped[int] = mapped_column(DB.Integer(), primary_key=True)
+    last_action: Mapped[Optional[str]] = mapped_column(DB.String(length=1))
+    meta_last_action_date: Mapped[Optional[datetime.datetime]] = mapped_column(DB.DateTime)
 
     @qfilter(query=True)
     def filter_by_params(cls, params, **kwargs):

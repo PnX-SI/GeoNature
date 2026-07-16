@@ -1,7 +1,12 @@
 # force discovery of some fixtures
-from .fixtures import app, users, _session, _app
-from pypnusershub.tests.fixtures import teardown_logout_user
 import pytest
+
+from utils_flask_sqla.tests.fixtures import *  # activate temporary_transaction fixture
+
+
+from geonature.tests.fixtures import _app, _session
+from geonature.tests.fixtures import *
+from pypnusershub.tests.fixtures import teardown_logout_user
 
 pytest.endpoint = ""
 

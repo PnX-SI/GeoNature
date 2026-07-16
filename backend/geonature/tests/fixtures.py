@@ -48,30 +48,10 @@ from pypnusershub.db.models import Profils as Profil
 from pypnusershub.db.models import User, UserApplicationRight
 from ref_geo.models import BibAreasTypes, LAreas
 from ref_geo.utils import get_local_srid
-from utils_flask_sqla.tests.utils import JSONClient
+from utils_flask_sqla.tests.utils import JSONClient, TestSession
 from werkzeug.datastructures import Headers
 
 from .utils import get_id_nomenclature
-
-__all__ = [
-    "datasets",
-    "acquisition_frameworks",
-    "synthese_data",
-    "synthese_sensitive_data",
-    "synthese_with_protected_status",
-    "source",
-    "reports_data",
-    "medium",
-    "module",
-    "perm_object",
-    "notifications_enabled",
-    "celery_eager",
-    "sources_modules",
-    "modules",
-    "auto_validation_enabled",
-    "add_synthese_read_permissions",
-    "synthese_module",
-]
 
 
 class GeoNatureClient(JSONClient):
@@ -121,9 +101,12 @@ def _app():
         yield app
 
 
+from flask_sqlalchemy.session import Session
+
+
 @pytest.fixture(scope="session")
 def _session(_app):
-    return db.session
+    return db._make_scoped_session({"class_": TestSession})
 
 
 @pytest.fixture(scope="session", autouse=True)

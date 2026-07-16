@@ -242,7 +242,7 @@ def g_permissions():
     g._permissions = {}
 
 
-@pytest.mark.usefixtures("temporary_transaction", "g_permissions")
+@pytest.mark.usefixtures("g_permissions")
 class TestPermissions:
     def test_no_right(self, assert_cruved, module_gn, module_a, object_a, g_permissions):
         assert_cruved("r1", "000000")
@@ -366,7 +366,7 @@ class TestPermissions:
         assert_cruved("r1", "100100")
 
 
-@pytest.mark.usefixtures("temporary_transaction", "g_permissions")
+@pytest.mark.usefixtures("g_permissions")
 class TestPermissionsFilters:
     def test_sensitivity_filter(self, roles, permissions, assert_permissions):
         permissions("r1", "1-----")
@@ -510,7 +510,6 @@ class TestPermissionsFilters:
         )
 
 
-@pytest.mark.usefixtures("temporary_transaction")
 class TestPermissionSchema:
     def test_permission_schema(self, roles, actions, module_a):
         gap = db.session.execute(

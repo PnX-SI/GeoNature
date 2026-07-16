@@ -1,7 +1,6 @@
 import pytest
 
 from geonature.utils.config import config
-from .fixtures import *
 
 
 @pytest.mark.usefixtures("client_class")

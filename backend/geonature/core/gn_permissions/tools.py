@@ -18,7 +18,7 @@ from geonature.core.gn_permissions.models import (
 )
 from geonature.utils.env import db
 
-from pypnusershub.db.models import User
+from pypnusershub.db.models import User, CorRoles
 from apptax.taxonomie.models import Taxref
 
 log = logging.getLogger()
@@ -46,6 +46,15 @@ def _get_user_permissions(id_role):
         .group_by(cor_permission_taxref.c.id_permission)
         .subquery()
     )
+    # Subquery for permissions through group membership
+    # Uses EXISTS with explicit JOIN to avoid cartesian product warning
+    group_membership_subquery = sa.exists(
+        sa.select(CorRoles).where(
+            CorRoles.id_role_groupe == Permission.id_role,  # permission assigned to this group
+            CorRoles.id_role_utilisateur == id_role,  # user is member of this group
+        )
+    )
+
     query = (
         sa.select(Permission)
         .options(
@@ -62,9 +71,8 @@ def _get_user_permissions(id_role):
             sa.or_(
                 # direct permissions
                 Permission.id_role == id_role,
-                # permissions through group
-                # FIXME : provoke a cartesian product warning (but )
-                Permission.role.has(User.members.any(User.id_role == id_role)),
+                # permissions through group - using explicit EXISTS to avoid cartesian product
+                group_membership_subquery,
             ),
         )
         .order_by(Permission.id_module, Permission.id_object, Permission.id_action)

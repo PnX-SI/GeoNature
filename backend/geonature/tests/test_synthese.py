@@ -42,8 +42,6 @@ from pypnusershub.tests.utils import logged_user_headers, set_logged_user
 
 from utils_flask_sqla_geo.schema import GeoModelConverter, GeoAlchemyAutoSchema
 
-from .fixtures import *
-from .fixtures import create_synthese, create_module, synthese_with_protected_status
 
 csv.field_size_limit(sys.maxsize)
 
@@ -163,7 +161,7 @@ class GroupedGeoJSONSchema(GeoJSONSchema):
     feature_schema = GroupedFeatureSchema
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 class TestSynthese:
     def test_required_fields_and_format(self, app, users):
         # Test required fields base on VSyntheseForWebAppSchema surrounded by a custom converter : CustomRequiredConverter
@@ -1885,7 +1883,7 @@ def assert_blurred_synthese(geojson, obs):
     )
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 class TestSyntheseBlurring:
     def test_split_blurring_precise_permissions(
         self, app, users, synthese_module, add_synthese_read_permissions
@@ -2190,7 +2188,7 @@ class TestSyntheseBlurring:
         assert len(response.json["features"]) == 0
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 class TestMediaTaxon:
     def test_taxon_medias(self, add_synthese_read_permissions, users):
         set_logged_user(self.client, users["self_user"])
@@ -2206,7 +2204,7 @@ class TestMediaTaxon:
         assert isinstance(response.json["items"], list)
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 class TestSyntheseGeographicFilter:
     @pytest.mark.parametrize("sensitivity_activated", (True, False))
     def test_geographic_filter_get_obs(
@@ -2282,7 +2280,7 @@ class TestSyntheseGeographicFilter:
         assert synthese_data["obs3"].id_synthese in response_ids
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 class TestSyntheseTaxonomicFilter:
     @pytest.mark.parametrize("sensitivity_activated", (True, False))
     def test_taxonomic_filter_get_obs(

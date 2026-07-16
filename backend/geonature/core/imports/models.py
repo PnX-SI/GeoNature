@@ -7,7 +7,7 @@ from packaging import version
 from flask import g
 import sqlalchemy as sa
 from sqlalchemy import func, ForeignKey, Table
-from sqlalchemy.orm import relationship, deferred, joinedload
+from sqlalchemy.orm import relationship, deferred, joinedload, Mapped, mapped_column
 from sqlalchemy.types import ARRAY
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.ext.mutable import MutableDict
@@ -68,11 +68,11 @@ class ImportUserErrorType(db.Model):
     __tablename__ = "bib_errors_types"
     __table_args__ = {"schema": "gn_imports"}
 
-    pk = db.Column("id_error", db.Integer, primary_key=True)
-    category = db.Column("error_type", db.Unicode, nullable=False)
-    name = db.Column(db.Unicode, nullable=False, unique=True)
-    description = db.Column(db.Unicode)
-    level = db.Column("error_level", db.Unicode)
+    pk: Mapped[int] = mapped_column("id_error", db.Integer, primary_key=True)
+    category: Mapped[str] = mapped_column("error_type", db.Unicode)
+    name: Mapped[str] = mapped_column(db.Unicode, unique=True)
+    description: Mapped[Optional[str]] = mapped_column(db.Unicode)
+    level: Mapped[Optional[str]] = mapped_column("error_level", db.Unicode)
 
     def __str__(self):
         return f"<ImportErrorType {self.name}>"
@@ -83,22 +83,22 @@ class ImportUserError(db.Model):
     __tablename__ = "t_user_errors"
     __table_args__ = {"schema": "gn_imports"}
 
-    pk = db.Column("id_user_error", db.Integer, primary_key=True)
-    id_import = db.Column(
+    pk: Mapped[int] = mapped_column("id_user_error", db.Integer, primary_key=True)
+    id_import: Mapped[Optional[int]] = mapped_column(
         db.Integer,
         db.ForeignKey("gn_imports.t_imports.id_import", onupdate="CASCADE", ondelete="CASCADE"),
     )
     imprt = db.relationship("TImports", back_populates="errors")
-    id_type = db.Column(
+    id_type: Mapped[Optional[int]] = mapped_column(
         "id_error",
         db.Integer,
         db.ForeignKey(ImportUserErrorType.pk, onupdate="CASCADE", ondelete="CASCADE"),
     )
     type = db.relationship("ImportUserErrorType")
-    column = db.Column("column_error", db.Unicode)
-    rows = db.Column("id_rows", db.ARRAY(db.Integer))
-    comment = db.Column(db.UnicodeText)
-    id_entity = db.Column(
+    column: Mapped[Optional[str]] = mapped_column("column_error", db.Unicode)
+    rows: Mapped[Optional[Any]] = mapped_column("id_rows", db.ARRAY(db.Integer))
+    comment: Mapped[Optional[str]] = mapped_column(db.UnicodeText)
+    id_entity: Mapped[Optional[int]] = mapped_column(
         db.Integer,
         db.ForeignKey("gn_imports.bib_entities.id_entity", onupdate="CASCADE", ondelete="CASCADE"),
     )
@@ -113,12 +113,12 @@ class Destination(db.Model):
     __tablename__ = "bib_destinations"
     __table_args__ = {"schema": "gn_imports"}
 
-    id_destination = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    id_module = db.Column(db.Integer, ForeignKey(TModules.id_module), nullable=True)
-    code = db.Column(db.String(64), unique=True)
-    label = db.Column(db.String(128))
-    table_name = db.Column(db.String(64))
-    active = sa.Column("active", sa.Boolean, server_default=sa.true())
+    id_destination: Mapped[int] = mapped_column(db.Integer, primary_key=True, autoincrement=True)
+    id_module: Mapped[Optional[int]] = mapped_column(db.Integer, ForeignKey(TModules.id_module))
+    code: Mapped[Optional[str]] = mapped_column(db.String(64), unique=True)
+    label: Mapped[Optional[str]] = mapped_column(db.String(128))
+    table_name: Mapped[Optional[str]] = mapped_column(db.String(64))
+    active: Mapped[Optional[bool]] = mapped_column(sa.Boolean, server_default=sa.true())
 
     module = relationship(TModules, backref="destination")
     entities = relationship("Entity", back_populates="destination")
@@ -127,7 +127,7 @@ class Destination(db.Model):
         return Table(
             self.table_name,
             db.metadata,
-            autoload=True,
+            autoload_replace=True,
             autoload_with=db.session.connection(),
             schema="gn_imports",
         )
@@ -245,12 +245,12 @@ class BibThemes(db.Model):
     __tablename__ = "bib_themes"
     __table_args__ = {"schema": "gn_imports"}
 
-    id_theme = db.Column(db.Integer, primary_key=True)
-    name_theme = db.Column(db.Unicode, nullable=False)
-    fr_label_theme = db.Column(db.Unicode, nullable=False)
-    eng_label_theme = db.Column(db.Unicode, nullable=True)
-    desc_theme = db.Column(db.Unicode, nullable=True)
-    order_theme = db.Column(db.Integer, nullable=False)
+    id_theme: Mapped[int] = mapped_column(db.Integer, primary_key=True)
+    name_theme: Mapped[str] = mapped_column(db.Unicode)
+    fr_label_theme: Mapped[str] = mapped_column(db.Unicode)
+    eng_label_theme: Mapped[Optional[str]] = mapped_column(db.Unicode)
+    desc_theme: Mapped[Optional[str]] = mapped_column(db.Unicode)
+    order_theme: Mapped[int]
 
 
 @serializable
@@ -258,20 +258,20 @@ class EntityField(db.Model):
     __tablename__ = "cor_entity_field"
     __table_args__ = {"schema": "gn_imports"}
 
-    id_entity = db.Column(
+    id_entity: Mapped[int] = mapped_column(
         db.Integer, db.ForeignKey("gn_imports.bib_entities.id_entity"), primary_key=True
     )
     entity = relationship("Entity", back_populates="fields")
-    id_field = db.Column(
+    id_field: Mapped[int] = mapped_column(
         db.Integer, db.ForeignKey("gn_imports.bib_fields.id_field"), primary_key=True
     )
     field = relationship("BibFields", back_populates="entities")
 
-    desc_field = db.Column(db.Unicode, nullable=True)
-    id_theme = db.Column(db.Integer, db.ForeignKey(BibThemes.id_theme), nullable=False)
+    desc_field: Mapped[Optional[str]] = mapped_column(db.Unicode)
+    id_theme: Mapped[int] = mapped_column(db.Integer, db.ForeignKey(BibThemes.id_theme))
     theme = relationship(BibThemes)
-    order_field = db.Column(db.Integer, nullable=False)
-    comment = db.Column(db.Unicode)
+    order_field: Mapped[int]
+    comment: Mapped[Optional[str]] = mapped_column(db.Unicode)
 
 
 @serializable
@@ -279,29 +279,35 @@ class Entity(db.Model):
     __tablename__ = "bib_entities"
     __table_args__ = {"schema": "gn_imports"}
 
-    id_entity = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    id_destination = db.Column(db.Integer, ForeignKey(Destination.id_destination))
+    id_entity: Mapped[int] = mapped_column(db.Integer, primary_key=True, autoincrement=True)
+    id_destination: Mapped[Optional[int]] = mapped_column(
+        db.Integer, ForeignKey(Destination.id_destination)
+    )
     destination = relationship(Destination, back_populates="entities")
-    code = db.Column(db.String(16))
-    label = db.Column(db.String(64))
-    order = db.Column(db.Integer)
-    validity_column = db.Column(db.String(64))
-    destination_table_schema = db.Column(db.String(63))
-    destination_table_name = db.Column(db.String(63))
-    id_unique_column = db.Column(
+    code: Mapped[Optional[str]] = mapped_column(db.String(16))
+    label: Mapped[Optional[str]] = mapped_column(db.String(64))
+    order: Mapped[Optional[int]]
+    validity_column: Mapped[Optional[str]] = mapped_column(db.String(64))
+    destination_table_schema: Mapped[Optional[str]] = mapped_column(db.String(63))
+    destination_table_name: Mapped[Optional[str]] = mapped_column(db.String(63))
+    id_unique_column: Mapped[int] = mapped_column(
         db.Integer, db.ForeignKey("gn_imports.bib_fields.id_field"), primary_key=True
     )
-    id_uuid_column = db.Column(
+    id_uuid_column: Mapped[int] = mapped_column(
         db.Integer, db.ForeignKey("gn_imports.bib_fields.id_field"), primary_key=True
     )
-    id_parent = db.Column(db.Integer, ForeignKey("gn_imports.bib_entities.id_entity"))
+    id_parent: Mapped[Optional[int]] = mapped_column(
+        db.Integer, ForeignKey("gn_imports.bib_entities.id_entity")
+    )
 
     parent = relationship("Entity", back_populates="childs", remote_side=[id_entity])
     childs = relationship("Entity", back_populates="parent")
     fields = relationship("EntityField", back_populates="entity")
     unique_column = relationship("BibFields", foreign_keys=[id_unique_column])
     uuid_column = relationship("BibFields", foreign_keys=[id_uuid_column])
-    id_object = db.Column(db.Integer, db.ForeignKey("gn_permissions.t_objects.id_object"))
+    id_object: Mapped[Optional[int]] = mapped_column(
+        db.Integer, db.ForeignKey("gn_permissions.t_objects.id_object")
+    )
     object = relationship("PermObject")
 
     def get_destination_table(self):
@@ -367,43 +373,49 @@ class TImports(InstancePermissionMixin, db.Model):
     AVAILABLE_FORMATS = ["csv", "geojson"]
     AVAILABLE_SEPARATORS = [",", ";"]
 
-    id_import = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    id_destination = db.Column(db.Integer, ForeignKey(Destination.id_destination))
-    destination = relationship(Destination)
-    format_source_file = db.Column(db.Unicode, nullable=True)
-    srid = db.Column(db.Integer, nullable=True)
-    separator = db.Column(db.Unicode, nullable=True)
-    detected_separator = db.Column(db.Unicode, nullable=True)
-    encoding = db.Column(db.Unicode, nullable=True)
-    detected_encoding = db.Column(db.Unicode, nullable=True)
-    # import_table = db.Column(db.Unicode, nullable=True)
-    full_file_name = db.Column(db.Unicode, nullable=True)
-    date_create_import = db.Column(db.DateTime, default=datetime.now)
-    date_update_import = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
-    date_end_import = db.Column(db.DateTime, nullable=True)
-    source_count = db.Column(db.Integer, nullable=True)
-    erroneous_rows = deferred(db.Column(ARRAY(db.Integer), nullable=True))
-    statistics = db.Column(
-        MutableDict.as_mutable(JSON), nullable=False, server_default=sa.text("'{}'::jsonb")
+    id_import: Mapped[int] = mapped_column(db.Integer, primary_key=True, autoincrement=True)
+    id_destination: Mapped[Optional[int]] = mapped_column(
+        db.Integer, ForeignKey(Destination.id_destination)
     )
-    date_min_data = db.Column(db.DateTime, nullable=True)
-    date_max_data = db.Column(db.DateTime, nullable=True)
-    uuid_autogenerated = db.Column(db.Boolean)
-    altitude_autogenerated = db.Column(db.Boolean)
+    destination = relationship(Destination)
+    format_source_file: Mapped[Optional[str]] = mapped_column(db.Unicode)
+    srid: Mapped[Optional[int]]
+    separator: Mapped[Optional[str]] = mapped_column(db.Unicode)
+    detected_separator: Mapped[Optional[str]] = mapped_column(db.Unicode)
+    encoding: Mapped[Optional[str]] = mapped_column(db.Unicode)
+    detected_encoding: Mapped[Optional[str]] = mapped_column(db.Unicode)
+    # import_table = db.Column(db.Unicode, nullable=True)
+    full_file_name: Mapped[Optional[str]] = mapped_column(db.Unicode)
+    date_create_import: Mapped[Optional[datetime]] = mapped_column(
+        db.DateTime, default=datetime.now
+    )
+    date_update_import: Mapped[Optional[datetime]] = mapped_column(
+        db.DateTime, default=datetime.now, onupdate=datetime.now
+    )
+    date_end_import: Mapped[Optional[datetime]] = mapped_column(db.DateTime)
+    source_count: Mapped[Optional[int]]
+    erroneous_rows: Mapped[Optional[Any]] = deferred(mapped_column(ARRAY(db.Integer)))
+    statistics: Mapped[Any] = mapped_column(
+        MutableDict.as_mutable(JSON), server_default=sa.text("'{}'::jsonb")
+    )
+    date_min_data: Mapped[Optional[datetime]] = mapped_column(db.DateTime)
+    date_max_data: Mapped[Optional[datetime]] = mapped_column(db.DateTime)
+    uuid_autogenerated: Mapped[Optional[bool]]
+    altitude_autogenerated: Mapped[Optional[bool]]
     authors = db.relationship(
         User,
         lazy="joined",
         secondary=cor_role_import,
     )
-    loaded = db.Column(db.Boolean, nullable=False, default=False)
-    processed = db.Column(db.Boolean, nullable=False, default=False)
-    source_file = deferred(db.Column(db.LargeBinary))
-    columns = db.Column(ARRAY(db.Unicode))
+    loaded: Mapped[bool] = mapped_column(db.Boolean, default=False)
+    processed: Mapped[bool] = mapped_column(db.Boolean, default=False)
+    source_file: Mapped[Optional[Any]] = deferred(mapped_column(db.LargeBinary))
+    columns: Mapped[Optional[Any]] = mapped_column(ARRAY(db.Unicode))
     # keys are target names, values are source names
-    fieldmapping = db.Column(MutableDict.as_mutable(JSON))
-    contentmapping = db.Column(MutableDict.as_mutable(JSON))
-    observermapping = db.Column(MutableDict.as_mutable(JSON))
-    task_id = db.Column(sa.String(155))
+    fieldmapping: Mapped[Optional[Any]] = mapped_column(MutableDict.as_mutable(JSON))
+    contentmapping: Mapped[Optional[Any]] = mapped_column(MutableDict.as_mutable(JSON))
+    observermapping: Mapped[Optional[Any]] = mapped_column(MutableDict.as_mutable(JSON))
+    task_id: Mapped[Optional[str]] = mapped_column(sa.String(155))
 
     errors = db.relationship(
         "ImportUserError",
@@ -550,24 +562,28 @@ class BibFields(db.Model):
     __tablename__ = "bib_fields"
     __table_args__ = {"schema": "gn_imports"}
 
-    id_field = db.Column(db.Integer, primary_key=True)
-    id_destination = db.Column(db.Integer, ForeignKey(Destination.id_destination))
+    id_field: Mapped[int] = mapped_column(db.Integer, primary_key=True)
+    id_destination: Mapped[Optional[int]] = mapped_column(
+        db.Integer, ForeignKey(Destination.id_destination)
+    )
     destination = relationship(Destination)
-    name_field = db.Column(db.Unicode, nullable=False, unique=True)
-    source_field = db.Column(db.Unicode, unique=True)
-    dest_field = db.Column(db.Unicode, unique=True)
-    fr_label = db.Column(db.Unicode, nullable=False)
-    eng_label = db.Column(db.Unicode, nullable=True)
-    type_field = db.Column(db.Unicode, nullable=True)
-    type_field_params = db.Column(MutableDict.as_mutable(JSON))
-    mandatory = db.Column(db.Boolean, nullable=False)
-    autogenerated = db.Column(db.Boolean, nullable=False)
-    mnemonique = db.Column(db.Unicode, db.ForeignKey(BibNomenclaturesTypes.mnemonique))
+    name_field: Mapped[str] = mapped_column(db.Unicode, unique=True)
+    source_field: Mapped[Optional[str]] = mapped_column(db.Unicode, unique=True)
+    dest_field: Mapped[Optional[str]] = mapped_column(db.Unicode, unique=True)
+    fr_label: Mapped[str] = mapped_column(db.Unicode)
+    eng_label: Mapped[Optional[str]] = mapped_column(db.Unicode)
+    type_field: Mapped[Optional[str]] = mapped_column(db.Unicode)
+    type_field_params: Mapped[Optional[Any]] = mapped_column(MutableDict.as_mutable(JSON))
+    mandatory: Mapped[bool] = mapped_column(db.Boolean)
+    autogenerated: Mapped[bool] = mapped_column(db.Boolean)
+    mnemonique: Mapped[Optional[str]] = mapped_column(
+        db.Unicode, db.ForeignKey(BibNomenclaturesTypes.mnemonique)
+    )
     nomenclature_type = relationship("BibNomenclaturesTypes")
-    display = db.Column(db.Boolean, nullable=False)
-    multi = db.Column(db.Boolean)
-    optional_conditions = db.Column(db.ARRAY(db.Unicode), nullable=True)
-    mandatory_conditions = db.Column(db.ARRAY(db.Unicode), nullable=True)
+    display: Mapped[bool] = mapped_column(db.Boolean)
+    multi: Mapped[Optional[bool]]
+    optional_conditions: Mapped[Optional[Any]] = mapped_column(db.ARRAY(db.Unicode))
+    mandatory_conditions: Mapped[Optional[Any]] = mapped_column(db.ARRAY(db.Unicode))
 
     entities = relationship("EntityField", back_populates="field")
 
@@ -600,13 +616,13 @@ class MappingTemplate(db.Model):
     __tablename__ = "t_mappings"
     __table_args__ = {"schema": "gn_imports"}
 
-    id = db.Column(db.Integer, primary_key=True)
-    id_destination = db.Column(db.Integer, ForeignKey(Destination.id_destination), nullable=False)
+    id: Mapped[int] = mapped_column(db.Integer, primary_key=True)
+    id_destination: Mapped[int] = mapped_column(db.Integer, ForeignKey(Destination.id_destination))
     destination = relationship(Destination)
-    label = db.Column(db.Unicode(255), nullable=False)
-    type = db.Column(db.Unicode(10), nullable=False)
-    active = db.Column(db.Boolean, nullable=False, default=True, server_default="true")
-    public = db.Column(db.Boolean, nullable=False, default=False, server_default="false")
+    label: Mapped[str] = mapped_column(db.Unicode(255))
+    type: Mapped[str] = mapped_column(db.Unicode(10))
+    active: Mapped[bool] = mapped_column(db.Boolean, default=True, server_default="true")
+    public: Mapped[bool] = mapped_column(db.Boolean, default=False, server_default="false")
 
     @property
     def cruved(self):

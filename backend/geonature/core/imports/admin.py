@@ -94,9 +94,7 @@ class ContentMappingView(MappingView):
     }
 
 
+geonature_admin.add_view(FieldMappingView(FieldMapping, db, name="Champs", category="Import"))
 geonature_admin.add_view(
-    FieldMappingView(FieldMapping, db.session, name="Champs", category="Import")
-)
-geonature_admin.add_view(
-    ContentMappingView(ContentMapping, db.session, name="Nomenclatures", category="Import")
+    ContentMappingView(ContentMapping, db, name="Nomenclatures", category="Import")
 )

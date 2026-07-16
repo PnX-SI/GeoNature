@@ -22,7 +22,6 @@ from geonature.utils.env import db
 from geonature.utils.errors import GeoNatureError
 from geonature.core.gn_commons.schemas import CastableField
 
-from .fixtures import *
 from .utils import set_logged_user
 
 
@@ -99,7 +98,7 @@ def media_repository(medium):
     return TMediaRepository(id_media=medium.id_media)
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 class TestMedia:
     def test_get_medias(self, medium):
         response = self.client.get(
@@ -219,7 +218,7 @@ class TestMedia:
         assert response.json["description"] == "Media introuvable"
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 class TestTMediaRepository:
     def test__init__(self, medium, media_repository):
         assert media_repository.media.id_media == medium.id_media
@@ -374,7 +373,7 @@ class TestTMediaRepositoryHeader:
         assert not test
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 class TestCommons:
     def test_list_modules(self, users):
         response = self.client.get(url_for("gn_commons.list_modules", exclude="GEONATURE"))
@@ -684,7 +683,6 @@ class TestCommons:
         assert response.json is None
 
 
-@pytest.mark.usefixtures("temporary_transaction")
 class TestTasks:
     def test_clean_attachements(self, monkeypatch, celery_eager, medium):
         # Monkey patch the __before_commit_delete not to remove file

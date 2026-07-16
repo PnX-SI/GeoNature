@@ -33,7 +33,6 @@ from werkzeug.exceptions import (
     UnsupportedMediaType,
 )
 
-from .fixtures import *
 from .utils import logged_user_headers, set_logged_user
 from ..utils.errors import GeoNatureError
 
@@ -146,7 +145,7 @@ def get_csv_from_response(data):
             yield i, row
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 class TestGNMeta:
 
     class TestGetAcquisitionFrameworkRoute:
@@ -304,14 +303,15 @@ class TestGNMeta:
             """Test la pagination de la route acquisition_frameworks"""
             acquisition_frameworks_url = url_for("gn_meta.get_acquisition_frameworks")
             # Créer plusieurs AFs pour tester la pagination
-            for i in range(55):  # Créer 55 AFs pour tester sur plusieurs pages
-                af = TAcquisitionFramework(
-                    acquisition_framework_name=f"Test AF {i}",
-                    acquisition_framework_desc="Test description",
-                    id_digitizer=users["admin_user"].id_role,
-                )
-                db.session.add(af)
-            db.session.commit()
+            with db.session.begin_nested():
+                for i in range(55):  # Créer 55 AFs pour tester sur plusieurs pages
+                    af = TAcquisitionFramework(
+                        acquisition_framework_name=f"Test AF {i}",
+                        acquisition_framework_desc="Test description",
+                        id_digitizer=users["admin_user"].id_role,
+                    )
+                    db.session.add(af)
+
             set_logged_user(self.client, users["admin_user"])
             # Test pagination par défaut (50 éléments par page)
             response = self.client.get(acquisition_frameworks_url)
@@ -1440,9 +1440,7 @@ class TestGNMeta:
         assert response.status_code == 500
 
 
-@pytest.mark.usefixtures(
-    "client_class", "temporary_transaction", "users", "datasets", "acquisition_frameworks"
-)
+@pytest.mark.usefixtures("client_class", "users", "datasets", "acquisition_frameworks")
 class TestRepository:
     def test_cruved_ds_filter(self, users, datasets):
         with pytest.raises(Unauthorized):

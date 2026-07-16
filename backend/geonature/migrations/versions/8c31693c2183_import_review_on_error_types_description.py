@@ -266,8 +266,8 @@ MODIFICATIONS = {
 
 
 def upgrade():
-    metadata = MetaData(bind=op.get_bind())
-    import_user_error = Table("bib_errors_types", metadata, schema="gn_imports", autoload=True)
+    metadata = MetaData()
+    import_user_error = Table("bib_errors_types", metadata, schema="gn_imports", autoload_with=op.get_bind())
     for error_name in MODIFICATIONS:
         op.execute(
             sa.update(import_user_error)
@@ -277,8 +277,8 @@ def upgrade():
 
 
 def downgrade():
-    metadata = MetaData(bind=op.get_bind())
-    import_user_error = Table("bib_errors_types", metadata, schema="gn_imports", autoload=True)
+    metadata = MetaData()
+    import_user_error = Table("bib_errors_types", metadata, schema="gn_imports", autoload_with=op.get_bind())
     for error_name in MODIFICATIONS:
         op.execute(
             sa.update(import_user_error)

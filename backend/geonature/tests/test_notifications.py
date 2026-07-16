@@ -16,7 +16,6 @@ from geonature.core.notifications.models import (
     NotificationTemplate,
 )
 from geonature.core.notifications import utils
-from geonature.tests.fixtures import celery_eager, notifications_enabled
 
 
 from sqlalchemy import select, exists, delete
@@ -113,7 +112,6 @@ def notification_rule(users, rule_method, rule_category):
 
 @pytest.mark.usefixtures(
     "client_class",
-    "temporary_transaction",
     "notifications_enabled",
     "clear_default_notification_rules",
 )

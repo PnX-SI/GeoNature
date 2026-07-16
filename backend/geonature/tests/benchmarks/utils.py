@@ -10,7 +10,6 @@ from geonature.utils.env import db
 from .benchmark_generator import CLater, BenchmarkTest
 from geonature.tests.test_synthese import blur_sensitive_observations
 import traceback
-from geonature.tests.fixtures import app
 from pypnusershub.db.models import User
 
 logging.basicConfig()
