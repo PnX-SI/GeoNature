@@ -51,7 +51,7 @@ class RemoteDatabaseSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlc
         load_instance = True
         sqla_session = db.session
 
-    name = fields.String()
+    name = fields.String(required=True)
     id_contact = fields.Integer(allow_none=True)
     contact = MA.Nested(UserSchema, dump_only=True, allow_none=True)
 

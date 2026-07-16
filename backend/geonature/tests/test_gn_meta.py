@@ -7,10 +7,15 @@ from geonature.core.gn_commons.models.additional_fields import TAdditionalFields
 from geonature.core.gn_commons.models.base import TModules, BibWidgets
 from geonature.core.gn_permissions.models import PermObject
 import pytest
-from flask import url_for, Flask
+from flask import url_for
 from kombu.asynchronous.http import Response
 
-from geonature.core.gn_meta.models import CorDatasetActor, TAcquisitionFramework, TDatasets
+from geonature.core.gn_meta.models import (
+    CorDatasetActor,
+    TAcquisitionFramework,
+    TDatasets,
+    TRemoteDatabase,
+)
 from geonature.core.gn_meta.repositories import (
     cruved_af_filter,
     cruved_ds_filter,
@@ -23,7 +28,7 @@ from pypnusershub.schemas import UserSchema
 from ref_geo.models import BibAreasTypes, LAreas
 from sqlalchemy import func, select, exists
 from sqlalchemy.sql.selectable import Select
-from werkzeug.datastructures import Headers, MultiDict
+from werkzeug.datastructures import Headers
 from werkzeug.exceptions import (
     BadRequest,
     Conflict,
@@ -146,9 +151,26 @@ def get_csv_from_response(data):
             yield i, row
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
-class TestGNMeta:
+@pytest.fixture
+def remote_database():
+    rd = TRemoteDatabase(name="Test Remote DB")
+    db.session.add(rd)
+    db.session.commit()
+    return rd
 
+
+@pytest.fixture
+def unexisted_remote_database_id():
+    return (
+        db.session.scalar(
+            select(func.max(TRemoteDatabase.id_remote_database)).select_from(TRemoteDatabase)
+        )
+        or 0
+    ) + 1
+
+
+@pytest.mark.usefixtures("client_class", "temporary_transaction")
+class TestAcquisitionFramework:
     class TestGetAcquisitionFrameworkRoute:
         def test_get_acquisition_frameworks(self, users):
             acquisition_frameworks_url = url_for("gn_meta.get_acquisition_frameworks")
@@ -264,8 +286,6 @@ class TestGNMeta:
             get_af_url = url_for("gn_meta.get_acquisition_frameworks")
 
             response = self.client.post(get_af_url, json={"search": af1.acquisition_framework_name})
-            print(response.status_code)
-            print(response.json)
             af_list = [af["id_acquisition_framework"] for af in response.json["items"]]
             assert af1.id_acquisition_framework in af_list
             assert af2.id_acquisition_framework not in af_list
@@ -664,22 +684,6 @@ class TestGNMeta:
         # synthese is at least 1 taxon
         assert data["nb_taxons"] == len(set([s.cd_nom for s in obs]))
 
-    def test_dataset_nb_observations_hybrid_property(self, users, datasets, synthese_data):
-        ds = datasets["own_dataset"]
-        set_logged_user(self.client, users["user"])
-
-        nb_obs = db.session.execute(
-            select(TDatasets.nb_observations)
-            .select_from(TDatasets)
-            .where(TDatasets.id_dataset == ds.id_dataset)
-        ).scalar_one()
-
-        expected_nb_obs_habitats = 0
-        expected_nb_obs_synthese = len([s for s in synthese_data.values() if s.dataset == ds])
-        expected_nb_obs = expected_nb_obs_habitats + expected_nb_obs_synthese
-
-        assert nb_obs == expected_nb_obs
-
     def test_get_acquisition_framework_bbox(self, users, acquisition_frameworks, synthese_data):
         # this AF contains at least 2 obs at different locations
         af = synthese_data["p1_af1"].dataset.acquisition_framework
@@ -697,6 +701,163 @@ class TestGNMeta:
         assert response.status_code == 200
         assert data["type"] == "Polygon"
 
+    def test_close_acquisition_framework_no_data(self, users, acquisition_frameworks):
+        set_logged_user(self.client, users["user"])
+
+        af = acquisition_frameworks["own_af"]
+        response = self.client.get(
+            url_for(
+                "gn_meta.close_acquisition_framework",
+                af_id=af.id_acquisition_framework,
+            )
+        )
+        assert response.status_code == Conflict.code, response.json
+
+    def test_close_acquisition_framework_with_data(
+        self, users, acquisition_frameworks, synthese_data
+    ):
+        set_logged_user(self.client, users["stranger_user"])
+        af = acquisition_frameworks["af_1"]
+        response = self.client.get(
+            url_for(
+                "gn_meta.close_acquisition_framework",
+                af_id=af.id_acquisition_framework,
+            )
+        )
+        assert response.status_code == 200, response.json
+
+    def test_close_acquisition_frameworks_extended(
+        self, app, users, acquisition_frameworks, synthese_data
+    ):
+        """
+        We test if the mechanism of extension of acquisition framework publication works
+        """
+        # We use mock as extended function so we can keep track wether it's called
+        mocked_extended_close = MagicMock()
+        route_name = "test.extended_af_close"
+        app.config["METADATA"]["EXTENDED_AF_PUBLISH_ROUTE_NAME"] = route_name
+        app.view_functions[route_name] = mocked_extended_close
+        set_logged_user(self.client, users["stranger_user"])
+        af = acquisition_frameworks["af_1"]
+        response = self.client.get(
+            url_for(
+                "gn_meta.close_acquisition_framework",
+                af_id=af.id_acquisition_framework,
+            )
+        )
+        mocked_extended_close.assert_called_once()
+        assert response.status_code == 200, response.json
+        assert af.opened == False
+
+    def test_close_acquisition_frameworks_extended_with_exception(
+        self, app, users, acquisition_frameworks, synthese_data
+    ):
+        """
+        We test if when an error occur in the extended af closing, the af stay opened.
+        """
+
+        def mocked_close(_=None):
+            raise GeoNatureError()
+
+        route_name = "test.extended_af_close"
+        app.config["METADATA"]["EXTENDED_AF_PUBLISH_ROUTE_NAME"] = route_name
+        app.view_functions[route_name] = mocked_close
+        set_logged_user(self.client, users["stranger_user"])
+        af = acquisition_frameworks["af_1"]
+        response = self.client.get(
+            url_for(
+                "gn_meta.close_acquisition_framework",
+                af_id=af.id_acquisition_framework,
+            )
+        )
+        assert response.status_code == 500, response.json
+        assert af.opened == True
+
+    def test_open_acquisition_framework(self, app, users, acquisition_frameworks):
+        """
+        Test opening an acquisition framework
+        """
+        set_logged_user(self.client, users["stranger_user"])
+        af = acquisition_frameworks["af_1"]
+        af.opened = False
+        db.session.commit()
+
+        response = self.client.get(
+            url_for(
+                "gn_meta.open_acquisition_framework",
+                af_id=af.id_acquisition_framework,
+            )
+        )
+
+        assert response.status_code == 200
+        af_updated = db.session.get(TAcquisitionFramework, af.id_acquisition_framework)
+        assert af_updated.opened is True
+
+    def test_open_acquisition_framework_not_openable(self, app, users, acquisition_frameworks):
+        """
+        Test opening an acquisition framework when AF_OPENABLE is False
+        """
+        set_logged_user(self.client, users["stranger_user"])
+        af = acquisition_frameworks["af_1"]
+        af.opened = False
+        db.session.commit()
+        app.config["METADATA"]["AF_OPENABLE"] = False
+        response = self.client.get(
+            url_for(
+                "gn_meta.open_acquisition_framework",
+                af_id=af.id_acquisition_framework,
+            )
+        )
+        assert response.status_code == 500
+
+    def test_get_af_from_id(self, af_list):
+        id_af = 1
+
+        found_af = get_af_from_id(id_af=id_af, af_list=af_list)
+
+        assert isinstance(found_af, dict)
+        assert found_af.get("id_acquisition_framework") == id_af
+
+    def test_get_af_from_id_not_present(self, af_list):
+        id_af = 12
+
+        found_af = get_af_from_id(id_af=id_af, af_list=af_list)
+
+        assert found_af is None
+
+    def test_get_af_from_id_none(self):
+        id_af = 1
+        af_list = [{"test": 2}]
+
+        with pytest.raises(KeyError):
+            get_af_from_id(id_af=id_af, af_list=af_list)
+
+    def test_get_id_acquisition_framework(self, acquisition_frameworks):
+        af = acquisition_frameworks["associate_af"]
+
+        uuid_af = af.unique_acquisition_framework_id
+        id_af = TAcquisitionFramework.get_id(uuid_af)
+
+        assert id_af == af.id_acquisition_framework
+        assert TAcquisitionFramework.get_id(uuid.uuid4()) is None
+
+    def test_get_user_af(self, users, acquisition_frameworks):
+        # Test to complete
+        user = users["user"]
+
+        afquery = TAcquisitionFramework.get_user_af(user=user, only_query=True)
+        afuser = TAcquisitionFramework.get_user_af(user=user, only_user=True)
+        afdefault = TAcquisitionFramework.get_user_af(user=user)
+
+        assert isinstance(afquery, Select)
+        assert isinstance(afuser, list)
+        assert len(afuser) == 6
+        assert isinstance(afdefault, list)
+        assert len(afdefault) >= 1
+
+
+@pytest.mark.usefixtures("client_class", "temporary_transaction")
+class TestDataset:
     def test_datasets_permissions(self, app, datasets, users):
         ds = datasets["own_dataset"]
         with app.test_request_context(headers=logged_user_headers(users["user"])):
@@ -746,6 +907,22 @@ class TestGNMeta:
             assert set(sc(dsc.filter_by_scope(3, query=qs)).unique().all()) == set(
                 datasets.values()
             )
+
+    def test_dataset_nb_observations_hybrid_property(self, users, datasets, synthese_data):
+        ds = datasets["own_dataset"]
+        set_logged_user(self.client, users["user"])
+
+        nb_obs = db.session.execute(
+            select(TDatasets.nb_observations)
+            .select_from(TDatasets)
+            .where(TDatasets.id_dataset == ds.id_dataset)
+        ).scalar_one()
+
+        expected_nb_obs_habitats = 0
+        expected_nb_obs_synthese = len([s for s in synthese_data.values() if s.dataset == ds])
+        expected_nb_obs = expected_nb_obs_habitats + expected_nb_obs_synthese
+
+        assert nb_obs == expected_nb_obs
 
     def test_dataset_is_deletable(self, app, synthese_data, datasets):
         assert (
@@ -1169,6 +1346,66 @@ class TestGNMeta:
         )
         assert response.status_code == 200
 
+    def test__get_create_scope(self, app, users):
+        modcode = "METADATA"
+
+        with app.test_request_context(headers=logged_user_headers(users["user"])):
+            app.preprocess_request()
+            create = TDatasets._get_create_scope(module_code=modcode)
+
+        usercreate = TDatasets._get_create_scope(module_code=modcode, user=users["user"])
+        norightcreate = TDatasets._get_create_scope(module_code=modcode, user=users["noright_user"])
+        associatecreate = TDatasets._get_create_scope(
+            module_code=modcode, user=users["associate_user"]
+        )
+        admincreate = TDatasets._get_create_scope(module_code=modcode, user=users["admin_user"])
+
+        assert create == 2
+        assert usercreate == 2
+        assert norightcreate == 0
+        assert associatecreate == 2
+        assert admincreate == 3
+
+    def test___str__(self, datasets):
+        dataset = datasets["associate_dataset"]
+
+        assert isinstance(dataset.__str__(), str)
+        assert dataset.__str__() == dataset.dataset_name
+
+    def test_get_id_dataset(self, datasets):
+        dataset = datasets["associate_dataset"]
+        uuid_dataset = dataset.unique_dataset_id
+
+        id_dataset = TDatasets.get_id(uuid_dataset)
+
+        assert id_dataset == dataset.id_dataset
+        assert TDatasets.get_id(uuid.uuid4()) is None
+
+    def test_get_uuid(self, datasets):
+        dataset = datasets["associate_dataset"]
+        id_dataset = dataset.id_dataset
+
+        uuid_dataset = TDatasets.get_uuid(id_dataset)
+
+        assert uuid_dataset == dataset.unique_dataset_id
+        assert TDatasets.get_uuid(None) is None
+
+    def test_actor(self, users):
+        user = users["user"]
+
+        empty = CorDatasetActor(role=None, organism=None)
+        roleonly = CorDatasetActor(role=user, organism=None)
+        organismonly = CorDatasetActor(role=None, organism=user.organisme)
+        complete = CorDatasetActor(role=user, organism=user.organisme)
+
+        assert not empty.actor
+        assert roleonly.actor == user
+        assert organismonly.actor == user.organisme
+        assert complete.actor == user
+
+
+@pytest.mark.usefixtures("client_class", "temporary_transaction")
+class TestReports:
     def test_uuid_report(self, users, synthese_data):
         observations_nbr = db.session.scalar(
             select(func.count(Synthese.id_synthese)).select_from(Synthese)
@@ -1228,216 +1465,156 @@ class TestGNMeta:
         # BadRequest because for now id_dataset query is required
         assert response.status_code == BadRequest.code
 
-    def test_get_af_from_id(self, af_list):
-        id_af = 1
 
-        found_af = get_af_from_id(id_af=id_af, af_list=af_list)
+@pytest.mark.usefixtures("client_class", "temporary_transaction")
+class TestRemoteDatabase:
+    def test_get_remote_databases(self, users, remote_database):
+        url = url_for("gn_meta.get_remote_databases")
 
-        assert isinstance(found_af, dict)
-        assert found_af.get("id_acquisition_framework") == id_af
+        response = self.client.get(url)
+        assert response.status_code == Unauthorized.code
 
-    def test_get_af_from_id_not_present(self, af_list):
-        id_af = 12
+        set_logged_user(self.client, users["noright_user"])
+        response = self.client.get(url)
+        assert response.status_code == Forbidden.code
 
-        found_af = get_af_from_id(id_af=id_af, af_list=af_list)
-
-        assert found_af is None
-
-    def test_get_af_from_id_none(self):
-        id_af = 1
-        af_list = [{"test": 2}]
-
-        with pytest.raises(KeyError):
-            get_af_from_id(id_af=id_af, af_list=af_list)
-
-    def test__get_create_scope(self, app, users):
-        modcode = "METADATA"
-
-        with app.test_request_context(headers=logged_user_headers(users["user"])):
-            app.preprocess_request()
-            create = TDatasets._get_create_scope(module_code=modcode)
-
-        usercreate = TDatasets._get_create_scope(module_code=modcode, user=users["user"])
-        norightcreate = TDatasets._get_create_scope(module_code=modcode, user=users["noright_user"])
-        associatecreate = TDatasets._get_create_scope(
-            module_code=modcode, user=users["associate_user"]
-        )
-        admincreate = TDatasets._get_create_scope(module_code=modcode, user=users["admin_user"])
-
-        assert create == 2
-        assert usercreate == 2
-        assert norightcreate == 0
-        assert associatecreate == 2
-        assert admincreate == 3
-
-    def test___str__(self, datasets):
-        dataset = datasets["associate_dataset"]
-
-        assert isinstance(dataset.__str__(), str)
-        assert dataset.__str__() == dataset.dataset_name
-
-    def test_get_id_dataset(self, datasets):
-        dataset = datasets["associate_dataset"]
-        uuid_dataset = dataset.unique_dataset_id
-
-        id_dataset = TDatasets.get_id(uuid_dataset)
-
-        assert id_dataset == dataset.id_dataset
-        assert TDatasets.get_id(uuid.uuid4()) is None
-
-    def test_get_uuid(self, datasets):
-        dataset = datasets["associate_dataset"]
-        id_dataset = dataset.id_dataset
-
-        uuid_dataset = TDatasets.get_uuid(id_dataset)
-
-        assert uuid_dataset == dataset.unique_dataset_id
-        assert TDatasets.get_uuid(None) is None
-
-    def test_get_id_acquisition_framework(self, acquisition_frameworks):
-        af = acquisition_frameworks["associate_af"]
-
-        uuid_af = af.unique_acquisition_framework_id
-        id_af = TAcquisitionFramework.get_id(uuid_af)
-
-        assert id_af == af.id_acquisition_framework
-        assert TAcquisitionFramework.get_id(uuid.uuid4()) is None
-
-    def test_get_user_af(self, users, acquisition_frameworks):
-        # Test to complete
-        user = users["user"]
-
-        afquery = TAcquisitionFramework.get_user_af(user=user, only_query=True)
-        afuser = TAcquisitionFramework.get_user_af(user=user, only_user=True)
-        afdefault = TAcquisitionFramework.get_user_af(user=user)
-
-        assert isinstance(afquery, Select)
-        assert isinstance(afuser, list)
-        assert len(afuser) == 6
-        assert isinstance(afdefault, list)
-        assert len(afdefault) >= 1
-
-    def test_actor(self, users):
-        user = users["user"]
-
-        empty = CorDatasetActor(role=None, organism=None)
-        roleonly = CorDatasetActor(role=user, organism=None)
-        organismonly = CorDatasetActor(role=None, organism=user.organisme)
-        complete = CorDatasetActor(role=user, organism=user.organisme)
-
-        assert not empty.actor
-        assert roleonly.actor == user
-        assert organismonly.actor == user.organisme
-        assert complete.actor == user
-
-    def test_close_acquisition_framework_no_data(self, users, acquisition_frameworks):
-        set_logged_user(self.client, users["user"])
-
-        af = acquisition_frameworks["own_af"]
-        response = self.client.get(
-            url_for(
-                "gn_meta.close_acquisition_framework",
-                af_id=af.id_acquisition_framework,
-            )
-        )
-        assert response.status_code == Conflict.code, response.json
-
-    def test_close_acquisition_framework_with_data(
-        self, users, acquisition_frameworks, synthese_data
-    ):
-        set_logged_user(self.client, users["stranger_user"])
-        af = acquisition_frameworks["af_1"]
-        response = self.client.get(
-            url_for(
-                "gn_meta.close_acquisition_framework",
-                af_id=af.id_acquisition_framework,
-            )
-        )
-        assert response.status_code == 200, response.json
-
-    def test_close_acquisition_frameworks_extended(
-        self, app, users, acquisition_frameworks, synthese_data
-    ):
-        """
-        We test if the mechanism of extension of acquisition framework publication works
-        """
-        # We use mock as extended function so we can keep track wether it's called
-        mocked_extended_close = MagicMock()
-        route_name = "test.extended_af_close"
-        app.config["METADATA"]["EXTENDED_AF_PUBLISH_ROUTE_NAME"] = route_name
-        app.view_functions[route_name] = mocked_extended_close
-        set_logged_user(self.client, users["stranger_user"])
-        af = acquisition_frameworks["af_1"]
-        response = self.client.get(
-            url_for(
-                "gn_meta.close_acquisition_framework",
-                af_id=af.id_acquisition_framework,
-            )
-        )
-        mocked_extended_close.assert_called_once()
-        assert response.status_code == 200, response.json
-        assert af.opened == False
-
-    def test_close_acquisition_frameworks_extended_with_exception(
-        self, app, users, acquisition_frameworks, synthese_data
-    ):
-        """
-        We test if when an error occur in the extended af closing, the af stay opened.
-        """
-
-        def mocked_close(_=None):
-            raise GeoNatureError()
-
-        route_name = "test.extended_af_close"
-        app.config["METADATA"]["EXTENDED_AF_PUBLISH_ROUTE_NAME"] = route_name
-        app.view_functions[route_name] = mocked_close
-        set_logged_user(self.client, users["stranger_user"])
-        af = acquisition_frameworks["af_1"]
-        response = self.client.get(
-            url_for(
-                "gn_meta.close_acquisition_framework",
-                af_id=af.id_acquisition_framework,
-            )
-        )
-        assert response.status_code == 500, response.json
-        assert af.opened == True
-
-    def test_open_acquisition_framework(self, app, users, acquisition_frameworks):
-        """
-        Test opening an acquisition framework
-        """
-        set_logged_user(self.client, users["stranger_user"])
-        af = acquisition_frameworks["af_1"]
-        af.opened = False
-        db.session.commit()
-
-        response = self.client.get(
-            url_for(
-                "gn_meta.open_acquisition_framework",
-                af_id=af.id_acquisition_framework,
-            )
-        )
-
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.get(url)
         assert response.status_code == 200
-        af_updated = db.session.get(TAcquisitionFramework, af.id_acquisition_framework)
-        assert af_updated.opened is True
+        names = [remote_db["name"] for remote_db in response.json]
+        assert remote_database.name in names
 
-    def test_open_acquisition_framework_not_openable(self, app, users, acquisition_frameworks):
-        """
-        Test opening an acquisition framework when AF_OPENABLE is False
-        """
-        set_logged_user(self.client, users["stranger_user"])
-        af = acquisition_frameworks["af_1"]
-        af.opened = False
+    def test_get_remote_database(self, users, remote_database):
+        url = url_for(
+            "gn_meta.get_remote_database",
+            id_remote_database=remote_database.id_remote_database,
+        )
+
+        response = self.client.get(url)
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user(self.client, users["noright_user"])
+        response = self.client.get(url)
+        assert response.status_code == Forbidden.code
+
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.get(url)
+        assert response.status_code == 200
+        assert response.json["id_remote_database"] == remote_database.id_remote_database
+        assert response.json["name"] == remote_database.name
+        assert response.json["id_contact"] is None
+
+    def test_get_remote_database_with_contact(self, users, remote_database):
+        remote_database.id_contact = users["user"].id_role
         db.session.commit()
-        app.config["METADATA"]["AF_OPENABLE"] = False
+
+        set_logged_user(self.client, users["admin_user"])
         response = self.client.get(
             url_for(
-                "gn_meta.open_acquisition_framework",
-                af_id=af.id_acquisition_framework,
+                "gn_meta.get_remote_database",
+                id_remote_database=remote_database.id_remote_database,
             )
         )
-        assert response.status_code == 500
+        assert response.status_code == 200
+        assert response.json["id_contact"] == users["user"].id_role
+        assert response.json["id_contact"] == users["user"].id_role
+
+    def test_get_remote_database_not_found(self, users, unexisted_remote_database_id):
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.get(
+            url_for(
+                "gn_meta.get_remote_database",
+                id_remote_database=unexisted_remote_database_id,
+            )
+        )
+        assert response.status_code == NotFound.code
+
+    def test_create_remote_database(self, users):
+        url = url_for("gn_meta.create_remote_database")
+
+        response = self.client.post(url, json={"name": "New Remote DB"})
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user(self.client, users["noright_user"])
+        response = self.client.post(url, json={"name": "New Remote DB"})
+        assert response.status_code == Forbidden.code
+
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.post(url, json={"name": "New Remote DB"})
+        assert response.status_code == 200
+        assert response.json["name"] == "New Remote DB"
+        assert response.json["id_remote_database"] is not None
+        assert response.json["id_contact"] is None
+
+    def test_create_remote_database_with_contact(self, users):
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.post(
+            url_for("gn_meta.create_remote_database"),
+            json={"name": "DB with contact", "id_contact": users["user"].id_role},
+        )
+        assert response.status_code == 200
+        assert response.json["id_contact"] == users["user"].id_role
+
+    def test_create_remote_database_duplicate_name(self, users, remote_database):
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.post(
+            url_for("gn_meta.create_remote_database"),
+            json={"name": remote_database.name},
+        )
+        assert response.status_code != 200
+
+    def test_create_remote_database_missing_name(self, users):
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.post(
+            url_for("gn_meta.create_remote_database"),
+            json={},
+        )
+        assert response.status_code == BadRequest.code
+
+    def test_update_remote_database(self, users, remote_database):
+        url = url_for(
+            "gn_meta.update_remote_database",
+            id_remote_database=remote_database.id_remote_database,
+        )
+
+        response = self.client.put(url, json={"name": "Updated name"})
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user(self.client, users["noright_user"])
+        response = self.client.put(url, json={"name": "Updated name"})
+        assert response.status_code == Forbidden.code
+
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.put(url, json={"name": "Updated name"})
+        assert response.status_code == 200
+        assert response.json["name"] == "Updated name"
+
+        updated = db.session.get(TRemoteDatabase, remote_database.id_remote_database)
+        assert updated.name == "Updated name"
+
+    def test_update_remote_database_partial(self, users, remote_database):
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.put(
+            url_for(
+                "gn_meta.update_remote_database",
+                id_remote_database=remote_database.id_remote_database,
+            ),
+            json={"id_contact": users["user"].id_role},
+        )
+        assert response.status_code == 200
+        assert response.json["id_contact"] == users["user"].id_role
+        assert response.json["name"] == remote_database.name
+
+    def test_update_remote_database_not_found(self, users, unexisted_remote_database_id):
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.put(
+            url_for(
+                "gn_meta.update_remote_database",
+                id_remote_database=unexisted_remote_database_id,
+            ),
+            json={"name": "Doesn't matter"},
+        )
+        assert response.status_code == NotFound.code
 
 
 @pytest.mark.usefixtures(

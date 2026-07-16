@@ -1033,10 +1033,7 @@ def update_remote_database(id_remote_database: int) -> dict:
     database = db.get_or_404(TRemoteDatabase, id_remote_database)
     data = request.get_json()
     schema = RemoteDatabaseSchema()
-    data = schema.load(data, partial=True)
-
-    for key, value in data.items():
-        setattr(database, key, value)
+    updated_database = schema.load(data, instance=database, partial=True)
 
     db.session.commit()
-    return schema.dump(database)
+    return schema.dump(updated_database)
