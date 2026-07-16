@@ -1,13 +1,12 @@
 <h2 mat-dialog-title>{{ 'MetaData.RemoteDatabase.CreateTitle' | translate }}</h2>
 <mat-dialog-content>
   <form [formGroup]="form">
-    <!-- Database Name (Required) -->
     <br />
     <mat-form-field
       appearance="outline"
       class="full-width"
     >
-      <mat-label>{{ 'MetaData.RemoteDatabase.Name' | translate }} *</mat-label>
+      <mat-label>{{ 'MetaData.RemoteDatabase.Name' | translate }}</mat-label>
       <input
         matInput
         formControlName="name"
@@ -16,6 +15,9 @@
       />
       <mat-error *ngIf="form.get('name').hasError('required')">
         {{ 'MetaData.RemoteDatabase.NameRequired' | translate }}
+      </mat-error>
+      <mat-error *ngIf="form.get('name').hasError('nameExists')">
+        {{ 'MetaData.RemoteDatabase.NameAlreadyExists' | translate }}
       </mat-error>
     </mat-form-field>
 

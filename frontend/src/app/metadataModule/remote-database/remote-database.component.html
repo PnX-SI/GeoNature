@@ -4,7 +4,7 @@
     <ng-container *ngIf="remoteDatabases | async as databases">
       <ng-select
         class="flex-grow-1"
-        [formControl]="formControl.get('id_remote_database')"
+        [formControl]="parentForm.get('id_remote_database')"
         [items]="databases"
         bindLabel="name"
         bindValue="id_remote_database"

@@ -5,6 +5,8 @@ import {
   UntypedFormBuilder,
   Validators,
   ReactiveFormsModule,
+  ValidationErrors,
+  AbstractControl,
 } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,15 +16,17 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
-import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { MetadataDataService } from '../services/metadata-data.service';
 import { ActorFormService } from '../services/actor-form.service';
 import { CommonService } from '@geonature_common/service/common.service';
+import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 
 @Component({
   selector: 'pnx-remote-database-form-dialog',
   templateUrl: './remote-database-form-dialog.component.html',
   styleUrls: ['./remote-database-form-dialog.component.scss'],
+  providers: [{ provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher }],
   standalone: true,
   imports: [
     CommonModule,
@@ -41,6 +45,7 @@ export class RemoteDatabaseFormDialogComponent implements OnInit, OnDestroy {
   roles: any[] = [];
   isSubmitting: boolean = false;
   private destroy$ = new Subject<void>();
+  private existingDatabases: any[] = [];
 
   constructor(
     private _fb: UntypedFormBuilder,
@@ -51,28 +56,40 @@ export class RemoteDatabaseFormDialogComponent implements OnInit, OnDestroy {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.initForm();
+    if (data?.remoteDatabases) {
+      data.remoteDatabases.pipe(takeUntil(this.destroy$)).subscribe((databases) => {
+        this.existingDatabases = databases;
+        this.form.get('name').updateValueAndValidity();
+      });
+    }
   }
 
   private initForm(): void {
     this.form = this._fb.group({
-      name: ['', [Validators.required]],
+      name: ['', [Validators.required, this.nameExistsValidator.bind(this)]],
       id_contact: [null],
     });
   }
 
   ngOnInit(): void {
     this.roles = this.actorFormS.roles;
-    this.form
-      .get('name')
-      .valueChanges.pipe(takeUntil(this.destroy$), debounceTime(300), distinctUntilChanged())
-      .subscribe((name) => {
-        // todo add check on doublon
-      });
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  nameExistsValidator(control: AbstractControl): ValidationErrors | null {
+    if (!control.value || control.value.trim() === '') {
+      return null;
+    }
+
+    const nameExists = this.existingDatabases.some(
+      (db) => db.name.toLowerCase().trim() === control.value.toLowerCase().trim()
+    );
+
+    return nameExists ? { nameExists: true } : null;
   }
 
   onCancel(): void {
