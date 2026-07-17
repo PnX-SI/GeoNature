@@ -2,13 +2,9 @@ import csv
 from functools import lru_cache
 
 import sqlalchemy as sa
-
 from geonature.utils.env import db
-
-from pypnnomenclature.models import (
-    TNomenclatures as Nomenclature,
-    BibNomenclaturesTypes as NomenclatureType,
-)
+from pypnnomenclature.models import BibNomenclaturesTypes as NomenclatureType
+from pypnnomenclature.models import TNomenclatures as Nomenclature
 
 from .models import CorSensitivityCriteria, SensitivityRule
 
@@ -34,6 +30,9 @@ def insert_sensitivity_referential(source, csvfile):
     behaviour_nomenclature_type = db.session.execute(
         sa.select(NomenclatureType).filter_by(mnemonique="OCC_COMPORTEMENT")
     ).scalar_one()
+    observation_method_type = db.session.execute(
+        sa.select(NomenclatureType).filter_by(mnemonique="METH_OBS")
+    ).scalar_one()
     defaults_nomenclatures = {
         statut_biologique_nomenclature_type: set(
             db.session.scalars(
@@ -48,6 +47,14 @@ def insert_sensitivity_referential(source, csvfile):
                 sa.select(Nomenclature).where(
                     Nomenclature.nomenclature_type == behaviour_nomenclature_type,
                     Nomenclature.mnemonique.in_(["NSP", "1"]),
+                )
+            ).all()
+        ),
+        observation_method_type: set(
+            db.session.scalars(
+                sa.select(Nomenclature).where(
+                    Nomenclature.nomenclature_type == observation_method_type,
+                    Nomenclature.mnemonique.in_(["Inconnu"]),
                 )
             ).all()
         ),
@@ -111,7 +118,8 @@ def insert_sensitivity_referential(source, csvfile):
 
     # Populate cor_sensitivity_area
     db.session.connection().execute(
-        sa.text("""
+        sa.text(
+            """
     INSERT INTO gn_sensitivity.cor_sensitivity_area
         SELECT DISTINCT id_sensitivity, id_area
         FROM gn_sensitivity.t_sensitivity_rules s
@@ -121,7 +129,8 @@ def insert_sensitivity_referential(source, csvfile):
             AND a.id_type = (SELECT id_type FROM ref_geo.bib_areas_types WHERE type_code ='DEP')
             AND regexp_replace(s.id_territory, '^([0-9])$', '0\\1') = a.area_code
         WHERE s.source = :source
-    """),
+    """
+        ),
         source=source,
     )
 
