@@ -47,11 +47,10 @@ class TDatasets(db.Model):
     dataset_name: Mapped[str] = mapped_column(Unicode)
     dataset_shortname: Mapped[str] = mapped_column(Unicode)
     dataset_desc: Mapped[str] = mapped_column(Unicode)
-    id_nomenclature_data_type: Mapped[int] = mapped_column(
-        Integer,
-        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        default=lambda: TNomenclatures.get_default_nomenclature("DATA_TYP"),
+    id_nomenclature_data_category: Mapped[int] = mapped_column(
+        Integer, ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"), nullable=False
     )
+    precision_data_category = mapped_column(Unicode(250))
     keywords: Mapped[Optional[str]] = mapped_column(Unicode)
     bbox_west: Mapped[Optional[float]] = mapped_column(Float)
     bbox_east: Mapped[Optional[float]] = mapped_column(Float)
@@ -100,9 +99,9 @@ class TDatasets(db.Model):
 
     additional_data: Mapped[Optional[Any]] = mapped_column(JSONB, server_default="{}")
 
-    nomenclature_data_type = DB.relationship(
+    nomenclature_data_category = DB.relationship(
         TNomenclatures,
-        foreign_keys=[id_nomenclature_data_type],
+        foreign_keys=[id_nomenclature_data_category],
     )
     nomenclature_collecting_method = DB.relationship(
         TNomenclatures,
