@@ -66,7 +66,7 @@ INSERT INTO gn_meta.t_datasets (
     'Carto d''habitat X',
     'Carto d''habitat X',
     'Carto d''habitat X',
-    ref_nomenclatures.get_id_nomenclature('DATA_TYP', '1'),
+    ref_nomenclatures.get_id_nomenclature('DATA_CATEGORY', '1.'),
     'Habitat',
     false,
     true,

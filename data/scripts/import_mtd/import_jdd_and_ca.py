@@ -648,7 +648,7 @@ def insert_update_t_datasets(CURRENT_DS_ROOT, action, cur_ds_uuid, id_ca):
     # Default value (information not found in xml files) 'Dataset'
     id_nomenclature_resource_type = "ref_nomenclatures.get_id_nomenclature('RESOURCE_TYP', '1')"
     # Default value (information not found in xml files) 'Occurrence de taxon'
-    id_nomenclature_data_type = "ref_nomenclatures.get_id_nomenclature('DATA_TYP', '1')"
+    id_nomenclature_data_category = "ref_nomenclatures.get_id_nomenclature('DATA_CATEGORY', '1')"
     # Default value
     active = "false"
     # dateCreationMtd
@@ -682,7 +682,7 @@ def insert_update_t_datasets(CURRENT_DS_ROOT, action, cur_ds_uuid, id_ca):
     if action == "create":
         cur_query = (
             "INSERT INTO gn_meta.t_datasets(unique_dataset_id, id_acquisition_framework, dataset_name, dataset_shortname, "
-            + "dataset_desc, id_nomenclature_data_type, keywords, marine_domain, terrestrial_domain, id_nomenclature_dataset_objectif, "
+            + "dataset_desc, id_nomenclature_data_category, keywords, marine_domain, terrestrial_domain, id_nomenclature_dataset_objectif, "
             + "bbox_west, bbox_east, bbox_south, bbox_north, id_nomenclature_collecting_method, id_nomenclature_data_origin, id_nomenclature_source_status, "
             + "id_nomenclature_resource_type, validable, active, meta_create_date, meta_update_date)"
             + "VALUES ("
@@ -696,7 +696,7 @@ def insert_update_t_datasets(CURRENT_DS_ROOT, action, cur_ds_uuid, id_ca):
             + ","
             + dataset_desc
             + ", "
-            + id_nomenclature_data_type
+            + id_nomenclature_data_category
             + ", "
             + keywords
             + ", "
@@ -740,7 +740,7 @@ def insert_update_t_datasets(CURRENT_DS_ROOT, action, cur_ds_uuid, id_ca):
 			dataset_name={dataset_name},
 			dataset_shortname={dataset_shortname},
 			dataset_desc={dataset_desc},
-			id_nomenclature_data_type={id_nomenclature_data_type},
+			id_nomenclature_data_category={id_nomenclature_data_category},
 			keywords={keywords},
 			marine_domain={marine_domain},
 			terrestrial_domain={terrestrial_domain},

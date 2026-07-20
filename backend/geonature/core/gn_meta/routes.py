@@ -165,7 +165,7 @@ def get_dataset(scope, id_dataset):
             "cor_dataset_actor.organism",
             "cor_dataset_actor.role",
             "modules",
-            "nomenclature_data_type",
+            "nomenclature_data_category",
             "nomenclature_collecting_method",
             "nomenclature_data_origin",
             "nomenclature_source_status",
@@ -450,7 +450,7 @@ def get_export_pdf_dataset(id_dataset, scope):
         raise Forbidden("Vous n'avez pas les droits d'exporter ces informations")
     dataset_schema = DatasetSchema(
         only=[
-            "nomenclature_data_type",
+            "nomenclature_data_category",
             "nomenclature_collecting_method",
             "acquisition_framework",
             "cor_dataset_actor.nomenclature_actor_role",
@@ -718,7 +718,7 @@ def get_acquisition_framework(scope, id_acquisition_framework):
                 "cor_territories",
                 "datasets",
                 "datasets.creator",
-                "datasets.nomenclature_data_type",
+                "datasets.nomenclature_data_category",
                 "datasets.cor_dataset_actor",
                 "datasets.cor_dataset_actor.nomenclature_actor_role",
                 "datasets.cor_dataset_actor.organism",

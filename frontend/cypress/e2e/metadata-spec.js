@@ -179,7 +179,9 @@ describe('Testing metadata', () => {
     cy.get('[data-qa="pnx-dataset-form-input-jdd-description"]').type(newJdd.description);
     cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
 
-    cy.get("[data-qa='pnx-dataset-form-datatype'] > ng-select > div > div > div.ng-input").click();
+    cy.get(
+      "[data-qa='pnx-dataset-form-data-category'] > ng-select > div > div > div.ng-input"
+    ).click();
     cy.get('[data-qa="5"]').click();
     cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
 
