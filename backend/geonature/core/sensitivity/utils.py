@@ -33,6 +33,9 @@ def insert_sensitivity_referential(source, csvfile):
     observation_method_type = db.session.execute(
         sa.select(NomenclatureType).filter_by(mnemonique="METH_OBS")
     ).scalar_one()
+    life_stage_nomenclature_type = db.session.execute(
+        sa.select(NomenclatureType).filter_by(mnemonique="STADE_VIE")
+    ).scalar_one()
     defaults_nomenclatures = {
         statut_biologique_nomenclature_type: set(
             db.session.scalars(
@@ -55,6 +58,14 @@ def insert_sensitivity_referential(source, csvfile):
                 sa.select(Nomenclature).where(
                     Nomenclature.nomenclature_type == observation_method_type,
                     Nomenclature.mnemonique.in_(["Inconnu"]),
+                )
+            ).all()
+        ),
+        life_stage_nomenclature_type: set(
+            db.session.scalars(
+                sa.select(Nomenclature).where(
+                    Nomenclature.nomenclature_type == life_stage_nomenclature_type,
+                    Nomenclature.mnemonique.in_(["Inconnu", "Indéterminé"]),
                 )
             ).all()
         ),
@@ -121,6 +132,10 @@ def insert_sensitivity_referential(source, csvfile):
             criteria = get_nomenclature("METH_OBS", code=row["MET_OBS"])
             _criterias |= {criteria} | defaults_nomenclatures[criteria.nomenclature_type]
 
+        if row["STADE_VIE"]:
+            criteria = get_nomenclature("STADE_VIE", code=row["STADE_VIE"])
+            _criterias |= {criteria} | defaults_nomenclatures[criteria.nomenclature_type]
+
         for criteria in _criterias:
             criterias.add((len(rules), criteria))
         rules.append(rule)
@@ -151,8 +166,15 @@ def insert_sensitivity_referential(source, csvfile):
         JOIN ref_geo.l_areas a
         ON
                 s.sensitivity_territory IN ('Département', 'Habitat')
-            AND a.id_type = (SELECT id_type FROM ref_geo.bib_areas_types WHERE type_code ='DEP')
-            AND regexp_replace(s.id_territory, '^([0-9])$', '0\\1') = a.area_code
+            AND a.id_type = (
+            SELECT id_type
+              FROM ref_geo.bib_areas_types
+              WHERE type_code ='DEP'
+             )
+            AND regexp_replace(
+              s.id_territory,
+              '^([0-9])$', '0\\1'
+              ) = a.area_code
             OR s.id_territory = a.area_code
         WHERE s.source = :source
     """
