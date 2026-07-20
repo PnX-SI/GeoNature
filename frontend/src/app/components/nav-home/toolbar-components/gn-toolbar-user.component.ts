@@ -43,4 +43,21 @@ export class GnToolbarUserComponent {
   get isPublicAccess(): boolean {
     return this.currentUser?.user_login === this.publicAccessUsername;
   }
+
+  /**
+   * Single source of truth for which variant of the user block to render,
+   * shared by both the desktop and mobile templates via [ngSwitch].
+   */
+  get viewState(): 'public' | 'menu' | 'linkedDisplay' | 'plainDisplay' {
+    if (this.isPublicAccess) {
+      return 'public';
+    }
+    if (this.useLocalProvider && this.accountManagementEnabled) {
+      return 'menu';
+    }
+    if (this.hasObserverSheet) {
+      return 'linkedDisplay';
+    }
+    return 'plainDisplay';
+  }
 }
