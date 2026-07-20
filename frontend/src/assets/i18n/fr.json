@@ -4,9 +4,9 @@
   "Language": "Langue",
   "Languages": "Langues",
   "AvailableLanguages": {
-    "English": "🇬🇧 English",
+    "English": "🇬🇧 Anglais (English)",
     "French": "🇫🇷 Français",
-    "Chinese": "🇨🇳 中文"
+    "Chinese": "🇨🇳 中文 (Chinois)"
   },
   "Calendar": {
     "Weekdays": ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],

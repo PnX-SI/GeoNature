@@ -5,9 +5,9 @@
   "Language": "Language",
   "Languages": "Languages",
   "AvailableLanguages": {
-    "English": "English (Anglais)",
-    "French": "Français",
-    "Chinese": "中文 (Chinois)"
+    "English": "🇬🇧 English",
+    "French": "🇫🇷 French (Français)",
+    "Chinese": "🇨🇳 中文 (Chinese)"
   },
   "Calendar": {
     "Weekdays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
