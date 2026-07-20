@@ -144,15 +144,26 @@
                 data-qa="pnx-dataset-form-data-category"
               ></pnx-nomenclature>
             </div>
-
-            <div class="col-md-6">
-              <pnx-nomenclature
-                label="{{ 'MetaData.DatasetForm.SourceStatus' | translate }}"
-                [parentFormControl]="form.get('id_nomenclature_source_status')"
-                codeNomenclatureType="STATUT_SOURCE"
-                data-qa="pnx-dataset-form-status-source"
-              ></pnx-nomenclature>
+            <div
+              class="col-md-6"
+              *ngIf="showPrecisionDataCategory()"
+            >
+              <small>{{ 'MetaData.DatasetCard.PrecisionDataCategory' | translate }}</small>
+              <input
+                class="form-control form-control-sm"
+                type="text"
+                [formControl]="form.get('precision_data_category')"
+                data-qa="pnx-dataset-form-input-precision-data-category"
+              />
             </div>
+          </div>
+          <div>
+            <pnx-nomenclature
+              label="{{ 'MetaData.DatasetForm.SourceStatus' | translate }}"
+              [parentFormControl]="form.get('id_nomenclature_source_status')"
+              codeNomenclatureType="STATUT_SOURCE"
+              data-qa="pnx-dataset-form-status-source"
+            ></pnx-nomenclature>
           </div>
 
           <div>

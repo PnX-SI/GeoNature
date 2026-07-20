@@ -345,6 +345,8 @@
       "DatasetGeoNatureID": "Identifiant GeoNature du jeu de données",
       "ShortName": "Libellé court",
       "DataCategory": "Catégorie de données",
+      "PrecisionDataCategory": "Précision sur la catégorie de données",
+      "CustomDataCategory": "Catégorie de données personnalisée",
 
       "LandCoverage": "Couverture du territoire terrestre",
       "MarineAreaCoverage": "Couverture du territoire marin",

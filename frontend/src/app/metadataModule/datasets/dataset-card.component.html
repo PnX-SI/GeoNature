@@ -158,7 +158,13 @@
 
           <div class="b">{{ 'MetaData.DatasetCard.DataCategory' | translate }}</div>
           <div class="a">
-            {{ dataset?.nomenclature_data_category.label_default || 'Non renseigné' }}
+            <ng-container *ngIf="dataset?.precision_data_category; else noDataCategoryPrecision">
+              {{ 'MetaData.DatasetCard.CustomDataCategory' | translate }}:
+              {{ dataset?.precision_data_category }}
+            </ng-container>
+            <ng-template #noDataCategoryPrecision>
+              {{ dataset?.nomenclature_data_category.label_default }}
+            </ng-template>
           </div>
           <br />
 

@@ -108,6 +108,9 @@
             {% if data.nomenclature_data_category.label_default: %}
             {{ data.nomenclature_data_category.label_default }}
             {% endif %}
+            {% if data.precision_data_category: %}
+            : {{ data.precision_data_category }}
+            {% endif %}
           </p>
         </div>
 
