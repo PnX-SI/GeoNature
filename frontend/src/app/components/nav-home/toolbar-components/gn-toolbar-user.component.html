@@ -35,9 +35,7 @@
         [matMenuTriggerFor]="userMenuDesktop"
       >
         <mat-icon>person</mat-icon>
-        <ng-container
-          *ngTemplateOutlet="userInfoContent; context: { small: false }"
-        ></ng-container>
+        <ng-container *ngTemplateOutlet="userInfoContent; context: { small: false }"></ng-container>
       </button>
 
       <mat-menu #userMenuDesktop="matMenu">
@@ -81,9 +79,7 @@
     <ng-container *ngSwitchDefault>
       <div class="UserDisplay">
         <mat-icon>person</mat-icon>
-        <ng-container
-          *ngTemplateOutlet="userInfoContent; context: { small: false }"
-        ></ng-container>
+        <ng-container *ngTemplateOutlet="userInfoContent; context: { small: false }"></ng-container>
       </div>
     </ng-container>
   </ng-container>
@@ -110,9 +106,7 @@
         disabled
       >
         <mat-icon>person</mat-icon>
-        <ng-container
-          *ngTemplateOutlet="userInfoContent; context: { small: true }"
-        ></ng-container>
+        <ng-container *ngTemplateOutlet="userInfoContent; context: { small: true }"></ng-container>
       </button>
       <a
         mat-menu-item
@@ -138,9 +132,7 @@
         [routerLink]="observerSheetUrl"
       >
         <mat-icon>person</mat-icon>
-        <ng-container
-          *ngTemplateOutlet="userInfoContent; context: { small: true }"
-        ></ng-container>
+        <ng-container *ngTemplateOutlet="userInfoContent; context: { small: true }"></ng-container>
       </a>
     </ng-container>
 
@@ -151,13 +143,10 @@
         disabled
       >
         <mat-icon>person</mat-icon>
-        <ng-container
-          *ngTemplateOutlet="userInfoContent; context: { small: true }"
-        ></ng-container>
+        <ng-container *ngTemplateOutlet="userInfoContent; context: { small: true }"></ng-container>
       </button>
     </ng-container>
   </ng-container>
 
   <mat-divider></mat-divider>
 </ng-container>
-

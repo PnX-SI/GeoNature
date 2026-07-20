@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
+import { GnToolbarIconButtonComponent } from './gn-toolbar-icon-button.component';
 
 interface LanguageOption {
   code: string;
@@ -24,6 +25,7 @@ interface LanguageOption {
     MatDividerModule,
     MatTooltipModule,
     TranslateModule,
+    GnToolbarIconButtonComponent,
   ],
   templateUrl: './gn-toolbar-language.component.html',
 })
@@ -35,9 +37,9 @@ export class GnToolbarLanguageComponent {
   @Output() languageChange = new EventEmitter<string>();
 
   languages: LanguageOption[] = [
-    { code: 'fr', label: 'AvailableLanguages.French', tooltip: 'Afficher l\'interface en français' },
-    { code: 'en', label: 'AvailableLanguages.English', tooltip: 'Afficher l\'interface en Anglais' },
-    { code: 'zh', label: 'AvailableLanguages.Chinese', tooltip: 'Afficher l\'interface en Chinois' },
+    { code: 'fr', label: 'AvailableLanguages.French', tooltip: "Afficher l'interface en français" },
+    { code: 'en', label: 'AvailableLanguages.English', tooltip: "Afficher l'interface en Anglais" },
+    { code: 'zh', label: 'AvailableLanguages.Chinese', tooltip: "Afficher l'interface en Chinois" },
   ];
 
   selectLanguage(locale: string): void {
