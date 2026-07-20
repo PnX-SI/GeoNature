@@ -11,7 +11,20 @@
   },
   "Calendar": {
     "Weekdays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-    "Months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    "Months": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ]
   },
   "Actions": {
     "Singular": "Action",
@@ -89,6 +102,7 @@
   "MyAccount": {
     "MyAccount": "My account",
     "MyObserverSheet": "My observer sheet",
+    "ObserverSheetTooltip": "Access your observer sheet",
     "EmailChangeTitle": "Change email address",
     "EmailChangeDescription": "Changing your email address requires validation. A confirmation link will be sent to your new email address and the change will be effective after clicking on the link.",
     "EmailChangeValidationTitle": "Email address change validation",
@@ -210,12 +224,24 @@
   "Detail": "Detail",
   "Details": "Details",
 
+  "Search": "Search",
+  "Documentation": {
+    "Documentation": "Documentation",
+    "OpenDocumentation": "Open documentation"
+  },
   "Downloading": "Downloading",
 
   "DownloadOverflow": "The number of items is too large to be downloaded, please refine your search or contact your administrator",
   "DynamicForm": {
     "Errors": {
       "CheckBoxError": "Please select at least one option"
+    }
+  },
+  "Toolbar": {
+    "Language": {
+      "FrenchTooltip": "Switch interface language to french",
+      "EnglishTooltip": "Switch interface language to english",
+      "ChineseTooltip": "Switch interface language to chinese"
     }
   },
   "Map": {

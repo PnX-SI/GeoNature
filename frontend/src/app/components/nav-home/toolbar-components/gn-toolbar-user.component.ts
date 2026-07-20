@@ -45,8 +45,12 @@ export class GnToolbarUserComponent {
   }
 
   /**
-   * Single source of truth for which variant of the user block to render,
-   * shared by both the desktop and mobile templates via [ngSwitch].
+   * Return the a view state based on the current user and configuration of GeoNature. The view state can be one of the following:
+   * - 'public' → the current user is a public access user, no menu or link to observer sheet is displayed
+   * - 'menu' → the current user is a local provider and account management is enabled, a menu with account management options is displayed
+   * - 'linkedDisplay' → the current user has an observer sheet (but can't access account management page), a link to the observer sheet is displayed
+   * - 'plainDisplay' → the current user does not have an observer sheet, only the display name and organism are displayed
+   * @returns {string} The view state
    */
   get viewState(): 'public' | 'menu' | 'linkedDisplay' | 'plainDisplay' {
     if (this.isPublicAccess) {

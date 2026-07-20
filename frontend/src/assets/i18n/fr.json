@@ -4,13 +4,26 @@
   "Language": "Langue",
   "Languages": "Langues",
   "AvailableLanguages": {
-    "English": "English (Anglais)",
-    "French": "Français",
-    "Chinese": "中文 (Chinois)"
+    "English": "🇬🇧 English",
+    "French": "🇫🇷 Français",
+    "Chinese": "🇨🇳 中文"
   },
   "Calendar": {
     "Weekdays": ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
-    "Months": ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]
+    "Months": [
+      "janvier",
+      "février",
+      "mars",
+      "avril",
+      "mai",
+      "juin",
+      "juillet",
+      "août",
+      "septembre",
+      "octobre",
+      "novembre",
+      "décembre"
+    ]
   },
   "Actions": {
     "Singular": "Action",
@@ -87,6 +100,7 @@
   "MyAccount": {
     "MyAccount": "Mon compte",
     "MyObserverSheet": "Ma fiche observateur",
+    "ObserverSheetTooltip": "Accéder à votre fiche observateur",
     "EmailChangeTitle": "Changement d'adresse mail",
     "EmailChangeDescription": "La modification de votre adresse email nécessite une validation. Un lien de confirmation sera envoyé à votre nouvelle adresse email et le changement d'adresse sera pris en compte après avoir cliqué sur le lien reçu.",
     "EmailChangeValidationTitle": "Validation du changement d'adresse mail",
@@ -207,12 +221,25 @@
   "Detail": "Détail",
   "Details": "Détails",
 
+  "Search": "Rechercher",
+  "Documentation": {
+    "Documentation": "Documentation",
+    "OpenDocumentation": "Ouvrir la documentation"
+  },
   "Downloading": "Téléchargement en cours",
 
   "DownloadOverflow": "Le nombre d'élément est trop important pour être téléchargé, veuillez affiner votre recherche ou contacter votre administrateur",
   "DynamicForm": {
     "Errors": {
       "CheckBoxError": "Veuillez choisir au moins une option"
+    }
+  },
+
+  "Toolbar": {
+    "Language": {
+      "FrenchTooltip": "Afficher l'interface en français",
+      "EnglishTooltip": "Afficher l'interface en anglais",
+      "ChineseTooltip": "Afficher l'interface en chinois"
     }
   },
   "Map": {

@@ -63,7 +63,7 @@
     <ng-container *ngSwitchCase="'linkedDisplay'">
       <a
         class="Link"
-        matTooltip="Accéder à ma fiche observateur"
+        matTooltip="{{ 'MyAccount.ObserverSheetTooltip' | translate }}"
         [routerLink]="observerSheetUrl"
       >
         <div class="UserDisplay">

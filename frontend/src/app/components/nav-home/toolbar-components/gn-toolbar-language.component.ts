@@ -37,9 +37,9 @@ export class GnToolbarLanguageComponent {
   @Output() languageChange = new EventEmitter<string>();
 
   languages: LanguageOption[] = [
-    { code: 'fr', label: 'AvailableLanguages.French', tooltip: "Afficher l'interface en français" },
-    { code: 'en', label: 'AvailableLanguages.English', tooltip: "Afficher l'interface en Anglais" },
-    { code: 'zh', label: 'AvailableLanguages.Chinese', tooltip: "Afficher l'interface en Chinois" },
+    { code: 'fr', label: 'AvailableLanguages.French', tooltip: 'Toolbar.Language.FrenchTooltip' },
+    { code: 'en', label: 'AvailableLanguages.English', tooltip: 'Toolbar.Language.EnglishTooltip' },
+    { code: 'zh', label: 'AvailableLanguages.Chinese', tooltip: 'Toolbar.Language.ChineseTooltip' },
   ];
 
   selectLanguage(locale: string): void {
