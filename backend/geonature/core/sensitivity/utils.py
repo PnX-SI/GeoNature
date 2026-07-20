@@ -158,8 +158,7 @@ def insert_sensitivity_referential(source, csvfile):
 
     # Populate cor_sensitivity_area
     db.session.connection().execute(
-        sa.text(
-            """
+        sa.text("""
             INSERT INTO gn_sensitivity.cor_sensitivity_area
             SELECT DISTINCT id_sensitivity,
                             id_area
@@ -173,8 +172,7 @@ def insert_sensitivity_referential(source, csvfile):
             AND regexp_replace(s.id_territory, '^([0-9])$', '0\\1') = a.area_code
             OR s.id_territory = a.area_code
             WHERE s.source = :source
-            """
-        ),
+            """),
         source=source,
     )
 
