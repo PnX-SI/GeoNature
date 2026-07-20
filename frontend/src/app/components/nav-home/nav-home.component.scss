@@ -60,15 +60,13 @@
 .right-toolbar-content {
   display: flex;
   align-items: center;
-  flex-shrink: 0;   // ne rétrécit JAMAIS → ne passe jamais en dessous
+  flex-shrink: 0; // ne rétrécit JAMAIS → ne passe jamais en dessous
 }
 
 .home-link {
   text-decoration: none;
   color: black;
   white-space: nowrap;
-
-
 }
 
 #logo-structure {
@@ -105,8 +103,6 @@
     }
   }
 }
-
-
 
 .UserDisplay {
   display: flex;
