@@ -1,0 +1,38 @@
+<ng-container *ngIf="multilingualEnabled">
+  <!-- DESKTOP VERSION -->
+  <ng-container *ngIf="!isMobile">
+    <gn-toolbar-icon-button
+      icon="language"
+      tooltip="{{ 'LanguageSelection' | translate }}"
+      [menuTrigger]="languagesMenuDesktop"
+    ></gn-toolbar-icon-button>
+
+    <mat-menu #languagesMenuDesktop="matMenu">
+      <button
+        *ngFor="let lang of languages"
+        mat-menu-item
+        (click)="selectLanguage(lang.code)"
+        [disabled]="currentLocale === lang.code"
+        matTooltip="{{ lang.tooltip | translate }}"
+        matTooltipPosition="before"
+      >
+        <mat-icon *ngIf="currentLocale === lang.code">check</mat-icon>
+        {{ lang.label | translate }}
+      </button>
+    </mat-menu>
+  </ng-container>
+
+  <!-- MOBILE VERSION -->
+  <ng-container *ngIf="isMobile">
+    <button
+      *ngFor="let lang of languages"
+      mat-menu-item
+      (click)="selectLanguage(lang.code)"
+      [disabled]="currentLocale === lang.code"
+    >
+      <mat-icon>{{ currentLocale === lang.code ? 'check' : 'language' }}</mat-icon>
+      {{ lang.label | translate }}
+    </button>
+    <mat-divider></mat-divider>
+  </ng-container>
+</ng-container>

@@ -1,0 +1,42 @@
+<!-- DESKTOP VERSION -->
+<ng-container *ngIf="!isMobile">
+  <!-- Documentation -->
+  <gn-toolbar-icon-button
+    icon="library_books"
+    iconId="documentation_link"
+    tooltip="{{ 'Documentation.OpenDocumentation' | translate }}"
+    [href]="documentationUrl"
+    target="_blank"
+  ></gn-toolbar-icon-button>
+
+  <!-- Logout -->
+  <gn-toolbar-icon-button
+    icon="exit_to_app"
+    tooltip="{{ 'Authentication.Actions.LogOut' | translate }}"
+    dataQa="pnx-home-content-exit-button"
+    (btnClick)="logout()"
+  ></gn-toolbar-icon-button>
+</ng-container>
+
+<!-- MOBILE VERSION -->
+<ng-container *ngIf="isMobile">
+  <!-- Documentation -->
+  <a
+    mat-menu-item
+    [href]="documentationUrl"
+    target="_blank"
+  >
+    <mat-icon>library_books</mat-icon>
+    <span>{{ 'Documentation.Documentation' | translate }}</span>
+  </a>
+
+  <!-- Logout -->
+  <button
+    mat-menu-item
+    (click)="logout()"
+    data-qa="pnx-home-content-exit-button"
+  >
+    <mat-icon>exit_to_app</mat-icon>
+    {{ 'Authentication.Actions.LogOut' | translate }}
+  </button>
+</ng-container>

@@ -1,0 +1,24 @@
+<a
+  *ngIf="href; else buttonMode"
+  class="mx-2 mat-elevation-z1"
+  mat-icon-button
+  [matTooltip]="tooltip"
+  [href]="href"
+  [target]="target"
+  [attr.data-qa]="dataQa"
+>
+  <mat-icon [id]="iconId">{{ icon }}</mat-icon>
+</a>
+
+<ng-template #buttonMode>
+  <button
+    class="mx-2 mat-elevation-z1"
+    mat-icon-button
+    [matTooltip]="tooltip"
+    [matMenuTriggerFor]="menuTrigger"
+    [attr.data-qa]="dataQa"
+    (click)="onClick()"
+  >
+    <mat-icon [id]="iconId">{{ icon }}</mat-icon>
+  </button>
+</ng-template>

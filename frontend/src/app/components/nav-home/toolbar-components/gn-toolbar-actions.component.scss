@@ -1,0 +1,7 @@
+/* Mobile menu styling */
+a[mat-menu-item],
+button[mat-menu-item] {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
