@@ -74,17 +74,36 @@ def insert_sensitivity_referential(source, csvfile):
             cd_dep = "974"
         else:
             cd_dep = row[dep_col]
+
+        if row[dep_col].startswith("hab"):
+            territory = "Habitat"
+        else:
+            territory = "Département"
+
         if row["DUREE"]:
             duration = int(row["DUREE"])
         else:
             duration = 10000
+
+        if row["DATE_MIN"]:
+            date_min = row["DATE_MIN"]
+        else:
+            date_min = None
+
+        if row["DATE_MAX"]:
+            date_max = row["DATE_MAX"]
+        else:
+            date_max = None
+
         rule = {
             "cd_nom": int(row["CD_NOM"]),
             "nom_cite": row["NOM_CITE"],
             "id_nomenclature_sensitivity": sensi_nomenclature.id_nomenclature,
             "sensitivity_duration": duration,
-            "sensitivity_territory": "Département",
+            "sensitivity_territory": territory,
             "id_territory": cd_dep,
+            "date_min": date_min,
+            "date_max": date_max,
             "source": f"{source}",
             "comments": row["AUTRE"],
             "active": True,
@@ -96,7 +115,10 @@ def insert_sensitivity_referential(source, csvfile):
         if row["COMPORTEMENT"]:
             criteria = get_nomenclature("OCC_COMPORTEMENT", code=row["COMPORTEMENT"])
             _criterias |= {criteria} | defaults_nomenclatures[criteria.nomenclature_type]
-        for criteria in _criterias:
+
+        if row["METH_OBS"]:
+                    criteria = get_nomenclature("METH_OBS", code=row["MET_OBS"])
+                    _criterias |= {criteria} | defaults_nomenclatures[criteria.nomenclature_type]        for criteria in _criterias:
             criterias.add((len(rules), criteria))
         rules.append(rule)
     results = db.session.execute(
@@ -125,9 +147,10 @@ def insert_sensitivity_referential(source, csvfile):
         FROM gn_sensitivity.t_sensitivity_rules s
         JOIN ref_geo.l_areas a
         ON
-                s.sensitivity_territory = 'Département'
+                s.sensitivity_territory IN ('Département', 'Habitat')
             AND a.id_type = (SELECT id_type FROM ref_geo.bib_areas_types WHERE type_code ='DEP')
             AND regexp_replace(s.id_territory, '^([0-9])$', '0\\1') = a.area_code
+            OR s.id_territory = a.area_code
         WHERE s.source = :source
     """
         ),
