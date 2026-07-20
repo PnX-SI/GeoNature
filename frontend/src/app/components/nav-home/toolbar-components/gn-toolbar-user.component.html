@@ -1,3 +1,29 @@
+<!-- Shared template: user name + organism -->
+<ng-template #userInfoContent>
+  <div class="user-info">
+    <div class="user-info-name">{{ displayName }}</div>
+    <div
+      *ngIf="displayOrganism"
+      class="user-info-organism"
+    >
+      {{ displayOrganism }}
+    </div>
+  </div>
+</ng-template>
+
+<!-- Shared template: mobile user name + organism -->
+<ng-template #mobileUserInfoContent>
+  <span class="user-info user-info--small">
+    <span class="user-info-name">{{ displayName }}</span>
+    <span
+      *ngIf="displayOrganism"
+      class="user-info-organism"
+    >
+      {{ displayOrganism }}
+    </span>
+  </span>
+</ng-template>
+
 <!-- DESKTOP VERSION -->
 <ng-container *ngIf="!isMobile">
   <ng-container *ngIf="!isPublicAccess; else publicAccessUserDesktop">
@@ -11,12 +37,7 @@
         [matMenuTriggerFor]="userMenuDesktop"
       >
         <mat-icon>person</mat-icon>
-        <div class="user-info">
-          <div class="user-info__name">{{ displayName }}</div>
-          <div *ngIf="displayOrganism" class="user-info__organism">
-            {{ displayOrganism }}
-          </div>
-        </div>
+        <ng-container *ngTemplateOutlet="userInfoContent"></ng-container>
       </button>
 
       <mat-menu #userMenuDesktop>
@@ -55,12 +76,7 @@
     <ng-template #userDisplayDesktop>
       <div class="UserDisplay">
         <mat-icon>person</mat-icon>
-        <div class="user-info">
-          <div class="user-info__name">{{ displayName }}</div>
-          <div *ngIf="displayOrganism" class="user-info__organism">
-            {{ displayOrganism }}
-          </div>
-        </div>
+        <ng-container *ngTemplateOutlet="userInfoContent"></ng-container>
       </div>
     </ng-template>
   </ng-container>
@@ -79,7 +95,10 @@
 <ng-template #mobileMenuContent>
   <!-- Content provided via ng-container in parent or used internally -->
   <ng-container *ngIf="isPublicAccess">
-    <button mat-menu-item disabled>
+    <button
+      mat-menu-item
+      disabled
+    >
       <mat-icon>accessibility_new</mat-icon>
       <span>Accès public</span>
     </button>
@@ -89,49 +108,48 @@
   <ng-container *ngIf="!isPublicAccess">
     <!-- With account management -->
     <ng-container *ngIf="useLocalProvider && accountManagementEnabled">
-      <button mat-menu-item disabled>
+      <button
+        mat-menu-item
+        disabled
+      >
         <mat-icon>person</mat-icon>
-        <span class="mobile-user-info">
-          <span class="mobile-user-info__name">{{ displayName }}</span>
-          <span *ngIf="displayOrganism" class="mobile-user-info__organism">
-            {{ displayOrganism }}
-          </span>
-        </span>
+        <ng-container *ngTemplateOutlet="mobileUserInfoContent"></ng-container>
       </button>
-      <a mat-menu-item routerLink="/user">
+      <a
+        mat-menu-item
+        routerLink="/user"
+      >
         <mat-icon>manage_accounts</mat-icon>
         {{ 'MyAccount.MyAccount' | translate }}
       </a>
-      <a *ngIf="hasObserverSheet" mat-menu-item [routerLink]="observerSheetUrl">
+      <a
+        *ngIf="hasObserverSheet"
+        mat-menu-item
+        [routerLink]="observerSheetUrl"
+      >
         <mat-icon>assignment_ind</mat-icon>
         {{ 'MyAccount.MyObserverSheet' | translate }}
       </a>
     </ng-container>
 
     <!-- Without account management -->
-    <ng-container
-      *ngIf="!(useLocalProvider && accountManagementEnabled)"
-    >
+    <ng-container *ngIf="!(useLocalProvider && accountManagementEnabled)">
       <ng-container *ngIf="hasObserverSheet; else mobileUserDisplayOnly">
-        <a mat-menu-item [routerLink]="observerSheetUrl">
+        <a
+          mat-menu-item
+          [routerLink]="observerSheetUrl"
+        >
           <mat-icon>person</mat-icon>
-          <span class="mobile-user-info">
-            <span class="mobile-user-info__name">{{ displayName }}</span>
-            <span *ngIf="displayOrganism" class="mobile-user-info__organism">
-              {{ displayOrganism }}
-            </span>
-          </span>
+          <ng-container *ngTemplateOutlet="mobileUserInfoContent"></ng-container>
         </a>
       </ng-container>
       <ng-template #mobileUserDisplayOnly>
-        <button mat-menu-item disabled>
+        <button
+          mat-menu-item
+          disabled
+        >
           <mat-icon>person</mat-icon>
-          <span class="mobile-user-info">
-            <span class="mobile-user-info__name">{{ displayName }}</span>
-            <span *ngIf="displayOrganism" class="mobile-user-info__organism">
-              {{ displayOrganism }}
-            </span>
-          </span>
+          <ng-container *ngTemplateOutlet="mobileUserInfoContent"></ng-container>
         </button>
       </ng-template>
     </ng-container>

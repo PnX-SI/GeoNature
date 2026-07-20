@@ -67,7 +67,7 @@ export class NavHomeComponent implements OnInit {
     this.currentUser = this.authService.getCurrentUser();
     this.useLocalProvider = this.authService.canBeLoggedWithLocalProvider();
 
-    this.breakpointObserver.observe(['(max-width: 870px)']).subscribe((result) => {
+    this.breakpointObserver.observe(['(max-width: 600px)']).subscribe((result) => {
       this.isMobile = result.matches;
     });
   }

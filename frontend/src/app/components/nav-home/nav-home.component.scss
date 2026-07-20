@@ -49,13 +49,18 @@
   }
 }
 
-// On le contraint pour qu'il ne pousse pas les boutons droite hors de la toolbar
 .left-toolbar-content {
   display: flex;
   align-items: center;
-  flex-shrink: 1;   // peut rétrécir si besoin
-  min-width: 0;     // autorise le rétrécissement sous sa taille intrinsèque
+  flex-shrink: 1;
+  min-width: 0;
   overflow: hidden;
+}
+
+.right-toolbar-content {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;   // ne rétrécit JAMAIS → ne passe jamais en dessous
 }
 
 .home-link {
@@ -70,9 +75,9 @@
   max-height: 60px;
   flex-shrink: 1;
 
-  @media (max-width: 577px) {
+  @media (max-width: 600px) {
     max-height: 36px;
-    max-width: 50%;   // bride la largeur pour ne pas écraser les boutons droite
+    max-width: 50%;
     width: auto;
     object-fit: contain;
   }
@@ -101,16 +106,7 @@
   }
 }
 
-.right-toolbar-content {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;   // ne rétrécit JAMAIS → ne passe jamais en dessous
-}
 
-.Link {
-  color: var(--purple);
-  filter: brightness(70%);
-}
 
 .UserDisplay {
   display: flex;

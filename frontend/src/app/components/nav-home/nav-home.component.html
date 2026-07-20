@@ -46,7 +46,7 @@
         <h3>{{ config.appName }}</h3>
       </span>
 
-      <!-- ── VERSION DESKTOP (≥ 578px) ── -->
+      <!-- ── VERSION DESKTOP (≥ 600px) ── -->
       <ng-container *ngIf="!isMobile">
         <!-- User Component -->
         <gn-toolbar-user
@@ -95,7 +95,7 @@
         ></gn-toolbar-actions>
       </ng-container>
 
-      <!-- ── VERSION MOBILE (< 578px) ── -->
+      <!-- ── VERSION MOBILE (< 600px) ── -->
       <ng-container *ngIf="isMobile">
         <!-- Badge notifications visible en dehors du menu -->
         <ng-container
