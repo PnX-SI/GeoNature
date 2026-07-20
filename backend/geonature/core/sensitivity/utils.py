@@ -112,13 +112,16 @@ def insert_sensitivity_referential(source, csvfile):
         if row["STATUT_BIOLOGIQUE"]:
             criteria = get_nomenclature("STATUT_BIO", code=row["STATUT_BIOLOGIQUE"])
             _criterias |= {criteria} | defaults_nomenclatures[criteria.nomenclature_type]
+
         if row["COMPORTEMENT"]:
             criteria = get_nomenclature("OCC_COMPORTEMENT", code=row["COMPORTEMENT"])
             _criterias |= {criteria} | defaults_nomenclatures[criteria.nomenclature_type]
 
         if row["METH_OBS"]:
-                    criteria = get_nomenclature("METH_OBS", code=row["MET_OBS"])
-                    _criterias |= {criteria} | defaults_nomenclatures[criteria.nomenclature_type]        for criteria in _criterias:
+            criteria = get_nomenclature("METH_OBS", code=row["MET_OBS"])
+            _criterias |= {criteria} | defaults_nomenclatures[criteria.nomenclature_type]
+
+        for criteria in _criterias:
             criterias.add((len(rules), criteria))
         rules.append(rule)
     results = db.session.execute(
