@@ -383,6 +383,8 @@
       "ShortName": "Libellé court",
       "DataType": "Type de données",
       "DataCategory": "Catégorie de données",
+      "PrecisionDataCategory": "Précision sur la catégorie de données",
+      "CustomDataCategory": "Catégorie de données personnalisée",
       "LandCoverage": "Couverture du territoire terrestre",
       "MarineAreaCoverage": "Couverture du territoire marin",
       "TermsReference": "Cadre de référence",
