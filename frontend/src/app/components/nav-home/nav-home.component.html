@@ -86,11 +86,8 @@
         <!-- Actions Component (Documentation & Logout) -->
         <gn-toolbar-actions
           [isMobile]="false"
-          [notificationsEnabled]="false"
-          [notificationNumber]="0"
           [documentationUrl]="currentDocUrl"
           [isPublicAccess]="config.PUBLIC_ACCESS_USERNAME == currentUser?.user_login"
-          (notificationClick)="openNotification()"
           (logoutClick)="authService.logout()"
         ></gn-toolbar-actions>
       </ng-container>
@@ -152,8 +149,6 @@
           <!-- Actions Component (Mobile) -->
           <gn-toolbar-actions
             [isMobile]="true"
-            [notificationsEnabled]="false"
-            [notificationNumber]="0"
             [documentationUrl]="currentDocUrl"
             [isPublicAccess]="config.PUBLIC_ACCESS_USERNAME == currentUser?.user_login"
             (logoutClick)="authService.logout()"
