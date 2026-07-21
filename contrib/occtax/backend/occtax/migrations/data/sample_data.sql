@@ -60,7 +60,7 @@ INSERT INTO gn_meta.t_datasets (
     dataset_name,
     dataset_shortname,
     dataset_desc,
-    id_nomenclature_data_type,
+    id_nomenclature_data_category,
     keywords,
     bbox_west,
     bbox_east,
