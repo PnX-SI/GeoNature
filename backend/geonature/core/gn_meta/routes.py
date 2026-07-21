@@ -165,7 +165,7 @@ def get_dataset(scope, id_dataset):
             "cor_dataset_actor.organism",
             "cor_dataset_actor.role",
             "modules",
-            "nomenclature_data_type",
+            "nomenclature_data_category",
             "nomenclature_collecting_method",
             "nomenclature_data_origin",
             "nomenclature_source_status",
@@ -382,10 +382,11 @@ def my_csv_resp(filename, data, columns, _header, separator=";"):
     return Response(out, headers=headers)
 
 
-def datasetHandler(dataset, data):
+def datasetHandler(dataset, data, partial=False):
     datasetSchema = DatasetSchema(
         only=["cor_dataset_actor", "modules", "cor_objectifs", "cor_territories"],
         unknown=EXCLUDE,
+        partial=partial,
     )
     try:
         dataset = datasetSchema.load(data, instance=dataset)
@@ -436,7 +437,9 @@ def update_dataset(id_dataset, scope):
     if not dataset.has_instance_permission(scope):
         raise Forbidden(f"User {g.current_user} cannot update dataset {dataset.id_dataset}")
     # TODO: specify which fields may be updated
-    return DatasetSchema().jsonify(datasetHandler(dataset=dataset, data=request.get_json()))
+    return DatasetSchema().jsonify(
+        datasetHandler(dataset=dataset, data=request.get_json(), partial=True)
+    )
 
 
 @routes.route("/dataset/export_pdf/<id_dataset>", methods=["GET", "POST"])
@@ -450,7 +453,7 @@ def get_export_pdf_dataset(id_dataset, scope):
         raise Forbidden("Vous n'avez pas les droits d'exporter ces informations")
     dataset_schema = DatasetSchema(
         only=[
-            "nomenclature_data_type",
+            "nomenclature_data_category",
             "nomenclature_collecting_method",
             "acquisition_framework",
             "cor_dataset_actor.nomenclature_actor_role",
@@ -718,7 +721,7 @@ def get_acquisition_framework(scope, id_acquisition_framework):
                 "cor_territories",
                 "datasets",
                 "datasets.creator",
-                "datasets.nomenclature_data_type",
+                "datasets.nomenclature_data_category",
                 "datasets.cor_dataset_actor",
                 "datasets.cor_dataset_actor.nomenclature_actor_role",
                 "datasets.cor_dataset_actor.organism",

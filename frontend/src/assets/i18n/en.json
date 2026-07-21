@@ -348,8 +348,10 @@
       "DatasetSINPID": "SINP ID of the dataset",
       "DatasetGeoNatureID": "GeoNature ID of the dataset",
       "ShortName": "Short label",
-      "DataType": "Data type",
-
+      "DataCategory": "Data category",
+      "PrecisionDataCategory": "Precision on the data category",
+      "CustomDataCategory": "Custom data category",
+      
       "LandCoverage": "Land territory coverage",
       "MarineAreaCoverage": "Marine territory coverage",
       "TermsReference": "Reference framework",

@@ -42,11 +42,10 @@ class TDatasets(db.Model):
     dataset_name = DB.Column(DB.Unicode)
     dataset_shortname = DB.Column(DB.Unicode)
     dataset_desc = DB.Column(DB.Unicode)
-    id_nomenclature_data_type = DB.Column(
-        DB.Integer,
-        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        default=lambda: TNomenclatures.get_default_nomenclature("DATA_TYP"),
+    id_nomenclature_data_category = DB.Column(
+        DB.Integer, ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"), nullable=False
     )
+    precision_data_category = DB.Column(DB.Unicode(250))
     keywords = DB.Column(DB.Unicode)
     marine_domain = DB.Column(DB.Boolean)
     terrestrial_domain = DB.Column(DB.Boolean)
@@ -93,9 +92,9 @@ class TDatasets(db.Model):
 
     additional_data = db.Column(JSONB, nullable=True, server_default="{}")
 
-    nomenclature_data_type = DB.relationship(
+    nomenclature_data_category = DB.relationship(
         TNomenclatures,
-        foreign_keys=[id_nomenclature_data_type],
+        foreign_keys=[id_nomenclature_data_category],
     )
     nomenclature_collecting_method = DB.relationship(
         TNomenclatures,

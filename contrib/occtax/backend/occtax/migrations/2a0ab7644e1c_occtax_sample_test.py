@@ -19,6 +19,7 @@ depends_on = (
     "3d0bf4ee67d1",  # geonature samples data
     "addb71d8efad",  # occtax
     "ae0b6362fb22",  # geonature@ae0b6362fb22 - "cor_dataset_objectifs"
+    "83572524f062",
 )
 
 

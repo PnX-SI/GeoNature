@@ -280,7 +280,7 @@ def get_one_synthese(permissions, id_synthese):
         "dataset.cor_territories",
         "dataset.nomenclature_source_status",
         "dataset.nomenclature_resource_type",
-        "dataset.nomenclature_data_type",
+        "dataset.nomenclature_data_category",
         "dataset.nomenclature_data_origin",
         "dataset.nomenclature_collecting_method",
         "dataset.creator",

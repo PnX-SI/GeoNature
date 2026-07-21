@@ -92,8 +92,8 @@ jobs:
           geonature install-gn-module contrib/occtax OCCTAX --build=false --upgrade-db=false
           geonature install-gn-module contrib/gn_module_occhab OCCHAB --build=false --upgrade-db=false
           geonature install-gn-module contrib/gn_module_validation VALIDATION --build=false --upgrade-db=false
-          geonature db upgrade cypress-samples-test@head
           geonature db autoupgrade
+          geonature db upgrade cypress-samples-test@head
           geonature permissions supergrant --group --nom "Grp_admin" --yes
           geonature db autoupgrade
         env:

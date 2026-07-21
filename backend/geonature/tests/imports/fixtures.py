@@ -127,6 +127,12 @@ def create_dataset(
 
     # Get module
     r_module = client.get(url_for("gn_commons.get_module", module_code=module_code))
+    import logging
+
+    logging.error(r_module)
+
+    logging.error(r_module.data)
+
     assert r_module.status_code == 200
 
     modules = [
@@ -168,6 +174,16 @@ def create_dataset(
         )
     ).scalar_one()
 
+    category = (
+        db.session.query(TNomenclatures)
+        .join(BibNomenclaturesTypes)
+        .filter(
+            BibNomenclaturesTypes.mnemonique == "DATA_CATEGORY",
+            TNomenclatures.mnemonique == "taxon",
+        )
+        .first()
+    )
+
     json = {
         "id_acquisition_framework": new_acquisition_framework.id_acquisition_framework,
         "dataset_name": "import_dataset",
@@ -183,6 +199,7 @@ def create_dataset(
         "modules": modules,
         "cor_territories": [territory_metropole.as_dict()],
         "cor_dataset_actor": cor_dataset_actor,
+        "id_nomenclature_data_category": category.id_nomenclature,
     }
 
     response = client.post(

@@ -344,7 +344,9 @@
       "DatasetSINPID": "Identifiant SINP du jeu de données",
       "DatasetGeoNatureID": "Identifiant GeoNature du jeu de données",
       "ShortName": "Libellé court",
-      "DataType": "Type de données",
+      "DataCategory": "Catégorie de données",
+      "PrecisionDataCategory": "Précision sur la catégorie de données",
+      "CustomDataCategory": "Catégorie de données personnalisée",
 
       "LandCoverage": "Couverture du territoire terrestre",
       "MarineAreaCoverage": "Couverture du territoire marin",

@@ -826,7 +826,7 @@ class TestGNMeta:
 
         assert set(response.json.keys()) == {"data"}
 
-    def get_test_dataset_json(self, id_acquisition_framework):
+    def get_test_dataset_json(self, id_acquisition_framework, nomenclature_category):
         return {
             "id_acquisition_framework": id_acquisition_framework,
             "dataset_name": "test",
@@ -835,34 +835,40 @@ class TestGNMeta:
             "terrestrial_domain": True,
             "marine_domain": False,
             "unique_dataset_id": None,
+            "id_nomenclature_data_category": nomenclature_category.id_nomenclature,
         }
 
-    def test_create_dataset(self, users, datasets):
-        response = self.client.post(url_for("gn_meta.create_dataset"))
+    def test_create_dataset(self, users, datasets, nomenclature_category):
+        url = url_for("gn_meta.create_dataset")
+        response = self.client.post(url)
         assert response.status_code == Unauthorized.code
 
         set_logged_user(self.client, users["admin_user"])
 
-        response = self.client.post(url_for("gn_meta.create_dataset"))
+        response = self.client.post(url)
         assert response.status_code == UnsupportedMediaType.code
 
         set_logged_user(self.client, users["admin_user"])
         ds = datasets["own_dataset"].as_dict()
         ds["id_dataset"] = "takeonme"
-        response = self.client.post(url_for("gn_meta.create_dataset"), json=ds)
+        response = self.client.post(url, json=ds)
         assert response.status_code == BadRequest.code
-        ds_json = self.get_test_dataset_json(datasets["own_dataset"].id_acquisition_framework)
+        ds_json = self.get_test_dataset_json(
+            datasets["own_dataset"].id_acquisition_framework, nomenclature_category
+        )
         response = self.client.post(
-            url_for("gn_meta.create_dataset"),
+            url,
             json=ds_json,
         )
         assert response.status_code == 200
 
-    def test_dataset_with_closed_af(self, users, datasets):
+    def test_dataset_with_closed_af(self, users, datasets, nomenclature_category):
         set_logged_user(self.client, users["admin_user"])
         datasets["own_dataset"].acquisition_framework.opened = False
         db.session.flush()
-        ds_json = self.get_test_dataset_json(datasets["own_dataset"].id_acquisition_framework)
+        ds_json = self.get_test_dataset_json(
+            datasets["own_dataset"].id_acquisition_framework, nomenclature_category
+        )
         response = self.client.post(
             url_for("gn_meta.create_dataset"),
             json=ds_json,
@@ -1121,7 +1127,6 @@ class TestGNMeta:
             url_for("gn_meta.update_dataset", id_dataset=ds.id_dataset),
             data=dict(dataset_name=new_name),
         )
-
         assert response.status_code == 200
         assert response.json.get("dataset_name") == new_name
 
