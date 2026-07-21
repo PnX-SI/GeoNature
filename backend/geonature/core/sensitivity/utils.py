@@ -129,7 +129,7 @@ def insert_sensitivity_referential(source, csvfile):
             _criterias |= {criteria} | defaults_nomenclatures[criteria.nomenclature_type]
 
         if row["METH_OBS"]:
-            criteria = get_nomenclature("METH_OBS", code=row["MET_OBS"])
+            criteria = get_nomenclature("METH_OBS", code=row["METH_OBS"])
             _criterias |= {criteria} | defaults_nomenclatures[criteria.nomenclature_type]
 
         if row["STADE_VIE"]:
