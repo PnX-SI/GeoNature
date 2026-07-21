@@ -140,6 +140,9 @@ def create_dataset_user(user):
         dataset_shortname=ds_desc_and_name + " - auto-créé via la demande de création de compte",
         dataset_desc=ds_desc_and_name,
         marine_domain=True,
+        id_nomenclature_data_category=func.ref_nomenclatures.get_id_nomenclature(
+            "DATA_CATEGORY", "1."
+        ),
         terrestrial_domain=True,
     )
     new_dataset.cor_dataset_actor = [ds_productor, ds_contact]

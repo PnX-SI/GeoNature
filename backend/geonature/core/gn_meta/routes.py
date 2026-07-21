@@ -382,10 +382,11 @@ def my_csv_resp(filename, data, columns, _header, separator=";"):
     return Response(out, headers=headers)
 
 
-def datasetHandler(dataset, data):
+def datasetHandler(dataset, data, partial=False):
     datasetSchema = DatasetSchema(
         only=["cor_dataset_actor", "modules", "cor_objectifs", "cor_territories"],
         unknown=EXCLUDE,
+        partial=partial,
     )
     try:
         dataset = datasetSchema.load(data, instance=dataset)
@@ -436,7 +437,9 @@ def update_dataset(id_dataset, scope):
     if not dataset.has_instance_permission(scope):
         raise Forbidden(f"User {g.current_user} cannot update dataset {dataset.id_dataset}")
     # TODO: specify which fields may be updated
-    return DatasetSchema().jsonify(datasetHandler(dataset=dataset, data=request.get_json()))
+    return DatasetSchema().jsonify(
+        datasetHandler(dataset=dataset, data=request.get_json(), partial=True)
+    )
 
 
 @routes.route("/dataset/export_pdf/<id_dataset>", methods=["GET", "POST"])

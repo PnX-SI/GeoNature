@@ -9,7 +9,7 @@ from pypnusershub.db.models import Application, CorRoleToken, Organisme
 from unittest.mock import MagicMock
 
 # Apparently: need to import both?
-from geonature.tests.fixtures import acquisition_frameworks, datasets, module
+from geonature.tests.fixtures import acquisition_frameworks, datasets, module, nomenclature_category
 from geonature.tests.utils import set_logged_user
 from geonature.utils.env import db
 
@@ -131,7 +131,6 @@ class TestUsers:
     def test_get_organismes_jdd(self, users, datasets):
         # Need to have a dataset to have the organism...
         set_logged_user(self.client, users["admin_user"])
-
         response = self.client.get(url_for("users.get_organismes_jdd"))
         assert users["admin_user"].organisme.nom_organisme in [
             org["nom_organisme"] for org in response.json
@@ -235,6 +234,7 @@ class TestUsers:
         )
 
         resp = self.client.get(url_confirmation, query_string={"token": token})
+
         assert resp.status_code == 200
 
         resp = self.client.get(url_confirmation, query_string={"token": "badtoken"})
