@@ -15,11 +15,10 @@ export class TaxonAdvancedStoreService {
   public taxonTree: any;
   public treeModel: TreeModel;
   public taxonTreeState: any;
-  public taxhubAttributes: any;
-  public formBuilded: boolean;
-  public taxonomyHab: Array<any>;
-  public taxonomyGroup2Inpn: Array<any>;
-  public taxonomyGroup3Inpn: Array<any>;
+  public taxhubAttributes: Array<any> = [];
+  public taxonomyHab: Array<any> = [];
+  public taxonomyGroup2Inpn: Array<any> = [];
+  public taxonomyGroup3Inpn: Array<any> = [];
   public redListsValues: any = {};
 
   constructor(
@@ -51,25 +50,7 @@ export class TaxonAdvancedStoreService {
       });
     });
 
-    // Get TaxHub attributes
-    this._dataService.getTaxhubBibAttributes().subscribe((attrs) => {
-      // Display only the taxhub attributes set in the config
-      this.taxhubAttributes = attrs
-        .filter((attr) => {
-          return this.config.SYNTHESE.ID_ATTRIBUT_TAXHUB.indexOf(attr.id_attribut) !== -1;
-        })
-        .map((attr) => {
-          // Format attributes to fit with the GeoNature dynamicFormComponent
-          attr['values'] = JSON.parse(attr['liste_valeur_attribut']).values;
-          attr['attribut_name'] = 'taxhub_attribut_' + attr['id_attribut'];
-          attr['required'] = attr['obligatoire'];
-          attr['attribut_label'] = attr['label_attribut'];
-          this._formGen.addNewControl(attr, this._formService.searchForm);
-
-          return attr;
-        });
-      this.formBuilded = true;
-    });
+    this.loadTaxhubAttributes();
 
     // Load habitat and group2inpn
     this._dataService.getTaxonomyHabitat().subscribe((data) => {
@@ -93,5 +74,73 @@ export class TaxonAdvancedStoreService {
     this._dataService.getGroup3Inpn().subscribe((data) => {
       this.taxonomyGroup3Inpn = data.map((item) => ({ value: item }));
     });
+  }
+
+  private loadTaxhubAttributes(): void {
+    const configuredFilterIds =
+      this.config.SYNTHESE.ID_ATTRIBUT_TAXHUB_FILTERS ??
+      this.config.SYNTHESE.ID_ATTRIBUT_TAXHUB ??
+      [];
+
+    if (configuredFilterIds.length === 0) {
+      return;
+    }
+
+    this._dataService.getTaxhubBibAttributes().subscribe({
+      next: (attributes) => {
+        this.taxhubAttributes = attributes.reduce((formDefinitions: Array<any>, attribute) => {
+          if (!configuredFilterIds.includes(attribute.id_attribut)) {
+            return formDefinitions;
+          }
+
+          const formDefinition = this.buildTaxhubFilter(attribute);
+          if (formDefinition) {
+            this._formGen.addNewControl(formDefinition, this._formService.searchForm);
+            formDefinitions.push(formDefinition);
+          }
+          return formDefinitions;
+        }, []);
+      },
+      error: (error) => {
+        console.error('Unable to load TaxHub attributes used as filters', error);
+        this.taxhubAttributes = [];
+      },
+    });
+  }
+
+  private buildTaxhubFilter(attribute: any): any | null {
+    if (!attribute.liste_valeur_attribut) {
+      console.warn(
+        `TaxHub attribute ${attribute.id_attribut} cannot be used as an advanced filter: ` +
+          'liste_valeur_attribut is empty.'
+      );
+      return null;
+    }
+
+    try {
+      const definition = JSON.parse(attribute.liste_valeur_attribut);
+      if (!Array.isArray(definition?.values)) {
+        console.warn(
+          `TaxHub attribute ${attribute.id_attribut} cannot be used as an advanced filter: ` +
+            'liste_valeur_attribut does not contain a values array.'
+        );
+        return null;
+      }
+
+      return {
+        ...attribute,
+        values: definition.values,
+        attribut_name: `taxhub_attribut_${attribute.id_attribut}`,
+        required: attribute.obligatoire,
+        attribut_label: attribute.label_attribut,
+      };
+    } catch (error) {
+      console.warn(
+        `TaxHub attribute ${attribute.id_attribut} cannot be used as an advanced filter: ` +
+          'liste_valeur_attribut is not valid JSON.',
+        error
+      );
+      return null;
+    }
   }
 }

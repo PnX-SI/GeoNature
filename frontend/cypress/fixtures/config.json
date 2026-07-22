@@ -122,6 +122,7 @@
       "dataset_name"
     ],
     "ID_ATTRIBUT_TAXHUB": [102, 103],
+    "ID_ATTRIBUT_TAXHUB_FILTERS": [102, 103],
     "DISPLAY_EMAIL": true,
     "EXPORT_GEOJSON_4326_COL": "geojson_4326",
     "EXPORT_OBSERVERS_COL": "observateurs",

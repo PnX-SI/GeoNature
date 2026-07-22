@@ -418,9 +418,13 @@ class Synthese(Schema):
 
     # --------------------------------------------------------------------
     # SYNTHESE - OBSERVATION DETAILS
-    # Liste des id attributs Taxhub à afficher sur la fiche détaile de la synthese
-    # et sur les filtres taxonomiques avancés
+    # Liste des id attributs Taxhub à afficher sur la fiche détaillée de la synthese
     ID_ATTRIBUT_TAXHUB = fields.List(fields.Integer(), load_default=[102, 103])
+    # Liste des id attributs Taxhub à utiliser dans les filtres taxonomiques avancés.
+    # Si la valeur est absente, le frontend utilise ID_ATTRIBUT_TAXHUB par rétrocompatibilité.
+    ID_ATTRIBUT_TAXHUB_FILTERS = fields.List(
+        fields.Integer(), allow_none=True, load_default=None
+    )
     # Display email on synthese and validation info obs modal
     DISPLAY_EMAIL = fields.Boolean(load_default=True)
 

@@ -271,10 +271,14 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # Nombre de résultats à afficher pour la recherche autocompletée de taxon
     TAXON_RESULT_NUMBER = 20
 
-    # Liste de 'id_attribut' TaxHub à afficher dans :
-    # - la modale du détail d'une observation
-    # - les filtres taxonomique avancés
+    # Liste de 'id_attribut' TaxHub à afficher dans la modale du détail Taxonomie
+    # d'une observation pour les Attribut(s) Taxonomique(s) locaux.
     ID_ATTRIBUT_TAXHUB = [102, 103]
+
+    # Liste de 'id_attribut' TaxHub à proposer dans les filtres taxonomiques avancés.
+    # Si ce paramètre est absent, ID_ATTRIBUT_TAXHUB est utilisé.
+    # Une liste vide désactive ces filtres.
+    ID_ATTRIBUT_TAXHUB_FILTERS = [102, 103]
 
     # Colonne de la table `gn_synthese.synthese` à masquer dans les filtres
     # du formulaire 'occurrence avancé'. Par défaut, c'est un tableau vide.
