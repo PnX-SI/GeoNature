@@ -13,9 +13,11 @@ AS $function$
                   new_row.the_geom_local,
                   jsonb_build_object(
                     'STATUT_BIO', new_row.id_nomenclature_bio_status,
-                    'OCC_COMPORTEMENT', new_row.id_nomenclature_behaviour
-                  )
-                ) AS id_nomenclature_sensitivity
+                    'OCC_COMPORTEMENT', new_row.id_nomenclature_behaviour,
+                    'STADE_VIE', new_row.id_nomenclature_life_stage,
+                    'METH_OBS',new_row.id_nomenclature_obs_technique
+                )
+              ) AS id_nomenclature_sensitivity
               FROM
                 NEW AS new_row
             )

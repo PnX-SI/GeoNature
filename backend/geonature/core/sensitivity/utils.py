@@ -2,13 +2,9 @@ import csv
 from functools import lru_cache
 
 import sqlalchemy as sa
-
 from geonature.utils.env import db
-
-from pypnnomenclature.models import (
-    TNomenclatures as Nomenclature,
-    BibNomenclaturesTypes as NomenclatureType,
-)
+from pypnnomenclature.models import BibNomenclaturesTypes as NomenclatureType
+from pypnnomenclature.models import TNomenclatures as Nomenclature
 
 from .models import CorSensitivityCriteria, SensitivityRule
 
@@ -34,6 +30,12 @@ def insert_sensitivity_referential(source, csvfile):
     behaviour_nomenclature_type = db.session.execute(
         sa.select(NomenclatureType).filter_by(mnemonique="OCC_COMPORTEMENT")
     ).scalar_one()
+    observation_method_type = db.session.execute(
+        sa.select(NomenclatureType).filter_by(mnemonique="METH_OBS")
+    ).scalar_one()
+    life_stage_nomenclature_type = db.session.execute(
+        sa.select(NomenclatureType).filter_by(mnemonique="STADE_VIE")
+    ).scalar_one()
     defaults_nomenclatures = {
         statut_biologique_nomenclature_type: set(
             db.session.scalars(
@@ -48,6 +50,22 @@ def insert_sensitivity_referential(source, csvfile):
                 sa.select(Nomenclature).where(
                     Nomenclature.nomenclature_type == behaviour_nomenclature_type,
                     Nomenclature.mnemonique.in_(["NSP", "1"]),
+                )
+            ).all()
+        ),
+        observation_method_type: set(
+            db.session.scalars(
+                sa.select(Nomenclature).where(
+                    Nomenclature.nomenclature_type == observation_method_type,
+                    Nomenclature.mnemonique.in_(["Inconnu"]),
+                )
+            ).all()
+        ),
+        life_stage_nomenclature_type: set(
+            db.session.scalars(
+                sa.select(Nomenclature).where(
+                    Nomenclature.nomenclature_type == life_stage_nomenclature_type,
+                    Nomenclature.mnemonique.in_(["Inconnu", "Indéterminé"]),
                 )
             ).all()
         ),
@@ -67,17 +85,36 @@ def insert_sensitivity_referential(source, csvfile):
             cd_dep = "974"
         else:
             cd_dep = row[dep_col]
+
+        if row[dep_col].startswith("hab"):
+            territory = "Habitat"
+        else:
+            territory = "Département"
+
         if row["DUREE"]:
             duration = int(row["DUREE"])
         else:
             duration = 10000
+
+        if row["DATE_MIN"]:
+            date_min = row["DATE_MIN"]
+        else:
+            date_min = None
+
+        if row["DATE_MAX"]:
+            date_max = row["DATE_MAX"]
+        else:
+            date_max = None
+
         rule = {
             "cd_nom": int(row["CD_NOM"]),
             "nom_cite": row["NOM_CITE"],
             "id_nomenclature_sensitivity": sensi_nomenclature.id_nomenclature,
             "sensitivity_duration": duration,
-            "sensitivity_territory": "Département",
+            "sensitivity_territory": territory,
             "id_territory": cd_dep,
+            "date_min": date_min,
+            "date_max": date_max,
             "source": f"{source}",
             "comments": row["AUTRE"],
             "active": True,
@@ -86,9 +123,19 @@ def insert_sensitivity_referential(source, csvfile):
         if row["STATUT_BIOLOGIQUE"]:
             criteria = get_nomenclature("STATUT_BIO", code=row["STATUT_BIOLOGIQUE"])
             _criterias |= {criteria} | defaults_nomenclatures[criteria.nomenclature_type]
+
         if row["COMPORTEMENT"]:
             criteria = get_nomenclature("OCC_COMPORTEMENT", code=row["COMPORTEMENT"])
             _criterias |= {criteria} | defaults_nomenclatures[criteria.nomenclature_type]
+
+        if row["METH_OBS"]:
+            criteria = get_nomenclature("METH_OBS", code=row["METH_OBS"])
+            _criterias |= {criteria} | defaults_nomenclatures[criteria.nomenclature_type]
+
+        if row["STADE_VIE"]:
+            criteria = get_nomenclature("STADE_VIE", code=row["STADE_VIE"])
+            _criterias |= {criteria} | defaults_nomenclatures[criteria.nomenclature_type]
+
         for criteria in _criterias:
             criterias.add((len(rules), criteria))
         rules.append(rule)
@@ -112,16 +159,20 @@ def insert_sensitivity_referential(source, csvfile):
     # Populate cor_sensitivity_area
     db.session.connection().execute(
         sa.text("""
-    INSERT INTO gn_sensitivity.cor_sensitivity_area
-        SELECT DISTINCT id_sensitivity, id_area
-        FROM gn_sensitivity.t_sensitivity_rules s
-        JOIN ref_geo.l_areas a
-        ON
-                s.sensitivity_territory = 'Département'
-            AND a.id_type = (SELECT id_type FROM ref_geo.bib_areas_types WHERE type_code ='DEP')
+            INSERT INTO gn_sensitivity.cor_sensitivity_area
+            SELECT DISTINCT id_sensitivity,
+                            id_area
+            FROM gn_sensitivity.t_sensitivity_rules s
+            JOIN ref_geo.l_areas a ON s.sensitivity_territory IN ('Département',
+                                                                  'Habitat')
+            AND a.id_type =
+              (SELECT id_type
+               FROM ref_geo.bib_areas_types
+               WHERE type_code ='DEP')
             AND regexp_replace(s.id_territory, '^([0-9])$', '0\\1') = a.area_code
-        WHERE s.source = :source
-    """),
+            OR s.id_territory = a.area_code
+            WHERE s.source = :source
+            """),
         source=source,
     )
 
