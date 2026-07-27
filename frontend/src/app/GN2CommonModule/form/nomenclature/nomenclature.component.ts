@@ -75,7 +75,9 @@ export class NomenclatureComponent
   @Input() keyValue = 'id_nomenclature';
 
   @Input() bindAllItem: false;
+
   @Input() cdNomenclatures: Array<string> = [];
+
   @Output() labelsLoaded = new EventEmitter<Array<any>>();
 
   constructor(
