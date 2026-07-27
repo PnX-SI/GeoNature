@@ -161,6 +161,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
           filter((occurrence) => occurrence),
           map((occurrence: any): Taxon => {
             let taxon: Taxon = occurrence.taxref ? <Taxon>occurrence.taxref : <Taxon>{};
+            console.log(taxon);
             taxon.search_name = occurrence.nom_cite.replace(/<[^>]*>/g, '');
             return taxon;
           })
