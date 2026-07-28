@@ -29,7 +29,8 @@
     "Validate": "Valider",
     "PDFExport": "Exporter en PDF",
     "DownloadData": "Télécharger les données",
-    "Copy": "Copier"
+    "Copy": "Copier",
+    "Clear": "Effacer"
   },
   "Messages": {
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire"
