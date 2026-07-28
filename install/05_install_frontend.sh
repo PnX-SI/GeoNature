@@ -77,8 +77,14 @@ fi
 # Frontend installation
 echo "Installation des paquets Npm"
 cd "${BASE_DIR}/frontend"
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+export NVM_DIR="${NVM_DIR:-/usr/local/nvm}"
+if [ ! -s "$NVM_DIR/nvm.sh" ]; then
+  export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+fi
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+if ! command -v nvm >/dev/null 2>&1; then
+  exitScript "ERROR: nvm is not available. Run install/00_install_nvm.sh first." 1
+fi
 nvm use || exit 1
 if [[ "${MODE}" == "dev" ]]; then
   npm ci || exit 1

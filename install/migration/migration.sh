@@ -26,7 +26,10 @@ fi
 
 # before 2.15 : suppression de l'application TaxHub - Rapatriement des médias TaxHub nécessite de connaitre l'emplacement de TaxHub
 if [ ! -d "${newdir}/backend/media/taxhub" ];then
-    TAXHUB_DIR="${HOME}/taxhub"
+    TAXHUB_DIR="$(dirname -- "${olddir}")/taxhub"
+    if [ ! -d "${TAXHUB_DIR}/apptax" ]; then
+        TAXHUB_DIR="${HOME}/taxhub"
+    fi
     if (($# > 1)); then
         TAXHUB_DIR="$(realpath "$2")"
     fi
@@ -112,8 +115,15 @@ fi
 echo "Mise à jour de node si nécessaire …"
 cd "${newdir}"/install
 ./00_install_nvm.sh
-export NVM_DIR="$HOME/.nvm"
+export NVM_DIR="${NVM_DIR:-/usr/local/nvm}"
+if [ ! -s "$NVM_DIR/nvm.sh" ]; then
+    export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+fi
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+if ! command -v nvm >/dev/null 2>&1; then
+    echo "NVM indisponible. Exécutez install/00_install_nvm.sh et vérifiez NVM_DIR." >&2
+    exit 1
+fi
 
 cd "${newdir}/frontend"
 nvm use

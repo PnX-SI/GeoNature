@@ -8,8 +8,36 @@ OS_NAME=$ID
 OS_VERSION=$VERSION_ID
 OS_BITS="$(getconf LONG_BIT)"
 BASE_DIR=$(readlink -e "${0%/*}")
-export GEONATURE_DIR="${HOME}/geonature"
-export USERSHUB_DIR="${HOME}/usershub"
+APP_USER="${app_user:-$(whoami)}"
+if ! id -u "${APP_USER}" >/dev/null 2>&1; then
+    echo "Utilisateur app_user invalide: ${APP_USER}" >&2
+    exit 1
+fi
+APP_GROUP="${app_group:-$(id -gn "${APP_USER}")}"
+if ! getent group "${APP_GROUP}" >/dev/null 2>&1; then
+    echo "Groupe app_group invalide: ${APP_GROUP}" >&2
+    exit 1
+fi
+
+if [ -n "${install_root_dir}" ]; then
+    install_root_dir="${install_root_dir%/}"
+fi
+
+if [ -n "${geonature_dir}" ]; then
+    export GEONATURE_DIR="${geonature_dir%/}"
+elif [ -n "${install_root_dir}" ]; then
+    export GEONATURE_DIR="${install_root_dir}/geonature"
+else
+    export GEONATURE_DIR="${HOME}/geonature"
+fi
+
+if [ -n "${usershub_dir}" ]; then
+    export USERSHUB_DIR="${usershub_dir%/}"
+elif [ -n "${install_root_dir}" ]; then
+    export USERSHUB_DIR="${install_root_dir}/usershub"
+else
+    export USERSHUB_DIR="${HOME}/usershub"
+fi
 
 
 # Test the server architecture
@@ -71,7 +99,9 @@ sudo systemctl restart apache2 || exit 1
 # Installing GeoNature with current user
 if [ ! -d "${GEONATURE_DIR}" ]; then
     echo "Téléchargement et installation de GeoNature ..."
-	cd "${HOME}"
+    sudo mkdir -p "$(dirname "${GEONATURE_DIR}")"
+    sudo chown "$(id -u):$(id -g)" "$(dirname "${GEONATURE_DIR}")"
+    cd "$(dirname "${GEONATURE_DIR}")"
     if [ "${mode}" = "dev" ]; then
         git clone https://github.com/PnX-SI/GeoNature "${GEONATURE_DIR}"
         cd "${GEONATURE_DIR}"
@@ -82,8 +112,9 @@ if [ ! -d "${GEONATURE_DIR}" ]; then
         escaped_geonature_release=${geonature_release//\//-}
         wget https://github.com/PnX-SI/GeoNature/archive/$geonature_release.zip -O GeoNature-$escaped_geonature_release.zip || exit 1
         unzip GeoNature-$escaped_geonature_release.zip || exit 1
-        mv GeoNature-$escaped_geonature_release "${GEONATURE_DIR}"
+        sudo mv "GeoNature-$escaped_geonature_release" "${GEONATURE_DIR}"
     fi
+    sudo chown -R "${APP_USER}:${APP_GROUP}" "${GEONATURE_DIR}"
 fi
 
 cd "${GEONATURE_DIR}"
@@ -126,7 +157,7 @@ echo "Installation de nvm"
 echo "Installation du backend GeoNature"
 ./01_install_backend.sh || exit 1
 echo "Installation des scripts systemd"
-./02_configure_systemd.sh || exit 1
+USER="${APP_USER}" ./02_configure_systemd.sh || exit 1
 echo "Installation de la base de données"
 ./03_create_db.sh || exit 1
 echo "Installation des modules GeoNature"
@@ -148,7 +179,9 @@ fi
 if [ "$install_usershub_app" = true ]; then
     if [ ! -d "${USERSHUB_DIR}" ]; then
         echo "Installation de l'application Usershub"
-        cd "${HOME}"
+        sudo mkdir -p "$(dirname "${USERSHUB_DIR}")"
+        sudo chown "$(id -u):$(id -g)" "$(dirname "${USERSHUB_DIR}")"
+        cd "$(dirname "${USERSHUB_DIR}")"
         if [ "${mode}" = "dev" ]; then
             git clone https://github.com/PnX-SI/UsersHub "${USERSHUB_DIR}" || exit 1
             cd "${USERSHUB_DIR}"
@@ -159,8 +192,9 @@ if [ "$install_usershub_app" = true ]; then
             escaped_usershub_release=${usershub_release//\//-}
             wget https://github.com/PnX-SI/UsersHub/archive/$usershub_release.zip -O UsersHub-$escaped_usershub_release.zip || exit 1
             unzip UsersHub-$escaped_usershub_release.zip || exit 1
-            mv UsersHub-$escaped_usershub_release "${USERSHUB_DIR}"
+            sudo mv UsersHub-$escaped_usershub_release "${USERSHUB_DIR}"
         fi
+        sudo chown -R "${APP_USER}:${APP_GROUP}" "${USERSHUB_DIR}"
     fi
     cd "${USERSHUB_DIR}"
     echo "Installation de la base de données et configuration de l'application UsersHub ..."
