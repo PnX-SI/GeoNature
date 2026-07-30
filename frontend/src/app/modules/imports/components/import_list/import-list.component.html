@@ -77,6 +77,7 @@
             name="{{ col.name }}"
             [prop]="col.prop"
             [sortable]="col.filter"
+            [maxWidth]="col.maxWidth"
           >
             <ng-template
               let-row="row"
@@ -109,6 +110,14 @@
                       {{ row[col.prop] }}
                     </p>
                   </ng-container>
+                  <ng-container *ngSwitchCase="'datasets'">
+                    <p [matTooltip]="datasetLinksRef.tooltip">
+                      <app-dataset-links
+                        #datasetLinksRef
+                        [datasets]="row.datasets"
+                      ></app-dataset-links>
+                    </p>
+                  </ng-container>
                 </ng-container>
               </div>
             </ng-template>
@@ -117,7 +126,6 @@
             name="Destination"
             [sortable]="true"
             prop="destination.code"
-            [maxWidth]="150"
           >
             <ng-template
               let-row="row"
@@ -134,7 +142,6 @@
           <ngx-datatable-column
             name="Fin import"
             [sortable]="true"
-            [maxWidth]="100"
             prop="date_end_import"
           >
             <ng-template

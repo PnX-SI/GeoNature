@@ -492,6 +492,15 @@ def datasets(users, acquisition_frameworks, module):
                     )
                 ).scalar_one()
 
+            if name == "own_dataset":
+                dataset.additional_data = {
+                    "select_field_used": "value1",
+                    "nomenclature_field_used": "Valeur De Nomenclature",
+                    "text_field_used": "test",
+                    "date_field_used": {"day": 31, "year": 2025, "month": 10},
+                    "number_field_used": 1,
+                }
+
             db.session.add(dataset)
             db.session.flush()  # Required to retrieve ids of created object
             [dataset.modules.append(m) for m in modules]
@@ -534,6 +543,7 @@ def datasets(users, acquisition_frameworks, module):
         id_af=af_1.id_acquisition_framework,
         modules=[module],
     )
+
     return datasets
 
 

@@ -166,11 +166,11 @@ def get_dataset(scope, id_dataset):
             "cor_dataset_actor.role",
             "modules",
             "nomenclature_data_type",
-            "nomenclature_dataset_objectif",
             "nomenclature_collecting_method",
             "nomenclature_data_origin",
             "nomenclature_source_status",
             "nomenclature_resource_type",
+            "cor_objectifs",
             "cor_territories",
             "acquisition_framework",
             "acquisition_framework.creator",
@@ -384,7 +384,8 @@ def my_csv_resp(filename, data, columns, _header, separator=";"):
 
 def datasetHandler(dataset, data):
     datasetSchema = DatasetSchema(
-        only=["cor_dataset_actor", "modules", "cor_territories"], unknown=EXCLUDE
+        only=["cor_dataset_actor", "modules", "cor_objectifs", "cor_territories"],
+        unknown=EXCLUDE,
     )
     try:
         dataset = datasetSchema.load(data, instance=dataset)
@@ -450,15 +451,33 @@ def get_export_pdf_dataset(id_dataset, scope):
     dataset_schema = DatasetSchema(
         only=[
             "nomenclature_data_type",
-            "nomenclature_dataset_objectif",
             "nomenclature_collecting_method",
             "acquisition_framework",
             "cor_dataset_actor.nomenclature_actor_role",
             "cor_dataset_actor.organism",
             "cor_dataset_actor.role",
+            "cor_objectifs",
         ]
     )
     dataset = dataset_schema.dump(dataset)
+
+    # Retrieve labels for additional fields
+    if dataset["additional_data"]:
+        updated_additional_data = {}
+        list_additional_fields = _get_additional_fields(
+            module_code="METADATA", object_code="METADATA_JEU_DE_DONNEES"
+        )
+        for dict_additional_field in list_additional_fields:
+            label_additional_field = dict_additional_field["field_label"]
+            name_additional_field = dict_additional_field["field_name"]
+            updated_additional_data[label_additional_field] = ""
+            if dataset["additional_data"].get(name_additional_field):
+                # Replace name with label for the additional_field
+                updated_additional_data[label_additional_field] = dataset["additional_data"][
+                    name_additional_field
+                ]
+        dataset["additional_data"] = updated_additional_data
+
     if len(dataset.get("dataset_desc")) > 240:
         dataset["dataset_desc"] = dataset["dataset_desc"][:240] + "..."
     url = current_app.config["URL_APPLICATION"] + "/#/metadata/dataset_detail/" + id_dataset

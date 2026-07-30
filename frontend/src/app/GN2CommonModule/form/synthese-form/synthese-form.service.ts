@@ -174,6 +174,15 @@ export class SyntheseFormService {
           updatedParams['geoIntersection'] = params['geoIntersection'];
         }
         // remove null/undefined but not zero (use for boolean)
+      } else if (key === 'id_digitiser' && params[key]) {
+        // Extraire les IDs des utilisateurs au lieu de passer les objets complets
+        if (Array.isArray(params[key])) {
+          updatedParams[key] = params[key].map((digitiser) =>
+            typeof digitiser === 'object' && digitiser !== null ? digitiser.id_role : digitiser
+          );
+        } else {
+          updatedParams[key] = params[key];
+        }
       } else if (params[key] != null || params[key] != undefined) {
         // if its an Array push only if > 0
         if (Array.isArray(params[key]) && params[key].length > 0) {

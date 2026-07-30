@@ -149,7 +149,14 @@ export class FieldMappingService {
   getUnmappedFields() {
     if (!this.sourceFields) return [];
     return this.sourceFields.filter(
-      (field) => !this.getMappedSourceColumn().some((item) => item?.column_src?.includes(field))
+      (field) =>
+        !this.getMappedSourceColumn().some((item) => {
+          if (!item?.column_src) return false;
+          if (typeof item.column_src === 'string' || Array.isArray(item.column_src)) {
+            return item.column_src.includes(field);
+          }
+          return false;
+        })
     );
   }
 

@@ -134,6 +134,7 @@ class AdditionalFields(Schema):
             "OCCTAX_OCCURENCE",
             "OCCTAX_DENOMBREMENT",
             "METADATA_CADRE_ACQUISITION",
+            "METADATA_JEU_DE_DONNEES",
         ],
     )
 

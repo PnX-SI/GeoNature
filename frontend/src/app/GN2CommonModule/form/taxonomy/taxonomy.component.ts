@@ -151,7 +151,8 @@ export class TaxonomyComponent implements OnInit, OnChanges {
   }
 
   formatter = (taxon: any) => {
-    return taxon[this.displayedLabel].replace(/<[^>]*>/g, ''); // supprime les balises HTML
+    //Remove HTML tags
+    return taxon?.[this.displayedLabel]?.replace(/<[^>]*>/g, '') ?? '';
   };
 
   searchTaxon = (text$: Observable<string>) =>

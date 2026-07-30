@@ -18,6 +18,7 @@ branch_labels = ("import-samples",)
 depends_on = (
     "2b0b3bd0248c",  # import@2b0b3bd0248c - "multidest"
     "3d0bf4ee67d1",  # geonature-samples@3d0bf4ee67d1 - "geonature samples"
+    "ae0b6362fb22",  # geonature@ae0b6362fb22 - "cor_dataset_objectifs"
 )
 
 
@@ -64,6 +65,12 @@ def downgrade():
             (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id = 'a1b2c3d4-e5f6-4a3b-2c1d-e6f5a4b3c2d1'),
             (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id = '5f45d560-1ce3-420c-b45c-3d589eedaee1')
         );
+        """)
+
+    # Delete the data from the gn_meta.cor_dataset_objectif table
+    op.execute("""
+        DELETE FROM gn_meta.cor_dataset_objectif
+        WHERE id_dataset = (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id = '9f86d081-8292-466e-9e7b-16f3960d255f');
         """)
 
     # Delete the data from the gn_meta.cor_acquisition_framework_actor table

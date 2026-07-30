@@ -29,7 +29,8 @@
     "Validate": "Valider",
     "PDFExport": "Exporter en PDF",
     "DownloadData": "Télécharger les données",
-    "Copy": "Copier"
+    "Copy": "Copier",
+    "Clear": "Effacer"
   },
   "Messages": {
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire"
@@ -178,8 +179,8 @@
 
   "Advanced": "Avancé",
   "All": "Tous",
-  "Aim": "Objectif",
-  "Aims": "Objectifs",
+  "Objective": "Objectif",
+  "Objective(s)": "Objectif(s)",
   "Objectives": "Objectifs",
   "Title": "Titre",
   "Description": "Description",
@@ -310,6 +311,7 @@
     "SpeciesDistribution": "Répartition des espèces",
     "AssociatedDatasets": "Jeux de données associés",
     "Reference": "Référence",
+    "AdditionalInformation": "Informations additionnelles",
 
     "DatasetCard": {
       "Actions": {
@@ -378,9 +380,6 @@
       "FacultativeTaxaList": "Liste de taxons (facultatif)",
       "SpecificGeonature": "Spécifique GeoNature",
       "RequiredToImportAndEnterData": "Requis pour saisir et importer des données dans le jeu de données"
-    },
-    "AcquisitionFrameworkCard": {
-      "AdditionalInformation": "Informations additionnelles"
     },
     "AcquisitionFrameworkForm": {},
     "Actors": {

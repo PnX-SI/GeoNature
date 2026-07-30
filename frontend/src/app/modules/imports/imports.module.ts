@@ -33,6 +33,7 @@ import { ModalActionImport } from './components/action-modal/action-modal.compon
 import { MappingThemeComponent } from './components/import_process/fields-mapping-step/mapping-theme/mapping-theme.component';
 import { MappingSelectionComponent } from './components/import_process/fields-mapping-step/mapping-selection/mapping-selection.component';
 import { ObserverMappingStepComponent } from './components/import_process/observer-mapping-step/observer-mapping-step.component';
+import { DatasetLinksComponent } from './components/dataset-links/datasets-links.component';
 
 const routes: Routes = [
   { path: '', component: ImportListComponent },
@@ -126,6 +127,7 @@ const routes: Routes = [
     MatStepperModule,
     MatCheckboxModule,
     NgbModule,
+    DatasetLinksComponent,
   ],
   exports: [MappingThemeComponent, MappingSelectionComponent],
   entryComponents: [ModalActionImport],

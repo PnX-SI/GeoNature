@@ -15,7 +15,10 @@ import sqlalchemy as sa
 revision = "87705981de5e"
 down_revision = "cce08a64eb4f"
 branch_labels = None
-depends_on = ("023b0be41829",)  # add id_module in t_releves_occtax
+depends_on = (
+    "023b0be41829",  # add id_module in t_releves_occtax
+    "ae0b6362fb22",  # geonature@ae0b6362fb22 - "cor_dataset_objectifs"
+)
 
 
 def upgrade():

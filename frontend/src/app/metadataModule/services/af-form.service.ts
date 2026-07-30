@@ -42,9 +42,7 @@ export class AcquisitionFrameworkFormService {
         //formate les donnés par défauts envoyées au formulaire
         return {
           is_parent: false,
-          cor_objectifs: [],
           cor_volets_sinp: [],
-          cor_territories: [],
           cor_af_actor: [{ id_nomenclature_actor_role: id_nomenclature }],
           additional_data: {},
         };

@@ -43,6 +43,10 @@
               </a>
             </p>
             <p>
+              <b>Jeux de données</b>
+              <app-dataset-links [datasets]="importData.datasets"></app-dataset-links>
+            </p>
+            <p>
               <b>Date de soumission de l'import :</b>
               {{ importData?.date_create_import | date: 'dd/MM/yyyy' }}
             </p>

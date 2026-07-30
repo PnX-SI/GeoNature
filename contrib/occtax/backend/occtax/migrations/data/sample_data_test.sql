@@ -138,7 +138,7 @@ INSERT INTO gn_meta.t_acquisition_frameworks (
     null
     );
 
--- Insérer 2 jeux de données d'exemple
+-- Insérer des jeux de données d'exemple
 INSERT INTO gn_meta.t_datasets (
     unique_dataset_id,
     id_acquisition_framework,
@@ -149,7 +149,6 @@ INSERT INTO gn_meta.t_datasets (
     keywords,
     marine_domain,
     terrestrial_domain,
-    id_nomenclature_dataset_objectif,
     bbox_west,
     bbox_east,
     bbox_south,
@@ -174,7 +173,6 @@ INSERT INTO gn_meta.t_datasets (
     'Aléatoire, hors protocole, faune, flore, fonge',
     false,
     true,
-    ref_nomenclatures.get_id_nomenclature('JDD_OBJECTIFS', '1.1'),
     4.85695,
     6.85654,
     44.5020,
@@ -198,7 +196,6 @@ INSERT INTO gn_meta.t_datasets (
     'Aléatoire, ATBI, biodiversité, faune, flore, fonge',
     false,
     true,
-    ref_nomenclatures.get_id_nomenclature('JDD_OBJECTIFS', '1.1'),
     4.85695,
     6.85654,
     44.5020,
@@ -222,7 +219,6 @@ INSERT INTO gn_meta.t_datasets (
     'Aléatoire, hors protocole, faune, flore, fonge',
     false,
     true,
-    ref_nomenclatures.get_id_nomenclature('JDD_OBJECTIFS', '1.1'),
     4.85695,
     6.85654,
     44.5020,
@@ -258,11 +254,6 @@ VALUES (
 INSERT INTO gn_meta.cor_acquisition_framework_voletsinp (id_acquisition_framework, id_nomenclature_voletsinp) VALUES
 ((SELECT id_acquisition_framework FROM gn_meta.t_acquisition_frameworks WHERE unique_acquisition_framework_id='57b7d0f2-4183-4b7b-8f08-6e105d476dc5')
 ,ref_nomenclatures.get_id_nomenclature('VOLET_SINP', '1'))
-;
-
-INSERT INTO gn_meta.cor_acquisition_framework_objectif (id_acquisition_framework, id_nomenclature_objectif) VALUES
-((SELECT id_acquisition_framework FROM gn_meta.t_acquisition_frameworks WHERE unique_acquisition_framework_id='57b7d0f2-4183-4b7b-8f08-6e105d476dc5')
-, ref_nomenclatures.get_id_nomenclature('CA_OBJECTIFS', '8'))
 ;
 
 INSERT INTO gn_meta.cor_acquisition_framework_actor (id_acquisition_framework, id_role, id_organism, id_nomenclature_actor_role) VALUES

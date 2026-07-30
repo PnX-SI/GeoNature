@@ -91,11 +91,13 @@ class BibFieldAdmin(CruvedProtectedMixin, ModelView):
         },
         "objects": {
             "query_factory": lambda: DB.session.scalars(
-                select(PermObject).where(
+                select(PermObject)
+                .where(
                     PermObject.code_object.in_(
                         current_app.config["ADDITIONAL_FIELDS"]["IMPLEMENTED_OBJECTS"]
                     )
                 )
+                .order_by(PermObject.code_object)
             )
         },
     }
