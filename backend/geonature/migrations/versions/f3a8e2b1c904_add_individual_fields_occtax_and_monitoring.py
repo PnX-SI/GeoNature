@@ -1,7 +1,7 @@
 """[monitoring] add additional_data to t_individuals
 
 Revision ID: f3a8e2b1c904
-Revises: 1f223c509a80
+Revises: daeaa45e4cc0
 Create Date: 2026-06-12 00:00:00.000000
 
 """
@@ -12,8 +12,8 @@ from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
 revision = "f3a8e2b1c904"
-down_revision = None  # Adjust to last geonature revision when we remove branch
-branch_labels = ("tmp-geonature-individuals",)  # Put to none when we remove branch
+down_revision = "daeaa45e4cc0"
+branch_labels = None
 depends_on = None
 
 
