@@ -23,6 +23,7 @@ from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
 
 from geonature.core.gn_commons.models import TModules, TMedias
+from apptax.taxonomie.models import Taxref
 from geonature.core.gn_meta.models import TDatasets
 from geonature.utils.env import DB
 
@@ -347,6 +348,7 @@ class TIndividuals(DB.Model):
     )
     active = DB.Column(DB.Boolean, default=True)
     comment = DB.Column(DB.Text)
+    additional_data = DB.Column(JSONB)
     id_digitiser = DB.Column(
         DB.ForeignKey("utilisateurs.t_roles.id_role"),
         nullable=False,
@@ -394,6 +396,14 @@ class TIndividuals(DB.Model):
         foreign_keys=[TMedias.uuid_attached_row],
         overlaps="medias",
     )
+
+    taxon = DB.relationship(
+        Taxref,
+        primaryjoin= (cd_nom == Taxref.cd_nom),
+        foreign_keys=[cd_nom],
+        lazy="select",
+        viewonly=True
+)
 
     @classmethod
     def filter_by_scope(cls, query, scope, user=None):
