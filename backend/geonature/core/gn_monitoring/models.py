@@ -398,13 +398,8 @@ class TIndividuals(DB.Model):
         overlaps="medias",
     )
 
-    taxon = DB.relationship(
-        Taxref,
-        primaryjoin= (cd_nom == Taxref.cd_nom),
-        foreign_keys=[cd_nom],
-        lazy="select",
-        viewonly=True
-)
+    taxon = DB.relationship(Taxref, lazy="select")
+
 
     @classmethod
     def filter_by_scope(cls, query, scope, user=None):
