@@ -117,8 +117,27 @@ def get_site_areas(id_site):
 @routes.route("/individuals/<int:id_module>", methods=["GET"])
 @login_required
 def get_individuals(id_module):
+    """_summary_
+
+    Parameters
+    ----------
+    id_module : int
+        id_module is used to get the permission scope
+
+    # Query string :
+    id_module_filter : int
+        use to filter with cor_individual_module
+
+    Returns
+    -------
+    list
+        list of individuals
+
+    """
+    params = request.args
+    id_module_filter = params.get("id_module_filter", None)
     action = "R"
-    object_code = "MONITORINGS_INDIVIDUALS"
+    object_code = "INDIVIDUALS"
     module = DB.session.get(TModules, id_module)
     if module is None:
         raise NotFound("Module not found")
@@ -133,7 +152,9 @@ def get_individuals(id_module):
 
     # FIXME: when all sqlalchemy 2.0 PR are merged, update it to fit the good practices
     # like @qfilter etc...
-    query = select(TIndividuals).where(TIndividuals.modules.any(TModules.id_module == id_module))
+    query = select(TIndividuals)
+    if id_module_filter:
+        query = query.where(TIndividuals.modules.any(TModules.id_module == id_module_filter))
     results = (
         DB.session.scalars(TIndividuals.filter_by_scope(query, max_scope, current_user))
         .unique()
