@@ -22,6 +22,7 @@ from ref_geo.models import LAreas
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
 
+from apptax.taxonomie.models import Taxref
 from geonature.core.gn_commons.models import TModules, TMedias
 from apptax.taxonomie.models import Taxref
 from geonature.core.gn_meta.models import TDatasets
@@ -397,13 +398,7 @@ class TIndividuals(DB.Model):
         overlaps="medias",
     )
 
-    taxon = DB.relationship(
-        Taxref,
-        primaryjoin=(cd_nom == Taxref.cd_nom),
-        foreign_keys=[cd_nom],
-        lazy="select",
-        viewonly=True,
-    )
+    taxon = DB.relationship(Taxref, lazy="select")
 
     @classmethod
     def filter_by_scope(cls, query, scope, user=None):
