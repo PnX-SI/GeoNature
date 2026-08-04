@@ -24,8 +24,9 @@ pandas  # imports
 pillow>=11
 packaging
 psycopg2
-pyproj<3.9;python_version<"3.10"  # imports
-pyproj;python_version>="3.10"  # imports
+pyproj==3.6.1;python_version<"3.10" 
+pyproj==3.7.1;python_version=="3.10" 
+pyproj;python_version>"3.10" 
 python-dateutil
 shapely>=2.0.0
 sqlalchemy<2.0
