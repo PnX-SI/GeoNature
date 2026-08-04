@@ -108,4 +108,12 @@ export class IndividualsComponent implements OnInit, OnChanges {
       this.filtersForm.patchValue({ cd_nom: changes.cdNom.currentValue });
     }
   }
+
+  ngOnChanges(changes: any) {
+    if (changes.cdNom && changes.cdNom.currentValue) {
+      this.getIndividuals(changes.cdNom.currentValue).subscribe((data) => {
+        this.values = data;
+      });
+    }
+  }
 }
