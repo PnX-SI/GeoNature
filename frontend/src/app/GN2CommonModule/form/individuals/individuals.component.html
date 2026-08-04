@@ -6,18 +6,18 @@
     </div>
   </ng-template> -->
 <div class="d-flex">
-    <ng-select
-      [ngClass]="{'pr-2':showAddButton}"
-      [items]="values"
-      [bindLabel]="keyLabel"
-      [bindValue]="keyValue"
-      [placeholder]="null"
-      [multiple]="false"
-      [clearable]="false"
-      [virtualScroll]="true"
-      [formControl]="parentFormControl"
-      [ngStyle]="{'width': showAddButton ? '85%' : '100%'}"
-    ></ng-select>
+  <ng-select
+    [ngClass]="{ 'pr-2': showAddButton }"
+    [items]="values"
+    [bindLabel]="keyLabel"
+    [bindValue]="keyValue"
+    [placeholder]="null"
+    [multiple]="false"
+    [clearable]="false"
+    [virtualScroll]="true"
+    [formControl]="parentFormControl"
+    [ngStyle]="{ width: showAddButton ? '85%' : '100%' }"
+  ></ng-select>
   <div *ngIf="showAddButton">
     <button
       width="10%"
