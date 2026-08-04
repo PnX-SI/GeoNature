@@ -1,4 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { Individual } from './interfaces';
 import { IndividualsService } from './individuals.service';
@@ -33,12 +41,12 @@ export class IndividualsComponent implements OnInit, OnChanges {
     });
   }
 
-  getIndividuals(cd_nom: number | null=null) {
+  getIndividuals(cd_nom: number | null = null) {
     return this._individualsService.getIndividuals(this.idModule, cd_nom).pipe(
-      tap((individuals: any) => { 
-        this.nbIndividuals.emit(individuals.length)
+      tap((individuals: any) => {
+        this.nbIndividuals.emit(individuals.length);
       })
-    )
+    );
   }
 
   openModal(content) {
@@ -61,11 +69,11 @@ export class IndividualsComponent implements OnInit, OnChanges {
     });
   }
 
-  ngOnChanges(changes: any) {    
-    if(changes.cdNom && changes.cdNom.currentValue) {
-      this.getIndividuals(changes.cdNom.currentValue).subscribe(data => {
+  ngOnChanges(changes: any) {
+    if (changes.cdNom && changes.cdNom.currentValue) {
+      this.getIndividuals(changes.cdNom.currentValue).subscribe((data) => {
         this.values = data;
-      })
+      });
     }
   }
 }
