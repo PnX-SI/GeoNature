@@ -6,6 +6,7 @@ from sqlalchemy.sql import func, select
 from geojson import FeatureCollection
 from werkzeug.exceptions import BadRequest, Forbidden, NotFound
 
+from apptax.taxonomie.models import Taxref
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions.decorators import _forbidden_message, login_required
 from geonature.utils.env import DB
@@ -136,6 +137,7 @@ def get_individuals(id_module):
     """
     params = request.args
     id_module_filter = params.get("id_module_filter", None)
+    cd_nom = params.get("cd_nom", None)
     action = "R"
     object_code = "INDIVIDUALS"
     module = DB.session.get(TModules, id_module)
@@ -155,6 +157,8 @@ def get_individuals(id_module):
     query = select(TIndividuals)
     if id_module_filter:
         query = query.where(TIndividuals.modules.any(TModules.id_module == id_module_filter))
+    if cd_nom:
+        query = query.where(TIndividuals.taxon.has(Taxref.cd_nom == cd_nom))
     results = (
         DB.session.scalars(TIndividuals.filter_by_scope(query, max_scope, current_user))
         .unique()
