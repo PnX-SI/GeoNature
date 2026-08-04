@@ -7,6 +7,7 @@ import { OcctaxFormService } from '../occtax-form.service';
 import { OcctaxFormOccurrenceService } from '../occurrence/occurrence.service';
 import { OcctaxFormCountingService } from './counting.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { ModuleService } from '@geonature/services/module.service';
 
 import { ValidationErrorsId } from '@geonature/services/validators';
 import { ViewChild } from '@angular/core';
@@ -33,11 +34,15 @@ export class OcctaxFormCountingComponent implements OnInit, OnDestroy {
     return this.occtaxFormCountingService.additionalFieldsForm;
   }
 
+  public nbIndiv: number = 0;
+  public cdNomenclatureObjDen: string = "";
+
   constructor(
     public occtaxFormService: OcctaxFormService,
     public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     private occtaxFormCountingService: OcctaxFormCountingService,
-    public config: ConfigService
+    public config: ConfigService,
+    public moduleService: ModuleService
   ) {}
 
   // Expose enum to html
@@ -100,4 +105,14 @@ export class OcctaxFormCountingComponent implements OnInit, OnDestroy {
       description_fr: `${lb_nom} observé le ${date_txt2}`,
     };
   }
+
+  setNbIndiv(nbIndiv: number) {
+    this.nbIndiv = nbIndiv;
+  }
+
+  setCdNomenclatureObjDen(cdNomenclature: string) {
+    this.cdNomenclatureObjDen = cdNomenclature
+  }
+
+
 }

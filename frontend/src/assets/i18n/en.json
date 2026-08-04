@@ -11,7 +11,20 @@
   },
   "Calendar": {
     "Weekdays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-    "Months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    "Months": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ]
   },
   "Actions": {
     "Singular": "Action",
@@ -142,6 +155,7 @@
   "Taxon": "Taxon",
   "Taxons": "Taxons",
   "Species": "Species",
+  "Individual": "Nom de l'individu",
   "Habitat": "Habitat",
   "Habitats": "Habitats",
 
