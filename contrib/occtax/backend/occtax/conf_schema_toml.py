@@ -38,6 +38,7 @@ class FormConfig(Schema):
     source_status = fields.Boolean(load_default=False)
     comment_occ = fields.Boolean(load_default=True)
     life_stage = fields.Boolean(load_default=True)
+    individual = fields.Boolean(load_default=True)
     sex = fields.Boolean(load_default=True)
     obj_count = fields.Boolean(load_default=True)
     type_count = fields.Boolean(load_default=True)
