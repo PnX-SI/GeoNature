@@ -5,10 +5,9 @@
       <span class="pre-wrap">{{ item[keyLabel] }}</span>
     </div>
   </ng-template> -->
-<div class="row">
-  <div class="col-9">
+<div class="d-flex">
     <ng-select
-      [ngClass]="null"
+      [ngClass]="{'pr-2':showAddButton}"
       [items]="values"
       [bindLabel]="keyLabel"
       [bindValue]="keyValue"
@@ -17,10 +16,11 @@
       [clearable]="false"
       [virtualScroll]="true"
       [formControl]="parentFormControl"
+      [ngStyle]="{'width': showAddButton ? '85%' : '100%'}"
     ></ng-select>
-  </div>
-  <div class="col-3">
+  <div *ngIf="showAddButton">
     <button
+      width="10%"
       mat-mini-fab
       color="primary"
       (click)="openModal(content)"
