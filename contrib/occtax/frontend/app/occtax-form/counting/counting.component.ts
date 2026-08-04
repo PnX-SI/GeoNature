@@ -48,7 +48,7 @@ export class OcctaxFormCountingComponent implements OnInit, OnDestroy {
   // Expose enum to html
   ValidationErrorsId = ValidationErrorsId;
 
-  ngOnInit() {
+  ngOnInit() {    
     this.form = this.occtaxFormCountingService.form;
     this.sub = this.form
       .get('id_nomenclature_life_stage')
@@ -110,7 +110,7 @@ export class OcctaxFormCountingComponent implements OnInit, OnDestroy {
     this.nbIndiv = nbIndiv;
   }
 
-  setCdNomenclatureObjDen(cdNomenclature: string) {
+  setCdNomenclatureObjDen(cdNomenclature: string) {    
     this.cdNomenclatureObjDen = cdNomenclature
   }
 
