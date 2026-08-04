@@ -192,6 +192,7 @@ MEDIA_FIELDS_DETAILS = ['title_fr', 'description_fr', 'id_nomenclature_media_typ
     sex = true
     obj_count = true
     type_count = true
+    individual = true
     count_min = true
     count_max = true
     display_nom_valide = true
