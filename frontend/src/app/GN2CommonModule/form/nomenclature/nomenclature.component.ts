@@ -79,6 +79,7 @@ export class NomenclatureComponent
   @Input() cdNomenclatures: Array<string> = [];
 
   @Output() labelsLoaded = new EventEmitter<Array<any>>();
+  @Output() $currentCdNomenclature = new EventEmitter<string>();
 
   constructor(
     private _dfService: DataFormService,
@@ -107,7 +108,10 @@ export class NomenclatureComponent
       if (this.labels) {
         this.labels.forEach((label) => {
           if (this.currentIdNomenclature === label.id_nomenclature) {
+            
             self.currentCdNomenclature = label.cd_nomenclature;
+            self.$currentCdNomenclature.emit(self.currentCdNomenclature)
+            console.log(self.currentCdNomenclature);
           }
         });
       }
