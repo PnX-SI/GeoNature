@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2.17.5 (2026-08-04)
+
+### 🐛 Corrections
+
+- [Installation] Correction des fichiers `requirements.txt` et `requirements-dev.txt` pour la version python=3.10 (par @jacquesfize)
+
 ## 2.17.4 (2026-07-08)
 
 ### 🐛 Corrections
