@@ -9,7 +9,15 @@
     "Chinese": "🇨🇳 中文 (Chinois)"
   },
   "Calendar": {
-    "Weekdays": ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
+    "Weekdays": [
+      "Lundi",
+      "Mardi",
+      "Mercredi",
+      "Jeudi",
+      "Vendredi",
+      "Samedi",
+      "Dimanche"
+    ],
     "Months": [
       "janvier",
       "février",
@@ -54,7 +62,6 @@
     "AltitudeError": "L'altitude max ne peut être inférieure à l'altitude min",
     "NotAllowed": "Vous n'avez pas les permissions pour effectuer cette action"
   },
-
   "Authentication": {
     "Authentication": "Authentification",
     "Email": "Adresse mail",
@@ -124,7 +131,6 @@
       "EmailChangeError": "Une erreur s'est produite"
     }
   },
-
   "Observer": "Observateur",
   "Observers": "Observateurs",
   "Observers?": "Observateur(s)",
@@ -146,7 +152,6 @@
   "Creator": "Créateur",
   "Creators": "Créateurs",
   "Creators?": "Créateur(s)",
-
   "Dataset": "Jeu de données",
   "Datasets": "Jeux de données",
   "AcquisitionFramework": "Cadre d'acquisition",
@@ -163,23 +168,19 @@
   "SelectModules": "Sélectionner un ou plusieurs modules",
   "Habitat": "Habitat",
   "Habitats": "Habitats",
-
   "Sex": "Sexe",
   "LifeStage": "Stade de vie",
-
   "By": "Par",
   "On": " Sur",
   "Of": "de",
   "Columns": "Colonnes",
   "DisplayColumns": "Colonnes à afficher",
-
   "Yes": "Oui",
   "No": "Non",
   "Previous": "Précédent",
   "Next": "Suivant",
   "Back": "Retour",
   "Confirmation": "Confirmation",
-
   "Report": "Rapport",
   "Comment": "Commentaire",
   "Discussion": "Discussion",
@@ -189,7 +190,6 @@
   "Optional": "Facultatif",
   "OptionalIf": "Optionnel si",
   "RequiredIf": "Requis si",
-
   "Name": "Nom",
   "What": "Quoi ?",
   "When": "Quand ?",
@@ -197,7 +197,6 @@
   "How": "Comment ?",
   "Where": "Où ?",
   "New": "Nouveau",
-
   "Advanced": "Avancé",
   "All": "Tous",
   "Objective": "Objectif",
@@ -209,7 +208,6 @@
   "Valid": "Valide",
   "Invalid": "Invalide",
   "Active": "Actif",
-
   "Date": "Date",
   "Dates": "Dates",
   "MaxDate": "Date fin",
@@ -225,24 +223,20 @@
   "Label": "Libellé",
   "Url": "URL",
   "Keywords": "Mots-clés",
-
   "Detail": "Détail",
   "Details": "Détails",
-
   "Search": "Rechercher",
   "Documentation": {
     "Documentation": "Documentation",
     "OpenDocumentation": "Ouvrir la documentation"
   },
   "Downloading": "Téléchargement en cours",
-
   "DownloadOverflow": "Le nombre d'élément est trop important pour être téléchargé, veuillez affiner votre recherche ou contacter votre administrateur",
   "DynamicForm": {
     "Errors": {
       "CheckBoxError": "Veuillez choisir au moins une option"
     }
   },
-
   "Toolbar": {
     "Language": {
       "FrenchTooltip": "Afficher l'interface en français",
@@ -353,7 +347,6 @@
     "DatasetDeleteButtonTooltipNotPossibleExistData": "Ce jeu de données contient des données et ne peut donc pas être supprimé",
     "DatasetDeleteButtonTooltipNotPossibleMissingPermissions": "Vous n'avez pas les droits nécessaires pour supprimer ce jeu de données",
     "DatasetDeleteButtonTooltipPossible": "Supprimer le jeu de données",
-
     "DatasetCard": {
       "Actions": {
         "DisplayData": "Afficher les données"
@@ -367,11 +360,9 @@
       "SpeciesDistribution": "Répartition des espèces",
       "DescriptiveForm": "Fiche descriptive",
       "ID": "Identification",
-
       "GeographicalScope": "Périmètre géographique",
       "UUIDReport": "Rapport d'UUID",
       "SensitivityReport": "Rapport de sensibilité",
-
       "IntegratedOn": "Intégré le",
       "NumberOfData": "Nombre de données",
       "WidgetType": "Type de widget",
@@ -382,12 +373,10 @@
       "TaxaListID": "ID de liste de taxon",
       "GNSpecificFeatures": "Spécificités GeoNature",
       "DatasetCreator": "Créateur du jeu de données",
-
       "DatasetSINPID": "Identifiant SINP du jeu de données",
       "DatasetGeoNatureID": "Identifiant GeoNature du jeu de données",
       "ShortName": "Libellé court",
       "DataType": "Type de données",
-
       "LandCoverage": "Couverture du territoire terrestre",
       "MarineAreaCoverage": "Couverture du territoire marin",
       "TermsReference": "Cadre de référence",
@@ -406,7 +395,6 @@
         "SizeShortNameJDD": "Le nom court du JDD doit être inférieur ou égal à 30 caractères",
         "NoList": "Aucune liste (tous Taxref)"
       },
-
       "ShortNameJDD": "Nom court du JDD",
       "Field": "Domaine",
       "LandField": "Domaine terrestre",
@@ -416,7 +404,6 @@
       "OtherStakeholders": "Autre(s) acteur(s)",
       "MainContact": "Contact principal",
       "DataOrigin": "Origine des données",
-
       "ResourceType": "Type de ressource",
       "FacultativeTaxaList": "Liste de taxons (facultatif)",
       "SpecificGeonature": "Spécifique GeoNature",
@@ -500,11 +487,9 @@
     "Errors": {
       "PeriodCompleteness": "Le champs 'periode début' ET 'periode fin' doivent être remplis si vous souhaitez faire une recherche par période"
     },
-
     "Commented": "a commenté le",
     "ChangeStatus": "a modifié le statut le",
     "ModalTitle": "Information sur l'observation",
-
     "LocationName": "Nom du lieux",
     "Accuracy": "Précision du pointage",
     "Owner": "Observation de",
@@ -587,7 +572,6 @@
         "Choose": "Utiliser un modèle d'import prédéfini",
         "Rename": "Renommer le modèle d'import",
         "Delete": "Supprimer le modèle d'import",
-
         "Update": "Mettre à jour le modèle existant",
         "Save": "Enregistrer un nouveau modèle",
         "NoSave": "Ne pas enregistrer",
