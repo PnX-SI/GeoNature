@@ -103,18 +103,19 @@ export class NomenclatureComponent
 
     // set cdNomenclature
     this.valueSubscription = this.parentFormControl.valueChanges.subscribe((id) => {
-      this.currentIdNomenclature = id;
-      const self = this;
-      if (this.labels) {
-        this.labels.forEach((label) => {
-          if (this.currentIdNomenclature === label.id_nomenclature) {
-            self.currentCdNomenclature = label.cd_nomenclature;
-            self.$currentCdNomenclature.emit(self.currentCdNomenclature);
-            console.log(self.currentCdNomenclature);
-          }
-        });
-      }
+      this.emitCurrentCdNomenclature(id);
     });
+  }
+
+  private emitCurrentCdNomenclature(id: number) {
+    this.currentIdNomenclature = id;
+    if (this.labels) {
+      const label = this.labels.find((label) => label.id_nomenclature === id);
+      if (label) {
+        this.currentCdNomenclature = label.cd_nomenclature;
+        this.$currentCdNomenclature.emit(this.currentCdNomenclature);
+      }
+    }
   }
 
   getCdNomenclature() {
@@ -162,6 +163,7 @@ export class NomenclatureComponent
         this.labels = data.values;
         this.savedLabels = data.values;
         this.labelsLoaded.emit(this.labels);
+        this.emitCurrentCdNomenclature(this.parentFormControl.value);
       });
   }
 

@@ -11,7 +11,7 @@ import { UntypedFormControl } from '@angular/forms';
 import { Individual } from './interfaces';
 import { IndividualsService } from './individuals.service';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { tap } from '@librairies/rxjs/operators';
+import { tap, map } from '@librairies/rxjs/operators';
 
 @Component({
   selector: 'pnx-individuals',
@@ -36,8 +36,8 @@ export class IndividualsComponent implements OnInit, OnChanges {
     private _individualsService: IndividualsService
   ) {}
   ngOnInit(): void {
-    this.getIndividuals().subscribe((data) => {
-      this.values = data.filter((item) => item.active);
+    this.getIndividuals(this.cdNom).subscribe((data) => {
+      this.values = data;
     });
   }
 
@@ -45,6 +45,9 @@ export class IndividualsComponent implements OnInit, OnChanges {
     return this._individualsService.getIndividuals(this.idModule, cd_nom).pipe(
       tap((individuals: any) => {
         this.nbIndividuals.emit(individuals.length);
+      }),
+      map((data) => {
+        return data.filter((item: any) => item.active);
       })
     );
   }
@@ -69,8 +72,8 @@ export class IndividualsComponent implements OnInit, OnChanges {
     });
   }
 
-  ngOnChanges(changes: any) {
-    if (changes.cdNom && changes.cdNom.currentValue) {
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.cdNom && !changes.cdNom.firstChange) {
       this.getIndividuals(changes.cdNom.currentValue).subscribe((data) => {
         this.values = data;
       });
