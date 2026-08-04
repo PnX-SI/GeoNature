@@ -108,9 +108,8 @@ export class NomenclatureComponent
       if (this.labels) {
         this.labels.forEach((label) => {
           if (this.currentIdNomenclature === label.id_nomenclature) {
-            
             self.currentCdNomenclature = label.cd_nomenclature;
-            self.$currentCdNomenclature.emit(self.currentCdNomenclature)
+            self.$currentCdNomenclature.emit(self.currentCdNomenclature);
             console.log(self.currentCdNomenclature);
           }
         });

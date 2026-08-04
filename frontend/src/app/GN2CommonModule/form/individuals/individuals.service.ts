@@ -10,14 +10,14 @@ export class IndividualsService {
     public config: ConfigService
   ) {}
 
-  getIndividuals(idModule: number, cd_nom: number | null =null) {
+  getIndividuals(idModule: number, cd_nom: number | null = null) {
     let queryString: HttpParams = new HttpParams();
-    if(cd_nom) {
-      queryString = queryString.set("cd_nom", cd_nom)
+    if (cd_nom) {
+      queryString = queryString.set('cd_nom', cd_nom);
     }
     return this._http.get<Individual[]>(
       `${this.config.API_ENDPOINT}/gn_monitoring/individuals/${idModule}`,
-      { params : queryString}
+      { params: queryString }
     );
   }
 

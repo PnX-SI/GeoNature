@@ -25,8 +25,7 @@ def upgrade():
         )
         """)
 
-    op.execute(
-        """ 
+    op.execute(""" 
         -- Insert available permissions "R" for INDIVIDUALS object
         INSERT INTO gn_permissions.t_permissions_available (
             id_module,
@@ -48,8 +47,7 @@ def upgrade():
         JOIN gn_commons.t_modules m ON m.module_code = v.module_code
         JOIN gn_permissions.t_objects o ON o.code_object = v.object_code
         JOIN gn_permissions.bib_actions a ON a.code_action = v.action_code;
-        """
-    )
+        """)
 
 
 def downgrade():
@@ -59,12 +57,10 @@ def downgrade():
         AND id_object = (SELECT id_object FROM gn_permissions.t_objects WHERE code_object = 'INDIVIDUALS')
         """)
 
-    op.execute(
-        """         
+    op.execute("""         
         -- Remove "R" available permission for OCCTAX module and INDIVIDUALS object
         DELETE FROM gn_permissions.t_permissions_available 
         WHERE id_module = (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'OCCTAX')
         AND id_object = (SELECT id_object FROM gn_permissions.t_objects WHERE code_object = 'INDIVIDUALS')
         AND id_action = (SELECT id_action FROM gn_permissions.bib_actions WHERE code_action = 'R');
-        """
-    )
+        """)
