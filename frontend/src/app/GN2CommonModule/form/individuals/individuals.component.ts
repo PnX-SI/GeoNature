@@ -109,8 +109,8 @@ export class IndividualsComponent implements OnInit, OnChanges {
     }
   }
 
-  ngOnChanges(changes: any) {
-    if (changes.cdNom && changes.cdNom.currentValue) {
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.cdNom && !changes.cdNom.firstChange) {
       this.getIndividuals(changes.cdNom.currentValue).subscribe((data) => {
         this.values = data;
       });
