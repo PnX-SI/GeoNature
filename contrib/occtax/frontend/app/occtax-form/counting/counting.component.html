@@ -36,8 +36,8 @@
       [idModule]="moduleService.currentModule.id_module"
       [parentFormControl]="form.get('id_individual')"
       [cdNom]="(occtaxFormOccurrenceService.taxref | async)?.cd_nom"
-      [showAddButton]="false"
-      label="{{ 'Occtax.Counting.IndividualName' | translate }}"
+      [showAddButton]="moduleService.currentModule.module_objects.INDIVIDUALS.cruved.C > 0"
+      label="{{ 'Individual.Name' | translate }}"
       (nbIndividuals)="setNbIndiv($event)"
     ></pnx-individuals>
   </div>

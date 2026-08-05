@@ -274,7 +274,7 @@ class Synthese(DB.Model):
     )
     id_individual = DB.Column(DB.Integer, ForeignKey(TIndividuals.id_individual))
     individual = DB.relationship(TIndividuals)
-    
+
     grp_method = DB.Column(DB.Unicode(length=255))
 
     id_nomenclature_geo_object_nature = db.Column(
@@ -630,6 +630,7 @@ class VSyntheseForWebApp(DB.Model):
     group1_inpn = DB.Column(DB.Unicode)
     group2_inpn = DB.Column(DB.Unicode)
     group3_inpn = DB.Column(DB.Unicode)
+    id_individual = DB.Column(DB.Integer)
     sample_number_proof = DB.Column(DB.Unicode)
     digital_proof = DB.Column(DB.Unicode)
     non_digital_proof = DB.Column(DB.Unicode)

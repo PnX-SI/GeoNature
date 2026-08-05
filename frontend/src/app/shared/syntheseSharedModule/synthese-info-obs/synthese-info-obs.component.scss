@@ -25,6 +25,22 @@
   transform: translateX(0%);
 }
 
+.info-obs-header {
+  gap: 10px;
+}
+
+.info-obs-header-titles {
+  gap: 10px;
+  row-gap: 2px;
+}
+
+.individual-name {
+  color: #6c757d;
+  font-weight: 400;
+  padding-left: 10px;
+  border-left: 1px solid #ced4da;
+}
+
 .action-tbar {
   all: unset;
 }

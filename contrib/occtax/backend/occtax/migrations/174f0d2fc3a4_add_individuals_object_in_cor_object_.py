@@ -42,7 +42,8 @@ def upgrade():
             v.label
         FROM (
             VALUES
-            ('OCCTAX', 'INDIVIDUALS', 'R', True, 'Consulter les individus')
+            ('OCCTAX', 'INDIVIDUALS', 'R', True, 'Consulter les individus'),
+            ('OCCTAX', 'INDIVIDUALS', 'C', True, 'Ajouter un individu')
         ) AS v (module_code, object_code, action_code, scope_filter, label)
         JOIN gn_commons.t_modules m ON m.module_code = v.module_code
         JOIN gn_permissions.t_objects o ON o.code_object = v.object_code
