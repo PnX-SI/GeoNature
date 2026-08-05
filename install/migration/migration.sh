@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 
-SERVICES=("geonature" "geonature-worker" "usershub")
 
 newdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." &> /dev/null && pwd )"
 if (($# > 0)); then
@@ -48,6 +47,23 @@ if [ "$choice" != 'y' ] && [ "$choice" != 'Y' ]; then
 else
     echo "Lancement de la migration..."
 fi
+
+# Getting services names by loading original settings file:
+
+. ${olddir}/config/settings.ini
+
+# If values are absent set them to default :
+
+if [ -z "$usershub_app_name" ]; then
+    usershub_app_name="usershub"
+fi
+
+if [ -z "$geonature_app_name" ]; then
+    geonature_app_name="geonature"
+fi
+
+
+SERVICES=( ${geonature_app_name} "${geonature_app_name}-worker" ${usershub_app_name} )
 
 echo "Arrêt des services…"
 for service in ${SERVICES[@]}; do
@@ -197,10 +213,10 @@ fi
 
 echo "Mise à jour des scripts systemd…"
 cd ${newdir}/install
-if [ -f /etc/systemd/system/geonature-reload.path ]; then  # before GN 2.12
-    sudo systemctl stop geonature-reload.path
-    sudo systemctl disable geonature-reload.path
-    sudo rm /etc/systemd/system/geonature-reload.path
+if [ -f /etc/systemd/system/${geonature_app_name}-reload.path ]; then  # before GN 2.12
+    sudo systemctl stop ${geonature_app_name}-reload.path
+    sudo systemctl disable ${geonature_app_name}-reload.path
+    sudo rm /etc/systemd/system/${geonature_app_name}-reload.path
 fi
 ./02_configure_systemd.sh
 cd ${newdir}/
@@ -212,10 +228,10 @@ sudo apachectl configtest && sudo systemctl reload apache2 || echo "Attention, c
 
 # before GeoNature 2.10
 if [ -f "/var/log/geonature.log" ]; then
-    echo "Déplacement des fichiers de logs /var/log/geonature.log → /var/log/geonature/geonature.log …"
-    sudo mkdir -p /var/log/geonature/
-    sudo mv /var/log/geonature.log /var/log/geonature/geonature.log
-    sudo chown $USER: -R /var/log/geonature/
+    echo "Déplacement des fichiers de logs /var/log/geonature.log → /var/log/${geonature_app_name}/${geonature_app_name}.log …"
+    sudo mkdir -p /var/log/${geonature_app_name}/
+    sudo mv /var/log/geonature.log /var/log/${geonature_app_name}/${geonature_app_name}.log
+    sudo chown $USER: -R /var/log/${geonature_app_name}/
 fi
 
 # Update the API ENDPOINT in frontend configuration file

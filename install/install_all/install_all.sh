@@ -18,17 +18,8 @@ if [ !"$OS_BITS" == "64" ]; then
    exit 1
 fi
 
-# Format my_url to set a / at the end
-if [ "${my_url: -1}" != '/' ]
-then
-my_url=$my_url/
-fi
 
-# Remove http:// and remove final / from $my_url to create $my_domain
-# No more used actually but can be useful if we want to create a Servername in Apache configuration
-my_domain=$(echo $my_url | sed -r 's|^.*\/\/(.*)$|\1|')
-my_domain=$(echo $my_domain | sed s'/.$//')
-export DOMAIN_NAME="$my_domain"
+export DOMAIN_NAME=${domain_name:-localhost}
 
 # Check OS and versions
 if [ "$OS_NAME" != "debian" ]
@@ -91,14 +82,13 @@ cd "${GEONATURE_DIR}"
 # Updating GeoNature settings
 cp config/settings.ini.sample config/settings.ini
 echo "Installation de la base de données et configuration de l'application GeoNature ..."
-my_url="${my_url//\//\\/}"
+my_url=${host_protocol}://${domain_name}${base_path}/
 proxy_http="${proxy_http//\//\\/}"
 proxy_https="${proxy_https//\//\\/}"
 
 
 sed -i "s/MODE=.*$/MODE=$mode/g" config/settings.ini
 sed -i "s/my_local=.*$/my_local=$my_local/g" config/settings.ini
-sed -i "s/my_url=.*$/my_url=$my_url/g" config/settings.ini
 sed -i "s/drop_apps_db=.*$/drop_apps_db=$drop_geonaturedb/g" config/settings.ini
 sed -i "s/db_name=.*$/db_name=$geonaturedb_name/g" config/settings.ini
 sed -i "s/user_pg=.*$/user_pg=$user_pg/g" config/settings.ini
@@ -118,6 +108,11 @@ sed -i "s/install_module_validation=.*$/install_module_validation=$install_modul
 sed -i "s/install_module_occhab=.*$/install_module_occhab=$install_module_occhab/g" config/settings.ini
 sed -i "s/proxy_http=.*$/proxy_http=$proxy_http/g" config/settings.ini
 sed -i "s/proxy_https=.*$/proxy_https=$proxy_https/g" config/settings.ini
+sed -i "s/geonature_app_name=.*$/geonature_app_name=$geonature_app_name/g" config/settings.ini
+sed -i "s/backend_port=.*$/backend_port=$backend_port/g" config/settings.ini
+sed -i "s/domain_name=.*$/domain_name=$domain_name/g" config/settings.ini
+sed -i "s/base_path=.*$/base_path=$base_path/g" config/settings.ini
+
 
 cd "${GEONATURE_DIR}/install"
 
@@ -170,7 +165,7 @@ if [ "$install_usershub_app" = true ]; then
     sed -i "s/db_name=.*$/db_name=$geonaturedb_name/g" config/settings.ini
     sed -i "s/user_pg=.*$/user_pg=$user_pg/g" config/settings.ini
     sed -i "s/user_pg_pass=.*$/user_pg_pass=$user_pg_pass/g" config/settings.ini
-    sed -i 's#url_application=.*#url_application='$my_url'usershub#g' config/settings.ini
+    sed -i 's#url_application=.*#url_application='$host_protocol'://'$domain_name'/usershub#g' config/settings.ini
 
     # Installation of UsersHub application
     ./install_app.sh

@@ -1,5 +1,5 @@
 [Unit]
-Description=GeoNature
+Description=GeoNature - ${GEONATURE_APP_NAME}
 After=postgresql.service
 After=network.target
 
@@ -8,12 +8,12 @@ Type=simple
 User=${USER}
 Group=${USER}
 WorkingDirectory=${BASE_DIR}/
-Environment=GUNICORN_PROC_NAME=geonature
+Environment=GUNICORN_PROC_NAME=${GEONATURE_APP_NAME}
 Environment=GUNICORN_NUM_WORKERS=4
 Environment=GUNICORN_HOST=127.0.0.1
-Environment=GUNICORN_PORT=8000
+Environment=GUNICORN_PORT=${BACKEND_PORT}
 Environment=GUNICORN_TIMEOUT=30
-Environment=GUNICORN_LOG_FILE=/var/log/geonature/%N%I.log
+Environment=GUNICORN_LOG_FILE=/var/log/${GEONATURE_APP_NAME}/%N%I.log
 EnvironmentFile=-${BASE_DIR}/environ
 ExecStart=${BASE_DIR}/backend/venv/bin/gunicorn geonature:create_app() \
                 --name "${GUNICORN_PROC_NAME}" --workers "${GUNICORN_NUM_WORKERS}" \

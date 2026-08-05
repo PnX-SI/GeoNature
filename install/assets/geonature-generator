@@ -1,11 +1,11 @@
 #!/bin/sh
 
-service="/etc/systemd/system/geonature-reload@.path"
-wantdir="$1/geonature.service.wants"
+service="/etc/systemd/system/${GEONATURE_APP_NAME}-reload@.path"
+wantdir="$1/${GEONATURE_APP_NAME}.service.wants"
 
 mkdir -p "$wantdir"
 
 for conf in "${BASE_DIR}"/config/*_config.toml; do
 	confname=$(basename ${conf%"_config.toml"})
-	ln -s "$service" "$wantdir/geonature-reload@$confname.path"
+	ln -s "$service" "$wantdir/${GEONATURE_APP_NAME}-reload@$confname.path"
 done
