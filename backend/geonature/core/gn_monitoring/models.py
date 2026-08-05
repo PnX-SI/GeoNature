@@ -199,6 +199,7 @@ class TBaseSites(DB.Model):
     geom = DB.Column(Geometry("GEOMETRY", 4326))
     geom_local = DB.Column(Geometry("GEOMETRY"))
     uuid_base_site = DB.Column(UUID(as_uuid=True), default=select(func.uuid_generate_v4()))
+    active = DB.Column(DB.Boolean, default=True)
 
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
