@@ -49,6 +49,7 @@ from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
 
 from occtax.commands import add_submodule_permissions
+from geonature.utils.config import config
 
 blueprint = Blueprint("pr_occtax", __name__, cli_group="occtax")
 blueprint.cli.add_command(add_submodule_permissions)
@@ -472,6 +473,53 @@ def updateOccurrence(id_occurrence, scope):
     return OccurrenceSchema().dump(
         occurrenceHandler(request=request, occurrence=occurrence, scope=scope)
     )
+
+
+if "VALIDATION" in config:
+
+    from gn_module_validation.blueprint import notify_validator_on_data_modified
+    from geonature.core.gn_synthese.models import Synthese
+
+    @blueprint.after_request
+    def notify_validator_after_occ_update(response):
+        """
+        Check if an updated occurrence (counting or occurrence)
+        was already validated, and notify the validator if needed.
+        """
+        if request.endpoint and "updateOccurrence" in request.endpoint and request.method == "POST":
+            id_occurrence = request.view_args.get("id_occurrence", None)
+            if not id_occurrence:
+                return response
+
+            # Fetch countings attached to the current occurrence
+            countings = db.session.scalars(
+                select(CorCountingOccurrence.id_counting_occtax).where(
+                    CorCountingOccurrence.id_occurrence_occtax == id_occurrence
+                )
+            ).all()
+
+            occtax_id_module = db.session.scalar(
+                select(TModules.id_module).where(TModules.module_code == "OCCTAX")
+            )
+
+            # Boucle sur chaque counting pour vérifier la synthèse correspondante
+            for id_counting in countings:
+                synthese_record = db.session.scalar(
+                    select(Synthese)
+                    .where(Synthese.entity_source_pk_value == str(id_counting))
+                    .where(Synthese.id_module == occtax_id_module)
+                )
+                if not synthese_record:
+                    continue
+                # Verify if the update date is greater than the validation date
+                if (
+                    synthese_record.meta_validation_date
+                    and synthese_record.meta_update_date
+                    and synthese_record.meta_update_date > synthese_record.meta_validation_date
+                ):
+                    notify_validator_on_data_modified(synthese_record)
+
+        return response
 
 
 @blueprint.route("/<module_code>/releve/<int:id_releve>", methods=["DELETE"])

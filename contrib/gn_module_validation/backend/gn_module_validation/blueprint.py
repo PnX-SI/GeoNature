@@ -475,3 +475,52 @@ def get_validation_date(permissions, uuid):
         return jsonify(str(synthese.last_validation.validation_date))
 
     return "", 204
+
+
+# Send notification
+def notify_validation_state_change(synthese, validation, status):
+    if not synthese.id_digitiser:
+        return
+    dispatch_notifications(
+        code_categories=["VALIDATION-STATUS-CHANGED%"],
+        id_roles=[synthese.id_digitiser],
+        title="Changement de statut de validation",
+        url=current_app.config["URL_APPLICATION"]
+        + "/#/synthese/occurrence/"
+        + str(synthese.id_synthese),
+        context={
+            "synthese": synthese,
+            "validation": validation,
+            "status": status,
+        },
+    )
+
+
+def notify_validator_on_data_modified(observation: Synthese):
+    """
+    Notify the validator if an observation have been modified after the last validation.
+    """
+
+    # Fetch last validation attached to the observation
+    last_validation = db.session.scalar(
+        sa.select(TValidations)
+        .where(TValidations.uuid_attached_row == observation.unique_id_sinp)
+        .order_by(TValidations.validation_date.desc())
+        .limit(1)
+    )
+
+    if not last_validation:
+        return
+    # Send Notification
+    dispatch_notifications(
+        code_categories=["VALIDATED-DATA-MODIFIED"],
+        id_roles=[last_validation.id_validator],
+        title="Donnée validée modifiée",
+        url=f"{current_app.config['URL_APPLICATION']}/#/synthese/occurrence/{observation.id_synthese}",
+        context={
+            "synthese": observation,
+            "last_validation": last_validation,
+        },
+    )
+
+    db.session.commit()
