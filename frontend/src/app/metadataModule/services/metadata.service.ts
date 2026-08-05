@@ -18,6 +18,7 @@ interface MetadataSearchForm {
   date?: string | null;
   organism?: string | null;
   person?: string | null;
+
   [key: `area_${string}`]: Array<any>;
 }
 
@@ -60,7 +61,13 @@ export class MetadataService {
     });
 
     this.config.METADATA.METADATA_AREA_FILTERS.forEach((area) => {
-      const control_name = 'area_' + area['type_code'].toLowerCase();
+      let control_name: string;
+      if (typeof area['type_code'] === 'string') {
+        control_name = 'area_' + area['type_code'].toLowerCase();
+      } else if (Array.isArray(area['type_code'])) {
+        control_name =
+          'area_' + area['type_code'].map((code: string) => code.toLowerCase()).join('_');
+      }
       this.form.addControl(control_name, new UntypedFormControl(new Array()));
       const control = this.form.controls[control_name];
       area['control'] = control;
@@ -108,6 +115,7 @@ export class MetadataService {
     this.pageSize.next(page_size);
     this.pageIndex.next(page_index);
   }
+
   changePageEvent(pageEvent: PageEvent) {
     this.changePage(pageEvent.pageIndex, pageEvent.pageSize);
     this.search().subscribe(() => {
