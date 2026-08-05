@@ -128,8 +128,12 @@ def get_individuals(id_module):
 
     Http Params
     -----------
-    id_module_filter : int
-        use to filter with cor_individual_module
+    cd_nom : int
+        filter by taxon
+    active : bool
+        filter by active status
+    id_nomenclature_sex : int
+        filter by sex nomenclature
 
     Returns
     -------
@@ -137,6 +141,10 @@ def get_individuals(id_module):
         list of individuals
 
     """
+    params = request.args
+    cd_nom = params.get("cd_nom", None)
+    active = params.get("active", None)
+    id_nomenclature_sex = params.get("id_nomenclature_sex", None)
     action = "R"
     object_code = "INDIVIDUALS"
     module = DB.session.get(TModules, id_module)
@@ -145,23 +153,20 @@ def get_individuals(id_module):
     module_code = module.module_code
     current_user = g.current_user
 
-    params = request.args
-    id_module_filter = params.get("id_module_filter",default=0,type=int)
-    cd_nom = params.get("cd_nom", None)
-
-
     max_scope = get_scope(
         action, id_role=current_user.id_role, module_code=module_code, object_code=object_code
     )
     if not max_scope:
         raise Forbidden(description=_forbidden_message(action, module_code, object_code))
 
-
-    query = select(TIndividuals)
-    if id_module_filter:
-        query = query.where(TIndividuals.modules.any(TModules.id_module == id_module_filter))
+    # TODO: do not filter if module is "individual" when individual module will be in core
+    query = select(TIndividuals).where(TIndividuals.modules.any(TModules.id_module == id_module))
     if cd_nom:
         query = query.where(TIndividuals.taxon.has(Taxref.cd_nom == cd_nom))
+    if active is not None:
+        query = query.where(TIndividuals.active == (active.lower() == "true"))
+    if id_nomenclature_sex:
+        query = query.where(TIndividuals.id_nomenclature_sex == id_nomenclature_sex)
     results = (
         DB.session.scalars(TIndividuals.filter_by_scope(query, max_scope, current_user))
         .unique()
@@ -174,17 +179,14 @@ def get_individuals(id_module):
     return schema.jsonify(results, many=True)
 
 
-@routes.route("/individual/<int:id_module>", methods=["POST"])
+@routes.route("/individual/<string:module_code>", methods=["POST"])
 @login_required
-def create_one_individual(id_module: int):
-    # Id module is an optional parameter to associate an individual
-    # to a module
+def create_one_individual(module_code: str):
+    # module_code (path) is only used to resolve the permission scope.
+    # id_modules (body, optional) is the list of modules the individual
+    # is associated to.
     action = "C"
-    object_code = "MONITORINGS_INDIVIDUALS"
-    module = DB.session.get(TModules, id_module)
-    if module is None:
-        raise NotFound("Module not found")
-    module_code = module.module_code
+    object_code = "INDIVIDUALS"
     current_user = g.current_user
     max_scope = get_scope(
         action, id_role=current_user.id_role, module_code=module_code, object_code=object_code
@@ -193,15 +195,25 @@ def create_one_individual(id_module: int):
     if not max_scope:
         raise Forbidden(description=_forbidden_message(action, module_code, object_code))
 
+    data = request.get_json() or {}
+    id_modules = data.pop("id_modules", None)
+
     # Exclude id_digitiser since it is set by the current user
     individual_schema = TIndividualsSchema(exclude=["id_digitiser"], unknown=EXCLUDE)
     individual_instance = TIndividuals(id_digitiser=g.current_user.id_role)
     try:
-        individual = individual_schema.load(data=request.get_json(), instance=individual_instance)
+        individual = individual_schema.load(data=data, instance=individual_instance)
     except ValidationError as error:
         raise BadRequest(error.messages)
 
-    individual.modules = [module]
+    if id_modules:
+        modules = DB.session.scalars(
+            select(TModules).where(TModules.id_module.in_(id_modules))
+        ).all()
+        if len(modules) != len(set(id_modules)):
+            raise NotFound("Module not found")
+        individual.modules = modules
+
     DB.session.add(individual)
     DB.session.commit()
     return individual_schema.jsonify(individual)

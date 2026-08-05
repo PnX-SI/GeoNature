@@ -127,7 +127,7 @@ def releve_data(client: Any, datasets: dict[Any, TDatasets]):
 
 
 @pytest.fixture()
-def occurrence_data(client: Any, releve_occtax: Any):
+def occurrence_data(client: Any, releve_occtax: Any, individuals):
     nomenclatures = db.session.scalars(select(DefaultNomenclaturesValue)).all()
     dict_nomenclatures = {n.mnemonique_type: n.id_nomenclature for n in nomenclatures}
     return {
@@ -159,6 +159,7 @@ def occurrence_data(client: Any, releve_occtax: Any):
                 ).scalar_one(),
                 "id_nomenclature_obj_count": dict_nomenclatures["OBJ_DENBR"],
                 "id_nomenclature_type_count": dict_nomenclatures["TYP_DENBR"],
+                "id_individual": individuals[0].id_individual,
                 "count_min": 2,
                 "count_max": 2,
                 "medias": [],
@@ -431,9 +432,11 @@ class TestOcctaxReleve:
             assert response.status_code == Conflict.code
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction", "datasets", "module")
+@pytest.mark.usefixtures(
+    "client_class", "temporary_transaction", "datasets", "module", "individuals"
+)
 class TestOcctaxOccurrence:
-    def test_post_occurrence(self, users: dict, occurrence_data: dict[str, Any]):
+    def test_post_occurrence(self, users: dict, occurrence_data: dict[str, Any], individuals):
         set_logged_user(self.client, users["stranger_user"])
         response = self.client.post(
             url_for("pr_occtax.createOccurrence", id_releve=occurrence_data["id_releve_occtax"]),
@@ -469,16 +472,21 @@ class TestOcctaxOccurrence:
             "occurrence_addi_field": "occ",
             "releve_addi_field": "Releve",
         }
+        # test id_individual
+        assert occurrence.cor_counting_occtax[0].id_individual == individuals[0].id_individual
 
-    def test_update_occurrence(self, users: dict, occurrence: Any):
+    def test_update_occurrence(self, users: dict, occurrence: Any, individuals):
         set_logged_user(self.client, users["user"])
-        occ_dict = OccurrenceSchema(exclude=("taxref",)).dump(occurrence)
+        occ_dict = OccurrenceSchema(exclude=("taxref", "cor_counting_occtax.individual")).dump(
+            occurrence
+        )
         # change the cd_nom (occurrence level)
         occ_dict["cd_nom"] = 4516
         occ_dict["nom_cite"] = "Etourneau sansonnet"
         # change counting
         occ_dict["cor_counting_occtax"][0]["count_max"] = 3
         occ_dict["cor_counting_occtax"][1]["count_max"] = 5
+        occ_dict["cor_counting_occtax"][0]["id_individual"] = individuals[1].id_individual
         response = self.client.post(
             url_for("pr_occtax.updateOccurrence", id_occurrence=occurrence.id_occurrence_occtax),
             json=occ_dict,
@@ -490,6 +498,7 @@ class TestOcctaxOccurrence:
         uuid_counting = [
             counting["unique_id_sinp_occtax"] for counting in occ["cor_counting_occtax"]
         ]
+        assert occ["cor_counting_occtax"][0]["id_individual"] == individuals[1].id_individual
         synthese_data = db.session.scalars(
             select(Synthese).where(Synthese.unique_id_sinp.in_(uuid_counting))
         ).all()

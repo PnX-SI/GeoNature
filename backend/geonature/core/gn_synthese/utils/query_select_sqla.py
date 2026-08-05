@@ -363,6 +363,11 @@ class SyntheseQuery:
             if not colname.startswith("taxhub_attribut")
         }
 
+        # Individual filters
+        if "individuals" in self.filters:
+            individuals = self.filters.pop("individuals")
+            self.query = self.query.where(self.model.id_individual.in_(individuals))
+
     def filter_other_filters(self, user):
         """
         Other filters

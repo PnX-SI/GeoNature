@@ -5,28 +5,67 @@
       <span class="pre-wrap">{{ item[keyLabel] }}</span>
     </div>
   </ng-template> -->
+<div [(ngbCollapse)]="isCollapseFilters">
+  <div class="well well-sm well-margin">
+    <div
+      class="d-flex mb-2 align-items-end"
+      style="gap: 1rem"
+    >
+      <div style="width: 200px">
+        <pnx-nomenclature
+          label="Sexe"
+          [parentFormControl]="filtersForm.get('id_nomenclature_sex')"
+          codeNomenclatureType="SEXE"
+          keyValue="id_nomenclature"
+        ></pnx-nomenclature>
+      </div>
+      <pnx-taxonomy
+        label="Taxon"
+        [parentFormControl]="taxonomyFilterControl"
+        [idList]="idList"
+        displayedLabel="nom_valide"
+        charNumber="3"
+        listLength="20"
+        (onChange)="taxonFilterSelected($event)"
+      ></pnx-taxonomy>
+      <button
+        mat-mini-fab
+        (click)="refreshFilters()"
+      >
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>
 <div class="d-flex">
   <ng-select
-    [ngClass]="{ 'pr-2': showAddButton }"
+    [ngClass]="{ 'pr-2': displayAdvancedFilters }"
     [items]="values"
     [bindLabel]="keyLabel"
     [bindValue]="keyValue"
-    [placeholder]="null"
-    [multiple]="false"
+    [placeholder]="placeholder"
+    [multiple]="multiselect"
     [clearable]="true"
     [virtualScroll]="true"
     [formControl]="parentFormControl"
-    [ngStyle]="{ width: showAddButton ? '85%' : '100%' }"
-  ></ng-select>
-  <div *ngIf="showAddButton">
+    style="width:'85%'"
+  >
+    <ng-template *ngIf="showAddButton" ng-footer-tmp>
+      <button class="btn btn-sm btn-link" (click)="openModal(content)">
+        + Ajouter un individu
+      </button>
+    </ng-template>
+  </ng-select>
+  <div *ngIf="displayAdvancedFilters">
     <button
-      width="10%"
+      (click)="isCollapseFilters = !isCollapseFilters"
+      [attr.aria-expanded]="!isCollapseFilters"
       mat-mini-fab
       color="primary"
-      (click)="openModal(content)"
-      matTooltip="Ajouter un individu"
+      matTooltip="Filtres avancés"
+      class="mr-2"
     >
-      <mat-icon>add</mat-icon>
+      <mat-icon>filter_alt</mat-icon>
     </button>
   </div>
 </div>
