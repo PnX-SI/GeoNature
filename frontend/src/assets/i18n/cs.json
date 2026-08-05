@@ -1,0 +1,501 @@
+{
+  "Home": "Domů",
+
+  "LanguageSelection": "Vyberte jazyk rozhraní",
+  "Language": "Jazyk",
+  "Languages": "Jazyky",
+  "AvailableLanguages": {
+    "English": "Angličtina",
+    "French": "Francouzština",
+    "Chinese": "Čínština",
+    "Czech": "Čeština"    
+  },
+  "Actions": {
+    "Singular": "Akce",
+    "Plural": "Akce",
+    "Add": "Přidat",
+    "Filter": "Filtrovat",
+    "Download": "Stáhnout",
+    "Delete": "Smazat",
+    "Cancel": "Zrušit",
+    "Upload": "Importovat",
+    "Search": "Hledat",
+    "Confirm": "Potvrdit",
+    "Close": "Zavřít",
+    "Browse": "Procházet",
+    "Validate": "Ověřit",
+    "PDFExport": "Exportovat do PDF",
+    "DownloadData": "Stáhnout data",
+    "Copy": "Kopírovat"
+  },
+  "Messages": {
+    "FillGeometryFirst": "Nejprve zadejte bod na mapě před vyplněním formuláře"
+  },
+  "Errors": {
+    "ErrorOccurs": "Došlo k chybě",
+    "DatesReversed": "Datum začátku nemůže být později než datum konce",
+    "AltitudeError": "Maximální nadmořská výška nemůže být menší než minimální",
+    "NotAllowed": "Nemáte oprávnění provést tuto akci"
+  },
+
+  "Authentication": {
+    "Email": "Email",
+    "Username": "Uživatelské jméno",
+    "Password": "Heslo",
+    "LogIn": "Přihlásit se",
+    "LogOut": "Odhlásit se",
+    "Actions": {
+      "CreateAccount": "Vytvořit účet",
+      "ActivateAccount": "Aktivovat účet",
+      "ActivateAccountValidator": "Aktivovat tento účet"
+    },
+    "Errors": {
+      "WrongLoginOrPassword": "Nesprávné uživatelské jméno nebo heslo"
+    },
+    "Messages": {
+      "ForgotPasswordOrLogin": "Zapomněli jste uživatelské jméno nebo heslo?",
+      "ActivateAccountConfirmation": "Pro aktivaci účtu klikněte na tlačítko níže",
+      "ActivateAccountConfirmationValidator": "Pro aktivaci tohoto účtu klikněte na tlačítko níže",
+      "PasswordChanged": "Vaše heslo bylo změněno"
+    }
+  },
+  "MyAccount": {
+    "MyAccount": "Můj účet",
+
+    "Messages": {
+      "AutoAccountEmailConfirmation": "Byl vám právě odeslán email s aktivačním odkazem",
+      "AdminAccountEmailConfirmation": "Vaše žádost o založení účtu byla přijata a bude posouzena administrátorem",
+      "PasswordAndLoginRecovery": "Byl vám odeslán email pro obnovu uživatelského jména a/nebo hesla"
+    }
+  },
+
+  "Observer": "Pozorovatel",
+  "Observers?": "Pozorovatelé",
+  "Observers": "Pozorovatel(é)",
+  "Digitiser": "Zadavatel",
+  "Digitisers": "Zadavatelé",
+  "Digitisers?": "Zadavatel(é)",
+  "Organism": "Organismus",
+  "Organisms": "Organismy",
+  "Organisms?": "Organismus(y)",
+  "Actor": "Subjekt",
+  "Actors": "Subjekt",
+  "Actors?": "Subjekt(y)",
+  "ActorPerson": "Subjekt (osoba)",
+  "Group": "Skupina",
+  "Groups": "Skupiny",
+  "Creator": "Tvůrce",
+  "Creators": "Tvůrci",
+  "Creators?": "Tvůrce(é)",
+
+  "Dataset": "Datová sada",
+  "Datasets": "Datové sady",
+  "AcquisitionFramework": "Akviziční rámec",
+  "AcquisitionFrameworks": "Akviziční rámce",
+  "Observations": "Pozorování",
+  "Taxon": "Taxon",
+  "Taxons": "Taxony",
+  "Species": "Druh",
+
+  "Sex": "Pohlaví",
+  "LifeStage": "Životní fáze",
+
+  "By": "Od",
+  "On": "Dne",
+  "Of": "z",
+  "Columns": "Sloupce",
+  "DisplayColumns": "Zobrazit sloupce",
+
+  "Yes": "Ano",
+  "No": "Ne",
+  "Previous": "Předchozí",
+  "Next": "Další",
+  "Back": "Zpět",
+  "Confirmation": "Potvrzení",
+
+  "Report": "Protokol",
+  "Comment": "Komentář",
+  "Discussion": "Diskuse",
+  "Status": "Stav",
+  "Source": "Zdroj",
+
+  "Mandatory": "Povinné",
+  "Optional": "Volitelné",
+  "OptionalIf": "Volitelné pokud",
+  "RequiredIf": "Povinné pokud",
+
+  "Name": "Název",
+  "What": "Co?",
+  "When": "Kdy?",
+  "Who": "Kdo?",
+  "How": "Jak?",
+  "Where": "Kde?",
+  "New": "Nové",
+
+  "Advanced": "Pokročilý",
+  "All": "Vše",
+  "Aim": "Cíl",
+  "Aims": "Cíle",
+  "Title": "Titul",
+  "Description": "Popis",
+  "Validable": "Ověřitelné",
+  "Valid": "Platné",
+  "Invalid": "Neplatné",
+  "Active": "Aktivní",
+
+  "Date": "Datum",
+  "MaxDate": "Datum konce",
+  "MinDate": "Datum začátku",
+  "HourMin": "Čas začátku",
+  "HourMax": "Čas konce",
+  "Altitude": "Nadmořská výška",
+  "MinAltitude": "Min. nadmořská výška",
+  "MaxAltitude": "Max. nadmořská výška",
+  "MinDepth": "Min. hloubka",
+  "MaxDepth": "Max. hloubka",
+  "HourFormat": "hh:mm",
+  "Label": "Štítek",
+  "Keywords": "Klíčová slova",
+
+  "Downloading": "Stahuji",
+
+  "DownloadOverflow": "Počet položek je příliš velký ke stažení, upravte prosím vyhledávání nebo kontaktujte administrátora",
+
+  "Map": {
+    "Actions": {
+      "SearchLocation": "Vyhledat lokalitu",
+      "AddPoint": "Lokalizovat pozorování (bod)",
+      "AddLine": "Lokalizovat pozorování (linie)",
+      "AddPolygon": "Lokalizovat pozorování (polygon)"
+    },
+    "Errors": {
+      "LocationError": "Lokalita nenalezena"
+    },
+    "Messages": {
+      "ZoomWarning": "Nevhodné měřítko, přibližte mapu pro označení průzkumu",
+      "FileLayerInfo": "Klikněte na vrstvu (bod/linie/polygon) a vyberte ji jako bod průzkumu. Vybraná vrstva je na mapě červeně. Pravým tlačítkem zobrazíte info vrstvy",
+      "FileLayerInfoSynthese": "Soubor importován. Pravým tlačítkem na objekt zobrazíte jeho informace"
+    }
+  },
+  "MapList": {
+    "ObservationNumber": "Počet pozorování",
+    "Messages": {
+      "NoColumnSelected": "Vyberte sloupec k filtrování"
+    },
+    "Errors": {
+      "InvalidTypeError": "Typ zadané hodnoty neodpovídá typu pole"
+    }
+  },
+  "MetaData": {
+    "Programs": "Programy",
+    "Catalog": "Katalog datových sad",
+    "Errors": {
+      "JddError": "Chyba při načítání datových sad",
+      "JddErrorMTD": "Chyba při načítání datových sad MTD"
+    },
+    "Messages": {
+      "NoJDD": "Nebyla nalezena žádná datová sada, kontaktujte administrátora",
+      "NoJDDMTD": "Nebyla nalezena žádná datová sada, nejprve ji zadejte v aplikaci MTD",
+      "AF404": "Neexistující akviziční rámec",
+      "DatasetAdded": "Datová sada úspěšně přidána",
+      "DatasetRemoved": "Datová sada úspěšně odstraněna",
+      "AFAdded": "Akviziční rámec úspěšně přidán",
+      "AFDeleted": "Akviziční rámec úspěšně smazán",
+      "NoStakeholder": "Nebyl zadán žádný subjekt",
+      "FiledAF": "Akviziční rámec již byl zadán",
+      "EmptyAF": "Akviziční rámec je prázdný",
+      "NoMetadata": "Oops! Není k dispozici žádná metadata.",
+      "UUIDFormPlaceHolder": "Pokud není určeno, identifikátor bude generován při vytváření datové sady"
+    },
+    "Actions": {
+      "AddDataset": "Přidat datovou sadu",
+      "AddAF": "Přidat akviziční rámec",
+      "SubmitAF": "Odeslat akviziční rámec",
+      "EditAF": "Upravit akviziční rámec",
+      "EditDataset": "Upravit datovou sadu",
+      "DeleteDataset": "Smazat datovou sadu",
+      "ResetSearch": "Obnovit hledání",
+      "SeeAFSheet": "Zobrazit stránku akvizičního rámce",
+      "FillOwnUUID": "Uvedu svůj vlastní SINP UUID"
+    },
+    "UUIDField": "UUID ID",
+    "AdvancedSearch": "Pokročilé vyhledávání",
+    "AFAndDatasetsList": "Seznam akvizičních rámců a přidružených datových sad",
+    "CreationDate": "Datum spuštění",
+    "Stakeholders": "Subjekty",
+    "DatasetName": "Název datové sady",
+    "AFName": "Název akvizičního rámce",
+    "DataAmount": "Množství dat",
+    "StakeholderOrganization": "Subjekt (organizace)",
+    "DataSources": "Zdroje dat",
+
+    "DatasetCard": {
+      "Actions": {
+        "DisplayData": "Zobrazit data"
+      },
+      "Messages": {
+        "NoActorProvided": "Nebyl zadán žádný subjekt"
+      },
+      "Errors": {
+        "ErrorDeleteDataset": "Datová sada obsahuje data a nelze ji smazat"
+      },
+      "SpeciesDistribution": "Distribuce druhů",
+      "DescriptiveForm": "Popisný formulář",
+      "ID": "Identifikace",
+
+      "GeographicalScope": "Geografický rozsah",
+      "UUIDReport": "UUID protokol",
+      "SensitivityReport": "Protokol citlivosti",
+
+      "IntegratedOn": "Zaintegrováno dne",
+      "NumberOfData": "Počet dat",
+      "WidgetType": "Typ widgetu",
+      "Quantitative": "Kvantitativní",
+      "Unit": "Jednotka",
+      "AdditionalDatasetFields": "Další pole datové sady",
+      "AssociatedGNModules": "Přidružené GeoNature moduly",
+      "TaxaListID": "ID seznamu taxonů",
+      "GNSpecificFeatures": "Specifika GeoNature",
+      "DatasetCreator": "Tvůrce datové sady",
+
+      "DatasetSINPID": "SINP ID datové sady",
+      "DatasetGeoNatureID": "GeoNature ID datové sady",
+      "ShortName": "Krátký název",
+      "DataType": "Typ dat",
+
+      "LandCoverage": "Pokrytí suchozemského území",
+      "MarineAreaCoverage": "Pokrytí mořského území",
+      "TermsReference": "Referenční rámec",
+      "TitleAF": "Název akvizičního rámce",
+      "IDAF": "ID akvizičního rámce",
+      "CollectionProcess": "Proces sběru"
+    },
+    "DatasetForm": {
+      "Actions": {
+        "SaveDataset": "Uložit datovou sadu",
+        "SelectTaxaList": "--Vyberte seznam taxonů--"
+      },
+      "Messages": {
+        "StakeholderExists": "Tento subjekt je již v seznamu",
+        "MainContactExists": "Tento hlavní kontakt je již v seznamu",
+        "SizeNameJDD": "Název datové sady musí mít nejvýše 150 znaků",
+        "SizeShortNameJDD": "Krátký název datové sady musí mít nejvýše 30 znaků",
+        "NoList": "Žádný seznam (všechen Taxref)"
+      },
+
+      "ShortNameJDD": "Krátký název datové sady",
+      "Field": "Pole",
+      "LandField": "Suchozemské pole",
+      "MarineField": "Mořské pole",
+      "SourceStatus": "Stav zdroje",
+      "CollectionMethod": "Metoda sběru",
+      "OtherStakeholders": "Další subjekty",
+      "MainContact": "Hlavní kontakt",
+      "DataOrigin": "Původ dat",
+
+      "ResourceType": "Typ zdroje",
+      "FacultativeTaxaList": "Seznam taxonů (volitelně)",
+      "SpecificGeonature": "Specifika GeoNature",
+      "ActiveOnEntry": "Aktivní při zadání"
+    },
+    "AcquisitionFrameworkForm": {},
+    "Actors": {
+      "Person": "Osoba",
+      "RoleType": "Typ role",
+      "Actions": {
+        "EnterOrganization": "Zadat pouze organizaci",
+        "EnterPerson": "Zadat pouze osobu",
+        "EnterOrganizationPerson": "Zadat organizaci a osobu",
+        "DeleteActor": "Smazat subjekt"
+      }
+    }
+  },
+  "Filters": {
+    "Actions": {
+      "Refresh": "Obnovit filtry",
+      "Advanced": "Pokročilé filtry",
+      "Add": "Přidat filtr",
+      "Other": "Další filtry"
+    }
+  },
+  "TaxonSearch": {
+    "Messages": {
+      "NoTaxonFound": "Nenalezen žádný taxon"
+    }
+  },
+  "Geo": {
+    "Municipality": "Obec",
+    "Municipalities": "Obce",
+    "Territories": "Území"
+  },
+  "Synthese": {
+    "LatestObservations": "Nejnovější pozorování",
+    "Actions": {
+      "DeleteObs": "Smazat pozorování",
+      "Mailto": "Kontaktovat e-mailem",
+      "CopyPermalink": "Kopírovat permalink",
+      "AddComment": "Přidat komentář",
+      "DeleteComment": "Smazat komentář",
+      "ChangeValidStatus": "Změnit stav ověření",
+      "RedirectToModule": "Zobrazit v modulu zadávání dat"
+    },
+    "Messages": {
+      "Copied": "Zkopírováno do schránky!",
+      "DeleteSuccess": "Pozorování úspěšně smazáno"
+    },
+    "Errors": {
+      "PeriodCompleteness": "Pole 'počáteční období' a 'koncové období' musí být vyplněna pro vyhledávání podle období"
+    },
+
+    "Commented": "komentoval(a)",
+    "ChangeStatus": "změnil(a) stav na",
+    "ModalTitle": "Informace o pozorování",
+
+    "LocationName": "Název lokality",
+    "Accuracy": "Přesnost určení",
+    "Owner": "Pozorování od",
+    "UidObs": "UUID pozorování",
+    "Habitat": "Stanoviště",
+    "InpnTaxon": "INPN stránka",
+    "GnRecord": "GeoNature stránka taxonu",
+    "ObsState": "Stav pozorování",
+    "ObsTech": "Technika pozorování",
+    "ObsStateBio": "Biologický stav",
+    "ObsStatusBio": "Biologický status",
+    "ObsStatBiogeo": "Biogeografický status",
+    "ObsBehav": "Chování",
+    "ObsSex": "Pohlaví",
+    "ObsLifeStep": "Životní etapa",
+    "DeterMeth": "Metoda určení",
+    "Form": {
+      "Validation": "Ověření",
+      "ValidationStatus": "Stav ověření",
+      "EditedDataSinceLastEdit": "Data upravena od poslední editace",
+      "FilterTaxaProfile": "Filtrovat podle profilu taxonu",
+      "Score": "Skóre",
+      "ValidPosition": "Platná lokalita",
+      "NoFilter": "Žádný filtr",
+      "ValidAltitude": "Platná nadmořská výška",
+      "ValidPhenology": "Platná fenologie",
+      "SearchedTaxa": "Hledané taxony",
+      "AdvancedFieldsSelected": "Vybraná pokročilá pole",
+      "RedListCategory": "Kategorie červeného seznamu",
+      "ProtectionStatus": "Stav ochrany",
+      "TaxrefAttributes": "TaxRef atributy"
+    },
+    "FicheTaxon": {
+      "Messages": {
+        "MessageProfil": "* Tento profil je vypočítán z platných pozorování v Synthese. Pomáhá při ověřování nových pozorování porovnáním s[...]",
+        "MessageNoProfil": "Pro tento taxon nejsou profilová data"
+      }
+    },
+    "Map": {
+      "AreasToggleBtn": "Čtverce mřížky"
+    }
+  },
+  "Media": {
+    "Medias": "Média",
+    "Media": "Médium",
+    "Actions": {
+      "Add": "Přidat médium",
+      "Edit": "Upravit médium",
+      "Valid": "Ověřit médium",
+      "Delete": "Smazat médium",
+      "Undo": "Obnovit médium",
+      "Link": "Zobrazit médium",
+      "Diaporama": "Zobrazit médium",
+      "Next": "Zobrazit další médium",
+      "Previous": "Zobrazit předchozí médium"
+    },
+    "Messages": {
+      "loading": "Načítám média"
+    },
+    "MediaType": "Typ média"
+  },
+  "Import": {
+    "Destination": "Cíl",
+    "Destinations": "Cíle",
+    "Entity": "Entita",
+    "FileUpload": "Nahrání souboru",
+    "MappingName": "Název modelu",
+    "Actions": {
+      "ChooseDataset": "Vyberte datovou sadu",
+      "ChooseDestination": "Vyberte cíl",
+      "ImportFile": "Importujte soubor (CSV)",
+      "ChooseFile": "Vyberte soubor"
+    },
+    "FileName": "Název souboru",
+    "Mapping": {
+      "Actions": {
+        "Choose": "Použít předdefinovaný importní model",
+        "Rename": "Přejmenovat model",
+        "Delete": "Smazat model",
+
+        "Update": "Aktualizovat existující model",
+        "Save": "Uložit nový model",
+        "NoSave": "Neukládat",
+        "DontSave": "Pokračovat bez uložení"
+      },
+      "Questions": {
+        "Delete?": "Chcete odstranit model?"
+      }
+    },
+    "FieldMapping": {
+      "Title": "Odpovídající pole modelu",
+      "MappingName": "Název modelu",
+      "Messages": {
+        "SourceFieldsMapped": "{{ mappedFieldsLength }} cílových polí přiřazeno zdrojovému poli.",
+        "SourceFieldsAllMapped": "Všechna {{ sourceFieldsLength }} pole v importovaném souboru byla přiřazena cílovému poli.",
+        "SourceFieldsUnmapped": "{{ unmappedFieldsLength }} pole nemá přiřazené cílové pole a bude ignorováno.",
+        "MappingNameWarning": "Pro vytvoření modelu musíte zadat název",
+        "MappingChangeNameWarning": "Změňte název pro uložení modelu",
+        "SinpUUIDWarning": "Upozornění: SINP identifikátory nebudou generovány",
+        "MappingDeleted": "Model {{label}} byl úspěšně odstraněn"
+      },
+      "Questions": {
+        "MappingCreate?": "Chcete uložit odpovídající pole do modelu pro pozdější import?",
+        "MappingChanged?": "Model byl změněn; chcete aktualizovat existující nebo vytvořit nový?"
+      },
+      "Actions": {
+        "SelectMapping": "Vyberte model",
+        "SaveMapping": "Uložit model",
+        "ConfirmMappingDeletion": "Smazat model"
+      }
+    },
+    "ContentMapping": {
+      "Title": "Odpovídající názvosloví",
+      "Messages": {
+        "NomenclatureValuesAllMapped": "Všechny hodnoty byly automaticky spárovány s názvoslovím.",
+        "OneNomenclatureValueMapped": "Pouze jedna hodnota byla automaticky spárována s názvoslovím.",
+        "RestToMapped": "{{number}} zbývá ručně přiřadit.",
+        "NumberOfNomenclatureValueAutoMapped": "{{number}} polí bylo automaticky spárováno se zdrojovým modelem.",
+        "NoNomenclatureValueCouldBeMapped": "Žádná hodnota nebyla přiřazena k názvosloví.",
+        "MissingMappingNameWarning": "Pro vytvoření modelu musíte zadat název",
+        "ChangeMappingNameWarning": "Změňte název a vytvořte model",
+        "ControlInProgress": "Kontrola souboru probíhá...",
+        "ControlNotifications": "Kontrolu nad vaším souborem o {{ nbLignes }} řádcích byla zahájena... Po dokončení vám přijde email."
+      },
+      "Questions": {
+        "SaveMappingMessage?": "Chcete uložit odpovídající pole do modelu pro pozdější import?",
+        "CreateOrUpdateMappingModel?": "Model byl změněn; chcete aktualizovat existující nebo vytvořit nový?"
+      }
+    },
+    "Errors": {
+      "Title": "Importní modul narazil na problém",
+      "Remark": "Jde o problém nezávislý na kontrole dat.",
+      "DescriptionRestart": "Po kontrole parametrů můžete zkusit import znovu.",
+      "DescriptionContactAdmin": "Pokud problém přetrvává, kontaktujte správce.",
+      "FileTooBig": "Vybraný soubor je příliš velký. Maximální velikost je {{maxFileSize}}MB",
+      "EmptyFile": "Vybraný soubor je prázdný",
+      "FileColumn": "První řádek souboru musí obsahovat názvy sloupců",
+      "FileNameTooBig": "Název souboru je příliš dlouhý. Musí mít méně než {{maxFileNameLength}} znaků."
+    },
+    "Messages": {
+      "DeleteSuccessfully": "Import byl smazán",
+      "SkipContentMapping": "V dodaných datech není žádné názvosloví, pokračuje se ke kroku 'Import dat'."
+    }
+  },
+  "Releve": {
+    "InfoGeo": "Geoinformace průzkumu"
+  }
+}
