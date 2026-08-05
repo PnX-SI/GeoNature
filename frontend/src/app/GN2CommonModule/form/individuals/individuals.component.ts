@@ -7,11 +7,12 @@ import {
   OnChanges,
   SimpleChanges,
 } from '@angular/core';
-import { UntypedFormControl } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
+import { NgbModal, NgbModalRef, NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 import { Individual } from './interfaces';
 import { IndividualsService } from './individuals.service';
-import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { tap, map } from '@librairies/rxjs/operators';
+import { tap } from '@librairies/rxjs/operators';
 
 @Component({
   selector: 'pnx-individuals',
@@ -24,35 +25,67 @@ export class IndividualsComponent implements OnInit, OnChanges {
   @Input() idList: null | string = null;
   @Input() cdNom: null | number = null;
   @Input() showAddButton: boolean = true;
+  @Input() displayAdvancedFilters: boolean = false;
+  @Input() placeholder: string = '';
+  @Input() multiselect: boolean = false;
   @Output() nbIndividuals = new EventEmitter<number>();
 
   keyLabel: string = 'individual_name';
   keyValue: string = 'id_individual';
   values: Individual[] = [];
+  public isCollapseFilters = true;
   public modal: NgbModalRef;
+
+  // Filters displayed in the advanced filters panel
+  filtersForm = new UntypedFormGroup({
+    id_nomenclature_sex: new UntypedFormControl(null),
+    cd_nom: new UntypedFormControl(null),
+  });
+  // Temporary control required by pnx-taxonomy, the resulting cd_nom is
+  // reported to filtersForm through the (onChange) event
+  taxonomyFilterControl = new UntypedFormControl(null);
 
   constructor(
     private modalService: NgbModal,
     private _individualsService: IndividualsService
   ) {}
+
   ngOnInit(): void {
-    this.getIndividuals(this.cdNom).subscribe((data) => {
+    this.filtersForm.patchValue({ cd_nom: this.cdNom }, { emitEvent: false });
+    this.refreshIndividuals();
+    this.filtersForm.valueChanges.subscribe(() => this.refreshIndividuals());
+  }
+
+  refreshIndividuals() {
+    const { cd_nom, active, id_nomenclature_sex } = this.filtersForm.value;
+    this.getIndividuals(cd_nom, active, id_nomenclature_sex).subscribe((data) => {
       this.values = data;
     });
   }
 
-  getIndividuals(cd_nom: number | null = null) {
-    return this._individualsService.getIndividuals(this.idModule, cd_nom).pipe(
-      tap((individuals: any) => {
-        this.nbIndividuals.emit(individuals.length);
-      }),
-      map((data) => {
-        return data.filter((item: any) => item.active);
-      })
-    );
+  refreshFilters() {
+    this.filtersForm.reset();
   }
 
-  openModal(content) {
+  getIndividuals(
+    cd_nom: number | null = null,
+    active: boolean | null = null,
+    id_nomenclature_sex: number | null = null
+  ) {
+    return this._individualsService
+      .getIndividuals(this.idModule, cd_nom, active, id_nomenclature_sex)
+      .pipe(
+        tap((individuals: Individual[]) => {
+          this.nbIndividuals.emit(individuals.length);
+        })
+      );
+  }
+
+  taxonFilterSelected(event: NgbTypeaheadSelectItemEvent<Taxon>) {
+    this.filtersForm.patchValue({ cd_nom: event.item.cd_nom });
+  }
+
+  openModal(content: any) {
     // if no error : open popup for changing validation status
     this.modal = this.modalService.open(content, {
       centered: true,
@@ -66,17 +99,13 @@ export class IndividualsComponent implements OnInit, OnChanges {
 
   individualCreated(value: Individual) {
     this.closeModal();
-    this.getIndividuals().subscribe((data) => {
-      this.values = data;
-      this.parentFormControl.setValue(value.id_individual);
-    });
+    this.refreshIndividuals();
+    this.parentFormControl.setValue(value.id_individual);
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.cdNom && !changes.cdNom.firstChange) {
-      this.getIndividuals(changes.cdNom.currentValue).subscribe((data) => {
-        this.values = data;
-      });
+      this.filtersForm.patchValue({ cd_nom: changes.cdNom.currentValue });
     }
   }
 }

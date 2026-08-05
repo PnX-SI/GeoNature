@@ -9,6 +9,7 @@ import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthe
 import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
+import { ModuleService } from '@geonature/services/module.service';
 
 @Component({
   selector: 'pnx-validation-taxon-advanced',
@@ -35,7 +36,8 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
     public formService: SyntheseFormService,
     public storeService: TaxonAdvancedStoreService,
     public config: ConfigService,
-    public _ds: DataFormService
+    public _ds: DataFormService,
+    public moduleService: ModuleService
   ) {
     // Set config parameters
     this.URL_AUTOCOMPLETE = this._ds.getTaxhubAPI() + '/taxref/search/lb_nom';

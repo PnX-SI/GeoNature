@@ -86,6 +86,7 @@ export class SyntheseFormService {
       period_end: null,
       municipalities: null,
       geoIntersection: null,
+      individuals: null,
       taxonomy_lr: null,
       taxonomy_id_hab: null,
       taxonomy_group2_inpn: null,

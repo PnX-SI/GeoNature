@@ -370,6 +370,13 @@
                           </div>
                         </div>
 
+                        <div *ngIf="config.OCCTAX.form_fields.individual && counting.id_individual">
+                          <div class="label">{{ 'Individual.Raw' | translate }} :</div>
+                          <div class="value">
+                            {{ counting.individual?.individual_name }}
+                          </div>
+                        </div>
+
                         <div *ngIf="config.OCCTAX.form_fields.count_min">
                           <div class="label">{{ 'Occtax.Counting.NumberMin' | translate }} :</div>
                           <div class="value">
