@@ -14,10 +14,10 @@
   },
   "private": true,
   "dependencies": {
-    "@angular-devkit/build-angular": "^15.1.2",
+    "@angular-devkit/build-angular": "^21.2.19",
     "@angular/animations": "15.1.1",
     "@angular/cdk": "^15.1.0",
-    "@angular/cli": "~15.1.2",
+    "@angular/cli": "~22.0.8",
     "@angular/common": "15.1.1",
     "@angular/compiler": "15.1.1",
     "@angular/core": "15.1.1",
@@ -65,9 +65,9 @@
     "zone.js": "^0.12.0"
   },
   "devDependencies": {
-    "@angular-devkit/core": "^15.1.2",
+    "@angular-devkit/core": "^22.0.8",
     "@angular/compiler-cli": "15.1.1",
-    "@compodoc/compodoc": "^1.1.26",
+    "@compodoc/compodoc": "^2.0.0",
     "@types/node": "^22.8.4",
     "cypress": "^13.15.1",
     "cypress-promise": "^1.1.0",
