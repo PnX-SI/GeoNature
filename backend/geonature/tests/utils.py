@@ -55,3 +55,23 @@ def dict2obj(dict_data):
         obj.__dict__[k] = dict2obj(dict_data[k])
 
     return obj
+
+
+def assert_mock_called_partial(mock, *args, **kwargs):
+    """
+    Check there is a call with at least specified args and kwargs.
+    """
+    for call in mock.call_args_list:
+        _args, _kwargs = call
+        if _args[: len(args)] == args and kwargs.items() <= _kwargs.items():
+            return call
+    raise AssertionError(f"No call found with {args} {kwargs}, call list: {mock.call_args_list}")
+
+
+def assert_mock_not_called_partial(mock, *args, **kwargs):
+    """
+    Check there is a call with at least specified args and kwargs.
+    """
+    for _args, _kwargs in mock.call_args_list:
+        if _args[: len(args)] == args and kwargs.items() <= _kwargs.items():
+            raise AssertionError(f"Call found: {_args} {_kwargs}")

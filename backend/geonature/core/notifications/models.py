@@ -143,26 +143,15 @@ class NotificationRule(db.Model):
 
     method = relationship(NotificationMethod)
     category = relationship(NotificationCategory)
-    user = db.relationship(User)
+    user = db.relationship(User, backref="notification_rules")
 
     @qfilter(query=True)
     def filter_by_role_with_defaults(cls, *, query, id_role=None):
         if id_role is None:
             id_role = g.current_user.id_role
-        cte = (
-            sa.select(NotificationRule)
-            .where(
-                sa.or_(
-                    NotificationRule.id_role.is_(None),
-                    NotificationRule.id_role == id_role,
-                )
-            )
-            .distinct(NotificationRule.code_category, NotificationRule.code_method)
-            .order_by(
-                NotificationRule.code_category.desc(),
-                NotificationRule.code_method.desc(),
-                NotificationRule.id_role.asc(),
-            )
-            .cte("cte")
-        )
-        return query.where(NotificationRule.id == cte.c.id)
+
+        # Import here to avoid circular imports
+        from geonature.core.notifications.utils import get_effective_rules
+
+        effective_rules = get_effective_rules(id_role=id_role).cte("effective_rules")
+        return query.where(NotificationRule.id == effective_rules.c.id)

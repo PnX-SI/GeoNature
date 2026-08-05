@@ -125,10 +125,13 @@ def delete_all_notifications():
 )
 @permissions.login_required
 def update_rule(code_category, code_method, subscribe):
-    if not db.session.scalar(
-        exists().where(NotificationCategory.code == str(code_category)).select()
-    ):
+    category = db.session.scalars(
+        select(NotificationCategory).where(NotificationCategory.code == str(code_category))
+    ).one_or_none()
+    if category is None:
         raise BadRequest("Invalid category")
+    if not category.is_allowed():
+        raise Forbidden("You do not have access to this category")
 
     if not db.session.scalar(exists().where(NotificationMethod.code == str(code_method)).select()):
         raise BadRequest("Invalid method")

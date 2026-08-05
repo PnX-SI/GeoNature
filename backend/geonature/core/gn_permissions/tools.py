@@ -88,7 +88,7 @@ def _get_user_permissions(id_role):
 def get_user_permissions(id_role=None):
     if id_role is None:
         id_role = g.current_user.id_role
-    if has_request_context():
+    if has_request_context() and hasattr(g, "_permissions_by_user"):
         if id_role not in g._permissions_by_user:
             g._permissions_by_user[id_role] = _get_user_permissions(id_role)
         return g._permissions_by_user[id_role]
@@ -136,7 +136,7 @@ def get_permissions(action_code, id_role=None, module_code=None, object_code=Non
             object_code = "ALL"
 
     ident = (id_role, module_code, object_code, action_code)
-    if has_request_context():
+    if has_request_context() and hasattr(g, "_permissions"):
         if ident not in g._permissions:
             g._permissions[ident] = _get_permissions(*ident)
         return g._permissions[ident]
