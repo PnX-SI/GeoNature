@@ -113,8 +113,10 @@ export class NomenclatureComponent
       const label = this.labels.find((label) => label.id_nomenclature === id);
       if (label) {
         this.currentCdNomenclature = label.cd_nomenclature;
-        this.$currentCdNomenclature.emit(this.currentCdNomenclature);
+      } else {
+        this.currentCdNomenclature = null;
       }
+      this.$currentCdNomenclature.emit(this.currentCdNomenclature);
     }
   }
 
