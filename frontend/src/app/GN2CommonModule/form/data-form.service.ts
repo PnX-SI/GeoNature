@@ -670,7 +670,7 @@ export class DataFormService {
               objects: data.objects,
               modules: data.modules,
               datasets: data.datasets,
-              key_value: data.type_widget.widget_name === 'nomenclature' ? 'label_default' : null,
+              key_value: data.type_widget.widget_name === 'nomenclature' ? 'id_nomenclature' : null,
               ...data.additional_attributes,
             };
           });
