@@ -104,7 +104,8 @@
         "LifeStageRequiredError": "Please indicate the life stage",
         "SexRequiredError": "Please indicate the sex",
         "CountingObjectRequiredError": "Please indicate the count object"
-      }
+      },
+      "IndividualName": "Individual name"
     }
   }
 }

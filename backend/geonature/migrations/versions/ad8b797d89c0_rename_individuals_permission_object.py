@@ -1,4 +1,4 @@
-"""rename INDIVIDUALS permission object
+"""[individual] rename INDIVIDUALS permission object
 
 Revision ID: ad8b797d89c0
 Revises: daeaa45e4cc0

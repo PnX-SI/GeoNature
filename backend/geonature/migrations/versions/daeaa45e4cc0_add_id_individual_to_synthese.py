@@ -1,4 +1,4 @@
-"""add id_individual to synthese
+"""[individual] add id_individual to synthese
 
 Revision ID: daeaa45e4cc0
 Revises: ae0b6362fb22

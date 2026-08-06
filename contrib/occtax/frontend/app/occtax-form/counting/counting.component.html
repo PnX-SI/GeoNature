@@ -37,7 +37,7 @@
       [parentFormControl]="form.get('id_individual')"
       [cdNom]="(occtaxFormOccurrenceService.taxref | async)?.cd_nom"
       [showAddButton]="false"
-      label="{{ 'Individual' | translate }}"
+      label="{{ 'Occtax.Counting.IndividualName' | translate }}"
       (nbIndividuals)="setNbIndiv($event)"
     ></pnx-individuals>
   </div>

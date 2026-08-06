@@ -106,7 +106,8 @@
         "LifeStageRequiredError": "Veuillez indiquer le stade de vie",
         "SexRequiredError": "Veuillez indiquer le sexe",
         "CountingObjectRequiredError": "Veuillez indiquer l'objet du dénombrement"
-      }
+      },
+      "IndividualName": "Nom de l'individu"
     }
   }
 }
