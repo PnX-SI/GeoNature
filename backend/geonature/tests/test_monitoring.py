@@ -111,7 +111,7 @@ class TestMonitoring:
         set_logged_user_cookie(self.client, users["self_user"])
 
         response = self.client.get(
-            url_for("gn_monitoring.get_individuals", id_module=module.id_module)
+            url_for("gn_monitoring.get_individuals", module_code=module.module_code)
         )
         assert response.status_code == Forbidden.code
 
@@ -126,7 +126,7 @@ class TestMonitoring:
         )
 
         response = self.client.get(
-            url_for("gn_monitoring.get_individuals", id_module=module.id_module)
+            url_for("gn_monitoring.get_individuals", module_code=module.module_code)
         )
         resp_json = response.json
         not_expected_individual_uuid = {individuals[1].uuid_individual}
@@ -143,7 +143,7 @@ class TestMonitoring:
         set_logged_user_cookie(self.client, user)
 
         response = self.client.get(
-            url_for("gn_monitoring.get_individuals", id_module=module.id_module)
+            url_for("gn_monitoring.get_individuals", module_code=module.module_code)
         )
 
         assert response.status_code == Forbidden.code
@@ -163,7 +163,7 @@ class TestMonitoring:
         )
 
         response = self.client.get(
-            url_for("gn_monitoring.get_individuals", id_module=module.id_module)
+            url_for("gn_monitoring.get_individuals", module_code=module.module_code)
         )
         resp_json = response.json
         not_expected_individual_uuid = {individuals[1].uuid_individual}
