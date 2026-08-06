@@ -20,7 +20,7 @@ import { tap } from '@librairies/rxjs/operators';
 })
 export class IndividualsComponent implements OnInit, OnChanges {
   @Input() parentFormControl: UntypedFormControl;
-  @Input() idModule: number;
+  @Input() moduleCode: string;
   @Input() label: string;
   @Input() idList: null | string = null;
   @Input() cdNom: null | number = null;
@@ -73,7 +73,7 @@ export class IndividualsComponent implements OnInit, OnChanges {
     id_nomenclature_sex: number | null = null
   ) {
     return this._individualsService
-      .getIndividuals(this.idModule, cd_nom, active, id_nomenclature_sex)
+      .getIndividuals(this.moduleCode, cd_nom, active, id_nomenclature_sex)
       .pipe(
         tap((individuals: Individual[]) => {
           this.nbIndividuals.emit(individuals.length);

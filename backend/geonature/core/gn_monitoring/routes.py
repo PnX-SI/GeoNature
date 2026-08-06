@@ -115,16 +115,16 @@ def get_site_areas(id_site):
     return FeatureCollection(features)
 
 
-@routes.route("/individuals/<int:id_module>", methods=["GET"])
+@routes.route("/individuals/<string:module_code>", methods=["GET"])
 @login_required
-def get_individuals(id_module):
+def get_individuals(module_code):
     """
     Return individuals based on a module id.
 
     Parameters
     ----------
-    id_module : int
-        id_module is used to get the permission scope
+    module_code : str
+        module_code is used to get the permission scope
 
     Http Params
     -----------
@@ -147,10 +147,11 @@ def get_individuals(id_module):
     id_nomenclature_sex = params.get("id_nomenclature_sex", None)
     action = "R"
     object_code = "INDIVIDUALS"
-    module = DB.session.get(TModules, id_module)
+    module = DB.session.execute(
+        select(TModules).where(TModules.module_code == module_code)
+    ).scalar_one_or_none()
     if module is None:
         raise NotFound("Module not found")
-    module_code = module.module_code
     current_user = g.current_user
 
     max_scope = get_scope(
@@ -160,7 +161,9 @@ def get_individuals(id_module):
         raise Forbidden(description=_forbidden_message(action, module_code, object_code))
 
     # TODO: do not filter if module is "individual" when individual module will be in core
-    query = select(TIndividuals).where(TIndividuals.modules.any(TModules.id_module == id_module))
+    query = select(TIndividuals)
+    if module_code != "SYNTHESE":
+        query = query.where(TIndividuals.modules.any(TModules.id_module == module.id_module))
     if cd_nom:
         query = query.where(TIndividuals.taxon.has(Taxref.cd_nom == cd_nom))
     if active is not None:

@@ -33,7 +33,7 @@
   >
     <pnx-individuals
       [hidden]="nbIndiv === 0 || cdNomenclatureObjDen !== 'IND'"
-      [idModule]="moduleService.currentModule.id_module"
+      moduleCode="OCCTAX"
       [parentFormControl]="form.get('id_individual')"
       [cdNom]="(occtaxFormOccurrenceService.taxref | async)?.cd_nom"
       [showAddButton]="moduleService.currentModule.module_objects.INDIVIDUALS.cruved.C > 0"
