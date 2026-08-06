@@ -97,7 +97,10 @@
                       <div *ngIf="dynamiqueField.type_widget != 'html'">
                         <div class="label">{{ dynamiqueField.attribut_label }} :</div>
                         <div class="value">
-                          {{ releve?.additional_fields[dynamiqueField.attribut_name] }}
+                          {{
+                            releve?.additional_fields
+                              | additionalFieldValue: dynamiqueField.attribut_name
+                          }}
                         </div>
                       </div>
                     </ng-container>
@@ -323,9 +326,8 @@
                           <div class="label">{{ dynamiqueField.attribut_label }} :</div>
                           <div class="value">
                             {{
-                              (displayOccurrence | async)?.additional_fields[
-                                dynamiqueField.attribut_name
-                              ]
+                              (displayOccurrence | async)?.additional_fields
+                                | additionalFieldValue: dynamiqueField.attribut_name
                             }}
                           </div>
                         </div>
@@ -413,7 +415,10 @@
                           <div>
                             <div class="label">{{ dynamiqueField.attribut_label }} :</div>
                             <div class="value">
-                              {{ counting?.additional_fields[dynamiqueField.attribut_name] }}
+                              {{
+                                counting?.additional_fields
+                                  | additionalFieldValue: dynamiqueField.attribut_name
+                              }}
                             </div>
                           </div>
                         </ng-container>

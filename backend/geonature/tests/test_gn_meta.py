@@ -16,8 +16,9 @@ from geonature.core.gn_meta.repositories import (
     cruved_ds_filter,
 )
 from geonature.core.gn_meta.routes import get_af_from_id
-from geonature.core.gn_meta.schemas import DatasetSchema
+from geonature.core.gn_meta.schemas import AcquisitionFrameworkSchema, DatasetSchema
 from geonature.core.gn_synthese.models import Synthese
+from geonature.core.schemas import AdditionnalDataDuplicateField
 from geonature.utils.env import db
 from pypnusershub.schemas import UserSchema
 from ref_geo.models import BibAreasTypes, LAreas
@@ -144,6 +145,29 @@ def get_csv_from_response(data):
     with StringIO(csv_data) as f:
         for i, row in enumerate(csv.DictReader(f, delimiter=";")):
             yield i, row
+
+
+def test_dataset_schema_additional_data_field():
+    """
+    DatasetSchema.additional_data must be an AdditionnalDataDuplicateField
+    scoped to METADATA / METADATA_JEU_DE_DONNEES, not a plain Dict field.
+    """
+    field = DatasetSchema()._declared_fields["additional_data"]
+    assert isinstance(field, AdditionnalDataDuplicateField)
+    assert field.module_code == "METADATA"
+    assert field.object_code == "METADATA_JEU_DE_DONNEES"
+
+
+def test_acquisition_framework_schema_additional_data_field():
+    """
+    AcquisitionFrameworkSchema.additional_data must be an
+    AdditionnalDataDuplicateField scoped to METADATA / METADATA_CADRE_ACQUISITION,
+    not a plain Dict field.
+    """
+    field = AcquisitionFrameworkSchema()._declared_fields["additional_data"]
+    assert isinstance(field, AdditionnalDataDuplicateField)
+    assert field.module_code == "METADATA"
+    assert field.object_code == "METADATA_CADRE_ACQUISITION"
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
@@ -888,7 +912,7 @@ class TestGNMeta:
         assert response.status_code == 400
         assert response.json["description"].get("active")
 
-    def test_get_dataset(self, users, datasets, additional_fields):
+    def test_get_dataset(self, users, datasets, additional_fields, first_nomenclature):
         ds = datasets["own_dataset"]
 
         response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=ds.id_dataset))
@@ -910,7 +934,8 @@ class TestGNMeta:
         assert DatasetSchema().validate(response.json)
         assert response.json["additional_data"] == {
             "select_field_used": "value1",
-            "nomenclature_field_used": "Valeur De Nomenclature",
+            "nomenclature_field_used": first_nomenclature.id_nomenclature,
+            "_label_nomenclature_field_used": first_nomenclature.label_default,
             "text_field_used": "test",
             "date_field_used": {"day": 31, "year": 2025, "month": 10},
             "number_field_used": 1,

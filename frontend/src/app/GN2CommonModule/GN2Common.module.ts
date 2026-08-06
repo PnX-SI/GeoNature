@@ -96,10 +96,12 @@ import { SheetLayoutComponent } from './layouts/sheet-layout/sheet-layout.compon
 import { TabsLayoutComponent } from './layouts/tabs-layout/tabs-layout.component';
 
 // Directives
+import { AdditionalFieldsDirective } from './directive/additional-fields.directive';
 import { DisableControlDirective } from './form/disable-control.directive';
 import { DisplayMouseOverDirective } from './directive/display-mouse-over.directive';
 
 // Pipes
+import { AdditionalFieldValuePipe } from './pipe/additional-field-value.pipe';
 import { ReadablePropertiePipe } from './pipe/readable-propertie.pipe';
 import { SafeHtmlPipe } from './pipe/sanitizer.pipe';
 import { SafeStripHtmlPipe } from './pipe/strip-html.pipe';
@@ -156,6 +158,8 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
   ],
   declarations: [
     AcquisitionFrameworksComponent,
+    AdditionalFieldsDirective,
+    AdditionalFieldValuePipe,
     AdvancedSectionComponent,
     AreasComponent,
     NomenclatureComponent,
@@ -239,6 +243,8 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
   ],
   exports: [
     AcquisitionFrameworksComponent,
+    AdditionalFieldsDirective,
+    AdditionalFieldValuePipe,
     AdvancedSectionComponent,
     AreasComponent,
     MunicipalitiesComponent,

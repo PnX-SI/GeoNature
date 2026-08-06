@@ -1,8 +1,11 @@
+import csv
+from io import StringIO
 from typing import Any
-from geonature.core.gn_commons.models.base import TModules
+from geonature.core.gn_commons.models.base import TModules, BibWidgets
 from geonature.core.gn_commons.models.additional_fields import TAdditionalFields
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_permissions.models import PermissionAvailable, PermObject
+from pypnnomenclature.models import TNomenclatures
 import pytest
 
 
@@ -12,6 +15,7 @@ from sqlalchemy import func, select
 from click.testing import CliRunner
 
 from geonature.core.gn_synthese.models import Synthese
+from geonature.core.schemas import AdditionnalDataDuplicateField
 from geonature.utils.env import db
 from geonature.utils.config import config
 from .utils import set_logged_user
@@ -26,7 +30,7 @@ from occtax.models import (
     TOccurrencesOccurrence,
     CorCountingOccurrence,
 )
-from occtax.schemas import OccurrenceSchema, ReleveSchema
+from occtax.schemas import CountingSchema, OccurrenceSchema, ReleveSchema
 from occtax.commands import add_submodule_permissions
 
 
@@ -204,6 +208,118 @@ def additional_field(app, datasets):
     return additional_field
 
 
+@pytest.fixture(scope="function")
+def additional_field_nomenclature(app, datasets):
+    """
+    Nomenclature-widget additional field on OCCTAX_OCCURENCE, restricted to
+    datasets["own_dataset"] only, used to check that CSV export replaces the
+    nomenclature id with its label.
+    """
+    module = db.session.execute(
+        select(TModules).where(TModules.module_code == "OCCTAX")
+    ).scalar_one()
+    obj = db.session.execute(
+        select(PermObject).where(PermObject.code_object == "OCCTAX_OCCURENCE")
+    ).scalar_one()
+    nomenclature_widget = db.session.execute(
+        select(BibWidgets).where(BibWidgets.widget_name == "nomenclature")
+    ).scalar_one()
+    additional_field = TAdditionalFields(
+        field_name="occurrence_nomenclature_export_field",
+        field_label="Champ nomenclature export",
+        required=False,
+        id_widget=nomenclature_widget.id_widget,
+        modules=[module],
+        objects=[obj],
+        datasets=[datasets["own_dataset"]],
+    )
+    with db.session.begin_nested():
+        db.session.add(additional_field)
+    return additional_field
+
+
+@pytest.fixture(scope="function")
+def additional_fields_releve(app, datasets):
+    """
+    Additional fields scoped to module OCCTAX / object OCCTAX_RELEVE, used to
+    test AdditionnalDataDuplicateField on ReleveSchema.
+    """
+    module = db.session.execute(
+        select(TModules).where(TModules.module_code == "OCCTAX")
+    ).scalar_one()
+    obj = db.session.execute(
+        select(PermObject).where(PermObject.code_object == "OCCTAX_RELEVE")
+    ).scalar_one()
+    text_widget = db.session.execute(
+        select(BibWidgets).where(BibWidgets.widget_name == "text")
+    ).scalar_one()
+    nomenclature_widget = db.session.execute(
+        select(BibWidgets).where(BibWidgets.widget_name == "nomenclature")
+    ).scalar_one()
+    datasets = list(datasets.values())
+
+    text_field = TAdditionalFields(
+        field_name="releve_text_field",
+        field_label="Champ texte",
+        required=False,
+        id_widget=text_widget.id_widget,
+        modules=[module],
+        objects=[obj],
+        datasets=datasets,
+    )
+    nomenclature_field = TAdditionalFields(
+        field_name="releve_nomenclature_field",
+        field_label="Champ nomenclature",
+        required=False,
+        id_widget=nomenclature_widget.id_widget,
+        modules=[module],
+        objects=[obj],
+        datasets=datasets,
+    )
+    with db.session.begin_nested():
+        db.session.add_all([text_field, nomenclature_field])
+    return {"text": text_field, "nomenclature": nomenclature_field}
+
+
+@pytest.fixture(scope="function")
+def additional_fields_occtax_nomenclature(app, datasets):
+    """
+    One nomenclature-widget additional field per OccTax object
+    (releve / occurrence / counting), used to test that
+    insertOrUpdateOneReleve duplicates nomenclature additional fields with a
+    "_label_" prefixed key.
+    """
+    module = db.session.execute(
+        select(TModules).where(TModules.module_code == "OCCTAX")
+    ).scalar_one()
+    nomenclature_widget = db.session.execute(
+        select(BibWidgets).where(BibWidgets.widget_name == "nomenclature")
+    ).scalar_one()
+    datasets = list(datasets.values())
+
+    fields = {}
+    for key, code_object, field_name in [
+        ("releve", "OCCTAX_RELEVE", "releve_nomenclature_field"),
+        ("occurrence", "OCCTAX_OCCURENCE", "occurrence_nomenclature_field"),
+        ("counting", "OCCTAX_DENOMBREMENT", "counting_nomenclature_field"),
+    ]:
+        obj = db.session.execute(
+            select(PermObject).where(PermObject.code_object == code_object)
+        ).scalar_one()
+        fields[key] = TAdditionalFields(
+            field_name=field_name,
+            field_label=field_name,
+            required=False,
+            id_widget=nomenclature_widget.id_widget,
+            modules=[module],
+            objects=[obj],
+            datasets=datasets,
+        )
+    with db.session.begin_nested():
+        db.session.add_all(fields.values())
+    return fields
+
+
 @pytest.fixture()
 def media_in_export_enabled(monkeypatch):
     monkeypatch.setitem(current_app.config["OCCTAX"], "ADD_MEDIA_IN_EXPORT", True)
@@ -261,6 +377,23 @@ def unexisting_id_releve():
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction", "datasets")
 class TestOcctaxReleve:
+    def test_occtax_schemas_additional_fields_field(self, occtax_module):
+        """
+        ReleveSchema/OccurrenceSchema/CountingSchema.additional_fields must be
+        AdditionnalDataDuplicateField instances scoped to the right object_code,
+        not plain Dict fields.
+        """
+        g.current_module = occtax_module
+        expected = {
+            ReleveSchema: "OCCTAX_RELEVE",
+            OccurrenceSchema: "OCCTAX_OCCURENCE",
+            CountingSchema: "OCCTAX_DENOMBREMENT",
+        }
+        for schema_cls, object_code in expected.items():
+            field = schema_cls()._declared_fields["additional_fields"]
+            assert isinstance(field, AdditionnalDataDuplicateField)
+            assert field.object_code == object_code
+
     def test_get_releve(self, users: dict, releve_occtax: Any):
         set_logged_user(self.client, users["user"])
 
@@ -298,9 +431,102 @@ class TestOcctaxReleve:
         )
         assert response.status_code == 200
 
-    def test_insertOrUpdate_releve(
-        self, users: dict, releve_mobile_data: dict[str, dict[str, Any]]
+    def test_releve_additional_fields_load(
+        self,
+        app: Flask,
+        users: dict,
+        releve_data: dict[str, Any],
+        occtax_module: Any,
+        additional_fields_releve: dict[str, TAdditionalFields],
     ):
+        """
+        ReleveSchema.load() must duplicate nomenclature additional fields with a
+        "_label_" prefixed key holding the nomenclature default label -- this is
+        where additional_fields values get persisted to DB, dump is left untouched
+        -- and leave non-nomenclature additional fields untouched.
+        """
+        g.current_module = occtax_module
+        text_field = additional_fields_releve["text"]
+        nomenclature_field = additional_fields_releve["nomenclature"]
+        nomenclature = db.session.execute(select(TNomenclatures).limit(1)).scalar_one()
+
+        data = releve_data["properties"]
+        data["geom_4326"] = releve_data["geometry"]
+        data["observers"] = [users["user"].id_role]
+        data["additional_fields"] = {
+            text_field.field_name: "some value",
+            nomenclature_field.field_name: nomenclature.id_nomenclature,
+        }
+
+        releve = ReleveSchema().load(data)
+
+        assert releve.additional_fields[text_field.field_name] == "some value"
+        assert (
+            releve.additional_fields[nomenclature_field.field_name] == nomenclature.id_nomenclature
+        )
+        assert (
+            releve.additional_fields["_label_" + nomenclature_field.field_name]
+            == nomenclature.label_default
+        )
+        assert "_label_" + text_field.field_name not in releve.additional_fields
+
+    def test_releve_additional_fields_load_unknown_nomenclature(
+        self,
+        app: Flask,
+        users: dict,
+        releve_data: dict[str, Any],
+        occtax_module: Any,
+        additional_fields_releve: dict[str, TAdditionalFields],
+    ):
+        """
+        When the posted value does not match any existing nomenclature, no
+        "_label_" key should be added.
+        """
+        g.current_module = occtax_module
+        nomenclature_field = additional_fields_releve["nomenclature"]
+        unexisting_id_nomenclature = (
+            db.session.execute(select(func.max(TNomenclatures.id_nomenclature))).scalar() or 0
+        ) + 1
+
+        data = releve_data["properties"]
+        data["geom_4326"] = releve_data["geometry"]
+        data["observers"] = [users["user"].id_role]
+        data["additional_fields"] = {
+            nomenclature_field.field_name: unexisting_id_nomenclature,
+        }
+
+        releve = ReleveSchema().load(data)
+
+        assert releve.additional_fields[nomenclature_field.field_name] == (
+            unexisting_id_nomenclature
+        )
+        assert "_label_" + nomenclature_field.field_name not in releve.additional_fields
+
+    def test_insertOrUpdate_releve(
+        self,
+        users: dict,
+        releve_mobile_data: dict[str, dict[str, Any]],
+        additional_fields_occtax_nomenclature: dict[str, TAdditionalFields],
+    ):
+        """
+        insertOrUpdateOneReleve must duplicate nomenclature additional fields
+        (on the releve, its occurrences and their countings) with a
+        "_label_" prefixed key holding the nomenclature default label.
+        """
+        releve_field = additional_fields_occtax_nomenclature["releve"]
+        occurrence_field = additional_fields_occtax_nomenclature["occurrence"]
+        counting_field = additional_fields_occtax_nomenclature["counting"]
+        nomenclature = db.session.execute(select(TNomenclatures).limit(1)).scalar_one()
+
+        releve_mobile_data["properties"]["additional_fields"] = {
+            releve_field.field_name: nomenclature.id_nomenclature,
+        }
+        occ = releve_mobile_data["properties"]["t_occurrences_occtax"][0]
+        occ["additional_fields"] = {occurrence_field.field_name: nomenclature.id_nomenclature}
+        occ["cor_counting_occtax"][0]["additional_fields"] = {
+            counting_field.field_name: nomenclature.id_nomenclature
+        }
+
         set_logged_user(self.client, users["stranger_user"])
         response = self.client.post(
             url_for("pr_occtax.insertOrUpdateOneReleve"), json=releve_mobile_data
@@ -314,6 +540,30 @@ class TestOcctaxReleve:
         assert response.status_code == 200
         result = db.get_or_404(TRelevesOccurrence, response.json["id"])
         assert result
+
+        assert result.additional_fields[releve_field.field_name] == nomenclature.id_nomenclature
+        assert (
+            result.additional_fields["_label_" + releve_field.field_name]
+            == nomenclature.label_default
+        )
+        occurrence_result = result.t_occurrences_occtax[0]
+        assert (
+            occurrence_result.additional_fields[occurrence_field.field_name]
+            == nomenclature.id_nomenclature
+        )
+        assert (
+            occurrence_result.additional_fields["_label_" + occurrence_field.field_name]
+            == nomenclature.label_default
+        )
+        counting_result = occurrence_result.cor_counting_occtax[0]
+        assert (
+            counting_result.additional_fields[counting_field.field_name]
+            == nomenclature.id_nomenclature
+        )
+        assert (
+            counting_result.additional_fields["_label_" + counting_field.field_name]
+            == nomenclature.label_default
+        )
 
         # Passage en Update
         releve_mobile_data["properties"]["altitude_min"] = 200
@@ -381,6 +631,35 @@ class TestOcctaxReleve:
         releve_data["properties"]["date_min"] = None
         response = self.client.post(url_for("pr_occtax.createReleve"), json=releve_data)
         assert response.status_code == BadRequest.code
+
+    def test_post_releve_additional_fields_nomenclature(
+        self,
+        users: dict,
+        releve_data: dict[str, Any],
+        additional_fields_releve: dict[str, TAdditionalFields],
+    ):
+        """
+        POST pr_occtax.createReleve must duplicate nomenclature additional
+        fields in its response, adding a "_label_" prefixed key holding the
+        nomenclature default label.
+        """
+        nomenclature_field = additional_fields_releve["nomenclature"]
+        nomenclature = db.session.execute(select(TNomenclatures).limit(1)).scalar_one()
+
+        set_logged_user(self.client, users["user"])
+        releve_data["properties"]["additional_fields"] = {
+            nomenclature_field.field_name: nomenclature.id_nomenclature,
+        }
+
+        response = self.client.post(url_for("pr_occtax.createReleve"), json=releve_data)
+
+        assert response.status_code == 200
+        additional_fields = response.json["properties"]["additional_fields"]
+        assert additional_fields[nomenclature_field.field_name] == nomenclature.id_nomenclature
+        assert (
+            additional_fields["_label_" + nomenclature_field.field_name]
+            == nomenclature.label_default
+        )
 
     def test_post_releve_in_module_bis(
         self,
@@ -775,10 +1054,20 @@ class TestOcctaxGetReleveFilter:
         users: dict,
         datasets: dict[Any, TDatasets],
         additional_field,
+        additional_field_nomenclature,
         occurrence,
         media_in_export_enabled,
     ):
-        # FIX ME: CHECK CONTENT
+        nomenclature = db.session.execute(select(TNomenclatures).limit(1)).scalar_one()
+        field_name = additional_field_nomenclature.field_name
+        occurrence.additional_fields = {
+            **(occurrence.additional_fields or {}),
+            field_name: nomenclature.id_nomenclature,
+            "_label_" + field_name: nomenclature.label_default,
+        }
+        db.session.add(occurrence)
+        db.session.flush()
+
         set_logged_user(self.client, users["user"])
         response = self.client.get(
             url_for(
@@ -786,6 +1075,16 @@ class TestOcctaxGetReleveFilter:
             ),
         )
         assert response.status_code == 200
+
+        # the additional nomenclature field must be exported with its label,
+        # not the raw id_nomenclature
+        csv_reader = csv.DictReader(StringIO(response.data.decode("utf-8")), delimiter=";")
+        rows = list(csv_reader)
+        assert field_name in csv_reader.fieldnames
+        assert len(rows) >= 1
+        for row in rows:
+            assert row[field_name] == nomenclature.label_default
+            assert row[field_name] != str(nomenclature.id_nomenclature)
 
         response = self.client.get(
             url_for("pr_occtax.export", id_dataset=datasets["own_dataset"].id_dataset),
