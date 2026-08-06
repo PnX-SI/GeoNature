@@ -208,7 +208,7 @@ def additional_field(app, datasets):
 def additional_fields_releve(app, datasets):
     """
     Additional fields scoped to module OCCTAX / object OCCTAX_RELEVE, used to
-    test AdditionnalSchemaDuplicateField on ReleveSchema.
+    test AdditionnalDataDuplicateField on ReleveSchema.
     """
     module = db.session.execute(
         select(TModules).where(TModules.module_code == "OCCTAX")

@@ -13,6 +13,7 @@ from geonature.utils.env import MA, db
 from geonature.utils.schema import CruvedSchemaMixin
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_commons.schemas import ModuleSchema
+from geonature.core.schemas import AdditionnalDataDuplicateField
 
 # Note: import of SourceSchema is importent as it trigger import of synthese models
 # which define TDatasets.sources and TDatasets.nb_observations_synthese, and these must be
@@ -72,6 +73,7 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
     )
 
     creator = MA.Nested(UserSchema, dump_only=True)
+    additional_data = AdditionnalDataDuplicateField(module_code="METADATA", object_code="METADATA_JEU_DE_DONNEES")
     nomenclature_data_type = MA.Nested(NomenclatureSchema, dump_only=True)
     nomenclature_collecting_method = MA.Nested(NomenclatureSchema, dump_only=True)
     nomenclature_data_origin = MA.Nested(NomenclatureSchema, dump_only=True)
@@ -199,6 +201,8 @@ class AcquisitionFrameworkSchema(
     # omit — see TAcquisitionFramework model for the defaults.
     unique_acquisition_framework_id = MA.auto_field(required=False, allow_none=True)
     acquisition_framework_start_date = MA.auto_field(required=False)
+    additional_data = AdditionnalDataDuplicateField(module_code="METADATA", object_code="METADATA_CADRE_ACQUISITION")
+
     t_datasets = MA.Nested(DatasetSchema, many=True)
     datasets = MA.Nested(DatasetSchema, many=True)
     bibliographical_references = MA.Nested(BibliographicReferenceSchema, many=True)
