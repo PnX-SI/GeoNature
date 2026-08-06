@@ -48,10 +48,16 @@
     [clearable]="true"
     [virtualScroll]="true"
     [formControl]="parentFormControl"
-    style="width:'85%'"
+    style="width: '85%'"
   >
-    <ng-template *ngIf="showAddButton" ng-footer-tmp>
-      <button class="btn btn-sm btn-link" (click)="openModal(content)">
+    <ng-template
+      *ngIf="showAddButton"
+      ng-footer-tmp
+    >
+      <button
+        class="btn btn-sm btn-link"
+        (click)="openModal(content)"
+      >
         + Ajouter un individu
       </button>
     </ng-template>

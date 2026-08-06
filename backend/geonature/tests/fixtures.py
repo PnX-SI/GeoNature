@@ -74,6 +74,7 @@ __all__ = [
     "add_synthese_read_permissions",
     "synthese_module",
     "individuals",
+    "individual",
 ]
 
 
@@ -570,6 +571,11 @@ def individuals(users):
         db.session.add(individual)
         db.session.add(individual2)
     return [individual, individual2]
+
+
+@pytest.fixture(scope="class")
+def individual(individuals):
+    return individuals[0]
 
 
 @pytest.fixture(scope="class")
