@@ -1,4 +1,4 @@
-"""add individual object on synthese
+"""[individual] add individual object on synthese
 
 Revision ID: 4c9e74ffc27e
 Revises: ad8b797d89c0

@@ -274,6 +274,7 @@ class Synthese(DB.Model):
     )
     id_individual = DB.Column(DB.Integer, ForeignKey(TIndividuals.id_individual))
     individual = DB.relationship(TIndividuals)
+    
     grp_method = DB.Column(DB.Unicode(length=255))
 
     id_nomenclature_geo_object_nature = db.Column(

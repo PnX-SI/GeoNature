@@ -118,14 +118,16 @@ def get_site_areas(id_site):
 @routes.route("/individuals/<int:id_module>", methods=["GET"])
 @login_required
 def get_individuals(id_module):
-    """_summary_
+    """
+    Return individuals based on a module id.
 
     Parameters
     ----------
     id_module : int
         id_module is used to get the permission scope
 
-    # Query string :
+    Http Params
+    -----------
     id_module_filter : int
         use to filter with cor_individual_module
 
@@ -135,9 +137,6 @@ def get_individuals(id_module):
         list of individuals
 
     """
-    params = request.args
-    id_module_filter = params.get("id_module_filter", None)
-    cd_nom = params.get("cd_nom", None)
     action = "R"
     object_code = "INDIVIDUALS"
     module = DB.session.get(TModules, id_module)
@@ -145,15 +144,19 @@ def get_individuals(id_module):
         raise NotFound("Module not found")
     module_code = module.module_code
     current_user = g.current_user
+
+    params = request.args
+    id_module_filter = params.get("id_module_filter",default=0,type=int)
+    cd_nom = params.get("cd_nom", None)
+
+
     max_scope = get_scope(
         action, id_role=current_user.id_role, module_code=module_code, object_code=object_code
     )
-
     if not max_scope:
         raise Forbidden(description=_forbidden_message(action, module_code, object_code))
 
-    # FIXME: when all sqlalchemy 2.0 PR are merged, update it to fit the good practices
-    # like @qfilter etc...
+
     query = select(TIndividuals)
     if id_module_filter:
         query = query.where(TIndividuals.modules.any(TModules.id_module == id_module_filter))
