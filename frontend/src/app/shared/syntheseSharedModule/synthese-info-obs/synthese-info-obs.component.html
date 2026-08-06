@@ -362,10 +362,16 @@
             <td>Identifiant unique SINP</td>
             <td>{{ selectedObs?.unique_id_sinp }}</td>
           </tr>
-          <tr>
-            <td>Champs additionnels</td>
-            <td>{{ selectedObs?.additional_data | json }}</td>
+          <tr class="bg-info font-weight-bold">
+            <td>Champs additionnels :</td>
+            <td></td>
           </tr>
+          <ng-container *additionalFields="let field of selectedObs?.additional_data">
+            <tr>
+              <td>{{ field.label | titlecase }}</td>
+              <td>{{ field.value }}</td>
+            </tr>
+          </ng-container>
         </table>
       </ng-container>
       <!-- </mat-tab> -->
