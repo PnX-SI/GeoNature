@@ -11,7 +11,7 @@ export class IndividualsService {
   ) {}
 
   getIndividuals(
-    idModule: number,
+    moduleCode: string,
     cd_nom: number | null = null,
     active: boolean | null = null,
     id_nomenclature_sex: number | null = null
@@ -27,15 +27,15 @@ export class IndividualsService {
       queryString = queryString.set('id_nomenclature_sex', id_nomenclature_sex);
     }
     return this._http.get<Individual[]>(
-      `${this.config.API_ENDPOINT}/gn_monitoring/individuals/${idModule}`,
+      `${this.config.API_ENDPOINT}/gn_monitoring/individuals/${moduleCode}`,
       { params: queryString }
     );
   }
 
-  postIndividual(value: Individual, idModule: number) {
+  postIndividual(value: Individual, moduleCode: string) {
     return this._http.post<Individual>(
-      `${this.config.API_ENDPOINT}/gn_monitoring/individual/${idModule}`,
-      { ...value, id_modules: [idModule] }
+      `${this.config.API_ENDPOINT}/gn_monitoring/individual/${moduleCode}`,
+      { ...value, id_modules: value.id_modules ?? [] }
     );
   }
 }
