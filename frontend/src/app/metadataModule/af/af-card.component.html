@@ -277,7 +277,7 @@
                 [attr.data-qa]="'pnx-metadata-additional-field-' + additionalField.attribut_name"
               >
                 <b>{{ additionalField.attribut_label }} :</b>
-                {{ af?.additional_data[additionalField.attribut_name] }}
+                {{ af?.additional_data | additionalFieldValue:additionalField.attribut_name }}
               </div>
             </div>
           </ng-container>
