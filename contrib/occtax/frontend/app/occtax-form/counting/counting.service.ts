@@ -68,23 +68,25 @@ export class OcctaxFormCountingService {
     )
       .pipe(
         tap(([counting, additional_fields]) => {
-          //manage additional_fields
-          additional_fields.forEach((field) => {
-            //Formattage des dates
-            if (field.type_widget == 'date') {
-              //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
-              if (typeof counting.additional_fields[field.attribut_name] !== 'object') {
-                counting.additional_fields[field.attribut_name] = this.occtaxFormService.formatDate(
-                  counting.additional_fields[field.attribut_name]
-                );
+          if(counting.additional_fields) {
+            //manage additional_fields
+            additional_fields.forEach((field) => {
+              //Formattage des dates
+              if (field.type_widget == 'date') {
+                //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
+                if (typeof counting.additional_fields[field.attribut_name] !== 'object') {
+                  counting.additional_fields[field.attribut_name] = this.occtaxFormService.formatDate(
+                    counting.additional_fields[field.attribut_name]
+                  );
+                }
               }
-            }
-
-            //set value of field (eq patchValue)
-            if (counting.additional_fields[field.attribut_name] !== undefined) {
-              field.value = counting.additional_fields[field.attribut_name];
-            }
-          });
+  
+              //set value of field (eq patchValue)
+              if (counting.additional_fields[field.attribut_name] !== undefined) {
+                field.value = counting.additional_fields[field.attribut_name];
+              }
+            });
+          }
 
           return [counting, additional_fields];
         }),

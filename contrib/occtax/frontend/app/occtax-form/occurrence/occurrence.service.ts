@@ -123,24 +123,27 @@ export class OcctaxFormOccurrenceService {
           return [occurrence, additional_fields];
         }),
         tap(([occurrence, additional_fields]) => {
-          //manage occ_additional_f
-          additional_fields.forEach((field) => {
-            //Formattage des dates
-            if (field.type_widget == 'date') {
-              //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
-              if (typeof occurrence.additional_fields[field.attribut_name] !== 'object') {
-                occurrence.additional_fields[field.attribut_name] =
-                  this.occtaxFormService.formatDate(
-                    occurrence.additional_fields[field.attribut_name]
-                  );
+          if(occurrence.additional_fields) {
+            //manage occ_additional_f
+            additional_fields.forEach((field) => {
+              //Formattage des dates
+              if (field.type_widget == 'date') {
+                //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
+                if (typeof occurrence.additional_fields[field.attribut_name] !== 'object') {
+                  occurrence.additional_fields[field.attribut_name] =
+                    this.occtaxFormService.formatDate(
+                      occurrence.additional_fields[field.attribut_name]
+                    );
+                }
               }
-            }
+  
+              //set value of field (eq patchValue)
+              if (occurrence.additional_fields[field.attribut_name] !== undefined) {
+                field.value = occurrence.additional_fields[field.attribut_name];
+              }
+            });
 
-            //set value of field (eq patchValue)
-            if (occurrence.additional_fields[field.attribut_name] !== undefined) {
-              field.value = occurrence.additional_fields[field.attribut_name];
-            }
-          });
+          }
 
           return [occurrence, additional_fields];
         }),

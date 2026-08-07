@@ -207,22 +207,24 @@ export class OcctaxFormReleveService {
           return forkJoin(of(releve), additionnalFieldsObservable);
         }),
         map(([releve, additional_fields]) => {
-          additional_fields.forEach((field) => {
-            //Formattage des dates
-            if (field.type_widget == 'date') {
-              //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
-              if (typeof releve.additional_fields[field.attribut_name] !== 'object') {
-                releve.additional_fields[field.attribut_name] = this.occtaxFormService.formatDate(
-                  releve.additional_fields[field.attribut_name]
-                );
+          if(releve.additional_fields) {
+            additional_fields.forEach((field) => {
+              //Formattage des dates
+              if (field.type_widget == 'date') {
+                //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
+                if (typeof releve.additional_fields[field.attribut_name] !== 'object') {
+                  releve.additional_fields[field.attribut_name] = this.occtaxFormService.formatDate(
+                    releve.additional_fields[field.attribut_name]
+                  );
+                }
               }
-            }
-
-            //set value of field (eq patchValue)
-            if (releve.additional_fields[field.attribut_name] !== undefined) {
-              field.value = releve.additional_fields[field.attribut_name];
-            }
-          });
+  
+              //set value of field (eq patchValue)
+              if (releve.additional_fields[field.attribut_name] !== undefined) {
+                field.value = releve.additional_fields[field.attribut_name];
+              }
+            });
+          }
 
           return [releve, additional_fields];
         }),
