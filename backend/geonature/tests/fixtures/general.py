@@ -638,7 +638,7 @@ def create_synthese(
 
 
 @pytest.fixture(scope="class")
-def synthese_data(app, users, datasets, source, sources_modules, individual):
+def synthese_data(app, users, datasets, source, sources_modules, individuals):
     point1 = Point(5.92, 45.56)
     point2 = Point(-1.54, 46.85)
     point3 = Point(-3.486786, 48.832182)
@@ -680,7 +680,7 @@ def synthese_data(app, users, datasets, source, sources_modules, individual):
                 date_1,
                 altitude_1,
                 altitude_1,
-                individual.id_individual,
+                individuals[0].id_individual,
             ),
             (
                 "obs2",

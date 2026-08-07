@@ -16,8 +16,9 @@ from geonature.core.gn_meta.repositories import (
     cruved_ds_filter,
 )
 from geonature.core.gn_meta.routes import get_af_from_id
-from geonature.core.gn_meta.schemas import DatasetSchema
+from geonature.core.gn_meta.schemas import AcquisitionFrameworkSchema, DatasetSchema
 from geonature.core.gn_synthese.models import Synthese
+from geonature.core.schemas import AdditionnalDataDuplicateField
 from geonature.utils.env import db
 from pypnusershub.schemas import UserSchema
 from ref_geo.models import BibAreasTypes, LAreas
@@ -488,6 +489,7 @@ class TestGNMeta:
 
         assert response.status_code == 200
 
+
     def test_create_acquisition_framework_forbidden(self, users):
         set_logged_user(self.client, users["noright_user"])
 
@@ -882,6 +884,7 @@ class TestGNMeta:
             json=ds_json,
         )
         assert response.status_code == 200
+
 
     def test_dataset_with_closed_af(self, users, datasets):
         set_logged_user(self.client, users["admin_user"])

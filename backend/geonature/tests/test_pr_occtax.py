@@ -13,6 +13,7 @@ from sqlalchemy import func, select
 from click.testing import CliRunner
 
 from geonature.core.gn_synthese.models import Synthese
+from geonature.core.schemas import AdditionnalDataDuplicateField
 from geonature.utils.env import db
 from geonature.utils.config import config
 from .utils import set_logged_user
@@ -343,6 +344,23 @@ def unexisting_id_releve():
 
 @pytest.mark.usefixtures("client_class", "datasets")
 class TestOcctaxReleve:
+    def test_occtax_schemas_additional_fields_field(self, occtax_module):
+        """
+        ReleveSchema/OccurrenceSchema/CountingSchema.additional_fields must be
+        AdditionnalDataDuplicateField instances scoped to the right object_code,
+        not plain Dict fields.
+        """
+        g.current_module = occtax_module
+        expected = {
+            ReleveSchema: "OCCTAX_RELEVE",
+            OccurrenceSchema: "OCCTAX_OCCURENCE",
+            CountingSchema: "OCCTAX_DENOMBREMENT",
+        }
+        for schema_cls, object_code in expected.items():
+            field = schema_cls()._declared_fields["additional_fields"]
+            assert isinstance(field, AdditionnalDataDuplicateField)
+            assert field.object_code == object_code
+
     def test_get_releve(self, users: dict, releve_occtax: Any):
         set_logged_user(self.client, users["user"])
 
