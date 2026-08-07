@@ -247,6 +247,45 @@ def additional_fields_releve(app, datasets):
     return {"text": text_field, "nomenclature": nomenclature_field}
 
 
+@pytest.fixture(scope="function")
+def additional_fields_occtax_nomenclature(app, datasets):
+    """
+    One nomenclature-widget additional field per OccTax object
+    (releve / occurrence / counting), used to test that
+    insertOrUpdateOneReleve duplicates nomenclature additional fields with a
+    "_label_" prefixed key.
+    """
+    module = db.session.execute(
+        select(TModules).where(TModules.module_code == "OCCTAX")
+    ).scalar_one()
+    nomenclature_widget = db.session.execute(
+        select(BibWidgets).where(BibWidgets.widget_name == "nomenclature")
+    ).scalar_one()
+    datasets = list(datasets.values())
+
+    fields = {}
+    for key, code_object, field_name in [
+        ("releve", "OCCTAX_RELEVE", "releve_nomenclature_field"),
+        ("occurrence", "OCCTAX_OCCURENCE", "occurrence_nomenclature_field"),
+        ("counting", "OCCTAX_DENOMBREMENT", "counting_nomenclature_field"),
+    ]:
+        obj = db.session.execute(
+            select(PermObject).where(PermObject.code_object == code_object)
+        ).scalar_one()
+        fields[key] = TAdditionalFields(
+            field_name=field_name,
+            field_label=field_name,
+            required=False,
+            id_widget=nomenclature_widget.id_widget,
+            modules=[module],
+            objects=[obj],
+            datasets=datasets,
+        )
+    with db.session.begin_nested():
+        db.session.add_all(fields.values())
+    return fields
+
+
 @pytest.fixture()
 def media_in_export_enabled(monkeypatch):
     monkeypatch.setitem(current_app.config["OCCTAX"], "ADD_MEDIA_IN_EXPORT", True)
@@ -341,66 +380,103 @@ class TestOcctaxReleve:
         )
         assert response.status_code == 200
 
-    def test_releve_additional_fields_dump(
+    def test_releve_additional_fields_load(
         self,
-        releve_occtax: TRelevesOccurrence,
+        app: Flask,
+        users: dict,
+        releve_data: dict[str, Any],
+        occtax_module: Any,
         additional_fields_releve: dict[str, TAdditionalFields],
     ):
         """
-        ReleveSchema must duplicate nomenclature additional fields with a
-        "_label_" prefixed key holding the nomenclature default label, and
-        leave non-nomenclature additional fields untouched.
+        ReleveSchema.load() must duplicate nomenclature additional fields with a
+        "_label_" prefixed key holding the nomenclature default label -- this is
+        where additional_fields values get persisted to DB, dump is left untouched
+        -- and leave non-nomenclature additional fields untouched.
         """
+        g.current_module = occtax_module
         text_field = additional_fields_releve["text"]
         nomenclature_field = additional_fields_releve["nomenclature"]
         nomenclature = db.session.execute(select(TNomenclatures).limit(1)).scalar_one()
 
-        releve_occtax.additional_fields = {
+        data = releve_data["properties"]
+        data["geom_4326"] = releve_data["geometry"]
+        data["observers"] = [users["user"].id_role]
+        data["additional_fields"] = {
             text_field.field_name: "some value",
             nomenclature_field.field_name: nomenclature.id_nomenclature,
         }
 
-        dumped_additional_fields = ReleveSchema().dump(releve_occtax)["additional_fields"]
+        releve = ReleveSchema().load(data)
 
-        assert dumped_additional_fields[text_field.field_name] == "some value"
+        assert releve.additional_fields[text_field.field_name] == "some value"
         assert (
-            dumped_additional_fields[nomenclature_field.field_name]
+            releve.additional_fields[nomenclature_field.field_name]
             == nomenclature.id_nomenclature
         )
         assert (
-            dumped_additional_fields["_label_" + nomenclature_field.field_name]
+            releve.additional_fields["_label_" + nomenclature_field.field_name]
             == nomenclature.label_default
         )
-        assert "_label_" + text_field.field_name not in dumped_additional_fields
+        assert "_label_" + text_field.field_name not in releve.additional_fields
 
-    def test_releve_additional_fields_dump_unknown_nomenclature(
+    def test_releve_additional_fields_load_unknown_nomenclature(
         self,
-        releve_occtax: TRelevesOccurrence,
+        app: Flask,
+        users: dict,
+        releve_data: dict[str, Any],
+        occtax_module: Any,
         additional_fields_releve: dict[str, TAdditionalFields],
     ):
         """
-        When the stored value does not match any existing nomenclature, no
+        When the posted value does not match any existing nomenclature, no
         "_label_" key should be added.
         """
+        g.current_module = occtax_module
         nomenclature_field = additional_fields_releve["nomenclature"]
         unexisting_id_nomenclature = (
             db.session.execute(select(func.max(TNomenclatures.id_nomenclature))).scalar() or 0
         ) + 1
 
-        releve_occtax.additional_fields = {
+        data = releve_data["properties"]
+        data["geom_4326"] = releve_data["geometry"]
+        data["observers"] = [users["user"].id_role]
+        data["additional_fields"] = {
             nomenclature_field.field_name: unexisting_id_nomenclature,
         }
 
-        dumped_additional_fields = ReleveSchema().dump(releve_occtax)["additional_fields"]
+        releve = ReleveSchema().load(data)
 
-        assert dumped_additional_fields[nomenclature_field.field_name] == (
+        assert releve.additional_fields[nomenclature_field.field_name] == (
             unexisting_id_nomenclature
         )
-        assert "_label_" + nomenclature_field.field_name not in dumped_additional_fields
+        assert "_label_" + nomenclature_field.field_name not in releve.additional_fields
 
     def test_insertOrUpdate_releve(
-        self, users: dict, releve_mobile_data: dict[str, dict[str, Any]]
+        self,
+        users: dict,
+        releve_mobile_data: dict[str, dict[str, Any]],
+        additional_fields_occtax_nomenclature: dict[str, TAdditionalFields],
     ):
+        """
+        insertOrUpdateOneReleve must duplicate nomenclature additional fields
+        (on the releve, its occurrences and their countings) with a
+        "_label_" prefixed key holding the nomenclature default label.
+        """
+        releve_field = additional_fields_occtax_nomenclature["releve"]
+        occurrence_field = additional_fields_occtax_nomenclature["occurrence"]
+        counting_field = additional_fields_occtax_nomenclature["counting"]
+        nomenclature = db.session.execute(select(TNomenclatures).limit(1)).scalar_one()
+
+        releve_mobile_data["properties"]["additional_fields"] = {
+            releve_field.field_name: nomenclature.id_nomenclature,
+        }
+        occ = releve_mobile_data["properties"]["t_occurrences_occtax"][0]
+        occ["additional_fields"] = {occurrence_field.field_name: nomenclature.id_nomenclature}
+        occ["cor_counting_occtax"][0]["additional_fields"] = {
+            counting_field.field_name: nomenclature.id_nomenclature
+        }
+
         set_logged_user(self.client, users["stranger_user"])
         response = self.client.post(
             url_for("pr_occtax.insertOrUpdateOneReleve"), json=releve_mobile_data
@@ -414,6 +490,30 @@ class TestOcctaxReleve:
         assert response.status_code == 200
         result = db.get_or_404(TRelevesOccurrence, response.json["id"])
         assert result
+
+        assert result.additional_fields[releve_field.field_name] == nomenclature.id_nomenclature
+        assert (
+            result.additional_fields["_label_" + releve_field.field_name]
+            == nomenclature.label_default
+        )
+        occurrence_result = result.t_occurrences_occtax[0]
+        assert (
+            occurrence_result.additional_fields[occurrence_field.field_name]
+            == nomenclature.id_nomenclature
+        )
+        assert (
+            occurrence_result.additional_fields["_label_" + occurrence_field.field_name]
+            == nomenclature.label_default
+        )
+        counting_result = occurrence_result.cor_counting_occtax[0]
+        assert (
+            counting_result.additional_fields[counting_field.field_name]
+            == nomenclature.id_nomenclature
+        )
+        assert (
+            counting_result.additional_fields["_label_" + counting_field.field_name]
+            == nomenclature.label_default
+        )
 
         # Passage en Update
         releve_mobile_data["properties"]["altitude_min"] = 200
@@ -983,5 +1083,3 @@ class TestOcctaxGetReleveFilterWrongType:
         response = self.client.get(url_for("pr_occtax.getReleves"), query_string=query_string)
 
         assert response.status_code == 500  # FIXME 500 should not be possible
-
-

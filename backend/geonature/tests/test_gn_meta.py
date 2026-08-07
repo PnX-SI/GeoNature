@@ -913,7 +913,7 @@ class TestGNMeta:
         assert response.status_code == 400
         assert response.json["description"].get("active")
 
-    def test_get_dataset(self, users, datasets, additional_fields):
+    def test_get_dataset(self, users, datasets, additional_fields, first_nomenclature):
         ds = datasets["own_dataset"]
 
         response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=ds.id_dataset))
@@ -935,7 +935,8 @@ class TestGNMeta:
         assert DatasetSchema().validate(response.json)
         assert response.json["additional_data"] == {
             "select_field_used": "value1",
-            "nomenclature_field_used": "Valeur De Nomenclature",
+            "nomenclature_field_used": first_nomenclature.id_nomenclature,
+            "_label_nomenclature_field_used": first_nomenclature.label_default,
             "text_field_used": "test",
             "date_field_used": {"day": 31, "year": 2025, "month": 10},
             "number_field_used": 1,

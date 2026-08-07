@@ -73,7 +73,9 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
     )
 
     creator = MA.Nested(UserSchema, dump_only=True)
-    additional_data = AdditionnalDataDuplicateField(module_code="METADATA", object_code="METADATA_JEU_DE_DONNEES")
+    additional_data = AdditionnalDataDuplicateField(
+        module_code="METADATA", object_code="METADATA_JEU_DE_DONNEES"
+    )
     nomenclature_data_type = MA.Nested(NomenclatureSchema, dump_only=True)
     nomenclature_collecting_method = MA.Nested(NomenclatureSchema, dump_only=True)
     nomenclature_data_origin = MA.Nested(NomenclatureSchema, dump_only=True)

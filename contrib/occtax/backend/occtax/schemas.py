@@ -72,13 +72,12 @@ class CountingSchema(MA.SQLAlchemyAutoSchema):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.module_code = g.current_module.module_code
+
     class Meta:
         model = CorCountingOccurrence
         load_instance = True
 
-    additional_fields = AdditionnalDataDuplicateField(
-        object_code="OCCTAX_DENOMBREMENT"
-    )
+    additional_fields = AdditionnalDataDuplicateField(object_code="OCCTAX_DENOMBREMENT")
     medias = MA.Nested(MediaSchema, many=True)
     id_individual = MA.auto_field()
     individual = MA.Nested(TIndividualsSchema, dump_only=True)
@@ -94,18 +93,15 @@ class OccurrenceSchema(MA.SQLAlchemyAutoSchema):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.module_code = g.current_module.module_code
+
     class Meta:
         model = TOccurrencesOccurrence
         load_instance = True
         include_fk = True
 
-    additional_fields = AdditionnalDataDuplicateField(
-        object_code="OCCTAX_OCCURENCE"
-    )
+    additional_fields = AdditionnalDataDuplicateField(object_code="OCCTAX_OCCURENCE")
     cor_counting_occtax = MA.Nested(CountingSchema, many=True)
     taxref = MA.Nested(TaxrefSchema, dump_only=True)
-
-
 
 
 class ReleveSchema(MA.SQLAlchemyAutoSchema):
@@ -136,9 +132,7 @@ class ReleveSchema(MA.SQLAlchemyAutoSchema):
     digitiser = MA.Nested(ObserverSchema, dump_only=True)
     dataset = MA.Nested(DatasetSchema, dump_only=True)
     habitat = MA.Nested(HabrefSchema, dump_only=True)
-    additional_fields = AdditionnalDataDuplicateField(
-        object_code="OCCTAX_RELEVE"
-    )
+    additional_fields = AdditionnalDataDuplicateField(object_code="OCCTAX_RELEVE")
 
     @pre_load
     def make_releve(self, data, **kwargs):

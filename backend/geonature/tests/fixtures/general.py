@@ -383,8 +383,17 @@ def celery_eager(app, monkeypatch):
     monkeypatch.setattr(celery_app.conf, "task_eager_propagates", True)
 
 
+@pytest.fixture(scope="session")
+def first_nomenclature(app):
+    """
+    A single nomenclature, shared by fixtures and tests needing one so they
+    all agree on the exact same id_nomenclature / label_default.
+    """
+    return db.session.execute(select(TNomenclatures).limit(1)).scalar_one()
+
+
 @pytest.fixture(scope="class")
-def acquisition_frameworks(users):
+def acquisition_frameworks(users, first_nomenclature):
     principal_actor_role = db.session.execute(
         select(TNomenclatures)
         .join(BibNomenclaturesTypes, BibNomenclaturesTypes.mnemonique == "ROLE_ACTEUR")
@@ -434,7 +443,8 @@ def acquisition_frameworks(users):
     # Add additional data to "af_1"
     afs["af_1"].additional_data = {
         "select_field_used": "value1",
-        "nomenclature_field_used": "Valeur De Nomenclature",
+        "nomenclature_field_used": first_nomenclature.id_nomenclature,
+        "_label_nomenclature_field_used": first_nomenclature.label_default,
         "text_field_used": "test",
         "date_field_used": {"day": 31, "year": 2025, "month": 10},
         "number_field_used": 1,
@@ -444,7 +454,7 @@ def acquisition_frameworks(users):
 
 
 @pytest.fixture(scope="class")
-def datasets(users, acquisition_frameworks, module):
+def datasets(users, acquisition_frameworks, module, first_nomenclature):
     principal_actor_role = db.session.execute(
         select(TNomenclatures)
         .join(BibNomenclaturesTypes, TNomenclatures.id_type == BibNomenclaturesTypes.id_type)
@@ -493,7 +503,8 @@ def datasets(users, acquisition_frameworks, module):
             if name == "own_dataset":
                 dataset.additional_data = {
                     "select_field_used": "value1",
-                    "nomenclature_field_used": "Valeur De Nomenclature",
+                    "nomenclature_field_used": first_nomenclature.id_nomenclature,
+                    "_label_nomenclature_field_used": first_nomenclature.label_default,
                     "text_field_used": "test",
                     "date_field_used": {"day": 31, "year": 2025, "month": 10},
                     "number_field_used": 1,

@@ -36,6 +36,7 @@ from .repositories import (
     get_query_occtax_filters,
     get_query_occtax_order,
 )
+from geonature.core.schemas import _duplicate_nomenclature
 from .schemas import OccurrenceSchema, ReleveCruvedSchema, ReleveSchema
 from .utils import as_dict_with_add_cols
 from geonature.utils.utilsgeometrytools import export_as_geo_file
@@ -268,6 +269,9 @@ def insertOrUpdateOneReleve():
     releve = TRelevesOccurrence(**data["properties"])
     two_dimension_geom = remove_third_dimension(shape(data["geometry"]))
     releve.geom_4326 = from_shape(two_dimension_geom, srid=4326)
+    releve.additional_fields = _duplicate_nomenclature(
+        releve.additional_fields, module_code="OCCTAX", object_code="OCCTAX_RELEVE"
+    )
 
     if observersList is not None:
         observers = db.session.scalars(select(User).where(User.id_role.in_(observersList))).all()
@@ -289,6 +293,9 @@ def insertOrUpdateOneReleve():
         if "id_occurrence_occtax" in occ and occ["id_occurrence_occtax"] is None:
             occ.pop("id_occurrence_occtax")
         occtax = TOccurrencesOccurrence(**occ)
+        occtax.additional_fields = _duplicate_nomenclature(
+            occtax.additional_fields, module_code="OCCTAX", object_code="OCCTAX_OCCURENCE"
+        )
 
         for cnt in cor_counting_occtax:
             # Test et suppression
@@ -301,6 +308,12 @@ def insertOrUpdateOneReleve():
             if "id_counting_occtax" in cnt and cnt["id_counting_occtax"] is None:
                 cnt.pop("id_counting_occtax")
             countingOccurrence = CorCountingOccurrence(**cnt)
+            countingOccurrence.additional_fields = _duplicate_nomenclature(
+                countingOccurrence.additional_fields,
+                module_code="OCCTAX",
+                object_code="OCCTAX_DENOMBREMENT",
+            )
+
             occtax.cor_counting_occtax.append(countingOccurrence)
         releve.t_occurrences_occtax.append(occtax)
     # if its a update
