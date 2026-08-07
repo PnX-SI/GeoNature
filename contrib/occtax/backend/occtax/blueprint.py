@@ -628,8 +628,6 @@ def export(scope):
 
     data = db.session.execute(q)
 
-    print(data)
-
     file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
     file_name = filemanager.removeDisallowedFilenameChars(file_name)
 
@@ -641,6 +639,7 @@ def export(scope):
     global_add_fields = db.session.scalars(
         query_add_fields.where(~TAdditionalFields.datasets.any())
     ).all()
+    dataset_add_fields = []
     if "id_dataset" in request.args:
         dataset_add_fields = db.session.scalars(
             query_add_fields.where(
@@ -650,6 +649,11 @@ def export(scope):
         global_add_fields = [*global_add_fields, *dataset_add_fields]
 
     additional_col_names = [field.field_name for field in global_add_fields]
+    additional_nomenclature_col_name = [
+        field.field_name
+        for field in global_add_fields
+        if field.type_widget.widget_name == "nomenclature"
+    ]
     if export_format == "csv":
         # set additional data col at the end (remove it and inset it ...)
         if export_col_name_additional_data in columns:
@@ -659,7 +663,8 @@ def export(scope):
         if additional_col_names:
             serialize_result = [
                 as_dict_with_add_cols(
-                    export_view, row, export_col_name_additional_data, additional_col_names
+                    export_view, row, export_col_name_additional_data, additional_col_names,
+                    additional_nomenclature_col_name
                 )
                 for row in data
             ]

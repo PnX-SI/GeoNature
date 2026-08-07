@@ -1,3 +1,5 @@
+import csv
+from io import StringIO
 from typing import Any
 from geonature.core.gn_commons.models.base import TModules, BibWidgets
 from geonature.core.gn_commons.models.additional_fields import TAdditionalFields
@@ -199,6 +201,36 @@ def additional_field(app, datasets):
         modules=[module],
         objects=[obj],
         datasets=datasets,
+    )
+    with db.session.begin_nested():
+        db.session.add(additional_field)
+    return additional_field
+
+
+@pytest.fixture(scope="function")
+def additional_field_nomenclature(app, datasets):
+    """
+    Nomenclature-widget additional field on OCCTAX_OCCURENCE, restricted to
+    datasets["own_dataset"] only, used to check that CSV export replaces the
+    nomenclature id with its label.
+    """
+    module = db.session.execute(
+        select(TModules).where(TModules.module_code == "OCCTAX")
+    ).scalar_one()
+    obj = db.session.execute(
+        select(PermObject).where(PermObject.code_object == "OCCTAX_OCCURENCE")
+    ).scalar_one()
+    nomenclature_widget = db.session.execute(
+        select(BibWidgets).where(BibWidgets.widget_name == "nomenclature")
+    ).scalar_one()
+    additional_field = TAdditionalFields(
+        field_name="occurrence_nomenclature_export_field",
+        field_label="Champ nomenclature export",
+        required=False,
+        id_widget=nomenclature_widget.id_widget,
+        modules=[module],
+        objects=[obj],
+        datasets=[datasets["own_dataset"]],
     )
     with db.session.begin_nested():
         db.session.add(additional_field)
@@ -1028,10 +1060,20 @@ class TestOcctaxGetReleveFilter:
         users: dict,
         datasets: dict[Any, TDatasets],
         additional_field,
+        additional_field_nomenclature,
         occurrence,
         media_in_export_enabled,
     ):
-        # FIX ME: CHECK CONTENT
+        nomenclature = db.session.execute(select(TNomenclatures).limit(1)).scalar_one()
+        field_name = additional_field_nomenclature.field_name
+        occurrence.additional_fields = {
+            **(occurrence.additional_fields or {}),
+            field_name: nomenclature.id_nomenclature,
+            "_label_" + field_name: nomenclature.label_default,
+        }
+        db.session.add(occurrence)
+        db.session.flush()
+
         set_logged_user(self.client, users["user"])
         response = self.client.get(
             url_for(
@@ -1039,6 +1081,16 @@ class TestOcctaxGetReleveFilter:
             ),
         )
         assert response.status_code == 200
+
+        # the additional nomenclature field must be exported with its label,
+        # not the raw id_nomenclature
+        csv_reader = csv.DictReader(StringIO(response.data.decode("utf-8")), delimiter=";")
+        rows = list(csv_reader)
+        assert field_name in csv_reader.fieldnames
+        assert len(rows) >= 1
+        for row in rows:
+            assert row[field_name] == nomenclature.label_default
+            assert row[field_name] != str(nomenclature.id_nomenclature)
 
         response = self.client.get(
             url_for("pr_occtax.export", id_dataset=datasets["own_dataset"].id_dataset),
