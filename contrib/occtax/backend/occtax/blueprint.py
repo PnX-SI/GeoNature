@@ -663,8 +663,11 @@ def export(scope):
         if additional_col_names:
             serialize_result = [
                 as_dict_with_add_cols(
-                    export_view, row, export_col_name_additional_data, additional_col_names,
-                    additional_nomenclature_col_name
+                    export_view,
+                    row,
+                    export_col_name_additional_data,
+                    additional_col_names,
+                    additional_nomenclature_col_name,
                 )
                 for row in data
             ]

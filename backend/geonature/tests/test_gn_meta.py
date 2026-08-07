@@ -489,7 +489,6 @@ class TestGNMeta:
 
         assert response.status_code == 200
 
-
     def test_create_acquisition_framework_forbidden(self, users):
         set_logged_user(self.client, users["noright_user"])
 
@@ -884,7 +883,6 @@ class TestGNMeta:
             json=ds_json,
         )
         assert response.status_code == 200
-
 
     def test_dataset_with_closed_af(self, users, datasets):
         set_logged_user(self.client, users["admin_user"])

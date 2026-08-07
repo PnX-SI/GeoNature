@@ -47,9 +47,13 @@ def get_nomenclature_filters(params):
                 releve_filters.append(p)
     return releve_filters, occurrence_filters, counting_filters
 
+
 def as_dict_with_add_cols(
-    export_view, row, additional_cols_key: str, addition_cols_to_export: list, 
-    nomenclature_fields:list = []
+    export_view,
+    row,
+    additional_cols_key: str,
+    addition_cols_to_export: list,
+    nomenclature_fields: list = [],
 ):
     row_as_dict = export_view.as_dict(row)
     if current_app.config["OCCTAX"]["ADD_MEDIA_IN_EXPORT"]:

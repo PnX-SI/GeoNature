@@ -364,14 +364,14 @@
           </tr>
           <tr class="bg-info font-weight-bold">
             <td>Champs additionnels :</td>
-            <td>  </td>
+            <td></td>
           </tr>
-           <ng-container *additionalFields="let field of selectedObs?.additional_data">
+          <ng-container *additionalFields="let field of selectedObs?.additional_data">
             <tr>
-              <td> {{ field.label | titlecase}}</td>
-              <td> {{ field.value }}</td>
+              <td>{{ field.label | titlecase }}</td>
+              <td>{{ field.value }}</td>
             </tr>
-            </ng-container>
+          </ng-container>
         </table>
       </ng-container>
       <!-- </mat-tab> -->

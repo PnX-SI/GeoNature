@@ -461,8 +461,7 @@ class TestOcctaxReleve:
 
         assert releve.additional_fields[text_field.field_name] == "some value"
         assert (
-            releve.additional_fields[nomenclature_field.field_name]
-            == nomenclature.id_nomenclature
+            releve.additional_fields[nomenclature_field.field_name] == nomenclature.id_nomenclature
         )
         assert (
             releve.additional_fields["_label_" + nomenclature_field.field_name]
