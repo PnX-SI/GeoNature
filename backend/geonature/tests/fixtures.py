@@ -36,6 +36,8 @@ from geonature.core.gn_synthese.models import (
     TReport,
     TSources,
 )
+from geonature.core.gn_monitoring.models import TIndividuals
+
 from geonature.core.sensitivity.models import (
     CorSensitivityCriteria,
     SensitivityRule,
@@ -71,6 +73,8 @@ __all__ = [
     "auto_validation_enabled",
     "add_synthese_read_permissions",
     "synthese_module",
+    "individuals",
+    "individual",
 ]
 
 
@@ -556,6 +560,25 @@ def source():
 
 
 @pytest.fixture(scope="class")
+def individuals(users):
+    with db.session.begin_nested():
+        individual = TIndividuals(
+            cd_nom=212, individual_name="toto", id_digitiser=users["self_user"].id_role
+        )
+        individual2 = TIndividuals(
+            cd_nom=61098, individual_name="toto", id_digitiser=users["self_user"].id_role
+        )
+        db.session.add(individual)
+        db.session.add(individual2)
+    return [individual, individual2]
+
+
+@pytest.fixture(scope="class")
+def individual(individuals):
+    return individuals[0]
+
+
+@pytest.fixture(scope="class")
 def sources_modules(modules):
     sources = []
     for name_source, module in [("source test 1", modules[0]), ("source test 2", modules[1])]:
@@ -571,6 +594,7 @@ def create_synthese(
     user,
     dataset,
     source,
+    id_individual=None,
     uuid=func.uuid_generate_v4(),
     cor_observers=[],
     observers=[],
@@ -603,12 +627,13 @@ def create_synthese(
         altitude_max=altitude_max,
         cor_observers=cor_observers,
         observers=observers,
+        id_individual=id_individual,
         **kwargs,
     )
 
 
 @pytest.fixture(scope="class")
-def synthese_data(app, users, datasets, source, sources_modules):
+def synthese_data(app, users, datasets, source, sources_modules, individual):
     point1 = Point(5.92, 45.56)
     point2 = Point(-1.54, 46.85)
     point3 = Point(-3.486786, 48.832182)
@@ -636,6 +661,7 @@ def synthese_data(app, users, datasets, source, sources_modules):
             date_max,
             altitude_min,
             altitude_max,
+            id_individual,
         ) in [
             # Donnnées de gypaète : possède des statuts de protection nationale
             (
@@ -649,6 +675,7 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 date_1,
                 altitude_1,
                 altitude_1,
+                individual.id_individual,
             ),
             (
                 "obs2",
@@ -661,6 +688,7 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 date_4,
                 altitude_1,
                 altitude_4,
+                None,
             ),
             (
                 "obs3",
@@ -673,6 +701,7 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 date_3,
                 altitude_2,
                 altitude_3,
+                None,
             ),
             (
                 "obs4",
@@ -685,6 +714,7 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 date_3,
                 altitude_2,
                 altitude_3,
+                None,
             ),
             (
                 "p1_af1",
@@ -697,6 +727,7 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 date_3,
                 altitude_1,
                 altitude_3,
+                None,
             ),
             (
                 "p1_af1_2",
@@ -709,6 +740,7 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 date_3,
                 altitude_3,
                 altitude_3,
+                None,
             ),
             (
                 "p1_af2",
@@ -721,6 +753,7 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 date_4,
                 altitude_3,
                 altitude_4,
+                None,
             ),
             (
                 "p2_af2",
@@ -733,6 +766,7 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 date_2,
                 altitude_1,
                 altitude_2,
+                None,
             ),
             (
                 "p2_af1",
@@ -745,6 +779,7 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 date_1,
                 altitude_1,
                 altitude_1,
+                None,
             ),
             (
                 "p3_af3",
@@ -757,6 +792,7 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 date_2,
                 altitude_2,
                 altitude_2,
+                None,
             ),
             (
                 "obs_outside_gap",
@@ -769,6 +805,7 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 date_2,
                 altitude_2,
                 altitude_2,
+                None,
             ),
             (
                 "obs_outside_france",
@@ -781,6 +818,7 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 date_2,
                 altitude_2,
                 altitude_2,
+                None,
             ),
         ]:
             unique_id_sinp = (
@@ -796,6 +834,7 @@ def synthese_data(app, users, datasets, source, sources_modules):
                 users["self_user"],
                 ds,
                 source_m,
+                id_individual,
                 unique_id_sinp,
                 [users["admin_user"], users["user"]],
                 ["Administrative Test", "Bobby Bob"],

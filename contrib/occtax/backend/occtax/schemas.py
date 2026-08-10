@@ -15,6 +15,7 @@ from .models import CorCountingOccurrence, TOccurrencesOccurrence, TRelevesOccur
 from geonature.core.gn_meta.schemas import DatasetSchema
 from geonature.core.gn_commons.schemas import MediaSchema
 from geonature.core.taxonomie.schemas import TaxrefSchema
+from geonature.core.gn_monitoring.schema import TIndividualsSchema
 from geonature.utils.config import config
 from pypnusershub.db.models import User
 from pypn_habref_api.schemas import HabrefSchema
@@ -72,6 +73,8 @@ class CountingSchema(MA.SQLAlchemyAutoSchema):
         load_instance = True
 
     medias = MA.Nested(MediaSchema, many=True)
+    id_individual = MA.auto_field()
+    individual = MA.Nested(TIndividualsSchema, dump_only=True)
 
     @pre_load
     def make_counting(self, data, **kwargs):

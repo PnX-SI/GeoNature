@@ -41,6 +41,7 @@ export class OcctaxFormCountingService {
       {
         id_counting_occtax: null,
         id_nomenclature_life_stage: [null, Validators.required],
+        id_individual: null,
         id_nomenclature_sex: [null, Validators.required],
         id_nomenclature_obj_count: [null, Validators.required],
         id_nomenclature_type_count: null,

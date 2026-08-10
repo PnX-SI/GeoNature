@@ -6,6 +6,7 @@ from sqlalchemy.sql import func, select
 from geojson import FeatureCollection
 from werkzeug.exceptions import BadRequest, Forbidden, NotFound
 
+from apptax.taxonomie.models import Taxref
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions.decorators import _forbidden_message, login_required
 from geonature.utils.env import DB
@@ -114,26 +115,61 @@ def get_site_areas(id_site):
     return FeatureCollection(features)
 
 
-@routes.route("/individuals/<int:id_module>", methods=["GET"])
+@routes.route("/individuals/<string:module_code>", methods=["GET"])
 @login_required
-def get_individuals(id_module):
+def get_individuals(module_code):
+    """
+    Return individuals based on a module id.
+
+    Parameters
+    ----------
+    module_code : str
+        module_code is used to get the permission scope
+
+    Http Params
+    -----------
+    cd_nom : int
+        filter by taxon
+    active : bool
+        filter by active status
+    id_nomenclature_sex : int
+        filter by sex nomenclature
+
+    Returns
+    -------
+    list
+        list of individuals
+
+    """
+    params = request.args
+    cd_nom = params.get("cd_nom", None)
+    active = params.get("active", None)
+    id_nomenclature_sex = params.get("id_nomenclature_sex", None)
     action = "R"
-    object_code = "MONITORINGS_INDIVIDUALS"
-    module = DB.session.get(TModules, id_module)
+    object_code = "INDIVIDUALS"
+    module = DB.session.execute(
+        select(TModules).where(TModules.module_code == module_code)
+    ).scalar_one_or_none()
     if module is None:
         raise NotFound("Module not found")
-    module_code = module.module_code
     current_user = g.current_user
+
     max_scope = get_scope(
         action, id_role=current_user.id_role, module_code=module_code, object_code=object_code
     )
-
     if not max_scope:
         raise Forbidden(description=_forbidden_message(action, module_code, object_code))
 
-    # FIXME: when all sqlalchemy 2.0 PR are merged, update it to fit the good practices
-    # like @qfilter etc...
-    query = select(TIndividuals).where(TIndividuals.modules.any(TModules.id_module == id_module))
+    # TODO: do not filter if module is "individual" when individual module will be in core
+    query = select(TIndividuals)
+    if module_code != "SYNTHESE":
+        query = query.where(TIndividuals.modules.any(TModules.id_module == module.id_module))
+    if cd_nom:
+        query = query.where(TIndividuals.taxon.has(Taxref.cd_nom == cd_nom))
+    if active is not None:
+        query = query.where(TIndividuals.active == (active.lower() == "true"))
+    if id_nomenclature_sex:
+        query = query.where(TIndividuals.id_nomenclature_sex == id_nomenclature_sex)
     results = (
         DB.session.scalars(TIndividuals.filter_by_scope(query, max_scope, current_user))
         .unique()
@@ -146,17 +182,14 @@ def get_individuals(id_module):
     return schema.jsonify(results, many=True)
 
 
-@routes.route("/individual/<int:id_module>", methods=["POST"])
+@routes.route("/individual/<string:module_code>", methods=["POST"])
 @login_required
-def create_one_individual(id_module: int):
-    # Id module is an optional parameter to associate an individual
-    # to a module
+def create_one_individual(module_code: str):
+    # module_code (path) is only used to resolve the permission scope.
+    # id_modules (body, optional) is the list of modules the individual
+    # is associated to.
     action = "C"
-    object_code = "MONITORINGS_INDIVIDUALS"
-    module = DB.session.get(TModules, id_module)
-    if module is None:
-        raise NotFound("Module not found")
-    module_code = module.module_code
+    object_code = "INDIVIDUALS"
     current_user = g.current_user
     max_scope = get_scope(
         action, id_role=current_user.id_role, module_code=module_code, object_code=object_code
@@ -165,15 +198,25 @@ def create_one_individual(id_module: int):
     if not max_scope:
         raise Forbidden(description=_forbidden_message(action, module_code, object_code))
 
+    data = request.get_json() or {}
+    id_modules = data.pop("id_modules", None)
+
     # Exclude id_digitiser since it is set by the current user
     individual_schema = TIndividualsSchema(exclude=["id_digitiser"], unknown=EXCLUDE)
     individual_instance = TIndividuals(id_digitiser=g.current_user.id_role)
     try:
-        individual = individual_schema.load(data=request.get_json(), instance=individual_instance)
+        individual = individual_schema.load(data=data, instance=individual_instance)
     except ValidationError as error:
         raise BadRequest(error.messages)
 
-    individual.modules = [module]
+    if id_modules:
+        modules = DB.session.scalars(
+            select(TModules).where(TModules.id_module.in_(id_modules))
+        ).all()
+        if len(modules) != len(set(id_modules)):
+            raise NotFound("Module not found")
+        individual.modules = modules
+
     DB.session.add(individual)
     DB.session.commit()
     return individual_schema.jsonify(individual)

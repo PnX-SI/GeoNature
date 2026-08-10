@@ -28,6 +28,7 @@ from geonature.core.gn_synthese.utils.query_select_sqla import remove_accents
 from geonature.core.sensitivity.models import cor_sensitivity_area_type
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_synthese.models import Synthese, TSources, VSyntheseForWebApp
+from geonature.core.gn_monitoring.models import TIndividuals
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 
 from geonature.core.gn_synthese.schemas import SyntheseSchema
@@ -373,6 +374,18 @@ class TestSynthese:
         assert id_synthese in (
             feature["properties"]["id_synthese"] for feature in r.json["features"]
         )
+
+    def test_filter_individual(self, synthese_data, users, individuals):
+        set_logged_user(self.client, users["self_user"])
+        url = url_for("gn_synthese.synthese.get_observations_for_web")
+        filters = {"individuals": [individuals[0].id_individual]}
+        r = self.client.get(url, json=filters)
+
+        assert r.status_code == 200
+
+        for synthese in r.json["features"]:
+            syn = db.session.query(Synthese).get(synthese["properties"]["id_synthese"])
+            assert syn.id_individual == individuals[0].id_individual
 
     def test_get_observations_for_web_filter_id_source(self, users, synthese_data, source):
         set_logged_user(self.client, users["self_user"])
@@ -1468,6 +1481,28 @@ class TestSynthese:
             )
         )
         assert response.status_code == Forbidden.code
+
+    def test_synthese_schema_individual(self, users, synthese_data):
+        synthese_obs = synthese_data["obs1"]
+
+        individual = TIndividuals(
+            individual_name="Test schema individual",
+            cd_nom=synthese_obs.cd_nom,
+            digitiser=users["admin_user"],
+        )
+        with db.session.begin_nested():
+            db.session.add(individual)
+        with db.session.begin_nested():
+            synthese_obs.individual = individual
+
+        dumped = SyntheseSchema().dump(synthese_obs)
+        assert dumped["id_individual"] == individual.id_individual
+
+        with db.session.begin_nested():
+            synthese_obs.individual = None
+
+        dumped = SyntheseSchema().dump(synthese_obs)
+        assert dumped["id_individual"] is None
 
     def test_taxon_observer(self, synthese_data, users):
         set_logged_user(self.client, users["stranger_user"])

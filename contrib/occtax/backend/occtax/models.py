@@ -13,6 +13,7 @@ from utils_flask_sqla_geo.serializers import geoserializable
 
 from geonature.core.gn_commons.models import TMedias
 from geonature.core.gn_meta.models import TDatasets
+from geonature.core.gn_monitoring.models import TIndividuals
 from geonature.core.gn_permissions.tools import get_scopes_by_action
 from geonature.utils.env import DB, db
 
@@ -65,6 +66,10 @@ class CorCountingOccurrence(DB.Model):
     # additional fields dans occtax MET 14/10/2020
     additional_fields = DB.Column(JSONB)
     occurrence = db.relationship("TOccurrencesOccurrence", back_populates="cor_counting_occtax")
+
+    id_individual = DB.Column(DB.Integer, ForeignKey("gn_monitoring.t_individuals.id_individual"))
+    individual = DB.relationship(TIndividuals)
+
     readonly_fields = [
         "id_counting_occtax",
         "unique_id_sinp_occtax",

@@ -295,6 +295,7 @@ def get_one_synthese(permissions, id_synthese):
         "medias",
         "areas",
         "areas.area_type",
+        "individual.individual_name",
     ]
 
     # get reports info only if activated by admin config

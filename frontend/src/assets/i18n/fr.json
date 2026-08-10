@@ -154,6 +154,13 @@
   "Taxon": "Taxon",
   "Taxons": "Taxons",
   "Species": "Espèces",
+  "Individual": {
+    "Name": "Nom de l'individu",
+    "Raw": "Individu(s)",
+    "Select": "Sélectionner un individu",
+    "SelectPlural": "Sélectionner des individus"
+  },
+  "SelectModules": "Sélectionner un ou plusieurs modules",
   "Habitat": "Habitat",
   "Habitats": "Habitats",
 

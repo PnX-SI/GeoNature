@@ -227,13 +227,23 @@
     </div>
   </div>
 
-  <div class="modal-footer">
-    <button
-      type="button"
-      class="btn btn-success"
-      (click)="onCloseModal()"
-    >
-      Valider et fermer
-    </button>
+  <div class="mb-3">
+    <h5>{{ 'Individual.Raw' | translate }}</h5>
+    <pnx-individuals
+      moduleCode="SYNTHESE"
+      [parentFormControl]="formService.searchForm.controls.individuals"
+      [showAddButton]="false"
+      [displayAdvancedFilters]="true"
+      [multiselect]="true"
+      placeholder="{{ 'Individual.SelectPlural' | translate }}"
+    ></pnx-individuals>
   </div>
+
+  <button
+    type="button"
+    class="btn btn-success"
+    (click)="onCloseModal()"
+  >
+    Valider et fermer
+  </button>
 </div>

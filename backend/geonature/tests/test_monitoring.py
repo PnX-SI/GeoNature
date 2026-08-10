@@ -80,7 +80,7 @@ def markings(users, module, individuals, nomenclature_type_markings):
 
 @pytest.fixture
 def monitoring_individual_perm_object():
-    individuals_object = "MONITORINGS_INDIVIDUALS"
+    individuals_object = "INDIVIDUALS"
     perm_object = db.session.scalar(
         select(PermObject).where(PermObject.code_object == individuals_object)
     )
@@ -111,7 +111,7 @@ class TestMonitoring:
         set_logged_user_cookie(self.client, users["self_user"])
 
         response = self.client.get(
-            url_for("gn_monitoring.get_individuals", id_module=module.id_module)
+            url_for("gn_monitoring.get_individuals", module_code=module.module_code)
         )
         assert response.status_code == Forbidden.code
 
@@ -126,7 +126,7 @@ class TestMonitoring:
         )
 
         response = self.client.get(
-            url_for("gn_monitoring.get_individuals", id_module=module.id_module)
+            url_for("gn_monitoring.get_individuals", module_code=module.module_code)
         )
         resp_json = response.json
         not_expected_individual_uuid = {individuals[1].uuid_individual}
@@ -143,7 +143,7 @@ class TestMonitoring:
         set_logged_user_cookie(self.client, user)
 
         response = self.client.get(
-            url_for("gn_monitoring.get_individuals", id_module=module.id_module)
+            url_for("gn_monitoring.get_individuals", module_code=module.module_code)
         )
 
         assert response.status_code == Forbidden.code
@@ -163,7 +163,7 @@ class TestMonitoring:
         )
 
         response = self.client.get(
-            url_for("gn_monitoring.get_individuals", id_module=module.id_module)
+            url_for("gn_monitoring.get_individuals", module_code=module.module_code)
         )
         resp_json = response.json
         not_expected_individual_uuid = {individuals[1].uuid_individual}
@@ -177,7 +177,8 @@ class TestMonitoring:
         set_logged_user_cookie(self.client, users["self_user"])
 
         response = self.client.post(
-            url_for("gn_monitoring.create_one_individual", id_module=module.id_module), json={}
+            url_for("gn_monitoring.create_one_individual", module_code=module.module_code),
+            json={"id_modules": [module.id_module]},
         )
         assert response.status_code == Forbidden.code
 
@@ -192,10 +193,14 @@ class TestMonitoring:
         )
 
         individual_name = "Test_Post"
-        individual = {"individual_name": individual_name, "cd_nom": CD_NOM}
+        individual = {
+            "individual_name": individual_name,
+            "cd_nom": CD_NOM,
+            "id_modules": [module.id_module],
+        }
 
         response = self.client.post(
-            url_for("gn_monitoring.create_one_individual", id_module=module.id_module),
+            url_for("gn_monitoring.create_one_individual", module_code=module.module_code),
             json=individual,
         )
 

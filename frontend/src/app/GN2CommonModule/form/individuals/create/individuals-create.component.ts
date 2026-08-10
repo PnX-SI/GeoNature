@@ -3,6 +3,8 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
 import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
+import { ModuleService } from '@geonature/services/module.service';
+import { Module } from '@geonature/models/module.model';
 import { IndividualsService } from '../individuals.service';
 import { Individual } from '../interfaces';
 import { throwError } from 'rxjs';
@@ -12,7 +14,7 @@ import { throwError } from 'rxjs';
   styleUrls: ['./individuals-create.component.scss'],
 })
 export class IndividualsCreateComponent implements OnInit {
-  @Input() idModule: number;
+  @Input() moduleCode: string;
   @Input() idList: null | string = null;
   @Input() cdNom: null | number = null;
   @Output() individualEvent = new EventEmitter<Individual>();
@@ -24,11 +26,20 @@ export class IndividualsCreateComponent implements OnInit {
     cd_nom: FormControl<number | null>;
     cd_nom_temp: FormControl<number | null>;
     comment: FormControl<string>;
+    id_modules: FormControl<number[]>;
   }>;
 
-  constructor(private _individualsService: IndividualsService) {}
+  modules: Module[] = [];
+
+  constructor(
+    private _individualsService: IndividualsService,
+    public moduleService: ModuleService
+  ) {}
 
   ngOnInit() {
+    this.modules = this.moduleService.getDisplayedModules();
+    const currentModule = this.moduleService.getModule(this.moduleCode);
+    const defaultModules = currentModule ? [currentModule.id_module] : [];
     this.form = new FormGroup({
       individual_name: new FormControl<string | null>(null, {
         validators: [Validators.required],
@@ -44,6 +55,7 @@ export class IndividualsCreateComponent implements OnInit {
         validators: [Validators.required],
       }),
       comment: new FormControl<string>(''),
+      id_modules: new FormControl<number[]>(defaultModules),
     });
   }
 
@@ -55,7 +67,7 @@ export class IndividualsCreateComponent implements OnInit {
     const value = this.form.getRawValue();
     delete value.cd_nom_temp;
     this._individualsService
-      .postIndividual(value as Individual, this.idModule)
+      .postIndividual(value as Individual, this.moduleCode)
       .subscribe((value) => this.individualEvent.emit(value));
   }
 
