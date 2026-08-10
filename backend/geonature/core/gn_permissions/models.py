@@ -98,6 +98,7 @@ class PermObject(db.Model):
     id_object: Mapped[int] = mapped_column(Integer, primary_key=True)
     code_object: Mapped[Optional[str]] = mapped_column(Unicode)
     description_object: Mapped[Optional[str]] = mapped_column(Unicode)
+    support_additional_fields: Mapped[bool]
 
     def __str__(self):
         return f"{self.code_object} ({self.description_object})"

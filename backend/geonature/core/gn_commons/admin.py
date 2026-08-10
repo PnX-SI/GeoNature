@@ -1,6 +1,6 @@
 import logging
 
-from flask import current_app, flash, request
+from flask import flash, request
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.form import BaseForm
 from wtforms import validators, Form
@@ -82,21 +82,13 @@ class BibFieldAdmin(CruvedProtectedMixin, ModelView):
         "additional_attributes": {"label": "Attribut additionnels"},
         "modules": {
             "query_factory": lambda: DB.session.scalars(
-                select(TModules).where(
-                    TModules.module_code.in_(
-                        current_app.config["ADDITIONAL_FIELDS"]["IMPLEMENTED_MODULES"]
-                    )
-                )
+                select(TModules).where(TModules.support_additional_fields.is_(True))
             )
         },
         "objects": {
             "query_factory": lambda: DB.session.scalars(
                 select(PermObject)
-                .where(
-                    PermObject.code_object.in_(
-                        current_app.config["ADDITIONAL_FIELDS"]["IMPLEMENTED_OBJECTS"]
-                    )
-                )
+                .where(PermObject.support_additional_fields.is_(True))
                 .order_by(PermObject.code_object)
             )
         },

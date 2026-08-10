@@ -108,6 +108,7 @@ class TModules(DB.Model):
     module_comment = DB.Column(DB.Unicode)
     active_frontend = DB.Column(DB.Boolean)
     active_backend = DB.Column(DB.Boolean)
+    support_additional_fields = DB.Column(DB.Boolean)
     module_doc_url = DB.Column(DB.Unicode)
     module_order = DB.Column(DB.Integer)
     ng_module = DB.Column(DB.Unicode(length=500))

@@ -125,20 +125,6 @@ class AlembicConfig(Schema):
     VERSION_LOCATIONS = fields.String()
 
 
-class AdditionalFields(Schema):
-    IMPLEMENTED_MODULES = fields.List(fields.String(), load_default=["OCCTAX", "METADATA"])
-    IMPLEMENTED_OBJECTS = fields.List(
-        fields.String(),
-        load_default=[
-            "OCCTAX_RELEVE",
-            "OCCTAX_OCCURENCE",
-            "OCCTAX_DENOMBREMENT",
-            "METADATA_CADRE_ACQUISITION",
-            "METADATA_JEU_DE_DONNEES",
-        ],
-    )
-
-
 class HomeConfig(Schema):
     TITLE = fields.String(load_default="Bienvenue dans GeoNature")
     INTRODUCTION = fields.String(
@@ -616,7 +602,6 @@ class GnGeneralSchemaConf(Schema):
     MEDIA_URL = fields.String(load_default="/media")
     METADATA = fields.Nested(MetadataConfig, load_default=MetadataConfig().load({}))
     NB_MAX_DATA_SENSITIVITY_REPORT = fields.Integer(load_default=1000000)
-    ADDITIONAL_FIELDS = fields.Nested(AdditionalFields, load_default=AdditionalFields().load({}))
     PUBLIC_ACCESS_USERNAME = fields.String(load_default="")
     TAXHUB = fields.Nested(TaxhubAppConf, load_default=TaxhubAppConf().load({"API_PREFIX": "/api"}))
 

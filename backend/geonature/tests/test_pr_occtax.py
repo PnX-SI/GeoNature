@@ -26,7 +26,7 @@ from occtax.models import (
     CorCountingOccurrence,
 )
 from occtax.schemas import OccurrenceSchema, ReleveSchema
-from occtax.commands import add_submodule_permissions
+from occtax.commands import create_duplicated_module
 
 
 @pytest.fixture(scope="session")
@@ -641,20 +641,28 @@ class TestOcctax:
         assert response.status_code == 204
         assert not count
 
-    def test_command_permission_module(self, module):
+    def test_command_create_duplicated_module(self):
         client_command_line = CliRunner()
-        with db.session.begin_nested():
-            db.session.add(module)
+        module_code = "TEST_DUPLICATED_OCCTAX"
 
-        client_command_line.invoke(add_submodule_permissions, [module.module_code])
+        result = client_command_line.invoke(
+            create_duplicated_module, [module_code, "Test duplicated Occtax"]
+        )
+        assert result.exit_code == 0, result.output
+
+        new_module = db.session.execute(
+            select(TModules).filter_by(module_code=module_code)
+        ).scalar_one()
+        assert new_module.ng_module == "occtax"
+        assert new_module.active_frontend is True
+        assert new_module.active_backend is False
+
         permission_available = (
-            select(PermissionAvailable)
-            .join(TModules)
-            .where(TModules.module_code == module.module_code)
+            select(PermissionAvailable).join(TModules).where(TModules.module_code == module_code)
         )
         permission_available = db.session.scalars(permission_available).all()
 
-        assert len(permission_available) == 5
+        assert len(permission_available) == 6
 
 
 @pytest.mark.usefixtures("client_class")

@@ -1945,85 +1945,24 @@ Dupliquer le module Occtax
 
 Il est possible de "dupliquer" le module Occtax pour créer des nouveaux modules, basé sur le moteur d'Occtax, en y ajoutant des champs additionnels propre au module.
 
+Pour cela lancer la commande : 
+
+    ::
+
+      geonature occtax create-duplicated-module "TEST" "Le module test"
+      # geonature occtax create-duplicated-module --help -> voir tous les paramètres disponible
+
 Le schéma de base de données ainsi que les routes du backend utilisées restent les mêmes (celles d'Occtax). En base de données un nouveau champs ``id_module`` permet de différencier les données venant des differents modules. Concernant l'API, les routes sont appelées avec le préfixe du module code :
 
 - route Occtax : ``/occtax/releves``
 - route du module dupliqué : `occtax/<MODULE_CODE>/releves`
 
-Pour créer un nouveau module "Occtax dupliqué", ajoutez une ligne dans la table ``gn_commons.t_modules``.
-
-La ligne doit contenir les informations suivantes :
-
-- le ``module_code`` doit être unique,
-- les champs ``active_frontend=true``, ``active_backend=false``, ``ng_module=occtax`` et le champs ``module_path`` pour l'URL derrière lequel le module sera servi (``/florestation`` par exemple)
-
-Exemple :
-
-.. code:: sql
-
-    INSERT INTO gn_commons.t_modules (module_code, module_label, module_picto, module_desc, module_path,active_frontend, active_backend, ng_module) VALUES
-	 ('FLORE_STATION','Flore station v2','fa-leaf','Module de saisie Flore station (sous module Occtax)','flore_station',true,false,'occtax');
-
-Ajoutez ensuite une "source" dans la synthese (``gn_synthese.t_sources``) pour ce nouveau module.
-
-Dans l'exemple ci-dessous, remplacez ``<MODULE_PATH>`` par le contenu de la colonne ``module_path`` ainsi que ``<ID_MODULE>`` par l'id du module que vous venez de créer.
-
-.. code:: sql
-
-    INSERT INTO gn_synthese.t_sources (name_source,desc_source,entity_source_pk_field,url_source,,id_module) VALUES
-    ('Flore station (sous-module Occtax)','Données issues du protocole Flore station','pr_occtax.cor_counting_occtax.id_counting_occtax','#/<MODULE_PATH>/info/id_counting', <ID_MODULE>);
-
-Bien que le module soit une copie d'Occtax, il est tout de même nécessaire de définir les permissions disponibles pour ce module (ce sont les mêmes qu'Occtax). Jouez le scrit SQL suivant en remplacant :MODULE_CODE par le code du module que vous venez de créer.
-
-.. code:: sql
-
-    INSERT INTO
-        gn_permissions.t_permissions_available (
-            id_module,
-            id_object,
-            id_action,
-            label,
-            scope_filter
-        )
-    SELECT
-        m.id_module,
-        o.id_object,
-        a.id_action,
-        v.label,
-        v.scope_filter
-    FROM
-        (
-            VALUES
-                  (':MODULE_CODE', 'ALL', 'C', True, 'Créer des relevés')
-                ,(':MODULE_CODE', 'ALL', 'R', True, 'Voir les relevés')
-                ,(':MODULE_CODE', 'ALL', 'U', True, 'Modifier les relevés')
-                ,(':MODULE_CODE', 'ALL', 'E', True, 'Exporter les relevés')
-                ,(':MODULE_CODE', 'ALL', 'D', True, 'Supprimer des relevés')
-        ) AS v (module_code, object_code, action_code, scope_filter, label)
-    JOIN
-        gn_commons.t_modules m ON m.module_code = v.module_code
-    JOIN
-        gn_permissions.t_objects o ON o.code_object = v.object_code
-    JOIN
-        gn_permissions.bib_actions a ON a.code_action = v.action_code;
-
+Pour créer un nouveau module "Occtax dupliqué"
 
 Associer des jeux de données et des champs additionnels
 ```````````````````````````````````````````````````````
 
 Dans le module Métadonnées (formulaire des jeux de données), associez les jeux de données que vous souhaitez rendre saisissables au nouveau module dupliqué.
-
-Ajouter le nouveau module dans la liste des modules implémentés
-```````````````````````````````````````````````````````````````
-
-Dans le fichier de configuration de GeoNature (geonature_config.toml) ajoutez une section `ADDITIONAL_FIELDS` qui contient tableau `IMPLEMENTED_MODULES` listant les modules qui implémentent les champs additionnels (Occtax doit y figurer en plus du nouveau module)
-
-.. code::toml
-
-    [ADDITIONAL_FIELDS]
-      IMPLEMENTED_MODULES = ["OCCTAX", "FLORE_STATION"]
-
-Vous pouvez ensuite créer des nouveaux champs additionnels et les associer à ce module. De la même manière que dans Occtax, on peut les associer aux trois niveaux du formulaire (relevé, occurrence, dénombrement).
 
 
 Module Admin
