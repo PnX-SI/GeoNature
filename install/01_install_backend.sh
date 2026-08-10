@@ -50,6 +50,17 @@ parseScriptOptions "${@}"
 
 cd "${BASE_DIR}"
 
+url_application_prefix_path="${url_application_prefix_path:-geonature}"
+url_application_prefix_path="${url_application_prefix_path#/}"
+url_application_prefix_path="${url_application_prefix_path%/}"
+my_url_no_trailing_slash="${my_url%/}"
+if [ -n "${url_application_prefix_path}" ]; then
+  URL_APPLICATION_VALUE="${my_url_no_trailing_slash}/${url_application_prefix_path}"
+else
+  URL_APPLICATION_VALUE="${my_url_no_trailing_slash}"
+fi
+API_ENDPOINT_VALUE="${URL_APPLICATION_VALUE}/api"
+
 if [ -f config/geonature_config.toml ]; then
   echo "Utilisation du fichier de configuration GeoNature exisant"
 else
@@ -57,8 +68,8 @@ else
   cp config/geonature_config.toml.sample config/geonature_config.toml
   echo "Préparation du fichier de configuration..."
   sed -i "s|^SQLALCHEMY_DATABASE_URI = .*$|SQLALCHEMY_DATABASE_URI = \"postgresql:\/\/$user_pg:$user_pg_pass@$db_host:$db_port\/$db_name?application_name=geonature\"|" config/geonature_config.toml
-  sed -i "s|^URL_APPLICATION = .*$|URL_APPLICATION = '${my_url}geonature'|" config/geonature_config.toml
-  sed -i "s|^API_ENDPOINT = .*$|API_ENDPOINT = '${my_url}geonature\/api'|" config/geonature_config.toml 
+  sed -i "s|^URL_APPLICATION = .*$|URL_APPLICATION = '${URL_APPLICATION_VALUE}'|" config/geonature_config.toml
+  sed -i "s|^API_ENDPOINT = .*$|API_ENDPOINT = '${API_ENDPOINT_VALUE}'|" config/geonature_config.toml
   sed -i "s|^SECRET_KEY = .*$|SECRET_KEY = '`openssl rand -hex 16`'|" config/geonature_config.toml
   sed -i "s|^DEFAULT_LANGUAGE = .*$|DEFAULT_LANGUAGE = '${default_language}'|" config/geonature_config.toml
   sed -i "s|^SECRET_KEY = .*$|SECRET_KEY = '`openssl rand -hex 32`'|" config/geonature_config.toml
