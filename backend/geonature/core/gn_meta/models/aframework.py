@@ -100,6 +100,12 @@ class TAcquisitionFramework(db.Model):
         backref=DB.backref("acquisition_framework"),
     )
 
+    cor_publications = DB.relationship(
+        CorAcquisitionFrameworkPublication,
+        foreign_keys=[CorAcquisitionFrameworkPublication.id_acquisition_framework],
+        cascade="all,delete-orphan",
+        lazy="select",
+
     # FIXME: remove and use datasets instead
     t_datasets = DB.relationship(
         "TDatasets",
