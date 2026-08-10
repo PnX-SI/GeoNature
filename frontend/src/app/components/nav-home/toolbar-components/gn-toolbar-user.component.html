@@ -1,0 +1,152 @@
+<!-- Shared template: user name + organism (small = mobile-sized variant) -->
+<ng-template
+  #userInfoContent
+  let-small="small"
+>
+  <span
+    class="user-info"
+    [class.user-info--small]="small"
+  >
+    <span class="user-info-name">{{ displayName }}</span>
+    <span
+      *ngIf="displayOrganism"
+      class="user-info-organism"
+    >
+      {{ displayOrganism }}
+    </span>
+  </span>
+</ng-template>
+
+<!-- DESKTOP VERSION -->
+<ng-container *ngIf="!isMobile">
+  <ng-container [ngSwitch]="viewState">
+    <!-- Public access -->
+    <ng-container *ngSwitchCase="'public'">
+      <mat-icon>accessibility_new</mat-icon>
+      <span class="user-name">Accès public</span>
+    </ng-container>
+
+    <!-- Account management menu -->
+    <ng-container *ngSwitchCase="'menu'">
+      <button
+        class="user-button mx-1"
+        mat-raised-button
+        matTooltip="Ouvrir le menu de mon profil"
+        [matMenuTriggerFor]="userMenuDesktop"
+      >
+        <mat-icon>person</mat-icon>
+        <ng-container *ngTemplateOutlet="userInfoContent; context: { small: false }"></ng-container>
+      </button>
+
+      <mat-menu #userMenuDesktop="matMenu">
+        <a
+          mat-menu-item
+          matTooltip="Accéder aux paramètres de mon compte"
+          matTooltipPosition="before"
+          routerLink="/user"
+        >
+          {{ 'MyAccount.MyAccount' | translate }}
+        </a>
+        <a
+          *ngIf="hasObserverSheet"
+          mat-menu-item
+          matTooltip="Accéder à ma fiche observateur"
+          matTooltipPosition="before"
+          [routerLink]="observerSheetUrl"
+        >
+          {{ 'MyAccount.MyObserverSheet' | translate }}
+        </a>
+      </mat-menu>
+    </ng-container>
+
+    <!-- Observer sheet link, no account management -->
+    <ng-container *ngSwitchCase="'linkedDisplay'">
+      <a
+        class="Link"
+        matTooltip="{{ 'MyAccount.ObserverSheetTooltip' | translate }}"
+        [routerLink]="observerSheetUrl"
+      >
+        <div class="UserDisplay">
+          <mat-icon>person</mat-icon>
+          <ng-container
+            *ngTemplateOutlet="userInfoContent; context: { small: false }"
+          ></ng-container>
+        </div>
+      </a>
+    </ng-container>
+
+    <!-- Plain display: no account management, no observer sheet -->
+    <ng-container *ngSwitchDefault>
+      <div class="UserDisplay">
+        <mat-icon>person</mat-icon>
+        <ng-container *ngTemplateOutlet="userInfoContent; context: { small: false }"></ng-container>
+      </div>
+    </ng-container>
+  </ng-container>
+</ng-container>
+
+<!-- MOBILE VERSION -->
+<ng-container *ngIf="isMobile">
+  <ng-container [ngSwitch]="viewState">
+    <!-- Public access -->
+    <ng-container *ngSwitchCase="'public'">
+      <button
+        mat-menu-item
+        disabled
+      >
+        <mat-icon>accessibility_new</mat-icon>
+        <span>Accès public</span>
+      </button>
+    </ng-container>
+
+    <!-- Account management menu -->
+    <ng-container *ngSwitchCase="'menu'">
+      <button
+        mat-menu-item
+        disabled
+      >
+        <mat-icon>person</mat-icon>
+        <ng-container *ngTemplateOutlet="userInfoContent; context: { small: true }"></ng-container>
+      </button>
+      <a
+        mat-menu-item
+        routerLink="/user"
+      >
+        <mat-icon>manage_accounts</mat-icon>
+        {{ 'MyAccount.MyAccount' | translate }}
+      </a>
+      <a
+        *ngIf="hasObserverSheet"
+        mat-menu-item
+        [routerLink]="observerSheetUrl"
+      >
+        <mat-icon>assignment_ind</mat-icon>
+        {{ 'MyAccount.MyObserverSheet' | translate }}
+      </a>
+    </ng-container>
+
+    <!-- Observer sheet link, no account management -->
+    <ng-container *ngSwitchCase="'linkedDisplay'">
+      <a
+        mat-menu-item
+        [routerLink]="observerSheetUrl"
+      >
+        <mat-icon>person</mat-icon>
+        <ng-container *ngTemplateOutlet="userInfoContent; context: { small: true }"></ng-container>
+      </a>
+    </ng-container>
+
+    <!-- Plain display: no account management, no observer sheet -->
+    <ng-container *ngSwitchDefault>
+      <button
+        mat-menu-item
+        disabled
+      >
+        <mat-icon>person</mat-icon>
+        <ng-container *ngTemplateOutlet="userInfoContent; context: { small: true }"></ng-container>
+      </button>
+    </ng-container>
+  </ng-container>
+
+  <mat-divider></mat-divider>
+</ng-container>
