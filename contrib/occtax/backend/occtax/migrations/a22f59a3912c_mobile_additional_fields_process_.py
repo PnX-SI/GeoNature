@@ -4,6 +4,19 @@ Revision ID: a22f59a3912c
 Revises: b5b0d26c1fcc
 Create Date: 2026-08-10 10:36:15.272438
 
+Migration des données des champs additionnels de type nomenclature d'occtax saisies dans le formulaire mobile
+Concerne les tables :
+    - t_releves_occtax
+    - t_occurrences_occtax
+    - cor_counting_occtax
+
+Transformation :
+    {'mon_champ' : id_nomenclature} -> {'mon_champ' : id_nomenclature, '_label_mon_champ' : 'label_default'}
+Exception :
+    - Si le champ à été transformé pour correspondre au label_nomenclature
+        {'mon_champ' : 'label_default'} -> {'mon_champ' : 'id_nomenclature', '_label_mon_champ' : 'label_default'}
+    - Si l'id n'est pas retrouvé dans la nomenclature  {'mon_champ' : id_nomenclature , '_label_mon_champ' : null}
+
 """
 
 from alembic import op
@@ -96,7 +109,7 @@ def generate_upgrade(id_field, table_name, object_code):
             LEFT JOIN fields f
             ON f.field_name = e.key
             LEFT JOIN ref_nomenclatures.t_nomenclatures tn
-            ON tn.id_nomenclature::text  = e.value #>> '{{}}'
+            ON tn.id_nomenclature::text  = e.value #>> '{{}}' OR  tn.label_default = e.value #>> '{{}}'
             AND tn.id_type =ref_nomenclatures.get_id_nomenclature_type(f.code_nomenclature_type)
             LEFT JOIN LATERAL (
                 SELECT *

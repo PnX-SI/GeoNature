@@ -4,6 +4,17 @@ Revision ID: b5b0d26c1fcc
 Revises: 174f0d2fc3a4
 Create Date: 2026-08-06 17:04:32.446593
 
+Migration des données des champs additionnels de type nomenclature d'occtax saisies dans le formulaire web
+Concerne les tables :
+    - t_releves_occtax
+    - t_occurrences_occtax
+    - cor_counting_occtax
+
+Transformation :
+    {'mon_champ' : 'label_default'} -> {'mon_champ' : 'id_nomenclature', '_label_mon_champ' : 'label_default'}
+Exception :
+    - Si le label n'est pas retrouvé dans la nomenclature  {'mon_champ' : null , '_label_mon_champ' : 'label'}
+
 """
 
 from alembic import op
