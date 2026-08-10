@@ -245,7 +245,16 @@ class TDatatypePublication(db.Model):
     publication_reference = DB.Column(DB.Unicode, nullable=False)
     publication_url = DB.Column(DB.Unicode, nullable=True)
     description_publication = DB.Column(DB.Text, nullable=True)
-    type_publication = DB.Column(DB.Text, nullable=True)
+    id_nomenclature_type_publication = DB.Column(
+        DB.Integer,
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        default=lambda: TNomenclatures.get_default_nomenclature("TYPE_PUBLICATION"),
+    )
+    nomenclature_type_publication = DB.relationship(
+        TNomenclatures,
+        lazy="joined",
+        foreign_keys=[id_nomenclature_type_publication],
+    )
 
 
 cor_dataset_publication = db.Table(
