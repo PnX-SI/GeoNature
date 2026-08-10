@@ -256,7 +256,16 @@ class TDatatypePublication(db.Model):
     publication_url: Mapped[Optional[str]] = mapped_column(Unicode, nullable=True)
     description_publication: Mapped[Optional[str]] = mapped_column(Unicode, nullable=True)
     type_publication: Mapped[Optional[str]] = mapped_column(Unicode, nullable=True)
-
+    id_nomenclature_type_publication: Mapped[Optional[int]] = mapped_column(
+        Integer,
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        default=lambda: TNomenclatures.get_default_nomenclature("TYPE_PUBLICATION"),
+    )
+    nomenclature_type_publication: Mapped[TNomenclatures] = relationship(
+        TNomenclatures,
+        lazy="joined",
+        foreign_keys=[id_nomenclature_type_publication],
+    )
 
 @serializable
 class CorDatasetPublication(db.Model):
