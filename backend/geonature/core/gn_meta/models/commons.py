@@ -1,11 +1,12 @@
 import datetime
-from typing import Optional
+from typing import Optional, Any
 
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy import Column, ForeignKey, Integer, Table, Unicode
 from sqlalchemy.ext.hybrid import hybrid_property
 import marshmallow as ma
-
+from sqlalchemy.dialects.postgresql import UUID as UUIDType
+from sqlalchemy import func, select
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User, Organisme
@@ -241,3 +242,51 @@ class TBibliographicReference(db.Model):
     )
     publication_url: Mapped[Optional[str]] = mapped_column(Unicode)
     publication_reference: Mapped[str] = mapped_column(Unicode)
+
+
+@serializable
+class TDatatypePublication(db.Model):
+    __tablename__ = "datatype_publications"
+    __table_args__ = {"schema": "gn_meta"}
+    id_publication: Mapped[int] = mapped_column(Integer, primary_key=True)
+    unique_publication_id: Mapped[Optional[Any]] = mapped_column(
+        UUIDType(as_uuid=True), default=select(func.uuid_generate_v4())
+    )
+    publication_reference: Mapped[str] = mapped_column(Unicode, nullable=False)
+    publication_url: Mapped[Optional[str]] = mapped_column(Unicode, nullable=True)
+    description_publication: Mapped[Optional[str]] = mapped_column(Unicode, nullable=True)
+    type_publication: Mapped[Optional[str]] = mapped_column(Unicode, nullable=True)
+
+
+@serializable
+class CorDatasetPublication(db.Model):
+    __tablename__ = "cor_dataset_publication"
+    __table_args__ = {"schema": "gn_meta"}
+
+    id_dataset: Mapped[int] = mapped_column(
+        Integer,
+        ForeignKey("gn_meta.t_datasets.id_dataset"),
+        primary_key=True,
+    )
+    id_publication: Mapped[int] = mapped_column(
+        Integer,
+        ForeignKey("gn_meta.datatype_publications.id_publication"),
+        primary_key=True,
+    )
+
+
+@serializable
+class CorAcquisitionFrameworkPublication(db.Model):
+    __tablename__ = "cor_acquisition_framework_publication"
+    __table_args__ = {"schema": "gn_meta"}
+
+    id_acquisition_framework: Mapped[int] = mapped_column(
+        Integer,
+        ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
+        primary_key=True,
+    )
+    id_publication: Mapped[int] = mapped_column(
+        Integer,
+        ForeignKey("gn_meta.datatype_publications.id_publication"),
+        primary_key=True,
+    )
