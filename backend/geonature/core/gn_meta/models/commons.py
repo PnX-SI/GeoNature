@@ -3,7 +3,8 @@ from sqlalchemy.orm import relationship
 from sqlalchemy import ForeignKey
 from sqlalchemy.ext.hybrid import hybrid_property
 import marshmallow as ma
-
+from sqlalchemy.dialects.postgresql import UUID as UUIDType
+from sqlalchemy import func, select
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User, Organisme
@@ -231,3 +232,53 @@ class TBibliographicReference(db.Model):
     )
     publication_url = DB.Column(DB.Unicode)
     publication_reference = DB.Column(DB.Unicode)
+
+
+@serializable
+class TDatatypePublication(db.Model):
+    __tablename__ = "datatype_publications"
+    __table_args__ = {"schema": "gn_meta"}
+    id_publication = DB.Column(DB.Integer, primary_key=True)
+    unique_publication_id = DB.Column(
+        UUIDType(as_uuid=True), default=select(func.uuid_generate_v4())
+    )
+    publication_reference = DB.Column(DB.Unicode, nullable=False)
+    publication_url = DB.Column(DB.Unicode, nullable=True)
+    description_publication = DB.Column(DB.Text, nullable=True)
+    type_publication = DB.Column(DB.Text, nullable=True)
+
+
+cor_dataset_publication = db.Table(
+    "cor_dataset_publication",
+    db.Column(
+        "id_dataset",
+        db.Integer,
+        ForeignKey("gn_meta.t_datasets.id_dataset"),
+        primary_key=True,
+    ),
+    db.Column(
+        "id_publication",
+        db.Integer,
+        ForeignKey("gn_meta.datatype_publications.id_publication"),
+        primary_key=True,
+    ),
+    schema="gn_meta",
+)
+
+
+cor_acquisition_framework_publication = db.Table(
+    "cor_acquisition_framework_publication",
+    db.Column(
+        "id_acquisition_framework",
+        db.Integer,
+        ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
+        primary_key=True,
+    ),
+    db.Column(
+        "id_publication",
+        db.Integer,
+        ForeignKey("gn_meta.datatype_publications.id_publication"),
+        primary_key=True,
+    ),
+    schema="gn_meta",
+)

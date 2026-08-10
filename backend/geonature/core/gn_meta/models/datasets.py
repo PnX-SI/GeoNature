@@ -134,6 +134,14 @@ class TDatasets(db.Model):
         cascade="save-update, merge, delete, delete-orphan",
         backref=DB.backref("actor_dataset"),
     )
+
+    cor_publications = DB.relationship(
+        "TDatatypePublication",
+        secondary=cor_dataset_publication,
+        backref=DB.backref("datasets", lazy="select"),
+        lazy="select",
+    )
+
     additional_fields = DB.relationship(
         "TAdditionalFields", secondary=cor_field_dataset, back_populates="datasets"
     )

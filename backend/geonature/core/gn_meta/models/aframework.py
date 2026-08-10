@@ -96,6 +96,13 @@ class TAcquisitionFramework(db.Model):
         backref=DB.backref("acquisition_framework"),
     )
 
+    cor_publications = DB.relationship(
+        "TDatatypePublication",
+        secondary=cor_acquisition_framework_publication,
+        backref=DB.backref("acquisition_frameworks", lazy="select"),
+        lazy="select",
+    )
+
     # FIXME: remove and use datasets instead
     t_datasets = DB.relationship(
         "TDatasets",
