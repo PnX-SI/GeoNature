@@ -11,7 +11,7 @@ from . import *
 from .utils import logged_user_headers
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 class TestUsersLogin:
     @pytest.fixture
     def user(self, app):

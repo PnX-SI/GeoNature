@@ -50,32 +50,10 @@ from pypnusershub.db.models import Profils as Profil
 from pypnusershub.db.models import User, UserApplicationRight
 from ref_geo.models import BibAreasTypes, LAreas
 from ref_geo.utils import get_local_srid
-from utils_flask_sqla.tests.utils import JSONClient
+from utils_flask_sqla.tests.utils import JSONClient, TestSession
 from werkzeug.datastructures import Headers
 
 from .utils import get_id_nomenclature
-
-__all__ = [
-    "datasets",
-    "acquisition_frameworks",
-    "synthese_data",
-    "synthese_sensitive_data",
-    "synthese_with_protected_status",
-    "source",
-    "reports_data",
-    "medium",
-    "module",
-    "perm_object",
-    "notifications_enabled",
-    "celery_eager",
-    "sources_modules",
-    "modules",
-    "auto_validation_enabled",
-    "add_synthese_read_permissions",
-    "synthese_module",
-    "individuals",
-    "individual",
-]
 
 
 class GeoNatureClient(JSONClient):
@@ -127,6 +105,13 @@ def _app():
 
 @pytest.fixture(scope="session")
 def _session(_app):
+    # Reconfigure the existing db.session in place (rather than assigning a new
+    # scoped_session) so that code caching a reference to db.session at import
+    # time (e.g. session = db.session) keeps working against the same object.
+    # sessionmaker.configure() does not special-case class_ (that's only done in
+    # __init__), so the class must be swapped on session_factory directly.
+    db.session.session_factory.class_ = type(TestSession.__name__, (TestSession,), {})
+    db.session.remove()
     return db.session
 
 
@@ -343,8 +328,9 @@ def users(app):
         return user
 
     users = {}
-    organisme = Organisme(nom_organisme="test imports")
-    db.session.add(organisme)
+    with db.session.begin_nested():
+        organisme = Organisme(nom_organisme="test imports")
+        db.session.add(organisme)
 
     users_to_create = [
         (("noright_user", organisme, 0), {"nom_role": "User", "prenom_role": "NoRight"}),

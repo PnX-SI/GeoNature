@@ -9,9 +9,6 @@ from geonature.utils.env import db
 from geonature.core.gn_permissions.models import PermAction, PermObject, Permission
 from pypnusershub.tests.utils import logged_user_headers, set_logged_user_cookie
 
-
-from .fixtures import *
-
 CD_NOM = 212
 
 
@@ -105,7 +102,7 @@ def set_permissions(module, role, scope_value, action="R", **kwargs):
     return perm
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 class TestMonitoring:
     def test_get_individuals_forbidden(self, users, module):
         set_logged_user_cookie(self.client, users["self_user"])
@@ -129,8 +126,8 @@ class TestMonitoring:
             url_for("gn_monitoring.get_individuals", module_code=module.module_code)
         )
         resp_json = response.json
-        not_expected_individual_uuid = {individuals[1].uuid_individual}
-        expected_individual_uuid = {individuals[0].uuid_individual}
+        not_expected_individual_uuid = {str(individuals[1].uuid_individual)}
+        expected_individual_uuid = {str(individuals[0].uuid_individual)}
         actual_individual_uuid = {individual["uuid_individual"] for individual in resp_json}
 
         assert actual_individual_uuid.isdisjoint(not_expected_individual_uuid)
@@ -166,8 +163,8 @@ class TestMonitoring:
             url_for("gn_monitoring.get_individuals", module_code=module.module_code)
         )
         resp_json = response.json
-        not_expected_individual_uuid = {individuals[1].uuid_individual}
-        expected_individual_uuid = {individuals[0].uuid_individual}
+        not_expected_individual_uuid = {str(individuals[1].uuid_individual)}
+        expected_individual_uuid = {str(individuals[0].uuid_individual)}
         actual_individual_uuid = {individual["uuid_individual"] for individual in resp_json}
 
         assert actual_individual_uuid.isdisjoint(not_expected_individual_uuid)

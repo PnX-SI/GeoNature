@@ -160,7 +160,6 @@ def habitat(station):
 
 @pytest.mark.usefixtures(
     "client_class",
-    "temporary_transaction",
     "celery_eager",
     "import_destination",
     "default_import_destination",

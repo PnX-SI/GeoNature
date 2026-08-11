@@ -9,11 +9,9 @@ from werkzeug.exceptions import Unauthorized, BadRequest
 from werkzeug.datastructures import MultiDict
 
 from geonature.utils.env import db
-from geonature.core.gn_synthese.models import SyntheseLogEntry
+from geonature.core.gn_synthese.models import SyntheseLogEntry, Synthese
 
 from pypnusershub.tests.utils import set_logged_user
-
-from .fixtures import *
 
 
 @pytest.fixture()
@@ -24,7 +22,7 @@ def delete_synthese():
     return synthese
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 class TestSyntheseLogs:
     def test_synthese_log_deletion_trigger(self, synthese_data):
         """

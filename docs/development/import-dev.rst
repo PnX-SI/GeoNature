@@ -142,7 +142,7 @@ Pour chaque entité (e.g. une station dans Occhab), il faut déclarer les champs
 
     id_theme_general = (
         op.get_bind()
-        .execute(sa.select([theme.c.id_theme]).where(theme.c.name_theme == "general_info"))
+        .execute(sa.select(theme.c.id_theme).where(theme.c.name_theme == "general_info"))
         .scalar()
     )
 

@@ -1,6 +1,5 @@
 from typing import Any
 from geonature.tests.utils import set_logged_user
-from geonature.tests.fixtures import users
 
 import importlib
 from geonature.tests.benchmarks import *
@@ -19,7 +18,7 @@ class BenchmarkTest:
     ```python
     import pytest
     bench = BenchmarkTest(print,"test_print",["Hello","World"],{})
-    @pytest.mark.usefixtures("client_class", "temporary_transaction")
+    @pytest.mark.usefixtures("client_class")
         class TestBenchie:
             pass
     TestBenchie.test_print = bench()

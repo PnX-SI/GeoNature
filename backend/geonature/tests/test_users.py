@@ -9,7 +9,6 @@ from pypnusershub.db.models import Application, CorRoleToken, Organisme
 from unittest.mock import MagicMock
 
 # Apparently: need to import both?
-from geonature.tests.fixtures import acquisition_frameworks, datasets, module
 from geonature.tests.utils import set_logged_user
 from geonature.utils.env import db
 
@@ -44,7 +43,7 @@ def fake_smtp(monkeypatch):
     return mock_send
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction", "add_mail_to_user", "fake_smtp")
+@pytest.mark.usefixtures("client_class", "add_mail_to_user", "fake_smtp")
 class TestUsers:
     example_user_data = {
         "identifiant": "temp_user",
