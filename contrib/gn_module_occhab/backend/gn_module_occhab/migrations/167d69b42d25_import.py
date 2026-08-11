@@ -204,7 +204,7 @@ def upgrade():
     theme = Table("bib_themes", meta, autoload=True, schema="gn_imports")
     id_theme_general = (
         op.get_bind()
-        .execute(sa.select([theme.c.id_theme]).where(theme.c.name_theme == "general_info"))
+        .execute(sa.select(theme.c.id_theme).where(theme.c.name_theme == "general_info"))
         .scalar()
     )
     fields_entities = [

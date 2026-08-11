@@ -1,16 +1,28 @@
-from geonature.core.imports.models import BibFields, Entity, TImports
+import typing
 
 from bokeh.embed.standalone import StandaloneEmbedJson
-from geonature.utils.config import config
-from geonature.utils.env import db
-from pypnusershub.db.models import User
 import sqlalchemy as sa
 from sqlalchemy.inspection import inspect
 from werkzeug.exceptions import Conflict
 
-from sqlalchemy import func, select, case
+from sqlalchemy import (
+    Integer,
+    cast,
+    delete,
+    desc,
+    func,
+    insert,
+    literal_column,
+    select,
+    case,
+    update,
+)
 from sqlalchemy.dialects.postgresql import JSONB
-import typing
+from geonature.utils.config import config
+
+from geonature.utils.env import db
+from geonature.core.imports.models import Entity, TImports
+from pypnusershub.db.models import User
 
 
 class ImportStatisticsLabels(typing.TypedDict):
@@ -158,9 +170,9 @@ class ImportActions:
         be refused !
         """
         entities = db.session.scalars(
-            sa.select(Entity)
+            select(Entity)
             .where(Entity.destination == imprt.destination)
-            .order_by(sa.desc(Entity.order))
+            .order_by(desc(Entity.order))
         ).all()
         for entity in entities:
             parent_table = entity.get_destination_table()
@@ -173,7 +185,7 @@ class ImportActions:
                     # not belonging to this import.
                     # We use is_distinct_from to match rows with NULL id_import.
                     query = (
-                        sa.select(parent_pk, sa.func.array_agg(child_pk))
+                        select(parent_pk, func.array_agg(child_pk))
                         .select_from(parent_table.join(child_table))
                         .where(
                             parent_table.c.id_import == imprt.id_import,
@@ -190,7 +202,7 @@ class ImportActions:
                         description += "</ul>"
                         raise Conflict(description)
             db.session.execute(
-                sa.delete(parent_table).where(parent_table.c.id_import == imprt.id_import)
+                delete(parent_table).where(parent_table.c.id_import == imprt.id_import)
             )
 
     @staticmethod
@@ -273,8 +285,8 @@ class ImportActions:
 
         observer_mapping = (
             select(
-                sa.literal_column("observer_jsonb.key").label("observer_string"),
-                sa.cast(sa.literal_column("(observer_jsonb.value->>'id_role')"), sa.Integer).label(
+                literal_column("observer_jsonb.key").label("observer_string"),
+                cast(literal_column("(observer_jsonb.value->>'id_role')"), Integer).label(
                     "id_role"
                 ),
             )
@@ -302,12 +314,10 @@ class ImportActions:
                 model_observers.c[model_id_column],
                 observer_mapping.c.id_role,
                 case(
-                    [
-                        (
-                            User.nom_complet != "",
-                            User.nom_complet,
-                        ),  # Null is associated to "" since it's a string...
-                    ],
+                    (
+                        User.nom_complet != "",
+                        User.nom_complet,
+                    ),  # Null is associated to "" since it's a string...
                     else_=model_observers.c.observer_string,
                 ).label("observer_display_name"),
             )
@@ -322,7 +332,7 @@ class ImportActions:
         )
 
         aggregated_observers = db.session.execute(
-            sa.select(
+            select(
                 matched_observers.c[model_id_column],
                 func.string_agg(matched_observers.c.observer_display_name, ", "),
             )
@@ -331,10 +341,10 @@ class ImportActions:
         ).all()
 
         ## Insert into corresponding table
-        insert_stmt = sa.insert(correspondence_model).from_select(
+        insert_stmt = insert(correspondence_model).from_select(
             names=correspondence_model_columns,
             select=matched_observers.with_only_columns(
-                [getattr(matched_observers.c, col) for col in correspondence_model_columns]
+                *[getattr(matched_observers.c, col) for col in correspondence_model_columns]
             )
             .where(matched_observers.c.id_role != None)
             .distinct(),
@@ -345,7 +355,7 @@ class ImportActions:
 
         for model_id, observers_text in aggregated_observers:
             db.session.execute(
-                sa.update(model)
+                update(model)
                 .where(gettattr_(model, model_id_column) == model_id)
                 .values({model_user_column: observers_text})
             )

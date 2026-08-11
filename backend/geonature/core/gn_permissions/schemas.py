@@ -52,8 +52,8 @@ class PermissionSchema(SmartRelationshipsMixin, ma.SQLAlchemyAutoSchema):
     object = Nested(PermObjectSchema)
 
     scope_value = ma.auto_field(validate=validate.Range(min=0, max=3), strict=True)
-    areas_filter = Nested(AreaSchema, many=True)
-    taxons_filter = Nested(TaxrefSchema, many=True)
+    areas_filter = Nested(AreaSchema, many=True, only=("id_area",))
+    taxons_filter = Nested(TaxrefSchema, many=True, only=("cd_nom",))
 
     @validates("areas_filter")
     def validate_areas_filter(self, data, **kwargs):

@@ -22,7 +22,7 @@ def upgrade():
     destination = sa.Table("bib_destinations", meta, autoload_with=conn, schema="gn_imports")
     id_dest_occhab = (
         op.get_bind()
-        .execute(sa.select([destination.c.id_destination]).where(destination.c.code == "occhab"))
+        .execute(sa.select(destination.c.id_destination).where(destination.c.code == "occhab"))
         .scalar()
     )
     field = sa.Table("bib_fields", meta, autoload_with=conn, schema="gn_imports")
@@ -58,7 +58,7 @@ def downgrade():
     destination = sa.Table("bib_destinations", meta, autoload_with=conn, schema="gn_imports")
     id_dest_occhab = (
         op.get_bind()
-        .execute(sa.select([destination.c.id_destination]).where(destination.c.code == "occhab"))
+        .execute(sa.select(destination.c.id_destination).where(destination.c.code == "occhab"))
         .scalar()
     )
     field = sa.Table("bib_fields", meta, autoload_with=conn, schema="gn_imports")

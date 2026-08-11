@@ -42,7 +42,7 @@ def upgrade():
     module = Table("t_modules", meta, autoload=True, schema="gn_commons")
     id_module_synthese = (
         op.get_bind()
-        .execute(sa.select([module.c.id_module]).where(module.c.module_code == "SYNTHESE"))
+        .execute(sa.select(module.c.id_module).where(module.c.module_code == "SYNTHESE"))
         .scalar()
     )
     destination = op.create_table(

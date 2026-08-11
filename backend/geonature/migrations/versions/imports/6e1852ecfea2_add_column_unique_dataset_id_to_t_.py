@@ -30,14 +30,14 @@ def upgrade():
     destination = Table("bib_destinations", meta, autoload=True, schema="gn_imports")
     id_dest_synthese = (
         op.get_bind()
-        .execute(sa.select([destination.c.id_destination]).where(destination.c.code == "synthese"))
+        .execute(sa.select(destination.c.id_destination).where(destination.c.code == "synthese"))
         .scalar()
     )
     # Fetch id_entity_observation for id_destination from bib_entities table
     entity = Table("bib_entities", meta, autoload=True, schema="gn_imports")
     id_entity_observation = (
         op.get_bind()
-        .execute(sa.select([entity.c.id_entity]).where(entity.c.id_destination == id_dest_synthese))
+        .execute(sa.select(entity.c.id_entity).where(entity.c.id_destination == id_dest_synthese))
         .scalar()
     )
 
@@ -45,7 +45,7 @@ def upgrade():
     theme = Table("bib_themes", meta, autoload=True, schema="gn_imports")
     id_theme_general = (
         op.get_bind()
-        .execute(sa.select([theme.c.id_theme]).where(theme.c.name_theme == "general_info"))
+        .execute(sa.select(theme.c.id_theme).where(theme.c.name_theme == "general_info"))
         .scalar()
     )
 
@@ -124,7 +124,7 @@ def upgrade():
 
     id_t_mapping_synthese = (
         op.get_bind()
-        .execute(sa.select([t_mappings.c.id]).where(t_mappings.c.label == "Synthese GeoNature"))
+        .execute(sa.select(t_mappings.c.id).where(t_mappings.c.label == "Synthese GeoNature"))
         .scalar()
     )
 
@@ -150,7 +150,7 @@ def downgrade():
     destination = Table("bib_destinations", meta, autoload=True, schema="gn_imports")
     id_dest_synthese = (
         op.get_bind()
-        .execute(sa.select([destination.c.id_destination]).where(destination.c.code == "synthese"))
+        .execute(sa.select(destination.c.id_destination).where(destination.c.code == "synthese"))
         .scalar()
     )
 
@@ -158,7 +158,7 @@ def downgrade():
     entity = Table("bib_entities", meta, autoload=True, schema="gn_imports")
     id_entity_observation = (
         op.get_bind()
-        .execute(sa.select([entity.c.id_entity]).where(entity.c.id_destination == id_dest_synthese))
+        .execute(sa.select(entity.c.id_entity).where(entity.c.id_destination == id_dest_synthese))
         .scalar()
     )
 
@@ -167,7 +167,7 @@ def downgrade():
     id_fields = (
         op.get_bind()
         .execute(
-            sa.select([field.c.id_field]).where(
+            sa.select(field.c.id_field).where(
                 sa.or_(
                     sa.and_(
                         field.c.name_field == "unique_dataset_id",
@@ -202,7 +202,7 @@ def downgrade():
     # Get the ID of the "Synthese GeoNature" mapping
     id_t_mapping_synthese = (
         op.get_bind()
-        .execute(sa.select([t_mappings.c.id]).where(t_mappings.c.label == "Synthese GeoNature"))
+        .execute(sa.select(t_mappings.c.id).where(t_mappings.c.label == "Synthese GeoNature"))
         .scalar()
     )
 

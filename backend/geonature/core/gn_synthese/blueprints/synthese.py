@@ -12,14 +12,13 @@ from werkzeug.exceptions import Forbidden, NotFound, BadRequest
 from sqlalchemy import func, select, case, join, and_
 from sqlalchemy.orm import joinedload, lazyload, selectinload, contains_eager
 from geojson import FeatureCollection, Feature
-
 from sqlalchemy.orm import aliased, with_expression
 from sqlalchemy.exc import NoResultFound
 
+from ref_geo.models import LAreas, BibAreasTypes
 import geonature.core.gn_synthese.module  # Don't delete !
-from geonature.utils.env import db, DB
+from geonature.utils.env import db
 from geonature.core.gn_synthese.schemas import SyntheseSchema
-from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from geonature.core.gn_synthese.models import (
     CorAreaSynthese,
@@ -36,8 +35,8 @@ from geonature.core.gn_synthese.utils.blurring import (
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from geonature.core.gn_permissions.decorators import permissions_required
 from geonature.core.sensitivity.models import cor_sensitivity_area_type
-
-from ref_geo.models import LAreas, BibAreasTypes
+from geonature.core.gn_meta.models.aframework import TAcquisitionFramework
+from geonature.core.gn_meta.models.datasets import TDatasets
 
 synthese_routes = Blueprint("synthese", __name__)
 
@@ -232,7 +231,7 @@ def get_observations_for_web(permissions):
         )
         query = select(obs_query.c.geojson, grouped_properties).group_by(obs_query.c.geojson)
 
-    results = DB.session.execute(query)
+    results = db.session.execute(query)
 
     # Build final GeoJson
     geojson_features = []
@@ -251,15 +250,15 @@ def get_observations_for_web(permissions):
 def get_one_synthese(permissions, id_synthese):
     """Get one synthese record for web app with all decoded nomenclature"""
     synthese_query = Synthese.join_nomenclatures().options(
-        joinedload("dataset").options(
-            selectinload("acquisition_framework").options(
-                joinedload("creator"),
-                joinedload("nomenclature_territorial_level"),
-                joinedload("nomenclature_financing_type"),
+        joinedload(Synthese.dataset).options(
+            selectinload(TDatasets.acquisition_framework).options(
+                joinedload(TAcquisitionFramework.creator),
+                joinedload(TAcquisitionFramework.nomenclature_territorial_level),
+                joinedload(TAcquisitionFramework.nomenclature_financing_type),
             ),
         ),
         # Used to check the sensitivity after
-        joinedload("nomenclature_sensitivity"),
+        joinedload(Synthese.nomenclature_sensitivity),
     )
     ##################
 
@@ -361,8 +360,7 @@ def get_one_synthese(permissions, id_synthese):
             ),
         )
         synthese_query = (
-            synthese_query.execution_options(populate_existing=True)
-            .outerjoin(*outer)
+            synthese_query.outerjoin(*outer)
             # contains_eager: to populate Synthese.areas directly
             .options(contains_eager(Synthese.areas.of_type(BlurredAreas)))
             .options(
@@ -375,8 +373,8 @@ def get_one_synthese(permissions, id_synthese):
         )
     else:
         synthese_query = synthese_query.options(
-            lazyload("areas").options(
-                joinedload("area_type"),
+            lazyload(Synthese.areas).options(
+                joinedload(LAreas.area_type),
             ),
             with_expression(Synthese.the_geom_authorized, Synthese.the_geom_4326),
         )

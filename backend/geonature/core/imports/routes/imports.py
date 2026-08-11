@@ -9,6 +9,17 @@ from urllib.parse import quote as url_quote
 
 from flask import current_app, g, jsonify, request, send_file, stream_with_context
 from flask_login import login_required
+from sqlalchemy import delete, desc, func, or_, select
+from sqlalchemy.inspection import inspect
+from sqlalchemy.orm import contains_eager, joinedload
+from sqlalchemy.orm.attributes import set_committed_value
+from sqlalchemy.sql.expression import collate, exists
+from werkzeug.exceptions import BadRequest, Conflict, Forbidden, Gone, NotFound
+from marshmallow import EXCLUDE
+
+
+from pypnnomenclature.models import TNomenclatures
+from pypnusershub.db.models import User
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.imports.blueprint import blueprint
@@ -36,15 +47,6 @@ from geonature.core.imports.utils import (
 )
 from geonature.utils.env import db
 from geonature.utils.sentry import start_sentry_child
-from marshmallow import EXCLUDE
-from pypnnomenclature.models import TNomenclatures
-from pypnusershub.db.models import User
-from sqlalchemy import delete, desc, func, or_, select
-from sqlalchemy.inspection import inspect
-from sqlalchemy.orm import contains_eager, joinedload
-from sqlalchemy.orm.attributes import set_committed_value
-from sqlalchemy.sql.expression import collate, exists
-from werkzeug.exceptions import BadRequest, Conflict, Forbidden, Gone, NotFound
 
 IMPORTS_PER_PAGE = 15
 
@@ -551,7 +553,7 @@ def preview_valid_data(scope, imprt):
         )
 
         invalid_data_cte = (
-            select(data_fields_query)
+            select(*data_fields_query)
             .where(
                 transient_table.c.id_import == imprt.id_import,
                 transient_table.c[entity.validity_column] == False,
