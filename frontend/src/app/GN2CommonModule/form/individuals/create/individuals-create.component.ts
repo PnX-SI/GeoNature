@@ -2,8 +2,10 @@ import { Component, Output, EventEmitter, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
+import { Media } from '@geonature_common/form/media/media';
 import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 import { ModuleService } from '@geonature/services/module.service';
+import { ConfigService } from '@geonature/services/config.service';
 import { Module } from '@geonature/models/module.model';
 import { IndividualsService } from '../individuals.service';
 import { Individual } from '../interfaces';
@@ -27,13 +29,15 @@ export class IndividualsCreateComponent implements OnInit {
     cd_nom_temp: FormControl<number | null>;
     comment: FormControl<string>;
     id_modules: FormControl<number[]>;
+    medias: FormControl<Media[]>;
   }>;
 
   modules: Module[] = [];
 
   constructor(
     private _individualsService: IndividualsService,
-    public moduleService: ModuleService
+    public moduleService: ModuleService,
+    public _config: ConfigService
   ) {}
 
   ngOnInit() {
@@ -56,11 +60,20 @@ export class IndividualsCreateComponent implements OnInit {
       }),
       comment: new FormControl<string>(''),
       id_modules: new FormControl<number[]>(defaultModules),
+      medias: new FormControl<Media[]>([]),
     });
   }
 
   taxonSelected(value: NgbTypeaheadSelectItemEvent<Taxon>) {
     this.form.patchValue({ cd_nom: value.item.cd_nom });
+  }
+
+  defaultsMedia() {
+    const individualName = this.form.get('individual_name')?.value || '';
+    const timestamp = new Date().toISOString();
+    return {
+      title_fr: individualName ? `${individualName}_${timestamp}` : timestamp,
+    };
   }
 
   createIndividual() {

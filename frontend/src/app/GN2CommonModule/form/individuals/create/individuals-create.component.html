@@ -56,6 +56,13 @@
       data-qa="pnx-individuals-create-modules"
       [formControl]="form.get('id_modules')"
     ></ng-select>
+    <small>{{ 'Media.Medias' | translate }}</small>
+    <pnx-medias
+      schemaDotTable="gn_monitoring.t_individuals"
+      [parentFormControl]="form.get('medias')"
+      [sizeMax]="_config.MEDIAS.MEDIAS_SIZE_MAX"
+      [default]="defaultsMedia()"
+    ></pnx-medias>
   </div>
 </form>
 <div class="modal-footer">
