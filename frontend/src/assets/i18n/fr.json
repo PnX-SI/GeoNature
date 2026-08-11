@@ -302,6 +302,7 @@
     "Actions": {
       "AddDataset": "Ajouter un jeu de données",
       "AddAF": "Ajouter un cadre d'acquisition",
+      "HandlePublications": "Gérer les publications",
       "CloseAF": "Fermer le cadre d'acquisition",
       "OpenAF": "Ouvrir le cadre d'acquisition",
       "EditAF": "Editer ce cadre d'acquisition",
@@ -459,6 +460,20 @@
     "Statistics": {
       "OccurrencesSynthese": "Occurrence(s) de taxon(s)",
       "OccurrencesOcchab": "Occurrence(s) d'habitat(s)"
+    },
+    "PublicationsList": {
+      "Title": "Catalogue des publications",
+      "Reference": "Référence",
+      "Type": "Type de publication",
+      "Description": "Description",
+      "SearchPlaceholder": "Rechercher dans : \"Référence\", \"Description\" ou \"URL\" ",
+      "Consult": "Consulter la publication",
+      "ExternalLink": {
+        "Title": "Redirection externe",
+        "Warning": "Attention : Ce lien externe peut vous rediriger vers un site tiers et vous exposez à des risques de sécurité.",
+        "Confirm": "Confirmer la redirection",
+        "Link": "Lien externe : "
+      }
     }
   },
   "Filters": {

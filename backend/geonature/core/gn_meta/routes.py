@@ -7,6 +7,7 @@ import json
 import logging
 
 from flask import Blueprint, current_app, request, Response, g, render_template, jsonify
+from sqlalchemy import or_
 
 from geonature.utils.module import is_module_installed
 from sqlalchemy.exc import DatabaseError
@@ -40,10 +41,12 @@ from geonature.core.gn_meta.models import (
     CorDatasetActor,
     TAcquisitionFramework,
     CorAcquisitionFrameworkActor,
+    TDatatypePublication,
 )
 from geonature.core.gn_meta.schemas import (
     AcquisitionFrameworkSchema,
     DatasetSchema,
+    PublicationSchema,
 )
 from utils_flask_sqla.response import json_resp, to_csv_resp, generate_csv_content
 from utils_flask_sqla.db import ordered
@@ -205,6 +208,80 @@ def delete_dataset(scope, ds_id):
     db.session.delete(dataset)
     db.session.commit()
     return "", 204
+
+
+publication_schema = PublicationSchema(many=True)
+
+
+@routes.route("/publications", methods=["GET", "POST"])
+@login_required
+def get_publications():
+    """
+    Get publications list, paginated and searchable
+    .. :quickref: Metadata;
+    :query int page: page number (default 1)
+    :query int per_page: items per page (default 10)
+    :query str search: search term in reference, publication or url
+    :query int type_publication: filter by publication type
+    :query int orderby: order by column (default id_publication)
+    :query str order: order direction (default desc)
+    """
+    page = request.args.get("page", type=int, default=1)
+    per_page = request.args.get("per_page", type=int, default=10)
+    search = request.args.get("search", type=str, default="").strip()
+    type_publication = request.args.get("type_publication", type=int, default=None)
+    orderby = request.args.get("orderby", type=str, default="id_publication")
+    order = request.args.get("order", type=str, default="desc").lower()
+
+    query = select(TDatatypePublication)
+
+    if search:
+        search_pattern = f"%{search}%"
+        query = query.where(
+            or_(
+                TDatatypePublication.publication_reference.ilike(search_pattern),
+                TDatatypePublication.description_publication.ilike(search_pattern),
+                TDatatypePublication.publication_url.ilike(search_pattern),
+            )
+        )
+    if type_publication:
+        query = query.where(
+            TDatatypePublication.id_nomenclature_type_publication == type_publication
+        )
+
+    sortable_columns = {
+        "id_publication": TDatatypePublication.id_publication,
+        "publication_reference": TDatatypePublication.publication_reference,
+        "publication_url": TDatatypePublication.publication_url,
+        "id_nomenclature_type_publication": (TDatatypePublication.id_nomenclature_type_publication),
+    }
+    sort_column = sortable_columns.get(
+        orderby,
+        TDatatypePublication.id_publication,
+    )
+
+    if order == "asc":
+        query = query.order_by(sort_column.asc())
+    else:
+        query = query.order_by(sort_column.desc())
+
+    pagination = db.paginate(
+        query,
+        page=page,
+        per_page=per_page,
+        error_out=False,
+        max_per_page=100,
+    )
+
+    return jsonify(
+        {
+            "items": publication_schema.dump(pagination.items),
+            "total": pagination.total,
+            "page": pagination.page,
+            "pages": pagination.pages,
+            "per_page": pagination.per_page,
+        }
+    )
 
 
 @routes.route("/uuid_report", methods=["GET"])
