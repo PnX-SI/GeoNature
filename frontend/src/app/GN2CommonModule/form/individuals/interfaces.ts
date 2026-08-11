@@ -1,5 +1,3 @@
-import { Media } from '../media/media';
-
 export interface Individual {
   active?: boolean;
   cd_nom: number;
@@ -10,7 +8,6 @@ export interface Individual {
   id_modules?: number[];
   id_nomenclature_sex: number;
   individual_name: string;
-  medias?: Media[];
   meta_create_date?: Date;
   meta_update_date?: Date;
   // Get Nomenclature interface nomenclature_sex?: string;
