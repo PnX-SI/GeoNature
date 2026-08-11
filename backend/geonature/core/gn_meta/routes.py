@@ -209,7 +209,7 @@ def delete_dataset(scope, ds_id):
     return "", 204
 
 
-publication_schema = PublicationSchema(many=True)
+publication_schema = PublicationSchema(many=True, only=["+digitizer.nom_complet"])
 
 
 @routes.route("/publications", methods=["GET", "POST"])

@@ -101,6 +101,19 @@
             {{ getPublicationTypeLabel(value) }}
           </ng-template>
         </ngx-datatable-column>
+        <ngx-datatable-column
+          name="{{ 'Digitiser' | translate }}"
+          prop="digitizer"
+          [flexGrow]="1.5"
+          [sortable]="false"
+        >
+          <ng-template
+            let-value="value"
+            ngx-datatable-cell-template
+          >
+            {{ value?.nom_complet ?? '-' }}
+          </ng-template>
+        </ngx-datatable-column>
 
         <ngx-datatable-column
           name="{{ 'MetaData.PublicationsList.Description' | translate }}"
