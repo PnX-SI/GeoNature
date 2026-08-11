@@ -227,3 +227,4 @@ class PublicationSchema(SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
         include_fk = True
 
     nomenclature_type_publication = fields.Nested(NomenclatureSchema, dump_only=True)
+    digitizer = MA.Nested(UserSchema, dump_only=True)
