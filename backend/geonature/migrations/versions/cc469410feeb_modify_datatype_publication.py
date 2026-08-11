@@ -111,7 +111,7 @@ def upgrade_datatype_publication_table():
         remote_cols=["id_nomenclature"],
         source_schema="gn_meta",
         referent_schema="ref_nomenclatures",
-        onupdate="CASCADE",
+        onupdate="RESTRICT",
     )
     op.create_check_constraint(
         "check_datatype_publications_type_publication",
@@ -123,6 +123,22 @@ def upgrade_datatype_publication_table():
         schema="gn_meta",
         postgresql_not_valid=True,
     )
+    # For migration purpose only we let the column be nullable (if publication already exists we must keep it)
+    op.add_column(
+        "datatype_publications",
+        sa.Column("id_digitizer", sa.Integer(), nullable=True),
+        schema="gn_meta",
+    )
+    op.create_foreign_key(
+        "fk_datatype_publications_id_digitizer",
+        source_table="datatype_publications",
+        referent_table="t_roles",
+        local_cols=["id_digitizer"],
+        remote_cols=["id_role"],
+        source_schema="gn_meta",
+        referent_schema="utilisateurs",
+        onupdate="RESTRICT",
+    )
 
 
 def downgrade_datatype_publication_table():
@@ -133,11 +149,18 @@ def downgrade_datatype_publication_table():
         type_="check",
     )
     op.drop_constraint(
+        "fk_datatype_publications_id_digitizer",
+        "datatype_publications",
+        schema="gn_meta",
+        type_="foreignkey",
+    )
+    op.drop_constraint(
         "fk_datatype_publications_id_nomenclature_type_publication",
         "datatype_publications",
         schema="gn_meta",
         type_="foreignkey",
     )
+    op.drop_column("datatype_publications", "id_digitizer", schema="gn_meta")
     op.drop_column("datatype_publications", "id_nomenclature_type_publication", schema="gn_meta")
     op.drop_column("datatype_publications", "description_publication", schema="gn_meta")
     op.execute(
@@ -161,7 +184,7 @@ def create_cor_dataset_publication():
         sa.ForeignKeyConstraint(
             ("id_publication",),
             ["gn_meta.datatype_publications.id_publication"],
-            ondelete="CASCADE",
+            ondelete="RESTRICT",  # So we can't delete a publication if it's used by a dataset
             onupdate="CASCADE",
         ),
         sa.PrimaryKeyConstraint("id_dataset", "id_publication"),
@@ -199,7 +222,7 @@ def create_cor_acquisition_framework_publication():
         sa.ForeignKeyConstraint(
             ("id_publication",),
             ["gn_meta.datatype_publications.id_publication"],
-            ondelete="CASCADE",
+            ondelete="RESTRICT",  # So we can't delete a publication if it's used by an af
             onupdate="CASCADE",
         ),
         sa.PrimaryKeyConstraint("id_acquisition_framework", "id_publication"),
@@ -220,11 +243,11 @@ def create_cor_acquisition_framework_publication():
 
 
 def delete_cor_acquisition_framework_publication():
-    op.drop_table("cor_acquisition_framework_publication", schema="gn_meta")
+    op.drop_table("cor_acquisition_framework_publication", schema="gn_meta", if_exists=True)
 
 
 def upgrade():
-    # Unused table cor_acquisition_framework_publication already exists
+    # Unused table cor_acquisition_framework_publication sometimes already exists
     delete_cor_acquisition_framework_publication()
     create_datatype_nomenclature()
     upgrade_datatype_publication_table()

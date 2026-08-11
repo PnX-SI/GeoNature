@@ -4,4 +4,8 @@ export interface Publication {
   publication_url?: string;
   id_nomenclature_type_publication?: string;
   description_publication?: string;
+  digitiser?: {
+    id_role: number;
+    nom_role: string;
+  };
 }

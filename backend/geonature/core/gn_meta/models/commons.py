@@ -250,6 +250,11 @@ class TDatatypePublication(db.Model):
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         default=lambda: TNomenclatures.get_default_nomenclature("TYPE_PUBLICATION"),
     )
+    id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role), nullable=False)
+    digitizer = DB.relationship(
+        User,
+        lazy="joined",
+    )
     nomenclature_type_publication = DB.relationship(
         TNomenclatures,
         lazy="joined",
