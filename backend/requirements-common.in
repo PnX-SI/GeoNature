@@ -28,7 +28,7 @@ pyproj<3.9;python_version<"3.10"  # imports
 pyproj;python_version>="3.10"  # imports
 python-dateutil
 shapely>=2.0.0
-sqlalchemy<2.0
+sqlalchemy>2
 toml
 weasyprint
 # Compatibility with flask admin
