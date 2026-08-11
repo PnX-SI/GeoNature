@@ -8,6 +8,7 @@ from .models import (
     CorAcquisitionFrameworkActor,
     CorDatasetActor,
     TBibliographicReference,
+    TDatatypePublication,
 )
 from geonature.utils.env import MA, db
 from geonature.utils.schema import CruvedSchemaMixin
@@ -186,3 +187,12 @@ class AcquisitionFrameworkSchema(
     nomenclature_territorial_level = MA.Nested(NomenclatureSchema, dump_only=True)
     nomenclature_financing_type = MA.Nested(NomenclatureSchema, dump_only=True)
     creator = MA.Nested(UserSchema, dump_only=True)
+
+
+class PublicationSchema(SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
+    class Meta:
+        model = TDatatypePublication
+        load_instance = True
+        include_fk = True
+
+    nomenclature_type_publication = fields.Nested(NomenclatureSchema, dump_only=True)

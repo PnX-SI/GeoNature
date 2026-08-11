@@ -303,6 +303,7 @@
     "Actions": {
       "AddDataset": "Add a dataset",
       "AddAF": "Add an acquisition framework",
+      "HandlePublications": "Handle publications",
       "SubmitAF": "Submit the acquisition framework",
       "CloseAF": "Close this acquisition framework",
       "OpenAF": "Open this acquisition framework",
@@ -449,6 +450,20 @@
       "Of": "of",
       "PreviousPage": "Previous page",
       "NextPage": "Next page"
+    },
+    "PublicationsList": {
+      "Title": "Publications Catalog",
+      "Reference": "Reference",
+      "Type": "Publication Type",
+      "Description": "Description",
+      "SearchPlaceholder": "Search in  : \"Reference\", \"Description\" or \"URL\" ",
+      "Consult": "View the publication",
+      "ExternalLink": {
+        "Title": "External Redirect",
+        "Warning": "Warning: This external link may redirect you to a third-party site and expose you to security risks.",
+        "Confirm": "Confirm Redirect",
+        "Link": "External Link: "
+      }
     }
   },
   "Filters": {
