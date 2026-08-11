@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { Injectable, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { Routes, RouterModule } from '@angular/router';
@@ -22,6 +22,8 @@ import { ButtonDeleteAfComponent } from './af/button-delete-af.component';
 import { ButtonCloseAfComponent } from './af/button-close-af.component';
 import { OrganismFormDialogComponent } from './organisms/organism-form-dialog.component';
 import { DatasetActivationToggleComponent } from './datasets/dataset-activation-toggle.component';
+import { PublicationsListComponent } from '@geonature/metadataModule/publications/publications-list.component';
+import { PublicationsListService } from '@geonature/metadataModule/services/publication.service';
 
 const routes: Routes = [
   { path: '', component: MetadataComponent },
@@ -31,8 +33,10 @@ const routes: Routes = [
   { path: 'af', component: AfFormComponent },
   { path: 'af/:id', component: AfFormComponent },
   { path: 'af_detail/:id', component: AfCardComponent },
+  { path: 'publication', component: PublicationsListComponent },
 ];
 
+@Injectable()
 export class MetadataPaginator extends MatPaginatorIntl {
   constructor() {
     super();
@@ -78,11 +82,13 @@ export class MetadataPaginator extends MatPaginatorIntl {
     ButtonCloseAfComponent,
     DatasetActivationToggleComponent,
     OrganismFormDialogComponent,
+    PublicationsListComponent,
   ],
   providers: [
     MetadataService,
     MetadataDataService,
     ActorFormService,
+    PublicationsListService,
     {
       provide: MatPaginatorIntl,
       useClass: MetadataPaginator,
