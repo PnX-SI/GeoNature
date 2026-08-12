@@ -18,7 +18,7 @@ depends_on = None
 
 def upgrade():
     conn = op.get_bind()
-    meta = sa.MetaData(bind=conn)
+    meta = sa.MetaData()
     destination = sa.Table("bib_destinations", meta, autoload_with=conn, schema="gn_imports")
     id_dest_occhab = (
         op.get_bind()
@@ -54,7 +54,7 @@ def upgrade():
 
 def downgrade():
     conn = op.get_bind()
-    meta = sa.MetaData(bind=conn)
+    meta = sa.MetaData()
     destination = sa.Table("bib_destinations", meta, autoload_with=conn, schema="gn_imports")
     id_dest_occhab = (
         op.get_bind()

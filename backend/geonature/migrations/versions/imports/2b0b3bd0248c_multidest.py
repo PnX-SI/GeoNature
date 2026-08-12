@@ -22,7 +22,8 @@ depends_on = None
 
 
 def upgrade():
-    meta = MetaData(bind=op.get_bind())
+    conn = op.get_bind()
+    meta = MetaData()
     # Rename synthese_field → dest_field
     op.alter_column(
         schema="gn_imports",
@@ -39,7 +40,7 @@ def upgrade():
         server_default=None,
     )
     ### Destination
-    module = Table("t_modules", meta, autoload=True, schema="gn_commons")
+    module = Table("t_modules", meta, autoload_with=conn, schema="gn_commons")
     id_module_synthese = (
         op.get_bind()
         .execute(sa.select(module.c.id_module).where(module.c.module_code == "SYNTHESE"))
@@ -83,7 +84,7 @@ def upgrade():
         ),
         schema="gn_imports",
     )
-    field = Table("bib_fields", meta, autoload=True, schema="gn_imports")
+    field = Table("bib_fields", meta, autoload_with=conn, schema="gn_imports")
     op.execute(field.update().values({"id_destination": id_dest_synthese}))
     op.alter_column(
         table_name="bib_fields", column_name="id_destination", nullable=False, schema="gn_imports"
@@ -111,7 +112,7 @@ def upgrade():
         ),
         schema="gn_imports",
     )
-    imprt = Table("t_imports", meta, autoload=True, schema="gn_imports")
+    imprt = Table("t_imports", meta, autoload_with=conn, schema="gn_imports")
     op.execute(imprt.update().values({"id_destination": id_dest_synthese}))
     op.alter_column(
         table_name="t_imports", column_name="id_destination", nullable=False, schema="gn_imports"
@@ -127,7 +128,7 @@ def upgrade():
         ),
         schema="gn_imports",
     )
-    mapping = Table("t_mappings", meta, autoload=True, schema="gn_imports")
+    mapping = Table("t_mappings", meta, autoload_with=conn, schema="gn_imports")
     op.execute(mapping.update().values({"id_destination": id_dest_synthese}))
     op.alter_column(
         table_name="t_mappings", column_name="id_destination", nullable=False, schema="gn_imports"
@@ -155,7 +156,7 @@ def upgrade():
         ),
         schema="gn_imports",
     )
-    bib_fields = Table("bib_fields", meta, autoload=True, schema="gn_imports")
+    bib_fields = Table("bib_fields", meta, autoload_with=conn, schema="gn_imports")
     unique_column_field_query = sa.select(bib_fields.c.id_field).where(
         sa.and_(
             bib_fields.c.id_destination == id_dest_synthese,
@@ -218,14 +219,12 @@ def upgrade():
                 "comment",
             ],
             sa.select(
-                [
-                    id_entity_obs,
-                    field.c.id_field,
-                    field.c.desc_field,
-                    field.c.id_theme,
-                    field.c.order_field,
-                    field.c.comment,
-                ]
+                id_entity_obs,
+                field.c.id_field,
+                field.c.desc_field,
+                field.c.id_theme,
+                field.c.order_field,
+                field.c.comment,
             ),
         )
     )
@@ -295,7 +294,7 @@ def upgrade():
         """)
     op.drop_column(schema="gn_imports", table_name="t_imports", column_name="taxa_count")
     # Add new error types
-    error_type = Table("bib_errors_types", meta, autoload=True, schema="gn_imports")
+    error_type = Table("bib_errors_types", meta, autoload_with=conn, schema="gn_imports")
     op.execute(
         sa.insert(error_type).values(
             [
@@ -342,12 +341,12 @@ def upgrade():
             module_code = 'IMPORT'
         """)
 
-    ID_MODULE_IMPORT = op.get_bind().execute("""
+    ID_MODULE_IMPORT = op.get_bind().execute(sa.text("""
             SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'IMPORT';
-            """).first()[0]
-    ID_MODULE_SYNTHESE = op.get_bind().execute("""
+            """)).first()[0]
+    ID_MODULE_SYNTHESE = op.get_bind().execute(sa.text("""
             SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'SYNTHESE';
-            """).first()[0]
+            """)).first()[0]
 
     ## JDD IMPORT -> JDD Synthese
     # update row with module = import to module=synthese in cor_module_dataset, only if the dataset is not already associated with a synthese
@@ -368,19 +367,20 @@ def downgrade():
         "Re-add association between datasets and the import module (!!!!! association between synthese and dataset created previously will remain! !!!!)"
     )
 
-    ID_MODULE_IMPORT = op.get_bind().execute("""
+    ID_MODULE_IMPORT = op.get_bind().execute(sa.text("""
         SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'IMPORT';
-        """).first()[0]
-    ID_MODULE_SYNTHESE = op.get_bind().execute("""
+        """)).first()[0]
+    ID_MODULE_SYNTHESE = op.get_bind().execute(sa.text("""
         SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'SYNTHESE';
-        """).first()[0]
-    op.execute(f"""INSERT INTO gn_commons.cor_module_dataset (id_module, id_dataset) 
+        """)).first()[0]
+    op.execute(f"""INSERT INTO gn_commons.cor_module_dataset (id_module, id_dataset)
         SELECT {ID_MODULE_IMPORT}, id_dataset FROM gn_commons.cor_module_dataset WHERE id_module = {ID_MODULE_SYNTHESE};
         """)
 
-    meta = MetaData(bind=op.get_bind())
+    conn = op.get_bind()
+    meta = MetaData()
     # Remove new error types
-    error_type = Table("bib_errors_types", meta, autoload=True, schema="gn_imports")
+    error_type = Table("bib_errors_types", meta, autoload_with=conn, schema="gn_imports")
     op.execute(
         sa.delete(error_type).where(
             error_type.c.name.in_(

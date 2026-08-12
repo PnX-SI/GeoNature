@@ -72,7 +72,7 @@ def upgrade():
         NOT VALID;
         """)
     conn = op.get_bind()
-    metadata = sa.MetaData(bind=conn)
+    metadata = sa.MetaData()
     destination = sa.Table("bib_destinations", metadata, schema="gn_imports", autoload_with=conn)
     synthese_dest_id = conn.scalar(
         sa.select(destination.c.id_destination).where(destination.c.code == "synthese")
@@ -120,7 +120,7 @@ def downgrade():
     op.drop_column(table_name="bib_fields", schema="gn_imports", column_name="optional_conditions")
 
     conn = op.get_bind()
-    metadata = sa.MetaData(bind=conn)
+    metadata = sa.MetaData()
     destination = sa.Table("bib_destinations", metadata, schema="gn_imports", autoload_with=conn)
     synthese_dest_id = conn.scalar(
         sa.select(destination.c.id_destination).where(destination.c.code == "synthese")

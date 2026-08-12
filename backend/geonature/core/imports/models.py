@@ -331,7 +331,6 @@ class Entity(db.Model):
         return Table(
             self.destination_table_name,
             db.metadata,
-            autoload=True,
             autoload_with=db.session.connection(),
             schema=self.destination_table_schema,
         )

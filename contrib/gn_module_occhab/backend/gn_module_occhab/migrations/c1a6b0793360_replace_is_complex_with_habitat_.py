@@ -21,7 +21,7 @@ depends_on = ("5e882af04ff6",)
 def upgrade():
 
     conn = op.get_bind()
-    metadata = sa.MetaData(bind=conn)
+    metadata = sa.MetaData()
 
     # ADD new column
     op.add_column(
@@ -44,10 +44,12 @@ def upgrade():
         )
     )
     destination = sa.Table("bib_destinations", metadata, schema="gn_imports", autoload_with=conn)
-    entity = sa.Table("bib_entities", metadata, autoload=True, schema="gn_imports")
-    theme = sa.Table("bib_themes", metadata, autoload=True, schema="gn_imports")
+    entity = sa.Table("bib_entities", metadata, autoload_with=conn, schema="gn_imports")
+    theme = sa.Table("bib_themes", metadata, autoload_with=conn, schema="gn_imports")
     station = sa.Table("t_stations", metadata, schema="pr_occhab", autoload_with=conn)
-    cor_entity_field = sa.Table("cor_entity_field", metadata, autoload=True, schema="gn_imports")
+    cor_entity_field = sa.Table(
+        "cor_entity_field", metadata, autoload_with=conn, schema="gn_imports"
+    )
 
     id_theme_general = session.execute(
         sa.select(theme.c.id_theme).where(theme.c.name_theme == "general_info")
@@ -134,7 +136,7 @@ def upgrade():
 
 def downgrade():
     conn = op.get_bind()
-    metadata = sa.MetaData(bind=conn)
+    metadata = sa.MetaData()
 
     session = Session(bind=op.get_bind())
 

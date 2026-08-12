@@ -21,7 +21,7 @@ NEW_NAME_MAPPING = "Occhab GeoNature"
 
 def get_table():
     conn = op.get_bind()
-    metadata = sa.MetaData(bind=conn)
+    metadata = sa.MetaData()
     bib_fields = sa.Table("bib_fields", metadata, schema="gn_imports", autoload_with=op.get_bind())
     destinations = sa.Table(
         "bib_destinations", metadata, schema="gn_imports", autoload_with=op.get_bind()

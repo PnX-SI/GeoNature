@@ -19,7 +19,8 @@ depends_on = None
 
 
 def upgrade():
-    meta = MetaData(bind=op.get_bind())
+    conn = op.get_bind()
+    meta = MetaData()
 
     # Add columns to t_imports_synthese table
     with op.batch_alter_table("t_imports_synthese", schema="gn_imports") as batch_op:
@@ -27,14 +28,14 @@ def upgrade():
         batch_op.add_column(sa.Column("unique_dataset_id", UUID(as_uuid=True)))
         batch_op.add_column(sa.Column("id_dataset", sa.Integer))
     # Fetch id_destination for 'synthese' from bib_destinations table
-    destination = Table("bib_destinations", meta, autoload=True, schema="gn_imports")
+    destination = Table("bib_destinations", meta, autoload_with=conn, schema="gn_imports")
     id_dest_synthese = (
         op.get_bind()
         .execute(sa.select(destination.c.id_destination).where(destination.c.code == "synthese"))
         .scalar()
     )
     # Fetch id_entity_observation for id_destination from bib_entities table
-    entity = Table("bib_entities", meta, autoload=True, schema="gn_imports")
+    entity = Table("bib_entities", meta, autoload_with=conn, schema="gn_imports")
     id_entity_observation = (
         op.get_bind()
         .execute(sa.select(entity.c.id_entity).where(entity.c.id_destination == id_dest_synthese))
@@ -42,7 +43,7 @@ def upgrade():
     )
 
     # Fetch id_theme_general from bib_themes table
-    theme = Table("bib_themes", meta, autoload=True, schema="gn_imports")
+    theme = Table("bib_themes", meta, autoload_with=conn, schema="gn_imports")
     id_theme_general = (
         op.get_bind()
         .execute(sa.select(theme.c.id_theme).where(theme.c.name_theme == "general_info"))
@@ -50,7 +51,7 @@ def upgrade():
     )
 
     # Fetch id_field for 'unique_dataset_id' from bib_fields table
-    field = Table("bib_fields", meta, autoload=True, schema="gn_imports")
+    field = Table("bib_fields", meta, autoload_with=conn, schema="gn_imports")
     list_field_to_insert = [
         (
             {
@@ -107,8 +108,8 @@ def upgrade():
     ]
 
     # Insert data into cor_entity_field table
-    cor_entity_field = Table("cor_entity_field", meta, autoload=True, schema="gn_imports")
-    cor_entity_field = Table("cor_entity_field", meta, autoload=True, schema="gn_imports")
+    cor_entity_field = Table("cor_entity_field", meta, autoload_with=conn, schema="gn_imports")
+    cor_entity_field = Table("cor_entity_field", meta, autoload_with=conn, schema="gn_imports")
     op.execute(
         sa.insert(cor_entity_field).values(
             [
@@ -120,7 +121,7 @@ def upgrade():
     )
 
     # Update model contentmapping to add unique_dataset_id
-    t_mappings = Table("t_mappings", meta, autoload=True, schema="gn_imports")
+    t_mappings = Table("t_mappings", meta, autoload_with=conn, schema="gn_imports")
 
     id_t_mapping_synthese = (
         op.get_bind()
@@ -134,11 +135,12 @@ def upgrade():
         WHERE id = :id_t_mapping_synthese
         """)
 
-    op.get_bind().execute(update_query, id_t_mapping_synthese=id_t_mapping_synthese)
+    op.get_bind().execute(update_query, dict(id_t_mapping_synthese=id_t_mapping_synthese))
 
 
 def downgrade():
-    meta = MetaData(bind=op.get_bind())
+    conn = op.get_bind()
+    meta = MetaData()
 
     # Drop columns from t_imports_synthese table
     with op.batch_alter_table("t_imports_synthese", schema="gn_imports") as batch_op:
@@ -147,7 +149,7 @@ def downgrade():
         batch_op.drop_column("id_dataset")
 
     # Fetch id_destination for 'synthese' from bib_destinations table
-    destination = Table("bib_destinations", meta, autoload=True, schema="gn_imports")
+    destination = Table("bib_destinations", meta, autoload_with=conn, schema="gn_imports")
     id_dest_synthese = (
         op.get_bind()
         .execute(sa.select(destination.c.id_destination).where(destination.c.code == "synthese"))
@@ -155,7 +157,7 @@ def downgrade():
     )
 
     # Fetch id_entity_observation for id_destination from bib_entities table
-    entity = Table("bib_entities", meta, autoload=True, schema="gn_imports")
+    entity = Table("bib_entities", meta, autoload_with=conn, schema="gn_imports")
     id_entity_observation = (
         op.get_bind()
         .execute(sa.select(entity.c.id_entity).where(entity.c.id_destination == id_dest_synthese))
@@ -163,7 +165,7 @@ def downgrade():
     )
 
     # Fetch id_fields inserted into bib_fields table
-    field = Table("bib_fields", meta, autoload=True, schema="gn_imports")
+    field = Table("bib_fields", meta, autoload_with=conn, schema="gn_imports")
     id_fields = (
         op.get_bind()
         .execute(
@@ -185,7 +187,7 @@ def downgrade():
     )
 
     # Delete rows from cor_entity_field based on matching list of id_fields
-    cor_entity_field = Table("cor_entity_field", meta, autoload=True, schema="gn_imports")
+    cor_entity_field = Table("cor_entity_field", meta, autoload_with=conn, schema="gn_imports")
     op.execute(
         cor_entity_field.delete().where(
             sa.and_(
@@ -197,7 +199,7 @@ def downgrade():
 
     op.execute(field.delete().where(field.c.id_field.in_(id_fields)))
 
-    t_mappings = Table("t_mappings", meta, autoload=True, schema="gn_imports")
+    t_mappings = Table("t_mappings", meta, autoload_with=conn, schema="gn_imports")
 
     # Get the ID of the "Synthese GeoNature" mapping
     id_t_mapping_synthese = (

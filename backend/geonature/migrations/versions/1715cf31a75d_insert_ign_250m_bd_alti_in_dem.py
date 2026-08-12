@@ -30,7 +30,7 @@ file_name = "BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc"
 
 def upgrade():
     conn = op.get_bind()
-    local_srid = conn.execute("SELECT Find_SRID('ref_geo', 'l_areas', 'geom')").scalar()
+    local_srid = conn.execute(sa.text("SELECT Find_SRID('ref_geo', 'l_areas', 'geom')")).scalar()
     with TemporaryDirectory() as temp_dir:
         with open_remote_file(base_url, archive_name, open_fct=ZipFile) as archive:
             archive.extract(file_name, path=temp_dir)

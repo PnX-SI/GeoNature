@@ -25,13 +25,13 @@ def upgrade():
             sa.Unicode(length=500),
         ),
     )
-    monitoring_present = op.get_bind().execute("""
+    monitoring_present = op.get_bind().execute(sa.text("""
     SELECT EXISTS (
         SELECT FROM pg_tables
         WHERE  schemaname = 'gn_monitoring'
         AND    tablename  = 't_module_complements'
     )
-    """).scalar()
+    """)).scalar()
     if monitoring_present:
         op.execute("""
             UPDATE gn_commons.t_modules m
