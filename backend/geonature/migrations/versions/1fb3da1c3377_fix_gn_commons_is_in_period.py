@@ -21,7 +21,8 @@ def upgrade():
     """Redefine the utility function gn_commons.is_in_period
     to use the string representation 'MM-DD' of dates objects,
     so it handles both leap and non-leap years correctly."""
-    op.execute("""
+    op.execute(
+        """
         CREATE OR REPLACE FUNCTION gn_commons.is_in_period(dateobs date, datebegin date, dateend date)
          RETURNS boolean
          LANGUAGE plpgsql
@@ -47,14 +48,16 @@ def upgrade():
         END;
         $function$
         ;
-    """)
+    """
+    )
 
 
 def downgrade():
     """Redefine the utility function gn_commons.is_in_period
     the way it was, using DOY to calculate period appartenance.
     This version only works with leap years."""
-    op.execute("""
+    op.execute(
+        """
         CREATE OR REPLACE FUNCTION gn_commons.is_in_period(dateobs date, datebegin date, dateend date)
          RETURNS boolean
          LANGUAGE plpgsql
@@ -85,4 +88,5 @@ def downgrade():
         END;
         $function$
         ;
-    """)
+    """
+    )
