@@ -34,7 +34,6 @@ setuptools.setup(
             "pandas",
             "pytest",
             "pytest-flask",
-            "pytest-benchmark",
             "pytest-cov",
             "jsonschema",
             "pandas",
