@@ -139,9 +139,21 @@ def upgrade_datatype_publication_table():
         referent_schema="utilisateurs",
         onupdate="RESTRICT",
     )
+    op.create_unique_constraint(
+        "uq_datatype_publications_reference",
+        "datatype_publications",
+        ["publication_reference"],
+        schema="gn_meta",
+    )
 
 
 def downgrade_datatype_publication_table():
+    op.drop_constraint(
+        "uq_datatype_publications_reference",
+        "datatype_publications",
+        schema="gn_meta",
+        type_="unique",
+    )
     op.drop_constraint(
         "check_datatype_publications_type_publication",
         "datatype_publications",
