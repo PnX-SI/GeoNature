@@ -89,6 +89,10 @@ source venv/bin/activate
 
 echo "Installation des dépendances Python..."
 pip install --upgrade "pip>=19.3"  "wheel"  # https://www.python.org/dev/peps/pep-0440/#direct-references
+if ! command -v uv >/dev/null 2>&1; then
+  echo "Installation de uv..."
+  pip install uv
+fi
 if [[ "${MODE}" == "dev" ]]; then
   echo "Installation des dépendances Python de l'environnement de DEV..."
   git submodule status | grep -E "^-" >/dev/null
@@ -97,9 +101,12 @@ if [[ "${MODE}" == "dev" ]]; then
       echo "Avez-vous lancé 'git submodule init && git submodule update' ?"
       exit 1
   fi
-  pip install -e "${BASE_DIR}"[tests,lint] -r requirements-dev.txt
+  # Uses the uv workspace (backend/dependencies/*) declared in the root pyproject.toml:
+  # siblings are installed editable from their local submodule checkout.
+  uv sync --project "${BASE_DIR}" --active --extra tests --extra lint
 else
-  pip install -e "${BASE_DIR}" -r requirements.txt
+  # Siblings resolved from PyPI per backend/requirements.txt, no workspace/local sources involved.
+  uv pip install -e "${BASE_DIR}" -r requirements.txt
 fi
 
 readonly BIN_VENV_DIR="${BASE_DIR}/backend/venv/bin"

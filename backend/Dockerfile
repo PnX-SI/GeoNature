@@ -143,9 +143,11 @@ FROM base AS dev
 WORKDIR /sources/GeoNature
 
 # rw required by --editable to write .egg-info stuffs
+# Siblings resolve to their local backend/dependencies/* submodule checkout via
+# [tool.uv.sources] in the root pyproject.toml (uv workspace).
 RUN --mount=type=cache,target=/root/.cache \
     --mount=type=bind,source=.,target=/sources/GeoNature,rw \
-    cd backend && uv pip install --system  -e .. -r requirements-dev.txt
+    cd backend && uv pip install --system -e ..
 RUN --mount=type=cache,target=/root/.cache \
     --mount=type=bind,source=.,target=/sources/GeoNature,rw \
     uv pip install --system \

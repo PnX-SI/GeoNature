@@ -42,6 +42,29 @@ geonature = ["**/templates/**/*.html"]
 version = { file = "VERSION" }
 dependencies = { file = "backend/requirements.in" }
 
+[tool.uv.workspace]
+members = [
+  "backend/dependencies/UsersHub-authentification-module",
+  "backend/dependencies/Nomenclature-api-module",
+  "backend/dependencies/Habref-api-module",
+  "backend/dependencies/Utils-Flask-SQLAlchemy",
+  "backend/dependencies/TaxHub",
+  "backend/dependencies/Utils-Flask-SQLAlchemy-Geo",
+  "backend/dependencies/RefGeo",
+]
+exclude = [
+  "backend/dependencies/*/dependencies/*",
+]
+
+[tool.uv.sources]
+pypnusershub = { workspace = true }
+pypnnomenclature = { workspace = true }
+pypn_habref_api = { workspace = true }
+utils-flask-sqlalchemy-geo = { workspace = true }
+utils-flask-sqlalchemy = { workspace = true }
+taxhub = { workspace = true }
+pypn-ref-geo = { workspace = true }
+
 [project.optional-dependencies]
 tests = [
   "pandas",

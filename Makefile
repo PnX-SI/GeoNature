@@ -170,8 +170,8 @@ autoupgrade:
 	source backend/venv/bin/activate && geonature db autoupgrade
 
 compile_requirements:
-	source backend/venv/bin/activate && cd backend && piptools compile requirements.in
-	source backend/venv/bin/activate && cd backend && piptools compile ../pyproject.toml requirements-dev.in
+	uv lock
+	source backend/venv/bin/activate && cd backend && uv pip compile requirements.in -o requirements.txt
 
 test_frontend:
 	. ${NVM_DIR}/nvm.sh; cd frontend; nvm use && npm run cypress:run

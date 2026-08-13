@@ -108,10 +108,10 @@ jobs:
         if: github.action_ref != 'master'
         run: |
           echo 'Installation des requirements de dev'
-          python -m pip install --upgrade pip
-          python -m pip install \
-            -e ..[tests] \
-            -r requirements-dev.txt
+          python -m pip install --upgrade pip uv
+          # Siblings resolve to their local backend/dependencies/* submodule checkout
+          # via [tool.uv.sources] in the root pyproject.toml (uv workspace).
+          uv pip install --system -e ..[tests,lint]
         working-directory: ./backend
 
       - name: Install core modules backend
