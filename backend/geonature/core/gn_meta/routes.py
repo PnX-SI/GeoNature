@@ -210,10 +210,8 @@ def delete_dataset(scope, ds_id):
     return "", 204
 
 
-publication_schema = PublicationSchema(many=True, only=["+digitizer.nom_complet"])
-
-
 @routes.route("/publications", methods=["GET", "POST"])
+@permissions.check_cruved_scope("R", module_code="METADATA")
 @login_required
 def get_publications():
     """
@@ -229,7 +227,7 @@ def get_publications():
     page = request.args.get("page", type=int, default=1)
     per_page = request.args.get("per_page", type=int, default=10)
     search = request.args.get("search", type=str, default="").strip()
-    type_publication = request.args.get("type_publication", type=int, default=None)
+    type_publication = request.args.get("type_publication", type=int, default=-1)
     orderby = request.args.get("orderby", type=str, default="id_publication")
     order = request.args.get("order", type=str, default="desc").lower()
 
@@ -244,7 +242,7 @@ def get_publications():
                 TDatatypePublication.publication_url.ilike(search_pattern),
             )
         )
-    if type_publication:
+    if type_publication != -1:
         query = query.where(
             TDatatypePublication.id_nomenclature_type_publication == type_publication
         )
@@ -275,13 +273,80 @@ def get_publications():
 
     return jsonify(
         {
-            "items": publication_schema.dump(pagination.items),
+            "items": PublicationSchema(
+                many=True,
+                only=["+digitizer.nom_complet", "+cruved", "+datasets", "+acquisition_frameworks"],
+            ).dump(pagination.items),
             "total": pagination.total,
             "page": pagination.page,
             "pages": pagination.pages,
             "per_page": pagination.per_page,
         }
     )
+
+
+@routes.route("/publication", methods=["POST"])
+@permissions.check_cruved_scope("C", module_code="METADATA")
+def create_publication():
+    """
+    Post one Dataset data
+    .. :quickref: Metadata;
+    """
+    return PublicationSchema().jsonify(
+        publicationHandler(
+            publication=TDatatypePublication(id_digitizer=g.current_user.id_role),
+            data=request.get_json(),
+        )
+    )
+
+
+@routes.route("/publication/<int:id_publication>", methods=["POST"])
+@permissions.check_cruved_scope("U", get_scope=True, module_code="METADATA")
+def update_publication(id_publication, scope):
+    """
+    Update publication
+    .. :quickref: Metadata;
+    """
+    publication = db.get_or_404(TDatatypePublication, id_publication)
+    if not publication.has_instance_permission(scope):
+        raise Forbidden(
+            f"User {g.current_user} cannot update publication {publication.id_publication}"
+        )
+    return PublicationSchema().jsonify(
+        publicationHandler(
+            publication=publication,
+            data=request.get_json(),
+        )
+    )
+
+
+@routes.route("/publication/<int:id_publication>", methods=["DELETE"])
+@permissions.check_cruved_scope("D", get_scope=True, module_code="METADATA")
+def delete_publication(id_publication, scope):
+    """
+    Delete publication
+    .. :quickref: Metadata;
+    """
+    publication = db.get_or_404(TDatatypePublication, id_publication)
+    if not publication.has_instance_permission(scope):
+        raise Forbidden(
+            f"User {g.current_user} cannot delete publication {publication.id_publication}"
+        )
+    if publication.acquisition_frameworks:
+        raise Conflict(
+            "La suppression de la publication est impossible "
+            "car elle contient des cadres d'acquisition."
+        )
+
+    if publication.datasets:
+        raise Conflict(
+            "La suppression de la publication est impossible "
+            "car elle contient des jeux de données."
+        )
+    db.session.delete(publication)
+    db.session.commit()
+
+    return "", 204
 
 
 @routes.route("/uuid_report", methods=["GET"])
@@ -458,6 +523,38 @@ def my_csv_resp(filename, data, columns, _header, separator=";"):
     headers.add("Content-Disposition", "attachment", filename="export_%s.csv" % filename)
     out = _header + generate_csv_content(columns, data, separator)
     return Response(out, headers=headers)
+
+
+def publicationHandler(publication, data):
+    publication_schema = PublicationSchema(
+        only=[
+            "publication_reference",
+            "publication_url",
+            "description_publication",
+            "id_nomenclature_type_publication",
+        ]
+    )
+
+    try:
+        publication = publication_schema.load(data, instance=publication)
+    except ValidationError as error:
+        raise BadRequest(error.messages)
+
+    db.session.add(publication)
+    # todo Rassmebler les handlers? Les factoriser
+    try:
+        db.session.commit()
+    except IntegrityError as err:
+        db.session.rollback()
+
+        if isinstance(err.orig, UniqueViolation):
+            detail = getattr(getattr(err.orig, "diag", None), "message_detail", None)
+            if not detail:
+                detail = str(err.orig).splitlines()[0]
+
+            raise Conflict(detail) from err
+        raise InternalServerError("An error occured while creating/updating a publication !")
+    return publication
 
 
 def datasetHandler(dataset, data):

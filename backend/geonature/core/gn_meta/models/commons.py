@@ -1,6 +1,7 @@
 import datetime
 from typing import Optional, Any
 
+from flask import g
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy import Column, ForeignKey, Integer, Table, Unicode
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -275,6 +276,17 @@ class TDatatypePublication(db.Model):
         lazy="joined",
         foreign_keys=[id_nomenclature_type_publication],
     )
+    def has_instance_permission(self, scope):
+        if scope == 0:
+            return False
+        elif scope in (1, 2):
+            if g.current_user.id_role == self.id_digitizer:
+                return True
+            if scope == 2 and g.current_user.organisme == self.digitizer.organisme:
+                return True
+            return False
+        else:
+            return True
 
 @serializable
 class CorDatasetPublication(db.Model):
