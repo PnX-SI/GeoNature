@@ -238,94 +238,13 @@ possible de générer le coverage au format html en remplaçant ``xml`` par
 ``html``.
 
 
-Evaluer les performances du backend
+Évaluer les performances du backend
 ***********************************
 
-Les versions de GeoNature >2.14.1 intègrent la possibilité d'évaluer les performances de routes connues pour leur temps de traitement important. Par exemple, l'appel de la route ``gn_synthese.get_observations_for_web`` avec une géographie non-présente dans le référentiel géographique.
+Nous avons mis en place un processus de tests des performances à l'aide de l'outil `Locust <https://locust.io/>`__. Locust est un logiciel pour faire des tests de montée de charge, notamment sur des API !
+Pour ça rien de plus simple, il suffit de définir comment notre utilisateur navigue dans notre application. Dans le cas de GeoNature, nous le faisons utilisées les fonctionnalités qui demandent le plus
+de calcul ou les plus utilisées, etc. 
 
-Cette fonctionnalité s'appuie sur ``pytest`` et son extension ``pytest-benchmark``(https://pytest-benchmark.readthedocs.io/en/latest/).
+Sur le dépôt `geonature_benchmark <https://github.com/PnX-SI/geonature_benchmark>`__, nous avons mis en place un script qui permet de tester les performances de n'importe quelle instance GeoNature à condition qu'elle ait 
+une version supérieure ou égale à la 2.16.4.
 
-Lancement des tests de performances
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Pour lancer les tests de performances, utiliser la commande suivante : ``pytest --benchmark-only``
-
-
-Ajouter des tests de performances
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-La création de tests de performance s'effectue à l'aide de la classe ``geonature.tests.benchmarks.benchmark_generator.BenchmarkTest``.
-
-L'objet ``BenchmarkTest`` prend en argument :
-
-- La fonction dont on souhaite mesurer la performance
-- Le nom du test
-- Les ``args`` de la fonction
-- les ``kwargs`` de la fonction
-
-
-Cette classe permet de générer une fonction de test utilisable dans le _framework_ existant de ``pytest``. Pour cela, rien de plus simple ! Créer un fichier de test (de préférence dans le sous-dossier ``backend/geonature/tests/benchmarks``). 
-
-Import la classe BenchmarkTest dans le fichier de test.
-
-.. code:: python
-
-    import pytest
-    from geonature.tests.benchmarks import BenchmarkTest
-
-
-Ajouter un test de performance, ici le test ``test_print`` qui teste la fonction ``print`` de Python.
-
-
-.. code:: python
-    
-    bench = BenchmarkTest(print,"test_print",["Hello","World"],{})
-
-
-Ajouter la fonction générée dans ``bench`` dans une classe de test:
-
-.. code:: python
-
-    @pytest.mark.benchmark(group="occhab") # Pas obligatoire mais permet de compartimenter les tests de performances
-    @pytest.mark.usefixtures("client_class", "temporary_transaction")
-        class TestBenchie:
-            test_print = bench()
-
-.. note ::
-  Le décorateur ``@pytest.mark.benchmark`` permet de configurer l'éxecution des tests de performances par ``pytest-benchmark``. Dans l'exemple ci-dessus, on l'utilise pour regrouper les tests de performances
-  déclarés dans la classe ``TestBenchie`` dans un groupe nommée ``occhab``.
-
-
-.. image:: images/benchmark_result.png
-   :width: 60%
-   :alt: Affichage des tests de performances
-   :align: center
-
-
-
-Si le test de performances doit accéder à des fonctions ou des variables uniquement accessibles dans le contexte
-de l'application flask, il faudra utiliser l'objet ``geonature.tests.benchmarks.CLater``. Ce dernier permet
-de déclarer un expression python retournant un objet (fonction ou variable) dans une chaîne de caractère qui
-sera _évalué_ (voir la fonction ``eval()`` de Python) uniquement lors de l'exécution du benchmark.
-
-.. code:: python
-
-  test_get_default_nomenclatures = BenchmarkTest(
-        CLater("self.client.get"),
-        [CLater("""url_for("gn_synthese.getDefaultsNomenclatures")""")],
-        dict(user_profile="self_user"),
-    )()
-
-L'exécution de certaines benchmark de routes doivent inclure l'engistrement d'utilisateur de tests. Pour cela,
-il suffit d'utiliser la clé ``user_profile`` dans l'argument ``kwargs`` (Voir code ci-dessus).
-
-Si l'utilisation de _fixtures_ est nécessaire à votre test de performance, utilisé la clé ``fixture`` 
-dans l'argument ``kwargs``: 
-
-.. code:: python
-
-  test_get_station = BenchmarkTest(
-        CLater("self.client.get"),
-        [CLater("""url_for("occhab.get_station", id_station=8)""")],
-        dict(user_profile="user", fixtures=[stations]),
-    )()
