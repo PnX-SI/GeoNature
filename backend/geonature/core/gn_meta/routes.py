@@ -13,12 +13,14 @@ from sqlalchemy.exc import DatabaseError
 from sqlalchemy.sql import select
 from sqlalchemy.sql.functions import func
 from sqlalchemy.orm import Load, joinedload, undefer
-from werkzeug.exceptions import Conflict, BadRequest, Forbidden, InternalServerError, NotFound
+from werkzeug.exceptions import Conflict, BadRequest, Forbidden, NotFound
 from werkzeug.datastructures import MultiDict, TypeConversionDict
-from marshmallow import ValidationError, EXCLUDE
-from sqlalchemy.exc import IntegrityError
-from psycopg2.errors import UniqueViolation
 
+from geonature.core.gn_meta.handlers import (
+    publication_handler,
+    dataset_handler,
+    acquisition_framework_handler,
+)
 from geonature.core.gn_meta.utils import (
     get_acquisition_framework_stats,
     MetadataPdfBuilder,
@@ -51,7 +53,6 @@ from utils_flask_sqla.response import json_resp, to_csv_resp, generate_csv_conte
 from utils_flask_sqla.db import ordered
 from werkzeug.datastructures import Headers
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.tools import get_scopes_by_action
 
 from ref_geo.models import LAreas
 
@@ -292,7 +293,7 @@ def create_publication():
     .. :quickref: Metadata;
     """
     return PublicationSchema().jsonify(
-        publicationHandler(
+        publication_handler(
             publication=TDatatypePublication(id_digitizer=g.current_user.id_role),
             data=request.get_json(),
         )
@@ -312,7 +313,7 @@ def update_publication(id_publication, scope):
             f"User {g.current_user} cannot update publication {publication.id_publication}"
         )
     return PublicationSchema().jsonify(
-        publicationHandler(
+        publication_handler(
             publication=publication,
             data=request.get_json(),
         )
@@ -524,67 +525,6 @@ def my_csv_resp(filename, data, columns, _header, separator=";"):
     return Response(out, headers=headers)
 
 
-def publicationHandler(publication, data):
-    publication_schema = PublicationSchema(
-        only=[
-            "publication_reference",
-            "publication_url",
-            "description_publication",
-            "id_nomenclature_type_publication",
-        ]
-    )
-
-    try:
-        publication = publication_schema.load(data, instance=publication)
-    except ValidationError as error:
-        raise BadRequest(error.messages)
-
-    db.session.add(publication)
-    # todo Rassmebler les handlers? Les factoriser
-    try:
-        db.session.commit()
-    except IntegrityError as err:
-        db.session.rollback()
-
-        if isinstance(err.orig, UniqueViolation):
-            detail = getattr(getattr(err.orig, "diag", None), "message_detail", None)
-            if not detail:
-                detail = str(err.orig).splitlines()[0]
-
-            raise Conflict(detail) from err
-        raise InternalServerError("An error occured while creating/updating a publication !")
-    return publication
-
-
-def datasetHandler(dataset, data):
-    datasetSchema = DatasetSchema(
-        only=["cor_dataset_actor", "modules", "cor_objectifs", "cor_territories"],
-        unknown=EXCLUDE,
-    )
-    # a dataset already having an id_dataset is being updated: allow partial payloads
-    is_update = dataset.id_dataset is not None
-    try:
-        dataset = datasetSchema.load(data, instance=dataset, partial=is_update)
-    except ValidationError as error:
-        raise BadRequest(error.messages)
-
-    db.session.add(dataset)
-
-    try:
-        db.session.commit()
-    except IntegrityError as err:
-        db.session.rollback()
-
-        if isinstance(err.orig, UniqueViolation):
-            detail = getattr(getattr(err.orig, "diag", None), "message_detail", None)
-            if not detail:
-                detail = str(err.orig).splitlines()[0]
-
-            raise Conflict(detail) from err
-        raise InternalServerError("An error occured while creating/updating a dataset !")
-    return dataset
-
-
 @routes.route("/dataset", methods=["POST"])
 @permissions.check_cruved_scope("C", module_code="METADATA")
 def create_dataset():
@@ -593,7 +533,7 @@ def create_dataset():
     .. :quickref: Metadata;
     """
     return DatasetSchema().jsonify(
-        datasetHandler(
+        dataset_handler(
             dataset=TDatasets(id_digitizer=g.current_user.id_role),
             data=request.get_json(),
         )
@@ -612,7 +552,7 @@ def update_dataset(id_dataset, scope):
     if not dataset.has_instance_permission(scope):
         raise Forbidden(f"User {g.current_user} cannot update dataset {dataset.id_dataset}")
     # TODO: specify which fields may be updated
-    return DatasetSchema().jsonify(datasetHandler(dataset=dataset, data=request.get_json()))
+    return DatasetSchema().jsonify(dataset_handler(dataset=dataset, data=request.get_json()))
 
 
 @routes.route("/dataset/export_pdf/<id_dataset>", methods=["GET", "POST"])
@@ -936,54 +876,6 @@ def delete_acquisition_framework(scope, af_id):
     return "", 204
 
 
-def acquisitionFrameworkHandler(request, *, acquisition_framework):
-    # Test des droits d'édition du acquisition framework si modification
-
-    # 🔎 Récupération des données brutes du body
-
-    is_update = acquisition_framework.id_acquisition_framework is not None
-    if is_update:
-        user_cruved = get_scopes_by_action(module_code="METADATA")
-
-        # verification des droits d'édition pour le acquisition framework
-        if not acquisition_framework.has_instance_permission(user_cruved["U"]):
-            raise Forbidden(
-                "User {} has no right in acquisition_framework {}".format(
-                    g.current_user, acquisition_framework.id_acquisition_framework
-                )
-            )
-    else:
-        acquisition_framework.id_digitizer = g.current_user.id_role
-
-    acquisitionFrameworkSchema = AcquisitionFrameworkSchema(
-        only=["cor_af_actor", "cor_volets_sinp", "cor_objectifs", "cor_territories"],
-        unknown=EXCLUDE,
-    )
-    try:
-        acquisition_framework = acquisitionFrameworkSchema.load(
-            request.get_json(), instance=acquisition_framework, partial=is_update
-        )
-    except ValidationError as error:
-        log.exception(error)
-        raise BadRequest(error.messages)
-
-    db.session.add(acquisition_framework)
-    try:
-        db.session.commit()
-    except IntegrityError as err:
-        db.session.rollback()
-
-        if isinstance(err.orig, UniqueViolation):
-            detail = getattr(getattr(err.orig, "diag", None), "message_detail", None)
-            if not detail:
-                detail = str(err.orig).splitlines()[0]
-
-            raise Conflict(detail) from err
-        raise InternalServerError("An error occured while creating/updating a dataset !")
-
-    return acquisition_framework
-
-
 @routes.route("/acquisition_framework", methods=["POST"])
 @permissions.check_cruved_scope("C", module_code="METADATA")
 def create_acquisition_framework():
@@ -994,7 +886,9 @@ def create_acquisition_framework():
     # TODO: spécifier only
     # create new acquisition_framework
     return AcquisitionFrameworkSchema(only=[]).dump(
-        acquisitionFrameworkHandler(request=request, acquisition_framework=TAcquisitionFramework())
+        acquisition_framework_handler(
+            request=request, acquisition_framework=TAcquisitionFramework()
+        )
     )
 
 
@@ -1012,7 +906,7 @@ def updateAcquisitionFramework(id_acquisition_framework, scope):
             f"acquisition framework {af.id_acquisition_framework}"
         )
     return AcquisitionFrameworkSchema().dump(
-        acquisitionFrameworkHandler(request=request, acquisition_framework=af)
+        acquisition_framework_handler(request=request, acquisition_framework=af)
     )
 
 
