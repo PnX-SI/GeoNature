@@ -34,7 +34,6 @@
 alembic==1.20.0
     # via
     #   flask-migrate
-    #   pypn-habref-api
     #   pypn-ref-geo
     #   pypnusershub
 amqp==5.4.0
@@ -274,6 +273,7 @@ marshmallow==4.3.1
     #   flask-marshmallow
     #   geonature
     #   marshmallow-sqlalchemy
+    #   pypn-habref-api
     #   utils-flask-sqlalchemy
     #   utils-flask-sqlalchemy-geo
 marshmallow-sqlalchemy==1.5.0
