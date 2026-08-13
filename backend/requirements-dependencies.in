@@ -1,7 +1,0 @@
-pypnusershub>=3.2.2,<4
-pypnnomenclature>=1.6.7,<2
-pypn_habref_api>=0.4.2,<1
-utils-flask-sqlalchemy-geo>=0.3.4,<1
-utils-flask-sqlalchemy>=0.4.5,<1
-taxhub>=2.3.0
-pypn-ref-geo>=1.5.6,<2
