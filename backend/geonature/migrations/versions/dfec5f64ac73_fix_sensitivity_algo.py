@@ -9,6 +9,7 @@ Create Date: 2022-01-28 14:06:38.748133
 from alembic import op, context
 import sqlalchemy as sa
 
+from sqlalchemy.sql import text
 from utils_flask_sqla.utils import strtobool
 from utils_flask_sqla.migrations.utils import logger
 
@@ -72,7 +73,7 @@ def upgrade():
 
     if recompute_sensitivity:
         logger.info("Recompute sensitivity…")
-        count = op.get_bind().execute("SELECT gn_synthese.update_sensitivity()").scalar()
+        count = op.get_bind().execute(sa.text("SELECT gn_synthese.update_sensitivity()")).scalar()
         logger.info(f"Sensitivity updated for {count} rows")
 
 

@@ -4,10 +4,10 @@ from ref_geo.models import LAreas, BibAreasTypes
 from pypnusershub.tests.utils import set_logged_user
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 class TestAreaPermissionAdmin:
 
-    def test_ajax_area_lookup_sorting(self, users, app):
+    def test_ajax_area_lookup_sorting(self, users):
         """Teste que la recherche 'Ain' remonte 'Ain' en premier."""
 
         set_logged_user(self.client, users["admin_user"])

@@ -1,4 +1,5 @@
 import click
+from sqlalchemy import text
 
 from geonature.utils.env import db
 
@@ -37,6 +38,6 @@ def add_submodule_permissions(module_code):
         JOIN
             gn_permissions.bib_actions a ON a.code_action = v.action_code
         """
-    db.session.execute(q, {"module_code": module_code})
+    db.session.execute(text(q), {"module_code": module_code})
     db.session.commit()
     click.secho("DONE", fg="green")

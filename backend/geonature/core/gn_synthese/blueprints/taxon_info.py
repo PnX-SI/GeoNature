@@ -1,6 +1,8 @@
 from warnings import warn
 
 from flask import Blueprint, g, jsonify, request, current_app
+from sqlalchemy import desc, distinct, func, select
+from werkzeug.exceptions import BadRequest, Forbidden
 
 from geonature import app
 from geonature.utils.env import db
@@ -19,16 +21,10 @@ from geonature.core.gn_synthese.utils.taxon_sheet import TaxonSheet, TaxonSheetU
 from geonature.core.gn_synthese.utils.pagination_sorting import PaginationSortingUtils
 from pypnusershub.db import User
 from geonature.core.gn_synthese.utils.orm import is_already_joined
-from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from apptax.taxonomie.models import Taxref, VMTaxrefListForautocomplete
 from ref_geo.models import BibAreasTypes, LAreas
 from utils_flask_sqla.generic import GenericTable
 from utils_flask_sqla.response import json_resp
-
-
-from sqlalchemy import and_, desc, distinct, func, select, join, exists, true
-from sqlalchemy.orm import Query
-from werkzeug.exceptions import BadRequest, Forbidden
 
 taxon_info_routes = Blueprint("synthese_taxon_info", __name__)
 
@@ -298,8 +294,8 @@ if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
 
         observer_count = db.session.scalar(
             select(
-                func.count(distinct(cte_observer.c.observer)).label("observation_count"),
-            )
+                func.count(distinct(cte_observer.c.observer)).label("observer_count"),
+            ).select_from(cte_observer)
         )
 
         synthese_query = TaxonSheetUtils.get_synthese_query_with_permissions(
@@ -310,13 +306,13 @@ if app.config["SYNTHESE"]["ENABLE_TAXON_SHEETS"]:
 
         data = {
             "cd_ref": cd_ref,
-            "observation_count": synthese_stats["observation_count"],
+            "observation_count": synthese_stats.observation_count,
             "observer_count": observer_count,
-            "area_count": synthese_stats["area_count"],
-            "altitude_min": synthese_stats["altitude_min"],
-            "altitude_max": synthese_stats["altitude_max"],
-            "date_min": synthese_stats["date_min"],
-            "date_max": synthese_stats["date_max"],
+            "area_count": synthese_stats.area_count,
+            "altitude_min": synthese_stats.altitude_min,
+            "altitude_max": synthese_stats.altitude_max,
+            "date_min": synthese_stats.date_min,
+            "date_max": synthese_stats.date_max,
         }
 
         return data

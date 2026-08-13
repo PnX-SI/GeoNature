@@ -21,13 +21,12 @@ depends_on = ("7b6a578eccd7",)
 
 
 def upgrade():
-    meta = MetaData(bind=op.get_bind())
-    id_module_occhab = (
-        op.get_bind()
-        .execute("SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'OCCHAB'")
-        .scalar()
-    )
-    destination = Table("bib_destinations", meta, autoload=True, schema="gn_imports")
+    conn = op.get_bind()
+    meta = MetaData()
+    id_module_occhab = conn.execute(
+        sa.text("SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'OCCHAB'")
+    ).scalar()
+    destination = Table("bib_destinations", meta, autoload_with=conn, schema="gn_imports")
     id_dest_occhab = (
         op.get_bind()
         .execute(
@@ -42,7 +41,7 @@ def upgrade():
         )
         .scalar()
     )
-    entity = Table("bib_entities", meta, autoload=True, schema="gn_imports")
+    entity = Table("bib_entities", meta, autoload_with=conn, schema="gn_imports")
     id_entity_station = (
         op.get_bind()
         .execute(
@@ -201,10 +200,10 @@ def upgrade():
         ),
         schema="gn_imports",
     )
-    theme = Table("bib_themes", meta, autoload=True, schema="gn_imports")
+    theme = Table("bib_themes", meta, autoload_with=conn, schema="gn_imports")
     id_theme_general = (
         op.get_bind()
-        .execute(sa.select([theme.c.id_theme]).where(theme.c.name_theme == "general_info"))
+        .execute(sa.select(theme.c.id_theme).where(theme.c.name_theme == "general_info"))
         .scalar()
     )
     fields_entities = [
@@ -1008,7 +1007,7 @@ def upgrade():
             },
         ),
     ]
-    field = Table("bib_fields", meta, autoload=True, schema="gn_imports")
+    field = Table("bib_fields", meta, autoload_with=conn, schema="gn_imports")
     id_fields = [
         id_field
         for id_field, in op.get_bind()
@@ -1019,7 +1018,7 @@ def upgrade():
         )
         .fetchall()
     ]
-    cor_entity_field = Table("cor_entity_field", meta, autoload=True, schema="gn_imports")
+    cor_entity_field = Table("cor_entity_field", meta, autoload_with=conn, schema="gn_imports")
     op.execute(
         sa.insert(cor_entity_field).values(
             [
@@ -1029,7 +1028,7 @@ def upgrade():
             ]
         )
     )
-    bib_fields = Table("bib_fields", meta, autoload=True, schema="gn_imports")
+    bib_fields = Table("bib_fields", meta, autoload_with=conn, schema="gn_imports")
     unique_column_field_query = sa.select(bib_fields.c.id_field).where(
         sa.and_(
             bib_fields.c.id_destination == id_dest_occhab,

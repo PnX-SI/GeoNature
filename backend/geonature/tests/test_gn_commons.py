@@ -22,7 +22,6 @@ from geonature.utils.env import db
 from geonature.utils.errors import GeoNatureError
 from geonature.core.gn_commons.schemas import CastableField
 
-from .fixtures import *
 from .utils import set_logged_user
 
 
@@ -55,12 +54,16 @@ def additional_field(app, datasets):
         field_values=[100, 200, 300],
         default_value="100",
         id_widget=1,
-        modules=[module],
-        objects=[obj],
-        datasets=datasets,
     )
     with db.session.begin_nested():
+        # Add before assigning relationships to already-persistent objects:
+        # SQLAlchemy 2.0 removed cascade_backrefs, so a transient object is no
+        # longer auto-added to the session as a side effect of being appended
+        # to a persistent object's relationship collection.
         db.session.add(additional_field)
+        additional_field.modules = [module]
+        additional_field.objects = [obj]
+        additional_field.datasets = datasets
     return additional_field
 
 
@@ -99,7 +102,7 @@ def media_repository(medium):
     return TMediaRepository(id_media=medium.id_media)
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 class TestMedia:
     def test_get_medias(self, medium):
         response = self.client.get(
@@ -219,7 +222,7 @@ class TestMedia:
         assert response.json["description"] == "Media introuvable"
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 class TestTMediaRepository:
     def test__init__(self, medium, media_repository):
         assert media_repository.media.id_media == medium.id_media
@@ -374,7 +377,7 @@ class TestTMediaRepositoryHeader:
         assert not test
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 class TestCommons:
     def test_list_modules(self, users):
         response = self.client.get(url_for("gn_commons.list_modules", exclude="GEONATURE"))
@@ -684,7 +687,6 @@ class TestCommons:
         assert response.json is None
 
 
-@pytest.mark.usefixtures("temporary_transaction")
 class TestTasks:
     def test_clean_attachements(self, monkeypatch, celery_eager, medium):
         # Monkey patch the __before_commit_delete not to remove file

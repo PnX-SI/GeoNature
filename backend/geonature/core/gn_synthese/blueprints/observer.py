@@ -1,5 +1,3 @@
-from warnings import warn
-
 from flask import Blueprint, g, jsonify, request
 
 from geonature import app
@@ -87,11 +85,11 @@ if app.config["SYNTHESE"]["ENABLE_OBSERVER_SHEETS"]:
 
         data = {
             "observer": observer,
-            "observation_count": synthese_stats["observation_count"],
-            "taxa_count": synthese_stats["taxa_count"],
-            "area_count": synthese_stats["area_count"],
-            "date_min": synthese_stats["date_min"],
-            "date_max": synthese_stats["date_max"],
+            "observation_count": synthese_stats.observation_count,
+            "taxa_count": synthese_stats.taxa_count,
+            "area_count": synthese_stats.area_count,
+            "date_min": synthese_stats.date_min,
+            "date_max": synthese_stats.date_max,
         }
 
         return data

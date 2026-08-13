@@ -59,7 +59,9 @@ def do_nomenclatures_mapping(
                 sa.func.nullif(column("key"), "").label("value"),  # replace "" by NULL
                 column("value").label("cd_nomenclature"),
             )
-            .select_from(sa.func.JSON_EACH_TEXT(TImports.contentmapping[field.mnemonique]))
+            .select_from(
+                TImports, sa.func.JSON_EACH_TEXT(TImports.contentmapping[field.mnemonique])
+            )
             .where(TImports.id_import == imprt.id_import)
             .cte("cte")
         )

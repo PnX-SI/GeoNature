@@ -1,7 +1,13 @@
 from typing import Dict, Optional, Set
 
-import sqlalchemy as sa
 from flask import current_app, g
+from sqlalchemy import asc, desc, func, select, text, true
+from sqlalchemy.orm import (
+    aliased,
+    joinedload,
+    raiseload,
+)
+
 from geonature.core.gn_commons.models.base import TValidations
 from geonature.core.gn_meta.models.datasets import TDatasets
 from geonature.core.gn_profiles.models import VConsistencyData
@@ -10,11 +16,6 @@ from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from gn_module_validation.constant import *
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
-from sqlalchemy.orm import (
-    aliased,
-    joinedload,
-    raiseload,
-)
 
 
 def get_fields_from_params(params: Dict) -> Set[str]:
@@ -161,7 +162,7 @@ def build_synthese_query(params: Dict, permissions, limit: int = MAX_PER_PAGE):
 
     # Create base synthese query
     query = (
-        sa.select(Synthese)
+        select(Synthese)
         .order_by(Synthese.date_min.desc())
         .where(TDatasets.validable == True)
         .where(Synthese.the_geom_4326.isnot(None))
@@ -182,7 +183,7 @@ def build_synthese_query(params: Dict, permissions, limit: int = MAX_PER_PAGE):
 
     # Last validation lateral join
     last_validation_subquery = (
-        sa.select(TValidations)
+        select(TValidations)
         .where(TValidations.uuid_attached_row == Synthese.unique_id_sinp)
         .order_by(TValidations.validation_date.desc())
         .limit(1)
@@ -191,12 +192,12 @@ def build_synthese_query(params: Dict, permissions, limit: int = MAX_PER_PAGE):
     )
     last_validation = aliased(TValidations, last_validation_subquery)
     relation_aliases["last_validation"] = last_validation
-    query = query.outerjoin(last_validation, sa.true())
+    query = query.outerjoin(last_validation, true())
 
     # Profile lateral join if enabled
     if enable_profile and use_profile_filter:
         profile_subquery = (
-            sa.select(VConsistencyData)
+            select(VConsistencyData)
             .where(VConsistencyData.id_synthese == Synthese.id_synthese)
             .limit(1)
             .subquery()
@@ -204,7 +205,7 @@ def build_synthese_query(params: Dict, permissions, limit: int = MAX_PER_PAGE):
         )
         profile = aliased(VConsistencyData, profile_subquery)
         relation_aliases["profile"] = profile
-        query = query.outerjoin(profile, sa.true())
+        query = query.outerjoin(profile, true())
         query = apply_profile_filters(query, profile, profile_filters)
 
     if modif_since_validation:
@@ -299,13 +300,13 @@ def apply_sorting(query, params: Dict):
     without modification. Default sort is 'desc' on 'last_validation.validation_date'.
     """
     sort = params.get("sort", "desc")
-    order_by = sa.text(params.get("order_by", "last_validation.validation_date"))
+    order_by = text(params.get("order_by", "last_validation.validation_date"))
 
     if sort and order_by is not None:
         if sort == "asc":
-            return query.order_by(sa.asc(order_by))
+            return query.order_by(asc(order_by))
         else:
-            return query.order_by(sa.desc(order_by))
+            return query.order_by(desc(order_by))
 
     return query
 
@@ -379,11 +380,11 @@ def build_validations_query(params: Dict):
         selected_fields += fields_config["observation"][2]
 
     if format_type == "geojson":
-        selected_fields.append(sa.func.ST_AsGeoJSON(Synthese.the_geom_4326).label("the_geom_4326"))
+        selected_fields.append(func.ST_AsGeoJSON(Synthese.the_geom_4326).label("the_geom_4326"))
 
     # Build query
     query = (
-        sa.select(selected_fields)
+        select(*selected_fields)
         .where(TValidations.validation_auto == False)
         .where(TDatasets.validable == True)
     )

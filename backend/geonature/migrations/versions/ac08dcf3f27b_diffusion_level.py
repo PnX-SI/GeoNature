@@ -7,7 +7,7 @@ Create Date: 2022-02-10 12:45:05.472204
 """
 
 from alembic import op, context
-
+from sqlalchemy import text
 from utils_flask_sqla.utils import strtobool
 from utils_flask_sqla.migrations.utils import logger
 
@@ -140,7 +140,7 @@ def upgrade():
 
     if clear_diffusion_level:
         logger.info("Clearing diffusion level…")
-        count = op.get_bind().execute("""
+        count = op.get_bind().execute(text("""
             WITH cleared_rows AS (
                 UPDATE
                     gn_synthese.synthese s
@@ -159,7 +159,7 @@ def upgrade():
                 count(*)
             FROM
                 cleared_rows;
-        """).scalar()
+        """)).scalar()
         logger.info("Cleared diffusion level on {} rows.".format(count))
 
 
@@ -174,7 +174,7 @@ def downgrade():
 
     if restore_diffusion_level:
         logger.info("Restore diffusion level…")
-        count = op.get_bind().execute("""
+        count = op.get_bind().execute(text("""
             WITH restored_rows AS (
                 UPDATE 
                     gn_synthese.synthese s
@@ -197,7 +197,7 @@ def downgrade():
                 count(*)
             FROM
                 restored_rows
-        """).scalar()
+        """)).scalar()
         logger.info("Restored diffusion level on {} rows.".format(count))
 
     op.execute("""

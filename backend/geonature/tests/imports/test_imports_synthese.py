@@ -26,7 +26,6 @@ from geonature.core.gn_permissions.tools import (
 from geonature.core.gn_permissions.models import PermAction, Permission, PermObject
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_synthese.models import CorObserverSynthese, Synthese
-from geonature.tests.fixtures import synthese_data, celery_eager
 
 from pypnusershub.db.models import User, Organisme
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
@@ -116,7 +115,6 @@ def per_dataset_uuid_check(monkeypatch):
 
 @pytest.mark.usefixtures(
     "client_class",
-    "temporary_transaction",
     "celery_eager",
     "import_destination",
     "default_import_destination",
@@ -729,7 +727,7 @@ class TestImportsSynthese:
         assert len(imprt.columns) == valid_file_column_count
         transient_table = imprt.destination.get_transient_table()
         transient_rows_count = db.session.execute(
-            select([func.count()])
+            select(func.count())
             .select_from(transient_table)
             .where(transient_table.c.id_import == imprt.id_import)
         ).scalar()
@@ -823,7 +821,7 @@ class TestImportsSynthese:
             {"definitions": jsonschema_definitions, "$ref": "#/definitions/import"},
         )
         transient_rows_count = db.session.execute(
-            select([func.count()])
+            select(func.count())
             .select_from(transient_table)
             .where(transient_table.c.id_import == imprt.id_import)
         ).scalar()
@@ -1036,7 +1034,7 @@ class TestImportsSynthese:
         )
         transient_table = prepared_import.destination.get_transient_table()
         unique_id_sinp = db.session.execute(
-            select([transient_table.c.unique_id_sinp])
+            select(transient_table.c.unique_id_sinp)
             .where(transient_table.c.id_import == prepared_import.id_import)
             .where(transient_table.c.line_no == 7)
         ).scalar()
@@ -1054,7 +1052,7 @@ class TestImportsSynthese:
         )
         transient_table = prepared_import.destination.get_transient_table()
         unique_id_sinp = db.session.execute(
-            select([transient_table.c.unique_id_sinp])
+            select(transient_table.c.unique_id_sinp)
             .where(transient_table.c.id_import == prepared_import.id_import)
             .where(transient_table.c.line_no == 7)
         ).scalar()

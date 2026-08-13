@@ -6,7 +6,7 @@ from zipfile import ZipFile
 import click
 from flask import Blueprint, current_app
 from geonature.utils.env import db
-from sqlalchemy import func, select
+from sqlalchemy import func, select, text
 from sqlalchemy.orm import aliased
 from sqlalchemy.schema import Table
 from utils_flask_sqla.utils import remote_file
@@ -110,7 +110,7 @@ def refresh_rules_cache():
     """
     Rafraichie la vue matérialisée extrapolant les règles aux taxons enfants.
     """
-    db.session.execute("REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref")
+    db.session.execute(text("REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref"))
     db.session.commit()
 
 
@@ -119,6 +119,6 @@ def update_synthese():
     """
     Recalcule la sensibilité des observations de la synthèse.
     """
-    count = db.session.execute("SELECT gn_synthese.update_sensitivity()").scalar()
+    count = db.session.execute(text("SELECT gn_synthese.update_sensitivity()")).scalar()
     db.session.commit()
     click.echo(f"Sensitivity updated for {count} rows")

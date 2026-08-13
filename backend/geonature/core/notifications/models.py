@@ -2,21 +2,30 @@
 Models of gn_notifications schema
 """
 
+from typing import Optional
 import datetime
-from math import perm
 
+from flask import g
+from sqlalchemy import (
+    DateTime,
+    ForeignKey,
+    Index,
+    Integer,
+    Unicode,
+    UnicodeText,
+    UniqueConstraint,
+    or_,
+    select,
+    text,
+)
+from sqlalchemy.orm import relationship, Mapped, mapped_column
+
+from utils_flask_sqla.models import qfilter
+from utils_flask_sqla.serializers import serializable
+from pypnusershub.db.models import User
 from geonature.core.gn_commons.models.base import TModules
 from geonature.core.gn_permissions.models import PermAction, PermObject
 from geonature.core.gn_permissions.tools import get_user_permissions
-import sqlalchemy as sa
-from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship
-from flask import g
-from utils_flask_sqla.models import qfilter
-
-from utils_flask_sqla.serializers import serializable
-from pypnusershub.db.models import User
-
 from geonature.utils.env import db
 
 
@@ -24,9 +33,9 @@ from geonature.utils.env import db
 class NotificationMethod(db.Model):
     __tablename__ = "bib_notifications_methods"
     __table_args__ = {"schema": "gn_notifications"}
-    code = db.Column(db.Unicode, primary_key=True)
-    label = db.Column(db.Unicode)
-    description = db.Column(db.UnicodeText)
+    code: Mapped[str] = mapped_column(Unicode, primary_key=True)
+    label: Mapped[Optional[str]] = mapped_column(Unicode)
+    description: Mapped[Optional[str]] = mapped_column(UnicodeText)
 
     @property
     def display(self):
@@ -43,15 +52,21 @@ class NotificationMethod(db.Model):
 class NotificationCategory(db.Model):
     __tablename__ = "bib_notifications_categories"
     __table_args__ = {"schema": "gn_notifications"}
-    code = db.Column(db.Unicode, primary_key=True)
-    label = db.Column(db.Unicode)
-    description = db.Column(db.UnicodeText)
+    code: Mapped[str] = mapped_column(Unicode, primary_key=True)
+    label: Mapped[Optional[str]] = mapped_column(Unicode)
+    description: Mapped[Optional[str]] = mapped_column(UnicodeText)
 
-    id_module = db.Column(db.Integer, ForeignKey("gn_commons.t_modules.id_module"))
+    id_module: Mapped[Optional[int]] = mapped_column(
+        Integer, ForeignKey("gn_commons.t_modules.id_module")
+    )
     module = relationship(TModules)
-    id_object = db.Column(db.Integer, ForeignKey("gn_permissions.t_objects.id_object"))
+    id_object: Mapped[Optional[int]] = mapped_column(
+        Integer, ForeignKey("gn_permissions.t_objects.id_object")
+    )
     object = relationship(PermObject)
-    id_action = db.Column(db.Integer, ForeignKey("gn_permissions.bib_actions.id_action"))
+    id_action: Mapped[Optional[int]] = mapped_column(
+        Integer, ForeignKey("gn_permissions.bib_actions.id_action")
+    )
     action = relationship(PermAction)
 
     def is_allowed(self, user=None) -> bool:
@@ -82,13 +97,15 @@ class NotificationCategory(db.Model):
 class NotificationTemplate(db.Model):
     __tablename__ = "bib_notifications_templates"
     __table_args__ = {"schema": "gn_notifications"}
-    code_category = db.Column(
-        db.Unicode,
+    code_category: Mapped[str] = mapped_column(
+        Unicode,
         ForeignKey(NotificationCategory.code),
         primary_key=True,
     )
-    code_method = db.Column(db.Unicode, ForeignKey(NotificationMethod.code), primary_key=True)
-    content = db.Column(db.UnicodeText)
+    code_method: Mapped[str] = mapped_column(
+        Unicode, ForeignKey(NotificationMethod.code), primary_key=True
+    )
+    content: Mapped[Optional[str]] = mapped_column(UnicodeText)
 
     category = db.relationship(NotificationCategory)
     method = db.relationship(NotificationMethod)
@@ -101,13 +118,15 @@ class NotificationTemplate(db.Model):
 class Notification(db.Model):
     __tablename__ = "t_notifications"
     __table_args__ = {"schema": "gn_notifications"}
-    id_notification = db.Column(db.Integer, primary_key=True)
-    id_role = db.Column(db.Integer, ForeignKey(User.id_role), nullable=False)
-    title = db.Column(db.Unicode)
-    content = db.Column(db.UnicodeText)
-    url = db.Column(db.Unicode)
-    code_status = db.Column(db.Unicode)
-    creation_date = db.Column(db.DateTime(), default=datetime.datetime.utcnow)
+    id_notification: Mapped[int] = mapped_column(Integer, primary_key=True)
+    id_role: Mapped[int] = mapped_column(Integer, ForeignKey(User.id_role))
+    title: Mapped[Optional[str]] = mapped_column(Unicode)
+    content: Mapped[Optional[str]] = mapped_column(UnicodeText)
+    url: Mapped[Optional[str]] = mapped_column(Unicode)
+    code_status: Mapped[Optional[str]] = mapped_column(Unicode)
+    creation_date: Mapped[Optional[datetime.datetime]] = mapped_column(
+        DateTime, default=datetime.datetime.utcnow
+    )
 
     user = db.relationship(User)
 
@@ -116,30 +135,27 @@ class Notification(db.Model):
 class NotificationRule(db.Model):
     __tablename__ = "t_notifications_rules"
     __table_args__ = (
-        db.UniqueConstraint(
-            "id_role", "code_method", "code_category", name="un_role_method_category"
-        ),
-        db.Index(
+        UniqueConstraint("id_role", "code_method", "code_category", name="un_role_method_category"),
+        Index(
             "un_method_category",
             "code_method",
             "code_category",
             unique=True,
             postgresql_ops={
-                "where": sa.text("id_role IS NULL"),
+                "where": text("id_role IS NULL"),
             },
         ),
         {"schema": "gn_notifications"},
     )
 
-    id = db.Column(db.Integer, primary_key=True)
-    id_role = db.Column(db.Integer, ForeignKey(User.id_role), nullable=True)
-    code_method = db.Column(db.Unicode, ForeignKey(NotificationMethod.code), nullable=False)
-    code_category = db.Column(
-        db.Unicode,
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    id_role: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey(User.id_role))
+    code_method: Mapped[str] = mapped_column(Unicode, ForeignKey(NotificationMethod.code))
+    code_category: Mapped[str] = mapped_column(
+        Unicode,
         ForeignKey(NotificationCategory.code),
-        nullable=False,
     )
-    subscribed = db.Column(db.Boolean, nullable=False)
+    subscribed: Mapped[bool]
 
     method = relationship(NotificationMethod)
     category = relationship(NotificationCategory)
@@ -150,9 +166,9 @@ class NotificationRule(db.Model):
         if id_role is None:
             id_role = g.current_user.id_role
         cte = (
-            sa.select(NotificationRule)
+            select(NotificationRule)
             .where(
-                sa.or_(
+                or_(
                     NotificationRule.id_role.is_(None),
                     NotificationRule.id_role == id_role,
                 )

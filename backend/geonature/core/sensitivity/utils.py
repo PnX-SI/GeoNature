@@ -122,7 +122,7 @@ def insert_sensitivity_referential(source, csvfile):
             AND regexp_replace(s.id_territory, '^([0-9])$', '0\\1') = a.area_code
         WHERE s.source = :source
     """),
-        source=source,
+        dict(source=source),
     )
 
     return len(rules)
