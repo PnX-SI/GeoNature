@@ -5,6 +5,7 @@ import { Publication } from './publication.model';
 import { Nomenclature } from '@geonature_common/interfaces';
 import { CommonService } from '@geonature_common/service/common.service';
 import { PublicationsListService } from '../services/publication.service';
+import { urlValidator } from '@geonature/utils/validator';
 
 @Component({
   selector: 'pnx-publication-form-modal',
@@ -45,7 +46,7 @@ export class PublicationFormModalComponent implements OnInit {
       publication_reference: ['', [Validators.required, Validators.minLength(1)]],
       id_nomenclature_type_publication: [null],
       description_publication: [''],
-      publication_url: [''],
+      publication_url: ['', urlValidator()],
     });
   }
 

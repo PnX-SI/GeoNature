@@ -80,6 +80,12 @@
         placeholder="https://example.com"
         data-qa="pnx-publication-url"
       />
+      <div
+        *ngIf="form.get('publication_url')?.invalid && form.get('publication_url')?.touched"
+        class="invalid-feedback d-block"
+      >
+        {{ 'Errors.InvalidURL' | translate }}
+      </div>
     </div>
   </form>
 </div>
