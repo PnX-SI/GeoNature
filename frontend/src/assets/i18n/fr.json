@@ -52,7 +52,8 @@
     "ErrorOccurs": "Une erreur s'est produite",
     "DatesReversed": "La date de début ne peut pas être postérieure à la date de fin",
     "AltitudeError": "L'altitude max ne peut être inférieure à l'altitude min",
-    "NotAllowed": "Vous n'avez pas les permissions pour effectuer cette action"
+    "NotAllowed": "Vous n'avez pas les permissions pour effectuer cette action",
+    "InvalidURL": "Format de l'URL incorrect"
   },
 
   "Authentication": {
