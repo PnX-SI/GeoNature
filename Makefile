@@ -171,7 +171,7 @@ autoupgrade:
 
 compile_requirements:
 	source backend/venv/bin/activate && cd backend && piptools compile requirements.in
-	source backend/venv/bin/activate && cd backend && piptools compile requirements-dev.in
+	source backend/venv/bin/activate && cd backend && piptools compile ../pyproject.toml requirements-dev.in
 
 test_frontend:
 	. ${NVM_DIR}/nvm.sh; cd frontend; nvm use && npm run cypress:run

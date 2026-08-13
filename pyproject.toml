@@ -19,7 +19,7 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
 ]
-dynamic = ["version"]
+dynamic = ["version", "dependencies"]
 license = "GPL-3.0-or-later"
 license-files = ["LICENSE"]
 
@@ -40,7 +40,7 @@ geonature = ["**/templates/**/*.html"]
 
 [tool.setuptools.dynamic]
 version = { file = "VERSION" }
-dependencies = { file = "backend/requirements.txt" }
+dependencies = { file = "backend/requirements.in" }
 
 [project.optional-dependencies]
 tests = [
@@ -53,6 +53,7 @@ tests = [
   "pandas",
 ]
 doc = ["sphinx", "furo", "myst-parser", "sphinx-autoapi", "sphinx-copybutton"]
+lint = ["black>=26.1.0"]
 
 [tool.pytest.ini_options]
 minversion = "6.0"

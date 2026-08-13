@@ -61,19 +61,12 @@ Administration avec Alembic
 Celui-ci fonctionne grâce à des fichiers de migration qui sont appliqués de manière atomique (via une transaction) à la base de données, leur application étant enregistré dans la table ``public.alembic_version`` permettant en chaque instant de savoir dans quel état la base de données se trouve.
 
 Les fichiers de migrations de GeoNature se trouve dans le dossier ``backend/geonature/migrations/versions/``.
-Il est possible pour n’importe quelle dépendance ou module GeoNature de fournir également des fichiers de migrations. Pour que ceux-ci soient détectés par Alembic, il suffira de définir un point d’entrée dans le ``setup.py`` de la dépendance ou du module concerné :
+Il est possible pour n’importe quelle dépendance ou module GeoNature de fournir également des fichiers de migrations. Pour que ceux-ci soient détectés par Alembic, il suffira de définir un point d’entrée dans le ``pyproject.toml`` de la dépendance ou du module concerné :
 
-.. code:: python
+.. code:: toml
 
-    setuptools.setup(
-        …,
-        entry_points={
-            'alembic': [
-                'migrations = my_module:migrations',
-            ],
-        },
-        …
-    )
+    [project.entry-points.alembic]
+    migrations = "my_module:migrations"
 
 Il est également possible de spécifier l’emplacement de révisions Alembic manuellement dans la configuration de GeoNature. Cela est nécessaire entre autre pour UsersHub afin de pouvoir manipuler son schéma alors que UsersHub n’est usuellement pas installé dans le venv de GeoNature (seul UsersHub-authentification-module l’est) :
 
