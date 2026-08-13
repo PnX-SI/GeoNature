@@ -1,4 +1,6 @@
 import datetime
+
+from flask import g
 from sqlalchemy.orm import relationship
 from sqlalchemy import ForeignKey
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -234,34 +236,6 @@ class TBibliographicReference(db.Model):
     publication_reference = DB.Column(DB.Unicode)
 
 
-@serializable
-class TDatatypePublication(db.Model):
-    __tablename__ = "datatype_publications"
-    __table_args__ = {"schema": "gn_meta"}
-    id_publication = DB.Column(DB.Integer, primary_key=True)
-    unique_publication_id = DB.Column(
-        UUIDType(as_uuid=True), default=select(func.uuid_generate_v4())
-    )
-    publication_reference = DB.Column(DB.Unicode, nullable=False)
-    publication_url = DB.Column(DB.Unicode, nullable=True)
-    description_publication = DB.Column(DB.Text, nullable=True)
-    id_nomenclature_type_publication = DB.Column(
-        DB.Integer,
-        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        default=lambda: TNomenclatures.get_default_nomenclature("TYPE_PUBLICATION"),
-    )
-    id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role), nullable=False)
-    digitizer = DB.relationship(
-        User,
-        lazy="joined",
-    )
-    nomenclature_type_publication = DB.relationship(
-        TNomenclatures,
-        lazy="joined",
-        foreign_keys=[id_nomenclature_type_publication],
-    )
-
-
 cor_dataset_publication = db.Table(
     "cor_dataset_publication",
     db.Column(
@@ -296,3 +270,43 @@ cor_acquisition_framework_publication = db.Table(
     ),
     schema="gn_meta",
 )
+
+
+@serializable
+class TDatatypePublication(db.Model):
+    __tablename__ = "datatype_publications"
+    __table_args__ = {"schema": "gn_meta"}
+    id_publication = DB.Column(DB.Integer, primary_key=True)
+    unique_publication_id = DB.Column(
+        UUIDType(as_uuid=True), default=select(func.uuid_generate_v4())
+    )
+    publication_reference = DB.Column(DB.Unicode, nullable=False)
+    publication_url = DB.Column(DB.Unicode, nullable=True)
+    description_publication = DB.Column(DB.Text, nullable=True)
+    id_nomenclature_type_publication = DB.Column(
+        DB.Integer,
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        default=lambda: TNomenclatures.get_default_nomenclature("TYPE_PUBLICATION"),
+    )
+    id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role), nullable=False)
+    digitizer = DB.relationship(
+        User,
+        lazy="joined",
+    )
+    nomenclature_type_publication = DB.relationship(
+        TNomenclatures,
+        lazy="joined",
+        foreign_keys=[id_nomenclature_type_publication],
+    )
+
+    def has_instance_permission(self, scope):
+        if scope == 0:
+            return False
+        elif scope in (1, 2):
+            if g.current_user.id_role == self.id_digitizer:
+                return True
+            if scope == 2 and g.current_user.organisme == self.digitizer.organisme:
+                return True
+            return False
+        else:
+            return True

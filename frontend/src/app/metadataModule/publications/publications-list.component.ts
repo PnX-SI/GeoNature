@@ -7,6 +7,7 @@ import { PublicationsListService } from '../services/publication.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { Publication } from './publication.model';
 import { Nomenclature } from '@geonature_common/interfaces';
+import { PublicationFormModalComponent } from '@geonature/metadataModule/publications/publication-form-modal.component';
 
 @Component({
   selector: 'pnx-publications-list',
@@ -54,7 +55,10 @@ export class PublicationsListComponent implements OnInit {
 
   ngOnInit() {
     this.publicationsListService.getPublicationTypes().subscribe((types) => {
-      this.publicationTypes = types;
+      this.publicationTypes = [
+        { id_nomenclature: null, label_fr: 'Aucun', label_default: 'Aucun' } as any,
+        ...types,
+      ];
     });
 
     this.publicationsListService.publications
@@ -139,5 +143,32 @@ export class PublicationsListComponent implements OnInit {
       window.open(this.pendingExternalUrl, '_blank', 'noopener,noreferrer');
     }
     this.pendingExternalUrl = null;
+  }
+
+  GetUpsertModal() {
+    return this.modal.open(PublicationFormModalComponent, {
+      size: 'lg',
+      backdrop: 'static',
+      keyboard: false,
+    });
+  }
+
+  onCreatePublication() {
+    this.GetUpsertModal().result.then((result) => {
+      if (result) {
+        this.publicationsListService.searchFromFirstPage().subscribe();
+      }
+    });
+  }
+
+  onEditPublication(publication: Publication) {
+    const modalRef = this.GetUpsertModal();
+    modalRef.componentInstance.publication = publication;
+
+    modalRef.result.then((result) => {
+      if (result) {
+        this.publicationsListService.searchFromFirstPage().subscribe();
+      }
+    });
   }
 }

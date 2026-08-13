@@ -33,7 +33,7 @@
           />
         </div>
 
-        <div class="form-group col-sm-4">
+        <div class="form-group col-sm-3">
           <label>{{ 'MetaData.PublicationsList.Type' | translate }}</label>
           <ng-select
             [items]="publicationTypes"
@@ -56,8 +56,20 @@
             </ng-template>
           </ng-select>
         </div>
+        <div class="form-group col-sm-3"></div>
+        <div class="form-group col-sm-1 ms-auto d-flex align-items-flex-end">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="onCreatePublication()"
+            data-qa="pnx-publications-create-btn"
+            class="create-publication-btn"
+          >
+            <mat-icon>add</mat-icon>
+            {{ 'MetaData.PublicationsList.Create' | translate }}
+          </button>
+        </div>
       </div>
-
       <br />
 
       <ngx-datatable
@@ -125,22 +137,43 @@
         <ngx-datatable-column
           name="{{ 'Actions.Plural' | translate }}"
           [sortable]="false"
-          [flexGrow]="1"
+          [flexGrow]="2"
         >
           <ng-template
             let-row="row"
             ngx-datatable-cell-template
           >
             <button
-              *ngIf="row.publication_url"
+              [class.disabled-look]="!row.publication_url"
               mat-icon-button
               type="button"
-              (click)="confirmExternalLink(row.publication_url, externalLinkModal)"
-              matTooltip="{{ 'MetaData.PublicationsList.Consult' | translate }}"
+              (click)="
+                row.publication_url
+                  ? confirmExternalLink(row.publication_url, externalLinkModal)
+                  : null
+              "
+              [matTooltip]="
+                row.publication_url
+                  ? ('MetaData.PublicationsList.Consult' | translate)
+                  : ('MetaData.PublicationsList.NoURL' | translate)
+              "
               data-qa="pnx-publications-consult-link"
             >
               <mat-icon>open_in_new</mat-icon>
             </button>
+            <button
+              [class.disabled-look]="!row.cruved?.U"
+              mat-icon-button
+              type="button"
+              (click)="row.cruved?.U ? onEditPublication(row) : null"
+              [matTooltip]="
+                row.cruved?.U ? ('Actions.Edit' | translate) : ('Errors.NotAllowed' | translate)
+              "
+              data-qa="pnx-publications-edit-link"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <pnx-publication-delete-button [publication]="row"></pnx-publication-delete-button>
           </ng-template>
         </ngx-datatable-column>
       </ngx-datatable>

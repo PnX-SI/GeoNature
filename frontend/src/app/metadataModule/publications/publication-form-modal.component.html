@@ -1,0 +1,111 @@
+<div class="modal-header">
+  <h5 class="modal-title">
+    {{
+      isEditMode
+        ? ('Actions.Edit' | translate) + ' ' + ('MetaData.PublicationsList.Publication' | translate)
+        : ('Actions.Add' | translate) + ' ' + ('MetaData.PublicationsList.Publication' | translate)
+    }}
+  </h5>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="onCancel()"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label for="reference">{{ 'MetaData.PublicationsList.Reference' | translate }} *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="reference"
+        formControlName="publication_reference"
+        data-qa="pnx-publication-reference"
+      />
+      <div
+        *ngIf="
+          form.get('publication_reference')?.invalid && form.get('publication_reference')?.touched
+        "
+        class="invalid-feedback d-block"
+      >
+        {{ 'Mandatory' | translate }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="type">{{ 'MetaData.PublicationsList.Type' | translate }}</label>
+      <ng-select
+        id="type"
+        [items]="publicationTypes"
+        formControlName="id_nomenclature_type_publication"
+        bindLabel="label_fr"
+        bindValue="id_nomenclature"
+        placeholder="{{ 'MetaData.PublicationsList.Type' | translate }}"
+        data-qa="pnx-publication-type"
+      >
+        <ng-template
+          ng-option-tmp
+          let-item="item"
+        >
+          <span class="pre-wrap">
+            {{ item.label_fr || item.label_default }}
+          </span>
+        </ng-template>
+      </ng-select>
+    </div>
+
+    <div class="form-group">
+      <label for="description">{{ 'MetaData.PublicationsList.Description' | translate }}</label>
+      <textarea
+        class="form-control"
+        id="description"
+        formControlName="description_publication"
+        rows="4"
+        data-qa="pnx-publication-description"
+      ></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="url">{{ 'MetaData.PublicationsList.URL' | translate }}</label>
+      <input
+        type="url"
+        class="form-control"
+        id="url"
+        formControlName="publication_url"
+        placeholder="https://example.com"
+        data-qa="pnx-publication-url"
+      />
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button
+    type="button"
+    mat-raised-button
+    color="warn"
+    (click)="onCancel()"
+    [disabled]="isLoading"
+  >
+    {{ 'Actions.Cancel' | translate }}
+  </button>
+  <button
+    type="button"
+    mat-raised-button
+    color="primary"
+    (click)="onSubmit()"
+    [disabled]="!form.valid || isLoading"
+  >
+    <mat-spinner
+      *ngIf="isLoading"
+      diameter="20"
+      class="mr-2"
+    ></mat-spinner>
+    {{ (isEditMode ? 'Actions.Edit' : 'Actions.Add') | translate }}
+  </button>
+</div>

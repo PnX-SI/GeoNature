@@ -453,16 +453,26 @@
     },
     "PublicationsList": {
       "Title": "Publications Catalog",
+      "Publication": "Publication",
       "Reference": "Reference",
+      "URL": "URL",
       "Type": "Publication Type",
       "Description": "Description",
       "SearchPlaceholder": "Search in  : \"Reference\", \"Description\" or \"URL\" ",
       "Consult": "View the publication",
+      "NoURL": "No URL available",
+      "Create": "Create",
+      "ConfirmDelete": "Are you sure you want to delete this publication ?",
       "ExternalLink": {
         "Title": "External Redirect",
         "Warning": "Warning: This external link may redirect you to a third-party site and expose you to security risks.",
         "Confirm": "Confirm Redirect",
         "Link": "External Link: "
+      },
+      "Errors": {
+        "DeletionImpossible": "Deletion impossible:",
+        "LinkedDatasets": "Dataset are linked to this publication",
+        "LinkedAcquisitionFrameworks": "Acquisition frameworks are linked to this publication"
       }
     }
   },

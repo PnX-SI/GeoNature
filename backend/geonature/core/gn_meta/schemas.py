@@ -12,7 +12,6 @@ from .models import (
 )
 from geonature.utils.env import MA, db
 from geonature.utils.schema import CruvedSchemaMixin
-from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_commons.schemas import ModuleSchema
 
 # Note: import of SourceSchema is importent as it trigger import of synthese models
@@ -68,6 +67,7 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
     cor_territories = MA.Nested(NomenclatureSchema, many=True, unknown=EXCLUDE)
     acquisition_framework = MA.Nested("AcquisitionFrameworkSchema", dump_only=True)
     sources = MA.Nested(SourceSchema, many=True, dump_only=True)
+    publications = MA.Nested("PublicationSchema", many=True, dump_only=True, exclude=("datasets",))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -187,9 +187,14 @@ class AcquisitionFrameworkSchema(
     nomenclature_territorial_level = MA.Nested(NomenclatureSchema, dump_only=True)
     nomenclature_financing_type = MA.Nested(NomenclatureSchema, dump_only=True)
     creator = MA.Nested(UserSchema, dump_only=True)
+    publications = MA.Nested(
+        "PublicationSchema", many=True, dump_only=True, exclude=("acquisition_frameworks",)
+    )
 
 
-class PublicationSchema(SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
+class PublicationSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
+    __module_code__ = "METADATA"
+
     class Meta:
         model = TDatatypePublication
         load_instance = True
@@ -197,3 +202,7 @@ class PublicationSchema(SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
 
     nomenclature_type_publication = fields.Nested(NomenclatureSchema, dump_only=True)
     digitizer = MA.Nested(UserSchema, dump_only=True)
+    datasets = MA.Nested(DatasetSchema, many=True, dump_only=True, exclude=("publications",))
+    acquisition_frameworks = MA.Nested(
+        "AcquisitionFrameworkSchema", many=True, dump_only=True, exclude=("publications",)
+    )

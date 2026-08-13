@@ -451,16 +451,33 @@
     },
     "PublicationsList": {
       "Title": "Catalogue des publications",
+      "Publication": "Publication",
       "Reference": "Référence",
+      "URL": "URL",
       "Type": "Type de publication",
       "Description": "Description",
       "SearchPlaceholder": "Rechercher dans : \"Référence\", \"Description\" ou \"URL\" ",
       "Consult": "Consulter la publication",
+      "NoURL": "Aucune URL disponible",
+      "Create": "Créer",
+      "ConfirmDelete": "Êtes-vous sûr de vouloir supprimer cette publication ?",
       "ExternalLink": {
         "Title": "Redirection externe",
         "Warning": "Attention : Ce lien externe peut vous rediriger vers un site tiers et vous exposez à des risques de sécurité.",
         "Confirm": "Confirmer la redirection",
         "Link": "Lien externe : "
+      },
+      "Errors": {
+        "DeletionImpossible": "Suppression impossible:",
+        "LinkedDatasets": "Des jeux de données sont liés à cette publication",
+        "LinkedAcquisitionFrameworks": "Des cadres d'acquisition sont liés à cette publication",
+        "Update": "Une erreur est survenue lors de la mise à jour de la publication",
+        "Create": "Une erreur est survenue lors de la création de la publication",
+        "Deleted": "Publication supprimée avec succès"
+      },
+      "Messages": {
+        "PublicationUpdated": "Publication mise à jour",
+        "PublicationCreated": "Publication créée"
       }
     }
   },
