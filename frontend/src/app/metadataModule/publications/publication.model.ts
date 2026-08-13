@@ -1,3 +1,5 @@
+import { Cruved } from '@geonature/modules/imports/models/cruved.model';
+
 export interface Publication {
   id_publication: number;
   publication_reference: string;
@@ -8,4 +10,7 @@ export interface Publication {
     id_role: number;
     nom_role: string;
   };
+  datasets?: any[];
+  acquisition_frameworks?: any[];
+  cruved: Cruved;
 }

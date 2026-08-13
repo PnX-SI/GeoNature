@@ -113,4 +113,38 @@ export class PublicationsListService {
       .get<{ values: Nomenclature[] }>(apiEndpoint)
       .pipe(map((response) => response.values ?? []));
   }
+
+  createPublication(publication: Partial<Publication>): Observable<Publication> {
+    const apiEndpoint = `${this._config.API_ENDPOINT}/meta/publication`;
+
+    return this._http.post<Publication>(apiEndpoint, publication).pipe(
+      tap(() => {
+        // Reload list after creation
+        this.searchFromFirstPage().subscribe();
+      })
+    );
+  }
+
+  updatePublication(
+    id_publication: number,
+    publication: Partial<Publication>
+  ): Observable<Publication> {
+    const apiEndpoint = `${this._config.API_ENDPOINT}/meta/publication/${id_publication}`;
+
+    return this._http.post<Publication>(apiEndpoint, publication).pipe(
+      tap(() => {
+        // Reload list after update
+        this.searchFromFirstPage().subscribe();
+      })
+    );
+  }
+
+  deletePublication(id_publication: number): Observable<Publication> {
+    const apiEndpoint = `${this._config.API_ENDPOINT}/meta/publication/${id_publication}`;
+    return this._http.delete<Publication>(apiEndpoint).pipe(
+      tap(() => {
+        this.searchFromFirstPage().subscribe();
+      })
+    );
+  }
 }

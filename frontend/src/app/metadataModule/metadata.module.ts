@@ -23,7 +23,10 @@ import { ButtonCloseAfComponent } from './af/button-close-af.component';
 import { OrganismFormDialogComponent } from './organisms/organism-form-dialog.component';
 import { DatasetActivationToggleComponent } from './datasets/dataset-activation-toggle.component';
 import { PublicationsListComponent } from '@geonature/metadataModule/publications/publications-list.component';
+import { PublicationFormModalComponent } from '@geonature/metadataModule/publications/publication-form-modal.component';
 import { PublicationsListService } from '@geonature/metadataModule/services/publication.service';
+import { PublicationDeleteButtonComponent } from './publications/publication-delete-button.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 const routes: Routes = [
   { path: '', component: MetadataComponent },
@@ -68,6 +71,7 @@ export class MetadataPaginator extends MatPaginatorIntl {
     RouterModule.forChild(routes),
     MatCheckboxModule,
     MatButtonToggleModule,
+    ReactiveFormsModule,
   ],
   exports: [],
   declarations: [
@@ -83,6 +87,8 @@ export class MetadataPaginator extends MatPaginatorIntl {
     DatasetActivationToggleComponent,
     OrganismFormDialogComponent,
     PublicationsListComponent,
+    PublicationFormModalComponent,
+    PublicationDeleteButtonComponent,
   ],
   providers: [
     MetadataService,
