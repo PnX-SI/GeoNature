@@ -53,7 +53,7 @@ def install_gn_module(x_arg, module_path, module_code, build, upgrade_db):
         No module code was detected in the code
     """
     click.echo("Installation du backend…")
-    subprocess.run(f"pip install -e '{module_path}'", shell=True, check=True)
+    subprocess.run(f"uv pip install -e '{module_path}'", shell=True, check=True)
 
     # refresh list of entry points
     importlib.reload(site)
