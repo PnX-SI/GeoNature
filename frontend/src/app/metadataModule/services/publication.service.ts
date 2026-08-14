@@ -37,6 +37,11 @@ export class PublicationsListService {
       order: ['desc'],
     });
   }
+  getPublication(id_publication: number): Observable<Publication> {
+    const apiEndpoint = `${this._config.API_ENDPOINT}/meta/publication/${id_publication}`;
+
+    return this._http.get<Publication>(apiEndpoint);
+  }
 
   get currentPage(): number {
     return this._currentPage;

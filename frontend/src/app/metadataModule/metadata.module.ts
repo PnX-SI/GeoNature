@@ -23,10 +23,14 @@ import { ButtonCloseAfComponent } from './af/button-close-af.component';
 import { OrganismFormDialogComponent } from './organisms/organism-form-dialog.component';
 import { DatasetActivationToggleComponent } from './datasets/dataset-activation-toggle.component';
 import { PublicationsListComponent } from '@geonature/metadataModule/publications/publications-list.component';
+import { PublicationCardComponent } from '@geonature/metadataModule/publications/publication-card.component';
 import { PublicationFormModalComponent } from '@geonature/metadataModule/publications/publication-form-modal.component';
 import { PublicationsListService } from '@geonature/metadataModule/services/publication.service';
 import { PublicationDeleteButtonComponent } from './publications/publication-delete-button.component';
+import { PublicationConsultButtonComponent } from './publications/publication-consult-button.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { AssociatedDatasetCardListComponent } from './datasets/associated-dataset-card-list-component';
+import { AssociatedAfCardListComponent } from '@geonature/metadataModule/af/associated-af-card-list.component';
 
 const routes: Routes = [
   { path: '', component: MetadataComponent },
@@ -37,6 +41,7 @@ const routes: Routes = [
   { path: 'af/:id', component: AfFormComponent },
   { path: 'af_detail/:id', component: AfCardComponent },
   { path: 'publication', component: PublicationsListComponent },
+  { path: 'publication_detail/:id', component: PublicationCardComponent },
 ];
 
 @Injectable()
@@ -89,6 +94,10 @@ export class MetadataPaginator extends MatPaginatorIntl {
     PublicationsListComponent,
     PublicationFormModalComponent,
     PublicationDeleteButtonComponent,
+    PublicationConsultButtonComponent,
+    PublicationCardComponent,
+    AssociatedDatasetCardListComponent,
+    AssociatedAfCardListComponent,
   ],
   providers: [
     MetadataService,

@@ -462,6 +462,9 @@
       "NoURL": "Aucune URL disponible",
       "Create": "Créer",
       "ConfirmDelete": "Êtes-vous sûr de vouloir supprimer cette publication ?",
+      "SeePublication": "Consulter la publication",
+      "LinkedDataset": "Jeux de données liés",
+      "LinkedAF": "Cadres d'acquisition liés",
       "ExternalLink": {
         "Title": "Redirection externe",
         "Warning": "Attention : Ce lien externe peut vous rediriger vers un site tiers et vous exposez à des risques de sécurité.",

@@ -549,32 +549,9 @@
         <div class="card-header">
           <h5>{{ 'AcquisitionFramework' | translate }}</h5>
         </div>
-        <div class="card-body">
-          <div class="row">
-            <div
-              class="col-auto"
-              width="60"
-            >
-              <img
-                src="./assets/images/Taxon_icon_vert.svg"
-                width="64"
-              />
-            </div>
-            <div class="col">
-              <div>
-                <a
-                  [routerLink]="['/metadata/af_detail', dataset.id_acquisition_framework]"
-                  style="color: black"
-                >
-                  {{ dataset.acquisition_framework.acquisition_framework_name }}
-                </a>
-              </div>
-              <div>
-                <small>{{ dataset.acquisition_framework.unique_acquisition_framework_id }}</small>
-              </div>
-            </div>
-          </div>
-        </div>
+        <pnx-associated-af-card-list
+          [acquisitionFrameworks]="[dataset.acquisition_framework]"
+        ></pnx-associated-af-card-list>
       </div>
       <!-- Fin bloc AF -->
     </div>

@@ -339,10 +339,7 @@
         </div>
       </div>
 
-      <div
-        *ngIf="stats && stats.nb_dataset"
-        class="card"
-      >
+      <div class="card">
         <div class="card-header d-flex justify-content-between">
           <h3>{{ 'MetaData.AssociatedDatasets' | translate }}</h3>
           <button
@@ -357,43 +354,9 @@
             <mat-icon>add</mat-icon>
           </button>
         </div>
-        <div class="card-body associated-datasets">
-          <table>
-            <tr *ngFor="let dataset of af?.datasets">
-              <td [ngSwitch]="dataset.nomenclature_data_type.cd_nomenclature">
-                <img
-                  width="60"
-                  *ngSwitchCase="'1'"
-                  src="./assets/images/Taxon_icon_vert.svg"
-                  alt=""
-                />
-                <img
-                  width="60"
-                  *ngSwitchCase="'2'"
-                  src="./assets/images/Habitat_icon_vert.svg"
-                  alt=""
-                />
-                <img
-                  width="60"
-                  *ngSwitchDefault
-                  src="./assets/images/Taxon_icon_vert.svg"
-                  alt=""
-                />
-              </td>
-              <td>
-                <a
-                  [routerLink]="['/metadata/dataset_detail', dataset.id_dataset]"
-                  class="text-dark"
-                >
-                  {{ dataset.dataset_name }}
-                </a>
-                <div>
-                  <small>{{ dataset.unique_dataset_id }}</small>
-                </div>
-              </td>
-            </tr>
-          </table>
-        </div>
+        <pnx-associated-dataset-card-list
+          [datasets]="af?.datasets"
+        ></pnx-associated-dataset-card-list>
       </div>
     </div>
   </div>

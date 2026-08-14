@@ -293,6 +293,22 @@ def get_publications():
     )
 
 
+@routes.route("/publication/<int:id_publication>", methods=["GET"])
+@permissions.check_cruved_scope("R", module_code="METADATA")
+@login_required
+def get_publication(id_publication):
+    publication = db.get_or_404(TDatatypePublication, id_publication)
+    return PublicationSchema(
+        only=[
+            "+digitizer.nom_complet",
+            "+cruved",
+            "+datasets",
+            "+datasets.nomenclature_data_type",
+            "+acquisition_frameworks",
+        ]
+    ).jsonify(publication)
+
+
 @routes.route("/publication", methods=["POST"])
 @permissions.check_cruved_scope("C", module_code="METADATA")
 def create_publication():

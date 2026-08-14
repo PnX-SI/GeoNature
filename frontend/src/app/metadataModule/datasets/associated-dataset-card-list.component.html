@@ -1,0 +1,31 @@
+<div class="card-body associated-list">
+  <table *ngIf="datasets?.length">
+    <tr *ngFor="let dataset of datasets">
+      <td [ngSwitch]="dataset?.nomenclature_data_type?.cd_nomenclature">
+        <img
+          width="60"
+          [src]="getDatasetIcon(dataset?.nomenclature_data_type?.cd_nomenclature)"
+          alt=""
+        />
+      </td>
+      <td>
+        <a
+          [routerLink]="['/metadata/dataset_detail', dataset.id_dataset]"
+          class="text-dark"
+        >
+          {{ dataset.dataset_name }}
+        </a>
+        <div>
+          <small>{{ dataset.unique_dataset_id }}</small>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <div
+    *ngIf="!datasets?.length"
+    class="text-muted"
+  >
+    Aucun jeu de données associé
+  </div>
+</div>
