@@ -17,6 +17,12 @@ PG_USER_PASSWD ?= gn_passwd
 
 GEONATURE_APP_NAME ?= 'DEV'
 
+# Default venv path: config/settings.ini's venv_path, falling back to backend/venv.
+# geonature.local.env (included above) or `make VENV_PATH=...` still take priority.
+VENV_PATH ?= $(shell grep -E '^venv_path=' config/settings.ini 2>/dev/null | cut -d= -f2)
+VENV_PATH := $(or $(VENV_PATH),backend/venv)
+export VENV_PATH
+
 WITH_SAMPLE_DATA ?= false
 
 MODULE_DASHBOARD_TAG ?= 1.5.0
@@ -124,18 +130,18 @@ install_db:
 	cd install/ && ./03_create_db.sh
 
 install_contrib:
-	source backend/venv/bin/activate && geonature install-gn-module contrib/occtax --build false --upgrade-db=${UPGRADE_DB_EXTRA}
-	if [ "${WITH_SAMPLE_DATA}" = true ]; then source backend/venv/bin/activate && geonature db upgrade occtax-samples@head;fi
-	source backend/venv/bin/activate && geonature install-gn-module contrib/gn_module_occhab --build false --upgrade-db=${UPGRADE_DB_EXTRA}
-	source backend/venv/bin/activate && geonature install-gn-module contrib/gn_module_validation  --build false --upgrade-db=${UPGRADE_DB_EXTRA}
+	source $(VENV_PATH)/bin/activate && geonature install-gn-module contrib/occtax --build false --upgrade-db=${UPGRADE_DB_EXTRA}
+	if [ "${WITH_SAMPLE_DATA}" = true ]; then source $(VENV_PATH)/bin/activate && geonature db upgrade occtax-samples@head;fi
+	source $(VENV_PATH)/bin/activate && geonature install-gn-module contrib/gn_module_occhab --build false --upgrade-db=${UPGRADE_DB_EXTRA}
+	source $(VENV_PATH)/bin/activate && geonature install-gn-module contrib/gn_module_validation  --build false --upgrade-db=${UPGRADE_DB_EXTRA}
 
 install_extra:
 	cd ${MODULE_MONITORING_DIRECTORY} && git checkout ${MODULE_MONITORING_TAG}
 	cd ${MODULE_EXPORT_DIRECTORY} && git checkout ${MODULE_EXPORT_TAG}
 	cd ${MODULE_DASHBOARD_DIRECTORY} && git checkout ${MODULE_DASHBOARD_TAG}
-	source backend/venv/bin/activate && geonature install-gn-module "${MODULE_MONITORING_DIRECTORY}" --upgrade-db=${UPGRADE_DB_EXTRA}  --build=false
-	source backend/venv/bin/activate && geonature install-gn-module "${MODULE_EXPORT_DIRECTORY}" --upgrade-db=${UPGRADE_DB_EXTRA}  --build=false
-	source backend/venv/bin/activate && geonature install-gn-module "${MODULE_DASHBOARD_DIRECTORY}" --upgrade-db=${UPGRADE_DB_EXTRA}  --build=false
+	source $(VENV_PATH)/bin/activate && geonature install-gn-module "${MODULE_MONITORING_DIRECTORY}" --upgrade-db=${UPGRADE_DB_EXTRA}  --build=false
+	source $(VENV_PATH)/bin/activate && geonature install-gn-module "${MODULE_EXPORT_DIRECTORY}" --upgrade-db=${UPGRADE_DB_EXTRA}  --build=false
+	source $(VENV_PATH)/bin/activate && geonature install-gn-module "${MODULE_DASHBOARD_DIRECTORY}" --upgrade-db=${UPGRADE_DB_EXTRA}  --build=false
 
 install_modules: install_contrib install_extra
 
@@ -146,19 +152,19 @@ reset_install: install_backend install_db install_modules
 ##############################
 
 back:
-	source backend/venv/bin/activate && geonature dev-back --port ${PORT_GN_BACKEND}
+	source $(VENV_PATH)/bin/activate && geonature dev-back --port ${PORT_GN_BACKEND}
 
 front:
 	. ${NVM_DIR}/nvm.sh; cd frontend; nvm use; npm run start -- --port ${PORT_GN_FRONTEND}
 
 celery:
-	source backend/venv/bin/activate && celery -A geonature.celery_app:app worker -c ${NB_CONCURRENT_WORKER_CELERY}
+	source $(VENV_PATH)/bin/activate && celery -A geonature.celery_app:app worker -c ${NB_CONCURRENT_WORKER_CELERY}
 
 celery_debug:
-	source backend/venv/bin/activate && watchmedo auto-restart --directory=../ --pattern='*.py' --recursive -- celery -A geonature.celery_app:app worker --loglevel=INFO
+	source $(VENV_PATH)/bin/activate && watchmedo auto-restart --directory=../ --pattern='*.py' --recursive -- celery -A geonature.celery_app:app worker --loglevel=INFO
 
 db_status:
-	source backend/venv/bin/activate && geonature db status
+	source $(VENV_PATH)/bin/activate && geonature db status
 
 docker_db:
 	docker run -d \
@@ -167,30 +173,30 @@ docker_db:
     ghcr.io/pnx-si/geonature-db:latest
 
 autoupgrade:
-	source backend/venv/bin/activate && geonature db autoupgrade
+	source $(VENV_PATH)/bin/activate && geonature db autoupgrade
 
 compile_requirements:
 	uv lock
-	source backend/venv/bin/activate && cd backend && uv pip compile requirements.in -o requirements.txt
+	source $(VENV_PATH)/bin/activate && cd backend && uv pip compile requirements.in -o requirements.txt
 
 test_frontend:
 	. ${NVM_DIR}/nvm.sh; cd frontend; nvm use && npm run cypress:run
 
 test_backend:
-	source backend/venv/bin/activate && pytest
+	source $(VENV_PATH)/bin/activate && pytest
 
 benchmark:
-	source backend/venv/bin/activate && pytest --benchmark-only
+	source $(VENV_PATH)/bin/activate && pytest --benchmark-only
 
 lint_frontend:
 	. ${NVM_DIR}/nvm.sh; cd frontend; nvm use; npm run format
 
 lint_backend:
-	source backend/venv/bin/activate && black .
+	source $(VENV_PATH)/bin/activate && black .
 
 supergrant:
-	if [ "${SUPERGRANT_ISGROUP}" = true ]; then source backend/venv/bin/activate && geonature permissions supergrant --group --nom ${SUPERGRANT_NOM_ROLE} --yes; fi
-	if [ "${SUPERGRANT_ISGROUP}" = false ]; then source backend/venv/bin/activate && geonature permissions supergrant --nom ${SUPERGRANT_NOM_ROLE} --yes; fi
+	if [ "${SUPERGRANT_ISGROUP}" = true ]; then source $(VENV_PATH)/bin/activate && geonature permissions supergrant --group --nom ${SUPERGRANT_NOM_ROLE} --yes; fi
+	if [ "${SUPERGRANT_ISGROUP}" = false ]; then source $(VENV_PATH)/bin/activate && geonature permissions supergrant --nom ${SUPERGRANT_NOM_ROLE} --yes; fi
 
 # Add other targets in a Makefile.local file if you wish to extend the make file
 -include Makefile.local

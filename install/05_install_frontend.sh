@@ -56,7 +56,7 @@ write_log "Préparation du frontend..."
 cd "${BASE_DIR}/frontend"
 
 echo "Activation du venv..."
-source "${BASE_DIR}/backend/venv/bin/activate"
+source "${BASE_DIR}/${VENV_PATH}/bin/activate"
 
 # create config.json
 api_end_point=$(geonature get-config API_ENDPOINT)

@@ -77,22 +77,26 @@ fi
 
 cd "${BASE_DIR}"/backend
 
-# Installation du virtual env
-if [ ! -d 'venv/' ]; then
+if ! command -v uv >/dev/null 2>&1; then
+  echo "Installation de uv..."
+  pip install --user uv
+fi
+
+# Chemin du venv géré automatiquement par uv (VENV_PATH est déjà exporté par `utils`,
+# depuis settings.ini ou l'environnement).
+export UV_PROJECT_ENVIRONMENT="${BASE_DIR}/${VENV_PATH}"
+
+if [ ! -d "${UV_PROJECT_ENVIRONMENT}" ]; then
   echo "Création du virtual env…"
-  python3 -m venv venv
+  # --seed installe pip/setuptools/wheel dans le venv (requis par `geonature install-gn-module`).
+  uv venv --seed "${UV_PROJECT_ENVIRONMENT}"
 fi
 
 echo "Activation du virtual env..."
-source venv/bin/activate
-
+source "${UV_PROJECT_ENVIRONMENT}/bin/activate"
 
 echo "Installation des dépendances Python..."
 pip install --upgrade "pip>=19.3"  "wheel"  # https://www.python.org/dev/peps/pep-0440/#direct-references
-if ! command -v uv >/dev/null 2>&1; then
-  echo "Installation de uv..."
-  pip install uv
-fi
 if [[ "${MODE}" == "dev" ]]; then
   echo "Installation des dépendances Python de l'environnement de DEV..."
   git submodule status | grep -E "^-" >/dev/null
@@ -109,7 +113,7 @@ else
   uv pip install -e "${BASE_DIR}" -r requirements.txt
 fi
 
-readonly BIN_VENV_DIR="${BASE_DIR}/backend/venv/bin"
+readonly BIN_VENV_DIR="${UV_PROJECT_ENVIRONMENT}/bin"
 readonly ACTIVATE_FILE="${BIN_VENV_DIR}/activate"
 readonly COMPLETION_FILE_NAME="geonature_completion"
 
