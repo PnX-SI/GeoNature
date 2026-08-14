@@ -144,23 +144,16 @@
             ngx-datatable-cell-template
           >
             <button
-              [class.disabled-look]="!row.publication_url"
               mat-icon-button
-              type="button"
-              (click)="
-                row.publication_url
-                  ? confirmExternalLink(row.publication_url, externalLinkModal)
-                  : null
-              "
-              [matTooltip]="
-                row.publication_url
-                  ? ('MetaData.PublicationsList.Consult' | translate)
-                  : ('MetaData.PublicationsList.NoURL' | translate)
-              "
-              data-qa="pnx-publications-consult-link"
+              [routerLink]="['/metadata/publication_detail', row.id_publication]"
+              matTooltip="{{ 'MetaData.PublicationsList.SeePublication' | translate }}"
+              style="color: black"
             >
-              <mat-icon>open_in_new</mat-icon>
+              <mat-icon>info</mat-icon>
             </button>
+            <pnx-publication-consult-button
+              [publicationUrl]="row.publication_url"
+            ></pnx-publication-consult-button>
             <button
               [class.disabled-look]="!row.cruved?.U"
               mat-icon-button

@@ -1,0 +1,9 @@
+.publication-card-header {
+  .action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+}

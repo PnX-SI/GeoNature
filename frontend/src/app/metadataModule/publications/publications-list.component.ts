@@ -29,8 +29,6 @@ export class PublicationsListComponent implements OnInit {
 
   public publicationTypes: Nomenclature[] = [];
 
-  public pendingExternalUrl: string | null = null;
-
   constructor(
     private modal: NgbModal,
     public publicationsListService: PublicationsListService,
@@ -129,20 +127,6 @@ export class PublicationsListComponent implements OnInit {
     });
 
     this.publicationsListService.searchFromFirstPage().subscribe();
-  }
-
-  confirmExternalLink(url: string, modalTemplate) {
-    this.pendingExternalUrl = url;
-    this.modal.open(modalTemplate).result.finally(() => {
-      this.pendingExternalUrl = null;
-    });
-  }
-
-  openExternalLink() {
-    if (this.pendingExternalUrl) {
-      window.open(this.pendingExternalUrl, '_blank', 'noopener,noreferrer');
-    }
-    this.pendingExternalUrl = null;
   }
 
   GetUpsertModal() {
