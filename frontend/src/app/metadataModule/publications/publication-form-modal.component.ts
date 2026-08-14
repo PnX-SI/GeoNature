@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Publication } from './publication.model';
@@ -6,17 +6,26 @@ import { Nomenclature } from '@geonature_common/interfaces';
 import { CommonService } from '@geonature_common/service/common.service';
 import { PublicationsListService } from '../services/publication.service';
 import { urlValidator } from '@geonature/utils/validator';
+import { Subject } from 'rxjs';
+import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'pnx-publication-form-modal',
   templateUrl: './publication-form-modal.component.html',
+  styleUrls: ['./publication-form-modal.component.scss'],
 })
-export class PublicationFormModalComponent implements OnInit {
+export class PublicationFormModalComponent implements OnInit, OnDestroy {
   @Input() publication: Publication | null = null;
-
+  @Input() getPublicationTypeLabel: (id: number) => string;
   public form: UntypedFormGroup;
   public publicationTypes: Nomenclature[] = [];
   public isLoading = false;
+
+  private destroy$ = new Subject<void>();
+  similarPublications: any[] = [];
+  showSimilarWarning: boolean = false;
+  selectedPublication: any = null;
+  exactMatchExists: boolean = false;
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -39,6 +48,19 @@ export class PublicationFormModalComponent implements OnInit {
     if (this.isEditMode && this.publication) {
       this.populateForm(this.publication);
     }
+
+    // Check for similar publication references
+    this.form
+      .get('publication_reference')
+      .valueChanges.pipe(takeUntil(this.destroy$), debounceTime(500), distinctUntilChanged())
+      .subscribe((reference) => {
+        this.checkSimilarReferences(reference);
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private createForm(): UntypedFormGroup {
@@ -57,6 +79,43 @@ export class PublicationFormModalComponent implements OnInit {
       description_publication: publication.description_publication,
       publication_url: publication.publication_url,
     });
+  }
+
+  /**
+   * Check if the entered reference is similar to existing publication references
+   */
+  checkSimilarReferences(inputReference: string): void {
+    if (!inputReference) {
+      this.similarPublications = [];
+      this.showSimilarWarning = false;
+      this.exactMatchExists = false;
+      return;
+    }
+
+    this.publicationsListService.searchSimilarPublications(inputReference).subscribe(
+      (response) => {
+        this.similarPublications = response.items;
+
+        this.showSimilarWarning = this.similarPublications.length > 0;
+        this.exactMatchExists = this.similarPublications.some(
+          (pub) => pub.publication_reference === inputReference
+        );
+      },
+      (error) => {
+        console.error('Error searching publications:', error);
+        this.similarPublications = [];
+        this.showSimilarWarning = false;
+        this.exactMatchExists = false;
+      }
+    );
+  }
+
+  viewPublicationDetails(publication: any): void {
+    if (this.selectedPublication?.id_publication === publication.id_publication) {
+      this.selectedPublication = null;
+      return;
+    }
+    this.selectedPublication = publication;
   }
 
   onSubmit() {
@@ -89,5 +148,9 @@ export class PublicationFormModalComponent implements OnInit {
 
   onCancel() {
     this.activeModal.dismiss();
+  }
+
+  similar_element_to_display() {
+    return this.exactMatchExists ? 1 : 3;
   }
 }

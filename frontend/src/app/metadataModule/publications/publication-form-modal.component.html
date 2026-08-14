@@ -37,6 +37,110 @@
       </div>
     </div>
 
+    <!-- Match exact ou publications similaires -->
+    <div
+      *ngIf="showSimilarWarning"
+      class="similarity"
+      [class.similar-warning]="!exactMatchExists"
+      [class.exact-match-error]="exactMatchExists"
+    >
+      <mat-icon class="similar-icon">
+        {{ exactMatchExists ? 'error' : 'warning' }}
+      </mat-icon>
+      <div class="similar-content">
+        <strong>
+          {{
+            (exactMatchExists
+              ? 'MetaData.PublicationsList.Errors.ExactMatchExists'
+              : 'MetaData.PublicationsList.Errors.SimilarReferencesWarning'
+            ) | translate
+          }}
+        </strong>
+
+        <ul
+          class="similar-list"
+          data-qa="pnx-publication-form-dialog-similar-list"
+        >
+          <li *ngFor="let pub of similarPublications | slice: 0 : similar_element_to_display()">
+            <a
+              href="javascript:void(0)"
+              class="publication-link"
+              (click)="viewPublicationDetails(pub)"
+              [class.active]="selectedPublication?.id_publication === pub.id_publication"
+            >
+              <span>{{ pub.publication_reference }}</span>
+              <mat-icon class="expand-icon">
+                {{
+                  selectedPublication?.id_publication === pub.id_publication
+                    ? 'expand_less'
+                    : 'expand_more'
+                }}
+              </mat-icon>
+            </a>
+
+            <div
+              *ngIf="selectedPublication?.id_publication === pub.id_publication"
+              class="publication-details"
+            >
+              <div>
+                <div
+                  class="detail-row"
+                  *ngIf="selectedPublication.id_nomenclature_type_publication"
+                >
+                  <span class="detail-label">
+                    {{ 'MetaData.PublicationsList.Type' | translate }}
+                  </span>
+                  <span class="detail-value">
+                    {{
+                      getPublicationTypeLabel(selectedPublication.id_nomenclature_type_publication)
+                    }}
+                  </span>
+                </div>
+                <div
+                  class="detail-row"
+                  *ngIf="selectedPublication.description_publication"
+                >
+                  <span class="detail-label">
+                    {{ 'MetaData.PublicationsList.Description' | translate }}
+                  </span>
+                  <span class="detail-value">
+                    {{ selectedPublication.description_publication }}
+                  </span>
+                </div>
+                <div
+                  class="detail-row"
+                  *ngIf="selectedPublication.publication_url"
+                >
+                  <span class="detail-label">
+                    {{ 'MetaData.PublicationsList.URL' | translate }}
+                  </span>
+                  <span class="detail-value">
+                    <a
+                      href="{{ selectedPublication.publication_url }}"
+                      target="_blank"
+                    >
+                      {{ selectedPublication.publication_url }}
+                    </a>
+                  </span>
+                </div>
+                <div
+                  class="detail-row"
+                  *ngIf="selectedPublication.digitizer"
+                >
+                  <span class="detail-label">
+                    {{ 'Digitiser' | translate }}
+                  </span>
+                  <span class="detail-value">
+                    {{ selectedPublication.digitizer.nom_complet }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
     <div class="form-group">
       <label for="type">{{ 'MetaData.PublicationsList.Type' | translate }}</label>
       <ng-select
@@ -105,7 +209,7 @@
     mat-raised-button
     color="primary"
     (click)="onSubmit()"
-    [disabled]="!form.valid || isLoading"
+    [disabled]="!form.valid || isLoading || exactMatchExists"
   >
     <mat-spinner
       *ngIf="isLoading"
