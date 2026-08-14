@@ -1,0 +1,21 @@
+.associated-list {
+  max-height: 30vh;
+  overflow-y: auto;
+
+  table {
+    width: 80%;
+  }
+
+  td {
+    vertical-align: middle;
+    padding-bottom: 0.5rem;
+  }
+
+  img {
+    display: block;
+  }
+
+  small {
+    color: #6c757d;
+  }
+}
