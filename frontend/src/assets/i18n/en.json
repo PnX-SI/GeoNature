@@ -473,7 +473,9 @@
       "Errors": {
         "DeletionImpossible": "Deletion impossible:",
         "LinkedDatasets": "Dataset are linked to this publication",
-        "LinkedAcquisitionFrameworks": "Acquisition frameworks are linked to this publication"
+        "LinkedAcquisitionFrameworks": "Acquisition frameworks are linked to this publication",
+        "SimilarReferencesWarning": "Publication with simlar references already exists",
+        "ExactMatchExists": "Publication with the same reference already exists"
       }
     }
   },

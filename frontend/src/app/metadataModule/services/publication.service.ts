@@ -114,6 +114,30 @@ export class PublicationsListService {
       .pipe(map((response) => response.values ?? []));
   }
 
+  searchSimilarPublications(similarity_search: string): Observable<{
+    items: Publication[];
+    total: number;
+  }> {
+    let params = new HttpParams()
+      .set('page', '1')
+      .set('per_page', '3')
+      .set('similarity_search', similarity_search);
+
+    const apiEndpoint = `${this._config.API_ENDPOINT}/meta/publications`;
+
+    return this._http
+      .get<{
+        items: Publication[];
+        total: number;
+      }>(apiEndpoint, { params })
+      .pipe(
+        map((result) => ({
+          items: result.items || [],
+          total: result.total || 0,
+        }))
+      );
+  }
+
   createPublication(publication: Partial<Publication>): Observable<Publication> {
     const apiEndpoint = `${this._config.API_ENDPOINT}/meta/publication`;
 

@@ -227,6 +227,7 @@ def get_publications():
     page = request.args.get("page", type=int, default=1)
     per_page = request.args.get("per_page", type=int, default=10)
     search = request.args.get("search", type=str, default="").strip()
+    similarity_search = request.args.get("similarity_search", type=str, default="").strip()
     type_publication = request.args.get("type_publication", type=int, default=-1)
     orderby = request.args.get("orderby", type=str, default="id_publication")
     order = request.args.get("order", type=str, default="desc").lower()
@@ -242,6 +243,13 @@ def get_publications():
                 TDatatypePublication.publication_url.ilike(search_pattern),
             )
         )
+
+    if similarity_search:
+        similarity = func.word_similarity(
+            TDatatypePublication.publication_reference, similarity_search
+        )
+        query = query.where(similarity > 0.7).order_by(similarity.desc())
+
     if type_publication != -1:
         query = query.where(
             TDatatypePublication.id_nomenclature_type_publication == type_publication
