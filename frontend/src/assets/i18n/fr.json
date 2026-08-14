@@ -485,7 +485,9 @@
         "LinkedAcquisitionFrameworks": "Des cadres d'acquisition sont liés à cette publication",
         "Update": "Une erreur est survenue lors de la mise à jour de la publication",
         "Create": "Une erreur est survenue lors de la création de la publication",
-        "Deleted": "Publication supprimée avec succès"
+        "Deleted": "Publication supprimée avec succès",
+        "SimilarReferencesWarning": "Des publications avec une réference similaires existent déjà",
+        "ExactMatchExists": "Une publication avec une réference identique existe déjà"
       },
       "Messages": {
         "PublicationUpdated": "Publication mise à jour",

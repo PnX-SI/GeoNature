@@ -154,7 +154,10 @@ export class PublicationsListComponent implements OnInit {
   }
 
   onCreatePublication() {
-    this.GetUpsertModal().result.then((result) => {
+    let modalRef = this.GetUpsertModal();
+    modalRef.componentInstance.getPublicationTypeLabel = this.getPublicationTypeLabel.bind(this);
+
+    modalRef.result.then((result) => {
       if (result) {
         this.publicationsListService.searchFromFirstPage().subscribe();
       }
@@ -164,6 +167,7 @@ export class PublicationsListComponent implements OnInit {
   onEditPublication(publication: Publication) {
     const modalRef = this.GetUpsertModal();
     modalRef.componentInstance.publication = publication;
+    modalRef.componentInstance.getPublicationTypeLabel = this.getPublicationTypeLabel.bind(this);
 
     modalRef.result.then((result) => {
       if (result) {
