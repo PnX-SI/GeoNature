@@ -1,6 +1,5 @@
 {
   "Home": "Home",
-
   "LanguageSelection": "Choose the interface language",
   "Language": "Language",
   "Languages": "Languages",
@@ -10,7 +9,15 @@
     "Chinese": "🇨🇳 中文 (Chinese)"
   },
   "Calendar": {
-    "Weekdays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    "Weekdays": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday"
+    ],
     "Months": [
       "January",
       "February",
@@ -45,7 +52,8 @@
     "DownloadData": "Download data",
     "Copy": "Copy",
     "Clear": "Clear",
-    "Associate": "Associate"
+    "Associate": "Associate",
+    "Disassociate": "Disassociate"
   },
   "Messages": {
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire"
@@ -57,7 +65,6 @@
     "NotAllowed": "You do not have permission to perform this action",
     "InvalidURL": "Incorrect format"
   },
-
   "Authentication": {
     "Authentication": "Authentication",
     "Email": "Email",
@@ -128,7 +135,6 @@
       "EmailChangeError": "An error occurred"
     }
   },
-
   "Observer": "Observer",
   "Observers?": "Observers",
   "Observers": "Observer(s)",
@@ -150,7 +156,6 @@
   "Creator": "Creator",
   "Creators": "Creators",
   "Creators?": "Creator(s)",
-
   "Dataset": "Dataset",
   "Datasets": "Datasets",
   "AcquisitionFramework": "Acquisition Framework",
@@ -167,34 +172,28 @@
   "SelectModules": "Select one or more modules",
   "Habitat": "Habitat",
   "Habitats": "Habitats",
-
   "Sex": "Sex",
   "LifeStage": "Life Stage",
-
   "By": "By",
   "On": "On",
   "Of": "of",
   "Columns": "Columns",
   "DisplayColumns": "Columns to display",
-
   "Yes": "Yes",
   "No": "No",
   "Previous": "Previous",
   "Next": "Next",
   "Back": "Back",
   "Confirmation": "Confirmation",
-
   "Report": "Report",
   "Comment": "Comment",
   "Discussion": "Discussion",
   "Status": "Status",
   "Source": "Source",
-
   "Mandatory": "Mandatory",
   "Optional": "Optional",
   "OptionalIf": "Optional if",
   "RequiredIf": "Required if",
-
   "Name": "Name",
   "What": "What?",
   "When": "When?",
@@ -202,7 +201,6 @@
   "How": "How?",
   "Where": "Where?",
   "New": "New",
-
   "Advanced": "Advanced",
   "All": "All",
   "Objective": "Objective",
@@ -214,7 +212,6 @@
   "Valid": "Valid",
   "Invalid": "Invalid",
   "Active": "Active",
-
   "Date": "Date",
   "Dates": "Dates",
   "MaxDate": "End Date",
@@ -230,17 +227,14 @@
   "Label": "Label",
   "Url": "URL",
   "Keywords": "Keywords",
-
   "Detail": "Detail",
   "Details": "Details",
-
   "Search": "Search",
   "Documentation": {
     "Documentation": "Documentation",
     "OpenDocumentation": "Open documentation"
   },
   "Downloading": "Downloading",
-
   "DownloadOverflow": "The number of items is too large to be downloaded, please refine your search or contact your administrator",
   "DynamicForm": {
     "Errors": {
@@ -352,7 +346,6 @@
     "AssociatedDatasets": "Associated datasets",
     "Reference": "Reference",
     "AdditionalInformation": "Additional information",
-
     "DatasetCard": {
       "Actions": {
         "DisplayData": "Display data"
@@ -366,11 +359,9 @@
       "SpeciesDistribution": "Species distribution",
       "DescriptiveForm": "Descriptive form",
       "ID": "Identification",
-
       "GeographicalScope": "Geographical scope",
       "UUIDReport": "UUID report",
       "SensitivityReport": "Sensitivity report",
-
       "IntegratedOn": "Integrated on",
       "NumberOfData": "Number of data",
       "WidgetType": "Widget type",
@@ -381,12 +372,10 @@
       "TaxaListID": "Taxon list ID",
       "GNSpecificFeatures": "GeoNature specifics features",
       "DatasetCreator": "Dataset creator",
-
       "DatasetSINPID": "SINP ID of the dataset",
       "DatasetGeoNatureID": "GeoNature ID of the dataset",
       "ShortName": "Short label",
       "DataType": "Data type",
-
       "LandCoverage": "Land territory coverage",
       "MarineAreaCoverage": "Marine territory coverage",
       "TermsReference": "Reference framework",
@@ -405,7 +394,6 @@
         "SizeShortNameJDD": "The short JDD name must be less than or equal to 30 characters",
         "NoList": "No list (all Taxref)"
       },
-
       "ShortNameJDD": "Short JDD name",
       "Field": "Field",
       "LandField": "Land field",
@@ -415,7 +403,6 @@
       "OtherStakeholders": "Other stakeholder(s)",
       "MainContact": "Main contact",
       "DataOrigin": "Data origin",
-
       "ResourceType": "Resource type",
       "FacultativeTaxaList": "Taxon list (optional)",
       "SpecificGeonature": "Specific GeoNature",
@@ -472,6 +459,7 @@
       "LinkedPublication": "Linked Publications",
       "NoLinkedPublication": "No linked publication",
       "AssociateToPublication": "Associate to a publication",
+      "ConfirmDisassociate": "Are you sure you want to disassociate this publication ?",
       "ExternalLink": {
         "Title": "External Redirect",
         "Warning": "Warning: This external link may redirect you to a third-party site and expose you to security risks.",
@@ -483,7 +471,13 @@
         "LinkedDatasets": "Dataset are linked to this publication",
         "LinkedAcquisitionFrameworks": "Acquisition frameworks are linked to this publication",
         "SimilarReferencesWarning": "Publication with simlar references already exists",
-        "ExactMatchExists": "Publication with the same reference already exists"
+        "ExactMatchExists": "Publication with the same reference already exists",
+        "DisassociationFailed": "Disassociation failed"
+      },
+      "Messages": {
+        "PublicationUpdated": "Publication updated",
+        "PublicationCreated": "Publication created",
+        "Disassociated": "Publication disassociated successfully"
       }
     }
   },
@@ -527,11 +521,9 @@
     "Errors": {
       "PeriodCompleteness": "The 'start period' and 'end period' fields must be filled if you want to search by period"
     },
-
     "Commented": "commented on",
     "ChangeStatus": "changed the status on",
     "ModalTitle": "Observation information",
-
     "LocationName": "Location name",
     "Accuracy": "Pointing accuracy",
     "Owner": "Observation by",
@@ -613,7 +605,6 @@
         "Choose": "Use a predefined import model",
         "Rename": "Rename the import model",
         "Delete": "Delete the import model",
-
         "Update": "Update the existing model",
         "Save": "Save a new model",
         "NoSave": "Do not save",

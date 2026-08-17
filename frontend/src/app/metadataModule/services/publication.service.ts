@@ -37,6 +37,7 @@ export class PublicationsListService {
       order: ['desc'],
     });
   }
+
   getPublication(id_publication: number): Observable<Publication> {
     const apiEndpoint = `${this._config.API_ENDPOINT}/meta/publication/${id_publication}`;
 
@@ -184,6 +185,16 @@ export class PublicationsListService {
 
   associateAfToPublication(publication_id: number, af_id: number): Observable<any> {
     const apiEndpoint = `${this._config.API_ENDPOINT}/meta/publication/associate_af`;
+    return this._http.post<any>(apiEndpoint, { publication_id, af_id });
+  }
+
+  disassociateDatasetFromPublication(publication_id: number, dataset_id: number): Observable<any> {
+    const apiEndpoint = `${this._config.API_ENDPOINT}/meta/publication/disassociate_dataset`;
+    return this._http.post<any>(apiEndpoint, { publication_id, dataset_id });
+  }
+
+  disassociateAfFromPublication(publication_id: number, af_id: number): Observable<any> {
+    const apiEndpoint = `${this._config.API_ENDPOINT}/meta/publication/disassociate_af`;
     return this._http.post<any>(apiEndpoint, { publication_id, af_id });
   }
 }
