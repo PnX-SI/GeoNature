@@ -97,16 +97,26 @@
 
     <div class="col-12 col-xl-4">
       <div class="card">
-        <div class="card-header">
+        <div class="card-header d-flex justify-content-between">
           <h3>{{ 'MetaData.PublicationsList.LinkedDataset' | translate }}</h3>
+          <pnx-publication-associate-button
+            [elementId]="publication.id_publication"
+            [from]="'Publication'"
+            [to]="'Dataset'"
+          ></pnx-publication-associate-button>
         </div>
         <pnx-associated-dataset-card-list
           [datasets]="publication.datasets"
         ></pnx-associated-dataset-card-list>
       </div>
       <div class="card">
-        <div class="card-header">
+        <div class="card-header d-flex justify-content-between">
           <h3>{{ 'MetaData.PublicationsList.LinkedAF' | translate }}</h3>
+          <pnx-publication-associate-button
+            [elementId]="publication.id_publication"
+            [from]="'Publication'"
+            [to]="'AcquisitionFramework'"
+          ></pnx-publication-associate-button>
         </div>
         <pnx-associated-af-card-list
           [acquisitionFrameworks]="publication.acquisition_frameworks"

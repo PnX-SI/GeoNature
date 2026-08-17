@@ -7,9 +7,10 @@ import json
 import logging
 
 from flask import Blueprint, current_app, request, Response, g, render_template, jsonify
-from sqlalchemy import or_
+from psycopg2.errors import UniqueViolation
+from sqlalchemy import or_, true
 
-from sqlalchemy.exc import DatabaseError
+from sqlalchemy.exc import DatabaseError, IntegrityError
 from sqlalchemy.sql import select
 from sqlalchemy.sql.functions import func
 from sqlalchemy.orm import Load, joinedload, undefer
@@ -43,6 +44,8 @@ from geonature.core.gn_meta.models import (
     TAcquisitionFramework,
     CorAcquisitionFrameworkActor,
     TDatatypePublication,
+    cor_dataset_publication,
+    cor_acquisition_framework_publication,
 )
 from geonature.core.gn_meta.schemas import (
     AcquisitionFrameworkSchema,
@@ -183,6 +186,7 @@ def get_dataset(scope, id_dataset):
             "acquisition_framework.cor_af_actor.organism",
             "acquisition_framework.cor_af_actor.role",
             "sources",
+            "publications",
         ]
     )
     return dataset_schema.jsonify(dataset)
@@ -307,6 +311,64 @@ def get_publication(id_publication):
             "+acquisition_frameworks",
         ]
     ).jsonify(publication)
+
+
+@routes.route("/publication/associate_dataset", methods=["POST"])
+@permissions.check_cruved_scope("U", get_scope=true, module_code="METADATA")
+@login_required
+def associate_dataset_to_publication(scope):
+    publication_id = request.json.get("publication_id", None)
+    dataset_id = request.json.get("dataset_id", None)
+    if not publication_id or not dataset_id:
+        return jsonify({"error": "Missing publication or dataset id"}), 400
+    publication = db.get_or_404(TDatatypePublication, publication_id)
+    dataset = db.get_or_404(TDatasets, dataset_id)
+    publication.has_instance_permission(scope=scope)
+    dataset.has_instance_permission(scope=scope)
+    try:
+        db.session.execute(
+            cor_dataset_publication.insert().values(
+                id_dataset=dataset.id_dataset,
+                id_publication=publication.id_publication,
+            )
+        )
+        db.session.commit()
+    except IntegrityError as err:
+        if isinstance(err.orig, UniqueViolation):
+            db.session.rollback()
+            raise BadRequest("This association already exists.")
+        else:
+            raise err
+    return jsonify({"message": "Dataset associated to publication"}), 200
+
+
+@routes.route("/publication/associate_af", methods=["POST"])
+@permissions.check_cruved_scope("U", get_scope=true, module_code="METADATA")
+@login_required
+def associate_af_to_publication(scope):
+    publication_id = request.json.get("publication_id", None)
+    af_id = request.json.get("af_id", None)
+    if not publication_id or not af_id:
+        return jsonify({"error": "Missing publication or af id"}), 400
+    publication = db.get_or_404(TDatatypePublication, publication_id)
+    af = db.get_or_404(TAcquisitionFramework, af_id)
+    publication.has_instance_permission(scope=scope)
+    af.has_instance_permission(scope=scope)
+    try:
+        db.session.execute(
+            cor_acquisition_framework_publication.insert().values(
+                id_acquisition_framework=af.id_acquisition_framework,
+                id_publication=publication.id_publication,
+            )
+        )
+        db.session.commit()
+    except IntegrityError as err:
+        if isinstance(err.orig, UniqueViolation):
+            db.session.rollback()
+            raise BadRequest("This association already exists.")
+        else:
+            raise err
+    return jsonify({"message": "Af associated to publication"}), 200
 
 
 @routes.route("/publication", methods=["POST"])
@@ -863,6 +925,7 @@ def get_acquisition_framework(scope, id_acquisition_framework):
                 "datasets.cor_dataset_actor.nomenclature_actor_role",
                 "datasets.cor_dataset_actor.organism",
                 "datasets.cor_dataset_actor.role",
+                "publications",
             ],
             exclude=exclude,
         )
