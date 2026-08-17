@@ -3,11 +3,10 @@
   overflow-y: auto;
 
   table {
-    width: 80%;
+    width: 100%;
   }
 
   td {
-    vertical-align: middle;
     padding-bottom: 0.5rem;
   }
 
@@ -17,5 +16,25 @@
 
   small {
     color: #6c757d;
+  }
+
+  .publication-cell {
+    padding: 0;
+  }
+
+  .publication-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 0.5rem;
+  }
+
+  .publication-info {
+    flex: 1;
+  }
+
+  .publication-actions {
+    flex-shrink: 0;
   }
 }

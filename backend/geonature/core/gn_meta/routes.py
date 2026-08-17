@@ -314,10 +314,87 @@ def get_publication(id_publication):
     ).jsonify(publication)
 
 
+def _get_required_ids(*keys):
+    values = [request.json.get(key) for key in keys]
+    if not all(values):
+        return None, (jsonify({"error": f"Missing {' or '.join(keys)}"}), 400)
+    return values, None
+
+
+def _get_publication_and_related(scope, publication_id, model, related_id):
+    publication = db.get_or_404(
+        TDatatypePublication, publication_id, description="Publication not found"
+    )
+    publication.has_instance_permission(scope=scope)
+    related = db.get_or_404(model, related_id, description=f"{{model}} not found")
+    related.has_instance_permission(scope=scope)
+    return publication, related
+
+
+def _associate(table, **values):
+    try:
+        db.session.execute(table.insert().values(**values))
+        db.session.commit()
+    except IntegrityError as err:
+        db.session.rollback()
+        if isinstance(err.orig, UniqueViolation):
+            raise BadRequest("This association already exists.")
+        raise
+
+
+def _disassociate(table, condition):
+    try:
+        db.session.execute(table.delete().where(condition))
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        raise
+
+
 @routes.route("/publication/associate_dataset", methods=["POST"])
 @permissions.check_cruved_scope("U", get_scope=true, module_code="METADATA")
 @login_required
 def associate_dataset_to_publication(scope):
+    ids, error = _get_required_ids("publication_id", "dataset_id")
+    if error:
+        return error
+    publication_id, dataset_id = ids
+
+    publication, dataset = _get_publication_and_related(
+        scope, publication_id, TDatasets, dataset_id
+    )
+    _associate(
+        cor_dataset_publication,
+        id_dataset=dataset.id_dataset,
+        id_publication=publication.id_publication,
+    )
+    return jsonify({"message": "Dataset associated to publication"}), 200
+
+
+@routes.route("/publication/associate_af", methods=["POST"])
+@permissions.check_cruved_scope("U", get_scope=true, module_code="METADATA")
+@login_required
+def associate_af_to_publication(scope):
+    ids, error = _get_required_ids("publication_id", "af_id")
+    if error:
+        return error
+    publication_id, af_id = ids
+
+    publication, af = _get_publication_and_related(
+        scope, publication_id, TAcquisitionFramework, af_id
+    )
+    _associate(
+        cor_acquisition_framework_publication,
+        id_acquisition_framework=af.id_acquisition_framework,
+        id_publication=publication.id_publication,
+    )
+    return jsonify({"message": "Af associated to publication"}), 200
+
+
+@routes.route("/publication/disassociate_dataset", methods=["POST"])
+@permissions.check_cruved_scope("U", get_scope=true, module_code="METADATA")
+@login_required
+def disassociate_dataset_from_publication(scope):
     publication_id = request.json.get("publication_id", None)
     dataset_id = request.json.get("dataset_id", None)
     if not publication_id or not dataset_id:
@@ -328,48 +405,51 @@ def associate_dataset_to_publication(scope):
     dataset.has_instance_permission(scope=scope)
     try:
         db.session.execute(
-            cor_dataset_publication.insert().values(
-                id_dataset=dataset.id_dataset,
-                id_publication=publication.id_publication,
+            cor_dataset_publication.delete().where(
+                (cor_dataset_publication.c.id_dataset == dataset.id_dataset)
+                & (cor_dataset_publication.c.id_publication == publication.id_publication)
             )
         )
         db.session.commit()
-    except IntegrityError as err:
-        if isinstance(err.orig, UniqueViolation):
-            db.session.rollback()
-            raise BadRequest("This association already exists.")
-        else:
-            raise err
-    return jsonify({"message": "Dataset associated to publication"}), 200
+    except Exception as err:
+        db.session.rollback()
+        raise err
+    return jsonify({"message": "Dataset disassociated from publication"}), 200
 
 
-@routes.route("/publication/associate_af", methods=["POST"])
+@routes.route("/publication/disassociate_af", methods=["POST", "GET"])
 @permissions.check_cruved_scope("U", get_scope=true, module_code="METADATA")
 @login_required
-def associate_af_to_publication(scope):
+def disassociate_af_from_publication(scope):
     publication_id = request.json.get("publication_id", None)
     af_id = request.json.get("af_id", None)
     if not publication_id or not af_id:
         return jsonify({"error": "Missing publication or af id"}), 400
+    logging.info(f"1 Disassociating publication {publication_id} from af {af_id}")
     publication = db.get_or_404(TDatatypePublication, publication_id)
+    logging.info(f"2Disassociating publication {publication_id} from af {af_id}")
     af = db.get_or_404(TAcquisitionFramework, af_id)
+    logging.info(f"3Disassociating publication {publication_id} from af {af_id}")
     publication.has_instance_permission(scope=scope)
     af.has_instance_permission(scope=scope)
     try:
         db.session.execute(
-            cor_acquisition_framework_publication.insert().values(
-                id_acquisition_framework=af.id_acquisition_framework,
-                id_publication=publication.id_publication,
+            cor_acquisition_framework_publication.delete().where(
+                (
+                    cor_acquisition_framework_publication.c.id_acquisition_framework
+                    == af.id_acquisition_framework
+                )
+                & (
+                    cor_acquisition_framework_publication.c.id_publication
+                    == publication.id_publication
+                )
             )
         )
         db.session.commit()
-    except IntegrityError as err:
-        if isinstance(err.orig, UniqueViolation):
-            db.session.rollback()
-            raise BadRequest("This association already exists.")
-        else:
-            raise err
-    return jsonify({"message": "Af associated to publication"}), 200
+    except Exception as err:
+        db.session.rollback()
+        raise err
+    return jsonify({"message": "Af disassociated from publication"}), 200
 
 
 @routes.route("/publication", methods=["POST"])

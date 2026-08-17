@@ -44,7 +44,8 @@
     "DownloadData": "Télécharger les données",
     "Copy": "Copier",
     "Clear": "Effacer",
-    "Associate": "Associer"
+    "Associate": "Associer",
+    "Disassociate": "Désassocier"
   },
   "Messages": {
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire"
@@ -482,6 +483,7 @@
       "LinkedPublication": "Publications associées",
       "NoLinkedPublication": "Pas de publication associée",
       "AssociateToPublication": "Associer à une publication",
+      "ConfirmDisassociate": "Voulez-vous désassocier {{publication}} ?",
       "ExternalLink": {
         "Title": "Redirection externe",
         "Warning": "Attention : Ce lien externe peut vous rediriger vers un site tiers et vous exposez à des risques de sécurité.",
@@ -496,11 +498,13 @@
         "Create": "Une erreur est survenue lors de la création de la publication",
         "Deleted": "Publication supprimée avec succès",
         "SimilarReferencesWarning": "Des publications avec une réference similaires existent déjà",
-        "ExactMatchExists": "Une publication avec une réference identique existe déjà"
+        "ExactMatchExists": "Une publication avec une réference identique existe déjà",
+        "DisassociationFailed": "Erreur lors de la désassociation"
       },
       "Messages": {
         "PublicationUpdated": "Publication mise à jour",
-        "PublicationCreated": "Publication créée"
+        "PublicationCreated": "Publication créée",
+        "Disassociated": "Publication désassociée avec succès"
       }
     }
   },
