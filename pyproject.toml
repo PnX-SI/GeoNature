@@ -51,10 +51,9 @@ members = [
   "backend/dependencies/TaxHub",
   "backend/dependencies/Utils-Flask-SQLAlchemy-Geo",
   "backend/dependencies/RefGeo",
+  "backend/dependencies/UsersHub",
 ]
-exclude = [
-  "backend/dependencies/*/dependencies/*",
-]
+exclude = ["backend/dependencies/*/dependencies/*"]
 
 [tool.uv.sources]
 pypnusershub = { workspace = true }
@@ -64,6 +63,7 @@ utils-flask-sqlalchemy-geo = { workspace = true }
 utils-flask-sqlalchemy = { workspace = true }
 taxhub = { workspace = true }
 pypn-ref-geo = { workspace = true }
+usershub = { workspace = true }
 
 [project.optional-dependencies]
 tests = [
