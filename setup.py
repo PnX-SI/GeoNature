@@ -45,6 +45,9 @@ setuptools.setup(
             "sphinx-autoapi",
             "sphinx-copybutton",
         ],
+        "sentry": [
+            "sentry_sdk[flask]",
+        ],
     },
     classifiers=[
         "Framework :: Flask",
