@@ -1,11 +1,13 @@
+from typing import Any, Optional
+
 import sqlalchemy as sa
 from flask import g
 from geonature.core.gn_permissions.tools import get_scopes_by_action
 from pypnnomenclature.models import TNomenclatures
-from sqlalchemy import ForeignKey, or_, func
+from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, Unicode, or_, func
 from sqlalchemy.dialects.postgresql import JSONB, UUID as UUIDType
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy import func, select, exists
 from utils_flask_sqla.models import qfilter
 from utils_flask_sqla.serializers import serializable
@@ -19,39 +21,41 @@ class TAcquisitionFramework(db.Model):
     __tablename__ = "t_acquisition_frameworks"
     __table_args__ = {"schema": "gn_meta"}
 
-    id_acquisition_framework = DB.Column(DB.Integer, primary_key=True)
-    unique_acquisition_framework_id = DB.Column(
+    id_acquisition_framework: Mapped[int] = mapped_column(Integer, primary_key=True)
+    unique_acquisition_framework_id: Mapped[Any] = mapped_column(
         UUIDType(as_uuid=True), default=select(func.uuid_generate_v4())
     )
-    acquisition_framework_name = DB.Column(DB.Unicode(255))
-    acquisition_framework_desc = DB.Column(DB.Unicode)
-    id_nomenclature_territorial_level = DB.Column(
-        DB.Integer,
+    acquisition_framework_name: Mapped[str] = mapped_column(Unicode(255))
+    acquisition_framework_desc: Mapped[str] = mapped_column(Unicode)
+    id_nomenclature_territorial_level: Mapped[Optional[int]] = mapped_column(
+        Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         default=lambda: TNomenclatures.get_default_nomenclature("NIVEAU_TERRITORIAL"),
     )
-    territory_desc = DB.Column(DB.Unicode)
-    keywords = DB.Column(DB.Unicode)
-    id_nomenclature_financing_type = DB.Column(
-        DB.Integer,
+    territory_desc: Mapped[Optional[str]] = mapped_column(Unicode)
+    keywords: Mapped[Optional[str]] = mapped_column(Unicode)
+    id_nomenclature_financing_type: Mapped[Optional[int]] = mapped_column(
+        Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         default=lambda: TNomenclatures.get_default_nomenclature("TYPE_FINANCEMENT"),
     )
-    target_description = DB.Column(DB.Unicode)
-    ecologic_or_geologic_target = DB.Column(DB.Unicode)
-    acquisition_framework_parent_id = DB.Column(DB.Integer)
-    is_parent = DB.Column(DB.Boolean)
-    opened = DB.Column(DB.Boolean, default=True)
-    id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
+    target_description: Mapped[Optional[str]] = mapped_column(Unicode)
+    ecologic_or_geologic_target: Mapped[Optional[str]] = mapped_column(Unicode)
+    acquisition_framework_parent_id: Mapped[Optional[int]] = mapped_column(Integer)
+    is_parent: Mapped[Optional[bool]] = mapped_column(Boolean)
+    opened: Mapped[Optional[bool]] = mapped_column(Boolean, default=True)
+    id_digitizer: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey(User.id_role))
 
-    acquisition_framework_start_date = DB.Column(DB.Date, default=datetime.datetime.utcnow)
-    acquisition_framework_end_date = DB.Column(DB.Date)
+    acquisition_framework_start_date: Mapped[datetime.date] = mapped_column(
+        Date, default=datetime.datetime.utcnow
+    )
+    acquisition_framework_end_date: Mapped[Optional[datetime.date]] = mapped_column(Date)
 
-    additional_data = db.Column(JSONB, nullable=True, server_default="{}")
+    additional_data: Mapped[Optional[Any]] = mapped_column(JSONB, server_default="{}")
 
-    meta_create_date = DB.Column(DB.DateTime)
-    meta_update_date = DB.Column(DB.DateTime)
-    initial_closing_date = DB.Column(DB.DateTime)
+    meta_create_date: Mapped[datetime.datetime] = mapped_column(DateTime)
+    meta_update_date: Mapped[Optional[datetime.datetime]] = mapped_column(DateTime)
+    initial_closing_date: Mapped[Optional[datetime.datetime]] = mapped_column(DateTime)
 
     creator = DB.relationship(User, lazy="joined")  # = digitizer
     nomenclature_territorial_level = DB.relationship(

@@ -387,8 +387,10 @@ def datasetHandler(dataset, data):
         only=["cor_dataset_actor", "modules", "cor_objectifs", "cor_territories"],
         unknown=EXCLUDE,
     )
+    # a dataset already having an id_dataset is being updated: allow partial payloads
+    is_update = dataset.id_dataset is not None
     try:
-        dataset = datasetSchema.load(data, instance=dataset)
+        dataset = datasetSchema.load(data, instance=dataset, partial=is_update)
     except ValidationError as error:
         raise BadRequest(error.messages)
 
@@ -765,7 +767,8 @@ def acquisitionFrameworkHandler(request, *, acquisition_framework):
 
     # 🔎 Récupération des données brutes du body
 
-    if acquisition_framework.id_acquisition_framework is not None:
+    is_update = acquisition_framework.id_acquisition_framework is not None
+    if is_update:
         user_cruved = get_scopes_by_action(module_code="METADATA")
 
         # verification des droits d'édition pour le acquisition framework
@@ -784,7 +787,7 @@ def acquisitionFrameworkHandler(request, *, acquisition_framework):
     )
     try:
         acquisition_framework = acquisitionFrameworkSchema.load(
-            request.get_json(), instance=acquisition_framework
+            request.get_json(), instance=acquisition_framework, partial=is_update
         )
     except ValidationError as error:
         log.exception(error)
