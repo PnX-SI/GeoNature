@@ -111,10 +111,8 @@ const routes: Routes = [
     ObserverSheetService,
     ObserverSheetRouteService,
     TaxonSheetRouteService,
-  ],
-    RouteService,
     SyntheseStoreService,
     SyntheseCriteriaService,
-  ]
+  ],
 })
 export class SyntheseModule {}
