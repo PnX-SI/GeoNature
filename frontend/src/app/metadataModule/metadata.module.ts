@@ -34,6 +34,7 @@ import { AssociatedAfCardListComponent } from '@geonature/metadataModule/af/asso
 import { PublicationAssociateButtonComponent } from '@geonature/metadataModule/publications/publication-associate-button.component';
 import { PublicationAssociationModalComponent } from '@geonature/metadataModule/publications/publication-association-modal.component';
 import { AssociatedPublicationsCardListComponent } from '@geonature/metadataModule/publications/associated-publications-card-list.component';
+import { PublicationDisassociateButtonComponent } from '@geonature/metadataModule/publications/disassociate-publication-button.component';
 const routes: Routes = [
   { path: '', component: MetadataComponent },
   { path: 'dataset', component: DatasetFormComponent },
@@ -103,6 +104,7 @@ export class MetadataPaginator extends MatPaginatorIntl {
     PublicationAssociateButtonComponent,
     PublicationAssociationModalComponent,
     AssociatedPublicationsCardListComponent,
+    PublicationDisassociateButtonComponent,
   ],
   providers: [
     MetadataService,

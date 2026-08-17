@@ -1,6 +1,5 @@
 {
   "Home": "Home",
-
   "LanguageSelection": "Choose the interface language",
   "Language": "Language",
   "Languages": "Languages",
@@ -45,7 +44,8 @@
     "DownloadData": "Download data",
     "Copy": "Copy",
     "Clear": "Clear",
-    "Associate": "Associate"
+    "Associate": "Associate",
+    "Disassociate": "Disassociate"
   },
   "Messages": {
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire"
@@ -305,6 +305,7 @@
     "Actions": {
       "AddDataset": "Add a dataset",
       "AddAF": "Add an acquisition framework",
+      "HandlePublications": "Handle publications",
       "SubmitAF": "Submit the acquisition framework",
       "CloseAF": "Close this acquisition framework",
       "OpenAF": "Open this acquisition framework",
@@ -328,7 +329,7 @@
     "Stakeholders": "Stakeholders",
     "DatasetName": "Dataset name",
     "AFName": "Acquisition framework name",
-    "CountObservations": "Number of observations",
+    "DataAmount": "Amount of data",
     "StakeholderOrganization": "Stakeholder (organization)",
     "DataSources": "Data sources",
     "DescriptiveForm": "Descriptive form",
@@ -482,6 +483,7 @@
       "LinkedPublication": "Linked Publications",
       "NoLinkedPublication": "No linked publication",
       "AssociateToPublication": "Associate to a publication",
+      "ConfirmDisassociate": "Are you sure you want to disassociate this publication ?",
       "ExternalLink": {
         "Title": "External Redirect",
         "Warning": "Warning: This external link may redirect you to a third-party site and expose you to security risks.",
@@ -493,7 +495,13 @@
         "LinkedDatasets": "Dataset are linked to this publication",
         "LinkedAcquisitionFrameworks": "Acquisition frameworks are linked to this publication",
         "SimilarReferencesWarning": "Publication with simlar references already exists",
-        "ExactMatchExists": "Publication with the same reference already exists"
+        "ExactMatchExists": "Publication with the same reference already exists",
+        "DisassociationFailed": "Disassociation failed"
+      },
+      "Messages": {
+        "PublicationUpdated": "Publication updated",
+        "PublicationCreated": "Publication created",
+        "Disassociated": "Publication disassociated successfully"
       }
     }
   },
