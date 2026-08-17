@@ -18,8 +18,8 @@ envsubst '${USER}' < "${BASE_DIR}/install/assets/tmpfiles-geonature.conf" | sudo
 sudo systemd-tmpfiles --create /etc/tmpfiles.d/geonature.conf
 
 echo "Installation des fichiers de service systemd…"
-envsubst '${USER} ${BASE_DIR}' < "${BASE_DIR}/install/assets/geonature.service" | sudo tee /etc/systemd/system/geonature.service
-envsubst '${USER} ${BASE_DIR}' < "${BASE_DIR}/install/assets/geonature-worker.service" | sudo tee /etc/systemd/system/geonature-worker.service
+envsubst '${USER} ${BASE_DIR} ${VENV_PATH}' < "${BASE_DIR}/install/assets/geonature.service" | sudo tee /etc/systemd/system/geonature.service
+envsubst '${USER} ${BASE_DIR} ${VENV_PATH}' < "${BASE_DIR}/install/assets/geonature-worker.service" | sudo tee /etc/systemd/system/geonature-worker.service
 cat "${BASE_DIR}/install/assets/geonature-reload.service" | sudo tee /etc/systemd/system/geonature-reload.service
 envsubst '${BASE_DIR}' < "${BASE_DIR}/install/assets/geonature-reload@.path" | sudo tee /etc/systemd/system/geonature-reload@.path
 sudo mkdir -p /etc/systemd/system-generators/
