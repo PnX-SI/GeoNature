@@ -1,0 +1,24 @@
+<div class="card-body associated-list">
+  <table *ngIf="publications?.length">
+    <tr *ngFor="let publication of publications">
+      <td>
+        <a
+          [routerLink]="['/metadata/publication_detail', publication.id_publication]"
+          class="text-dark"
+        >
+          {{ publication.publication_reference }}
+        </a>
+        <div>
+          <small>{{ publication.unique_publication_id }}</small>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <div
+    *ngIf="!publications?.length"
+    class="text-muted"
+  >
+    {{ 'MetaData.PublicationsList.NoLinkedPublication' | translate }}
+  </div>
+</div>

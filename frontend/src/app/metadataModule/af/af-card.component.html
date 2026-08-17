@@ -357,6 +357,17 @@
         <pnx-associated-dataset-card-list
           [datasets]="af?.datasets"
         ></pnx-associated-dataset-card-list>
+        <div class="card-header d-flex justify-content-between">
+          <h3>{{ 'MetaData.PublicationsList.LinkedPublication' | translate }}</h3>
+          <pnx-publication-associate-button
+            [elementId]="af?.id_acquisition_framework"
+            [from]="'AcquisitionFramework'"
+            [to]="'Publication'"
+          ></pnx-publication-associate-button>
+        </div>
+        <pnx-associated-publication-card-list
+          [publications]="af?.publications"
+        ></pnx-associated-publication-card-list>
       </div>
     </div>
   </div>

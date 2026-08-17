@@ -1,5 +1,7 @@
 import { Cruved } from '@geonature/modules/imports/models/cruved.model';
 
+export type Association = 'Publication' | 'AcquisitionFramework' | 'Dataset';
+
 export interface Publication {
   id_publication: number;
   publication_reference: string;

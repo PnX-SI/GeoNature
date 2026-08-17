@@ -96,7 +96,7 @@ class TAcquisitionFramework(db.Model):
         backref=DB.backref("acquisition_framework"),
     )
 
-    cor_publications = DB.relationship(
+    publications = DB.relationship(
         "TDatatypePublication",
         secondary=cor_acquisition_framework_publication,
         backref=DB.backref("acquisition_frameworks", lazy="select"),

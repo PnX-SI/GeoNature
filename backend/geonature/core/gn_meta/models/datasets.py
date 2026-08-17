@@ -135,7 +135,7 @@ class TDatasets(db.Model):
         backref=DB.backref("actor_dataset"),
     )
 
-    cor_publications = DB.relationship(
+    publications = DB.relationship(
         "TDatatypePublication",
         secondary=cor_dataset_publication,
         backref=DB.backref("datasets", lazy="select"),

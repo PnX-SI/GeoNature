@@ -44,7 +44,8 @@
     "PDFExport": "Export a PDF",
     "DownloadData": "Download data",
     "Copy": "Copy",
-    "Clear": "Clear"
+    "Clear": "Clear",
+    "Associate": "Associate"
   },
   "Messages": {
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire"
@@ -455,6 +456,7 @@
     "PublicationsList": {
       "Title": "Publications Catalog",
       "Publication": "Publication",
+      "Publications": "Publications",
       "Reference": "Reference",
       "URL": "URL",
       "Type": "Publication Type",
@@ -464,6 +466,12 @@
       "NoURL": "No URL available",
       "Create": "Create",
       "ConfirmDelete": "Are you sure you want to delete this publication ?",
+      "SeePublication": "See publication",
+      "LinkedDataset": "Linked dataset",
+      "LinkedAF": "Linked AF",
+      "LinkedPublication": "Linked Publications",
+      "NoLinkedPublication": "No linked publication",
+      "AssociateToPublication": "Associate to a publication",
       "ExternalLink": {
         "Title": "External Redirect",
         "Warning": "Warning: This external link may redirect you to a third-party site and expose you to security risks.",
