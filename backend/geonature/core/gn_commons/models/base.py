@@ -3,12 +3,26 @@ Modèles du schéma gn_commons
 """
 
 import os
+from typing import Any, Optional
+from datetime import datetime
 from pathlib import Path
 from collections import defaultdict
 
 from flask import current_app
-from sqlalchemy import ForeignKey, text
-from sqlalchemy.orm import relationship, aliased
+from sqlalchemy import (
+    TIMESTAMP,
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    Table,
+    Unicode,
+    false,
+    text,
+)
+from sqlalchemy.orm import relationship, aliased, Mapped, mapped_column
 from sqlalchemy.sql import select, func
 from sqlalchemy.dialects.postgresql import UUID
 from geoalchemy2 import Geometry
@@ -25,25 +39,26 @@ from geonature.utils.env import DB
 class BibTablesLocation(DB.Model):
     __tablename__ = "bib_tables_location"
     __table_args__ = {"schema": "gn_commons"}
-    id_table_location = DB.Column(DB.Integer, primary_key=True)
-    table_desc = DB.Column(DB.Unicode)
-    schema_name = DB.Column(DB.Unicode)
-    table_name = DB.Column(DB.Unicode)
-    pk_field = DB.Column(DB.Unicode)
-    uuid_field_name = DB.Column(DB.Unicode)
+    id_table_location: Mapped[int] = mapped_column(Integer, primary_key=True)
+    table_desc: Mapped[Optional[str]] = mapped_column(Unicode)
+    schema_name: Mapped[str] = mapped_column(Unicode)
+    table_name: Mapped[str] = mapped_column(Unicode)
+    pk_field: Mapped[str] = mapped_column(Unicode)
+    uuid_field_name: Mapped[str] = mapped_column(Unicode)
 
 
-cor_module_dataset = DB.Table(
+cor_module_dataset = Table(
     "cor_module_dataset",
-    DB.Column(
+    DB.metadata,
+    Column(
         "id_module",
-        DB.Integer,
+        Integer,
         ForeignKey("gn_commons.t_modules.id_module"),
         primary_key=True,
     ),
-    DB.Column(
+    Column(
         "id_dataset",
-        DB.Integer,
+        Integer,
         ForeignKey("gn_meta.t_datasets.id_dataset"),
         primary_key=True,
     ),
@@ -55,13 +70,13 @@ cor_module_dataset = DB.Table(
 class CorModuleDataset(DB.Model):
     __tablename__ = "cor_module_dataset"
     __table_args__ = {"schema": "gn_commons", "extend_existing": True}
-    id_module = DB.Column(
-        DB.Integer,
+    id_module: Mapped[int] = mapped_column(
+        Integer,
         ForeignKey("gn_commons.t_modules.id_module"),
         primary_key=True,
     )
-    id_dataset = DB.Column(
-        DB.Integer,
+    id_dataset: Mapped[int] = mapped_column(
+        Integer,
         ForeignKey("gn_meta.t_datasets.id_dataset"),
         primary_key=True,
     )
@@ -89,31 +104,33 @@ class TModules(DB.Model):
         def __missing__(self, key):
             return self["base"]
 
-    type = DB.Column(DB.Unicode, nullable=False, server_default="base")
+    type: Mapped[str] = mapped_column(Unicode, server_default="base")
     __mapper_args__ = {
         "polymorphic_on": "type",
         "polymorphic_identity": "base",
         "_polymorphic_map": base_defaultdict(),
     }
 
-    id_module = DB.Column(DB.Integer, primary_key=True)
-    module_code = DB.Column(DB.Unicode)
-    module_label = DB.Column(DB.Unicode)
-    module_picto = DB.Column(DB.Unicode)
-    module_desc = DB.Column(DB.Unicode)
-    module_group = DB.Column(DB.Unicode)
-    module_path = DB.Column(DB.Unicode)
-    module_external_url = DB.Column(DB.Unicode)
-    module_target = DB.Column(DB.Unicode)
-    module_comment = DB.Column(DB.Unicode)
-    active_frontend = DB.Column(DB.Boolean)
-    active_backend = DB.Column(DB.Boolean)
-    support_additional_fields = DB.Column(DB.Boolean)
-    module_doc_url = DB.Column(DB.Unicode)
-    module_order = DB.Column(DB.Integer)
-    ng_module = DB.Column(DB.Unicode(length=500))
-    meta_create_date = DB.Column(DB.DateTime)
-    meta_update_date = DB.Column(DB.DateTime)
+    id_module: Mapped[int] = mapped_column(Integer, primary_key=True)
+    module_code: Mapped[str] = mapped_column(Unicode)
+    module_label: Mapped[str] = mapped_column(Unicode)
+    module_picto: Mapped[Optional[str]] = mapped_column(Unicode)
+    module_desc: Mapped[Optional[str]] = mapped_column(Unicode)
+    module_group: Mapped[Optional[str]] = mapped_column(Unicode)
+    module_path: Mapped[Optional[str]] = mapped_column(Unicode)
+    module_external_url: Mapped[Optional[str]] = mapped_column(Unicode)
+    module_target: Mapped[Optional[str]] = mapped_column(Unicode)
+    module_comment: Mapped[Optional[str]] = mapped_column(Unicode)
+    active_frontend: Mapped[bool] = mapped_column(Boolean)
+    active_backend: Mapped[bool] = mapped_column(Boolean)
+    module_doc_url: Mapped[Optional[str]] = mapped_column(Unicode)
+    module_order: Mapped[Optional[int]] = mapped_column(Integer)
+    ng_module: Mapped[Optional[str]] = mapped_column(Unicode(length=500))
+    meta_create_date: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    meta_update_date: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    support_additional_fields: Mapped[Optional[bool]] = mapped_column(
+        Boolean, server_default=false()
+    )
 
     objects = DB.relationship(
         "PermObject", secondary=lambda: _resolve_import_cor_object_module(), backref="modules"
@@ -128,31 +145,33 @@ class TModules(DB.Model):
 class TMedias(DB.Model):
     __tablename__ = "t_medias"
     __table_args__ = {"schema": "gn_commons"}
-    id_media = DB.Column(DB.Integer, primary_key=True)
-    id_nomenclature_media_type = DB.Column(
-        DB.Integer, ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature")
+    id_media: Mapped[int] = mapped_column(Integer, primary_key=True)
+    id_nomenclature_media_type: Mapped[int] = mapped_column(
+        Integer, ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature")
     )
-    id_table_location = DB.Column(
-        DB.Integer, ForeignKey("gn_commons.bib_tables_location.id_table_location")
+    id_table_location: Mapped[int] = mapped_column(
+        Integer, ForeignKey("gn_commons.bib_tables_location.id_table_location")
     )
-    unique_id_media = DB.Column(UUID(as_uuid=True), default=select(func.uuid_generate_v4()))
-    uuid_attached_row = DB.Column(UUID(as_uuid=True))
-    title_fr = DB.Column(DB.Unicode)
-    title_en = DB.Column(DB.Unicode)
-    title_it = DB.Column(DB.Unicode)
-    title_es = DB.Column(DB.Unicode)
-    title_de = DB.Column(DB.Unicode)
-    media_url = DB.Column(DB.Unicode)
-    media_path = DB.Column(DB.Unicode)
-    author = DB.Column(DB.Unicode)
-    description_fr = DB.Column(DB.Unicode)
-    description_en = DB.Column(DB.Unicode)
-    description_it = DB.Column(DB.Unicode)
-    description_es = DB.Column(DB.Unicode)
-    description_de = DB.Column(DB.Unicode)
-    is_public = DB.Column(DB.Boolean, default=True)
-    meta_create_date = DB.Column(DB.DateTime)
-    meta_update_date = DB.Column(DB.DateTime)
+    unique_id_media: Mapped[Any] = mapped_column(
+        UUID(as_uuid=True), default=select(func.uuid_generate_v4())
+    )
+    uuid_attached_row: Mapped[Optional[Any]] = mapped_column(UUID(as_uuid=True))
+    title_fr: Mapped[Optional[str]] = mapped_column(Unicode)
+    title_en: Mapped[Optional[str]] = mapped_column(Unicode)
+    title_it: Mapped[Optional[str]] = mapped_column(Unicode)
+    title_es: Mapped[Optional[str]] = mapped_column(Unicode)
+    title_de: Mapped[Optional[str]] = mapped_column(Unicode)
+    media_url: Mapped[Optional[str]] = mapped_column(Unicode)
+    media_path: Mapped[Optional[str]] = mapped_column(Unicode)
+    author: Mapped[Optional[str]] = mapped_column(Unicode)
+    description_fr: Mapped[Optional[str]] = mapped_column(Unicode)
+    description_en: Mapped[Optional[str]] = mapped_column(Unicode)
+    description_it: Mapped[Optional[str]] = mapped_column(Unicode)
+    description_es: Mapped[Optional[str]] = mapped_column(Unicode)
+    description_de: Mapped[Optional[str]] = mapped_column(Unicode)
+    is_public: Mapped[bool] = mapped_column(Boolean, default=True)
+    meta_create_date: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    meta_update_date: Mapped[Optional[datetime]] = mapped_column(DateTime)
 
     @staticmethod
     def base_dir():
@@ -196,12 +215,14 @@ class TMedias(DB.Model):
 class TParameters(DB.Model):
     __tablename__ = "t_parameters"
     __table_args__ = {"schema": "gn_commons"}
-    id_parameter = DB.Column(DB.Integer, primary_key=True)
-    id_organism = DB.Column(DB.Integer, ForeignKey("utilisateurs.bib_organismes.id_organisme"))
-    parameter_name = DB.Column(DB.Unicode)
-    parameter_desc = DB.Column(DB.Unicode)
-    parameter_value = DB.Column(DB.Unicode)
-    parameter_extra_value = DB.Column(DB.Unicode)
+    id_parameter: Mapped[int] = mapped_column(Integer, primary_key=True)
+    id_organism: Mapped[Optional[int]] = mapped_column(
+        Integer, ForeignKey("utilisateurs.bib_organismes.id_organisme")
+    )
+    parameter_name: Mapped[str] = mapped_column(Unicode)
+    parameter_desc: Mapped[Optional[str]] = mapped_column(Unicode)
+    parameter_value: Mapped[str] = mapped_column(Unicode)
+    parameter_extra_value: Mapped[Optional[str]] = mapped_column(Unicode)
 
 
 @serializable
@@ -209,12 +230,12 @@ class TValidations(DB.Model):
     __tablename__ = "t_validations"
     __table_args__ = {"schema": "gn_commons"}
 
-    id_validation = DB.Column(DB.Integer, primary_key=True)
-    uuid_attached_row = DB.Column(
+    id_validation: Mapped[int] = mapped_column(Integer, primary_key=True)
+    uuid_attached_row: Mapped[Any] = mapped_column(
         UUID(as_uuid=True), ForeignKey("gn_synthese.synthese.unique_id_sinp")
     )
-    id_nomenclature_valid_status = DB.Column(
-        DB.Integer,
+    id_nomenclature_valid_status: Mapped[Optional[int]] = mapped_column(
+        Integer,
         ForeignKey(TNomenclatures.id_nomenclature),
     )
     nomenclature_valid_status = relationship(
@@ -222,12 +243,13 @@ class TValidations(DB.Model):
         foreign_keys=[id_nomenclature_valid_status],
         lazy="joined",  # FIXME: remove and manually join when needed
     )
-    id_validator = DB.Column(DB.Integer, ForeignKey(User.id_role))
+    id_validator: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey(User.id_role))
     validator_role = DB.relationship(User)
-    validation_auto = DB.Column(DB.Boolean)
-    validation_comment = DB.Column(DB.Unicode)
-    validation_date = DB.Column(DB.TIMESTAMP, server_default=FetchedValue())
-    validation_auto = DB.Column(DB.Boolean)
+    validation_auto: Mapped[bool] = mapped_column(Boolean)
+    validation_comment: Mapped[Optional[str]] = mapped_column(Unicode)
+    validation_date: Mapped[Optional[datetime]] = mapped_column(
+        TIMESTAMP, server_default=FetchedValue()
+    )
     # FIXME: remove and use nomenclature_valid_status
     validation_label = DB.relationship(
         TNomenclatures,
@@ -265,12 +287,12 @@ last_validation = aliased(TValidations, last_validation_query)
 class VLatestValidations(DB.Model):
     __tablename__ = "v_latest_validation"
     __table_args__ = {"schema": "gn_commons"}
-    id_validation = DB.Column(DB.Integer, primary_key=True)
-    uuid_attached_row = DB.Column(UUID(as_uuid=True))
-    id_nomenclature_valid_status = DB.Column(DB.Integer)
-    id_validator = DB.Column(DB.Integer)
-    validation_comment = DB.Column(DB.Unicode)
-    validation_date = DB.Column(DB.DateTime)
+    id_validation: Mapped[int] = mapped_column(Integer, primary_key=True)
+    uuid_attached_row: Mapped[Optional[Any]] = mapped_column(UUID(as_uuid=True))
+    id_nomenclature_valid_status: Mapped[Optional[int]] = mapped_column(Integer)
+    id_validator: Mapped[Optional[int]] = mapped_column(Integer)
+    validation_comment: Mapped[Optional[str]] = mapped_column(Unicode)
+    validation_date: Mapped[Optional[datetime]] = mapped_column(DateTime)
 
 
 @serializable
@@ -278,25 +300,25 @@ class THistoryActions(DB.Model):
     __tablename__ = "t_history_actions"
     __table_args__ = {"schema": "gn_commons"}
 
-    id_history_action = DB.Column(DB.Integer, primary_key=True)
-    id_table_location = DB.Column(DB.Integer)
-    uuid_attached_row = DB.Column(UUID(as_uuid=True))
-    operation_type = DB.Column(DB.Unicode)
-    operation_date = DB.Column(DB.DateTime)
-    table_content = DB.Column(DB.Unicode)
+    id_history_action: Mapped[int] = mapped_column(Integer, primary_key=True)
+    id_table_location: Mapped[int] = mapped_column(Integer)
+    uuid_attached_row: Mapped[Any] = mapped_column(UUID(as_uuid=True))
+    operation_type: Mapped[Optional[str]] = mapped_column(Unicode)
+    operation_date: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    table_content: Mapped[Optional[str]] = mapped_column(Unicode)
 
 
 @serializable
 class TMobileApps(DB.Model):
     __tablename__ = "t_mobile_apps"
     __table_args__ = {"schema": "gn_commons"}
-    id_mobile_app = DB.Column(DB.Integer, primary_key=True)
-    app_code = DB.Column(DB.Unicode)
-    relative_path_apk = DB.Column(DB.Unicode)
-    url_apk = DB.Column(DB.Unicode)
-    url_settings = DB.Column(DB.Unicode)
-    package = DB.Column(DB.Unicode)
-    version_code = DB.Column(DB.Unicode)
+    id_mobile_app: Mapped[int] = mapped_column(Integer, primary_key=True)
+    app_code: Mapped[Optional[str]] = mapped_column(Unicode)
+    relative_path_apk: Mapped[Optional[str]] = mapped_column(Unicode)
+    url_apk: Mapped[Optional[str]] = mapped_column(Unicode)
+    url_settings: Mapped[Optional[str]] = mapped_column(Unicode)
+    package: Mapped[Optional[str]] = mapped_column(Unicode)
+    version_code: Mapped[Optional[str]] = mapped_column(Unicode)
 
 
 @serializable
@@ -304,41 +326,44 @@ class TMobileApps(DB.Model):
 class TPlaces(DB.Model):
     __tablename__ = "t_places"
     __table_args__ = {"schema": "gn_commons"}
-    id_place = DB.Column(DB.Integer, primary_key=True)
-    id_role = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
+    id_place: Mapped[int] = mapped_column(Integer, primary_key=True)
+    id_role: Mapped[int] = mapped_column(Integer, ForeignKey("utilisateurs.t_roles.id_role"))
     role = relationship(User)
-    place_name = DB.Column(DB.String)
-    place_geom = DB.Column(Geometry("GEOMETRY", 4326))
+    place_name: Mapped[Optional[str]] = mapped_column(String)
+    place_geom: Mapped[Optional[Any]] = mapped_column(Geometry("GEOMETRY", 4326))
 
 
 @serializable
 class BibWidgets(DB.Model):
     __tablename__ = "bib_widgets"
     __table_args__ = {"schema": "gn_commons"}
-    id_widget = DB.Column(DB.Integer, primary_key=True)
-    widget_name = DB.Column(DB.String, nullable=False)
+    id_widget: Mapped[int] = mapped_column(Integer, primary_key=True)
+    widget_name: Mapped[str] = mapped_column(String)
 
     def __str__(self):
         return self.widget_name.capitalize()
 
 
-cor_field_object = DB.Table(
+cor_field_object = Table(
     "cor_field_object",
-    DB.Column("id_field", DB.Integer, DB.ForeignKey("gn_commons.t_additional_fields.id_field")),
-    DB.Column("id_object", DB.Integer, DB.ForeignKey("gn_permissions.t_objects.id_object")),
+    DB.metadata,
+    Column("id_field", Integer, ForeignKey("gn_commons.t_additional_fields.id_field")),
+    Column("id_object", Integer, ForeignKey("gn_permissions.t_objects.id_object")),
     schema="gn_commons",
 )
 
-cor_field_module = DB.Table(
+cor_field_module = Table(
     "cor_field_module",
-    DB.Column("id_field", DB.Integer, DB.ForeignKey("gn_commons.t_additional_fields.id_field")),
-    DB.Column("id_module", DB.Integer, DB.ForeignKey("gn_commons.t_modules.id_module")),
+    DB.metadata,
+    Column("id_field", Integer, ForeignKey("gn_commons.t_additional_fields.id_field")),
+    Column("id_module", Integer, ForeignKey("gn_commons.t_modules.id_module")),
     schema="gn_commons",
 )
 
-cor_field_dataset = DB.Table(
+cor_field_dataset = Table(
     "cor_field_dataset",
-    DB.Column("id_field", DB.Integer, DB.ForeignKey("gn_commons.t_additional_fields.id_field")),
-    DB.Column("id_dataset", DB.Integer, DB.ForeignKey("gn_meta.t_datasets.id_dataset")),
+    DB.metadata,
+    Column("id_field", Integer, ForeignKey("gn_commons.t_additional_fields.id_field")),
+    Column("id_dataset", Integer, ForeignKey("gn_meta.t_datasets.id_dataset")),
     schema="gn_commons",
 )

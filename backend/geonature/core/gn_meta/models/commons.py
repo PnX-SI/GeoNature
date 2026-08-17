@@ -1,6 +1,8 @@
 import datetime
-from sqlalchemy.orm import relationship
-from sqlalchemy import ForeignKey
+from typing import Optional
+
+from sqlalchemy.orm import relationship, Mapped, mapped_column
+from sqlalchemy import Column, ForeignKey, Integer, Table, Unicode
 from sqlalchemy.ext.hybrid import hybrid_property
 import marshmallow as ma
 
@@ -47,17 +49,18 @@ class MetadataFilterSchema(ma.Schema):
         return data
 
 
-cor_acquisition_framework_objectif = db.Table(
+cor_acquisition_framework_objectif = Table(
     "cor_acquisition_framework_objectif",
-    db.Column(
+    DB.metadata,
+    Column(
         "id_acquisition_framework",
-        db.Integer,
+        Integer,
         ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
         primary_key=True,
     ),
-    db.Column(
+    Column(
         "id_nomenclature_objectif",
-        db.Integer,
+        Integer,
         ForeignKey(TNomenclatures.id_nomenclature),
         primary_key=True,
     ),
@@ -65,17 +68,18 @@ cor_acquisition_framework_objectif = db.Table(
 )
 
 
-cor_acquisition_framework_voletsinp = db.Table(
+cor_acquisition_framework_voletsinp = Table(
     "cor_acquisition_framework_voletsinp",
-    db.Column(
+    DB.metadata,
+    Column(
         "id_acquisition_framework",
-        db.Integer,
+        Integer,
         ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
         primary_key=True,
     ),
-    db.Column(
+    Column(
         "id_nomenclature_voletsinp",
-        db.Integer,
+        Integer,
         ForeignKey(TNomenclatures.id_nomenclature),
         primary_key=True,
     ),
@@ -83,17 +87,18 @@ cor_acquisition_framework_voletsinp = db.Table(
 )
 
 
-cor_acquisition_framework_territory = db.Table(
+cor_acquisition_framework_territory = Table(
     "cor_acquisition_framework_territory",
-    db.Column(
+    DB.metadata,
+    Column(
         "id_acquisition_framework",
-        db.Integer,
+        Integer,
         ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
         primary_key=True,
     ),
-    db.Column(
+    Column(
         "id_nomenclature_territory",
-        db.Integer,
+        Integer,
         ForeignKey(TNomenclatures.id_nomenclature),
         primary_key=True,
     ),
@@ -105,15 +110,15 @@ cor_acquisition_framework_territory = db.Table(
 class CorAcquisitionFrameworkActor(DB.Model):
     __tablename__ = "cor_acquisition_framework_actor"
     __table_args__ = {"schema": "gn_meta"}
-    id_cafa = DB.Column(DB.Integer, primary_key=True)
-    id_acquisition_framework = DB.Column(
-        DB.Integer,
+    id_cafa: Mapped[int] = mapped_column(Integer, primary_key=True)
+    id_acquisition_framework: Mapped[int] = mapped_column(
+        Integer,
         ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
     )
-    id_role = DB.Column(DB.Integer, ForeignKey(User.id_role))
-    id_organism = DB.Column(DB.Integer, ForeignKey(Organisme.id_organisme))
-    id_nomenclature_actor_role = DB.Column(
-        DB.Integer,
+    id_role: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey(User.id_role))
+    id_organism: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey(Organisme.id_organisme))
+    id_nomenclature_actor_role: Mapped[int] = mapped_column(
+        Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         default=lambda: TNomenclatures.get_default_nomenclature("ROLE_ACTEUR"),
     )
@@ -139,13 +144,13 @@ class CorAcquisitionFrameworkActor(DB.Model):
 class CorDatasetActor(DB.Model):
     __tablename__ = "cor_dataset_actor"
     __table_args__ = {"schema": "gn_meta"}
-    id_cda = DB.Column(DB.Integer, primary_key=True)
-    id_dataset = DB.Column(DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"))
-    id_role = DB.Column(DB.Integer, ForeignKey(User.id_role))
-    id_organism = DB.Column(DB.Integer, ForeignKey(Organisme.id_organisme))
+    id_cda: Mapped[int] = mapped_column(Integer, primary_key=True)
+    id_dataset: Mapped[int] = mapped_column(Integer, ForeignKey("gn_meta.t_datasets.id_dataset"))
+    id_role: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey(User.id_role))
+    id_organism: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey(Organisme.id_organisme))
 
-    id_nomenclature_actor_role = DB.Column(
-        DB.Integer,
+    id_nomenclature_actor_role: Mapped[int] = mapped_column(
+        Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         default=lambda: TNomenclatures.get_default_nomenclature("ROLE_ACTEUR"),
     )
@@ -179,22 +184,26 @@ class CorDatasetProtocol(DB.Model):
     # TODO: replace with table used as secondary in relationships
     __tablename__ = "cor_dataset_protocol"
     __table_args__ = {"schema": "gn_meta"}
-    id_cdp = DB.Column(DB.Integer, primary_key=True)
-    id_dataset = DB.Column(DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"))
-    id_protocol = DB.Column(DB.Integer, ForeignKey("gn_meta.sinp_datatype_protocols.id_protocol"))
+    id_dataset: Mapped[int] = mapped_column(
+        Integer, ForeignKey("gn_meta.t_datasets.id_dataset"), primary_key=True
+    )
+    id_protocol: Mapped[int] = mapped_column(
+        Integer, ForeignKey("gn_meta.sinp_datatype_protocols.id_protocol"), primary_key=True
+    )
 
 
-cor_dataset_objectif = db.Table(
+cor_dataset_objectif = Table(
     "cor_dataset_objectif",
-    db.Column(
+    DB.metadata,
+    Column(
         "id_dataset",
-        db.Integer,
+        Integer,
         ForeignKey("gn_meta.t_datasets.id_dataset"),
         primary_key=True,
     ),
-    db.Column(
+    Column(
         "id_nomenclature_objectif",
-        db.Integer,
+        Integer,
         ForeignKey(TNomenclatures.id_nomenclature),
         primary_key=True,
     ),
@@ -202,17 +211,18 @@ cor_dataset_objectif = db.Table(
 )
 
 
-cor_dataset_territory = db.Table(
+cor_dataset_territory = Table(
     "cor_dataset_territory",
-    db.Column(
+    DB.metadata,
+    Column(
         "id_dataset",
-        db.Integer,
+        Integer,
         ForeignKey("gn_meta.t_datasets.id_dataset"),
         primary_key=True,
     ),
-    db.Column(
+    Column(
         "id_nomenclature_territory",
-        db.Integer,
+        Integer,
         ForeignKey(TNomenclatures.id_nomenclature),
         primary_key=True,
     ),
@@ -224,10 +234,10 @@ cor_dataset_territory = db.Table(
 class TBibliographicReference(db.Model):
     __tablename__ = "t_bibliographical_references"
     __table_args__ = {"schema": "gn_meta"}
-    id_bibliographic_reference = DB.Column(DB.Integer, primary_key=True)
-    id_acquisition_framework = DB.Column(
-        DB.Integer,
+    id_bibliographic_reference: Mapped[int] = mapped_column(Integer, primary_key=True)
+    id_acquisition_framework: Mapped[int] = mapped_column(
+        Integer,
         ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
     )
-    publication_url = DB.Column(DB.Unicode)
-    publication_reference = DB.Column(DB.Unicode)
+    publication_url: Mapped[Optional[str]] = mapped_column(Unicode)
+    publication_reference: Mapped[str] = mapped_column(Unicode)
