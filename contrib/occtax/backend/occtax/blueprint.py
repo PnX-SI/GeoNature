@@ -48,10 +48,10 @@ from utils_flask_sqla_geo.generic import GenericTableGeo
 from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
 
-from occtax.commands import add_submodule_permissions
+from occtax.commands import create_duplicated_module
 
 blueprint = Blueprint("pr_occtax", __name__, cli_group="occtax")
-blueprint.cli.add_command(add_submodule_permissions)
+blueprint.cli.add_command(create_duplicated_module)
 
 log = logging.getLogger(__name__)
 

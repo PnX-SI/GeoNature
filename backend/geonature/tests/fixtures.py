@@ -120,13 +120,21 @@ def app(_app, _session):
     return _app
 
 
-def create_module(module_code, module_label, module_path, active_frontend, active_backend):
+def create_module(
+    module_code,
+    module_label,
+    module_path,
+    active_frontend,
+    active_backend,
+    support_additional_fields=True,
+):
     return TModules(
         module_code=module_code,
         module_label=module_label,
         module_path=module_path,
         active_frontend=active_frontend,
         active_backend=active_backend,
+        support_additional_fields=support_additional_fields,
     )
 
 
@@ -191,7 +199,7 @@ def module(users):
 @pytest.fixture(scope="class")
 def perm_object():
     with db.session.begin_nested():
-        new_object = PermObject(code_object="TEST_OBJECT")
+        new_object = PermObject(code_object="TEST_OBJECT", support_additional_fields=True)
         db.session.add(new_object)
     return new_object
 

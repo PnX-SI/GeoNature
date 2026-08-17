@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2.18.x
+
+### 🚀 Nouveautés
+
+### 🐛 Corrections
+
+- Suppression de la section de configuration `ADDITIONAL_FIELDS` et des variables de configuration `IMPLEMENTED_MODULES` et `IMPLEMENTED_MODULES`, maintenant géré en base de donnée (la migration alambic gère la rétro-compatibilité)
+
 ## 2.17.2 (2026-06-09)
 
 ### 🚀 Nouveautés

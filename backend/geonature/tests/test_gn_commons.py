@@ -577,8 +577,6 @@ class TestCommons:
 
     def test_additional_field_admin(self, app, users, module, perm_object):
         set_logged_user(self.client, users["admin_user"])
-        app.config["ADDITIONAL_FIELDS"]["IMPLEMENTED_MODULES"] = [module.module_code]
-        app.config["ADDITIONAL_FIELDS"]["IMPLEMENTED_OBJECTS"] = [perm_object.code_object]
         form_values = {
             "field_label": "pytest_valid",
             "field_name": "pytest_valid",
