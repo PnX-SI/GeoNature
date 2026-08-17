@@ -145,9 +145,7 @@ class CorDatasetActor(DB.Model):
     __tablename__ = "cor_dataset_actor"
     __table_args__ = {"schema": "gn_meta"}
     id_cda: Mapped[int] = mapped_column(Integer, primary_key=True)
-    id_dataset: Mapped[int] = mapped_column(
-        Integer, ForeignKey("gn_meta.t_datasets.id_dataset")
-    )
+    id_dataset: Mapped[int] = mapped_column(Integer, ForeignKey("gn_meta.t_datasets.id_dataset"))
     id_role: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey(User.id_role))
     id_organism: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey(Organisme.id_organisme))
 
