@@ -662,7 +662,7 @@ class TestOcctax:
         )
         permission_available = db.session.scalars(permission_available).all()
 
-        assert len(permission_available) == 6
+        assert len(permission_available) == 7
 
 
 @pytest.mark.usefixtures("client_class")
