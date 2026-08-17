@@ -142,7 +142,7 @@ class TDatasets(db.Model):
         backref=DB.backref("actor_dataset"),
     )
 
-    cor_publications = DB.relationship(
+    publications = DB.relationship(
         CorDatasetPublication,
         foreign_keys=[CorDatasetPublication.id_dataset],
         cascade="all,delete-orphan",

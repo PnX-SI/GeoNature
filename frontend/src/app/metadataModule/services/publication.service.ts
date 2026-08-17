@@ -176,4 +176,14 @@ export class PublicationsListService {
       })
     );
   }
+
+  associateDatasetToPublication(publication_id: number, dataset_id: number): Observable<any> {
+    const apiEndpoint = `${this._config.API_ENDPOINT}/meta/publication/associate_dataset`;
+    return this._http.post<any>(apiEndpoint, { publication_id, dataset_id });
+  }
+
+  associateAfToPublication(publication_id: number, af_id: number): Observable<any> {
+    const apiEndpoint = `${this._config.API_ENDPOINT}/meta/publication/associate_af`;
+    return this._http.post<any>(apiEndpoint, { publication_id, af_id });
+  }
 }

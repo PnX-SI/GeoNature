@@ -1,8 +1,8 @@
 .not-clickable {
-    cursor: not-allowed;
-    pointer-events: none;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
-::ng-deep .not-clickable>mat-pseudo-checkbox {
-    display: none!important;
+::ng-deep .not-clickable > mat-pseudo-checkbox {
+  display: none !important;
 }
