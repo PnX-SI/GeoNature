@@ -1464,6 +1464,335 @@ class TestGNMeta:
         )
         assert response.status_code == 500
 
+@pytest.mark.usefixtures("client_class", "temporary_transaction")
+class TestPublication:
+
+    def test_get_publications(self, users):
+        """Test getting list of publications"""
+        publications_url = url_for("gn_meta.get_publications")
+        response = self.client.get(publications_url)
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.get(publications_url)
+        assert response.status_code == 200
+        assert "items" in response.json
+        assert "total" in response.json
+        assert "page" in response.json
+
+    def test_get_publications_pagination(self, users):
+        """Test publications pagination"""
+        from geonature.core.gn_meta.models import TDatatypePublication
+
+        publications_url = url_for("gn_meta.get_publications")
+        set_logged_user(self.client, users["admin_user"])
+
+        for i in range(15):
+            pub = TDatatypePublication(
+                publication_reference=f"Test Publication {i}",
+                id_digitizer=users["admin_user"].id_role,
+            )
+            db.session.add(pub)
+        db.session.commit()
+
+        # Test default pagination (10 per page)
+        response = self.client.get(publications_url)
+        assert response.status_code == 200
+        data = response.json
+        assert len(data["items"]) <= 10
+        assert data["page"] == 1
+
+        # Test custom page size
+        response = self.client.get(f"{publications_url}?per_page=5")
+        assert response.status_code == 200
+        data = response.json
+        assert len(data["items"]) <= 5
+
+    def test_get_publications_search(self, users):
+        """Test searching publications"""
+        from geonature.core.gn_meta.models import TDatatypePublication
+
+        set_logged_user(self.client, users["admin_user"])
+
+        # Create test publications
+        pub1 = TDatatypePublication(
+            publication_reference="Unique Reference ABC",
+            id_digitizer=users["admin_user"].id_role,
+        )
+        pub2 = TDatatypePublication(
+            publication_reference="Another Publication",
+            id_digitizer=users["admin_user"].id_role,
+        )
+        db.session.add(pub1)
+        db.session.add(pub2)
+        db.session.commit()
+
+        publications_url = url_for("gn_meta.get_publications")
+        response = self.client.get(f"{publications_url}?search=Unique")
+        assert response.status_code == 200
+        results = [p["publication_reference"] for p in response.json["items"]]
+        assert "Unique Reference ABC" in results
+
+    def test_get_publication(self, users):
+        """Test getting a single publication"""
+        from geonature.core.gn_meta.models import TDatatypePublication
+
+        # Create a test publication
+        pub = TDatatypePublication(
+            publication_reference="Test Publication",
+            id_digitizer=users["admin_user"].id_role,
+        )
+        db.session.add(pub)
+        db.session.commit()
+
+        get_pub_url = url_for("gn_meta.get_publication", id_publication=pub.id_publication)
+
+        # Without authentication
+        response = self.client.get(get_pub_url)
+        assert response.status_code == Unauthorized.code
+
+        # With authentication
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.get(get_pub_url)
+        assert response.status_code == 200
+        assert response.json["publication_reference"] == "Test Publication"
+        assert response.json["id_publication"] == pub.id_publication
+
+    def test_create_publication(self, users):
+        """Test creating a publication"""
+        set_logged_user(self.client, users["admin_user"])
+
+        publication_data = {
+            "publication_reference": "New Publication",
+            "publication_url": "http://example.com",
+            "description_publication": "Test description",
+        }
+
+        response = self.client.post(
+            url_for("gn_meta.create_publication"),
+            json=publication_data,
+        )
+
+        assert response.status_code == 200
+        assert response.json["publication_reference"] == "New Publication"
+        assert "id_publication" in response.json
+
+    def test_create_publication_forbidden(self, users):
+        """Test that users without CRUVED:C cannot create publications"""
+        set_logged_user(self.client, users["noright_user"])
+
+        publication_data = {
+            "publication_reference": "New Publication",
+            "publication_url": "http://example.com",
+        }
+
+        response = self.client.post(
+            url_for("gn_meta.create_publication"),
+            json=publication_data,
+        )
+
+        assert response.status_code == Forbidden.code
+
+    def test_update_publication(self, users):
+        """Test updating a publication"""
+        from geonature.core.gn_meta.models import TDatatypePublication
+
+        set_logged_user(self.client, users["admin_user"])
+
+        # Create a test publication
+        pub = TDatatypePublication(
+            publication_reference="Original Name",
+            id_digitizer=users["admin_user"].id_role,
+        )
+        db.session.add(pub)
+        db.session.commit()
+
+        # Update it
+        updated_data = {
+            "publication_reference": "Updated Name",
+            "description_publication": "Updated description",
+        }
+
+        response = self.client.post(
+            url_for("gn_meta.update_publication", id_publication=pub.id_publication),
+            json=updated_data,
+        )
+
+        assert response.status_code == 200
+        assert response.json["publication_reference"] == "Updated Name"
+        assert response.json["description_publication"] == "Updated description"
+
+    def test_delete_publication(self, users):
+        """Test deleting a publication"""
+        from geonature.core.gn_meta.models import TDatatypePublication
+
+        set_logged_user(self.client, users["admin_user"])
+
+        # Create a test publication
+        pub = TDatatypePublication(
+            publication_reference="To Delete",
+            id_digitizer=users["admin_user"].id_role,
+        )
+        db.session.add(pub)
+        db.session.commit()
+        pub_id = pub.id_publication
+
+        # Delete it
+        response = self.client.delete(url_for("gn_meta.delete_publication", id_publication=pub_id))
+
+        assert response.status_code == 204
+
+        # Verify it's deleted
+        deleted_pub = db.session.get(TDatatypePublication, pub_id)
+        assert deleted_pub is None
+
+    def test_delete_publication_not_found(self, users):
+        """Test deleting a non-existent publication"""
+        set_logged_user(self.client, users["admin_user"])
+
+        response = self.client.delete(url_for("gn_meta.delete_publication", id_publication=99999))
+
+        assert response.status_code == NotFound.code
+
+    def test_associate_dataset_to_publication(self, users, datasets):
+        """Test associating a dataset to a publication"""
+        from geonature.core.gn_meta.models import TDatatypePublication
+
+        set_logged_user(self.client, users["admin_user"])
+        # Create a test publication
+        pub = TDatatypePublication(
+            publication_reference="Test Publication",
+            id_digitizer=users["admin_user"].id_role,
+        )
+        db.session.add(pub)
+        db.session.commit()
+
+        dataset = datasets["own_dataset"]
+
+        response = self.client.post(
+            url_for("gn_meta.associate_dataset_to_publication"),
+            json={
+                "publication_id": pub.id_publication,
+                "dataset_id": dataset.id_dataset,
+            },
+        )
+
+        assert response.status_code == 200
+        # Verify association
+        assert len(pub.datasets) == 1
+        assert pub.datasets[0].id_dataset == dataset.id_dataset
+
+    def test_disassociate_dataset_from_publication(self, users, datasets):
+        """Test disassociating a dataset from a publication"""
+        from geonature.core.gn_meta.models import TDatatypePublication
+
+        set_logged_user(self.client, users["admin_user"])
+
+        # Create a test publication and associate a dataset
+        pub = TDatatypePublication(
+            publication_reference="Test Publication",
+            id_digitizer=users["admin_user"].id_role,
+        )
+        dataset = datasets["own_dataset"]
+        pub.datasets.append(dataset)
+        db.session.add(pub)
+        db.session.commit()
+
+        # Disassociate
+        response = self.client.post(
+            url_for("gn_meta.disassociate_dataset_from_publication"),
+            json={
+                "publication_id": pub.id_publication,
+                "dataset_id": dataset.id_dataset,
+            },
+        )
+
+        assert response.status_code == 200
+        # Verify disassociation
+        assert len(pub.datasets) == 0
+
+    def test_associate_af_to_publication(self, users, acquisition_frameworks):
+        """Test associating an acquisition framework to a publication"""
+        from geonature.core.gn_meta.models import TDatatypePublication
+
+        set_logged_user(self.client, users["admin_user"])
+
+        # Create a test publication
+        pub = TDatatypePublication(
+            publication_reference="Test Publication",
+            id_digitizer=users["admin_user"].id_role,
+        )
+        db.session.add(pub)
+        db.session.commit()
+
+        af = acquisition_frameworks["own_af"]
+
+        response = self.client.post(
+            url_for("gn_meta.associate_af_to_publication"),
+            json={
+                "publication_id": pub.id_publication,
+                "af_id": af.id_acquisition_framework,
+            },
+        )
+
+        assert response.status_code == 200
+        # Verify association
+        assert len(pub.acquisition_frameworks) == 1
+        assert pub.acquisition_frameworks[0].id_acquisition_framework == af.id_acquisition_framework
+
+    def test_disassociate_af_from_publication(self, users, acquisition_frameworks):
+        """Test disassociating an acquisition framework from a publication"""
+        from geonature.core.gn_meta.models import TDatatypePublication
+
+        set_logged_user(self.client, users["admin_user"])
+
+        # Create a test publication and associate an AF
+        pub = TDatatypePublication(
+            publication_reference="Test Publication",
+            id_digitizer=users["admin_user"].id_role,
+        )
+        af = acquisition_frameworks["own_af"]
+        pub.acquisition_frameworks.append(af)
+        db.session.add(pub)
+        db.session.commit()
+
+        # Disassociate
+        response = self.client.post(
+            url_for("gn_meta.disassociate_af_from_publication"),
+            json={
+                "publication_id": pub.id_publication,
+                "af_id": af.id_acquisition_framework,
+            },
+        )
+
+        assert response.status_code == 200
+        # Verify disassociation
+        assert len(pub.acquisition_frameworks) == 0
+
+    def test_publication_permissions(self, app, users):
+        """Test publication instance permissions"""
+        from geonature.core.gn_meta.models import TDatatypePublication
+
+        pub = TDatatypePublication(
+            publication_reference="Test",
+            id_digitizer=users["user"].id_role,
+        )
+        db.session.add(pub)
+        db.session.commit()
+
+        with app.test_request_context(headers=logged_user_headers(users["user"])):
+            app.preprocess_request()
+            assert pub.has_instance_permission(0) == False
+            assert pub.has_instance_permission(1) == True
+            assert pub.has_instance_permission(2) == True
+            assert pub.has_instance_permission(3) == True
+
+        with app.test_request_context(headers=logged_user_headers(users["associate_user"])):
+            app.preprocess_request()
+            assert pub.has_instance_permission(0) == False
+            assert pub.has_instance_permission(1) == False
+            assert pub.has_instance_permission(2) == True
+            assert pub.has_instance_permission(3) == True
 
 @pytest.mark.usefixtures("client_class", "users", "datasets", "acquisition_frameworks")
 class TestRepository:
