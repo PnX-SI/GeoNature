@@ -160,7 +160,9 @@ class TestUtils:
         monkeypatch.setattr(
             "geonature.utils.module.is_alembic_branch_up_to_date", mock_is_alembic_branch_up_to_date
         )
-        assert not is_module_installed(python_module_name="gn_module_occhab")
+        assert not is_module_installed(
+            python_module_name="gn_module_occhab", check_if_all_revisions_have_been_applied=True
+        )
 
 
 pagination_schema = {

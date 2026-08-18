@@ -98,40 +98,19 @@
                     </p>
                 </div>
             </div>
-            <div class="etiquette">
-                <div class="etiquette-haut">
-                    <img
-                        class="logo-etiquette"
-                        src="{{url_for('static', filename='images/Habitat_icon.svg')}}"
-                        alt="habitat-icon"
-                    >
-                    <p class="titre-etiquette">Nombre d'habitats</p>
-                </div>
-                <div class="etiquette-bas">
-                    <p class="stat-etiquette">
-                        {% if data.stats: %}
-                        {{ data.stats["nb_habitats"]}}
-                        {% endif %}
-                    </p>
-                </div>
-            </div>
-            <div class="etiquette">
-                <div class="etiquette-haut">
-                    <img
-                        class="logo-etiquette"
-                        src="{{url_for('static', filename='images/Donnee_icon.svg')}}"
-                        alt="donnee-icon"
-                    >
-                    <p class="titre-etiquette">Nombre d'observations</p>
-                </div>
-                <div class="etiquette-bas">
-                    <p class="stat-etiquette">
-                        {% if data.stats: %}
-                        {{ data.stats["nb_observations"]}}
-                        {% endif %}
-                    </p>
-                </div>
-            </div>
+            {% for item, value in data.stats.dict_nb_obs.items() -%}
+                <div class="etiquette">
+                    <div class="etiquette-haut">
+                        <img class="logo-etiquette" src="{{url_for('static', filename='images/Donnee_icon.svg')}}" alt="habitat-icon">
+                        <p class="titre-etiquette">Nombre d'observations {{ item }}</p>
+                        </div>
+                        <div class="etiquette-bas">
+                            <p class="stat-etiquette">
+                            {{ value }}
+                            </p>
+                            </div>
+                            </div>
+            {%- endfor %}
         </div>
 
         <div class="description">

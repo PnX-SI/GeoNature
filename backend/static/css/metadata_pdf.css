@@ -85,6 +85,8 @@ div.titre {
   margin-top: 15px;
   margin-bottom: 15px;
   display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
 }
 
 .etiquette {

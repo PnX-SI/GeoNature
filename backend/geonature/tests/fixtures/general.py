@@ -53,7 +53,7 @@ from ref_geo.utils import get_local_srid
 from utils_flask_sqla.tests.utils import JSONClient, TestSession
 from werkzeug.datastructures import Headers
 
-from .utils import get_id_nomenclature
+from geonature.tests.utils import get_id_nomenclature
 
 
 class GeoNatureClient(JSONClient):
