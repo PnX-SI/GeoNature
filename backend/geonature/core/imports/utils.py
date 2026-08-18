@@ -659,7 +659,7 @@ def compute_bounding_box(
             ent_table = entity.get_destination_table()
             query = query.join(ent_table)
             or_where_clause.append(ent_table.c.id_import == imprt.id_import)
-        query.where(sa.or_(*or_where_clause))
+        query = query.where(sa.or_(*or_where_clause))
 
         # Merge with geom entity with an id_import equal to the current import
         query = sa.union(
