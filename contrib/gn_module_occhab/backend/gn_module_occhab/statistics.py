@@ -4,7 +4,7 @@ from sqlalchemy import func, select
 
 from geonature.utils.env import db
 from geonature.core.gn_meta.utils import AbstractMetadataStatistics
-from geonature.core.gn_meta.models import TAcquisitionFramework
+from geonature.core.gn_meta.models import TAcquisitionFramework, TDatasets
 from gn_module_occhab.models import OccurenceHabitat, Station
 
 
@@ -26,9 +26,11 @@ class MetadataStatistics(AbstractMetadataStatistics):
         return db.session.scalar(
             select(func.count(OccurenceHabitat.id_habitat))
             .join(OccurenceHabitat.station)
+            .join(TDatasets, TDatasets.id_dataset == Station.id_dataset)
             .join(
                 TAcquisitionFramework,
-                Station.id_dataset == TAcquisitionFramework.id_acquisition_framework,
+                TDatasets.id_acquisition_framework
+                == TAcquisitionFramework.id_acquisition_framework,
             )
             .where(TAcquisitionFramework.id_acquisition_framework == id_acquisition_framework)
         )
