@@ -16,7 +16,7 @@ from geonature.utils.utilstoml import load_and_validate_toml
 from geonature.utils.env import db, CONFIG_FILE
 from geonature.core.gn_commons.models import TModules
 
-from sqlalchemy import exists, select
+from sqlalchemy import select, text
 from sqlalchemy.exc import ProgrammingError
 
 
@@ -172,8 +172,11 @@ def exists_in_t_modules(module_code: str):
     """
     try:
         return db.session.execute(
-            exists(TModules).where(TModules.module_code == module_code).select()
-        ).scalar()
+            text(
+                "SELECT 1 WHERE EXISTS(SELECT m.module_code FROM gn_commons.t_modules m WHERE m.module_code = :module_code);"
+            ),
+            {"module_code": module_code},
+        )
     except ProgrammingError as e:
         db.session.rollback()
         if (
