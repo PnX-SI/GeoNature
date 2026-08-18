@@ -172,17 +172,15 @@ div.c {
   }
 }
 
-.head-card{
+.head-card {
   display: flex;
   justify-content: space-between;
   padding-left: 1em;
   padding-right: 1em;
 }
 
-#data-sources{
-
-
-  .ngx-datatable.material{
+#data-sources {
+  .ngx-datatable.material {
     box-shadow: none;
     border-bottom: 1px solid #efefef;
     border-top: 1px solid #efefef;
