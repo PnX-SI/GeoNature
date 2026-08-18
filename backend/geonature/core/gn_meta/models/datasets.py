@@ -380,9 +380,7 @@ class TDatasets(db.Model):
 
         from geonature.utils.module import is_module_installed
 
-        is_module_OCCHAB_installed = is_module_installed(
-            "gn_module_occhab", check_if_all_revisions_have_been_applied=False
-        )
+        is_module_OCCHAB_installed = is_module_installed("gn_module_occhab")
         if is_module_OCCHAB_installed:
             from gn_module_occhab.models import OccurenceHabitat, Station
 

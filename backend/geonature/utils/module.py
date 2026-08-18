@@ -192,7 +192,7 @@ def is_module_installed(
     python_module_name: str,
     migrations_dir: str = None,
     alembic_branch_name: str = None,
-    check_if_all_revisions_have_been_applied: bool = True,
+    check_if_all_revisions_have_been_applied: bool = False,
 ):
     """Is a GeoNature module installed.
 
