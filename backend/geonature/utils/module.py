@@ -171,7 +171,7 @@ def exists_in_t_modules(module_code: str):
         The code of the module (for ex. : SYNTHESE, OCCHAB, etc...)
     """
     try:
-        return db.session.execute(
+        return db.session.scalar(
             text(
                 "SELECT 1 WHERE EXISTS(SELECT m.module_code FROM gn_commons.t_modules m WHERE m.module_code = :module_code);"
             ),
@@ -247,6 +247,7 @@ def is_module_installed(
 
     # Verify if the module is registered in the database
     if not exists_in_t_modules(module_code):
+        print("daaaa")
         # Module not installed because not registered in the database
         return False
     if check_if_all_revisions_have_been_applied:
