@@ -119,18 +119,96 @@ div.c {
   margin-left: 5px;
 }
 
-#title-actions-block {
+.af-card-header {
   display: flex;
+  flex-flow: row wrap;
   justify-content: space-between;
   align-items: flex-start;
+
+  &__badges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
 }
 
-#dataset-title {
+.action-buttons {
   display: flex;
-  flex-direction: column;
-}
-#action-block {
-  display: flex;
+  flex-flow: row wrap;
   justify-content: flex-end;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.af-stat-badge {
+  display: inline-flex;
   align-items: center;
+  gap: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.5rem 0.8rem;
+  background-color: #f1f3f5;
+  border-color: #ced4da !important;
+  color: #212529;
+
+  img {
+    width: 1.25rem;
+    height: 1.25rem;
+    object-fit: contain;
+  }
+
+  &__value {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.1rem;
+    padding: 0.15rem 0.45rem;
+    border-radius: 999px;
+    background-color: #495057;
+    color: #fff;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+}
+
+.head-card{
+  display: flex;
+  justify-content: space-between;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+#data-sources{
+
+
+  .ngx-datatable.material{
+    box-shadow: none;
+    border-bottom: 1px solid #efefef;
+    border-top: 1px solid #efefef;
+    border-radius: 10px;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .a {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .af-stat-badge {
+    font-size: 1.2rem;
+    padding: 0.6rem 0.85rem;
+
+    img {
+      width: 2rem;
+      height: 2rem;
+    }
+
+    &__value {
+      min-width: 2.4rem;
+      font-size: 1rem;
+    }
+  }
 }
