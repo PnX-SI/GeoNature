@@ -214,13 +214,13 @@ Si vous avez téléchargé GeoNature zippé (via la procédure d'installation gl
 Installation du venv en dev
 ***************************
 
-Il est nécessaire d’installer les dépendances (sous-modules Git présent dans ``backend/dependencies``) en mode éditable afin de travailler avec la dernière version de celles-ci.
+Il est nécessaire d’installer les dépendances (sous-modules Git présent dans ``backend/dependencies``) en mode éditable afin de travailler avec la dernière version de celles-ci. Ceci est réalisé via le workspace ``uv`` déclaré dans le ``pyproject.toml`` racine (``[tool.uv.workspace]``/``[tool.uv.sources]``), qui fait pointer chaque sous-module vers son répertoire local sous ``backend/dependencies``.
 
 .. code-block:: console
 
   cd backend
   source venv/bin/activate
-  pip install -e .. -r requirements-dev.txt
+  uv sync --project .. --active --extra tests --extra lint
 
 
 Configuration des URLs de développement
@@ -1703,11 +1703,12 @@ Release
 Pour sortir une nouvelle version de GeoNature :
 
 - Faites les éventuelles Releases des dépendances (UsersHub, TaxHub, UsersHub-authentification-module, Nomenclature-api-module, RefGeo, Utils-Flask-SQLAlchemy, Utils-Flask-SQLAlchemy-Geo)
-- Assurez-vous que les sous-modules git de GeoNature pointent sur les bonnes versions des dépendances et que le ``requirements-dependencies.in`` a bien été mis à jour.
-- Regénérer les fichiers ``requirements.txt`` et ``requirements-dev.txt`` avec les commandes suivantes dans la plus petite version de python supportée par GeoNature
+- Assurez-vous que les sous-modules git de GeoNature pointent sur les bonnes versions des dépendances et que le ``backend/requirements.in`` a bien été mis à jour.
+- Regénérer ``uv.lock`` (résolution du workspace de dev) et ``backend/requirements.txt`` (résolution PyPI de prod) avec la commande suivante, ou directement via ``make compile_requirements``, dans la plus petite version de python supportée par GeoNature
   ::
-    pip-compile requirements.in > requirements.txt
-    pip-compile requirements-dev.in > requirements-dev.txt
+    uv lock
+    uv export --no-hashes --extra tests --extra lint -o backend/requirements-dev.txt > backend/requirements-dev.txt
+    cd backend && uv pip compile requirements.in -o requirements.txt
 
 - Mettez à jour la version de GeoNature et éventuellement des dépendances dans ``install/install_all/install_all.ini``
 - Complétez le fichier ``docs/CHANGELOG.md`` (en comparant les branches https://github.com/PnX-SI/GeoNature/compare/develop) et dater la version à sortir

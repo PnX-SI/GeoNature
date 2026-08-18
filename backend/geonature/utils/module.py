@@ -199,7 +199,8 @@ def is_module_installed(
     ----------
     python_module_name : str
         The name of the python module.
-        Can be found in the root file "setup.py" of the module repository.
+        Can be found in the root file "pyproject.toml" of the module repository
+        (under the "[project.entry-points.gn_module]" table).
         Examples:
             - "gn_module_occhab"
             - "occtax"

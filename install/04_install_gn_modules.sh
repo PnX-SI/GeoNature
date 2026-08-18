@@ -9,7 +9,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 cd "${BASE_DIR}"
 
 echo "Activation du virtual env"
-source backend/venv/bin/activate
+source "${VENV_PATH}/bin/activate"
 
 
 geonature install-gn-module "${BASE_DIR}/contrib/occtax" OCCTAX --build false

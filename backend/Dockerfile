@@ -53,45 +53,45 @@ RUN python -m build --wheel
 FROM build AS build-geonature
 WORKDIR /build/
 COPY /backend ./backend
-COPY /setup.py .
+COPY /pyproject.toml .
 COPY /MANIFEST.in .
 COPY /VERSION .
 COPY /LICENSE .
 COPY /README.md .
-RUN python setup.py bdist_wheel
+RUN python -m build --wheel
 
 
 FROM build AS build-occtax
 WORKDIR /build/
 COPY /contrib/occtax/backend ./backend
-COPY /contrib/occtax/setup.py .
+COPY /contrib/occtax/pyproject.toml .
 COPY /contrib/occtax/requirements.in .
 COPY /contrib/occtax/MANIFEST.in .
 COPY /contrib/occtax/VERSION .
 COPY /contrib/occtax/README.rst .
-RUN python setup.py bdist_wheel
+RUN python -m build --wheel
 
 
 FROM build AS build-occhab
 WORKDIR /build/
 COPY /contrib/gn_module_occhab/backend ./backend
-COPY /contrib/gn_module_occhab/setup.py .
+COPY /contrib/gn_module_occhab/pyproject.toml .
 COPY /contrib/gn_module_occhab/requirements.in .
 COPY /contrib/gn_module_occhab/MANIFEST.in .
 COPY /contrib/gn_module_occhab/VERSION .
 COPY /contrib/gn_module_occhab/README.rst .
-RUN python setup.py bdist_wheel
+RUN python -m build --wheel
 
 
 FROM build AS build-validation
 WORKDIR /build/
 COPY /contrib/gn_module_validation/backend ./backend
-COPY /contrib/gn_module_validation/setup.py .
+COPY /contrib/gn_module_validation/pyproject.toml .
 COPY /contrib/gn_module_validation/requirements.in .
 COPY /contrib/gn_module_validation/MANIFEST.in .
 COPY /contrib/gn_module_validation/VERSION .
 COPY /contrib/gn_module_validation/README.rst .
-RUN python setup.py bdist_wheel
+RUN python -m build --wheel
 
 
 FROM ${NODE_IMAGE} AS node
@@ -143,9 +143,11 @@ FROM base AS dev
 WORKDIR /sources/GeoNature
 
 # rw required by --editable to write .egg-info stuffs
+# Siblings resolve to their local backend/dependencies/* submodule checkout via
+# [tool.uv.sources] in the root pyproject.toml (uv workspace).
 RUN --mount=type=cache,target=/root/.cache \
     --mount=type=bind,source=.,target=/sources/GeoNature,rw \
-    cd backend && uv pip install --system  -e .. -r requirements-dev.txt
+    cd backend && uv pip install --system -e ..
 RUN --mount=type=cache,target=/root/.cache \
     --mount=type=bind,source=.,target=/sources/GeoNature,rw \
     uv pip install --system \

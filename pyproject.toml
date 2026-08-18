@@ -19,7 +19,7 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
 ]
-dynamic = ["version"]
+dynamic = ["version", "dependencies"]
 license = "GPL-3.0-or-later"
 license-files = ["LICENSE"]
 
@@ -40,7 +40,30 @@ geonature = ["**/templates/**/*.html"]
 
 [tool.setuptools.dynamic]
 version = { file = "VERSION" }
-dependencies = { file = "backend/requirements.txt" }
+dependencies = { file = "backend/requirements.in" }
+
+[tool.uv.workspace]
+members = [
+  "backend/dependencies/UsersHub-authentification-module",
+  "backend/dependencies/Nomenclature-api-module",
+  "backend/dependencies/Habref-api-module",
+  "backend/dependencies/Utils-Flask-SQLAlchemy",
+  "backend/dependencies/TaxHub",
+  "backend/dependencies/Utils-Flask-SQLAlchemy-Geo",
+  "backend/dependencies/RefGeo",
+  "backend/dependencies/UsersHub",
+]
+exclude = ["backend/dependencies/*/dependencies/*"]
+
+[tool.uv.sources]
+pypnusershub = { workspace = true }
+pypnnomenclature = { workspace = true }
+pypn_habref_api = { workspace = true }
+utils-flask-sqlalchemy-geo = { workspace = true }
+utils-flask-sqlalchemy = { workspace = true }
+taxhub = { workspace = true }
+pypn-ref-geo = { workspace = true }
+usershub = { workspace = true }
 
 [project.optional-dependencies]
 tests = [
@@ -53,6 +76,7 @@ tests = [
   "pandas",
 ]
 doc = ["sphinx", "furo", "myst-parser", "sphinx-autoapi", "sphinx-copybutton"]
+lint = ["black>=26.1.0"]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
