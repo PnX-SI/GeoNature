@@ -7,34 +7,34 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
-import { DatasetFormComponent } from './datasets/dataset-form.component';
-import { DatasetCardComponent } from './datasets/dataset-card.component';
-import { AfFormComponent } from './af/af-form.component';
+import { DatasetFormComponent } from './datasets/dataset-form/dataset-form.component';
+import { DatasetCardComponent } from './datasets/dataset-card/dataset-card.component';
+import { AfFormComponent } from './af/af-form/af-form.component';
 import { ActorComponent } from './actors/actors.component';
 import { MetadataComponent } from './metadata.component';
 import { MetadataDatasetComponent } from './metadata-dataset.component';
-import { AfCardComponent } from './af/af-card.component';
+import { AfCardComponent } from './af/af-card/af-card.component';
 import { NgChartsModule } from 'ng2-charts';
 import { MetadataService } from './services/metadata.service';
 import { MetadataDataService } from './services/metadata-data.service';
 import { ActorFormService } from './services/actor-form.service';
-import { ButtonDeleteAfComponent } from './af/button-delete-af.component';
-import { ButtonCloseAfComponent } from './af/button-close-af.component';
+import { ButtonDeleteAfComponent } from './af/button-delete-af/button-delete-af.component';
+import { ButtonCloseAfComponent } from './af/button-close-af/button-close-af.component';
 import { OrganismFormDialogComponent } from './organisms/organism-form-dialog.component';
-import { DatasetActivationToggleComponent } from './datasets/dataset-activation-toggle.component';
-import { PublicationsListComponent } from '@geonature/metadataModule/publications/publications-list.component';
-import { PublicationCardComponent } from '@geonature/metadataModule/publications/publication-card.component';
-import { PublicationFormModalComponent } from '@geonature/metadataModule/publications/publication-form-modal.component';
-import { PublicationsListService } from '@geonature/metadataModule/services/publication.service';
-import { PublicationDeleteButtonComponent } from './publications/publication-delete-button.component';
-import { PublicationConsultButtonComponent } from './publications/publication-consult-button.component';
+import { DatasetActivationToggleComponent } from './datasets/dataset-activation-toogle/dataset-activation-toggle.component';
+import { PublicationsListComponent } from '@geonature/metadataModule/publications/publications-list/publications-list.component';
+import { PublicationCardComponent } from '@geonature/metadataModule/publications/publication-card/publication-card.component';
+import { PublicationFormModalComponent } from '@geonature/metadataModule/publications/publication-form-modal/publication-form-modal.component';
+import { PublicationsService } from '@geonature/metadataModule/services/publication.service';
+import { PublicationDeleteButtonComponent } from './publications/publication-delete-button/publication-delete-button.component';
+import { PublicationConsultButtonComponent } from './publications/publication-consult-button/publication-consult-button.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { AssociatedDatasetCardListComponent } from './datasets/associated-dataset-card-list-component';
-import { AssociatedAfCardListComponent } from '@geonature/metadataModule/af/associated-af-card-list.component';
-import { PublicationAssociateButtonComponent } from '@geonature/metadataModule/publications/publication-associate-button.component';
-import { PublicationAssociationModalComponent } from '@geonature/metadataModule/publications/publication-association-modal.component';
-import { AssociatedPublicationsCardListComponent } from '@geonature/metadataModule/publications/associated-publications-card-list.component';
-import { PublicationDisassociateButtonComponent } from '@geonature/metadataModule/publications/disassociate-publication-button.component';
+import { AssociatedDatasetCardListComponent } from './datasets/associated-dataset-card-list/associated-dataset-card-list-component';
+import { AssociatedAfCardListComponent } from '@geonature/metadataModule/af/associated-af-card-list/associated-af-card-list.component';
+import { PublicationAssociateButtonComponent } from '@geonature/metadataModule/publications/publication-associate-button/publication-associate-button.component';
+import { PublicationAssociationModalComponent } from '@geonature/metadataModule/publications/publication-association-modal/publication-association-modal.component';
+import { AssociatedPublicationsCardListComponent } from '@geonature/metadataModule/publications/associated-pubication-card-list/associated-publications-card-list.component';
+import { PublicationDisassociateButtonComponent } from '@geonature/metadataModule/publications/disassociate-publication-button/disassociate-publication-button.component';
 const routes: Routes = [
   { path: '', component: MetadataComponent },
   { path: 'dataset', component: DatasetFormComponent },
@@ -110,7 +110,7 @@ export class MetadataPaginator extends MatPaginatorIntl {
     MetadataService,
     MetadataDataService,
     ActorFormService,
-    PublicationsListService,
+    PublicationsService,
     {
       provide: MatPaginatorIntl,
       useClass: MetadataPaginator,

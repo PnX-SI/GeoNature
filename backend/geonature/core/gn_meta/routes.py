@@ -224,7 +224,7 @@ def get_publications():
     :query int page: page number (default 1)
     :query int per_page: items per page (default 10)
     :query str search: search term in reference, publication or url
-    :query int type_publication: filter by publication type
+    :query int type_publication: filter by publication type. If -1 we get one that have no type
     :query int orderby: order by column (default id_publication)
     :query str order: order direction (default desc)
     """
@@ -232,7 +232,7 @@ def get_publications():
     per_page = request.args.get("per_page", type=int, default=10)
     search = request.args.get("search", type=str, default="").strip()
     similarity_search = request.args.get("similarity_search", type=str, default="").strip()
-    type_publication = request.args.get("type_publication", type=int, default=-1)
+    type_publication = request.args.get("type_publication", type=int, default=None)
     orderby = request.args.get("orderby", type=str, default="id_publication")
     order = request.args.get("order", type=str, default="desc").lower()
 
@@ -254,7 +254,9 @@ def get_publications():
         )
         query = query.where(similarity > 0.7).order_by(similarity.desc())
 
-    if type_publication != -1:
+    if type_publication == -1:
+        query = query.where(TDatatypePublication.id_nomenclature_type_publication.is_(None))
+    elif type_publication is not None:
         query = query.where(
             TDatatypePublication.id_nomenclature_type_publication == type_publication
         )
@@ -424,11 +426,8 @@ def disassociate_af_from_publication(scope):
     af_id = request.json.get("af_id", None)
     if not publication_id or not af_id:
         return jsonify({"error": "Missing publication or af id"}), 400
-    logging.info(f"1 Disassociating publication {publication_id} from af {af_id}")
     publication = db.get_or_404(TDatatypePublication, publication_id)
-    logging.info(f"2Disassociating publication {publication_id} from af {af_id}")
     af = db.get_or_404(TAcquisitionFramework, af_id)
-    logging.info(f"3Disassociating publication {publication_id} from af {af_id}")
     publication.has_instance_permission(scope=scope)
     af.has_instance_permission(scope=scope)
     try:
@@ -439,7 +438,7 @@ def disassociate_af_from_publication(scope):
                     == af.id_acquisition_framework
                 )
                 & (
-                    cor_acquisition_framework_publication.c.id_publication
+                    CorAcquisitionFrameworkPublication.__table__.c.id_publication
                     == publication.id_publication
                 )
             )
