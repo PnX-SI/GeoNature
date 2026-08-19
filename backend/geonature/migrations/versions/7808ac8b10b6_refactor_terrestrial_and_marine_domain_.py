@@ -25,6 +25,7 @@ def upgrade():
         ALTER TABLE gn_meta.t_acquisition_frameworks 
         ADD COLUMN marine_domain BOOLEAN NOT NULL DEFAULT False;
     """)
+    # TODO: decide whether to add comments, and if yes could take inspiration from comments for these fields of t_datasets
 
     op.execute("""
         UPDATE gn_meta.t_acquisition_frameworks taf
@@ -87,6 +88,9 @@ def downgrade():
         ALTER TABLE gn_meta.t_datasets 
         ADD COLUMN marine_domain BOOLEAN NOT NULL DEFAULT False;
     """)
+
+    # TODO: decide whether to set terrestrial_domain as True for datasets associated to af having terrestrial_domain being True
+    #   Same decision for marine_domain
 
     op.execute("""
         CREATE TABLE gn_meta.cor_acquisition_framework_voletsinp (
