@@ -1,0 +1,175 @@
+<div
+  class="container-fluid"
+  data-qa="pnx-publications"
+>
+  <div class="card card-page">
+    <div class="card-header">
+      <h3 class="main-color">{{ 'MetaData.Publications.Catalog' | translate }}</h3>
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-5">
+        <a
+          mat-raised-button
+          routerLink="/metadata"
+          class="mb-2 return_button"
+          data-qa="pnx-metadata-exit-af"
+        >
+          <mat-icon>chevron_left</mat-icon>
+          Retour
+        </a>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <div class="row align-items-end">
+        <div class="form-group col-sm-5">
+          <label>{{ 'Actions.Search' | translate }}</label>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            [formControl]="rapidSearchControl"
+            placeholder="{{ 'MetaData.Publications.SearchPlaceholder' | translate }}"
+            data-qa="pnx-publications-search"
+          />
+        </div>
+
+        <div class="form-group col-sm-3">
+          <label>{{ 'MetaData.Publications.Type' | translate }}</label>
+          <ng-select
+            [items]="publicationTypes"
+            [formControl]="typeFilterControl"
+            bindLabel="label_fr"
+            bindValue="id_nomenclature"
+            [clearable]="true"
+            placeholder="{{ 'MetaData.Publications.Type' | translate }}"
+            data-qa="pnx-publications-type-filter"
+          >
+            <ng-template
+              ng-option-tmp
+              let-item="item"
+            >
+              <div [attr.data-qa]="item.id_nomenclature">
+                <span class="pre-wrap">
+                  {{ item.label_fr || item.label_default }}
+                </span>
+              </div>
+            </ng-template>
+          </ng-select>
+        </div>
+        <div class="form-group col-sm-3"></div>
+        <div class="form-group col-sm-1 ms-auto d-flex align-items-flex-end">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="onCreatePublication()"
+            data-qa="pnx-publications-create-btn"
+            class="create-publication-btn"
+          >
+            <mat-icon>add</mat-icon>
+            {{ 'MetaData.Publications.Create' | translate }}
+          </button>
+        </div>
+      </div>
+      <br />
+
+      <ngx-datatable
+        class="material"
+        data-qa="pnx-publications-table"
+        [rows]="publications"
+        [columnMode]="'flex'"
+        [headerHeight]="40"
+        [footerHeight]="50"
+        [rowHeight]="'auto'"
+        [loadingIndicator]="isLoading"
+        [count]="totalItems"
+        [offset]="pageOffset"
+        [limit]="pageSize"
+        [externalPaging]="true"
+        [externalSorting]="true"
+        (page)="onDatatablePage($event)"
+        (sort)="onDatatableSort($event)"
+      >
+        <ngx-datatable-column
+          name="Id"
+          prop="id_publication"
+          [flexGrow]="0.5"
+        ></ngx-datatable-column>
+
+        <ngx-datatable-column
+          name="{{ 'MetaData.Publications.Reference' | translate }}"
+          prop="publication_reference"
+          [flexGrow]="2"
+        ></ngx-datatable-column>
+
+        <ngx-datatable-column
+          name="{{ 'MetaData.Publications.Type' | translate }}"
+          prop="id_nomenclature_type_publication"
+          [flexGrow]="1.5"
+        >
+          <ng-template
+            let-value="value"
+            ngx-datatable-cell-template
+          >
+            {{ getPublicationTypeLabel(value) }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column
+          name="{{ 'Digitiser' | translate }}"
+          prop="digitizer"
+          [flexGrow]="1.5"
+          [sortable]="false"
+        >
+          <ng-template
+            let-value="value"
+            ngx-datatable-cell-template
+          >
+            {{ value?.nom_complet ?? '-' }}
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column
+          name="{{ 'MetaData.Publications.Description' | translate }}"
+          prop="description_publication"
+          [sortable]="false"
+          [flexGrow]="3"
+        ></ngx-datatable-column>
+
+        <ngx-datatable-column
+          name="{{ 'Actions.Plural' | translate }}"
+          [sortable]="false"
+          [flexGrow]="2"
+        >
+          <ng-template
+            let-row="row"
+            ngx-datatable-cell-template
+          >
+            <button
+              mat-icon-button
+              [routerLink]="['/metadata/publication_detail', row.id_publication]"
+              matTooltip="{{ 'MetaData.Publications.SeePublication' | translate }}"
+              style="color: black"
+            >
+              <mat-icon>info</mat-icon>
+            </button>
+            <pnx-publication-consult-button
+              [publicationUrl]="row.publication_url"
+            ></pnx-publication-consult-button>
+            <button
+              [class.disabled-look]="!row.cruved?.U"
+              mat-icon-button
+              type="button"
+              (click)="row.cruved?.U ? onEditPublication(row) : null"
+              [matTooltip]="
+                row.cruved?.U ? ('Actions.Edit' | translate) : ('Errors.NotAllowed' | translate)
+              "
+              data-qa="pnx-publications-edit-link"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <pnx-publication-delete-button [publication]="row"></pnx-publication-delete-button>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+  </div>
+</div>

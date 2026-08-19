@@ -11,7 +11,7 @@ import { Nomenclature } from '@geonature_common/interfaces';
 @Injectable({
   providedIn: 'root',
 })
-export class PublicationsListService {
+export class PublicationsService {
   private _publications$ = new BehaviorSubject<Publication[]>([]);
   public publications: Observable<Publication[]> = this._publications$.asObservable();
 

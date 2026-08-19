@@ -76,7 +76,6 @@ export class AcquisitionFrameworkFormService {
           this.actorFormS.checkDoublonsValidator.bind(this.actorFormS),
         ]
       ),
-      bibliographical_references: this.fb.array([]),
       unique_acquisition_framework_id: [null, [this.formS.uuidValidator()]],
       additional_data: this.fb.group({}),
     });
@@ -124,11 +123,6 @@ export class AcquisitionFrameworkFormService {
           }
           value.cor_af_actor.forEach((actor) => {
             this.addActor(this.actors, actor);
-          });
-        }
-        if (value.bibliographical_references) {
-          value.bibliographical_references.forEach((e) => {
-            this.addBibliographicalReferences();
           });
         }
         return value;
@@ -232,24 +226,6 @@ export class AcquisitionFrameworkFormService {
 
   removeActor(formArray: UntypedFormArray, i: number): void {
     formArray.removeAt(i);
-  }
-
-  get bibliographicalReferences(): UntypedFormArray {
-    return this.form.get('bibliographical_references') as UntypedFormArray;
-  }
-
-  //ajoute un acteur au formulaire, par défaut un acteur vide est ajouté
-  addBibliographicalReferences(): void {
-    const biblioRefForm = this.fb.group({
-      id_bibliographic_reference: null,
-      publication_url: null,
-      publication_reference: [null, Validators.required],
-    });
-    this.bibliographicalReferences.push(biblioRefForm);
-  }
-
-  removeBibliographicalReferences(i: number): void {
-    this.bibliographicalReferences.removeAt(i);
   }
 
   //retourne true sur l'acteur est contact principal

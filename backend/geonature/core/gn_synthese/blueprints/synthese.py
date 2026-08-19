@@ -265,7 +265,6 @@ def get_one_synthese(permissions, id_synthese):
     fields = [
         "dataset",
         "dataset.acquisition_framework",
-        "dataset.acquisition_framework.bibliographical_references",
         "dataset.acquisition_framework.cor_af_actor",
         "dataset.acquisition_framework.cor_objectifs",
         "dataset.acquisition_framework.cor_territories",
