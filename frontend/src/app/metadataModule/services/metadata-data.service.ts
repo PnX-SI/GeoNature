@@ -34,11 +34,11 @@ export class MetadataDataService {
     return this._api.patch<any>(`${this.config.API_ENDPOINT}/meta/dataset/${id_dataset}`, value);
   }
 
-  getRemoteDatabases() {
-    return this._api.get<any>(`${this.config.API_ENDPOINT}/meta/remote_database`);
+  getProductionDatabases() {
+    return this._api.get<any>(`${this.config.API_ENDPOINT}/meta/production_database`);
   }
 
-  createRemoteDatabase(data: any) {
-    return this._api.post<any>(`${this.config.API_ENDPOINT}/meta/remote_database`, data);
+  createProductionDatabase(data: any) {
+    return this._api.post<any>(`${this.config.API_ENDPOINT}/meta/production_database`, data);
   }
 }

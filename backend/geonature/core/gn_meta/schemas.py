@@ -23,7 +23,7 @@ from utils_flask_sqla.schema import SmartRelationshipsMixin
 from pypnusershub.schemas import UserSchema, OrganismeSchema
 from pypnnomenclature.schemas import NomenclatureSchema
 
-from .models.remotedatabase import TRemoteDatabase
+from .models.productiondatabase import TProductionDatabase
 
 
 class DatasetActorSchema(SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
@@ -47,9 +47,9 @@ class DatasetActorSchema(SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
         return data
 
 
-class RemoteDatabaseSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
+class ProductionDatabaseSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
     class Meta:
-        model = TRemoteDatabase
+        model = TProductionDatabase
         include_fk = True
         load_instance = True
         sqla_session = db.session
@@ -95,8 +95,8 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
     acquisition_framework = MA.Nested("AcquisitionFrameworkSchema", dump_only=True)
     sources = MA.Nested(SourceSchema, many=True, dump_only=True)
     publications = MA.Nested("PublicationSchema", many=True, dump_only=True, exclude=("datasets",))
-    id_remote_database = fields.Integer(allow_none=True)
-    remote_database = MA.Nested(RemoteDatabaseSchema, dump_only=True, allow_none=True)
+    id_production_database = fields.Integer(allow_none=True)
+    production_database = MA.Nested(ProductionDatabaseSchema, dump_only=True, allow_none=True)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

@@ -420,8 +420,8 @@
         "CreateOrganism": "Add an organism"
       }
     },
-    "RemoteDatabase": {
-      "RemoteDatabase": "Production Database",
+    "ProductionDatabase": {
+      "ProductionDatabase": "Production Database",
       "AddDatabase": "Add a Production Database",
       "Name": "Name",
       "NameRequired": "Name Required",

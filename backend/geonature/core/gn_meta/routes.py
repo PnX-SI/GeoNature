@@ -46,13 +46,13 @@ from geonature.core.gn_meta.models import (
     TDatatypePublication,
     cor_dataset_publication,
     cor_acquisition_framework_publication,
-    TRemoteDatabase,
+    TProductionDatabase,
 )
 from geonature.core.gn_meta.schemas import (
     AcquisitionFrameworkSchema,
     DatasetSchema,
     PublicationSchema,
-    RemoteDatabaseSchema,
+    ProductionDatabaseSchema,
 )
 from utils_flask_sqla.response import json_resp, to_csv_resp, generate_csv_content
 from utils_flask_sqla.db import ordered
@@ -164,7 +164,9 @@ def get_dataset(scope, id_dataset):
     dataset = (
         db.session.execute(
             select(TDatasets)
-            .options(joinedload(TDatasets.remote_database).joinedload(TRemoteDatabase.contact))
+            .options(
+                joinedload(TDatasets.production_database).joinedload(TProductionDatabase.contact)
+            )
             .where(TDatasets.id_dataset == id_dataset)
         )
     ).scalar_one_or_none()
@@ -197,10 +199,10 @@ def get_dataset(scope, id_dataset):
             "acquisition_framework.cor_af_actor.role",
             "sources",
             "publications",
-            "remote_database.id_remote_database",
-            "remote_database.name",
-            "remote_database.contact.identifiant",
-            "remote_database.contact.id_role",
+            "production_database.id_production_database",
+            "production_database.name",
+            "production_database.contact.identifiant",
+            "production_database.contact.id_role",
         ]
     )
     return dataset_schema.jsonify(dataset)
@@ -1265,41 +1267,43 @@ def close_acquisition_framework(af_id):
     return af.as_dict()
 
 
-@routes.route("/remote_database", methods=["GET"])
+@routes.route("/production_database", methods=["GET"])
 @permissions.check_cruved_scope("R", module_code="METADATA")
 @json_resp
-def get_remote_databases() -> list[dict]:
+def get_production_databases() -> list[dict]:
     """
-    Get all remote databases
+    Get all production databases
     """
     databases = (
-        db.session.execute(select(TRemoteDatabase).order_by(TRemoteDatabase.name)).scalars().all()
+        db.session.execute(select(TProductionDatabase).order_by(TProductionDatabase.name))
+        .scalars()
+        .all()
     )
-    schema = RemoteDatabaseSchema(many=True)
+    schema = ProductionDatabaseSchema(many=True)
     return schema.dump(databases)
 
 
-@routes.route("/remote_database/<int:id_remote_database>", methods=["GET"])
+@routes.route("/production_database/<int:id_production_database>", methods=["GET"])
 @permissions.check_cruved_scope("R", module_code="METADATA")
 @json_resp
-def get_remote_database(id_remote_database: int) -> dict:
+def get_production_database(id_production_database: int) -> dict:
     """
-    Get remote database detail
+    Get production database detail
     """
-    database = db.get_or_404(TRemoteDatabase, id_remote_database)
-    schema = RemoteDatabaseSchema()
+    database = db.get_or_404(TProductionDatabase, id_production_database)
+    schema = ProductionDatabaseSchema()
     return schema.dump(database)
 
 
-@routes.route("/remote_database", methods=["POST"])
+@routes.route("/production_database", methods=["POST"])
 @permissions.check_cruved_scope("C", module_code="METADATA")
 @json_resp
-def create_remote_database() -> dict:
+def create_production_database() -> dict:
     """
-    Create a new remote database
+    Create a new production database
     """
     data = request.get_json()
-    schema = RemoteDatabaseSchema()
+    schema = ProductionDatabaseSchema()
     data = schema.load(data)
 
     db.session.add(data)
@@ -1308,16 +1312,16 @@ def create_remote_database() -> dict:
     return schema.dump(data)
 
 
-@routes.route("/remote_database/<int:id_remote_database>", methods=["PUT"])
+@routes.route("/production_database/<int:id_production_database>", methods=["PUT"])
 @permissions.check_cruved_scope("U", module_code="METADATA")
 @json_resp
-def update_remote_database(id_remote_database: int) -> dict:
+def update_production_database(id_production_database: int) -> dict:
     """
-    Update a remote database
+    Update a production database
     """
-    database = db.get_or_404(TRemoteDatabase, id_remote_database)
+    database = db.get_or_404(TProductionDatabase, id_production_database)
     data = request.get_json()
-    schema = RemoteDatabaseSchema()
+    schema = ProductionDatabaseSchema()
     updated_database = schema.load(data, instance=database, partial=True)
 
     db.session.commit()

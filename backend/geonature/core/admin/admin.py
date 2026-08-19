@@ -8,8 +8,8 @@ from geonature.utils.env import db
 from geonature.utils.config import config
 from geonature.core.gn_commons.models import TAdditionalFields, TMobileApps, TModules
 from geonature.core.gn_commons.admin import BibFieldAdmin, TMobileAppsAdmin, TModulesAdmin
-from geonature.core.gn_meta.admin import TRemoteDatabaseAdmin
-from geonature.core.gn_meta.models.remotedatabase import TRemoteDatabase
+from geonature.core.gn_meta.admin import ProductionDatabaseAdmin
+from geonature.core.gn_meta.models.productiondatabase import TProductionDatabase
 from geonature.core.notifications.admin import (
     NotificationTemplateAdmin,
     NotificationCategoryAdmin,
@@ -154,8 +154,8 @@ admin.add_view(
 )
 
 admin.add_view(
-    TRemoteDatabaseAdmin(
-        TRemoteDatabase,
+    ProductionDatabaseAdmin(
+        TProductionDatabase,
         db,
         name="Bases de données de production",
         category="Métadonnées",

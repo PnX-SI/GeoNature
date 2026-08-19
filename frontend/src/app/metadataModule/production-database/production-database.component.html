@@ -1,0 +1,23 @@
+<div>
+  <small>{{ 'MetaData.ProductionDatabase.ProductionDatabase' | translate }}</small>
+  <div class="d-flex gap-2">
+    <ng-container *ngIf="productionDatabases | async as databases">
+      <ng-select
+        class="flex-grow-1"
+        [formControl]="parentForm.get('id_production_database')"
+        [items]="databases"
+        bindLabel="name"
+        bindValue="id_production_database"
+        placeholder="{{ 'MetaData.DatasetCard.None' | translate }}"
+      ></ng-select>
+    </ng-container>
+    <button
+      type="button"
+      class="btn-success"
+      matTooltip="{{ 'MetaData.ProductionDatabase.AddDatabase' | translate }}"
+      (click)="openProductionDatabaseDialog()"
+    >
+      <strong>+</strong>
+    </button>
+  </div>
+</div>

@@ -1,4 +1,4 @@
-"""[remote database] add new permissions
+"""[production database] add new permissions
 
 Revision ID: 103ea033e21d
 Revises: 21fe37188895
@@ -20,7 +20,7 @@ def upgrade():
     op.execute("""
             INSERT INTO gn_permissions.t_objects (code_object, description_object)
             VALUES (
-                'REMOTEDATABASE', 
+                'PRODUCTION_DATABASE',
                 'Base de données de production'
             )
         """)
@@ -28,7 +28,7 @@ def upgrade():
             INSERT INTO gn_permissions.cor_object_module
                 (id_object, id_module)
             VALUES(
-                (SELECT id_object FROM gn_permissions.t_objects WHERE code_object = 'REMOTEDATABASE'),
+                (SELECT id_object FROM gn_permissions.t_objects WHERE code_object = 'PRODUCTION_DATABASE'),
                 (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'METADATA')
             )
         """)
@@ -50,10 +50,9 @@ def upgrade():
         FROM
             (
                 VALUES
-                    ('METADATA', 'REMOTEDATABASE', 'C', True, 'Créer des imports')
-                    ,('METADATA', 'REMOTEDATABASE', 'R', True, 'Voir les imports')
-                    ,('METADATA', 'REMOTEDATABASE', 'U', True, 'Modifier des imports')
-                    ,('METADATA', 'REMOTEDATABASE', 'D', True, 'Supprimer des imports')
+                    ('METADATA', 'PRODUCTION_DATABASE', 'C', False, 'Créer une base de production')
+                    ,('METADATA', 'PRODUCTION_DATABASE', 'U', False, 'Modifier une base de production')
+                    ,('METADATA', 'PRODUCTION_DATABASE', 'D', False, 'Supprimer une base de production')
             ) AS v (module_code, object_code, action_code, scope_filter, label)
         JOIN
             gn_commons.t_modules m ON m.module_code = v.module_code
@@ -73,7 +72,7 @@ def downgrade():
         WHERE
             pa.id_module = m.id_module
             AND
-            module_code = 'REMOTEDATABASE'
+            module_code = 'PRODUCTION_DATABASE'
         """)
     op.execute("""
         DELETE FROM
@@ -88,6 +87,6 @@ def downgrade():
             AND
             p.id_object = o.id_object
             AND
-            code_object = 'REMOTEDATABASE'
+            code_object = 'PRODUCTION_DATABASE'
         """)
-    op.execute("DELETE FROM gn_permissions.t_objects WHERE code_object = 'REMOTEDATABASE'")
+    op.execute("DELETE FROM gn_permissions.t_objects WHERE code_object = 'PRODUCTION_DATABASE'")

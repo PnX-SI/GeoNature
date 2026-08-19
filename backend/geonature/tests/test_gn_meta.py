@@ -14,7 +14,7 @@ from geonature.core.gn_meta.models import (
     CorDatasetActor,
     TAcquisitionFramework,
     TDatasets,
-    TRemoteDatabase,
+    TProductionDatabase,
 )
 from geonature.core.gn_meta.repositories import (
     cruved_af_filter,
@@ -151,18 +151,20 @@ def get_csv_from_response(data):
 
 
 @pytest.fixture
-def remote_database():
-    rd = TRemoteDatabase(name="Test Remote DB")
+def production_database():
+    rd = TProductionDatabase(name="Test Production DB")
     db.session.add(rd)
     db.session.commit()
     return rd
 
 
 @pytest.fixture
-def unexisted_remote_database_id():
+def unexisted_production_database_id():
     return (
         db.session.scalar(
-            select(func.max(TRemoteDatabase.id_remote_database)).select_from(TRemoteDatabase)
+            select(func.max(TProductionDatabase.id_production_database)).select_from(
+                TProductionDatabase
+            )
         )
         or 0
     ) + 1
@@ -1508,9 +1510,9 @@ class TestReports:
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
-class TestRemoteDatabase:
-    def test_get_remote_databases(self, users, remote_database):
-        url = url_for("gn_meta.get_remote_databases")
+class TestProductionDatabase:
+    def test_get_production_databases(self, users, production_database):
+        url = url_for("gn_meta.get_production_databases")
 
         response = self.client.get(url)
         assert response.status_code == Unauthorized.code
@@ -1522,13 +1524,13 @@ class TestRemoteDatabase:
         set_logged_user(self.client, users["admin_user"])
         response = self.client.get(url)
         assert response.status_code == 200
-        names = [remote_db["name"] for remote_db in response.json]
-        assert remote_database.name in names
+        names = [production_db["name"] for production_db in response.json]
+        assert production_database.name in names
 
-    def test_get_remote_database(self, users, remote_database):
+    def test_get_production_database(self, users, production_database):
         url = url_for(
-            "gn_meta.get_remote_database",
-            id_remote_database=remote_database.id_remote_database,
+            "gn_meta.get_production_database",
+            id_production_database=production_database.id_production_database,
         )
 
         response = self.client.get(url)
@@ -1541,81 +1543,81 @@ class TestRemoteDatabase:
         set_logged_user(self.client, users["admin_user"])
         response = self.client.get(url)
         assert response.status_code == 200
-        assert response.json["id_remote_database"] == remote_database.id_remote_database
-        assert response.json["name"] == remote_database.name
+        assert response.json["id_production_database"] == production_database.id_production_database
+        assert response.json["name"] == production_database.name
         assert response.json["id_contact"] is None
 
-    def test_get_remote_database_with_contact(self, users, remote_database):
-        remote_database.id_contact = users["user"].id_role
+    def test_get_production_database_with_contact(self, users, production_database):
+        production_database.id_contact = users["user"].id_role
         db.session.commit()
 
         set_logged_user(self.client, users["admin_user"])
         response = self.client.get(
             url_for(
-                "gn_meta.get_remote_database",
-                id_remote_database=remote_database.id_remote_database,
+                "gn_meta.get_production_database",
+                id_production_database=production_database.id_production_database,
             )
         )
         assert response.status_code == 200
         assert response.json["id_contact"] == users["user"].id_role
         assert response.json["id_contact"] == users["user"].id_role
 
-    def test_get_remote_database_not_found(self, users, unexisted_remote_database_id):
+    def test_get_production_database_not_found(self, users, unexisted_production_database_id):
         set_logged_user(self.client, users["admin_user"])
         response = self.client.get(
             url_for(
-                "gn_meta.get_remote_database",
-                id_remote_database=unexisted_remote_database_id,
+                "gn_meta.get_production_database",
+                id_production_database=unexisted_production_database_id,
             )
         )
         assert response.status_code == NotFound.code
 
-    def test_create_remote_database(self, users):
-        url = url_for("gn_meta.create_remote_database")
+    def test_create_production_database(self, users):
+        url = url_for("gn_meta.create_production_database")
 
-        response = self.client.post(url, json={"name": "New Remote DB"})
+        response = self.client.post(url, json={"name": "New Production DB"})
         assert response.status_code == Unauthorized.code
 
         set_logged_user(self.client, users["noright_user"])
-        response = self.client.post(url, json={"name": "New Remote DB"})
+        response = self.client.post(url, json={"name": "New Production DB"})
         assert response.status_code == Forbidden.code
 
         set_logged_user(self.client, users["admin_user"])
-        response = self.client.post(url, json={"name": "New Remote DB"})
+        response = self.client.post(url, json={"name": "New Production DB"})
         assert response.status_code == 200
-        assert response.json["name"] == "New Remote DB"
-        assert response.json["id_remote_database"] is not None
+        assert response.json["name"] == "New Production DB"
+        assert response.json["id_production_database"] is not None
         assert response.json["id_contact"] is None
 
-    def test_create_remote_database_with_contact(self, users):
+    def test_create_production_database_with_contact(self, users):
         set_logged_user(self.client, users["admin_user"])
         response = self.client.post(
-            url_for("gn_meta.create_remote_database"),
+            url_for("gn_meta.create_production_database"),
             json={"name": "DB with contact", "id_contact": users["user"].id_role},
         )
         assert response.status_code == 200
         assert response.json["id_contact"] == users["user"].id_role
 
-    def test_create_remote_database_duplicate_name(self, users, remote_database):
+    def test_create_production_database_duplicate_name(self, users, production_database):
         set_logged_user(self.client, users["admin_user"])
         response = self.client.post(
-            url_for("gn_meta.create_remote_database"),
-            json={"name": remote_database.name},
+            url_for("gn_meta.create_production_database"),
+            json={"name": production_database.name},
         )
         assert response.status_code != 200
 
-    def test_create_remote_database_missing_name(self, users):
+    def test_create_production_database_missing_name(self, users):
         set_logged_user(self.client, users["admin_user"])
         response = self.client.post(
-            url_for("gn_meta.create_remote_database"),
+            url_for("gn_meta.create_production_database"),
             json={},
         )
         assert response.status_code == BadRequest.code
 
-    def test_update_remote_database(self, users, remote_database):
+    def test_update_production_database(self, users, production_database):
         url = url_for(
-            "gn_meta.update_remote_database",
-            id_remote_database=remote_database.id_remote_database,
+            "gn_meta.update_production_database",
+            id_production_database=production_database.id_production_database,
         )
 
         response = self.client.put(url, json={"name": "Updated name"})
@@ -1630,28 +1632,28 @@ class TestRemoteDatabase:
         assert response.status_code == 200
         assert response.json["name"] == "Updated name"
 
-        updated = db.session.get(TRemoteDatabase, remote_database.id_remote_database)
+        updated = db.session.get(TProductionDatabase, production_database.id_production_database)
         assert updated.name == "Updated name"
 
-    def test_update_remote_database_partial(self, users, remote_database):
+    def test_update_production_database_partial(self, users, production_database):
         set_logged_user(self.client, users["admin_user"])
         response = self.client.put(
             url_for(
-                "gn_meta.update_remote_database",
-                id_remote_database=remote_database.id_remote_database,
+                "gn_meta.update_production_database",
+                id_production_database=production_database.id_production_database,
             ),
             json={"id_contact": users["user"].id_role},
         )
         assert response.status_code == 200
         assert response.json["id_contact"] == users["user"].id_role
-        assert response.json["name"] == remote_database.name
+        assert response.json["name"] == production_database.name
 
-    def test_update_remote_database_not_found(self, users, unexisted_remote_database_id):
+    def test_update_production_database_not_found(self, users, unexisted_production_database_id):
         set_logged_user(self.client, users["admin_user"])
         response = self.client.put(
             url_for(
-                "gn_meta.update_remote_database",
-                id_remote_database=unexisted_remote_database_id,
+                "gn_meta.update_production_database",
+                id_production_database=unexisted_production_database_id,
             ),
             json={"name": "Doesn't matter"},
         )

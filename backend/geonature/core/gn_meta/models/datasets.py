@@ -23,7 +23,7 @@ from geonature.core.gn_commons.models import cor_field_dataset, cor_module_datas
 
 from ref_geo.models import LAreas
 from .commons import *
-from .remotedatabase import TRemoteDatabase
+from .productiondatabase import TProductionDatabase
 
 
 @serializable(exclude=["user_actors", "organism_actors", "nb_observations"])
@@ -154,11 +154,14 @@ class TDatasets(db.Model):
     additional_fields = DB.relationship(
         "TAdditionalFields", secondary=cor_field_dataset, back_populates="datasets"
     )
-    id_remote_database: Mapped[Optional[int]] = mapped_column(
-        Integer, ForeignKey("gn_meta.remote_database.id_remote_database"), nullable=True
+    id_production_database: Mapped[Optional[int]] = mapped_column(
+        Integer,
+        ForeignKey("gn_meta.production_database.id_production_database"),
+        server_default=sa.text("gn_meta.get_default_production_database()"),
+        nullable=True,
     )
-    remote_database = DB.relationship(
-        "TRemoteDatabase", lazy="joined", foreign_keys=[id_remote_database]
+    production_database = DB.relationship(
+        "TProductionDatabase", lazy="joined", foreign_keys=[id_production_database]
     )
 
     @hybrid_property

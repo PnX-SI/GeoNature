@@ -205,11 +205,11 @@
               ></pnx-nomenclature>
             </div>
             <div class="col-12">
-              <gn-advanced-section *ngIf="uuidEditionEnabled || remoteDatabaseEditionEnabled">
-                <pnx-metadata-remote-database
+              <gn-advanced-section *ngIf="uuidEditionEnabled || productionDatabaseEditionEnabled">
+                <pnx-metadata-production-database
                   [parentForm]="form"
-                  [remoteDatabases]="remoteDatabases"
-                ></pnx-metadata-remote-database>
+                  [productionDatabases]="productionDatabases"
+                ></pnx-metadata-production-database>
                 <gn-uuid
                   [parentFormControl]="form.get('unique_dataset_id')"
                   [placeholder]="

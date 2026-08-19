@@ -7,9 +7,9 @@ from geonature.core.gn_meta.models.datasets import TDatasets
 from geonature.utils.env import DB
 
 
-class TRemoteDatabaseAdmin(CruvedProtectedMixin, ModelView):
+class ProductionDatabaseAdmin(CruvedProtectedMixin, ModelView):
     module_code = "METADATA"
-    object_code = "REMOTEDATABASE"
+    object_code = "PRODUCTION_DATABASE"
 
     column_list = ("name", "contact")
     column_labels = {
@@ -29,7 +29,7 @@ class TRemoteDatabaseAdmin(CruvedProtectedMixin, ModelView):
         référencée par un jeu de données.
         """
         in_use = DB.session.scalar(
-            select(exists().where(TDatasets.id_remote_database == model.id_remote_database))
+            select(exists().where(TDatasets.id_production_database == model.id_production_database))
         )
         if in_use:
             flash(

@@ -23,9 +23,9 @@ import { CommonService } from '@geonature_common/service/common.service';
 import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 
 @Component({
-  selector: 'pnx-remote-database-form-dialog',
-  templateUrl: './remote-database-form-dialog.component.html',
-  styleUrls: ['./remote-database-form-dialog.component.scss'],
+  selector: 'pnx-production-database-form-dialog',
+  templateUrl: './production-database-form-dialog.component.html',
+  styleUrls: ['./production-database-form-dialog.component.scss'],
   providers: [{ provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher }],
   standalone: true,
   imports: [
@@ -40,7 +40,7 @@ import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/materi
     TranslateModule,
   ],
 })
-export class RemoteDatabaseFormDialogComponent implements OnInit, OnDestroy {
+export class ProductionDatabaseFormDialogComponent implements OnInit, OnDestroy {
   form: UntypedFormGroup;
   roles: any[] = [];
   isSubmitting: boolean = false;
@@ -49,15 +49,15 @@ export class RemoteDatabaseFormDialogComponent implements OnInit, OnDestroy {
 
   constructor(
     private _fb: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<RemoteDatabaseFormDialogComponent>,
+    public dialogRef: MatDialogRef<ProductionDatabaseFormDialogComponent>,
     private metadataDataS: MetadataDataService,
     private actorFormS: ActorFormService,
     private _commonService: CommonService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.initForm();
-    if (data?.remoteDatabases) {
-      data.remoteDatabases.pipe(takeUntil(this.destroy$)).subscribe((databases) => {
+    if (data?.productionDatabases) {
+      data.productionDatabases.pipe(takeUntil(this.destroy$)).subscribe((databases) => {
         this.existingDatabases = databases;
         this.form.get('name').updateValueAndValidity();
       });
@@ -103,15 +103,18 @@ export class RemoteDatabaseFormDialogComponent implements OnInit, OnDestroy {
 
     this.isSubmitting = true;
     this.metadataDataS
-      .createRemoteDatabase(this.form.value)
+      .createProductionDatabase(this.form.value)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (result) => {
-          this._commonService.translateToaster('success', 'MetaData.RemoteDatabase.CreatedSuccess');
+          this._commonService.translateToaster(
+            'success',
+            'MetaData.ProductionDatabase.CreatedSuccess'
+          );
           this.dialogRef.close(result);
         },
         error: (error) => {
-          this._commonService.translateToaster('error', 'MetaData.RemoteDatabase.CreatedError');
+          this._commonService.translateToaster('error', 'MetaData.ProductionDatabase.CreatedError');
           this.isSubmitting = false;
         },
       });

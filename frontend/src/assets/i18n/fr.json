@@ -420,8 +420,8 @@
         "CreateOrganism": "Ajouter un organisme"
       }
     },
-    "RemoteDatabase": {
-      "RemoteDatabase": "Base de données de production",
+    "ProductionDatabase": {
+      "ProductionDatabase": "Base de données de production",
       "AddDatabase": "Ajouter une base de données de production",
       "Name": "Nom",
       "NameRequired": "Nom requis",

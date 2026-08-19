@@ -1,7 +1,7 @@
 import datetime
 from typing import Optional
 
-from sqlalchemy import DateTime, ForeignKey, Integer, Unicode
+from sqlalchemy import UUID, Boolean, DateTime, ForeignKey, Integer, Unicode, false
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.schema import FetchedValue
 from utils_flask_sqla.serializers import serializable
@@ -11,19 +11,20 @@ from pypnusershub.db.models import User
 
 
 @serializable
-class TRemoteDatabase(DB.Model):
+class TProductionDatabase(DB.Model):
     """
-    Represents a remote database used for data production.
+    Represents a production database used for data production.
     Links a dataset to the source database it was produced from.
     """
 
-    __tablename__ = "remote_database"
+    __tablename__ = "production_database"
     __table_args__ = (
-        DB.UniqueConstraint("name", name="uk_remote_database_name"),
+        DB.UniqueConstraint("name", name="uk_production_database_name"),
         {"schema": "gn_meta"},
     )
 
-    id_remote_database: Mapped[int] = mapped_column(Integer, primary_key=True)
+    id_production_database: Mapped[int] = mapped_column(Integer, primary_key=True)
+    uuid_production_database: Mapped[UUID] = mapped_column(UUID, nullable=True)
     name: Mapped[str] = mapped_column(Unicode, unique=True)
     id_contact: Mapped[Optional[int]] = mapped_column(
         Integer, ForeignKey(User.id_role), nullable=True
@@ -35,7 +36,9 @@ class TRemoteDatabase(DB.Model):
         DateTime, server_default=FetchedValue()
     )
 
+    is_default: Mapped[bool] = mapped_column(Boolean, server_default=false())
+
     contact = DB.relationship(User, lazy="joined", foreign_keys=[id_contact])
 
     def __repr__(self):
-        return f"RemoteDatabase<{self.name}>"
+        return f"ProductionDatabase<{self.name}>"

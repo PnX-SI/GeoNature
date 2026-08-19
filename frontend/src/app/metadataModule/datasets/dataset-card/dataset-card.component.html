@@ -301,19 +301,19 @@
             {{ dataset?.nomenclature_data_origin?.label_default }}
           </div>
           <br />
-          <div *ngIf="dataset.remote_database">
-            <div class="b">{{ 'MetaData.RemoteDatabase.RemoteDatabase' | translate }}</div>
+          <div *ngIf="dataset.production_database">
+            <div class="b">{{ 'MetaData.ProductionDatabase.ProductionDatabase' | translate }}</div>
             <div class="a">
               <b>{{ 'Name' | translate }} :</b>
-              {{ dataset.remote_database.name }}
+              {{ dataset.production_database.name }}
             </div>
             <div
               class="a"
-              *ngIf="dataset.remote_database.contact"
+              *ngIf="dataset.production_database.contact"
             >
               <b>{{ 'MetaData.DatasetCard.Contact' | translate }} :</b>
               {{
-                dataset.remote_database.contact.identifiant ||
+                dataset.production_database.contact.identifiant ||
                   ('MetaData.DatasetCard.None' | translate)
               }}
             </div>
