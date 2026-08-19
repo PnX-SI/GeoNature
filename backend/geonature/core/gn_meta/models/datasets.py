@@ -9,6 +9,7 @@ from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import JSONB, UUID as UUIDType
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.schema import FetchedValue
+
 from utils_flask_sqla.models import qfilter
 import marshmallow as ma
 
@@ -143,9 +144,9 @@ class TDatasets(db.Model):
     )
 
     publications = DB.relationship(
-        CorDatasetPublication,
-        foreign_keys=[CorDatasetPublication.id_dataset],
-        cascade="all,delete-orphan",
+        "TDatatypePublication",
+        secondary=cor_dataset_publication,
+        backref=DB.backref("datasets", lazy="select"),
         lazy="select",
     )
 

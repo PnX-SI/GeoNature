@@ -7,7 +7,6 @@ from .models import (
     TAcquisitionFramework,
     CorAcquisitionFrameworkActor,
     CorDatasetActor,
-    TBibliographicReference,
     TDatatypePublication,
 )
 from geonature.utils.env import MA, db
@@ -150,21 +149,6 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
         return data
 
 
-class BibliographicReferenceSchema(SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
-    class Meta:
-        model = TBibliographicReference
-        load_instance = True
-        include_fk = True
-
-    acquisition_framework = MA.Nested("AcquisitionFrameworkSchema", dump_only=True)
-
-    @pre_load
-    def make_biblio_ref(self, data, **kwargs):
-        if data.get("id_bibliographic_reference") is None:
-            data.pop("id_bibliographic_reference", None)
-        return data
-
-
 class AcquisitionFrameworkActorSchema(SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
     class Meta:
         model = CorAcquisitionFrameworkActor
@@ -210,7 +194,6 @@ class AcquisitionFrameworkSchema(
 
     t_datasets = MA.Nested(DatasetSchema, many=True)
     datasets = MA.Nested(DatasetSchema, many=True)
-    bibliographical_references = MA.Nested(BibliographicReferenceSchema, many=True)
     cor_af_actor = MA.Nested(AcquisitionFrameworkActorSchema, many=True, unknown=EXCLUDE)
     cor_volets_sinp = MA.Nested(NomenclatureSchema, many=True, unknown=EXCLUDE)
     cor_objectifs = MA.Nested(NomenclatureSchema, many=True, unknown=EXCLUDE)

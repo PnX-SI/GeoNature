@@ -41,29 +41,31 @@ def _save_or_raise(instance, error_message):
     return instance
 
 
-def publication_handler(publication, data):
+def publication_handler(publication, data, partial=False):
     publication_schema = PublicationSchema(
         only=[
             "publication_reference",
             "publication_url",
             "description_publication",
             "id_nomenclature_type_publication",
-        ]
+        ],
+        partial=partial,
     )
     publication = _load_or_400(publication_schema, data, publication)
     return _save_or_raise(publication, "An error occured while creating/updating a publication !")
 
 
-def dataset_handler(dataset, data):
+def dataset_handler(dataset, data, partial=False):
     dataset_schema = DatasetSchema(
         only=["cor_dataset_actor", "modules", "cor_objectifs", "cor_territories"],
         unknown=EXCLUDE,
+        partial=partial,
     )
     dataset = _load_or_400(dataset_schema, data, dataset)
     return _save_or_raise(dataset, "An error occured while creating/updating a dataset !")
 
 
-def acquisition_framework_handler(request, *, acquisition_framework):
+def acquisition_framework_handler(request, *, acquisition_framework, partial=False):
     # Test des droits d'édition du acquisition framework si modification
 
     # 🔎 Récupération des données brutes du body
@@ -84,6 +86,7 @@ def acquisition_framework_handler(request, *, acquisition_framework):
     acquisitionFrameworkSchema = AcquisitionFrameworkSchema(
         only=["cor_af_actor", "cor_volets_sinp", "cor_objectifs", "cor_territories"],
         unknown=EXCLUDE,
+        partial=partial,
     )
 
     acquisition_framework = _load_or_400(

@@ -1490,6 +1490,7 @@ class TestGNMeta:
         )
         assert response.status_code == 500
 
+
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestPublication:
 
@@ -1734,6 +1735,7 @@ class TestPublication:
         )
 
         assert response.status_code == 200
+        db.session.refresh(pub)
         # Verify disassociation
         assert len(pub.datasets) == 0
 
@@ -1793,6 +1795,8 @@ class TestPublication:
 
         assert response.status_code == 200
         # Verify disassociation
+        db.session.refresh(pub)
+
         assert len(pub.acquisition_frameworks) == 0
 
     def test_publication_permissions(self, app, users):
@@ -1819,6 +1823,7 @@ class TestPublication:
             assert pub.has_instance_permission(1) == False
             assert pub.has_instance_permission(2) == True
             assert pub.has_instance_permission(3) == True
+
 
 @pytest.mark.usefixtures("client_class", "users", "datasets", "acquisition_frameworks")
 class TestRepository:

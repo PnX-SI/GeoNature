@@ -232,17 +232,42 @@ cor_dataset_territory = Table(
 )
 
 
-@serializable
-class TBibliographicReference(db.Model):
-    __tablename__ = "t_bibliographical_references"
-    __table_args__ = {"schema": "gn_meta"}
-    id_bibliographic_reference: Mapped[int] = mapped_column(Integer, primary_key=True)
-    id_acquisition_framework: Mapped[int] = mapped_column(
+cor_dataset_publication = Table(
+    "cor_dataset_publication",
+    DB.metadata,
+    Column(
+        "id_dataset",
+        Integer,
+        ForeignKey("gn_meta.t_datasets.id_dataset"),
+        primary_key=True,
+    ),
+    Column(
+        "id_publication",
+        Integer,
+        ForeignKey("gn_meta.datatype_publications.id_publication"),
+        primary_key=True,
+    ),
+    schema="gn_meta",
+)
+
+
+cor_acquisition_framework_publication = Table(
+    "cor_acquisition_framework_publication",
+    DB.metadata,
+    Column(
+        "id_acquisition_framework",
         Integer,
         ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
-    )
-    publication_url: Mapped[Optional[str]] = mapped_column(Unicode)
-    publication_reference: Mapped[str] = mapped_column(Unicode)
+        primary_key=True,
+    ),
+    Column(
+        "id_publication",
+        Integer,
+        ForeignKey("gn_meta.datatype_publications.id_publication"),
+        primary_key=True,
+    ),
+    schema="gn_meta",
+)
 
 
 @serializable
@@ -256,11 +281,9 @@ class TDatatypePublication(db.Model):
     publication_reference: Mapped[str] = mapped_column(Unicode, nullable=False)
     publication_url: Mapped[Optional[str]] = mapped_column(Unicode, nullable=True)
     description_publication: Mapped[Optional[str]] = mapped_column(Unicode, nullable=True)
-    type_publication: Mapped[Optional[str]] = mapped_column(Unicode, nullable=True)
     id_nomenclature_type_publication: Mapped[Optional[int]] = mapped_column(
         Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        default=lambda: TNomenclatures.get_default_nomenclature("TYPE_PUBLICATION"),
     )
     id_digitizer: Mapped[int] = mapped_column(
         Integer,
@@ -276,6 +299,7 @@ class TDatatypePublication(db.Model):
         lazy="joined",
         foreign_keys=[id_nomenclature_type_publication],
     )
+
     def has_instance_permission(self, scope):
         if scope == 0:
             return False
@@ -287,36 +311,3 @@ class TDatatypePublication(db.Model):
             return False
         else:
             return True
-
-@serializable
-class CorDatasetPublication(db.Model):
-    __tablename__ = "cor_dataset_publication"
-    __table_args__ = {"schema": "gn_meta"}
-
-    id_dataset: Mapped[int] = mapped_column(
-        Integer,
-        ForeignKey("gn_meta.t_datasets.id_dataset"),
-        primary_key=True,
-    )
-    id_publication: Mapped[int] = mapped_column(
-        Integer,
-        ForeignKey("gn_meta.datatype_publications.id_publication"),
-        primary_key=True,
-    )
-
-
-@serializable
-class CorAcquisitionFrameworkPublication(db.Model):
-    __tablename__ = "cor_acquisition_framework_publication"
-    __table_args__ = {"schema": "gn_meta"}
-
-    id_acquisition_framework: Mapped[int] = mapped_column(
-        Integer,
-        ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
-        primary_key=True,
-    )
-    id_publication: Mapped[int] = mapped_column(
-        Integer,
-        ForeignKey("gn_meta.datatype_publications.id_publication"),
-        primary_key=True,
-    )
