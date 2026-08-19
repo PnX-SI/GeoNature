@@ -1,7 +1,7 @@
 """refactor terrestrial and marine domain fields for metadata
 
 Revision ID: 7808ac8b10b6
-Revises: f6a1feb3f297
+Revises: 05960b6c6292
 Create Date: 2026-07-07 15:06:00.564143
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = "7808ac8b10b6"
-down_revision = "0444c425fa27"
+down_revision = "05960b6c6292"
 branch_labels = None
 depends_on = None
 
@@ -25,7 +25,13 @@ def upgrade():
         ALTER TABLE gn_meta.t_acquisition_frameworks 
         ADD COLUMN marine_domain BOOLEAN NOT NULL DEFAULT False;
     """)
-    # TODO: decide whether to add comments, and if yes could take inspiration from comments for these fields of t_datasets
+
+    op.execute(
+        "COMMENT ON COLUMN gn_meta.t_acquisition_frameworks.marine_domain IS 'Indique si le cadre d''acquisition concerne le domaine marin';"
+    )
+    op.execute(
+        "COMMENT ON COLUMN gn_meta.t_acquisition_frameworks.terrestrial_domain IS 'Indique si le cadre d''acquisition concerne le domaine terrestre';"
+    )
 
     op.execute("""
         UPDATE gn_meta.t_acquisition_frameworks taf
@@ -89,8 +95,19 @@ def downgrade():
         ADD COLUMN marine_domain BOOLEAN NOT NULL DEFAULT False;
     """)
 
-    # TODO: decide whether to set terrestrial_domain as True for datasets associated to af having terrestrial_domain being True
-    #   Same decision for marine_domain
+    op.execute("""
+        UPDATE gn_meta.t_datasets
+        SET terrestrial_domain = af.terrestrial_domain
+        from gn_meta.t_acquisition_frameworks as af
+        where gn_meta.t_datasets.id_acquisition_framework = af.id_acquisition_framework
+    """)
+
+    op.execute("""
+            UPDATE gn_meta.t_datasets
+            SET marine_domain = af.marine_domain
+            from gn_meta.t_acquisition_frameworks as af
+            where gn_meta.t_datasets.id_acquisition_framework = af.id_acquisition_framework
+        """)
 
     op.execute("""
         CREATE TABLE gn_meta.cor_acquisition_framework_voletsinp (

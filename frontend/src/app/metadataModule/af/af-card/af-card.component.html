@@ -200,11 +200,11 @@
             </div>
             <div class="a">
               <b>{{ 'MetaData.DatasetCard.LandCoverage' | translate }} :</b>
-              {{ af?.terrestrial_domain ? 'oui' : 'non' }}
+              {{ (af?.terrestrial_domain ? 'Yes' : 'No') | translate }}
             </div>
             <div class="a">
               <b>{{ 'MetaData.DatasetCard.MarineAreaCoverage' | translate }} :</b>
-              {{ af?.marine_domain ? 'oui' : 'non' }}
+              {{ (af?.marine_domain ? 'Yes' : 'No') | translate }}
             </div>
 
             <br />
