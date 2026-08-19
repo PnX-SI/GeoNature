@@ -162,11 +162,12 @@ def get_dataset(scope, id_dataset):
     :returns: dict<TDataset>
     """
     dataset = (
-        db.session.query(TDatasets)
-        .options(joinedload(TDatasets.remote_database).joinedload(TRemoteDatabase.contact))
-        .filter(TDatasets.id_dataset == id_dataset)
-        .first()
-    )
+        db.session.execute(
+            select(TDatasets)
+            .options(joinedload(TDatasets.remote_database).joinedload(TRemoteDatabase.contact))
+            .where(TDatasets.id_dataset == id_dataset)
+        )
+    ).scalar_one_or_none()
     if dataset is None:
         raise NotFound(f"Dataset {id_dataset} not found")
     if not dataset.has_instance_permission(scope=scope):

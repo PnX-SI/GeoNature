@@ -154,8 +154,8 @@ class TDatasets(db.Model):
     additional_fields = DB.relationship(
         "TAdditionalFields", secondary=cor_field_dataset, back_populates="datasets"
     )
-    id_remote_database = DB.Column(
-        DB.Integer, ForeignKey("gn_meta.remote_database.id_remote_database"), nullable=True
+    id_remote_database: Mapped[Optional[int]] = mapped_column(
+        Integer, ForeignKey("gn_meta.remote_database.id_remote_database"), nullable=True
     )
     remote_database = DB.relationship(
         "TRemoteDatabase", lazy="joined", foreign_keys=[id_remote_database]

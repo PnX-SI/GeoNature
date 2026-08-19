@@ -1,4 +1,8 @@
-from sqlalchemy import ForeignKey
+import datetime
+from typing import Optional
+
+from sqlalchemy import DateTime, ForeignKey, Integer, Unicode
+from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.schema import FetchedValue
 from utils_flask_sqla.serializers import serializable
 
@@ -19,13 +23,19 @@ class TRemoteDatabase(DB.Model):
         {"schema": "gn_meta"},
     )
 
-    id_remote_database = DB.Column(DB.Integer, primary_key=True)
-    name = DB.Column(DB.Unicode, nullable=False, unique=True)
-    id_contact = DB.Column(DB.Integer, ForeignKey(User.id_role), nullable=True)
-    meta_create_date = DB.Column(DB.DateTime, server_default=FetchedValue())
-    meta_update_date = DB.Column(DB.DateTime, server_default=FetchedValue())
+    id_remote_database: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(Unicode, unique=True)
+    id_contact: Mapped[Optional[int]] = mapped_column(
+        Integer, ForeignKey(User.id_role), nullable=True
+    )
+    meta_create_date: Mapped[Optional[datetime.datetime]] = mapped_column(
+        DateTime, server_default=FetchedValue()
+    )
+    meta_update_date: Mapped[Optional[datetime.datetime]] = mapped_column(
+        DateTime, server_default=FetchedValue()
+    )
 
     contact = DB.relationship(User, lazy="joined", foreign_keys=[id_contact])
 
-    def __str__(self):
-        return self.name
+    def __repr__(self):
+        return f"RemoteDatabase<{self.name}>"
