@@ -206,7 +206,7 @@
   "Objective": "Objectif",
   "Objective(s)": "Objectif(s)",
   "Objectives": "Objectifs",
-  "Title": "Titre",
+  "Catalog": "Titre",
   "Description": "Description",
   "Validable": "Validable",
   "Valid": "Valide",
@@ -287,7 +287,9 @@
     },
     "Messages": {
       "NoJDD": "Aucun jeu de données n'a été trouvé, contactez votre administrateur",
+      "NoLinkedJDD": "Aucun jeu de données associé",
       "NoJDDMTD": "Aucun jeu de données n'a été trouvé, veuillez d'abord les saisir dans l'application MTD",
+      "NoLinkedAF": "Aucun cadre d'acquisition associé",
       "AF404": "Cadre d'acquisition inexistant",
       "DatasetAdded": "Jeu de donnée ajouté avec succès",
       "DatasetRemoved": "Jeu de donnée supprimé avec succès",
@@ -452,8 +454,8 @@
       "PreviousPage": "Page précédente",
       "NextPage": "Page suivante"
     },
-    "PublicationsList": {
-      "Title": "Catalogue des publications",
+    "Publications": {
+      "Catalog": "Catalogue des publications",
       "Publication": "Publication",
       "Publications": "Publications",
       "Reference": "Référence",
@@ -634,7 +636,7 @@
       }
     },
     "FieldMapping": {
-      "Title": "Correspondance des champs avec le modèle",
+      "Catalog": "Correspondance des champs avec le modèle",
       "MappingName": "Nom du modèle",
       "Messages": {
         "SourceFieldsMapped": "{{ mappedFieldsLength }} champs cibles ont été associés à un champs source.",
@@ -658,7 +660,7 @@
       }
     },
     "ContentMapping": {
-      "Title": "Correspondance des nomenclatures",
+      "Catalog": "Correspondance des nomenclatures",
       "Messages": {
         "NomenclatureValuesAllMapped": "L'ensemble des valeurs du fichier a été automatiquement associé aux nomenclatures.",
         "OneNomenclatureValueMapped": "Une seule valeur du fichier a été automatiquement associée aux valeurs des nomenclatures.",
@@ -676,7 +678,7 @@
       }
     },
     "ObserverMapping": {
-      "Title": "Correspondance des observateurs",
+      "Catalog": "Correspondance des observateurs",
       "Table": {
         "InTheFile": "Dans le fichier source",
         "InDatabase": "Dans GeoNature"
@@ -691,7 +693,7 @@
       }
     },
     "Errors": {
-      "Title": "Le module d'import a rencontré un problème",
+      "Catalog": "Le module d'import a rencontré un problème",
       "Remark": "Il s'agit d'un problème indépendant du controle des données.",
       "DescriptionRestart": "Vous pouvez essayer de relancer l'import après vérification des paramètres.",
       "DescriptionContactAdmin": "Si le problème persiste, merci de contacter votre administrateur.",

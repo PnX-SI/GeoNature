@@ -424,11 +424,8 @@ def disassociate_af_from_publication(scope):
     af_id = request.json.get("af_id", None)
     if not publication_id or not af_id:
         return jsonify({"error": "Missing publication or af id"}), 400
-    logging.info(f"1 Disassociating publication {publication_id} from af {af_id}")
     publication = db.get_or_404(TDatatypePublication, publication_id)
-    logging.info(f"2Disassociating publication {publication_id} from af {af_id}")
     af = db.get_or_404(TAcquisitionFramework, af_id)
-    logging.info(f"3Disassociating publication {publication_id} from af {af_id}")
     publication.has_instance_permission(scope=scope)
     af.has_instance_permission(scope=scope)
     try:

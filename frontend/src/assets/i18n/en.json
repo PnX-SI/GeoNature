@@ -9,15 +9,7 @@
     "Chinese": "🇨🇳 中文 (Chinese)"
   },
   "Calendar": {
-    "Weekdays": [
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-      "Sunday"
-    ],
+    "Weekdays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
     "Months": [
       "January",
       "February",
@@ -206,7 +198,7 @@
   "Objective": "Objective",
   "Objective(s)": "Objective(s)",
   "Objectives": "Objectives",
-  "Title": "Title",
+  "Catalog": "Title",
   "Description": "Description",
   "Validable": "Validable",
   "Valid": "Valid",
@@ -440,8 +432,8 @@
       "PreviousPage": "Previous page",
       "NextPage": "Next page"
     },
-    "PublicationsList": {
-      "Title": "Publications Catalog",
+    "Publications": {
+      "Catalog": "Publications Catalog",
       "Publication": "Publication",
       "Publications": "Publications",
       "Reference": "Reference",
@@ -461,7 +453,7 @@
       "AssociateToPublication": "Associate to a publication",
       "ConfirmDisassociate": "Are you sure you want to disassociate this publication ?",
       "ExternalLink": {
-        "Title": "External Redirect",
+        "Catalog": "External Redirect",
         "Warning": "Warning: This external link may redirect you to a third-party site and expose you to security risks.",
         "Confirm": "Confirm Redirect",
         "Link": "External Link: "
@@ -615,7 +607,7 @@
       }
     },
     "FieldMapping": {
-      "Title": "Field correspondence with the model",
+      "Catalog": "Field correspondence with the model",
       "MappingName": "Model name",
       "Messages": {
         "SourceFieldsMapped": "{{ mappedFieldsLength }} target fields have been associated with a source field.",
@@ -639,7 +631,7 @@
       }
     },
     "ContentMapping": {
-      "Title": "Nomenclature correspondence",
+      "Catalog": "Nomenclature correspondence",
       "Messages": {
         "NomenclatureValuesAllMapped": "All values in the file have been automatically associated with the nomenclatures.",
         "OneNomenclatureValueMapped": "Only one value in the file has been automatically associated with the nomenclature values.",
@@ -657,7 +649,7 @@
       }
     },
     "ObserverMapping": {
-      "Title": "Observer mapping",
+      "Catalog": "Observer mapping",
       "Table": {
         "InTheFile": "In the file",
         "InDatabase": "In GeoNature"
@@ -668,7 +660,7 @@
       }
     },
     "Errors": {
-      "Title": "The import module encountered a problem",
+      "Catalog": "The import module encountered a problem",
       "Remark": "This is a problem independent of data control.",
       "DescriptionRestart": "You can try to restart the import after checking the parameters.",
       "DescriptionContactAdmin": "If the problem persists, please contact your administrator.",

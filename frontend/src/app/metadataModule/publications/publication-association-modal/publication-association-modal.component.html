@@ -1,0 +1,70 @@
+<div class="modal-header">
+  <h5 class="modal-title">{{ 'MetaData.Publications.AssociateToPublication' | translate }}</h5>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="cancel()"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label for="target">
+        {{ getTargetName() }}
+      </label>
+
+      <ng-select
+        id="target"
+        formControlName="targetElement"
+        [items]="targetItems"
+        [searchable]="true"
+        [clearable]="true"
+      >
+        <ng-template
+          ng-option-tmp
+          let-item="item"
+        >
+          {{ getItemLabel(item) }}
+        </ng-template>
+
+        <ng-template
+          ng-label-tmp
+          let-item="item"
+        >
+          {{ getItemLabel(item) }}
+        </ng-template>
+      </ng-select>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button
+    type="button"
+    mat-raised-button
+    color="warn"
+    (click)="cancel()"
+    [disabled]="isLoading"
+  >
+    {{ 'Actions.Cancel' | translate }}
+  </button>
+
+  <button
+    type="button"
+    mat-raised-button
+    color="primary"
+    (click)="submit()"
+    [disabled]="form?.invalid || isLoading"
+  >
+    <mat-spinner
+      *ngIf="isLoading"
+      diameter="20"
+      class="mr-2"
+    ></mat-spinner>
+    {{ 'Actions.Associate' | translate }}
+  </button>
+</div>
