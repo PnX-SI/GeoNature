@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ProductionDatabaseFormDialogComponent } from './production-database-form-dialog';
 import { MetadataDataService } from '../services/metadata-data.service';
 import { CommonService } from '@geonature_common/service/common.service';
+import { ModuleService } from '@geonature/services/module.service';
 
 @Component({
   selector: 'pnx-metadata-production-database',
@@ -17,19 +18,26 @@ export class ProductionDatabaseComponent implements OnInit {
   @Input() productionDatabases: Observable<any[]>;
   @Output() productionDatabaseRefreshed = new EventEmitter<Observable<any[]>>();
 
+  public canAdd: boolean = false;
   constructor(
     private dialog: MatDialog,
     private metadataDataS: MetadataDataService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private _moduleService: ModuleService
   ) {}
 
   ngOnInit() {
     if (!this.productionDatabases) {
       this.productionDatabases = this.metadataDataS.getProductionDatabases();
     }
+    this.canAdd =
+      this._moduleService.currentModule?.module_objects?.PRODUCTION_DATABASE?.cruved.C > 0;
   }
 
   openProductionDatabaseDialog(): void {
+    if (!this.canAdd) {
+      return;
+    }
     const dialogRef = this.dialog.open(ProductionDatabaseFormDialogComponent, {
       width: '600px',
       disableClose: false,

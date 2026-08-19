@@ -23,6 +23,9 @@ class ProductionDatabaseAdmin(CruvedProtectedMixin, ModelView):
         "contact": {"label": "Contact", "get_label": "nom_complet"},
     }
 
+    def is_accessible(self):
+        return self._can_action("C")
+
     def delete_model(self, model):
         """
         Empêche la suppression d'une base de données de production encore

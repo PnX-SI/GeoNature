@@ -1284,7 +1284,7 @@ def get_production_databases() -> list[dict]:
 
 
 @routes.route("/production_database/<int:id_production_database>", methods=["GET"])
-@permissions.check_cruved_scope("R", module_code="METADATA")
+@permissions.check_cruved_scope("R", module_code="METADATA", object_code="PRODUCTION_DATABASE")
 @json_resp
 def get_production_database(id_production_database: int) -> dict:
     """
@@ -1296,7 +1296,7 @@ def get_production_database(id_production_database: int) -> dict:
 
 
 @routes.route("/production_database", methods=["POST"])
-@permissions.check_cruved_scope("C", module_code="METADATA")
+@permissions.check_cruved_scope("C", module_code="METADATA", object_code="PRODUCTION_DATABASE")
 @json_resp
 def create_production_database() -> dict:
     """
@@ -1313,7 +1313,7 @@ def create_production_database() -> dict:
 
 
 @routes.route("/production_database/<int:id_production_database>", methods=["PUT"])
-@permissions.check_cruved_scope("U", module_code="METADATA")
+@permissions.check_cruved_scope("U", module_code="METADATA", object_code="PRODUCTION_DATABASE")
 @json_resp
 def update_production_database(id_production_database: int) -> dict:
     """
@@ -1326,3 +1326,12 @@ def update_production_database(id_production_database: int) -> dict:
 
     db.session.commit()
     return schema.dump(updated_database)
+
+
+@routes.route("/production_database/<int:id_production_database>", methods=["DELETE"])
+@permissions.check_cruved_scope("D", module_code="METADATA", object_code="PRODUCTION_DATABASE")
+def delete_production_database(id_production_database: int):
+    database = db.get_or_404(TProductionDatabase, id_production_database)
+    db.session.delete(database)
+    db.session.commit()
+    return "", 204

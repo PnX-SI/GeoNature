@@ -1659,6 +1659,37 @@ class TestProductionDatabase:
         )
         assert response.status_code == NotFound.code
 
+    def test_delete_production_database(self, users, production_database):
+        url = url_for(
+            "gn_meta.delete_production_database",
+            id_production_database=production_database.id_production_database,
+        )
+
+        response = self.client.delete(url)
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user(self.client, users["noright_user"])
+        response = self.client.delete(url)
+        assert response.status_code == Forbidden.code
+
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.delete(url)
+        assert response.status_code == 204
+
+        assert (
+            db.session.get(TProductionDatabase, production_database.id_production_database) is None
+        )
+
+    def test_delete_production_database_not_found(self, users, unexisted_production_database_id):
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.delete(
+            url_for(
+                "gn_meta.delete_production_database",
+                id_production_database=unexisted_production_database_id,
+            )
+        )
+        assert response.status_code == NotFound.code
+
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestPublication:

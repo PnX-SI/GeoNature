@@ -16,6 +16,7 @@
       class="btn-success"
       matTooltip="{{ 'MetaData.ProductionDatabase.AddDatabase' | translate }}"
       (click)="openProductionDatabaseDialog()"
+      *ngIf="canAdd"
     >
       <strong>+</strong>
     </button>
