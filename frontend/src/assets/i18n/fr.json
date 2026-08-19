@@ -415,6 +415,7 @@
       "MainContact": "Contact principal",
       "DataOrigin": "Origine des données",
       "ResourceType": "Type de ressource",
+      "EbvClasses": "Classe(s) EBV",
       "FacultativeTaxaList": "Liste de taxons (facultatif)",
       "SpecificGeonature": "Spécifique GeoNature",
       "RequiredToImportAndEnterData": "Requis pour saisir et importer des données dans le jeu de données"

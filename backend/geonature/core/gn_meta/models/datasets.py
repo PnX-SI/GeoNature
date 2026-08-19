@@ -5,7 +5,7 @@ from flask import g
 import sqlalchemy as sa
 from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, Unicode, or_, func
 from sqlalchemy.sql import select, func
-from sqlalchemy.orm import relationship, Mapped, mapped_column
+from sqlalchemy.orm import backref, relationship, Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import JSONB, UUID as UUIDType
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.schema import FetchedValue
@@ -131,6 +131,11 @@ class TDatasets(db.Model):
         TNomenclatures,
         secondary=cor_dataset_territory,
         backref=DB.backref("territory_dataset"),
+    )
+
+    cor_classes_ebv: Mapped[list[TNomenclatures]] = relationship(
+        secondary=cor_dataset_classe_ebv,
+        backref=backref("classe_ebv_dataset"),
     )
 
     # because CorDatasetActor could be an User or an Organisme object...

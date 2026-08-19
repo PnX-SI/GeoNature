@@ -154,6 +154,17 @@
           <div>
             <pnx-nomenclature
               [multiSelect]="true"
+              label="{{ 'MetaData.DatasetForm.EbvClasses' | translate }}"
+              [parentFormControl]="form.get('cor_classes_ebv')"
+              codeNomenclatureType="JDD_CLASSE_EBV"
+              [bindAllItem]="true"
+              data-qa="pnx-dataset-form-classe-ebv"
+            ></pnx-nomenclature>
+          </div>
+
+          <div>
+            <pnx-nomenclature
+              [multiSelect]="true"
               label="{{ 'Geo.Territories' | translate }}"
               [parentFormControl]="form.get('cor_territories')"
               codeNomenclatureType="TERRITOIRE"

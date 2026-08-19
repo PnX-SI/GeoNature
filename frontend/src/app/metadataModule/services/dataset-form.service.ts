@@ -77,6 +77,7 @@ export class DatasetFormService {
       cor_objectifs: [[], Validators.required],
       cor_territories: [[], Validators.required],
       id_production_database: null,
+      cor_classes_ebv: [[]],
       cor_dataset_actor: this.fb.array(
         [],
         [
