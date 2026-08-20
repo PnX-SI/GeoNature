@@ -47,11 +47,13 @@ from geonature.core.gn_meta.models import (
     TDatatypePublication,
     cor_dataset_publication,
     cor_acquisition_framework_publication,
+    TProductionDatabase,
 )
 from geonature.core.gn_meta.schemas import (
     AcquisitionFrameworkSchema,
     DatasetSchema,
     PublicationSchema,
+    ProductionDatabaseSchema,
 )
 from utils_flask_sqla.response import json_resp, to_csv_resp, generate_csv_content
 from utils_flask_sqla.db import ordered
@@ -160,7 +162,17 @@ def get_dataset(scope, id_dataset):
     :param type: int
     :returns: dict<TDataset>
     """
-    dataset = db.get_or_404(TDatasets, id_dataset)
+    dataset = (
+        db.session.execute(
+            select(TDatasets)
+            .options(
+                joinedload(TDatasets.production_database).joinedload(TProductionDatabase.contact)
+            )
+            .where(TDatasets.id_dataset == id_dataset)
+        )
+    ).scalar_one_or_none()
+    if dataset is None:
+        raise NotFound(f"Dataset {id_dataset} not found")
     if not dataset.has_instance_permission(scope=scope):
         raise Forbidden(f"User {g.current_user} cannot read dataset {dataset.id_dataset}")
 
@@ -188,6 +200,10 @@ def get_dataset(scope, id_dataset):
             "acquisition_framework.cor_af_actor.role",
             "sources",
             "publications",
+            "production_database.id_production_database",
+            "production_database.name",
+            "production_database.contact.identifiant",
+            "production_database.contact.id_role",
         ]
     )
     return dataset_schema.jsonify(dataset)
@@ -1250,3 +1266,73 @@ def close_acquisition_framework(af_id):
         db.session.commit()  # On commit que si tout a bien fonctionné
 
     return af.as_dict()
+
+
+@routes.route("/production_database", methods=["GET"])
+@permissions.check_cruved_scope("R", module_code="METADATA")
+@json_resp
+def get_production_databases() -> list[dict]:
+    """
+    Get all production databases
+    """
+    databases = (
+        db.session.execute(select(TProductionDatabase).order_by(TProductionDatabase.name))
+        .scalars()
+        .all()
+    )
+    schema = ProductionDatabaseSchema(many=True)
+    return schema.dump(databases)
+
+
+@routes.route("/production_database/<int:id_production_database>", methods=["GET"])
+@permissions.check_cruved_scope("R", module_code="METADATA", object_code="PRODUCTION_DATABASE")
+@json_resp
+def get_production_database(id_production_database: int) -> dict:
+    """
+    Get production database detail
+    """
+    database = db.get_or_404(TProductionDatabase, id_production_database)
+    schema = ProductionDatabaseSchema()
+    return schema.dump(database)
+
+
+@routes.route("/production_database", methods=["POST"])
+@permissions.check_cruved_scope("C", module_code="METADATA", object_code="PRODUCTION_DATABASE")
+@json_resp
+def create_production_database() -> dict:
+    """
+    Create a new production database
+    """
+    data = request.get_json()
+    schema = ProductionDatabaseSchema()
+    data = schema.load(data)
+
+    db.session.add(data)
+    db.session.commit()
+
+    return schema.dump(data)
+
+
+@routes.route("/production_database/<int:id_production_database>", methods=["PUT"])
+@permissions.check_cruved_scope("U", module_code="METADATA", object_code="PRODUCTION_DATABASE")
+@json_resp
+def update_production_database(id_production_database: int) -> dict:
+    """
+    Update a production database
+    """
+    database = db.get_or_404(TProductionDatabase, id_production_database)
+    data = request.get_json()
+    schema = ProductionDatabaseSchema()
+    updated_database = schema.load(data, instance=database, partial=True)
+
+    db.session.commit()
+    return schema.dump(updated_database)
+
+
+@routes.route("/production_database/<int:id_production_database>", methods=["DELETE"])
+@permissions.check_cruved_scope("D", module_code="METADATA", object_code="PRODUCTION_DATABASE")
+def delete_production_database(id_production_database: int):
+    database = db.get_or_404(TProductionDatabase, id_production_database)
+    db.session.delete(database)
+    db.session.commit()
+    return "", 204

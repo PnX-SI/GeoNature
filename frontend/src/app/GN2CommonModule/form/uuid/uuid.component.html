@@ -3,10 +3,15 @@
   class="form-control form-control-sm"
   type="text"
   [placeholder]="placeholder"
-  [formControl]="formControl"
+  [formControl]="parentFormControl"
 />
 <!-- mettre le placeholder dans les fichiers de traductions -->
-<div *ngIf="formControl?.hasError('invalidUuid') && (formControl?.touched || formControl?.dirty)">
+<div
+  *ngIf="
+    parentFormControl?.hasError('invalidUuid') &&
+    (parentFormControl?.touched || parentFormControl?.dirty)
+  "
+>
   <small
     class="error"
     style="color: red"

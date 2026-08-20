@@ -12,5 +12,5 @@ export class UUIDComponent {
   placeholder: string = '';
 
   @Input()
-  formControl: FormControl = null;
+  parentFormControl: FormControl = null;
 }

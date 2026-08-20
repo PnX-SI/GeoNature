@@ -26,8 +26,10 @@ export class DatasetFormComponent implements OnInit {
   public form: UntypedFormGroup;
   //observable pour la liste déroulantes HTML des AF
   public acquisitionFrameworks: Observable<any>;
+  public productionDatabases: Observable<any>;
   public taxaBibList: number;
   public uuidEditionEnabled: boolean = true;
+  public productionDatabaseEditionEnabled: boolean = true;
   public entityLabel: string;
   public isAcquisitionFrameworkOpened: boolean = true;
 
@@ -47,6 +49,8 @@ export class DatasetFormComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.productionDatabases = this.metadataDataS.getProductionDatabases();
+
     // get the id from the route
     this._route.params
       .pipe(
@@ -94,6 +98,8 @@ export class DatasetFormComponent implements OnInit {
 
     this._dfs.getTaxaBibList().subscribe((d) => (this.taxaBibList = d));
     this.uuidEditionEnabled = this._config.METADATA.ENABLE_UUID_EDITION_FIELD;
+    this.productionDatabaseEditionEnabled =
+      this._config.METADATA.ENABLE_PRODUCTION_DATABASE_EDITION_FIELD;
     this.entityLabel = this.translation_service.instant('Dataset');
   }
 
