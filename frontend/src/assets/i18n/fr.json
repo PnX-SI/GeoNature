@@ -428,7 +428,7 @@
       "AssociatedActor": "Acteur lié",
       "CreateTitle": "Créer base de données de production",
       "CreatedSuccess": "Base de données de production créée avec succès",
-      "CreatedError": "La base de données de production n'a pas pu être crée",
+      "CreatedError": "La base de données de production n'a pas pu être créée",
       "NameAlreadyExists": "Ce nom existe déjà"
     },
     "Organisms": {

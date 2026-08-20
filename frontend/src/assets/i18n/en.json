@@ -421,15 +421,15 @@
       }
     },
     "ProductionDatabase": {
-      "ProductionDatabase": "Production Database",
-      "AddDatabase": "Add a Production Database",
+      "ProductionDatabase": "Production database",
+      "AddDatabase": "Add a production database",
       "Name": "Name",
-      "NameRequired": "Name Required",
-      "AssociatedActor": "Associated Actor",
-      "CreateTitle": "Create Production Database",
-      "CreatedSuccess": "Production Database Created Successfully",
-      "CreatedError": "Production Database Could Not Be Created",
-      "NameAlreadyExists": "This Name Already Exists"
+      "NameRequired": "Name required",
+      "AssociatedActor": "Associated actor",
+      "CreateTitle": "Create production database",
+      "CreatedSuccess": "Production database created successfully",
+      "CreatedError": "Production database could not be created",
+      "NameAlreadyExists": "This name already exists"
     },
     "Organisms": {
       "CreateOrganism": "Add an organism",

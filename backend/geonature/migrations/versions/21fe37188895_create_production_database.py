@@ -1,7 +1,7 @@
 """Create production_database table
 
 Revision ID: 21fe37188895
-Revises: 0444c425fa27
+Revises: 570a8b7a030c
 Create Date: 2026-07-15 11:10:00
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = "21fe37188895"
-down_revision = "0444c425fa27"
+down_revision = "570a8b7a030c"
 branch_labels = None
 depends_on = None
 
@@ -23,8 +23,8 @@ app_name = current_app.config["appName"]
 def upgrade():
     op.create_table(
         "production_database",
-        sa.Column("id_production_database", sa.Integer(), nullable=False),
-        sa.Column("uuid_production_database", sa.UUID, nullable=True),
+        sa.Column("id_production_database", sa.Integer(), nullable=False, primary_key=True),
+        sa.Column("uuid_production_database", sa.UUID, nullable=True, unique=True),
         sa.Column("name", sa.Unicode(), nullable=False),
         sa.Column("id_contact", sa.Integer(), nullable=True),
         sa.Column("meta_create_date", sa.DateTime(), server_default=sa.func.now(), nullable=True),
@@ -34,19 +34,17 @@ def upgrade():
             ["id_contact"],
             ["utilisateurs.t_roles.id_role"],
         ),
-        sa.PrimaryKeyConstraint("id_production_database"),
-        sa.UniqueConstraint("name", name="uk_production_database_name"),
         schema="gn_meta",
     )
     op.create_index(
-        op.f("ix_gn_meta_production_database_name"),
+        op.f("idx_gn_meta_production_database_name"),
         "production_database",
         ["name"],
         unique=True,
         schema="gn_meta",
     )
     op.create_index(
-        "ix_gn_meta_production_database_unique_is_default",
+        "idx_gn_meta_production_database_unique_is_default",
         "production_database",
         ["is_default"],
         unique=True,
