@@ -40,9 +40,9 @@ export class PublicationAssociationModalComponent implements OnInit {
 
   getTargetName(): string {
     const labels: { [key: string]: string } = {
-      AcquisitionFramework: 'AcquisitionFrameworks',
-      Dataset: 'Datasets',
-      Publication: 'MetaData.Publications.Publications',
+      AcquisitionFramework: 'AcquisitionFramework',
+      Dataset: 'Dataset',
+      Publication: 'MetaData.Publications.Publication',
     };
 
     return this.translateService.instant(labels[this.to]);
