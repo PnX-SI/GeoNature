@@ -174,8 +174,6 @@ def create_dataset(
         "dataset_shortname": "import_dataset",
         "dataset_desc": "import_dataset description",
         "keywords": None,
-        "terrestrial_domain": True,
-        "marine_domain": False,
         "id_nomenclature_data_origin": id_nomenclature_data_origin,
         "validable": True,
         "active": active,

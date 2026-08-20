@@ -20,7 +20,9 @@ CREATE TABLE gn_meta.t_acquisition_frameworks (
     meta_create_date timestamp without time zone NOT NULL,
     meta_update_date timestamp without time zone,
     initial_closing_date timestamp without time zone,
-    additional_data jsonb DEFAULT '{}'::jsonb
+    additional_data jsonb DEFAULT '{}'::jsonb,
+    marine_domain boolean NOT NULL DEFAULT False,
+    terrestrial_domain boolean NOT NULL DEFAULT False,
 );
 
 COMMENT ON TABLE gn_meta.t_acquisition_frameworks IS 'Define a acquisition framework that embed datasets. Implement 1.3.10 SINP metadata standard';

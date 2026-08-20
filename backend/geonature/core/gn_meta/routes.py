@@ -1012,7 +1012,6 @@ def get_acquisition_framework(scope, id_acquisition_framework):
                 "cor_af_actor.nomenclature_actor_role",
                 "cor_af_actor.organism",
                 "cor_af_actor.role",
-                "cor_volets_sinp",
                 "cor_objectifs",
                 "cor_territories",
                 "datasets",
