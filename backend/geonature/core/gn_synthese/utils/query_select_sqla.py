@@ -14,7 +14,7 @@ from enum import Enum
 from flask import current_app
 
 import sqlalchemy as sa
-from sqlalchemy import func, or_, and_, case, select, distinct, inspect
+from sqlalchemy import extract, func, or_, and_, case, select, distinct, inspect, tuple_
 from sqlalchemy.sql import text
 from sqlalchemy.orm import aliased
 from werkzeug.exceptions import BadRequest
@@ -505,20 +505,31 @@ class SyntheseQuery:
             self.filters.pop("geoIntersection")
 
         if "period_start" in self.filters and "period_end" in self.filters:
-            period_start = self.filters.pop("period_start")
-            period_end = self.filters.pop("period_end")
+            period_start = self.filters.pop("period_start")  # e.g. "09-09" (DD-MM)
+            period_end = self.filters.pop("period_end")  # e.g. "11-12" (DD-MM)
+
+            start_day, start_month = (int(x) for x in period_start.split("-"))
+            end_day, end_month = (int(x) for x in period_end.split("-"))
+
+            start_tuple = (start_month, start_day)
+            end_tuple = (end_month, end_day)
+
+            def in_period(date_col):
+                md = tuple_(
+                    extract("month", date_col),
+                    extract("day", date_col),
+                )
+                if start_tuple <= end_tuple:
+                    # normal range, e.g. Sept 9 -> Dec 11
+                    return md.between(start_tuple, end_tuple)
+                else:
+                    # wrap-around range, e.g. Dec 15 -> Jan 10
+                    return or_(md >= start_tuple, md <= end_tuple)
+
             self.query = self.query.where(
                 or_(
-                    func.gn_commons.is_in_period(
-                        func.date(self.model.date_min),
-                        func.to_date(period_start, "DD-MM"),
-                        func.to_date(period_end, "DD-MM"),
-                    ),
-                    func.gn_commons.is_in_period(
-                        func.date(self.model.date_max),
-                        func.to_date(period_start, "DD-MM"),
-                        func.to_date(period_end, "DD-MM"),
-                    ),
+                    in_period(func.date(self.model.date_min)),
+                    in_period(func.date(self.model.date_max)),
                 )
             )
         if "unique_id_sinp" in self.filters:
