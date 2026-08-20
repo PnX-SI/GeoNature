@@ -1,7 +1,7 @@
 <div class="row">
   <div
-    *ngIf="config.OCCTAX.form_fields.obj_count"
-    class="col-lg-4 col-sm-4"
+    *ngIf="occtaxConfig.moduleConf.form_fields.obj_count"
+    class="col-lg-4 col-sm-6"
   >
     <pnx-nomenclature
       label="{{ 'Occtax.Counting.CountingObject' | translate }}"
@@ -14,8 +14,8 @@
     ></pnx-nomenclature>
   </div>
   <div
-    *ngIf="config.OCCTAX.form_fields.type_count"
-    class="col-lg-4 col-sm-4"
+    *ngIf="occtaxConfig.moduleConf.form_fields.type_count"
+    class="col-lg-4 col-sm-6"
   >
     <pnx-nomenclature
       #typeDenombrement
@@ -57,7 +57,7 @@
   <div class="col-6">
     <div class="row">
       <div
-        *ngIf="config.OCCTAX.form_fields.count_min"
+        *ngIf="occtaxConfig.moduleConf.form_fields.count_min"
         class="col-6"
       >
         <small>{{ 'Occtax.Counting.NumberMin' | translate }}</small>
@@ -70,7 +70,7 @@
         />
       </div>
       <div
-        *ngIf="config.OCCTAX.form_fields.count_max"
+        *ngIf="occtaxConfig.moduleConf.form_fields.count_max"
         class="col-6"
       >
         <small>{{ 'Occtax.Counting.NumberMax' | translate }}</small>
@@ -94,7 +94,7 @@
   </div>
 
   <div
-    *ngIf="config.OCCTAX.form_fields.life_stage"
+    *ngIf="occtaxConfig.moduleConf.form_fields.life_stage"
     class="col-3"
   >
     <pnx-nomenclature
@@ -117,7 +117,7 @@
     </small>
   </div>
   <div
-    *ngIf="config.OCCTAX.form_fields.sex"
+    *ngIf="occtaxConfig.moduleConf.form_fields.sex"
     class="col-3"
   >
     <pnx-nomenclature
@@ -151,7 +151,7 @@
 <div class="row">
   <div
     id="occurrence-medias"
-    *ngIf="config.OCCTAX.ENABLE_MEDIAS"
+    *ngIf="occtaxConfig.moduleConf.ENABLE_MEDIAS"
     class="col-sm-12"
   >
     <h6 style="margin-top: 15px">
@@ -168,7 +168,7 @@
       [parentFormControl]="form.controls.medias"
       [sizeMax]="config.MEDIAS.MEDIAS_SIZE_MAX"
       [default]="defaultsMedia()"
-      [details]="config.OCCTAX.MEDIA_FIELDS_DETAILS"
+      [details]="occtaxConfig.moduleConf.MEDIA_FIELDS_DETAILS"
       [disabled]="!taxref"
       disabledTxt="Veuillez choisir un taxon avant de renseigner les médias"
     ></pnx-medias>
