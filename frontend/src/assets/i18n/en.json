@@ -425,7 +425,6 @@
       "AddDatabase": "Add a production database",
       "Name": "Name",
       "NameRequired": "Name required",
-      "AssociatedActor": "Associated actor",
       "CreateTitle": "Create production database",
       "CreatedSuccess": "Production database created successfully",
       "CreatedError": "Production database could not be created",
