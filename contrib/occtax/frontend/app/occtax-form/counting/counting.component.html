@@ -27,15 +27,16 @@
       [group3Inpn]="(occtaxFormOccurrenceService.taxref | async)?.group3_inpn"
     ></pnx-nomenclature>
   </div>
-  <div class="col-lg-4 col-sm-4" *ngIf="config.OCCTAX.form_fields.individual">
+  <div
+    class="col-lg-4 col-sm-4"
+    *ngIf="config.OCCTAX.form_fields.individual"
+  >
     <pnx-individuals
       [hidden]="nbIndiv === 0 || cdNomenclatureObjDen !== 'IND'"
       moduleCode="OCCTAX"
       [parentFormControl]="form.get('id_individual')"
       [cdNom]="(occtaxFormOccurrenceService.taxref | async)?.cd_nom"
-      [showAddButton]="
-        moduleService.currentModule.module_objects.INDIVIDUALS.cruved.C > 0
-      "
+      [showAddButton]="moduleService.currentModule.module_objects.INDIVIDUALS.cruved.C > 0"
       label="{{ 'Individual.Name' | translate }}"
       (nbIndividuals)="setNbIndiv($event)"
     ></pnx-individuals>
@@ -49,14 +50,17 @@
   class="error"
   style="color: red"
 >
-  {{ "Occtax.Counting.Errors.CountingObjectRequiredError" | translate }}
+  {{ 'Occtax.Counting.Errors.CountingObjectRequiredError' | translate }}
 </small>
 
 <div class="row">
   <div class="col-6">
     <div class="row">
-      <div *ngIf="occtaxConfig.moduleConf.form_fields.count_min" class="col-6">
-        <small>{{ "Occtax.Counting.NumberMin" | translate }}</small>
+      <div
+        *ngIf="occtaxConfig.moduleConf.form_fields.count_min"
+        class="col-6"
+      >
+        <small>{{ 'Occtax.Counting.NumberMin' | translate }}</small>
         <input
           data-qa="counting-count-min"
           class="form-control form-control-sm"
@@ -65,8 +69,11 @@
           [formControl]="form.get('count_min')"
         />
       </div>
-      <div *ngIf="occtaxConfig.moduleConf.form_fields.count_max" class="col-6">
-        <small>{{ "Occtax.Counting.NumberMax" | translate }}</small>
+      <div
+        *ngIf="occtaxConfig.moduleConf.form_fields.count_max"
+        class="col-6"
+      >
+        <small>{{ 'Occtax.Counting.NumberMax' | translate }}</small>
         <input
           data-qa="counting-count-max"
           class="form-control form-control-sm"
@@ -82,11 +89,14 @@
       class="error"
       style="color: red"
     >
-      {{ "Occtax.Counting.Errors.CountError" | translate }}
+      {{ 'Occtax.Counting.Errors.CountError' | translate }}
     </small>
   </div>
 
-  <div *ngIf="occtaxConfig.moduleConf.form_fields.life_stage" class="col-3">
+  <div
+    *ngIf="occtaxConfig.moduleConf.form_fields.life_stage"
+    class="col-3"
+  >
     <pnx-nomenclature
       label="{{ 'Occtax.Counting.LifeStage' | translate }}"
       codeNomenclatureType="STADE_VIE"
@@ -103,10 +113,13 @@
       class="error"
       style="color: red"
     >
-      {{ "Occtax.Counting.Errors.LifeStageRequiredError" | translate }}
+      {{ 'Occtax.Counting.Errors.LifeStageRequiredError' | translate }}
     </small>
   </div>
-  <div *ngIf="occtaxConfig.moduleConf.form_fields.sex" class="col-3">
+  <div
+    *ngIf="occtaxConfig.moduleConf.form_fields.sex"
+    class="col-3"
+  >
     <pnx-nomenclature
       label="{{ 'Occtax.Counting.Sex' | translate }}"
       codeNomenclatureType="SEXE"
@@ -123,7 +136,7 @@
       class="error"
       style="color: red"
     >
-      {{ "Occtax.Counting.Errors.SexRequiredError" | translate }}
+      {{ 'Occtax.Counting.Errors.SexRequiredError' | translate }}
     </small>
   </div>
 </div>
@@ -147,7 +160,7 @@
         matBadgeOverlap="false"
         class="color-add-media"
       >
-        {{ "Media.Medias" | translate }}
+        {{ 'Media.Medias' | translate }}
       </span>
     </h6>
     <pnx-medias
