@@ -155,6 +155,15 @@ class ReleveSchema(MA.SQLAlchemyAutoSchema):
             pass
 
     t_vegetation_stratum = fields.Nested(VegetationStratumSchema, many=True)
+    # __init__ is overridden because g.module_conf is only available during
+    # a request context (i.e., at instantiation time), not at class definition time.
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        try:
+            observers_allow_none = g.module_conf.get("observers_txt", True)
+            self.fields["observers"].allow_none = observers_allow_none
+        except:
+            pass
 
     @pre_load
     def make_releve(self, data, **kwargs):
