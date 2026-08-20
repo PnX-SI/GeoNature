@@ -42,7 +42,8 @@ export class AcquisitionFrameworkFormService {
         //formate les donnés par défauts envoyées au formulaire
         return {
           is_parent: false,
-          cor_volets_sinp: [],
+          terrestrial_domain: false,
+          marine_domain: false,
           cor_af_actor: [{ id_nomenclature_actor_role: id_nomenclature }],
           additional_data: {},
         };
@@ -66,7 +67,8 @@ export class AcquisitionFrameworkFormService {
       acquisition_framework_start_date: [null, Validators.required],
       acquisition_framework_end_date: null,
       cor_objectifs: [[], Validators.required],
-      cor_volets_sinp: [[]],
+      terrestrial_domain: null,
+      marine_domain: null,
       cor_territories: [[], Validators.required],
       cor_af_actor: this.fb.array(
         [],

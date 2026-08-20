@@ -20,7 +20,7 @@ down_revision = None
 branch_labels = ("occhab-samples",)
 depends_on = (
     "2984569d5df6",  # occhab
-    "ae0b6362fb22",  # geonature@ae0b6362fb22 - "cor_dataset_objectifs"
+    "7808ac8b10b6",  # geonature@7808ac8b10b6 - "refactor terrestrial and marine domain fields for metadata"
 )
 
 

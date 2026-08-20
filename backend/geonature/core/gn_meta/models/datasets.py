@@ -53,8 +53,6 @@ class TDatasets(db.Model):
         default=lambda: TNomenclatures.get_default_nomenclature("DATA_TYP"),
     )
     keywords: Mapped[Optional[str]] = mapped_column(Unicode)
-    marine_domain: Mapped[bool] = mapped_column(Boolean)
-    terrestrial_domain: Mapped[bool] = mapped_column(Boolean)
     bbox_west: Mapped[Optional[float]] = mapped_column(Float)
     bbox_east: Mapped[Optional[float]] = mapped_column(Float)
     bbox_south: Mapped[Optional[float]] = mapped_column(Float)

@@ -9,8 +9,6 @@ CREATE TABLE gn_meta.t_datasets (
     dataset_desc text NOT NULL,
     id_nomenclature_data_type integer DEFAULT ref_nomenclatures.get_default_nomenclature_value('DATA_TYP'::character varying) NOT NULL,
     keywords text,
-    marine_domain boolean NOT NULL,
-    terrestrial_domain boolean NOT NULL,
     id_nomenclature_dataset_objectif integer DEFAULT ref_nomenclatures.get_default_nomenclature_value('JDD_OBJECTIFS'::character varying) NOT NULL,
     bbox_west real,
     bbox_east real,
@@ -46,10 +44,6 @@ COMMENT ON COLUMN gn_meta.t_datasets.dataset_desc IS 'Correspondance standard SI
 COMMENT ON COLUMN gn_meta.t_datasets.id_nomenclature_data_type IS 'Correspondance standard SINP = typeDonnees : Type de données du jeu de données tel que défini dans la nomenclature TypeDonneesValue - OBLIGATOIRE';
 
 COMMENT ON COLUMN gn_meta.t_datasets.keywords IS 'Correspondance standard SINP = motCle : Mot(s)-clé(s) représentatifs du jeu de données, séparés par des virgules - FACULTATIF';
-
-COMMENT ON COLUMN gn_meta.t_datasets.marine_domain IS 'Correspondance standard SINP = domaineMarin : Indique si le jeu de données concerne le domaine marin - OBLIGATOIRE';
-
-COMMENT ON COLUMN gn_meta.t_datasets.terrestrial_domain IS 'Correspondance standard SINP = domaineTerrestre : Indique si le jeu de données concerne le domaine terrestre - OBLIGATOIRE';
 
 COMMENT ON COLUMN gn_meta.t_datasets.id_nomenclature_dataset_objectif IS 'Correspondance standard SINP = objectifJdd : Objectif du jeu de données tel que défini par la nomenclature ObjectifJeuDonneesValue - OBLIGATOIRE';
 

@@ -84,7 +84,7 @@ def acquisition_framework_handler(request, *, acquisition_framework, partial=Fal
         acquisition_framework.id_digitizer = g.current_user.id_role
 
     acquisitionFrameworkSchema = AcquisitionFrameworkSchema(
-        only=["cor_af_actor", "cor_volets_sinp", "cor_objectifs", "cor_territories"],
+        only=["cor_af_actor", "cor_objectifs", "cor_territories"],
         unknown=EXCLUDE,
         partial=partial,
     )
