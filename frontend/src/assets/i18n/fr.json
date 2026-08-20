@@ -425,7 +425,6 @@
       "AddDatabase": "Ajouter une base de données de production",
       "Name": "Nom",
       "NameRequired": "Nom requis",
-      "AssociatedActor": "Acteur lié",
       "CreateTitle": "Créer base de données de production",
       "CreatedSuccess": "Base de données de production créée avec succès",
       "CreatedError": "La base de données de production n'a pas pu être créée",
