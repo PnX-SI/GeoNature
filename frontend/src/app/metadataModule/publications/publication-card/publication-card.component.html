@@ -40,7 +40,7 @@
               </button>
               <pnx-publication-consult-button
                 [publicationUrl]="publication.publication_url"
-                [detailLook]="true"
+                displayStyle="detailLook"
               ></pnx-publication-consult-button>
             </div>
           </div>
@@ -76,15 +76,10 @@
 
           <div class="a">
             <b>{{ 'Url' | translate }} :</b>
-            <a
-              *ngIf="publication?.publication_url; else noUrl"
-              [href]="publication?.publication_url"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {{ publication?.publication_url }}
-            </a>
-            <ng-template #noUrl>-</ng-template>
+            <pnx-publication-consult-button
+              [publicationUrl]="publication.publication_url"
+              displayStyle="simpleUrl"
+            ></pnx-publication-consult-button>
           </div>
 
           <div class="a">
