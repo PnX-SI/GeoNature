@@ -73,7 +73,7 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
     # NOT NULL columns populated server-side (Python default= / DB default) that clients
     # legitimately omit or send as null on creation — see TDatasets model for the defaults.
     unique_dataset_id = MA.auto_field(required=False, allow_none=True)
-    id_nomenclature_data_type = MA.auto_field(required=False)
+    id_nomenclature_data_category = MA.auto_field(required=False)
     id_nomenclature_collecting_method = MA.auto_field(required=False)
     id_nomenclature_data_origin = MA.auto_field(required=False, allow_none=True)
     id_nomenclature_source_status = MA.auto_field(required=False)

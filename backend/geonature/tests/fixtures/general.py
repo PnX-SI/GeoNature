@@ -450,7 +450,7 @@ def nomenclature_category():
         .join(BibNomenclaturesTypes)
         .filter(
             BibNomenclaturesTypes.mnemonique == "DATA_CATEGORY",
-            TNomenclatures.mnemonique == "taxon",
+            TNomenclatures.mnemonique == "taxons",
         )
         .first()
     )

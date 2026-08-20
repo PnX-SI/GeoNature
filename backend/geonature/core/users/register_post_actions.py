@@ -141,7 +141,7 @@ def create_dataset_user(user):
         dataset_desc=ds_desc_and_name,
         marine_domain=True,
         id_nomenclature_data_category=func.ref_nomenclatures.get_id_nomenclature(
-            "DATA_CATEGORY", "1."
+            "DATA_CATEGORY", "1"
         ),
         terrestrial_domain=True,
     )
