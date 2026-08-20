@@ -20,6 +20,8 @@ import { takeUntil } from 'rxjs/operators';
 import { MetadataDataService } from '../services/metadata-data.service';
 import { ActorFormService } from '../services/actor-form.service';
 import { CommonService } from '@geonature_common/service/common.service';
+import { FormService } from '@geonature_common/form/form.service';
+import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 
 @Component({
@@ -38,6 +40,7 @@ import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/materi
     MatSelectModule,
     MatIconModule,
     TranslateModule,
+    GN2CommonModule,
   ],
 })
 export class ProductionDatabaseFormDialogComponent implements OnInit, OnDestroy {
@@ -53,6 +56,7 @@ export class ProductionDatabaseFormDialogComponent implements OnInit, OnDestroy 
     private metadataDataS: MetadataDataService,
     private actorFormS: ActorFormService,
     private _commonService: CommonService,
+    private formService: FormService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.initForm();
@@ -68,6 +72,7 @@ export class ProductionDatabaseFormDialogComponent implements OnInit, OnDestroy 
     this.form = this._fb.group({
       name: ['', [Validators.required, this.nameExistsValidator.bind(this)]],
       id_contact: [null],
+      uuid_production_database: ['', [this.formService.uuidValidator()]],
     });
   }
 
@@ -100,7 +105,13 @@ export class ProductionDatabaseFormDialogComponent implements OnInit, OnDestroy 
     if (this.form.invalid || this.isSubmitting) {
       return;
     }
+    this.isSubmitting = true;
+    const formData = this.form.value;
 
+    // delete uuid_production_database if empty
+    if (!formData.uuid_production_database || formData.uuid_production_database.trim() === '') {
+      delete formData.uuid_production_database;
+    }
     this.isSubmitting = true;
     this.metadataDataS
       .createProductionDatabase(this.form.value)
