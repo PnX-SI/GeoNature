@@ -62,6 +62,7 @@ export class PublicationDeleteButtonComponent {
   }
 
   onDeletePublication() {
+    if (!this.isDeletable()) return;
     const dialogRef = this._dialog.open(ConfirmationDialog, {
       width: 'auto',
       position: { top: '5%' },

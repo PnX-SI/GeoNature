@@ -35,7 +35,7 @@ mat-sidenav-content {
 
 button.disabled-look {
   opacity: 0.5;
-  cursor: not-allowed;
+  cursor: not-allowed !important;
 }
 
 .right-aligned-header > .mat-content {
