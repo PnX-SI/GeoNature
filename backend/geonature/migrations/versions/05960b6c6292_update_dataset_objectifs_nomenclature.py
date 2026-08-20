@@ -1,7 +1,7 @@
 """Update nomenclature_dataset_objectifs
 
 Revision ID: 05960b6c6292
-Revises: 0444c425fa27
+Revises: 103ea033e21d
 Create Date: 2026-07-02 09:54:00
 
 """
@@ -14,7 +14,7 @@ from sqlalchemy.sql import column
 
 # revision identifiers, used by Alembic.
 revision = "05960b6c6292"
-down_revision = "0444c425fa27"
+down_revision = "103ea033e21d"
 branch_labels = None
 depends_on = None
 
