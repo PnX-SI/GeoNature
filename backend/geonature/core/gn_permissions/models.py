@@ -123,7 +123,7 @@ def _nice_order(model, qs):
         .order_by(
             TModules.module_code,
             # ensure ALL at first:
-            case([(PermObject.code_object == "ALL", "1")], else_=PermObject.code_object),
+            case(*[(PermObject.code_object == "ALL", "1")], else_=PermObject.code_object),
             model.id_action,
         )
     )

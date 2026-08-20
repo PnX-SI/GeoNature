@@ -531,7 +531,7 @@ class PermissionAdmin(CruvedProtectedMixin, ModelView):
         "areas_filter": "Filtre géographique",
         "taxons_filter": "Filtre taxonomique",
     }
-    column_select_related_list = ("availability",)
+    column_select_related_list = (Permission.availability,)
     column_searchable_list = ("role.identifiant", "role.nom_complet")
     column_formatters = {
         "role": role_formatter,
@@ -700,7 +700,7 @@ class RolePermAdmin(CruvedProtectedMixin, ModelView):
     can_view_details = True
 
     details_template = "role_or_group_detail.html"
-    column_select_related_list = ("permissions",)
+    column_select_related_list = (User.permissions,)
     column_labels = {
         "nom_role": "Nom",
         "prenom_role": "Prénom",
