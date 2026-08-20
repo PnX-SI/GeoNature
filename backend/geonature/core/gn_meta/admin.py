@@ -5,22 +5,22 @@ from sqlalchemy import exists, select
 from geonature.core.admin.utils import CruvedProtectedMixin
 from geonature.core.gn_meta.models.datasets import TDatasets
 from geonature.utils.env import DB
+from wtforms import StringField
 
 
 class ProductionDatabaseAdmin(CruvedProtectedMixin, ModelView):
     module_code = "METADATA"
     object_code = "PRODUCTION_DATABASE"
 
-    column_list = ("name", "contact")
-    column_labels = {
-        "name": "Nom",
-        "contact": "Contact",
-    }
-    column_searchable_list = ("name",)
-    form_columns = ("name", "contact")
+    column_list = ("name", "contact", "uuid_production_database")
+    column_labels = {"name": "Nom", "contact": "Contact", "uuid_production_database": "UUID"}
+    column_searchable_list = ("name", "uuid_production_database")
+    form_columns = ("name", "contact", "uuid_production_database")
+    form_overrides = {"uuid_production_database": StringField}
     form_args = {
         "name": {"label": "Nom"},
         "contact": {"label": "Contact", "get_label": "nom_complet"},
+        "uuid_production_database": {},
     }
 
     def is_accessible(self):

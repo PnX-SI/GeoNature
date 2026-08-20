@@ -36,6 +36,14 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
+
+    <div style="margin-top: 16px">
+      <gn-uuid
+        [parentFormControl]="form.get('uuid_production_database')"
+        label="{{ 'UUID' | translate }}"
+        placeholder="Entrez un UUID valide"
+      ></gn-uuid>
+    </div>
   </form>
 </mat-dialog-content>
 

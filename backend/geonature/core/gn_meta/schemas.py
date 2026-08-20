@@ -57,6 +57,7 @@ class ProductionDatabaseSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQ
 
     name = fields.String(required=True)
     id_contact = fields.Integer(allow_none=True)
+    uuid_production_database = fields.String(allow_none=True)
     contact = MA.Nested(UserSchema, dump_only=True, allow_none=True)
 
 
