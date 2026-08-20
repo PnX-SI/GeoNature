@@ -57,7 +57,13 @@ def publication_handler(publication, data, partial=False):
 
 def dataset_handler(dataset, data, partial=False):
     dataset_schema = DatasetSchema(
-        only=["cor_dataset_actor", "modules", "cor_objectifs", "cor_territories", "cor_classes_ebv"],
+        only=[
+            "cor_dataset_actor",
+            "modules",
+            "cor_objectifs",
+            "cor_territories",
+            "cor_classes_ebv",
+        ],
         unknown=EXCLUDE,
         partial=partial,
     )

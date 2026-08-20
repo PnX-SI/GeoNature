@@ -211,6 +211,11 @@
           </div>
           <br />
 
+          <div class="b">{{ 'MetaData.DatasetCard.DataType' | translate }}</div>
+          <div class="a">
+            {{ dataset?.nomenclature_data_type_2.label_default }}
+          </div>
+          <br />
           <div class="b">{{ 'Objective(s)' | translate }}</div>
           <div
             *ngFor="let objectif of dataset?.cor_objectifs"

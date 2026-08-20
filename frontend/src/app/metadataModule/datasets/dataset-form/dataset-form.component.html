@@ -139,6 +139,16 @@
               data-qa="pnx-dataset-form-status-source"
             ></pnx-nomenclature>
           </div>
+          <div class="row">
+            <div class="col-md-6">
+              <pnx-nomenclature
+                label="{{ 'MetaData.DatasetCard.DataType' | translate }}"
+                [parentFormControl]="form.get('id_nomenclature_data_type_2')"
+                codeNomenclatureType="TYPE_DONNEES"
+                data-qa="pnx-dataset-form-type_donnees"
+              ></pnx-nomenclature>
+            </div>
+          </div>
 
           <div>
             <pnx-nomenclature

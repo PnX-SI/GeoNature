@@ -185,6 +185,7 @@ def get_dataset(scope, id_dataset):
             "cor_dataset_actor.role",
             "modules",
             "nomenclature_data_category",
+            "nomenclature_data_type",
             "nomenclature_collecting_method",
             "nomenclature_data_origin",
             "nomenclature_source_status",
@@ -709,7 +710,13 @@ def my_csv_resp(filename, data, columns, _header, separator=";"):
 
 def datasetHandler(dataset, data):
     datasetSchema = DatasetSchema(
-        only=["cor_dataset_actor", "modules", "cor_objectifs", "cor_territories", "cor_classes_ebv"],
+        only=[
+            "cor_dataset_actor",
+            "modules",
+            "cor_objectifs",
+            "cor_territories",
+            "cor_classes_ebv",
+        ],
         unknown=EXCLUDE,
     )
     # a dataset already having an id_dataset is being updated: allow partial payloads
