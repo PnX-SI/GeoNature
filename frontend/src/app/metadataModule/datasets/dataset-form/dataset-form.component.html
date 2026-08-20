@@ -196,7 +196,6 @@
                 data-qa="pnx-dataset-form-data-origin"
               ></pnx-nomenclature>
             </div>
-
             <div class="col-md-6">
               <pnx-nomenclature
                 label="{{ 'MetaData.DatasetForm.ResourceType' | translate }}"
@@ -205,11 +204,16 @@
                 data-qa="pnx-dataset-form-resource-type"
               ></pnx-nomenclature>
             </div>
-            <!-- *ngIf="uuidEditionEnabled" -> top be move to pnx-togglable form control if other entries are added to the advanced section -->
             <div class="col-12">
-              <gn-advanced-section *ngIf="uuidEditionEnabled">
+              <gn-advanced-section *ngIf="uuidEditionEnabled || productionDatabaseEditionEnabled">
+                <pnx-metadata-production-database
+                  *ngIf="productionDatabaseEditionEnabled"
+                  [parentForm]="form"
+                  [productionDatabases]="productionDatabases"
+                ></pnx-metadata-production-database>
                 <gn-uuid
-                  [formControl]="form.get('unique_dataset_id')"
+                  *ngIf="uuidEditionEnabled"
+                  [parentFormControl]="form.get('unique_dataset_id')"
                   [placeholder]="
                     translation_service.instant('MetaData.Messages.UUIDFormPlaceHolder', {
                       entity: entityLabel
