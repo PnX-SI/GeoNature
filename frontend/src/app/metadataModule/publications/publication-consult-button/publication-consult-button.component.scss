@@ -1,0 +1,9 @@
+.simple-url-link {
+  color: #0066cc !important;
+  cursor: pointer !important;
+
+  &:hover {
+    color: #0052a3 !important;
+    text-decoration: underline !important;
+  }
+}

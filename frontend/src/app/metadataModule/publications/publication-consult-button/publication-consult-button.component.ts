@@ -2,17 +2,19 @@ import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 
+type DisplayStyle = 'basic' | 'detailLook' | 'simpleUrl';
+
 @Component({
   selector: 'pnx-publication-consult-button',
   templateUrl: `publication-consult-button.component.html`,
+  styleUrls: ['./publication-consult-button.component.scss'],
 })
 export class PublicationConsultButtonComponent {
   @Input() publicationUrl: string | null = null;
   @ViewChild('externalLinkModal', { static: true })
   externalLinkModal!: TemplateRef<any>;
-
   public pendingExternalUrl: string | null = null;
-  @Input() detailLook: boolean = false;
+  @Input() displayStyle: DisplayStyle = 'basic';
 
   constructor(
     private modal: NgbModal,
