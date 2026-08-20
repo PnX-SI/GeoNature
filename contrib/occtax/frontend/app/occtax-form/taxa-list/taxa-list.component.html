@@ -6,6 +6,9 @@
       else zeroOccurrenceBlk
     "
   >
+    <button (click)="switchSortingTaxalist()" type="button">
+      {{ labelSortTaxalist }}
+    </button>
     <ng-container *ngFor="let occ_in_progress of occtaxTaxaListService.rec_occurrences_in_progress">
       <div
         class="in-progress-panel"
