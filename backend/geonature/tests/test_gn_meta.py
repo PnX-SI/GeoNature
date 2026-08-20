@@ -1798,6 +1798,149 @@ class TestPublication:
             assert pub.has_instance_permission(2) == True
             assert pub.has_instance_permission(3) == True
 
+    def test_disassociate_dataset_from_publication(self, users, datasets):
+        """Test disassociating a dataset from a publication"""
+        from geonature.core.gn_meta.models import TDatatypePublication
+
+        set_logged_user(self.client, users["admin_user"])
+
+        # Create a test publication and associate a dataset
+        pub = TDatatypePublication(
+            publication_reference="Test Publication",
+            id_digitizer=users["admin_user"].id_role,
+        )
+        dataset = datasets["own_dataset"]
+        pub.datasets.append(dataset)
+        db.session.add(pub)
+        db.session.commit()
+
+        # Disassociate
+        response = self.client.post(
+            url_for("gn_meta.disassociate_dataset_from_publication"),
+            json={
+                "publication_id": pub.id_publication,
+                "dataset_id": dataset.id_dataset,
+            },
+        )
+
+        assert response.status_code == 200
+        db.session.refresh(pub)
+        # Verify disassociation
+        assert len(pub.datasets) == 0
+
+    def test_disassociate_dataset_from_publication_unique_violation(self, users, datasets):
+        """Test disassociating a dataset with unique constraint violation"""
+        from geonature.core.gn_meta.models import TDatatypePublication
+
+        set_logged_user(self.client, users["admin_user"])
+
+        # Create a test publication with a dataset
+        pub = TDatatypePublication(
+            publication_reference="Test Publication",
+            id_digitizer=users["admin_user"].id_role,
+        )
+        dataset = datasets["own_dataset"]
+        pub.datasets.append(dataset)
+        db.session.add(pub)
+        db.session.commit()
+
+        # Try to disassociate with invalid IDs that might cause unique constraint issue
+        response = self.client.post(
+            url_for("gn_meta.disassociate_dataset_from_publication"),
+            json={
+                "publication_id": pub.id_publication,
+                "dataset_id": 999999,  # Non-existent dataset
+            },
+        )
+
+        # Should return an error status code (NotFound or Conflict)
+        assert response.status_code in [NotFound.code, Conflict.code]
+        # Verify the original association still exists
+        db.session.refresh(pub)
+        assert len(pub.datasets) == 1
+
+    def test_get_publications_search_similarity(self, users):
+        """Test searching publications by similarity"""
+        from geonature.core.gn_meta.models import TDatatypePublication
+
+        set_logged_user(self.client, users["admin_user"])
+
+        # Create test publications with similar names
+        pub1 = TDatatypePublication(
+            publication_reference="Publication Biodiversity 2024",
+            id_digitizer=users["admin_user"].id_role,
+        )
+        pub2 = TDatatypePublication(
+            publication_reference="Publication Biology 2023",
+            id_digitizer=users["admin_user"].id_role,
+        )
+        pub3 = TDatatypePublication(
+            publication_reference="Report Environment 2024",
+            id_digitizer=users["admin_user"].id_role,
+        )
+        db.session.add(pub1)
+        db.session.add(pub2)
+        db.session.add(pub3)
+        db.session.commit()
+
+        publications_url = url_for("gn_meta.get_publications")
+
+        # Search by partial similarity
+        response = self.client.get(f"{publications_url}?search=Publication")
+        assert response.status_code == 200
+        results = [p["publication_reference"] for p in response.json["items"]]
+        assert "Publication Biodiversity 2024" in results
+        assert "Publication Biology 2023" in results
+        assert "Report Environment 2024" not in results
+
+        # Search by another term
+        response = self.client.get(f"{publications_url}?search=2024")
+        assert response.status_code == 200
+        results = [p["publication_reference"] for p in response.json["items"]]
+        assert "Publication Biodiversity 2024" in results
+        assert "Report Environment 2024" in results
+
+        def test_publication_type_publication_negative_value(self, users):
+            """Test filtering publications with type_publication = -1 (None type)"""
+            from geonature.core.gn_meta.models import TDatatypePublication
+            from pypnnomenclature.models import TNomenclatures
+            from sqlalchemy import select
+
+            set_logged_user(self.client, users["admin_user"])
+
+            # Get a valid PUBLICATION_TYPE nomenclature
+            pub_type = db.session.scalars(
+                select(TNomenclatures)
+                .join(TNomenclatures.type)
+                .where(TNomenclatures.type.has(mnemonique="PUBLICATION_TYPE"))
+                .limit(1)
+            ).first()
+
+            # Create a publication with a type
+            pub_with_type = TDatatypePublication(
+                publication_reference="Publication with type",
+                id_digitizer=users["admin_user"].id_role,
+                id_nomenclature_type_publication=pub_type.id_nomenclature if pub_type else None,
+            )
+            # Create a publication without type
+            pub_without_type = TDatatypePublication(
+                publication_reference="Publication without type",
+                id_digitizer=users["admin_user"].id_role,
+            )
+            db.session.add(pub_with_type)
+            db.session.add(pub_without_type)
+            db.session.commit()
+
+            publications_url = url_for("gn_meta.get_publications")
+
+            # Filter by type_publication = -1 should return only publications with None type
+            response = self.client.get(f"{publications_url}?type_publication=-1")
+            assert response.status_code == 200
+            results = [p["publication_reference"] for p in response.json["items"]]
+            assert "Publication without type" in results
+            if pub_type:
+                assert "Publication with type" not in results
+
 
 @pytest.mark.usefixtures("client_class", "users", "datasets", "acquisition_frameworks")
 class TestRepository:
