@@ -508,8 +508,8 @@ class SyntheseQuery:
             period_start = self.filters.pop("period_start")  # e.g. "09-09" (DD-MM)
             period_end = self.filters.pop("period_end")  # e.g. "11-12" (DD-MM)
 
-            start_day, start_month = (int(x) for x in period_start.split("-"))
-            end_day, end_month = (int(x) for x in period_end.split("-"))
+            start_day, start_month = (int(x) for x in period_start.split("/"))
+            end_day, end_month = (int(x) for x in period_end.split("/"))
 
             start_tuple = (start_month, start_day)
             end_tuple = (end_month, end_day)
