@@ -6,9 +6,34 @@
       else zeroOccurrenceBlk
     "
   >
-    <button (click)="switchSortingTaxalist()" type="button">
-      {{ labelSortTaxalist }}
-    </button>
+    <div class="sort-toolbar">
+      <mat-button-toggle-group
+        class="sort-type-group"
+        name="sortType"
+        aria-label="Type de tri"
+        [value]="typeSortingTaxalist"
+        (change)="setSortType($event.value)"
+      >
+        <mat-button-toggle value="record">
+          {{ 'Occtax.TaxaList.SortByRecord' | translate }}
+        </mat-button-toggle>
+        <mat-button-toggle value="lexicographic">
+          {{ 'Occtax.TaxaList.SortByName' | translate }}
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+
+      <button
+        mat-icon-button
+        type="button"
+        class="sort-order-btn"
+        [matTooltip]="
+          (sortOrder === 'asc' ? 'Occtax.TaxaList.SortAsc' : 'Occtax.TaxaList.SortDesc') | translate
+        "
+        (click)="toggleSortOrder()"
+      >
+        <mat-icon>{{ sortOrder === 'asc' ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+      </button>
+    </div>
     <ng-container *ngFor="let occ_in_progress of occtaxTaxaListService.rec_occurrences_in_progress">
       <div
         class="in-progress-panel"
@@ -48,6 +73,15 @@
         >
           <mat-expansion-panel-header class="right-aligned-header">
             <mat-panel-title>
+              <span
+                [innerHTML]="taxonTitle(occurrence)"
+                [matTooltip]="occurrence.taxref?.nom_valide || removeHtml(occurrence.nom_cite)"
+                class="header-title"
+                [attr.data-qa]="'pnx-occtax-taxon-form-taxa-head-' + i"
+              ></span>
+            </mat-panel-title>
+
+            <mat-panel-description>
               <span class="btn-actions d-none">
                 <button
                   mat-icon-button
@@ -65,15 +99,6 @@
                   <mat-icon matTooltip="Supprimer le taxon">clear</mat-icon>
                 </button>
               </span>
-            </mat-panel-title>
-
-            <mat-panel-description>
-              <span
-                [innerHTML]="taxonTitle(occurrence)"
-                [matTooltip]="occurrence.taxref?.nom_valide || removeHtml(occurrence.nom_cite)"
-                class="header-title"
-                [attr.data-qa]="'pnx-occtax-taxon-form-taxa-head-' + i"
-              ></span>
             </mat-panel-description>
           </mat-expansion-panel-header>
 

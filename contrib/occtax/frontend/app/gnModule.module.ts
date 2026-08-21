@@ -29,6 +29,7 @@ import { OcctaxFormMapService } from './occtax-form/map/occtax-map.service';
 import { OcctaxFormParamService } from './occtax-form/form-param/form-param.service';
 
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ConfigService } from '@geonature/services/config.service';
 import { CustomTranslateLoader } from '@geonature/shared/translate/custom-loader';
@@ -80,6 +81,7 @@ export function createTranslateLoader(http: HttpClient, config: ConfigService) {
     }),
     CommonModule,
     MatSlideToggleModule,
+    MatButtonToggleModule,
     MatTabsModule,
     NgbModule,
     GNPanelModule,
