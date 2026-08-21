@@ -8,6 +8,7 @@ import logging
 
 from flask import Blueprint, current_app, request, Response, g, render_template, jsonify
 
+from geonature.utils.module import is_module_installed
 from sqlalchemy.exc import DatabaseError
 from sqlalchemy.sql import select
 from sqlalchemy.sql.functions import func
@@ -877,7 +878,7 @@ def get_dataset_stats(id_dataset):
 
     for module_dist in iter_modules_dist():
         module_name = module_dist.name
-        is_current_module_installed = current_app.dict_modules_is_installed.get(module_name, False)
+        is_current_module_installed = is_module_installed(module_name)
         if is_current_module_installed:
             module_statistics = None
             try:
