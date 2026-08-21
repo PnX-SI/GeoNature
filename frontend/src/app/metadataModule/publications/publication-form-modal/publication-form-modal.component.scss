@@ -91,15 +91,14 @@
             }
 
             .detail-value {
-              color: #333;
+              word-break: break-word;
+              overflow-wrap: break-word;
+              white-space: normal;
+              max-width: 100%;
 
               a {
-                color: #1976d2;
-                text-decoration: none;
-
-                &:hover {
-                  text-decoration: underline;
-                }
+                word-break: break-all;
+                overflow-wrap: break-word;
               }
             }
           }

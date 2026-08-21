@@ -119,7 +119,20 @@
           prop="description_publication"
           [sortable]="false"
           [flexGrow]="3"
-        ></ngx-datatable-column>
+        >
+          <ng-template
+            let-value="value"
+            ngx-datatable-cell-template
+          >
+            <span
+              class="description-text"
+              [matTooltip]="value"
+              matTooltipPosition="above"
+            >
+              {{ value || '-' }}
+            </span>
+          </ng-template>
+        </ngx-datatable-column>
 
         <ngx-datatable-column
           name="{{ 'Actions.Plural' | translate }}"
