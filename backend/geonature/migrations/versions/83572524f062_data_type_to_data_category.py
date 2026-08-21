@@ -1,7 +1,7 @@
 """data type to data category
 
 Revision ID: 83572524f062
-Revises: 0444c425fa27
+Revises: 7808ac8b10b6
 Create Date: 2026-07-20 10:27:35.383337
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = "83572524f062"
-down_revision = "0444c425fa27"
+down_revision = "7808ac8b10b6"
 branch_labels = None
 depends_on = None
 

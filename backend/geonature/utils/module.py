@@ -179,10 +179,9 @@ def exists_in_t_modules(module_code: str):
         )
     except ProgrammingError as e:
         db.session.rollback()
-        if (
-            '(psycopg2.errors.UndefinedTable) relation "gn_commons.t_modules" does not exist'
-            in str(e)
-        ):
+        # SQLSTATE 42P01 = undefined_table, checked instead of the message
+        # text so this doesn't depend on the PostgreSQL server locale.
+        if getattr(e.orig, "pgcode", None) == "42P01":
             return False
         else:
             raise e
@@ -247,6 +246,7 @@ def is_module_installed(
 
     # Verify if the module is registered in the database
     if not exists_in_t_modules(module_code):
+        print("daaaa")
         # Module not installed because not registered in the database
         return False
     if check_if_all_revisions_have_been_applied:
