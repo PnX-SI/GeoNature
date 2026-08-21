@@ -104,13 +104,13 @@ export class HomeDiscussionsTableComponent implements OnInit, OnDestroy {
   }
 
   private _buildQueryParams(): HttpParams {
-    const params = new HttpParams();
-    params.set('type', 'discussion');
-    params.set('sort', this.sort.sortOrder);
-    params.set('orderby', this.sort.sortBy);
-    params.set('page', this.pagination.currentPage.toString());
-    params.set('per_page', this.pagination.perPage.toString());
-    params.set('my_reports', this._myReportsOnly.toString());
+    const params = new HttpParams()
+      .set('type', 'discussion')
+      .set('sort', this.sort.sortOrder)
+      .set('orderby', this.sort.sortBy)
+      .set('page', this.pagination.currentPage.toString())
+      .set('per_page', this.pagination.perPage.toString())
+      .set('my_reports', this._myReportsOnly.toString());
     return params;
   }
 
