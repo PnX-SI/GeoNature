@@ -68,11 +68,11 @@ def downgrade():
         DELETE FROM
             gn_permissions.t_permissions_available pa
         USING
-            gn_commons.t_modules m
+            gn_permissions.t_objects o
         WHERE
-            pa.id_module = m.id_module
+            pa.id_object = o.id_object
             AND
-            module_code = 'PRODUCTION_DATABASE'
+            code_object = 'PRODUCTION_DATABASE'
         """)
     op.execute("""
         DELETE FROM
