@@ -49,11 +49,8 @@ class TDatasets(db.Model):
     dataset_desc: Mapped[str] = mapped_column(Unicode)
     id_nomenclature_data_category: Mapped[int] = mapped_column(
         Integer, ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"), nullable=False
-    id_nomenclature_data_type: Mapped[int] = mapped_column(
-        Integer,
-        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
     )
-    id_nomenclature_data_type_2: Mapped[int] = mapped_column(
+    id_nomenclature_data_type: Mapped[int] = mapped_column(
         Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         default=lambda: TNomenclatures.get_default_nomenclature("TYPE_DONNEES"),
@@ -127,9 +124,9 @@ class TDatasets(db.Model):
         TNomenclatures,
         foreign_keys=[id_nomenclature_resource_type],
     )
-    nomenclature_data_type_2 = DB.relationship(
+    nomenclature_data_type = DB.relationship(
         TNomenclatures,
-        foreign_keys=[id_nomenclature_data_type_2],
+        foreign_keys=[id_nomenclature_data_type],
     )
 
     cor_objectifs = DB.relationship(

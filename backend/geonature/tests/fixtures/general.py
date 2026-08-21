@@ -458,6 +458,31 @@ def nomenclature_category():
 
 
 @pytest.fixture(scope="class")
+def nomenclature_data_type():
+    return (
+        db.session.query(TNomenclatures)
+        .join(BibNomenclaturesTypes)
+        .filter(
+            BibNomenclaturesTypes.mnemonique == "TYPE_DONNEES",
+            TNomenclatures.cd_nomenclature == "1",
+        )
+        .first()
+    )
+
+
+@pytest.fixture(scope="class")
+def nomenclatures_classe_ebv():
+    return (
+        db.session.query(TNomenclatures)
+        .join(BibNomenclaturesTypes)
+        .filter(BibNomenclaturesTypes.mnemonique == "JDD_CLASSE_EBV")
+        .order_by(TNomenclatures.cd_nomenclature)
+        .limit(2)
+        .all()
+    )
+
+
+@pytest.fixture(scope="class")
 def datasets(users, acquisition_frameworks, module, nomenclature_category):
     principal_actor_role = db.session.execute(
         select(TNomenclatures)

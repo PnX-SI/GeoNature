@@ -1,7 +1,7 @@
 """Add dataset standard V2 fields
 
 Revision ID: 46c287eb8267
-Revises: 0444c425fa27
+Revises: 83572524f062
 Create Date: 2026-08-19 11:24:42.500962
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = "46c287eb8267"
-down_revision = "7808ac8b10b6"
+down_revision = "83572524f062"
 branch_labels = None
 depends_on = None
 
@@ -178,12 +178,12 @@ def add_cor_dataset_ebv():
                """)
 
 
-def add_data_type_2_column():
-    # Add the id_nomenclature_data_type_2 column to t_datasets
+def add_data_type_column():
+    # Add the id_nomenclature_data_type column to t_datasets
     op.add_column(
         "t_datasets",
         sa.Column(
-            "id_nomenclature_data_type_2",
+            "id_nomenclature_data_type",
             sa.Integer(),
             sa.ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
             nullable=True,
@@ -197,12 +197,12 @@ def add_data_type_2_column():
     # Add constraint to check nomenclature type
     op.execute("""
         ALTER TABLE gn_meta.t_datasets
-        ADD CONSTRAINT check_data_type_2_nomenclature
-        CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_data_type_2, 'TYPE_DONNEES')) NOT VALID
+        ADD CONSTRAINT check_data_type_nomenclature
+        CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_data_type, 'TYPE_DONNEES')) NOT VALID
         """)
 
 
-def set_default_data_type_2():
+def set_default_data_type():
     # Set the default value for TYPE_DONNEES to "2" (données d'observation) in defaults_nomenclatures_value
     op.execute("""
         INSERT INTO ref_nomenclatures.defaults_nomenclatures_value
@@ -225,8 +225,8 @@ def upgrade():
     insert_ebv_class()
     add_cor_dataset_ebv()
     insert_type_donnees()
-    add_data_type_2_column()
-    set_default_data_type_2()
+    add_data_type_column()
+    set_default_data_type()
 
 
 def downgrade_type_donnees():
@@ -237,11 +237,11 @@ def downgrade_type_donnees():
     # Remove the constraint
     op.execute("""
         ALTER TABLE gn_meta.t_datasets
-        DROP CONSTRAINT IF EXISTS check_data_type_2_nomenclature
+        DROP CONSTRAINT IF EXISTS check_data_type_nomenclature
         """)
 
     # Drop the column
-    op.drop_column("t_datasets", "id_nomenclature_data_type_2", schema="gn_meta")
+    op.drop_column("t_datasets", "id_nomenclature_data_type", schema="gn_meta")
 
     # Delete nomenclatures
     list_cd_nomenclature = [

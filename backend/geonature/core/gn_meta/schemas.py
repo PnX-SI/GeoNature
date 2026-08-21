@@ -78,7 +78,7 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
     id_nomenclature_data_origin = MA.auto_field(required=False, allow_none=True)
     id_nomenclature_source_status = MA.auto_field(required=False)
     id_nomenclature_resource_type = MA.auto_field(required=False)
-    id_nomenclature_data_type_2 = MA.auto_field(required=True)
+    id_nomenclature_data_type = MA.auto_field(required=True)
     active = MA.auto_field(required=False)
     cor_dataset_actor = MA.Nested(DatasetActorSchema, many=True, unknown=EXCLUDE)
     modules = MA.Nested(
@@ -88,7 +88,6 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
     creator = MA.Nested(UserSchema, dump_only=True)
     nomenclature_data_category = MA.Nested(NomenclatureSchema, dump_only=True, required=True)
     nomenclature_data_type = MA.Nested(NomenclatureSchema, dump_only=True)
-    nomenclature_data_type_2 = MA.Nested(NomenclatureSchema, dump_only=True)
     nomenclature_collecting_method = MA.Nested(NomenclatureSchema, dump_only=True)
     nomenclature_data_origin = MA.Nested(NomenclatureSchema, dump_only=True)
     nomenclature_source_status = MA.Nested(NomenclatureSchema, dump_only=True)
