@@ -444,7 +444,21 @@ def acquisition_frameworks(users):
 
 
 @pytest.fixture(scope="class")
-def datasets(users, acquisition_frameworks, module):
+def nomenclature_category():
+    category = (
+        db.session.query(TNomenclatures)
+        .join(BibNomenclaturesTypes)
+        .filter(
+            BibNomenclaturesTypes.mnemonique == "DATA_CATEGORY",
+            TNomenclatures.mnemonique == "taxons",
+        )
+        .first()
+    )
+    return category
+
+
+@pytest.fixture(scope="class")
+def datasets(users, acquisition_frameworks, module, nomenclature_category):
     principal_actor_role = db.session.execute(
         select(TNomenclatures)
         .join(BibNomenclaturesTypes, TNomenclatures.id_type == BibNomenclaturesTypes.id_type)
@@ -461,7 +475,12 @@ def datasets(users, acquisition_frameworks, module):
     ).all()
 
     def create_dataset(
-        name, id_af, digitizer=None, modules=writable_module, active=True, private=False
+        name,
+        id_af,
+        digitizer=None,
+        modules=writable_module,
+        active=True,
+        private=False,
     ):
         with db.session.begin_nested():
             dataset = TDatasets(
@@ -471,6 +490,7 @@ def datasets(users, acquisition_frameworks, module):
                 dataset_desc="lorem ipsum" * 22,
                 id_digitizer=digitizer.id_role if digitizer else None,
                 active=active,
+                id_nomenclature_data_category=nomenclature_category.id_nomenclature,
             )
             if digitizer and digitizer.organisme:
                 actor = CorDatasetActor(

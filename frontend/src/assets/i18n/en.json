@@ -9,7 +9,15 @@
     "Chinese": "🇨🇳 中文 (Chinese)"
   },
   "Calendar": {
-    "Weekdays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    "Weekdays": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday"
+    ],
     "Months": [
       "January",
       "February",
@@ -374,6 +382,9 @@
       "DatasetGeoNatureID": "GeoNature ID of the dataset",
       "ShortName": "Short label",
       "DataType": "Data type",
+      "DataCategory": "Data category",
+      "PrecisionDataCategory": "Precision on the data category",
+      "CustomDataCategory": "Custom data category",
       "LandCoverage": "Land territory coverage",
       "MarineAreaCoverage": "Marine territory coverage",
       "TermsReference": "Reference framework",
