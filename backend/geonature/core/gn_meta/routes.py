@@ -708,41 +708,6 @@ def my_csv_resp(filename, data, columns, _header, separator=";"):
     return Response(out, headers=headers)
 
 
-def datasetHandler(dataset, data):
-    datasetSchema = DatasetSchema(
-        only=[
-            "cor_dataset_actor",
-            "modules",
-            "cor_objectifs",
-            "cor_territories",
-            "cor_classes_ebv",
-        ],
-        unknown=EXCLUDE,
-    )
-    # a dataset already having an id_dataset is being updated: allow partial payloads
-    is_update = dataset.id_dataset is not None
-    try:
-        dataset = datasetSchema.load(data, instance=dataset, partial=is_update)
-    except ValidationError as error:
-        raise BadRequest(error.messages)
-
-    db.session.add(dataset)
-
-    try:
-        db.session.commit()
-    except IntegrityError as err:
-        db.session.rollback()
-
-        if isinstance(err.orig, UniqueViolation):
-            detail = getattr(getattr(err.orig, "diag", None), "message_detail", None)
-            if not detail:
-                detail = str(err.orig).splitlines()[0]
-
-            raise Conflict(detail) from err
-        raise InternalServerError("An error occured while creating/updating a dataset !")
-    return dataset
-
-
 @routes.route("/dataset", methods=["POST"])
 @permissions.check_cruved_scope("C", module_code="METADATA")
 def create_dataset():

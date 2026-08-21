@@ -1059,9 +1059,7 @@ class TestDataset:
             "id_nomenclature_data_type": nomenclature_data_type.id_nomenclature,
         }
 
-    def test_create_dataset(
-        self, users, datasets, nomenclature_category, nomenclature_data_type
-    ):
+    def test_create_dataset(self, users, datasets, nomenclature_category, nomenclature_data_type):
         url = url_for("gn_meta.create_dataset")
         response = self.client.post(url)
         assert response.status_code == Unauthorized.code
@@ -1086,18 +1084,14 @@ class TestDataset:
             json=ds_json,
         )
         assert response.status_code == 200
-        assert (
-            response.json["id_nomenclature_data_type"] == nomenclature_data_type.id_nomenclature
-        )
+        assert response.json["id_nomenclature_data_type"] == nomenclature_data_type.id_nomenclature
 
         get_response = self.client.get(
             url_for("gn_meta.get_dataset", id_dataset=response.json["id_dataset"])
         )
         assert get_response.json["nomenclature_data_type"]["cd_nomenclature"] == "1"
 
-    def test_create_dataset_missing_data_type(
-        self, users, datasets, nomenclature_category
-    ):
+    def test_create_dataset_missing_data_type(self, users, datasets, nomenclature_category):
         set_logged_user(self.client, users["admin_user"])
         ds_json = {
             "id_acquisition_framework": datasets["own_dataset"].id_acquisition_framework,
@@ -1419,7 +1413,9 @@ class TestDataset:
             json={"id_nomenclature_data_type": nomenclature_data_type.id_nomenclature},
         )
         assert response.status_code == 200
-        assert response.json.get("id_nomenclature_data_type") == nomenclature_data_type.id_nomenclature
+        assert (
+            response.json.get("id_nomenclature_data_type") == nomenclature_data_type.id_nomenclature
+        )
 
     def test_update_dataset_classes_ebv(self, users, datasets, nomenclatures_classe_ebv):
         ds = datasets["own_dataset"]
