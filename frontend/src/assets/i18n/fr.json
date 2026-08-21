@@ -173,6 +173,7 @@
   "Yes": "Oui",
   "No": "Non",
   "UUID": "UUID",
+  "NotValidUUID": "Le champ doit contenir un UUID valide.",
   "Previous": "Précédent",
   "Next": "Suivant",
   "Back": "Retour",
@@ -222,6 +223,7 @@
   "Detail": "Détail",
   "Details": "Détails",
   "Search": "Rechercher",
+  "NoElementFound": "Pas d'élément trouvé",
   "Documentation": {
     "Documentation": "Documentation",
     "OpenDocumentation": "Ouvrir la documentation"
