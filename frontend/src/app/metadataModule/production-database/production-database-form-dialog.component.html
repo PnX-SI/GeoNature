@@ -21,27 +21,19 @@
       </mat-error>
     </mat-form-field>
 
-    <mat-form-field
-      appearance="outline"
-      class="full-width"
-    >
-      <mat-label>{{ 'Actor' | translate }}</mat-label>
-      <mat-select formControlName="id_contact">
-        <mat-option [value]="null">{{ 'MetaData.DatasetCard.None' | translate }}</mat-option>
-        <mat-option
-          *ngFor="let role of roles"
-          [value]="role.id_role"
-        >
-          {{ role.nom_complet }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+    <pnx-observers
+      [parentFormControl]="form.controls['id_contact']"
+      label="{{ 'Actors' | translate }}"
+      designStyle="material"
+      bindValue="id_role"
+    />
 
     <div style="margin-top: 16px">
       <gn-uuid
         [parentFormControl]="form.get('uuid_production_database')"
         label="{{ 'UUID' | translate }}"
         placeholder="Entrez un UUID valide"
+        designStyle="material"
       ></gn-uuid>
     </div>
   </form>
