@@ -501,6 +501,42 @@ class TestSynthese:
         else:
             assert r.json["features"] == []
 
+    @pytest.mark.parametrize(
+        "period_start,period_end,expect_obs1",
+        [
+            # normal range (start <= end), containing obs1's date (2024-10-02)
+            ("01/10", "03/10", True),
+            # normal range (start <= end), not containing obs1's date
+            ("10/10", "20/10", False),
+            # wrap-around range (start > end, e.g. Oct 1st -> Jan 1st), containing obs1's date
+            ("01/10", "01/01", True),
+            # wrap-around range (start > end), not containing obs1's date
+            ("01/11", "01/03", False),
+        ],
+    )
+    def test_get_observations_for_web_filter_period(
+        self, users, synthese_data, period_start, period_end, expect_obs1
+    ):
+        set_logged_user(self.client, users["self_user"])
+        filters = {"period_start": period_start, "period_end": period_end}
+        r = self.client.get(url_for("gn_synthese.synthese.get_observations_for_web"), json=filters)
+        assert r.status_code == 200
+        response_ids = {f["properties"]["id_synthese"] for f in r.json["features"]}
+        if expect_obs1:
+            assert synthese_data["obs1"].id_synthese in response_ids
+        else:
+            assert synthese_data["obs1"].id_synthese not in response_ids
+
+    def test_get_observations_for_web_filter_period_matches_date_max(self, users, synthese_data):
+        # p1_af1 spans date_min=2024-10-02 to date_max=2024-10-04: a period containing only
+        # date_max (Oct 4th) must still match it, since the filter ORs date_min and date_max.
+        set_logged_user(self.client, users["self_user"])
+        filters = {"period_start": "04/10", "period_end": "04/10"}
+        r = self.client.get(url_for("gn_synthese.synthese.get_observations_for_web"), json=filters)
+        assert r.status_code == 200
+        response_ids = {f["properties"]["id_synthese"] for f in r.json["features"]}
+        assert synthese_data["p1_af1"].id_synthese in response_ids
+
     def test_get_synthese_data_cruved(self, app, users, synthese_data, datasets):
         set_logged_user(self.client, users["self_user"])
 
