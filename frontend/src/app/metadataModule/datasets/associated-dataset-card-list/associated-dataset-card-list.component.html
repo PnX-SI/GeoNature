@@ -1,10 +1,10 @@
 <div class="card-body associated-list">
   <table *ngIf="datasets?.length">
     <tr *ngFor="let dataset of datasets">
-      <td [ngSwitch]="dataset?.nomenclature_data_type?.cd_nomenclature">
+      <td [ngSwitch]="dataset?.id_nomenclature_data_category?.cd_nomenclature">
         <img
           width="60"
-          [src]="getDatasetIcon(dataset?.nomenclature_data_type?.cd_nomenclature)"
+          [src]="getDatasetIcon(dataset?.id_nomenclature_data_category?.cd_nomenclature)"
           alt=""
         />
       </td>

@@ -325,7 +325,7 @@ def get_publication(id_publication):
             "+digitizer.nom_complet",
             "+cruved",
             "+datasets",
-            "+datasets.nomenclature_data_type",
+            "+datasets.id_nomenclature_data_category",
             "+acquisition_frameworks",
         ]
     ).jsonify(publication)
