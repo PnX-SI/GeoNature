@@ -12,32 +12,38 @@
 
 <div class="modal-body">
   <form [formGroup]="form">
-    <div class="form-group">
-      <label for="target">
-        {{ getTargetName() }}
-      </label>
-
-      <ng-select
-        id="target"
-        formControlName="targetElement"
-        [items]="targetItems"
-        [searchable]="true"
-        [clearable]="true"
-      >
-        <ng-template
-          ng-option-tmp
-          let-item="item"
-        >
-          {{ getItemLabel(item) }}
-        </ng-template>
-
-        <ng-template
-          ng-label-tmp
-          let-item="item"
-        >
-          {{ getItemLabel(item) }}
-        </ng-template>
-      </ng-select>
+    <div
+      class="form-group"
+      *ngIf="to === 'Dataset'"
+    >
+      <pnx-datasets
+        id="datasets"
+        [parentFormControl]="form.controls.targetElement"
+        [displayOnlyActive]="false"
+        [multiSelect]="false"
+        label="{{ 'Datasets' | translate }}"
+      ></pnx-datasets>
+    </div>
+    <div
+      class="form-group"
+      *ngIf="to === 'AcquisitionFramework'"
+    >
+      <pnx-acquisition-frameworks
+        [multiSelect]="false"
+        [displayAll]="true"
+        [parentFormControl]="form.controls.targetElement"
+        label="{{ 'AcquisitionFramework' | translate }}"
+      ></pnx-acquisition-frameworks>
+    </div>
+    <div
+      class="form-group"
+      *ngIf="to === 'Publication'"
+    >
+      <pnx-publications-select
+        [multiSelect]="false"
+        [parentFormControl]="form.controls.targetElement"
+        label="{{ 'MetaData.Publications.Publications' | translate }}"
+      ></pnx-publications-select>
     </div>
   </form>
 </div>
