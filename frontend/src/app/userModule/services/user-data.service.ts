@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { Role } from './form.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { AuthService } from '@geonature/components/auth/auth.service';
@@ -67,5 +67,15 @@ export class UserDataService {
         return res;
       })
     );
+  }
+  checkLoginExists(login: string): Observable<boolean> {
+    return this._http
+      .get<boolean>('https://localhost/geonature/api/auth/login_exists', {
+        params: { login: login },
+      })
+      .pipe(
+        map((exists) => exists),
+        catchError(() => of(false))
+      );
   }
 }
