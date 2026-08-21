@@ -70,7 +70,7 @@ export class UserDataService {
   }
   checkLoginExists(login: string): Observable<boolean> {
     return this._http
-      .get<boolean>('https://localhost/geonature/api/auth/login_exists', {
+      .get<boolean>('${this.config.API_ENDPOINT}/auth/login_exists', {
         params: { login: login },
       })
       .pipe(
