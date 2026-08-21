@@ -78,8 +78,8 @@ export class HomeDiscussionsTableComponent implements OnInit, OnDestroy {
 
   onColumnSort(event: any) {
     this.sort = {
-      sortBy: event.newValue,
-      sortOrder: event.column.prop,
+      sortBy: event.column.prop,
+      sortOrder: event.newValue,
     };
     this.pagination.currentPage = 1;
     this._fetchDiscussions();
