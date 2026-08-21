@@ -479,7 +479,7 @@
       "ConfirmDisassociate": "Voulez-vous désassocier {{publication}} ?",
       "ExternalLink": {
         "Title": "Redirection externe",
-        "Warning": "Attention : Ce lien externe peut vous rediriger vers un site tiers et vous exposez à des risques de sécurité.",
+        "Warning": "Attention : Ce lien externe peut vous rediriger vers un site tiers et vous exposer à des risques de sécurité.",
         "Confirm": "Confirmer la redirection",
         "Link": "Lien externe : "
       },

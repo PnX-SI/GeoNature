@@ -36,6 +36,7 @@ import { PublicationAssociationModalComponent } from '@geonature/metadataModule/
 import { AssociatedPublicationsCardListComponent } from '@geonature/metadataModule/publications/associated-pubication-card-list/associated-publications-card-list.component';
 import { PublicationDisassociateButtonComponent } from '@geonature/metadataModule/publications/disassociate-publication-button/disassociate-publication-button.component';
 import { ProductionDatabaseComponent } from './production-database/production-database.component';
+import { PublicationsSelectComponent } from './publications/publications-select/publications-select.component';
 
 const routes: Routes = [
   { path: '', component: MetadataComponent },
@@ -108,6 +109,7 @@ export class MetadataPaginator extends MatPaginatorIntl {
     AssociatedPublicationsCardListComponent,
     PublicationDisassociateButtonComponent,
     ProductionDatabaseComponent,
+    PublicationsSelectComponent,
   ],
   providers: [
     MetadataService,

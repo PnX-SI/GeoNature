@@ -19,69 +19,19 @@ export class PublicationAssociationModalComponent implements OnInit {
 
   form: UntypedFormGroup;
   isLoading = false;
-  targetItems: any[] = [];
 
   constructor(
     public activeModal: NgbActiveModal,
     private fb: UntypedFormBuilder,
     private commonService: CommonService,
-    private dataFormService: DataFormService,
-    private publicationsListService: PublicationsService,
-    private translateService: TranslateService
+    private publicationsListService: PublicationsService
   ) {
     this.form = this.fb.group({
       targetElement: [null, Validators.required],
     });
   }
 
-  ngOnInit(): void {
-    this.loadTargets();
-  }
-
-  getTargetName(): string {
-    const labels: { [key: string]: string } = {
-      AcquisitionFramework: 'AcquisitionFramework',
-      Dataset: 'Dataset',
-      Publication: 'MetaData.Publications.Publication',
-    };
-
-    return this.translateService.instant(labels[this.to]);
-  }
-
-  private loadTargets(): void {
-    if (this.to === 'AcquisitionFramework') {
-      this.dataFormService.getAcquisitionFrameworksList({}, {}, 1, -1).subscribe((response) => {
-        this.targetItems = response.items ?? [];
-      });
-      return;
-    }
-
-    if (this.to === 'Dataset') {
-      this.dataFormService.getDatasets({}, {}).subscribe((response) => {
-        this.targetItems = response ?? [];
-      });
-      return;
-    }
-
-    if (this.to === 'Publication') {
-      this.publicationsListService.searchFromFirstPage().subscribe((items) => {
-        this.targetItems = items ?? [];
-      });
-    }
-  }
-
-  getItemLabel(item: any): string {
-    return (
-      item?.publication_reference ||
-      item?.dataset_name ||
-      item?.acquisition_framework_name ||
-      item?.acquisition_framework?.acquisition_framework_name ||
-      item?.id_publication ||
-      item?.id_dataset ||
-      item?.id_acquisition_framework ||
-      ''
-    );
-  }
+  ngOnInit(): void {}
 
   submit(): void {
     if (this.form.invalid) {
@@ -94,24 +44,24 @@ export class PublicationAssociationModalComponent implements OnInit {
     let request$: Observable<any>;
     if (this.from === 'AcquisitionFramework') {
       request$ = this.publicationsListService.associateAfToPublication(
-        targetElement.id_publication,
+        targetElement,
         this.elementId
       );
     } else if (this.from === 'Dataset') {
       request$ = this.publicationsListService.associateDatasetToPublication(
-        targetElement.id_publication,
+        targetElement,
         this.elementId
       );
     } else {
       if (this.to === 'Dataset')
         request$ = this.publicationsListService.associateDatasetToPublication(
           this.elementId,
-          targetElement.id_dataset
+          targetElement
         );
       else
         request$ = this.publicationsListService.associateAfToPublication(
           this.elementId,
-          targetElement.id_acquisition_framework
+          targetElement
         );
     }
 
