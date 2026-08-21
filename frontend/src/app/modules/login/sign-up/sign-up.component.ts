@@ -9,6 +9,7 @@ import { AuthService } from '../../../components/auth/auth.service';
 import { PasswordService } from '../../../userModule/services/password.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { TranslateService } from '@librairies/@ngx-translate/core';
+import { LoginExistsValidator } from '@geonature/userModule/services/login-exists.validator';
 @Component({
   selector: 'pnx-signup',
   templateUrl: './sign-up.component.html',
@@ -29,7 +30,8 @@ export class SignUpComponent implements OnInit {
     private _commonService: CommonService,
     public config: ConfigService,
     private translate: TranslateService,
-    private passwordService: PasswordService
+    private passwordService: PasswordService,
+    private loginExistsValidator: LoginExistsValidator
   ) {
     this.FORM_CONFIG = this.config.ACCOUNT_MANAGEMENT.ACCOUNT_FORM;
     if (!(this.config['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false)) {
@@ -45,7 +47,7 @@ export class SignUpComponent implements OnInit {
     this.form = this.fb.group({
       nom_role: ['', Validators.required],
       prenom_role: ['', Validators.required],
-      identifiant: ['', Validators.required],
+      identifiant: ['', Validators.required, [this.loginExistsValidator]],
       email: [
         '',
         [Validators.pattern('^[+a-z0-9._-]+@[a-z0-9._-]{2,}.[a-z]{2,4}$'), Validators.required],

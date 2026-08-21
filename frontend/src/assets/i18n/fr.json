@@ -73,6 +73,7 @@
       "WrongMailAddress": "Une erreur est survenue. Veuillez vérifier le mail fourni.",
       "AccountCreationError": "L'adresse mail ou l'identifiant renseigné existe déjà.",
       "UnexpectedError": "Une erreur inattendue est survenue. Veuillez réessayer plus tard.",
+      "LoginExists": "L'identifiant renseigné existe déjà.",
       "Password": {
         "MinLength": "Le mot de passe doit contenir au moins {{ requiredLength }} caractères (actuellement {{ actualLength }}).",
         "UpperCase": "Le mot de passe doit contenir au moins une majuscule.",
