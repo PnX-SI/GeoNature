@@ -19,7 +19,9 @@ button .mat-spinner {
 // visible
 .mat-expansion-panel {
   overflow: auto;
+  border: 1px solid #cfcfcf;
   margin-right: 50px !important;
+  box-shadow: none;
 }
 
 .form-nom-complet {
