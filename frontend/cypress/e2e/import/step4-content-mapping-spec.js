@@ -1,5 +1,5 @@
 import { USERS } from './constants/users';
-import { TIMEOUT_WAIT, VIEWPORTS } from './constants/common';
+import { VIEWPORTS } from './constants/common';
 import { FILES } from './constants/files';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -46,7 +46,13 @@ function selectField(dataQa, value) {
 }
 
 function selectMapping(mappingName) {
-  cy.get(SELECTOR_IMPORT_CONTENTMAPPING_SELECT).should('exist').select(mappingName);
+  // Wait for the mapping's <option> to actually be rendered (i.e. userContentMappings has
+  // loaded) before selecting — the select renders before that data arrives, so acting on it
+  // too early can hit it mid-load.
+  cy.get(SELECTOR_IMPORT_CONTENTMAPPING_SELECT)
+    .find(`option:contains(${mappingName})`)
+    .should('exist');
+  cy.get(SELECTOR_IMPORT_CONTENTMAPPING_SELECT).should('be.enabled').select(mappingName);
 }
 
 function deleteCurrentMapping() {
@@ -119,12 +125,7 @@ function checkThatMappingCanNotBeSaved() {
 // ////////////////////////////////////////////////////////////////////////////
 
 function runTheProcess(user) {
-  cy.visitImport();
-  cy.startImport();
-  cy.pickDestination();
-  cy.loadImportFile(FILES.synthese.valid.fixture);
-  cy.configureImportFile();
-  cy.configureImportFieldMapping(user.dataset);
+  cy.setupImportViaApi('contentmapping', { datasetName: user.dataset }).as('currentImportId');
 }
 
 function runTheProcessForOcchab(user) {
@@ -145,9 +146,11 @@ function runTheProcessForOcchab(user) {
 }
 
 function restartTheProcess(user) {
-  cy.deleteCurrentImport();
-  cy.wait(TIMEOUT_WAIT);
+  cy.get('@currentImportId').then((importId) => {
+    cy.deleteImport(importId, 'synthese');
+  });
   runTheProcess(user);
+  cy.get(SELECTOR_IMPORT_CONTENTMAPPING_FORM).should('exist');
 }
 
 // Occhab dedicated
@@ -240,7 +243,9 @@ describe('Import - Content mapping step', () => {
       saveTheNewForm();
 
       // Switch user
-      cy.deleteCurrentImport();
+      cy.get('@currentImportId').then((importId) => {
+        cy.deleteImport(importId, 'synthese');
+      });
       cy.geonatureLogout();
       cy.geonatureLogin(USER_AGENT.login.username, USER_AGENT.login.password);
       runTheProcess(USER_AGENT);
@@ -251,7 +256,9 @@ describe('Import - Content mapping step', () => {
       ).should('not.exist');
 
       // Switch back to previous user
-      cy.deleteCurrentImport();
+      cy.get('@currentImportId').then((importId) => {
+        cy.deleteImport(importId, 'synthese');
+      });
       cy.geonatureLogout();
       cy.geonatureLogin(USER_ADMIN.login.username, USER_ADMIN.login.password);
       runTheProcess(USER_ADMIN);
@@ -268,7 +275,9 @@ describe('Import - Content mapping step', () => {
 
     it('An admin user should be able to access and delete a mapping owned by an agent user', () => {
       // Switch user
-      cy.deleteCurrentImport();
+      cy.get('@currentImportId').then((importId) => {
+        cy.deleteImport(importId, 'synthese');
+      });
       cy.geonatureLogout();
       cy.geonatureLogin(USER_AGENT.login.username, USER_AGENT.login.password);
       runTheProcess(USER_AGENT);
@@ -277,7 +286,9 @@ describe('Import - Content mapping step', () => {
       saveTheNewForm();
 
       // Switch back to previous user
-      cy.deleteCurrentImport();
+      cy.get('@currentImportId').then((importId) => {
+        cy.deleteImport(importId, 'synthese');
+      });
       cy.geonatureLogout();
       cy.geonatureLogin(USER_ADMIN.login.username, USER_ADMIN.login.password);
       runTheProcess(USER_ADMIN);
@@ -300,7 +311,9 @@ describe('Import - Content mapping step', () => {
     });
 
     afterEach(() => {
-      cy.deleteCurrentImport();
+      cy.get('@currentImportId').then((importId) => {
+        cy.deleteImport(importId, 'synthese');
+      });
     });
   });
 

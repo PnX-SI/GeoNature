@@ -1,9 +1,9 @@
 import { USERS } from './constants/users';
-import { TIMEOUT_WAIT, VIEWPORTS } from './constants/common';
-import { FILES } from './constants/files';
+import { VIEWPORTS } from './constants/common';
 import {
   getSelectorImportListTableRowEdit,
   getSelectorImportListTableRowId,
+  SELECTOR_IMPORT_CONTENTMAPPING_FORM,
   SELECTOR_IMPORT_CONTENTMAPPING_STEP_BUTTON,
   SELECTOR_IMPORT_FIELDMAPPING_CD_NOM,
   SELECTOR_IMPORT_FIELDMAPPING_DATE_MIN,
@@ -21,22 +21,16 @@ import {
 // ////////////////////////////////////////////////////////////////////////////
 
 function runTheProcessUntilFieldMapping(user) {
-  cy.visitImport();
-  cy.startImport();
-  cy.pickDestination();
-  cy.loadImportFile(FILES.synthese.valid.fixture);
-  cy.configureImportFile();
+  cy.setupImportViaApi('fieldmapping').as('currentImportId');
 }
 
 function runTheProcessUntilContentMapping(user) {
-  runTheProcessUntilFieldMapping(user);
-  cy.configureImportFieldMapping(user.dataset);
-  cy.wait(500);
+  cy.setupImportViaApi('contentmapping', { datasetName: user.dataset }).as('currentImportId');
 }
 
 function goToContentMappingPage() {
   cy.get(SELECTOR_IMPORT_CONTENTMAPPING_STEP_BUTTON).click();
-  cy.wait(500);
+  cy.get(SELECTOR_IMPORT_CONTENTMAPPING_FORM).should('exist');
 }
 
 function checkImportIsFirstInList(importId) {
@@ -94,14 +88,9 @@ describe('Navigation - cancel and save', () => {
 
       it('fieldmapping - cancel and suppress', () => {
         runTheProcessUntilFieldMapping(user);
-        cy.url().then((url) => {
-          // Extract the ID using string manipulation
-          const parts = url.split('/');
-          const importID = parts[parts.length - 2]; // Get the penultimate element
-
+        cy.get('@currentImportId').then((importID) => {
           fillTheFieldMappingFormRaw();
           cy.get(SELECTOR_IMPORT_FOOTER_DELETE).should('be.enabled').click();
-          cy.wait(TIMEOUT_WAIT);
           cy.checkCurrentPageIsImport();
           checkImportIsNotFirstInList(importID);
         });
@@ -109,11 +98,7 @@ describe('Navigation - cancel and save', () => {
 
       it('fieldmapping - cancel', () => {
         runTheProcessUntilFieldMapping(user);
-        cy.url().then((url) => {
-          // Extract the ID using string manipulation
-          const parts = url.split('/');
-          const importID = parts[parts.length - 2]; // Get the penultimate element
-
+        cy.get('@currentImportId').then((importID) => {
           fillTheFieldMappingFormRaw();
           cy.visitImport();
           checkImportIsFirstInList(importID);
@@ -121,20 +106,17 @@ describe('Navigation - cancel and save', () => {
           cy.url().then((url) => {
             const parts = url.split('/');
             const importID_reopened = parts[parts.length - 2]; // Get the penultimate element
-            expect(importID).to.be.equal(importID_reopened);
+            expect(String(importID)).to.be.equal(importID_reopened);
             // Checks that a ng-select is not restored
             cy.get(SELECTOR_IMPORT_FIELDMAPPING_DATE_MIN).find('.ng-placeholder');
-            cy.deleteCurrentImport();
+            cy.deleteImport(importID, 'synthese');
           });
         });
       });
 
       it('fieldmapping - save', () => {
         runTheProcessUntilFieldMapping(user);
-        cy.url().then((url) => {
-          // Extract the ID using string manipulation
-          const parts = url.split('/');
-          const importID = parts[parts.length - 2]; // Get the penultimate element
+        cy.get('@currentImportId').then((importID) => {
           fillTheFieldMappingFormRaw();
           cy.get(SELECTOR_IMPORT_FOOTER_SAVE).should('be.enabled').click();
           checkImportIsFirstInList(importID);
@@ -146,18 +128,14 @@ describe('Navigation - cancel and save', () => {
             .should('exist')
             .should('contains.text', 'date_debut');
 
-          cy.deleteCurrentImport();
+          cy.deleteImport(importID, 'synthese');
         });
       });
 
       it('contentmapping - cancel and suppress', () => {
         runTheProcessUntilContentMapping(user);
-        cy.url().then((url) => {
-          // Extract the ID using string manipulation
-          const parts = url.split('/');
-          const importID = parts[parts.length - 2]; // Get the penultimate element
+        cy.get('@currentImportId').then((importID) => {
           cy.get(SELECTOR_IMPORT_FOOTER_DELETE).should('be.enabled').click();
-          cy.wait(TIMEOUT_WAIT);
           cy.checkCurrentPageIsImport();
           checkImportIsNotFirstInList(importID);
         });
@@ -167,13 +145,9 @@ describe('Navigation - cancel and save', () => {
         const FIELD = 'id_nomenclature_behaviour';
         const VALUE = '0 - Inconnu';
         runTheProcessUntilContentMapping(user);
-        cy.url().then((url) => {
-          // Extract the ID using string manipulation
-          const parts = url.split('/');
-          const importID = parts[parts.length - 2]; // Get the penultimate element
+        cy.get('@currentImportId').then((importID) => {
           selectContentMappingField(FIELD, VALUE);
           cy.visitImport();
-          cy.wait(500);
           checkImportIsFirstInList(importID);
           clickOnFirstLineEdit();
           goToContentMappingPage();
@@ -181,15 +155,14 @@ describe('Navigation - cancel and save', () => {
           cy.url().then((url) => {
             const parts = url.split('/');
             const importID_reopened = parts[parts.length - 2]; // Get the penultimate element
-            expect(importID).to.be.equal(importID_reopened);
+            expect(String(importID)).to.be.equal(importID_reopened);
             cy.get(`[data-qa=import-contentmapping-theme-${FIELD}] option:selected`).should(
               'not.have.text',
               ` ${VALUE} `
             );
-            cy.deleteCurrentImport();
+            cy.deleteImport(importID, 'synthese');
           });
         });
-        cy.wait(500);
       });
 
       it('contentmapping - save', () => {
@@ -197,15 +170,10 @@ describe('Navigation - cancel and save', () => {
         const VALUE = '0 - Inconnu';
 
         runTheProcessUntilContentMapping(user);
-        cy.url().then((url) => {
-          // Extract the ID using string manipulation
-          const parts = url.split('/');
-          const importID = parts[parts.length - 2]; // Get the penultimate element
-
+        cy.get('@currentImportId').then((importID) => {
           selectContentMappingField(FIELD, VALUE);
 
           cy.get(SELECTOR_IMPORT_FOOTER_SAVE).should('be.enabled').click();
-          cy.wait(TIMEOUT_WAIT);
           checkImportIsFirstInList(importID);
           clickOnFirstLineEdit();
           goToContentMappingPage();
@@ -216,7 +184,7 @@ describe('Navigation - cancel and save', () => {
             ` ${VALUE} `
           );
 
-          cy.deleteCurrentImport();
+          cy.deleteImport(importID, 'synthese');
         });
       });
     });

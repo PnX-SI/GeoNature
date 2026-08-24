@@ -9,7 +9,7 @@ import {
   SELECTOR_IMPORT_MODAL_EDIT_VALIDATE,
 } from './constants/selectors';
 import { USERS } from './constants/users';
-import { TIMEOUT_WAIT, VIEWPORTS } from './constants/common';
+import { VIEWPORTS } from './constants/common';
 
 import {
   FIELDS_CONTENT_STEP_UPLOAD,
@@ -65,24 +65,31 @@ describe('Import Process Navigation', () => {
         cy.viewport(viewport.width, viewport.height);
         cy.geonatureLogin(user.login.username, user.login.password);
         cy.visitImport();
-        cy.wait(TIMEOUT_WAIT);
         cy.startImport();
         cy.pickDestination(DESTINATION);
 
         // STEP 1 - UPLOAD
         cy.loadImportFile(FIELDS_CONTENT_STEP_UPLOAD.fileUploadField.defaultValue);
-        cy.wait(TIMEOUT_WAIT);
-        cy.url().then((url) => {
-          // Extract the ID using string manipulation
-          const parts = url.split('/');
-          const id = parts[parts.length - 2]; // Get the penultimate element
-          // Log the extracted ID
-          importID = id;
-        });
+        cy.url()
+          .should('include', '/process/')
+          .then((url) => {
+            // Extract the ID using string manipulation
+            const parts = url.split('/');
+            const id = parts[parts.length - 2]; // Get the penultimate element
+            // Log the extracted ID
+            importID = id;
+          });
         cy.visitImport();
       });
 
       it(`should navigate correctly from step ${STEP_NAMES[0]} to step ${STEP_NAMES[1]} and save fields content`, function () {
+        // Cypress resets page/cookies/storage before each test (and before each retry
+        // attempt), so this test can't rely on the page state `before()` left behind —
+        // re-establish login and land back on the import list ourselves, same as the
+        // next test already does.
+        cy.viewport(viewport.width, viewport.height);
+        cy.geonatureLogin(user.login.username, user.login.password);
+        cy.visitImport();
         // Wait for the alias to be available
         cy.wrap(importID)
           .as('newImportID')
@@ -95,7 +102,6 @@ describe('Import Process Navigation', () => {
               cy.get(getSelectorImportListTableRowEdit(rowIndex)).should('be.enabled').click();
               // cy.get(SELECTOR_IMPORT_MODAL_EDIT_VALIDATE).should('exist').click();
             });
-            cy.wait(TIMEOUT_WAIT);
             // Should go on last step edited  --> decode file
             cy.url().should('eq', urlStepsImport.step_2_decode_file.url);
 
@@ -137,7 +143,6 @@ describe('Import Process Navigation', () => {
             cy.get(FIELDS_CONTENT_STEP_FILE_DECODE.sridField.selector).select(
               FIELDS_CONTENT_STEP_FILE_DECODE.sridField.defaultValue
             );
-            cy.wait(TIMEOUT_WAIT);
             cy.get(SELECTOR_NAVIGATION_GENERAL.save_and_quit_btn_selector)
               .should('be.visible')
               .click();
@@ -166,7 +171,6 @@ describe('Import Process Navigation', () => {
               cy.get(getSelectorImportListTableRowEdit(rowIndex)).should('be.enabled').click();
               // cy.get(SELECTOR_IMPORT_MODAL_EDIT_VALIDATE).should('exist').click();
             });
-            cy.wait(TIMEOUT_WAIT);
             // Should go on last step edited  --> decode file
             cy.url().should('eq', urlStepsImport.step_2_decode_file.url);
 
@@ -201,12 +205,10 @@ describe('Import Process Navigation', () => {
             cy.get(SELECTOR_NAVIGATION_STEP_DECODE_FILE.next_btn_selector)
               .should('be.visible')
               .click();
-            cy.wait(TIMEOUT_WAIT);
             cy.get(SELECTOR_NAVIGATION_STEP_FIELDMAPPING.back_btn_selector)
               .scrollIntoView()
               .should('be.visible')
               .click();
-            cy.wait(TIMEOUT_WAIT);
 
             cy.get(FIELDS_CONTENT_STEP_FILE_DECODE.sridField.selector).select(
               FIELDS_CONTENT_STEP_FILE_DECODE.sridField.newValue
@@ -224,7 +226,6 @@ describe('Import Process Navigation', () => {
             cy.get(SELECTOR_NAVIGATION_STEP_DECODE_FILE.next_btn_selector)
               .should('be.visible')
               .click();
-            cy.wait(TIMEOUT_WAIT);
             cy.get(SELECTOR_NAVIGATION_STEP_FIELDMAPPING.back_btn_selector)
               .scrollIntoView()
               .should('be.visible')
@@ -254,6 +255,7 @@ describe('Import Process Navigation', () => {
       });
 
       after(() => {
+        cy.geonatureLogin(user.login.username, user.login.password);
         cy.wrap(importID)
           .as('newImportID')
           .then((importID) => {
