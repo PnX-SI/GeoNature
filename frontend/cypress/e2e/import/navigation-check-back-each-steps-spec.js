@@ -69,9 +69,14 @@ describe('Import Process Navigation', () => {
         cy.pickDestination(DESTINATION);
 
         // STEP 1 - UPLOAD
+        // pickDestination() already navigates to the id-less `.../process/upload` route
+        // before any file is picked, so a bare `.should('include', '/process/')` here
+        // matches that stale URL immediately — before loadImportFile()'s upload has even
+        // been submitted — and captures "process" (the segment before "upload") as a fake
+        // importID. Wait specifically for the post-upload redirect to a real numeric id.
         cy.loadImportFile(FIELDS_CONTENT_STEP_UPLOAD.fileUploadField.defaultValue);
         cy.url()
-          .should('include', '/process/')
+          .should('match', /\/process\/\d+\/decode$/)
           .then((url) => {
             // Extract the ID using string manipulation
             const parts = url.split('/');
