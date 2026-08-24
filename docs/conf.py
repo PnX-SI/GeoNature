@@ -68,7 +68,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "GeoNature"
-copyright = "2018-2026, Parc National des Écrins, Parc National des Cévennes"
+copyright = "2018-2026, Parc national des Écrins, Parc national des Cévennes, PatriNat"
 author = "PnE, PnC"
 
 # The version info for the project you're documenting, acts as replacement for
