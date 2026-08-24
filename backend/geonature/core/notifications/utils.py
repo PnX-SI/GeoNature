@@ -14,7 +14,8 @@ from geonature.core.notifications.models import (
 )
 from geonature.utils.env import db
 from geonature.core.notifications.tasks import send_notification_mail
-from sqlalchemy import values, Integer, text, select
+from sqlalchemy import select
+from jinja2.sandbox import SandboxedEnvironment
 
 
 def dispatch_notifications(
@@ -62,7 +63,9 @@ def dispatch_notification(category, role, title=None, url=None, *, content=None,
             ).one_or_none()
             if not notification_template:
                 continue
-            notification_content = Template(notification_template.content).render(context)
+            notification_content = (
+                SandboxedEnvironment().from_string(notification_template.content).render(context)
+            )
             # if no content break | content is
             if not notification_content.strip():
                 continue
