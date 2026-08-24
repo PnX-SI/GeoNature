@@ -8,6 +8,7 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
 import { DataFormService, ParamsDict } from '@geonature_common/form/data-form.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { PageEvent } from '@angular/material/paginator';
+import { valueOrDefault } from 'chart.js/helpers';
 
 const SELECTORS = { datasets: 0, creator: 1, actors: 1 };
 
@@ -80,17 +81,16 @@ export class MetadataService {
    */
   search(search_only: boolean = false) {
     let params = {};
-
-    if (search_only)
-      params = Object.entries(this.form.value).reduce((acc, [key, value]) => {
-        if (value !== null && !key.startsWith('area_')) {
-          acc[key] = value;
-        }
-        return acc;
-      });
-    else if (this.form.value.search) {
+    if (!search_only) {
+      params = this.form.value;
+    } else if (this.form.value.search) {
       params = { search: this.form.value.search };
     }
+    Object.keys(params).forEach((value, index) => {
+      if (value.startsWith('area_') || !params[value]) {
+        delete params[value];
+      }
+    });
 
     return this.getMetadataObservable(params).pipe(
       tap((response) => {
@@ -143,9 +143,6 @@ export class MetadataService {
   }
 
   addDatasetToAcquisitionFramework(af, params, queryString: ParamsDict = {}) {
-    //TODO: keep in mind that acquisistionframeworks is
-    // a behaviour subject and so filter it with rxjs and
-    // pipe the getDatasets then subscribe at the end
     this.dataFormService
       .getDatasets(
         {
@@ -155,11 +152,15 @@ export class MetadataService {
         queryString
       )
       .subscribe((datasets) => {
-        af.t_datasets = datasets;
+        af.t_datasets = datasets.map((dataset) => ({
+          ...dataset,
+          dict_stats: dataset.dict_stats || { total_nb_obs: 0, dict_nb_obs: {} },
+        }));
+
         for (const dataset of af.t_datasets) {
-          this.dataFormService
-            .getDatasetStats(dataset.id_dataset)
-            .subscribe((stats) => (dataset.dict_stats = stats));
+          this.dataFormService.getDatasetStats(dataset.id_dataset).subscribe((stats) => {
+            dataset.dict_stats = stats;
+          });
         }
       });
   }

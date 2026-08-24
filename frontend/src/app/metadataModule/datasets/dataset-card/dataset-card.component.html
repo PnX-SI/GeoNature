@@ -142,7 +142,7 @@
                 class="badge badge-pill badge-light border mr-2 mb-2 af-stat-badge"
               >
                 <img
-                  src="../../../assets/images/Taxon_icon.svg"
+                  src="./assets/images/Taxon_icon.svg"
                   alt="Icône Taxon"
                 />
                 <span>{{ 'Taxons' | translate }}</span>
@@ -153,7 +153,7 @@
                 *ngFor="let item of stats.dict_nb_obs | keyvalue"
               >
                 <img
-                  src="../../../assets/images/Donnee_icon.svg"
+                  src="./assets/images/Donnee_icon.svg"
                   alt="Icône Donnée"
                 />
                 <span>{{ getObservationCountTooltip(item.key) }}</span>
@@ -199,12 +199,23 @@
           </div>
           <br />
 
-          <div class="b">{{ 'MetaData.DatasetCard.DataType' | translate }}</div>
+          <div class="b">{{ 'MetaData.DatasetCard.DataCategory' | translate }}</div>
           <div class="a">
-            {{ dataset?.nomenclature_data_type.label_default || 'Non renseigné' }}
+            <ng-container *ngIf="dataset?.precision_data_category; else noDataCategoryPrecision">
+              {{ 'MetaData.DatasetCard.CustomDataCategory' | translate }}:
+              {{ dataset?.precision_data_category }}
+            </ng-container>
+            <ng-template #noDataCategoryPrecision>
+              {{ dataset?.nomenclature_data_category.label_default }}
+            </ng-template>
           </div>
           <br />
 
+          <div class="b">{{ 'MetaData.DatasetCard.DataType' | translate }}</div>
+          <div class="a">
+            {{ dataset?.nomenclature_data_type?.label_default }}
+          </div>
+          <br />
           <div class="b">{{ 'Objective(s)' | translate }}</div>
           <div
             *ngFor="let objectif of dataset?.cor_objectifs"

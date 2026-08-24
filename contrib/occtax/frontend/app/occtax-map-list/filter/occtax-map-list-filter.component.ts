@@ -7,7 +7,7 @@ import { FILTERSLIST } from './filters-list';
 import { HttpParams } from '@angular/common/http';
 import { OcctaxMapListService } from '../occtax-map-list.service';
 import { ModuleService } from '@geonature/services/module.service';
-import { ConfigService } from '@geonature/services/config.service';
+import { OcctaxConfigService } from '../../services/occtax-config.service';
 
 @Component({
   selector: 'pnx-occtax-map-list-filter',
@@ -29,7 +29,7 @@ export class OcctaxMapListFilterComponent implements OnInit {
     private _dateParser: NgbDateParserFormatter,
     public occtaxMapListService: OcctaxMapListService,
     public moduleService: ModuleService,
-    public config: ConfigService
+    public occtaxConfig: OcctaxConfigService
   ) {}
 
   ngOnInit() {}

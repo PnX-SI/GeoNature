@@ -16,7 +16,7 @@ import { OcctaxFormMapService } from './map/occtax-map.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { filter } from 'rxjs/operators';
 import { ModuleService } from '@geonature/services/module.service';
-import { ConfigService } from '@geonature/services/config.service';
+import { OcctaxConfigService } from '../services/occtax-config.service';
 
 @Component({
   selector: 'pnx-occtax-form',
@@ -53,7 +53,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
     private _commonService: CommonService,
     private _modalService: NgbModal,
     public moduleService: ModuleService,
-    public config: ConfigService
+    public occtaxConfig: OcctaxConfigService
   ) {}
 
   ngOnInit() {
@@ -61,7 +61,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
       this.currentModulePath = module.module_path.toLowerCase();
     });
 
-    this.occtaxFormService.idTaxonList = this.config.OCCTAX.id_taxon_list;
+    this.occtaxFormService.idTaxonList = this.occtaxConfig.moduleConf.id_taxon_list;
 
     // set id_releve and tab on initalization (refresh page)
     this.setCurrentTabAndIdReleve(this._router.routerState.snapshot.url);

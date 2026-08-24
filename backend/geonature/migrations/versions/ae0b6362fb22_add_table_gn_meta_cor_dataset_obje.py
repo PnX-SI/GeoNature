@@ -1,7 +1,7 @@
 """add table gn_meta.cor_dataset_objectif
 
 Revision ID: ae0b6362fb22
-Revises: f6a1feb3f297
+Revises: 1ebab31227b8
 Create Date: 2026-04-27 12:58:35.383337
 
 """

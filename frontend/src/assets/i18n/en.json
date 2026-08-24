@@ -9,7 +9,15 @@
     "Chinese": "🇨🇳 中文 (Chinese)"
   },
   "Calendar": {
-    "Weekdays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    "Weekdays": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday"
+    ],
     "Months": [
       "January",
       "February",
@@ -376,6 +384,9 @@
       "DatasetGeoNatureID": "GeoNature ID of the dataset",
       "ShortName": "Short label",
       "DataType": "Data type",
+      "DataCategory": "Data category",
+      "PrecisionDataCategory": "Precision on the data category",
+      "CustomDataCategory": "Custom data category",
       "LandCoverage": "Land territory coverage",
       "MarineAreaCoverage": "Marine territory coverage",
       "TermsReference": "Reference framework",
@@ -406,6 +417,7 @@
       "MainContact": "Main contact",
       "DataOrigin": "Data origin",
       "ResourceType": "Resource type",
+      "EbvClasses": "EBV class(es)",
       "FacultativeTaxaList": "Taxon list (optional)",
       "SpecificGeonature": "Specific GeoNature",
       "RequiredToImportAndEnterData": "Required to enter or import data in the dataset"
@@ -421,6 +433,17 @@
         "DeleteActor": "Delete this stakeholder",
         "CreateOrganism": "Add an organism"
       }
+    },
+    "ProductionDatabase": {
+      "ProductionDatabase": "Production database",
+      "AddDatabase": "Add a production database",
+      "Name": "Name",
+      "NameRequired": "Name required",
+      "AssociatedActor": "Associated actor",
+      "CreateTitle": "Create production database",
+      "CreatedSuccess": "Production database created successfully",
+      "CreatedError": "Production database could not be created",
+      "NameAlreadyExists": "This name already exists"
     },
     "ProductionDatabase": {
       "ProductionDatabase": "Production database",

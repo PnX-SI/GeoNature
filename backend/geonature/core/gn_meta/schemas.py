@@ -74,11 +74,12 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
     # NOT NULL columns populated server-side (Python default= / DB default) that clients
     # legitimately omit or send as null on creation — see TDatasets model for the defaults.
     unique_dataset_id = MA.auto_field(required=False, allow_none=True)
-    id_nomenclature_data_type = MA.auto_field(required=False)
+    id_nomenclature_data_category = MA.auto_field(required=False)
     id_nomenclature_collecting_method = MA.auto_field(required=False)
     id_nomenclature_data_origin = MA.auto_field(required=False, allow_none=True)
     id_nomenclature_source_status = MA.auto_field(required=False)
     id_nomenclature_resource_type = MA.auto_field(required=False)
+    id_nomenclature_data_type = MA.auto_field(required=True)
     active = MA.auto_field(required=False)
     cor_dataset_actor = MA.Nested(DatasetActorSchema, many=True, unknown=EXCLUDE)
     modules = MA.Nested(
@@ -86,6 +87,7 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
     )
 
     creator = MA.Nested(UserSchema, dump_only=True)
+    nomenclature_data_category = MA.Nested(NomenclatureSchema, dump_only=True, required=True)
     nomenclature_data_type = MA.Nested(NomenclatureSchema, dump_only=True)
     nomenclature_collecting_method = MA.Nested(NomenclatureSchema, dump_only=True)
     nomenclature_data_origin = MA.Nested(NomenclatureSchema, dump_only=True)
@@ -93,6 +95,7 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
     nomenclature_resource_type = MA.Nested(NomenclatureSchema, dump_only=True)
     cor_objectifs = MA.Nested(NomenclatureSchema, many=True, unknown=EXCLUDE)
     cor_territories = MA.Nested(NomenclatureSchema, many=True, unknown=EXCLUDE)
+    cor_classes_ebv = MA.Nested(NomenclatureSchema, many=True, required=False, unknown=EXCLUDE)
     acquisition_framework = MA.Nested("AcquisitionFrameworkSchema", dump_only=True)
     sources = MA.Nested(SourceSchema, many=True, dump_only=True)
     publications = MA.Nested("PublicationSchema", many=True, dump_only=True, exclude=("datasets",))

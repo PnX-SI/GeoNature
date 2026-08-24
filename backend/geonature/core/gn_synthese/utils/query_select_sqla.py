@@ -14,7 +14,7 @@ from enum import Enum
 from flask import current_app
 
 import sqlalchemy as sa
-from sqlalchemy import func, or_, and_, select, distinct, inspect
+from sqlalchemy import extract, func, or_, and_, case, select, distinct, inspect, tuple_
 from sqlalchemy.sql import text
 from sqlalchemy.orm import aliased
 from werkzeug.exceptions import BadRequest
@@ -299,7 +299,7 @@ class SyntheseQuery:
             )
 
         aliased_cor_taxon_attr = {}
-        protection_status_value = []
+        protection_status_filters = {}
         red_list_filters = {}
 
         for colname, value in self.filters.items():
@@ -352,10 +352,10 @@ class SyntheseQuery:
                 ):
                     value = status_cfg["status_types"]
 
-                protection_status_value += value
+                protection_status_filters[status_id] = value
 
-        if protection_status_value or red_list_filters:
-            self.build_bdc_status_filters(protection_status_value, red_list_filters)
+        if protection_status_filters or red_list_filters:
+            self.build_bdc_status_filters(protection_status_filters, red_list_filters)
         # remove attributes taxhub from filters
         self.filters = {
             colname: value
@@ -505,20 +505,31 @@ class SyntheseQuery:
             self.filters.pop("geoIntersection")
 
         if "period_start" in self.filters and "period_end" in self.filters:
-            period_start = self.filters.pop("period_start")
-            period_end = self.filters.pop("period_end")
+            period_start = self.filters.pop("period_start")  # e.g. "09-09" (DD-MM)
+            period_end = self.filters.pop("period_end")  # e.g. "11-12" (DD-MM)
+
+            start_day, start_month = (int(x) for x in period_start.split("/"))
+            end_day, end_month = (int(x) for x in period_end.split("/"))
+
+            start_tuple = (start_month, start_day)
+            end_tuple = (end_month, end_day)
+
+            def in_period(date_col):
+                md = tuple_(
+                    extract("month", date_col),
+                    extract("day", date_col),
+                )
+                if start_tuple <= end_tuple:
+                    # normal range, e.g. Sept 9 -> Dec 11
+                    return md.between(start_tuple, end_tuple)
+                else:
+                    # wrap-around range, e.g. Dec 15 -> Jan 10
+                    return or_(md >= start_tuple, md <= end_tuple)
+
             self.query = self.query.where(
                 or_(
-                    func.gn_commons.is_in_period(
-                        func.date(self.model.date_min),
-                        func.to_date(period_start, "DD-MM"),
-                        func.to_date(period_end, "DD-MM"),
-                    ),
-                    func.gn_commons.is_in_period(
-                        func.date(self.model.date_max),
-                        func.to_date(period_start, "DD-MM"),
-                        func.to_date(period_end, "DD-MM"),
-                    ),
+                    in_period(func.date(self.model.date_min)),
+                    in_period(func.date(self.model.date_max)),
                 )
             )
         if "unique_id_sinp" in self.filters:
@@ -624,7 +635,7 @@ class SyntheseQuery:
         self.apply_all_filters(user, permissions)
         return self.build_query()
 
-    def build_bdc_status_filters(self, protection_status_value, red_list_filters):
+    def build_bdc_status_filters(self, protection_status_filters, red_list_filters):
         """
         Create subquery for bdc_status filters
 
@@ -635,6 +646,13 @@ class SyntheseQuery:
         Idée de façon à limiter le nombre de sous requêtes (le nombre de status demandé ne dégrade pas les performances),
             la liste des status selectionnés par l'utilisateur s'appliquant à l'observation est
             aggrégée de façon à tester le nombre puis jointer sur le département de la donnée
+
+        Chaque groupe de filtre (un champ "<id>_protection_status", ou une catégorie de liste
+        rouge) peut être satisfait par plusieurs valeurs (ex: "PN" ou "PD" pour un même champ
+        "Taxons protégés") : les valeurs d'un même groupe sont donc en OR entre elles, tandis que
+        les groupes entre eux sont en AND. Pour cela, chaque ligne de texte trouvée est étiquetée
+        (`group_label`) avec le groupe qu'elle satisfait, et c'est ce label (et non le
+        `cd_type_statut` brut) qui sert à compter les conditions satisfaites.
         """
         # Ajout de la table taxref si non ajouté
         self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
@@ -650,13 +668,40 @@ class SyntheseQuery:
             [bib_area_dep.id_type == lareas_dep.id_type, bib_area_dep.type_code == "DEP"],
         )
 
+        nb_status_groups = len(protection_status_filters) + len(red_list_filters)
+
+        # On construit une CTE pour avoir chaque taxon / id_area par "type d'input" de filtre (protection / reglementation / LRR etc...)
+        # Ceci permet via le .distinct ci dessous de faire des OR dans un filtre et des AND entre les filtres
+        # Exemple : protection_status_filters = {"protections": ["PN", "PD"], "regulations": ["REGLLUTTE"]}
+        # donne, une fois appliqué aux lignes de la CTE (cd_ref, id_area, group_label) :
+        #   (2679, 60, 'protection:protections')  <- texte PD, taxon 2679, département 60
+        #   (2679, 1,  'protection:protections')  <- texte PN, taxon 2679, France entière
+        #   (2679, 60, 'protection:regulations')  <- texte REGLLUTTE, taxon 2679, département 60
+
+        group_label_cases = [
+            (TaxrefBdcStatutText.cd_type_statut.in_(v), sa.literal(f"protection:{status_id}"))
+            for status_id, v in protection_status_filters.items()
+        ] + [
+            (
+                and_(
+                    TaxrefBdcStatutText.cd_type_statut == k,
+                    TaxrefBdcStatutValues.code_statut.in_(v),
+                ),
+                sa.literal(f"red_list:{k}"),
+            )
+            for k, v in red_list_filters.items()
+        ]
+        # case(cond1, res1, cond2, res2, ...) génère en SQL :
+        #   CASE WHEN cond1 THEN res1 WHEN cond2 THEN res2 END
+        group_label = case(*group_label_cases).label("group_label")
+
         # Creation requête CTE : taxon, zone d'application départementale des textes
         #   pour les taxons répondant aux critères de selection
         bdc_status_by_type_cte = (
             select(
                 TaxrefBdcStatutTaxon.cd_ref,
                 bdc_statut_cor_text_area.c.id_area,
-                TaxrefBdcStatutText.cd_type_statut,
+                group_label,
             )
             .distinct()
             .select_from(
@@ -681,43 +726,30 @@ class SyntheseQuery:
             .where(TaxrefBdcStatutText.enable == True)
         )
 
-        # ajout des filtres de selection des textes
-        bdc_status_filters = []
-        if red_list_filters:
-            bdc_status_filters = [
-                and_(
-                    TaxrefBdcStatutValues.code_statut.in_(v),
-                    TaxrefBdcStatutText.cd_type_statut == k,
-                )
-                for k, v in red_list_filters.items()
-            ]
-        if protection_status_value:
-            bdc_status_filters.append(
-                TaxrefBdcStatutText.cd_type_statut.in_(protection_status_value)
-            )
-
-        bdc_status_by_type_cte = bdc_status_by_type_cte.where(or_(*bdc_status_filters))
+        # ajout des filtres de selection des textes (un groupe matché = OR sur ses valeurs)
+        bdc_status_by_type_cte = bdc_status_by_type_cte.where(
+            or_(*(condition for condition, _ in group_label_cases))
+        )
         bdc_status_by_type_cte = bdc_status_by_type_cte.cte(
             name="bdc_status_by_type_" + str(uuid.uuid4())[:4]
         )
 
         # group by de façon à ne selectionner que les taxons
-        #   qui ont l'ensemble des textes selectionnés par l'utilisateur
-        #   c-a-d dont le nombre de cd_type_statut correspond au nombre demandé
+        #   qui ont l'ensemble des groupes de statuts selectionnés par l'utilisateur
+        #   c-a-d dont le nombre de group_label distincts correspond au nombre de groupes demandés
         bdc_status_cte = select(
             bdc_status_by_type_cte.c.cd_ref,
             func.array_agg(bdc_status_by_type_cte.c.id_area).label("ids_area"),
         )
         bdc_status_cte = bdc_status_cte.group_by(bdc_status_by_type_cte.c.cd_ref).having(
-            func.count(distinct(bdc_status_by_type_cte.c.cd_type_statut))
-            == (len(protection_status_value) + len(red_list_filters))
+            func.count(distinct(bdc_status_by_type_cte.c.group_label)) == nb_status_groups
         )
 
         bdc_status_cte = bdc_status_cte.cte()
 
         # Jointure sur le taxon
-        # et vérification que l'ensemble des textes
-        # soit sur bien sur le département de l'observation
+        # et vérification que l'ensemble des groupes de statuts demandés
+        # s'applique bien sur le département de l'observation
         self.add_join_multiple_cond(
             bdc_status_cte,
             [
@@ -725,7 +757,7 @@ class SyntheseQuery:
                 func.array_length(
                     func.array_positions(bdc_status_cte.c.ids_area, cas_dep.id_area), 1
                 )
-                == (len(protection_status_value) + len(red_list_filters)),
+                == nb_status_groups,
             ],
         )
 

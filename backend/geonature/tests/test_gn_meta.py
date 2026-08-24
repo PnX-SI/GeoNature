@@ -1046,41 +1046,103 @@ class TestDataset:
 
         assert set(response.json.keys()) == {"data"}
 
-    def get_test_dataset_json(self, id_acquisition_framework):
+    def get_test_dataset_json(
+        self, id_acquisition_framework, nomenclature_category, nomenclature_data_type
+    ):
         return {
             "id_acquisition_framework": id_acquisition_framework,
             "dataset_name": "test",
             "dataset_shortname": "test",
             "dataset_desc": "test",
             "unique_dataset_id": None,
+            "id_nomenclature_data_category": nomenclature_category.id_nomenclature,
+            "id_nomenclature_data_type": nomenclature_data_type.id_nomenclature,
         }
 
-    def test_create_dataset(self, users, datasets):
-        response = self.client.post(url_for("gn_meta.create_dataset"))
+    def test_create_dataset(self, users, datasets, nomenclature_category, nomenclature_data_type):
+        url = url_for("gn_meta.create_dataset")
+        response = self.client.post(url)
         assert response.status_code == Unauthorized.code
 
         set_logged_user(self.client, users["admin_user"])
 
-        response = self.client.post(url_for("gn_meta.create_dataset"))
+        response = self.client.post(url)
         assert response.status_code == UnsupportedMediaType.code
 
         set_logged_user(self.client, users["admin_user"])
         ds = datasets["own_dataset"].as_dict()
         ds["id_dataset"] = "takeonme"
-        response = self.client.post(url_for("gn_meta.create_dataset"), json=ds)
+        response = self.client.post(url, json=ds)
         assert response.status_code == BadRequest.code
-        ds_json = self.get_test_dataset_json(datasets["own_dataset"].id_acquisition_framework)
+        ds_json = self.get_test_dataset_json(
+            datasets["own_dataset"].id_acquisition_framework,
+            nomenclature_category,
+            nomenclature_data_type,
+        )
         response = self.client.post(
-            url_for("gn_meta.create_dataset"),
+            url,
             json=ds_json,
         )
         assert response.status_code == 200
+        assert response.json["id_nomenclature_data_type"] == nomenclature_data_type.id_nomenclature
 
-    def test_dataset_with_closed_af(self, users, datasets):
+        get_response = self.client.get(
+            url_for("gn_meta.get_dataset", id_dataset=response.json["id_dataset"])
+        )
+        assert get_response.json["nomenclature_data_type"]["cd_nomenclature"] == "1"
+
+    def test_create_dataset_missing_data_type(self, users, datasets, nomenclature_category):
+        set_logged_user(self.client, users["admin_user"])
+        ds_json = {
+            "id_acquisition_framework": datasets["own_dataset"].id_acquisition_framework,
+            "dataset_name": "test",
+            "dataset_shortname": "test",
+            "dataset_desc": "test",
+            "unique_dataset_id": None,
+            "id_nomenclature_data_category": nomenclature_category.id_nomenclature,
+        }
+        response = self.client.post(url_for("gn_meta.create_dataset"), json=ds_json)
+        assert response.status_code == BadRequest.code
+        assert "id_nomenclature_data_type" in response.json["description"]
+
+    def test_create_dataset_with_classes_ebv(
+        self,
+        users,
+        datasets,
+        nomenclature_category,
+        nomenclature_data_type,
+        nomenclatures_classe_ebv,
+    ):
+        set_logged_user(self.client, users["admin_user"])
+        ds_json = self.get_test_dataset_json(
+            datasets["own_dataset"].id_acquisition_framework,
+            nomenclature_category,
+            nomenclature_data_type,
+        )
+        ds_json["cor_classes_ebv"] = [
+            {"id_nomenclature": n.id_nomenclature} for n in nomenclatures_classe_ebv
+        ]
+        response = self.client.post(url_for("gn_meta.create_dataset"), json=ds_json)
+        assert response.status_code == 200
+
+        get_response = self.client.get(
+            url_for("gn_meta.get_dataset", id_dataset=response.json["id_dataset"])
+        )
+        assert {c["id_nomenclature"] for c in get_response.json["cor_classes_ebv"]} == {
+            n.id_nomenclature for n in nomenclatures_classe_ebv
+        }
+
+    def test_dataset_with_closed_af(
+        self, users, datasets, nomenclature_category, nomenclature_data_type
+    ):
         set_logged_user(self.client, users["admin_user"])
         datasets["own_dataset"].acquisition_framework.opened = False
         db.session.flush()
-        ds_json = self.get_test_dataset_json(datasets["own_dataset"].id_acquisition_framework)
+        ds_json = self.get_test_dataset_json(
+            datasets["own_dataset"].id_acquisition_framework,
+            nomenclature_category,
+            nomenclature_data_type,
+        )
         response = self.client.post(
             url_for("gn_meta.create_dataset"),
             json=ds_json,
@@ -1339,9 +1401,40 @@ class TestDataset:
             url_for("gn_meta.update_dataset", id_dataset=ds.id_dataset),
             data=dict(dataset_name=new_name),
         )
-
         assert response.status_code == 200
         assert response.json.get("dataset_name") == new_name
+
+    def test_update_dataset_data_type(self, users, datasets, nomenclature_data_type):
+        ds = datasets["own_dataset"]
+        set_logged_user(self.client, users["user"])
+
+        response = self.client.patch(
+            url_for("gn_meta.update_dataset", id_dataset=ds.id_dataset),
+            json={"id_nomenclature_data_type": nomenclature_data_type.id_nomenclature},
+        )
+        assert response.status_code == 200
+        assert (
+            response.json.get("id_nomenclature_data_type") == nomenclature_data_type.id_nomenclature
+        )
+
+    def test_update_dataset_classes_ebv(self, users, datasets, nomenclatures_classe_ebv):
+        ds = datasets["own_dataset"]
+        set_logged_user(self.client, users["user"])
+
+        response = self.client.patch(
+            url_for("gn_meta.update_dataset", id_dataset=ds.id_dataset),
+            json={
+                "cor_classes_ebv": [
+                    {"id_nomenclature": n.id_nomenclature} for n in nomenclatures_classe_ebv
+                ]
+            },
+        )
+        assert response.status_code == 200
+
+        get_response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=ds.id_dataset))
+        assert {c["id_nomenclature"] for c in get_response.json["cor_classes_ebv"]} == {
+            n.id_nomenclature for n in nomenclatures_classe_ebv
+        }
 
     def test_update_dataset_not_found(self, users, datasets, unexisted_id):
         set_logged_user(self.client, users["user"])

@@ -63,12 +63,14 @@ export class DatasetFormService {
       dataset_name: [null, [Validators.required, Validators.maxLength(150)]],
       dataset_shortname: [null, [Validators.required, Validators.maxLength(30)]],
       dataset_desc: [null, Validators.required],
-      id_nomenclature_data_type: [null, Validators.required],
+      id_nomenclature_data_category: [null, Validators.required],
+      precision_data_category: null,
       keywords: null,
       id_nomenclature_collecting_method: [null, Validators.required],
       id_nomenclature_data_origin: [null, Validators.required],
       id_nomenclature_source_status: [null, Validators.required],
       id_nomenclature_resource_type: [null, Validators.required],
+      id_nomenclature_data_type: [null, Validators.required],
       validable: null,
       active: [null, Validators.required],
       id_taxa_list: null,
@@ -76,6 +78,7 @@ export class DatasetFormService {
       cor_objectifs: [[], Validators.required],
       cor_territories: [[], Validators.required],
       id_production_database: null,
+      cor_classes_ebv: [[]],
       cor_dataset_actor: this.fb.array(
         [],
         [

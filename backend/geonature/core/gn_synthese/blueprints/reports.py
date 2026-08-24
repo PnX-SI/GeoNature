@@ -213,7 +213,7 @@ def list_all_reports(permissions):
     # Parameters
     type_name = request.args.get("type")
     orderby = request.args.get("orderby", "creation_date")
-    sort = request.args.get("sort")
+    sort = request.args.get("sort", "desc")
     page = request.args.get("page", 1, int)
     per_page = request.args.get("per_page", 10, int)
     my_reports = request.args.get("my_reports", "false").lower() == "true"

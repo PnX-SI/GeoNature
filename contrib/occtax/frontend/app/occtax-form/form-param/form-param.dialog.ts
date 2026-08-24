@@ -7,7 +7,7 @@ import { OcctaxFormMapService } from '../map/occtax-map.service';
 import { OcctaxFormReleveService } from '../releve/releve.service';
 import { OcctaxFormOccurrenceService } from '../occurrence/occurrence.service';
 import { OcctaxFormParamService } from './form-param.service';
-import { ConfigService } from '@geonature/services/config.service';
+import { OcctaxConfigService } from '../../services/occtax-config.service';
 
 @Component({
   selector: 'pnx-occtax-form-param',
@@ -59,7 +59,7 @@ export class OcctaxFormParamDialog implements OnInit, OnDestroy {
     public occtaxFormReleveService: OcctaxFormReleveService,
     public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     public occtaxFormParamService: OcctaxFormParamService,
-    public config: ConfigService
+    public occtaxConfig: OcctaxConfigService
   ) {}
 
   ngOnInit() {

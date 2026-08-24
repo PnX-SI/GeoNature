@@ -19,6 +19,7 @@ export class PublicationAssociationModalComponent implements OnInit {
 
   form: UntypedFormGroup;
   isLoading = false;
+  targetItems: any[] = [];
 
   constructor(
     public activeModal: NgbActiveModal,
