@@ -107,7 +107,14 @@ def import_dataset(import_datasets):
 
 
 def create_dataset(
-    client, module_code, user, active=True, private=False, acquisition_framework_opened=True
+    client,
+    module_code,
+    user,
+    nomenclature_category,
+    nomenclature_data_type,
+    active=True,
+    private=False,
+    acquisition_framework_opened=True,
 ):
     """ """
     set_logged_user(client, user)
@@ -127,6 +134,7 @@ def create_dataset(
 
     # Get module
     r_module = client.get(url_for("gn_commons.get_module", module_code=module_code))
+
     assert r_module.status_code == 200
 
     modules = [
@@ -181,6 +189,8 @@ def create_dataset(
         "modules": modules,
         "cor_territories": [territory_metropole.as_dict()],
         "cor_dataset_actor": cor_dataset_actor,
+        "id_nomenclature_data_category": nomenclature_category.id_nomenclature,
+        "id_nomenclature_data_type": nomenclature_data_type.id_nomenclature,
     }
 
     response = client.post(
@@ -201,14 +211,41 @@ def create_dataset(
 
 
 @pytest.fixture()
-def import_datasets(client, module_code, users):
+def import_datasets(client, module_code, users, nomenclature_category, nomenclature_data_type):
     datasets = {
-        "user": create_dataset(client, module_code, users["user"]),
-        "user--private": create_dataset(client, module_code, users["user"], private=True),
-        "user--inactive": create_dataset(client, module_code, users["user"], active=False),
-        "admin": create_dataset(client, module_code, users["admin_user"]),
+        "user": create_dataset(
+            client, module_code, users["user"], nomenclature_category, nomenclature_data_type
+        ),
+        "user--private": create_dataset(
+            client,
+            module_code,
+            users["user"],
+            nomenclature_category,
+            nomenclature_data_type,
+            private=True,
+        ),
+        "user--inactive": create_dataset(
+            client,
+            module_code,
+            users["user"],
+            nomenclature_category,
+            nomenclature_data_type,
+            active=False,
+        ),
+        "admin": create_dataset(
+            client,
+            module_code,
+            users["admin_user"],
+            nomenclature_category,
+            nomenclature_data_type,
+        ),
         "user--closed-af": create_dataset(
-            client, module_code, users["user"], acquisition_framework_opened=False
+            client,
+            module_code,
+            users["user"],
+            nomenclature_category,
+            nomenclature_data_type,
+            acquisition_framework_opened=False,
         ),
     }
     return datasets

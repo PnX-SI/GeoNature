@@ -53,7 +53,7 @@
     </div>
     <mat-icon
       *ngIf="dataset.dict_stats.total_nb_obs"
-      [matTooltip]="getObservationsCountsTooltip(dataset?.dict_stats.total_nb_obs)"
+      [matTooltip]="getObservationsCountsTooltip(dataset?.dict_stats?.dict_nb_obs)"
       style="vertical-align: bottom"
     >
       analytics

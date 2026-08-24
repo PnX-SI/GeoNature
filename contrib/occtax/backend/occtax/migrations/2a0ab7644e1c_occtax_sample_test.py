@@ -19,6 +19,7 @@ depends_on = (
     "3d0bf4ee67d1",  # geonature samples data
     "addb71d8efad",  # occtax
     "7808ac8b10b6",  # geonature@7808ac8b10b6 - "refactor terrestrial and marine domain fields for metadata"
+    "83572524f062",  # geonature needed migration
 )
 
 

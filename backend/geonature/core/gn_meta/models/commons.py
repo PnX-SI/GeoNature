@@ -193,6 +193,25 @@ cor_dataset_objectif = Table(
 )
 
 
+cor_dataset_classe_ebv = Table(
+    "cor_dataset_classe_ebv",
+    DB.metadata,
+    Column(
+        "id_dataset",
+        Integer,
+        ForeignKey("gn_meta.t_datasets.id_dataset"),
+        primary_key=True,
+    ),
+    Column(
+        "id_nomenclature_classe_ebv",
+        Integer,
+        ForeignKey(TNomenclatures.id_nomenclature),
+        primary_key=True,
+    ),
+    schema="gn_meta",
+)
+
+
 cor_dataset_territory = Table(
     "cor_dataset_territory",
     DB.metadata,

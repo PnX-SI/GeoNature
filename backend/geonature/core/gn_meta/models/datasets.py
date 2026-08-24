@@ -5,7 +5,7 @@ from flask import g
 import sqlalchemy as sa
 from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, Unicode, or_, func
 from sqlalchemy.sql import select, func
-from sqlalchemy.orm import relationship, Mapped, mapped_column
+from sqlalchemy.orm import backref, relationship, Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import JSONB, UUID as UUIDType
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.schema import FetchedValue
@@ -47,11 +47,15 @@ class TDatasets(db.Model):
     dataset_name: Mapped[str] = mapped_column(Unicode)
     dataset_shortname: Mapped[str] = mapped_column(Unicode)
     dataset_desc: Mapped[str] = mapped_column(Unicode)
+    id_nomenclature_data_category: Mapped[int] = mapped_column(
+        Integer, ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"), nullable=False
+    )
     id_nomenclature_data_type: Mapped[int] = mapped_column(
         Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        default=lambda: TNomenclatures.get_default_nomenclature("DATA_TYP"),
+        default=lambda: TNomenclatures.get_default_nomenclature("TYPE_DONNEES"),
     )
+    precision_data_category = mapped_column(Unicode(250))
     keywords: Mapped[Optional[str]] = mapped_column(Unicode)
     bbox_west: Mapped[Optional[float]] = mapped_column(Float)
     bbox_east: Mapped[Optional[float]] = mapped_column(Float)
@@ -100,9 +104,9 @@ class TDatasets(db.Model):
 
     additional_data: Mapped[Optional[Any]] = mapped_column(JSONB, server_default="{}")
 
-    nomenclature_data_type = DB.relationship(
+    nomenclature_data_category = DB.relationship(
         TNomenclatures,
-        foreign_keys=[id_nomenclature_data_type],
+        foreign_keys=[id_nomenclature_data_category],
     )
     nomenclature_collecting_method = DB.relationship(
         TNomenclatures,
@@ -120,6 +124,10 @@ class TDatasets(db.Model):
         TNomenclatures,
         foreign_keys=[id_nomenclature_resource_type],
     )
+    nomenclature_data_type = DB.relationship(
+        TNomenclatures,
+        foreign_keys=[id_nomenclature_data_type],
+    )
 
     cor_objectifs = DB.relationship(
         TNomenclatures,
@@ -132,6 +140,11 @@ class TDatasets(db.Model):
         TNomenclatures,
         secondary=cor_dataset_territory,
         backref=DB.backref("territory_dataset"),
+    )
+
+    cor_classes_ebv: Mapped[list[TNomenclatures]] = relationship(
+        secondary=cor_dataset_classe_ebv,
+        backref=backref("classe_ebv_dataset"),
     )
 
     # because CorDatasetActor could be an User or an Organisme object...

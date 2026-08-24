@@ -1,7 +1,7 @@
 """Rename sinp_datatype_publications to datatype_publications and add fields
 
 Revision ID: cc469410feeb
-Revises: ae0b6362fb22
+Revises: 78c7e705efd3
 Create Date: 2026-08-07 08:24:44.564373
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = "cc469410feeb"
-down_revision = "0444c425fa27"
+down_revision = "78c7e705efd3"
 branch_labels = None
 depends_on = None
 

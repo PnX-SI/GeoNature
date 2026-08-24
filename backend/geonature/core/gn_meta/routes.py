@@ -185,6 +185,7 @@ def get_dataset(scope, id_dataset):
             "cor_dataset_actor.organism",
             "cor_dataset_actor.role",
             "modules",
+            "nomenclature_data_category",
             "nomenclature_data_type",
             "nomenclature_collecting_method",
             "nomenclature_data_origin",
@@ -192,6 +193,7 @@ def get_dataset(scope, id_dataset):
             "nomenclature_resource_type",
             "cor_objectifs",
             "cor_territories",
+            "cor_classes_ebv",
             "acquisition_framework",
             "acquisition_framework.creator",
             "acquisition_framework.cor_af_actor",
@@ -326,7 +328,7 @@ def get_publication(id_publication):
             "+digitizer.nom_complet",
             "+cruved",
             "+datasets",
-            "+datasets.nomenclature_data_type",
+            "+datasets.id_nomenclature_data_category",
             "+acquisition_frameworks",
         ]
     ).jsonify(publication)
@@ -750,7 +752,7 @@ def get_export_pdf_dataset(id_dataset, scope):
         raise Forbidden("Vous n'avez pas les droits d'exporter ces informations")
     dataset_schema = DatasetSchema(
         only=[
-            "nomenclature_data_type",
+            "nomenclature_data_category",
             "nomenclature_collecting_method",
             "acquisition_framework",
             "cor_dataset_actor.nomenclature_actor_role",
@@ -1017,7 +1019,7 @@ def get_acquisition_framework(scope, id_acquisition_framework):
                 "cor_territories",
                 "datasets",
                 "datasets.creator",
-                "datasets.nomenclature_data_type",
+                "datasets.nomenclature_data_category",
                 "datasets.cor_dataset_actor",
                 "datasets.cor_dataset_actor.nomenclature_actor_role",
                 "datasets.cor_dataset_actor.organism",

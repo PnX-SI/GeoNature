@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, Observable } from 'rxjs';
 import { switchMap, tap, map } from 'rxjs/operators';
@@ -31,7 +31,8 @@ export class DatasetFormComponent implements OnInit {
   public uuidEditionEnabled: boolean = true;
   public productionDatabaseEditionEnabled: boolean = true;
   public entityLabel: string;
-  public isAcquisitionFrameworkOpened: boolean = true;
+  public dataCategoryValues: any[] = []; // Add this property
+  public oldDataCategoryPrecisionValue: string = null;
 
   constructor(
     private _route: ActivatedRoute,
@@ -79,6 +80,7 @@ export class DatasetFormComponent implements OnInit {
             .getAcquisitionFrameworksList({ opened: true }, {}, 1, -1)
             .pipe(map((response) => response.items));
         }
+        this.loadDataCategoryNomenclatures();
       });
     this.form = this.datasetFormS.form;
 
@@ -101,6 +103,10 @@ export class DatasetFormComponent implements OnInit {
     this.productionDatabaseEditionEnabled =
       this._config.METADATA.ENABLE_PRODUCTION_DATABASE_EDITION_FIELD;
     this.entityLabel = this.translation_service.instant('Dataset');
+
+    this.form.get('id_nomenclature_data_category')?.valueChanges.subscribe(() => {
+      this.updatePrecisionDataCategoryValidation();
+    });
   }
 
   handleDates(dataset, isParseElseFormat = false) {
@@ -152,6 +158,41 @@ export class DatasetFormComponent implements OnInit {
 
   mergeActors(dataset, genericActors) {
     dataset.cor_dataset_actor = dataset.cor_dataset_actor.concat(genericActors);
+  }
+
+  loadDataCategoryNomenclatures(): void {
+    this._dfs.getNomenclature('DATA_CATEGORY').subscribe((response) => {
+      this.dataCategoryValues = response.values || [];
+    });
+  }
+
+  showPrecisionDataCategory() {
+    const selectedId = this.form.get('id_nomenclature_data_category')?.value;
+    if (!selectedId || !this.dataCategoryValues.length) {
+      return false;
+    }
+    const selectedNomenclature = this.dataCategoryValues.find(
+      (n) => n.id_nomenclature === selectedId
+    );
+    // Check if mnemonique is "autre" if so, show precision data category
+    return selectedNomenclature?.mnemonique === 'autre';
+  }
+
+  updatePrecisionDataCategoryValidation(): void {
+    const precisionControl = this.form.get('precision_data_category');
+    if (!precisionControl) return;
+
+    if (this.showPrecisionDataCategory()) {
+      // Precision data category should be displayed and required
+      precisionControl.setValue(this.oldDataCategoryPrecisionValue);
+      precisionControl.setValidators([Validators.required]);
+    } else {
+      // Precision data category is not displayed, so not required and set to null
+      this.oldDataCategoryPrecisionValue = precisionControl.getRawValue();
+      precisionControl.setValue(null);
+      precisionControl.clearValidators();
+    }
+    precisionControl.updateValueAndValidity({ emitEvent: false });
   }
 
   postDataset() {

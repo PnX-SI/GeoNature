@@ -95,4 +95,14 @@ def downgrade():
 
     op.execute("DROP FUNCTION IF EXISTS gn_meta.get_default_production_database();")
 
+    op.drop_index(
+        "ix_gn_meta_production_database_unique_is_default",
+        table_name="production_database",
+        schema="gn_meta",
+    )
+    op.drop_index(
+        op.f("ix_gn_meta_production_database_name"),
+        table_name="production_database",
+        schema="gn_meta",
+    )
     op.drop_table("production_database", schema="gn_meta")

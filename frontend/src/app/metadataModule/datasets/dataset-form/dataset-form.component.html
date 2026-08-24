@@ -112,19 +112,40 @@
           <div class="row">
             <div class="col-md-6">
               <pnx-nomenclature
-                label="{{ 'MetaData.DatasetCard.DataType' | translate }}"
-                [parentFormControl]="form.get('id_nomenclature_data_type')"
-                codeNomenclatureType="DATA_TYP"
-                data-qa="pnx-dataset-form-datatype"
+                label="{{ 'MetaData.DatasetCard.DataCategory' | translate }}"
+                [parentFormControl]="form.get('id_nomenclature_data_category')"
+                codeNomenclatureType="DATA_CATEGORY"
+                data-qa="pnx-dataset-form-data-category"
               ></pnx-nomenclature>
             </div>
-
+            <div
+              class="col-md-6"
+              *ngIf="showPrecisionDataCategory()"
+            >
+              <small>{{ 'MetaData.DatasetCard.PrecisionDataCategory' | translate }}</small>
+              <input
+                class="form-control form-control-sm"
+                type="text"
+                [formControl]="form.get('precision_data_category')"
+                data-qa="pnx-dataset-form-input-precision-data-category"
+              />
+            </div>
+          </div>
+          <div>
+            <pnx-nomenclature
+              label="{{ 'MetaData.DatasetForm.SourceStatus' | translate }}"
+              [parentFormControl]="form.get('id_nomenclature_source_status')"
+              codeNomenclatureType="STATUT_SOURCE"
+              data-qa="pnx-dataset-form-status-source"
+            ></pnx-nomenclature>
+          </div>
+          <div class="row">
             <div class="col-md-6">
               <pnx-nomenclature
-                label="{{ 'MetaData.DatasetForm.SourceStatus' | translate }}"
-                [parentFormControl]="form.get('id_nomenclature_source_status')"
-                codeNomenclatureType="STATUT_SOURCE"
-                data-qa="pnx-dataset-form-status-source"
+                label="{{ 'MetaData.DatasetCard.DataType' | translate }}"
+                [parentFormControl]="form.get('id_nomenclature_data_type')"
+                codeNomenclatureType="TYPE_DONNEES"
+                data-qa="pnx-dataset-form-type_donnees"
               ></pnx-nomenclature>
             </div>
           </div>
@@ -137,6 +158,17 @@
               codeNomenclatureType="JDD_OBJECTIFS"
               [bindAllItem]="true"
               data-qa="pnx-dataset-form-objectif"
+            ></pnx-nomenclature>
+          </div>
+
+          <div>
+            <pnx-nomenclature
+              [multiSelect]="true"
+              label="{{ 'MetaData.DatasetForm.EbvClasses' | translate }}"
+              [parentFormControl]="form.get('cor_classes_ebv')"
+              codeNomenclatureType="JDD_CLASSE_EBV"
+              [bindAllItem]="true"
+              data-qa="pnx-dataset-form-classe-ebv"
             ></pnx-nomenclature>
           </div>
 

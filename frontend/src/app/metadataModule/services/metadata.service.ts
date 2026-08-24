@@ -151,9 +151,6 @@ export class MetadataService {
   }
 
   addDatasetToAcquisitionFramework(af, params, queryString: ParamsDict = {}) {
-    //TODO: keep in mind that acquisistionframeworks is
-    // a behaviour subject and so filter it with rxjs and
-    // pipe the getDatasets then subscribe at the end
     this.dataFormService
       .getDatasets(
         {
@@ -163,11 +160,15 @@ export class MetadataService {
         queryString
       )
       .subscribe((datasets) => {
-        af.t_datasets = datasets;
+        af.t_datasets = datasets.map((dataset) => ({
+          ...dataset,
+          dict_stats: dataset.dict_stats || { total_nb_obs: 0, dict_nb_obs: {} },
+        }));
+
         for (const dataset of af.t_datasets) {
-          this.dataFormService
-            .getDatasetStats(dataset.id_dataset)
-            .subscribe((stats) => (dataset.dict_stats = stats));
+          this.dataFormService.getDatasetStats(dataset.id_dataset).subscribe((stats) => {
+            dataset.dict_stats = stats;
+          });
         }
       });
   }
