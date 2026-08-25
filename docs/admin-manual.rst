@@ -1865,6 +1865,37 @@ Elle peut également prendre le nom de n'importe quelle nom de colonne de la tab
 Le paramètre ``available_maplist_column`` contient quant à lui la liste totale des champs pouvant être affichés ou masqués dans ce tableau.
 Si un élément est présent dans ``default_maplist_columns`` mais pas dans ``available_maplist_column``, il sera toujours affiché et ne pourra pas être masqué.
 
+Configurer les fonds de cartes:
+```````````````````````````````````````````````````````
+Chaque fond de carte est défini par les paramètres suivants dans le fichier ``config/geonature_config.toml`` :
+
+- **name** : Identifiant du fond de carte affiché dans le sélecteur de l'interface
+- **url** : URL du service fournisseur où récupérer les tuiles
+- **maxNativeZoom** : Niveau de zoom maximum disponible auprès du fournisseur
+
+Par exemple pour Open Street Map :
+
+.. code:: toml
+
+    [[MAPCONFIG.BASEMAP]]
+        name = "OpenStreetMap"
+        url = "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
+        maxNativeZoom = 16
+        attribution = "<a href='https://www.openstreetmap.org/copyright' target='_blank'>© OpenStreetMap contributors</a>"
+
+Il est donc possible d'ajouter des nouveaux de fond de carte à condition de disposer de :
+
+1. **L'URL du service de tuiles** - Format type : ``https://.../{z}/{x}/{y}.png``
+
+   - ``{z}`` = niveau de zoom
+   - ``{x}`` = position horizontale de la tuile
+   - ``{y}`` = position verticale de la tuile
+
+2. **L'attribution légale** - Texte/lien de crédits requis par le fournisseur
+
+3. **Les paramètres spécifiques** (clé API, sous-domaines, etc.) si nécessaire
+
+
 Ajouter une contrainte d'échelle de saisie sur la carte
 ```````````````````````````````````````````````````````
 
