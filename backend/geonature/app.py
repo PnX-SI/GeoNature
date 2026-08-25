@@ -126,7 +126,10 @@ def create_app(with_external_mods=True):
     auth_manager.init_app(app, providers_declaration=config["AUTHENTICATION"]["PROVIDERS"])
     auth_manager.home_page = config["URL_APPLICATION"]
 
-    if config["ACCOUNT_MANAGEMENT"]["ENABLE_USER_MANAGEMENT"]:
+    if (
+        config["ACCOUNT_MANAGEMENT"]["ENABLE_USER_MANAGEMENT"]
+        or config["ACCOUNT_MANAGEMENT"]["ENABLE_SIGN_UP"]
+    ):
         password_config = config["ACCOUNT_MANAGEMENT"]["PASSWORD_MANAGEMENT"]
         user_config = {
             "min_password_length": password_config["MIN_PASSWORD_LENGTH"],
