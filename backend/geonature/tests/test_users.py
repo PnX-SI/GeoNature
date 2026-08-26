@@ -35,7 +35,7 @@ def add_mail_to_user(users):
 def fake_smtp(monkeypatch):
     mock_send = MagicMock(return_value=True)
 
-    monkeypatch.setattr("geonature.utils.utilsmails.send_mail", mock_send)
+    monkeypatch.setattr("geonature.utils.mail.utilsmails.send_mail", mock_send)
     monkeypatch.setattr(
         "geonature.core.users.register_post_actions.send_mail", mock_send, raising=False
     )
