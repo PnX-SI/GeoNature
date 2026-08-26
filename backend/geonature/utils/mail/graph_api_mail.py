@@ -1,6 +1,6 @@
 import requests
 
-from geonature.utils.base_mail import BaseMail, Message
+from geonature.utils.mail.base_mail import BaseMail, Message
 from typing import Any, Dict
 
 

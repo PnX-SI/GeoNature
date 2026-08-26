@@ -6,7 +6,6 @@ from smtplib import SMTPException
 from flask import current_app
 from flask_mail import Message
 
-
 log = logging.getLogger()
 
 name_address_email_regex = re.compile(r"^([^<]+)<([^>]+)>$", re.IGNORECASE)
@@ -18,7 +17,7 @@ MAIL = None
 def init_mailer(app):
     global MAIL
     if app.config.get("GRAPH_API_MAIL_TENANT_ID"):
-        from geonature.utils.graph_api_mail import GraphAPIMail
+        from geonature.utils.mail.graph_api_mail import GraphAPIMail
 
         MAIL = GraphAPIMail()
     else:

@@ -25,7 +25,7 @@ from werkzeug.wrappers import Response
 
 from geonature.utils.config import config
 
-from geonature.utils import utilsmails
+from geonature.utils.mail import utilsmails
 from geonature.utils.env import DB, db, MA, migrate, BACKEND_DIR
 from geonature.utils.logs import config_loggers
 from geonature.utils.module import is_module_installed, iter_modules_dist
