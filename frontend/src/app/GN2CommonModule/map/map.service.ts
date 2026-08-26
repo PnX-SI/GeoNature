@@ -390,8 +390,12 @@ export class MapService {
       return label;
     }
     if (legendUrl) {
-      // Keep multi-line WMS legends below the label, drop on broken image.
-      return `${label}<br><img src="${legendUrl}" alt="" style="max-width:100%" onerror="this.remove()">`;
+      // Boxed below the label: a GetLegendGraphic image carries its own class labels.
+      // Drop the box with the img if the server has no legend.
+      const box =
+        'display:block;width:fit-content;margin:3px 0 3px 20px;padding:3px;' +
+        'border:1px solid #ccc;border-radius:3px';
+      return `${label}<span style="${box}"><img src="${legendUrl}" alt="" style="max-width:100%;display:block" onerror="this.parentNode.remove()"></span>`;
     }
     fillColor = fillColor || 'rgba(255,255,255)';
     // `fill: false` and `fillOpacity: 0` both mean "outline only" — keep them, hence ??
