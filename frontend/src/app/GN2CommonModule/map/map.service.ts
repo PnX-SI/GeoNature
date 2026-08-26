@@ -384,23 +384,34 @@ export class MapService {
    * @param stroke string
    * @returns
    */
-  getLegendBox({ title, fillColor, fillOpacity, color, weight, legendUrl }) {
-    let padding = 'padding-left:10px';
+  getLegendBox({ title, fill, fillColor, fillOpacity, color, weight, dashArray, legendUrl }) {
+    const label = `<span data-qa="title-overlay">${title}</span>`;
     if (!fillColor && !color && !legendUrl) {
-      return title;
+      return label;
     }
     if (legendUrl) {
-      return `<span class="title-overlay" >${title}</span> </br> <img style="${padding}" src="${legendUrl}">`;
+      // Boxed below the label: a GetLegendGraphic image carries its own class labels.
+      // Drop the box with the img if the server has no legend.
+      const box =
+        'display:block;width:fit-content;margin:3px 0 3px 20px;padding:3px;' +
+        'border:1px solid #ccc;border-radius:3px';
+      return `${label}<span style="${box}"><img src="${legendUrl}" alt="" style="max-width:100%;display:block" onerror="this.parentNode.remove()"></span>`;
     }
     fillColor = fillColor || 'rgba(255,255,255)';
-    fillOpacity = fillOpacity || 1;
+    // `fill: false` and `fillOpacity: 0` both mean "outline only" — keep them, hence ??
+    fillOpacity = fill === false ? 0 : (fillOpacity ?? 1);
     color = color || 'grey';
-    weight = weight + 2 || 3;
+    // Cap the stroke width in the legend
+    weight = Math.min(weight || 1, 4);
 
-    let svgSquare = `<svg width="16" height="16">
-      <rect width="300" height="100" style="fill:${fillColor};fill-opacity:${fillOpacity};stroke-width:${weight};stroke:${color}" />
+    // Stroke and fill should appear in the 16x16 square
+    const inset = weight / 2;
+    const side = 16 - weight;
+    let svgSquare = `<svg width="16" height="16" style="vertical-align:middle;margin-right:6px">
+      <rect x="${inset}" y="${inset}" width="${side}" height="${side}" stroke-dasharray="${dashArray || 'none'}"
+        style="fill:${fillColor};fill-opacity:${fillOpacity};stroke-width:${weight};stroke:${color}" />
     </svg>`;
-    return `<span data-qa="title-overlay">${title}</span> <br/> <span style="${padding}">${svgSquare}</span>`;
+    return `${svgSquare}${label}`;
   }
 
   /**
@@ -409,7 +420,7 @@ export class MapService {
    */
   createOverLayers(map) {
     const OVERLAYERS = JSON.parse(JSON.stringify(this.config.MAPCONFIG.REF_LAYERS));
-    const overlaysLayers = {};
+    const overlaysLayers: { [legend: string]: any } = {};
     OVERLAYERS.map((lyr) => [lyr, this.getLayerCreator(lyr.type)(lyr)])
       .filter((l) => l[1])
       .forEach((lyr) => {
