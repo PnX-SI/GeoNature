@@ -242,7 +242,7 @@ export class MapListService {
   zoomOnSelectedLayer(map, layer) {
     const tempFeatureGroup = new L.FeatureGroup();
     tempFeatureGroup.addLayer(layer);
-    map.fitBounds(tempFeatureGroup.getBounds(), { maxZoom: 15 });
+    map.fitBounds(tempFeatureGroup.getBounds());
   }
 
   zoomOnSeveralSelectedLayers(map, layers) {
