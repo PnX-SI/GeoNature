@@ -6,6 +6,7 @@ on:
       - develop
   release:
     types: [published]
+  workflow_dispatch:
 
 jobs:
   build-backend:
