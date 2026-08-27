@@ -1,3 +1,4 @@
+from flask import g
 from geonature.core.gn_commons.models.base import BibWidgets
 from marshmallow import fields
 from sqlalchemy import select
@@ -42,7 +43,11 @@ class AdditionalDataWithNomenclatureField(fields.Dict):
     def _deserialize(self, value, attr, data, **kwargs):
         # module_code may only be known at request time (eg. g.current_module),
         # in which case it's set on the parent schema instance instead of here.
-        module_code = self.module_code or self.parent.module_code
+        module_code = self.module_code or (
+            self.parent.module_code if hasattr(self.parent, "module_code") else None
+        )
+        if not module_code:
+            module_code = g.current_module.module_code if hasattr(g, "current_module") else None
         if module_code is None:
             raise BadRequest("No module code provided in NomenclatureAdditionalDataField")
         return _add_label_nomenclature_data_dict(
