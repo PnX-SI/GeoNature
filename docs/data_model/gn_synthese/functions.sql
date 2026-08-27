@@ -93,7 +93,9 @@ AS $function$
                 NEW.the_geom_local,
                 jsonb_build_object(
                   'STATUT_BIO', NEW.id_nomenclature_bio_status,
-                  'OCC_COMPORTEMENT', NEW.id_nomenclature_behaviour
+                  'OCC_COMPORTEMENT', NEW.id_nomenclature_behaviour,
+                  'STADE_VIE', new_row.id_nomenclature_life_stage,
+                  'METH_OBS',new_row.id_nomenclature_obs_technique
                 )
             );
             RETURN NEW;
