@@ -179,7 +179,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     let geojson: any = this.mapservice.leafletDrawFeatureGroup.toGeoJSON();
     geojson = geojson.features[0];
 
-    if (layerType === 'circle') {
+    if (layerType === 'circle' && geojson?.properties) {
       const radius = this._currentDraw.getRadius();
       geojson.properties.radius = radius;
     }

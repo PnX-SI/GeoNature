@@ -15,7 +15,6 @@ from geonature.core.gn_synthese.models import Synthese
 from geonature.utils.env import db
 from geonature.utils.config import config
 from .utils import set_logged_user
-from .fixtures import *
 
 occtax = pytest.importorskip("occtax")
 pytestmark = pytest.mark.skipif("OCCTAX" in config["DISABLED_MODULES"], reason="OccTax is disabled")
@@ -27,7 +26,7 @@ from occtax.models import (
     CorCountingOccurrence,
 )
 from occtax.schemas import OccurrenceSchema, ReleveSchema
-from occtax.commands import add_submodule_permissions
+from occtax.commands import create_duplicated_module
 
 
 @pytest.fixture(scope="session")
@@ -127,7 +126,7 @@ def releve_data(client: Any, datasets: dict[Any, TDatasets]):
 
 
 @pytest.fixture()
-def occurrence_data(client: Any, releve_occtax: Any):
+def occurrence_data(client: Any, releve_occtax: Any, individuals):
     nomenclatures = db.session.scalars(select(DefaultNomenclaturesValue)).all()
     dict_nomenclatures = {n.mnemonique_type: n.id_nomenclature for n in nomenclatures}
     return {
@@ -159,6 +158,7 @@ def occurrence_data(client: Any, releve_occtax: Any):
                 ).scalar_one(),
                 "id_nomenclature_obj_count": dict_nomenclatures["OBJ_DENBR"],
                 "id_nomenclature_type_count": dict_nomenclatures["TYP_DENBR"],
+                "id_individual": individuals[0].id_individual,
                 "count_min": 2,
                 "count_max": 2,
                 "medias": [],
@@ -258,7 +258,7 @@ def unexisting_id_releve():
     ) + 1
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction", "datasets")
+@pytest.mark.usefixtures("client_class", "datasets")
 class TestOcctaxReleve:
     def test_get_releve(self, users: dict, releve_occtax: Any):
         set_logged_user(self.client, users["user"])
@@ -431,9 +431,9 @@ class TestOcctaxReleve:
             assert response.status_code == Conflict.code
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction", "datasets", "module")
+@pytest.mark.usefixtures("client_class", "datasets", "module", "individuals")
 class TestOcctaxOccurrence:
-    def test_post_occurrence(self, users: dict, occurrence_data: dict[str, Any]):
+    def test_post_occurrence(self, users: dict, occurrence_data: dict[str, Any], individuals):
         set_logged_user(self.client, users["stranger_user"])
         response = self.client.post(
             url_for("pr_occtax.createOccurrence", id_releve=occurrence_data["id_releve_occtax"]),
@@ -469,16 +469,21 @@ class TestOcctaxOccurrence:
             "occurrence_addi_field": "occ",
             "releve_addi_field": "Releve",
         }
+        # test id_individual
+        assert occurrence.cor_counting_occtax[0].id_individual == individuals[0].id_individual
 
-    def test_update_occurrence(self, users: dict, occurrence: Any):
+    def test_update_occurrence(self, users: dict, occurrence: Any, individuals):
         set_logged_user(self.client, users["user"])
-        occ_dict = OccurrenceSchema(exclude=("taxref",)).dump(occurrence)
+        occ_dict = OccurrenceSchema(exclude=("taxref", "cor_counting_occtax.individual")).dump(
+            occurrence
+        )
         # change the cd_nom (occurrence level)
         occ_dict["cd_nom"] = 4516
         occ_dict["nom_cite"] = "Etourneau sansonnet"
         # change counting
         occ_dict["cor_counting_occtax"][0]["count_max"] = 3
         occ_dict["cor_counting_occtax"][1]["count_max"] = 5
+        occ_dict["cor_counting_occtax"][0]["id_individual"] = individuals[1].id_individual
         response = self.client.post(
             url_for("pr_occtax.updateOccurrence", id_occurrence=occurrence.id_occurrence_occtax),
             json=occ_dict,
@@ -490,6 +495,7 @@ class TestOcctaxOccurrence:
         uuid_counting = [
             counting["unique_id_sinp_occtax"] for counting in occ["cor_counting_occtax"]
         ]
+        assert occ["cor_counting_occtax"][0]["id_individual"] == individuals[1].id_individual
         synthese_data = db.session.scalars(
             select(Synthese).where(Synthese.unique_id_sinp.in_(uuid_counting))
         ).all()
@@ -558,7 +564,7 @@ class TestOcctaxOccurrence:
             assert response.status_code == Conflict.code
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction", "datasets", "module")
+@pytest.mark.usefixtures("client_class", "datasets", "module")
 class TestOcctax:
     def test_post_releve_in_module_bis(
         self,
@@ -635,23 +641,31 @@ class TestOcctax:
         assert response.status_code == 204
         assert not count
 
-    def test_command_permission_module(self, module):
+    def test_command_create_duplicated_module(self):
         client_command_line = CliRunner()
-        with db.session.begin_nested():
-            db.session.add(module)
+        module_code = "TEST_DUPLICATED_OCCTAX"
 
-        client_command_line.invoke(add_submodule_permissions, [module.module_code])
+        result = client_command_line.invoke(
+            create_duplicated_module, [module_code, "Test duplicated Occtax"]
+        )
+        assert result.exit_code == 0, result.output
+
+        new_module = db.session.execute(
+            select(TModules).filter_by(module_code=module_code)
+        ).scalar_one()
+        assert new_module.ng_module == "occtax"
+        assert new_module.active_frontend is True
+        assert new_module.active_backend is False
+
         permission_available = (
-            select(PermissionAvailable)
-            .join(TModules)
-            .where(TModules.module_code == module.module_code)
+            select(PermissionAvailable).join(TModules).where(TModules.module_code == module_code)
         )
         permission_available = db.session.scalars(permission_available).all()
 
-        assert len(permission_available) == 5
+        assert len(permission_available) == 7
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 class TestOcctaxGetReleveFilter:
     def test_get_releve_filter_observers_not_present(self, users: dict, releve_occtax: Any):
         query_string = {"observers": [users["admin_user"].id_role]}
@@ -818,7 +832,7 @@ class TestOcctaxGetReleveFilter:
         assert response.status_code == 200
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 @pytest.mark.parametrize(
     "wrong_value",
     (

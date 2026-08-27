@@ -18,9 +18,8 @@ depends_on = None
 
 def upgrade():
     conn = op.get_bind()
-    metadata = sa.MetaData(bind=conn)
     all_default_value = conn.execute(
-        "SELECT id_object FROM gn_permissions.t_objects where code_object = 'ALL'"
+        sa.text("SELECT id_object FROM gn_permissions.t_objects where code_object = 'ALL'")
     ).fetchall()[0][0]
 
     op.add_column(

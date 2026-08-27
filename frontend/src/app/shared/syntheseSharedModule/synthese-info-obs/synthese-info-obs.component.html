@@ -52,8 +52,8 @@
   class="modal-body"
   *ngIf="!alertOpen"
 >
-  <div class="d-flex w-100 justify-content-between">
-    <h4 class="mr-auto gn-color">
+  <div class="d-flex w-100 justify-content-between align-items-center info-obs-header">
+    <div class="d-flex align-items-center flex-wrap info-obs-header-titles">
       <a
         class="no-link-style"
         ngbTooltip="{{ 'Synthese.GnRecord' | translate }}"
@@ -62,10 +62,12 @@
         target="_blank"
         *ngIf="selectedObsTaxonDetail && config.FRONTEND['ENABLE_PROFILES']; else notLink"
       >
-        <span *ngIf="selectedObsTaxonDetail?.nom_vern">
-          {{ selectedObsTaxonDetail?.nom_vern }} -
-        </span>
-        {{ selectedObsTaxonDetail?.nom_valide }}
+        <h4 class="gn-color m-0">
+          <span *ngIf="selectedObsTaxonDetail?.nom_vern">
+            {{ selectedObsTaxonDetail?.nom_vern }} -
+          </span>
+          {{ selectedObsTaxonDetail?.nom_valide }}
+        </h4>
       </a>
       <ng-template #notLink>
         <div
@@ -79,7 +81,13 @@
           {{ selectedObsTaxonDetail?.nom_valide }}
         </div>
       </ng-template>
-    </h4>
+      <h5
+        *ngIf="selectedObs?.id_individual"
+        class="individual-name m-0"
+      >
+        {{ selectedObs?.individual?.individual_name }}
+      </h5>
+    </div>
     <div>
       <mat-toolbar class="action-tbar">
         <button

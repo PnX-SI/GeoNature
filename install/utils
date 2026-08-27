@@ -20,6 +20,10 @@ if [ ! -f "${SETTINGS}" ]; then
 fi
 . "${SETTINGS}" || exit 1
 
+# VENV_PATH may already be set in the environment (e.g. by the Makefile); otherwise
+# fall back to the venv_path read from settings.ini, then to a hardcoded default.
+export VENV_PATH="${VENV_PATH:-${venv_path:-backend/venv}}"
+
 
 function write_log() {
 	echo -e $1

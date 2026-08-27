@@ -24,6 +24,7 @@ import {ModuleService} from '@geonature/services/module.service';
 import {ConfigService} from '@geonature/services/config.service';
 import {TranslateService} from '@ngx-translate/core';
 import {ActionService} from '@geonature/services/action.service';
+import { OcctaxConfigService } from '../services/occtax-config.service';
 
 @Component({
   selector: 'pnx-occtax-map-list',
@@ -66,6 +67,7 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
     public config: ConfigService,
     private translate: TranslateService,
     private actionService: ActionService,
+    public occtaxConfig: OcctaxConfigService
   ) {
   }
 
@@ -88,9 +90,9 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
 
     // parameters for maplist
     // columns to be default displayed
-    this.mapListService.displayColumns = this.config.OCCTAX.default_maplist_columns;
+    this.mapListService.displayColumns = this.occtaxConfig.moduleConf.default_maplist_columns;
     // columns available for display
-    this.mapListService.availableColumns = this.config.OCCTAX.available_maplist_column;
+    this.mapListService.availableColumns = this.occtaxConfig.moduleConf.available_maplist_column;
 
     // FETCH THE DATA
     this.mapListService.refreshUrlQuery();
@@ -260,7 +262,7 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
     if (row.t_occurrences_occtax) {
       for (let i = 0; i < row.t_occurrences_occtax.length; i++) {
         let occ = row.t_occurrences_occtax[i];
-        const taxKey = this.config.OCCTAX.DISPLAY_VERNACULAR_NAME ? 'nom_vern' : 'nom_complet';
+        const taxKey = this.occtaxConfig.moduleConf.DISPLAY_VERNACULAR_NAME ? 'nom_vern' : 'nom_complet';
         let taxName;
         if (occ.taxref) {
           taxName = occ.taxref[taxKey] ? occ.taxref[taxKey] : occ.taxref.nom_complet;

@@ -15,6 +15,7 @@ from .models import CorCountingOccurrence, TOccurrencesOccurrence, TRelevesOccur
 from geonature.core.gn_meta.schemas import DatasetSchema
 from geonature.core.gn_commons.schemas import MediaSchema
 from geonature.core.taxonomie.schemas import TaxrefSchema
+from geonature.core.gn_monitoring.schema import TIndividualsSchema
 from geonature.utils.config import config
 from pypnusershub.db.models import User
 from pypn_habref_api.schemas import HabrefSchema
@@ -72,6 +73,8 @@ class CountingSchema(MA.SQLAlchemyAutoSchema):
         load_instance = True
 
     medias = MA.Nested(MediaSchema, many=True)
+    id_individual = MA.auto_field()
+    individual = MA.Nested(TIndividualsSchema, dump_only=True)
 
     @pre_load
     def make_counting(self, data, **kwargs):
@@ -106,14 +109,20 @@ class ReleveSchema(MA.SQLAlchemyAutoSchema):
     id_digitiser = MA.auto_field(dump_only=True)
 
     t_occurrences_occtax = MA.Nested(OccurrenceSchema, many=True)
-    observers = MA.Nested(
-        ObserverSchema,
-        many=True,
-        allow_none=config.get("OCCTAX", {}).get("observers_txt", True),
-    )
+    observers = MA.Nested(ObserverSchema, many=True, allow_none=True)
     digitiser = MA.Nested(ObserverSchema, dump_only=True)
     dataset = MA.Nested(DatasetSchema, dump_only=True)
     habitat = MA.Nested(HabrefSchema, dump_only=True)
+
+    # __init__ is overridden because g.module_conf is only available during
+    # a request context (i.e., at instantiation time), not at class definition time.
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        try:
+            observers_allow_none = g.module_conf.get("observers_txt", True)
+            self.fields["observers"].allow_none = observers_allow_none
+        except:
+            pass
 
     @pre_load
     def make_releve(self, data, **kwargs):

@@ -5,6 +5,7 @@ export interface Individual {
   id_digitiser?: number;
   // missing digitizer
   id_individual?: number;
+  id_modules?: number[];
   id_nomenclature_sex: number;
   individual_name: string;
   meta_create_date?: Date;

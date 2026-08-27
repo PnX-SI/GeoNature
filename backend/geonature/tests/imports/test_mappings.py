@@ -118,9 +118,7 @@ def mappings(import_destination, users):
     return mappings
 
 
-@pytest.mark.usefixtures(
-    "client_class", "temporary_transaction", "default_import_destination", "module_code"
-)
+@pytest.mark.usefixtures("client_class", "default_import_destination", "module_code")
 class TestMappings:
     def test_list_mappings(self, users, mappings):
         set_logged_user(self.client, users["noright_user"])

@@ -52,7 +52,7 @@ def upgrade():
     if active is not None:
         active = bool(strtobool(active))
     conn = op.get_bind()
-    metadata = sa.MetaData(bind=conn)
+    metadata = sa.MetaData()
     sensitivity_rule = sa.Table(
         "t_sensitivity_rules", metadata, schema="gn_sensitivity", autoload_with=conn
     )
@@ -137,7 +137,7 @@ def upgrade():
     )
 
     # We are looking codes in both actual and old regions but keep only the most recent one
-    conn.execute("""
+    conn.execute(sa.text("""
     INSERT INTO gn_sensitivity.cor_sensitivity_area
         SELECT DISTINCT ON (id_sensitivity) s.id_sensitivity, a.id_area
         FROM gn_sensitivity.t_sensitivity_rules s
@@ -149,16 +149,16 @@ def upgrade():
         ORDER BY
         	s.id_sensitivity,
         	array_position(ARRAY['REG','REG_1970'], t.type_code::text)
-    """)
+    """))
 
-    conn.execute("""
+    conn.execute(sa.text("""
     INSERT INTO gn_sensitivity.cor_sensitivity_area
         SELECT DISTINCT id_sensitivity, id_area
         FROM gn_sensitivity.t_sensitivity_rules   s
         JOIN ref_geo.l_areas
             ON REPLACE(id_territory, 'INSEED', '') = area_code AND  id_type = (SELECT id_type FROM ref_geo.bib_areas_types  WHERE type_code ='DEP')
         WHERE sensitivity_territory = 'Département'
-    """)
+    """))
 
     op.execute("REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref")
 

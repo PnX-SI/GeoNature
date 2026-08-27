@@ -4,13 +4,26 @@
   "Language": "Langue",
   "Languages": "Langues",
   "AvailableLanguages": {
-    "English": "English (Anglais)",
-    "French": "Français",
-    "Chinese": "中文 (Chinois)"
+    "English": "🇬🇧 Anglais (English)",
+    "French": "🇫🇷 Français",
+    "Chinese": "🇨🇳 中文 (Chinois)"
   },
   "Calendar": {
     "Weekdays": ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
-    "Months": ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]
+    "Months": [
+      "janvier",
+      "février",
+      "mars",
+      "avril",
+      "mai",
+      "juin",
+      "juillet",
+      "août",
+      "septembre",
+      "octobre",
+      "novembre",
+      "décembre"
+    ]
   },
   "Actions": {
     "Singular": "Action",
@@ -29,7 +42,8 @@
     "Validate": "Valider",
     "PDFExport": "Exporter en PDF",
     "DownloadData": "Télécharger les données",
-    "Copy": "Copier"
+    "Copy": "Copier",
+    "Clear": "Effacer"
   },
   "Messages": {
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire"
@@ -59,6 +73,7 @@
       "WrongMailAddress": "Une erreur est survenue. Veuillez vérifier le mail fourni.",
       "AccountCreationError": "L'adresse mail ou l'identifiant renseigné existe déjà.",
       "UnexpectedError": "Une erreur inattendue est survenue. Veuillez réessayer plus tard.",
+      "LoginExists": "L'identifiant renseigné existe déjà.",
       "Password": {
         "MinLength": "Le mot de passe doit contenir au moins {{ requiredLength }} caractères (actuellement {{ actualLength }}).",
         "UpperCase": "Le mot de passe doit contenir au moins une majuscule.",
@@ -87,6 +102,7 @@
   "MyAccount": {
     "MyAccount": "Mon compte",
     "MyObserverSheet": "Ma fiche observateur",
+    "ObserverSheetTooltip": "Accéder à votre fiche observateur",
     "EmailChangeTitle": "Changement d'adresse mail",
     "EmailChangeDescription": "La modification de votre adresse email nécessite une validation. Un lien de confirmation sera envoyé à votre nouvelle adresse email et le changement d'adresse sera pris en compte après avoir cliqué sur le lien reçu.",
     "EmailChangeValidationTitle": "Validation du changement d'adresse mail",
@@ -139,6 +155,13 @@
   "Taxon": "Taxon",
   "Taxons": "Taxons",
   "Species": "Espèces",
+  "Individual": {
+    "Name": "Nom de l'individu",
+    "Raw": "Individu(s)",
+    "Select": "Sélectionner un individu",
+    "SelectPlural": "Sélectionner des individus"
+  },
+  "SelectModules": "Sélectionner un ou plusieurs modules",
   "Habitat": "Habitat",
   "Habitats": "Habitats",
 
@@ -207,12 +230,25 @@
   "Detail": "Détail",
   "Details": "Détails",
 
+  "Search": "Rechercher",
+  "Documentation": {
+    "Documentation": "Documentation",
+    "OpenDocumentation": "Ouvrir la documentation"
+  },
   "Downloading": "Téléchargement en cours",
 
   "DownloadOverflow": "Le nombre d'élément est trop important pour être téléchargé, veuillez affiner votre recherche ou contacter votre administrateur",
   "DynamicForm": {
     "Errors": {
       "CheckBoxError": "Veuillez choisir au moins une option"
+    }
+  },
+
+  "Toolbar": {
+    "Language": {
+      "FrenchTooltip": "Afficher l'interface en français",
+      "EnglishTooltip": "Afficher l'interface en anglais",
+      "ChineseTooltip": "Afficher l'interface en chinois"
     }
   },
   "Map": {
@@ -288,7 +324,7 @@
     "Stakeholders": "Acteurs",
     "DatasetName": "Nom du jeu de données",
     "AFName": "Nom du cadre d'acquisition",
-    "DataAmount": "Nombre de données",
+    "CountObservations": "Nombre d'observations",
     "StakeholderOrganization": "Acteur (organisme)",
     "DataSources": "Sources des données",
     "DescriptiveForm": "Fiche descriptive",
@@ -311,6 +347,13 @@
     "AssociatedDatasets": "Jeux de données associés",
     "Reference": "Référence",
     "AdditionalInformation": "Informations additionnelles",
+    "ObservationsSyntheseTooltip": "Synthèse ",
+    "ObservationsOcchabTooltip": "Habitats ",
+    "DatasetSyntheseButtonTooltipNoData": "Ce jeu de données ne comporte aucune donnée dans la Synthèse",
+    "DatasetSyntheseButtonTooltipExistData": "Afficher les données dans la Synthèse",
+    "DatasetDeleteButtonTooltipNotPossibleExistData": "Ce jeu de données contient des données et ne peut donc pas être supprimé",
+    "DatasetDeleteButtonTooltipNotPossibleMissingPermissions": "Vous n'avez pas les droits nécessaires pour supprimer ce jeu de données",
+    "DatasetDeleteButtonTooltipPossible": "Supprimer le jeu de données",
 
     "DatasetCard": {
       "Actions": {
@@ -412,6 +455,10 @@
       "Of": "sur",
       "PreviousPage": "Page précédente",
       "NextPage": "Page suivante"
+    },
+    "Statistics": {
+      "OccurrencesSynthese": "Occurrence(s) de taxon(s)",
+      "OccurrencesOcchab": "Occurrence(s) d'habitat(s)"
     }
   },
   "Filters": {

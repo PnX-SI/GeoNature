@@ -3,6 +3,10 @@
 # Set mode to 'dev' to install GeoNature in dev mode
 MODE=prod
 
+# Path of the Python virtual env, relative to the GeoNature root directory
+# (managed automatically by uv, see install/01_install_backend.sh)
+venv_path=backend/venv
+
 # Langue du serveur
 # valeur possible : fr_FR.UTF-8, en_US.utf8 
 # locale -a pour voir la liste des locales disponible
@@ -13,6 +17,12 @@ my_local=fr_FR.UTF-8
 
 # My host URL or IP, starting with http and with / at the end
 my_url=http://url.com/
+
+# URL path prefix for GeoNature
+# - "geonature" => http://url.com/geonature
+# - "" (empty)   => http://url.com/
+# - "saisie"     => http://url.com/saisie
+url_application_prefix_path=geonature
 
 
 # PostgreSQL Configuration

@@ -18,7 +18,7 @@ depends_on = None
 
 def upgrade():
     conn = op.get_bind()
-    metadata = sa.MetaData(bind=conn)
+    metadata = sa.MetaData()
     error_type = sa.Table("bib_errors_types", metadata, schema="gn_imports", autoload_with=conn)
     op.bulk_insert(
         error_type,
@@ -59,7 +59,7 @@ def upgrade():
 
 def downgrade():
     conn = op.get_bind()
-    metadata = sa.MetaData(bind=conn)
+    metadata = sa.MetaData()
     error_type = sa.Table("bib_errors_types", metadata, schema="gn_imports", autoload_with=conn)
     op.execute(sa.delete(error_type).where(error_type.c.name == "INVALID_BOOL"))
     op.execute(sa.delete(error_type).where(error_type.c.name == "INCOHERENT_DATA"))

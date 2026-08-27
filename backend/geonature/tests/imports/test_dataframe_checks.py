@@ -9,7 +9,6 @@ import numpy as np
 from flask import current_app
 
 from geonature.core.gn_commons.models import TModules
-from geonature.tests.fixtures import synthese_data
 from shapely.geometry import Point
 
 from geonature.core.imports.models import TImports, Destination, BibFields

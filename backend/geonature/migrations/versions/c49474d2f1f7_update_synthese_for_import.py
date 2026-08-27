@@ -28,7 +28,7 @@ def upgrade():
         column=sa.Column("id_import", sa.Integer()),
     )
     conn = op.get_bind()
-    metadata = sa.MetaData(bind=conn)
+    metadata = sa.MetaData()
     t_sources = sa.Table("t_sources", metadata, schema="gn_synthese", autoload_with=conn)
     t_modules = sa.Table("t_modules", metadata, schema="gn_commons", autoload_with=conn)
     t_synthese = sa.Table("synthese", metadata, schema="gn_synthese", autoload_with=conn)
@@ -56,7 +56,7 @@ def upgrade():
                     t_sources.c.name_source,
                     r"^Import\(id=(\d+)\)$",
                     r"\1",
-                    flags="g",
+                    "g",
                 ),
                 sa.INT,
             ),
@@ -153,7 +153,7 @@ def upgrade():
 
 def downgrade():
     conn = op.get_bind()
-    metadata = sa.MetaData(bind=conn)
+    metadata = sa.MetaData()
     t_sources = sa.Table("t_sources", metadata, schema="gn_synthese", autoload_with=conn)
     t_modules = sa.Table("t_modules", metadata, schema="gn_commons", autoload_with=conn)
     t_synthese = sa.Table("synthese", metadata, schema="gn_synthese", autoload_with=conn)

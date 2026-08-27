@@ -168,9 +168,6 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # Zoom à partir duquel on peut pointer un relevé
     ZOOM_LEVEL_RELEVE = 15
 
-    # Zoom appliqué sur la carte lors du clic sur une liste
-    ZOOM_ON_CLICK = 16
-
     # activation d'un boutton de géolocalisation sur la carte
     GEOLOCATION = false
 
@@ -184,34 +181,18 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
 
 # Liste des fonds de carte proposés sur les cartes de GeoNature
 # chaque section [[MAPCONFIG.BASEMAP]] définit un fond de carte
-# l'option service est obligatoire uniquement pour les wms
-# l'ensemble des paramètre WMS peuvent être passé dans cette section
 [[MAPCONFIG.BASEMAP]]
     name = "OpenStreetMap"
     url = "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
+    maxNativeZoom = 16
     attribution = "<a href='https://www.openstreetmap.org/copyright' target='_blank'>© OpenStreetMap contributors</a>"
+
 [[MAPCONFIG.BASEMAP]]
-    name = "IGN Plan v2"
-    url = "https://data.geopf.fr/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=image/png&STYLE=normal"
-    attribution = "&copy IGN"
-[[MAPCONFIG.BASEMAP]]
-    name = "IGN Ortho"
-    url = "https://data.geopf.fr/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=image/jpeg&STYLE=normal"
-    attribution = "&copy IGN"
-[[MAPCONFIG.BASEMAP]]
-    name = "IGN Scan 25"
-    url = "https://data.geopf.fr/private/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&apikey=ign_scan_ws&LAYER=GEOGRAPHICALGRIDSYSTEMS.MAPS&EXCEPTIONS=text/xml&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=image/jpeg&STYLE=normal"
-    attribution = "&copy IGN"
-[[MAPCONFIG.BASEMAP]]
-    name = "IGN Cadastre"
-    url = "https://data.geopf.fr/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=CADASTRALPARCELS.PARCELS&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=image/png&STYLE=normal"
-    attribution = "&copy IGN"
-[[MAPCONFIG.BASEMAP]]
-    name = "WMS"
-    url = "https://mon_flux_wms"
-    service = "wms"
-    layers = 'ma_layer'
-    attribution = 'lala'
+    name = "OpenTopoMap"
+    url = "//a.tile.opentopomap.org/{z}/{x}/{y}.png"
+    maxNativeZoom = 17
+    attribution = "Map data: © <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap contributors</a>, SRTM | Map style: © <a href='https://opentopomap.org' target='_blank'>OpenTopoMap</a> (<a href='https://creativecommons.org/licenses/by-sa/3.0/' target='_blank'>CC-BY-SA</a>)"
+
 [[MAPCONFIG.BASEMAP]]
     attribution = "&copy Google Maps"
     name = "google"
@@ -601,12 +582,6 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
 [MEDIAS]
     # Taille maximale pour l'upload des médias
     MEDIAS_SIZE_MAX = 10000
-
-
-# Champs additionnels
-[ADDITIONAL_FIELDS]
-    IMPLEMENTED_MODULES = ["OCCTAX", "METADATA"]
-    IMPLEMENTED_OBJECTS = ["OCCTAX_RELEVE", "OCCTAX_OCCURENCE", "OCCTAX_DENOMBREMENT", "METADATA_CADRE_ACQUISITION", "METADATA_JEU_DE_DONNEES"]
 
 
 # Module métadonnées

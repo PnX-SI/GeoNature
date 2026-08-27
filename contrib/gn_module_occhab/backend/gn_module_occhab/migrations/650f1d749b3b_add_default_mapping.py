@@ -21,7 +21,7 @@ depends_on = "e43b01a18850"
 
 
 def get_models(conn):
-    metadata = sa.MetaData(bind=conn)
+    metadata = sa.MetaData()
     MappingTemplate = sa.Table("t_mappings", metadata, schema="gn_imports", autoload_with=conn)
     FieldMapping = sa.Table("t_fieldmappings", metadata, schema="gn_imports", autoload_with=conn)
     return MappingTemplate, FieldMapping

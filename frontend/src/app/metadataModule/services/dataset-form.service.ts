@@ -62,7 +62,7 @@ export class DatasetFormService {
     //FORM
     this.form = this.fb.group({
       id_acquisition_framework: [null, Validators.required],
-      dataset_name: [null, [Validators.required, Validators.maxLength(150)]],
+      dataset_name: [null, [Validators.required]],
       dataset_shortname: [null, [Validators.required, Validators.maxLength(30)]],
       dataset_desc: [null, Validators.required],
       id_nomenclature_data_type: [null, Validators.required],

@@ -45,6 +45,17 @@
       listLength="20"
       (onChange)="taxonSelected($event)"
     ></pnx-taxonomy>
+    <small>Modules</small>
+    <ng-select
+      [items]="modules"
+      bindLabel="module_label"
+      bindValue="id_module"
+      [multiple]="true"
+      [clearable]="true"
+      placeholder="{{ 'SelectModules' | translate }}"
+      data-qa="pnx-individuals-create-modules"
+      [formControl]="form.get('id_modules')"
+    ></ng-select>
   </div>
 </form>
 <div class="modal-footer">

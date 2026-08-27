@@ -28,6 +28,7 @@ from geonature.core.gn_synthese.utils.query_select_sqla import remove_accents
 from geonature.core.sensitivity.models import cor_sensitivity_area_type
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_synthese.models import Synthese, TSources, VSyntheseForWebApp
+from geonature.core.gn_monitoring.models import TIndividuals
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 
 from geonature.core.gn_synthese.schemas import SyntheseSchema
@@ -41,9 +42,6 @@ from pypnusershub.db.models import User
 from pypnusershub.tests.utils import logged_user_headers, set_logged_user
 
 from utils_flask_sqla_geo.schema import GeoModelConverter, GeoAlchemyAutoSchema
-
-from .fixtures import *
-from .fixtures import create_synthese, create_module, synthese_with_protected_status
 
 csv.field_size_limit(sys.maxsize)
 
@@ -88,7 +86,7 @@ def synthese_for_observers(source, datasets):
     insert in cor_observers_synthese and run a trigger which override the observers_txt field
     """
     now = datetime.datetime.now()
-    taxon = db.session.scalars(select(Taxref)).first()
+    taxon = db.session.scalars(select(Taxref).limit(1)).first()
     point = Point(5.486786, 42.832182)
     geom = from_shape(point, srid=4326)
     with db.session.begin_nested():
@@ -163,7 +161,7 @@ class GroupedGeoJSONSchema(GeoJSONSchema):
     feature_schema = GroupedFeatureSchema
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 class TestSynthese:
     def test_required_fields_and_format(self, app, users):
         # Test required fields base on VSyntheseForWebAppSchema surrounded by a custom converter : CustomRequiredConverter
@@ -322,6 +320,11 @@ class TestSynthese:
         assert r.status_code == 200
         assert len(r.json["features"]) >= 2  # FIXME
 
+    def test_get_observations_for_web_status_filters(self, users, synthese_data):
+
+        set_logged_user(self.client, users["self_user"])
+        url = url_for("gn_synthese.synthese.get_observations_for_web")
+
         # test status lr
         filters = {"regulations_protection_status": ["REGLLUTTE"]}
         r = self.client.get(url, json=filters)
@@ -333,8 +336,6 @@ class TestSynthese:
         # test status protection
         filters = {"protections_protection_status": ["PN"]}
         r = self.client.get(url, json=filters)
-        # doit au moins contenir une donnée de gypaète (protection nationale)
-        assert len(r.json["features"]) >= 1
         assert r.status_code == 200
         # test status protection and znieff
         filters = {"protections_protection_status": ["PN"], "znief_protection_status": True}
@@ -353,6 +354,47 @@ class TestSynthese:
         filters = {"regional_red_lists": ["LC"]}
         r = self.client.get(url, json=filters)
         assert r.status_code == 200
+
+    def test_get_observations_for_web_status_filters_or_and_and(self, users, synthese_data):
+        """
+        Vérifie le OR entre valeurs d'un même champ de filtre de statut, combiné
+        au AND entre champs différents, dans une seule et même requête.
+
+        Le gypaète (obs1, situé en Savoie) a les statuts PN, LRN=EN, ZDET et REGL.
+        """
+        set_logged_user(self.client, users["self_user"])
+        url = url_for("gn_synthese.synthese.get_observations_for_web")
+
+        # 4 champs de filtre combinés (AND entre eux), dont un avec 2 valeurs (OR entre elles) :
+        #   - protections_protection_status: ["PN", "PD"] -> le gypaète n'a que PN, doit matcher (OR)
+        #   - national_red_lists: ["EN"], znief_protection_status: True, regulations: ["REGL"]
+        #     -> tous vrais pour le gypaète en Savoie, où se trouve obs1 (AND satisfait)
+        filters = {
+            "protections_protection_status": ["PN", "PD"],
+            "national_red_lists": ["EN"],
+            "znief_protection_status": True,
+            "regulations_protection_status": ["REGL"],
+        }
+        r = self.client.get(url, json=filters)
+        assert r.status_code == 200
+        assert synthese_data["obs1"].id_synthese in {
+            f["properties"]["id_synthese"] for f in r.json["features"]
+        }
+
+        # Même requête, mais avec une des 4 conditions du AND devenue fausse pour le gypaète
+        # (il a LRN=EN, pas LRN=CR) : il ne doit plus ressortir, ce qui prouve que les 4
+        # champs sont bien combinés en AND et pas seulement le premier qui matche.
+        filters = {
+            "protections_protection_status": ["PN", "PD"],
+            "national_red_lists": ["CR"],
+            "znief_protection_status": True,
+            "regulations_protection_status": ["REGL"],
+        }
+        r = self.client.get(url, json=filters)
+        assert r.status_code == 200
+        assert synthese_data["obs1"].id_synthese not in {
+            f["properties"]["id_synthese"] for f in r.json["features"]
+        }
 
     def test_get_observations_for_web_filter_comment(self, users, synthese_data, taxon_attribut):
         set_logged_user(self.client, users["self_user"])
@@ -373,6 +415,18 @@ class TestSynthese:
         assert id_synthese in (
             feature["properties"]["id_synthese"] for feature in r.json["features"]
         )
+
+    def test_filter_individual(self, synthese_data, users, individuals):
+        set_logged_user(self.client, users["self_user"])
+        url = url_for("gn_synthese.synthese.get_observations_for_web")
+        filters = {"individuals": [individuals[0].id_individual]}
+        r = self.client.get(url, json=filters)
+
+        assert r.status_code == 200
+
+        for synthese in r.json["features"]:
+            syn = db.session.query(Synthese).get(synthese["properties"]["id_synthese"])
+            assert syn.id_individual == individuals[0].id_individual
 
     def test_get_observations_for_web_filter_id_source(self, users, synthese_data, source):
         set_logged_user(self.client, users["self_user"])
@@ -446,6 +500,42 @@ class TestSynthese:
                 ), feature["properties"]["observers"]
         else:
             assert r.json["features"] == []
+
+    @pytest.mark.parametrize(
+        "period_start,period_end,expect_obs1",
+        [
+            # normal range (start <= end), containing obs1's date (2024-10-02)
+            ("01/10", "03/10", True),
+            # normal range (start <= end), not containing obs1's date
+            ("10/10", "20/10", False),
+            # wrap-around range (start > end, e.g. Oct 1st -> Jan 1st), containing obs1's date
+            ("01/10", "01/01", True),
+            # wrap-around range (start > end), not containing obs1's date
+            ("01/11", "01/03", False),
+        ],
+    )
+    def test_get_observations_for_web_filter_period(
+        self, users, synthese_data, period_start, period_end, expect_obs1
+    ):
+        set_logged_user(self.client, users["self_user"])
+        filters = {"period_start": period_start, "period_end": period_end}
+        r = self.client.get(url_for("gn_synthese.synthese.get_observations_for_web"), json=filters)
+        assert r.status_code == 200
+        response_ids = {f["properties"]["id_synthese"] for f in r.json["features"]}
+        if expect_obs1:
+            assert synthese_data["obs1"].id_synthese in response_ids
+        else:
+            assert synthese_data["obs1"].id_synthese not in response_ids
+
+    def test_get_observations_for_web_filter_period_matches_date_max(self, users, synthese_data):
+        # p1_af1 spans date_min=2024-10-02 to date_max=2024-10-04: a period containing only
+        # date_max (Oct 4th) must still match it, since the filter ORs date_min and date_max.
+        set_logged_user(self.client, users["self_user"])
+        filters = {"period_start": "04/10", "period_end": "04/10"}
+        r = self.client.get(url_for("gn_synthese.synthese.get_observations_for_web"), json=filters)
+        assert r.status_code == 200
+        response_ids = {f["properties"]["id_synthese"] for f in r.json["features"]}
+        assert synthese_data["p1_af1"].id_synthese in response_ids
 
     def test_get_synthese_data_cruved(self, app, users, synthese_data, datasets):
         set_logged_user(self.client, users["self_user"])
@@ -1469,6 +1559,28 @@ class TestSynthese:
         )
         assert response.status_code == Forbidden.code
 
+    def test_synthese_schema_individual(self, users, synthese_data):
+        synthese_obs = synthese_data["obs1"]
+
+        individual = TIndividuals(
+            individual_name="Test schema individual",
+            cd_nom=synthese_obs.cd_nom,
+            digitiser=users["admin_user"],
+        )
+        with db.session.begin_nested():
+            db.session.add(individual)
+        with db.session.begin_nested():
+            synthese_obs.individual = individual
+
+        dumped = SyntheseSchema().dump(synthese_obs)
+        assert dumped["id_individual"] == individual.id_individual
+
+        with db.session.begin_nested():
+            synthese_obs.individual = None
+
+        dumped = SyntheseSchema().dump(synthese_obs)
+        assert dumped["id_individual"] is None
+
     def test_taxon_observer(self, synthese_data, users):
         set_logged_user(self.client, users["stranger_user"])
 
@@ -1885,7 +1997,7 @@ def assert_blurred_synthese(geojson, obs):
     )
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 class TestSyntheseBlurring:
     def test_split_blurring_precise_permissions(
         self, app, users, synthese_module, add_synthese_read_permissions
@@ -2190,7 +2302,7 @@ class TestSyntheseBlurring:
         assert len(response.json["features"]) == 0
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 class TestMediaTaxon:
     def test_taxon_medias(self, add_synthese_read_permissions, users):
         set_logged_user(self.client, users["self_user"])
@@ -2282,7 +2394,7 @@ class TestSyntheseGeographicFilter:
         assert synthese_data["obs3"].id_synthese in response_ids
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 class TestSyntheseTaxonomicFilter:
     @pytest.mark.parametrize("sensitivity_activated", (True, False))
     def test_taxonomic_filter_get_obs(

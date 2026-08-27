@@ -18,7 +18,7 @@ depends_on = ("707390c722fe",)
 
 def set_available_filters(taxons_filter, areas_filter):
     conn = op.get_bind()
-    metadata = sa.MetaData(bind=conn)
+    metadata = sa.MetaData()
     module = sa.Table("t_modules", metadata, schema="gn_commons", autoload_with=conn)
     id_module_validation = conn.execute(
         sa.select(module.c.id_module).where(module.c.module_code == "VALIDATION")

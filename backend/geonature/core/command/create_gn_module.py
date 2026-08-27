@@ -53,7 +53,13 @@ def install_gn_module(x_arg, module_path, module_code, build, upgrade_db):
         No module code was detected in the code
     """
     click.echo("Installation du backend…")
-    subprocess.run(f"pip install -e '{module_path}'", shell=True, check=True)
+    uv_pip_install_args = ["uv", "pip", "install"]
+    if sys.prefix == sys.base_prefix:
+        # No virtual environment active (e.g. CI installing with `uv pip install --system`):
+        # target the current/system Python interpreter instead.
+        uv_pip_install_args.append("--system")
+    uv_pip_install_args += ["-e", str(module_path)]
+    subprocess.run(uv_pip_install_args, check=True)
 
     # refresh list of entry points
     importlib.reload(site)

@@ -5,13 +5,26 @@
   "Language": "Language",
   "Languages": "Languages",
   "AvailableLanguages": {
-    "English": "English (Anglais)",
-    "French": "Français",
-    "Chinese": "中文 (Chinois)"
+    "English": "🇬🇧 English",
+    "French": "🇫🇷 French (Français)",
+    "Chinese": "🇨🇳 中文 (Chinese)"
   },
   "Calendar": {
     "Weekdays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-    "Months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    "Months": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ]
   },
   "Actions": {
     "Singular": "Action",
@@ -30,7 +43,8 @@
     "Validate": "Validate",
     "PDFExport": "Export a PDF",
     "DownloadData": "Download data",
-    "Copy": "Copy"
+    "Copy": "Copy",
+    "Clear": "Clear"
   },
   "Messages": {
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire"
@@ -89,6 +103,7 @@
   "MyAccount": {
     "MyAccount": "My account",
     "MyObserverSheet": "My observer sheet",
+    "ObserverSheetTooltip": "Access your observer sheet",
     "EmailChangeTitle": "Change email address",
     "EmailChangeDescription": "Changing your email address requires validation. A confirmation link will be sent to your new email address and the change will be effective after clicking on the link.",
     "EmailChangeValidationTitle": "Email address change validation",
@@ -141,6 +156,13 @@
   "Taxon": "Taxon",
   "Taxons": "Taxons",
   "Species": "Species",
+  "Individual": {
+    "Name": "Individual name",
+    "Raw": "Individual(s)",
+    "Select": "Sélectionner an individual",
+    "SelectPlural": "Sélect individuals"
+  },
+  "SelectModules": "Select one or more modules",
   "Habitat": "Habitat",
   "Habitats": "Habitats",
 
@@ -210,12 +232,24 @@
   "Detail": "Detail",
   "Details": "Details",
 
+  "Search": "Search",
+  "Documentation": {
+    "Documentation": "Documentation",
+    "OpenDocumentation": "Open documentation"
+  },
   "Downloading": "Downloading",
 
   "DownloadOverflow": "The number of items is too large to be downloaded, please refine your search or contact your administrator",
   "DynamicForm": {
     "Errors": {
       "CheckBoxError": "Please select at least one option"
+    }
+  },
+  "Toolbar": {
+    "Language": {
+      "FrenchTooltip": "Switch interface language to french",
+      "EnglishTooltip": "Switch interface language to english",
+      "ChineseTooltip": "Switch interface language to chinese"
     }
   },
   "Map": {
@@ -292,7 +326,7 @@
     "Stakeholders": "Stakeholders",
     "DatasetName": "Dataset name",
     "AFName": "Acquisition framework name",
-    "DataAmount": "Amount of data",
+    "CountObservations": "Number of observations",
     "StakeholderOrganization": "Stakeholder (organization)",
     "DataSources": "Data sources",
     "DescriptiveForm": "Descriptive form",
@@ -315,6 +349,13 @@
     "AssociatedDatasets": "Associated datasets",
     "Reference": "Reference",
     "AdditionalInformation": "Additional information",
+    "ObservationsSyntheseTooltip": "Synthese",
+    "ObservationsOcchabTooltip": "Habitats",
+    "DatasetSyntheseButtonTooltipNoData": "There is no data in Synthese for this dataset",
+    "DatasetSyntheseButtonTooltipExistData": "Display data in Synthese",
+    "DatasetDeleteButtonTooltipNotPossibleExistData": "This dataset contains data and thus cannot be deleted",
+    "DatasetDeleteButtonTooltipNotPossibleMissingPermissions": "You do not have the necessary permissions to delete this dataset",
+    "DatasetDeleteButtonTooltipPossible": "Delete the dataset",
 
     "DatasetCard": {
       "Actions": {
@@ -415,6 +456,10 @@
       "Of": "of",
       "PreviousPage": "Previous page",
       "NextPage": "Next page"
+    },
+    "Statistics": {
+      "OccurrencesSynthese": "Taxon(s) occurrence(s)",
+      "OccurrencesOcchab": "Habitat(s) occurrence(s)"
     }
   },
   "Filters": {

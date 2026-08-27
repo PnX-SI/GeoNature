@@ -1,15 +1,12 @@
 from flask import g
-from sqlalchemy import or_, case, func, select, and_
-from sqlalchemy.orm.exc import NoResultFound
-from urllib.parse import urljoin
-from werkzeug.exceptions import NotFound
+from sqlalchemy import or_, case, func, select
 
 
 from utils_flask_sqla.generic import testDataType
 from utils_flask_sqla.utils import is_already_joined
 
 from geonature.utils.env import DB
-from geonature.core.gn_commons.models import TMedias, VLatestValidations
+from geonature.core.gn_commons.models import TMedias
 from geonature.utils.errors import GeonatureApiError
 from .utils import get_nomenclature_filters
 
@@ -110,7 +107,7 @@ class ReleveRepository:
             func.string_agg(TMedias.title_fr, " | ").label("titreMedia"),
             func.string_agg(TMedias.description_fr, " | ").label("descMedia"),
             func.string_agg(
-                case([(TMedias.media_url == None, TMedias.media_path)], else_=TMedias.media_url),
+                case((TMedias.media_url == None, TMedias.media_path), else_=TMedias.media_url),
                 " | ",
             ).label("urlMedia"),
         )

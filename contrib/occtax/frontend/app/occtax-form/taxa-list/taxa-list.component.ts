@@ -10,7 +10,7 @@ import { OcctaxTaxaListService } from './taxa-list.service';
 import { MediaService } from '@geonature_common/service/media.service';
 
 import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/confirmation.dialog';
-import { ConfigService } from '@geonature/services/config.service';
+import { OcctaxConfigService } from '../../services/occtax-config.service';
 
 @Component({
   selector: 'pnx-occtax-form-taxa-list',
@@ -19,6 +19,8 @@ import { ConfigService } from '@geonature/services/config.service';
 })
 export class OcctaxFormTaxaListComponent implements OnInit {
   @ViewChild('tabOccurence') tabOccurence: ElementRef;
+  typeSortingTaxalist: 'lexicographic' | 'record' = 'record';
+  sortOrder: 'asc' | 'desc' = 'asc';
 
   constructor(
     public ngbModal: NgbModal,
@@ -28,7 +30,7 @@ export class OcctaxFormTaxaListComponent implements OnInit {
     public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     public occtaxTaxaListService: OcctaxTaxaListService,
     public ms: MediaService,
-    public config: ConfigService
+    public occtaxConfig: OcctaxConfigService
   ) {}
 
   ngOnInit() {
@@ -39,14 +41,14 @@ export class OcctaxFormTaxaListComponent implements OnInit {
             occtaxData && occtaxData.releve.properties.t_occurrences_occtax
         ),
         map(([occtaxData, occurrence]: any) => {
-          return occtaxData.releve.properties.t_occurrences_occtax
-            .filter((occ) => {
-              //enlève l'occurrence en cours de modification de la liste affichée
-              return occurrence !== null
-                ? occ.id_occurrence_occtax !== occurrence.id_occurrence_occtax
-                : true;
-            })
-            .sort((o1, o2) => {
+          let occurrences = occtaxData.releve.properties.t_occurrences_occtax.filter((occ) => {
+            //enlève l'occurrence en cours de modification de la liste affichée
+            return occurrence !== null
+              ? occ.id_occurrence_occtax !== occurrence.id_occurrence_occtax
+              : true;
+          });
+          if (this.typeSortingTaxalist == 'lexicographic') {
+            occurrences.sort((o1, o2) => {
               const name1 = (
                 o1.taxref ? o1.taxref.nom_complet : this.removeHtml(o1.nom_cite)
               ).toLowerCase();
@@ -61,6 +63,11 @@ export class OcctaxFormTaxaListComponent implements OnInit {
               }
               return 0;
             });
+          }
+          if (this.sortOrder === 'desc') {
+            occurrences.reverse();
+          }
+          return occurrences;
         })
       )
       .subscribe((occurrences) => {
@@ -119,5 +126,22 @@ export class OcctaxFormTaxaListComponent implements OnInit {
 
     this.editOccurrence(occ_in_progress.data);
     this.occtaxTaxaListService.removeOccurrenceInProgress(occ_in_progress.id);
+  }
+
+  setSortType(type: 'lexicographic' | 'record') {
+    if (this.typeSortingTaxalist === type) {
+      return;
+    }
+    this.typeSortingTaxalist = type;
+    this.refreshSort();
+  }
+
+  toggleSortOrder() {
+    this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+    this.refreshSort();
+  }
+
+  private refreshSort() {
+    this.occtaxFormService.occtaxData.next(this.occtaxFormService.occtaxData.getValue());
   }
 }

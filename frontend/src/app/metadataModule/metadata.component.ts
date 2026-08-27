@@ -12,6 +12,7 @@ import { DataFormService, ParamsDict } from '@geonature_common/form/data-form.se
 import { CommonService } from '@geonature_common/service/common.service';
 import { MetadataService } from './services/metadata.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { CdkPortal } from '@angular/cdk/portal';
 
 @Component({
   selector: 'pnx-metadata',
@@ -133,31 +134,29 @@ export class MetadataComponent implements OnInit {
     });
     return formatedForm;
   }
-  private advancedSearch() {
+  advancedSearch() {
     let formValues = Object.fromEntries(
       Object.entries(this.metadataService.form.value).filter(([_, v]) => v != null)
     );
+
+    let areas: any[] = [];
+    Object.keys(formValues)
+      .filter((key) => key.startsWith('area_') && formValues[key] != null)
+      .forEach((key) => {
+        const current_area: any[] = formValues[key] as any[];
+        areas = [...areas, ...current_area.map((area) => area.id_area)];
+        delete formValues[key];
+      });
     // reformat areas value
-    let areas = [];
-    let omited = omitBy(formValues, (value = [], field) => {
-      // omit control names started by area_
-      if (!field || !field.startsWith('area_')) return false;
-      // use only one areas ids list
-      if (value) {
-        areas = [...areas, ...value.map((area) => area.id_area)];
-      }
-      return true;
-    });
     this.searchTerms = {
-      ...omited,
-      ...(areas.length && { areas: areas }),
+      ...formValues,
+      ...(areas.length > 0 && { areas: areas }),
       ...(this.rapidSearchControl.value !== null && {
         search: this.rapidSearchControl.value,
       }),
     };
 
     this.searchTerms = this.formatFormValue(this.searchTerms);
-
     this.metadataService.form.patchValue(this.searchTerms);
     this.paginator?.firstPage();
     this.metadataService.changePage(0);
@@ -177,7 +176,7 @@ export class MetadataComponent implements OnInit {
   onOpenExpansionPanel(af: any) {
     if (af.t_datasets === undefined) {
       let params = {};
-      const queryStrings: ParamsDict = { synthese_records_count: 1 };
+      const queryStrings: ParamsDict = { nb_observations_synthese: 1 };
       if (this.searchTerms.selector === 'ds') {
         params = this.searchTerms;
       }

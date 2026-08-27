@@ -37,7 +37,7 @@ def assert_import_errors(imprt, expected_errors, entity_code=None):
     else:
         transient_table = imprt.destination.get_transient_table()
         stmt = (
-            select([transient_table.c.line_no])
+            select(transient_table.c.line_no)
             .where(transient_table.c.id_import == imprt.id_import)
             .where(
                 or_(*[transient_table.c[v] == False for v in imprt.destination.validity_columns])

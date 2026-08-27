@@ -33,7 +33,6 @@ from werkzeug.exceptions import (
     UnsupportedMediaType,
 )
 
-from .fixtures import *
 from .utils import logged_user_headers, set_logged_user
 from ..utils.errors import GeoNatureError
 
@@ -146,7 +145,7 @@ def get_csv_from_response(data):
             yield i, row
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 class TestGNMeta:
 
     class TestGetAcquisitionFrameworkRoute:
@@ -304,14 +303,15 @@ class TestGNMeta:
             """Test la pagination de la route acquisition_frameworks"""
             acquisition_frameworks_url = url_for("gn_meta.get_acquisition_frameworks")
             # Créer plusieurs AFs pour tester la pagination
-            for i in range(55):  # Créer 55 AFs pour tester sur plusieurs pages
-                af = TAcquisitionFramework(
-                    acquisition_framework_name=f"Test AF {i}",
-                    acquisition_framework_desc="Test description",
-                    id_digitizer=users["admin_user"].id_role,
-                )
-                db.session.add(af)
-            db.session.commit()
+            with db.session.begin_nested():
+                for i in range(55):  # Créer 55 AFs pour tester sur plusieurs pages
+                    af = TAcquisitionFramework(
+                        acquisition_framework_name=f"Test AF {i}",
+                        acquisition_framework_desc="Test description",
+                        id_digitizer=users["admin_user"].id_role,
+                    )
+                    db.session.add(af)
+
             set_logged_user(self.client, users["admin_user"])
             # Test pagination par défaut (50 éléments par page)
             response = self.client.get(acquisition_frameworks_url)
@@ -651,18 +651,43 @@ class TestGNMeta:
             )
         )
         data = response.json
+        data_dict_nb_obs = data["dict_nb_obs"]
 
         assert response.status_code == 200
         assert data["nb_dataset"] == len(af.datasets)
-        assert data["nb_habitats"] == 0
+        assert data_dict_nb_obs["OCCHAB"] == 0
         obs = [s for s in synthese_data.values() if s.dataset.acquisition_framework == af]
-        assert data["nb_observations"] == len(obs)
+        assert data_dict_nb_obs["SYNTHESE"] == len(obs)
         # Count of taxa :
         # Loop all the synthese entries, for each synthese
         # For each entry, take the max between count_min and count_max. And if
         # not provided: count_min and/or count_max is 1. Since one entry in
         # synthese is at least 1 taxon
         assert data["nb_taxons"] == len(set([s.cd_nom for s in obs]))
+
+    def test_get_dataset_stats(self, users, datasets, synthese_data, stations):
+        ds = datasets["own_dataset"]
+        set_logged_user(self.client, users["user"])
+
+        response = self.client.get(
+            url_for(
+                "gn_meta.get_dataset_stats",
+                id_dataset=ds.id_dataset,
+            )
+        )
+        data = response.json
+        data_dict_nb_obs = data["dict_nb_obs"]
+
+        assert response.status_code == 200
+        expected_nb_observations_habitats = 4
+        assert data_dict_nb_obs["OCCHAB"] == expected_nb_observations_habitats
+        obs = [s for s in synthese_data.values() if s.dataset == ds]
+        expected_nb_observations_synthese = len(obs)
+        assert data_dict_nb_obs["SYNTHESE"] == expected_nb_observations_synthese
+        expected_nb_observations = (
+            expected_nb_observations_synthese + expected_nb_observations_habitats
+        )
+        assert data["total_nb_obs"] == expected_nb_observations
 
     def test_dataset_nb_observations_hybrid_property(self, users, datasets, synthese_data):
         ds = datasets["own_dataset"]
@@ -917,10 +942,10 @@ class TestGNMeta:
         }
         assert response.json["id_dataset"] == ds.id_dataset
 
-    def test_get_datasets_synthese_records_count(self, users):
+    def test_get_datasets_nb_observations_synthese(self, users):
         # FIXME : verify content
         set_logged_user(self.client, users["admin_user"])
-        response = self.client.get(url_for("gn_meta.get_datasets", synthese_records_count=1))
+        response = self.client.get(url_for("gn_meta.get_datasets", nb_observations_synthese=1))
 
         assert response.status_code == 200
 
@@ -1440,9 +1465,7 @@ class TestGNMeta:
         assert response.status_code == 500
 
 
-@pytest.mark.usefixtures(
-    "client_class", "temporary_transaction", "users", "datasets", "acquisition_frameworks"
-)
+@pytest.mark.usefixtures("client_class", "users", "datasets", "acquisition_frameworks")
 class TestRepository:
     def test_cruved_ds_filter(self, users, datasets):
         with pytest.raises(Unauthorized):

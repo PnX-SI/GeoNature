@@ -16,8 +16,6 @@ from geonature.utils.module import alembic_branch_in_use, is_module_installed
 from jsonschema import validate
 from json import loads
 
-from .fixtures import *
-
 #############################################################################
 # BASIC TEMPLATE CONFIG FILE
 #############################################################################
@@ -90,7 +88,6 @@ TEMPLATE_TAXON_SHEET_CONFIG_FILE = """
     """
 
 
-@pytest.mark.usefixtures("temporary_transaction")
 class TestUtils:
     def test_utilstoml(self):
         # Test if file not exists
@@ -163,7 +160,9 @@ class TestUtils:
         monkeypatch.setattr(
             "geonature.utils.module.is_alembic_branch_up_to_date", mock_is_alembic_branch_up_to_date
         )
-        assert not is_module_installed(python_module_name="gn_module_occhab")
+        assert not is_module_installed(
+            python_module_name="gn_module_occhab", check_if_all_revisions_have_been_applied=True
+        )
 
 
 pagination_schema = {

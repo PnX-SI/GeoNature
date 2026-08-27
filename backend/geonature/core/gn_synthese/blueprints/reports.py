@@ -1,7 +1,13 @@
 import datetime
 
-import sqlalchemy as sa
+
 from flask import Blueprint, abort, current_app, g, jsonify, request
+from sqlalchemy import asc, desc, exists, or_, select
+from sqlalchemy.orm import Load, joinedload
+from werkzeug.exceptions import BadRequest, Conflict, Forbidden
+
+from pypnusershub.db.models import User
+from utils_flask_sqla.response import json_resp
 from geonature.core.gn_permissions.decorators import (
     login_required,
     permissions_required,
@@ -12,11 +18,6 @@ from geonature.core.gn_synthese.schemas import ReportSchema
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from geonature.core.notifications.utils import dispatch_notifications
 from geonature.utils.env import db
-from pypnusershub.db.models import User
-from sqlalchemy import asc, desc, or_, select
-from sqlalchemy.orm import Load, joinedload
-from utils_flask_sqla.response import json_resp
-from werkzeug.exceptions import BadRequest, Conflict, Forbidden
 
 reports_blueprint = Blueprint("reports", __name__)
 
@@ -51,7 +52,7 @@ def create_report(permissions):
         raise BadRequest("Discussion content is required")
 
     type_exists = db.session.execute(
-        sa.select(BibReportsTypes).filter_by(type=type_name)
+        select(BibReportsTypes).filter_by(type=type_name)
     ).scalar_one_or_none()
 
     if not type_exists:
@@ -61,12 +62,12 @@ def create_report(permissions):
         select(Synthese)
         .options(
             Load(Synthese).raiseload("*"),
-            joinedload("nomenclature_sensitivity"),
-            joinedload("cor_observers"),
-            joinedload("digitiser"),
-            joinedload("dataset"),
-            joinedload("areas"),
-            joinedload("taxref_tree"),
+            joinedload(Synthese.nomenclature_sensitivity),
+            joinedload(Synthese.cor_observers),
+            joinedload(Synthese.digitiser),
+            joinedload(Synthese.dataset),
+            joinedload(Synthese.areas),
+            joinedload(Synthese.taxref_tree),
         )
         .filter_by(id_synthese=id_synthese)
         .limit(1),
@@ -78,12 +79,12 @@ def create_report(permissions):
     if not synthese.has_instance_permission(permissions):
         raise Forbidden
 
-    report_query = sa.select(TReport).where(
+    report_query = select(TReport).where(
         TReport.id_synthese == id_synthese,
         TReport.report_type.has(BibReportsTypes.type == type_name),
     )
 
-    user_pin = sa.select(TReport).where(
+    user_pin = select(TReport).where(
         TReport.id_synthese == id_synthese,
         TReport.report_type.has(BibReportsTypes.type == "pin"),
         TReport.id_role == g.current_user.id_role,
@@ -212,14 +213,14 @@ def list_all_reports(permissions):
     # Parameters
     type_name = request.args.get("type")
     orderby = request.args.get("orderby", "creation_date")
-    sort = request.args.get("sort")
+    sort = request.args.get("sort", "desc")
     page = request.args.get("page", 1, int)
     per_page = request.args.get("per_page", 10, int)
     my_reports = request.args.get("my_reports", "false").lower() == "true"
 
     # Start query
     query = (
-        sa.select(TReport, User.nom_complet)
+        select(TReport, User.nom_complet)
         .join(User, TReport.id_role == User.id_role)
         .options(
             joinedload(TReport.report_type).load_only(
@@ -238,7 +239,7 @@ def list_all_reports(permissions):
     # Verify and filter by type
     if type_name:
         type_exists = db.session.scalar(
-            sa.exists(BibReportsTypes).where(BibReportsTypes.type == type_name).select()
+            exists(BibReportsTypes).where(BibReportsTypes.type == type_name).select()
         )
         if not type_exists:
             raise BadRequest("This report type does not exist")
@@ -318,12 +319,12 @@ def list_reports(permissions, id_synthese):
     if not synthese.has_instance_permission(permissions):
         raise Forbidden
 
-    query = sa.select(TReport).where(TReport.id_synthese == id_synthese)
+    query = select(TReport).where(TReport.id_synthese == id_synthese)
 
     # Verify and filter by type
     if type_name:
         type_exists = db.session.scalar(
-            sa.exists(BibReportsTypes).where(BibReportsTypes.type == type_name).select()
+            exists(BibReportsTypes).where(BibReportsTypes.type == type_name).select()
         )
         if not type_exists:
             raise BadRequest("This report type does not exist")

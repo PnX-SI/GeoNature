@@ -48,10 +48,10 @@ from utils_flask_sqla_geo.generic import GenericTableGeo
 from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
 
-from occtax.commands import add_submodule_permissions
+from occtax.commands import create_duplicated_module
 
 blueprint = Blueprint("pr_occtax", __name__, cli_group="occtax")
-blueprint.cli.add_command(add_submodule_permissions)
+blueprint.cli.add_command(create_duplicated_module)
 
 log = logging.getLogger(__name__)
 
@@ -62,6 +62,13 @@ def set_current_module(endpoint, values):
     g.current_module = db.first_or_404(
         select(TModules).filter_by(module_code=requested_module),
         description=f"No module name {requested_module}",
+    )
+    g.module_conf = (
+        current_app.config["OCCTAX"]
+        if requested_module == "OCCTAX"
+        else current_app.config["OCCTAX"]["MODULE_CONFS"].get(
+            requested_module, current_app.config["OCCTAX"]
+        )
     )
 
 
@@ -580,12 +587,12 @@ def export(scope):
     :query str format: format of the export ('csv', 'geojson', 'shapefile', 'gpkg')
 
     """
-    export_view_name = blueprint.config["export_view_name"]
-    export_geom_column = blueprint.config["export_geom_columns_name"]
-    export_columns = blueprint.config["export_columns"]
-    export_srid = blueprint.config["export_srid"]
+    export_view_name = g.module_conf["export_view_name"]
+    export_geom_column = g.module_conf["export_geom_columns_name"]
+    export_columns = g.module_conf["export_columns"]
+    export_srid = g.module_conf["export_srid"]
     export_format = request.args["format"] if "format" in request.args else "geojson"
-    export_col_name_additional_data = blueprint.config["export_col_name_additional_data"]
+    export_col_name_additional_data = g.module_conf["export_col_name_additional_data"]
 
     export_view = GenericTableGeo(
         tableName=export_view_name,
@@ -607,10 +614,10 @@ def export(scope):
         export_view,
         q,
         from_generic_table=True,
-        obs_txt_column=blueprint.config["export_observer_txt_column"],
+        obs_txt_column=g.module_conf["export_observer_txt_column"],
     )
 
-    if current_app.config["OCCTAX"]["ADD_MEDIA_IN_EXPORT"]:
+    if g.module_conf["ADD_MEDIA_IN_EXPORT"]:
         q, columns = releve_repository.add_media_in_export(q, columns)
 
     data = db.session.execute(q)

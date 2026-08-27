@@ -1,13 +1,12 @@
-from geonature.core.gn_permissions.decorators import login_required
+from flask import g
+from sqlalchemy import select
+from sqlalchemy.orm import joinedload
 
 from geonature.core.imports.models import Destination
-from sqlalchemy.orm import joinedload
+from geonature.core.gn_permissions.decorators import login_required
 from geonature.core.imports.schemas import DestinationSchema
 from geonature.core.imports.blueprint import blueprint
 from geonature.utils.env import db
-
-import sqlalchemy as sa
-from flask import g
 
 
 @blueprint.route("/destinations/", methods=["GET"], defaults={"action_code": None})
@@ -30,7 +29,7 @@ def list_all_destinations(action_code):
     """
 
     schema = DestinationSchema()
-    query = sa.select(Destination)
+    query = select(Destination)
     if action_code:
         query = query.where(Destination.filter_by_role(g.current_user, action_code))
     destinations = db.session.execute(query).scalars().all()
@@ -42,8 +41,8 @@ def list_all_destinations(action_code):
 def get_destination(destinationCode):
     schema = DestinationSchema(only=["module"])
     destination = db.session.execute(
-        db.select(Destination)
-        .options(joinedload("module"))
+        select(Destination)
+        .options(joinedload(Destination.module))
         .where(Destination.code == destinationCode)
     ).scalar_one_or_none()
     return schema.dump(destination)

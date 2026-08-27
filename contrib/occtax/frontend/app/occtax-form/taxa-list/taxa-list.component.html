@@ -6,6 +6,34 @@
       else zeroOccurrenceBlk
     "
   >
+    <div class="sort-toolbar">
+      <mat-button-toggle-group
+        class="sort-type-group"
+        name="sortType"
+        aria-label="Type de tri"
+        [value]="typeSortingTaxalist"
+        (change)="setSortType($event.value)"
+      >
+        <mat-button-toggle value="record">
+          {{ 'Occtax.TaxaList.SortByRecord' | translate }}
+        </mat-button-toggle>
+        <mat-button-toggle value="lexicographic">
+          {{ 'Occtax.TaxaList.SortByName' | translate }}
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+
+      <button
+        mat-icon-button
+        type="button"
+        class="sort-order-btn"
+        [matTooltip]="
+          (sortOrder === 'asc' ? 'Occtax.TaxaList.SortAsc' : 'Occtax.TaxaList.SortDesc') | translate
+        "
+        (click)="toggleSortOrder()"
+      >
+        <mat-icon>{{ sortOrder === 'asc' ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+      </button>
+    </div>
     <ng-container *ngFor="let occ_in_progress of occtaxTaxaListService.rec_occurrences_in_progress">
       <div
         class="in-progress-panel"
@@ -45,6 +73,15 @@
         >
           <mat-expansion-panel-header class="right-aligned-header">
             <mat-panel-title>
+              <span
+                [innerHTML]="taxonTitle(occurrence)"
+                [matTooltip]="occurrence.taxref?.nom_valide || removeHtml(occurrence.nom_cite)"
+                class="header-title"
+                [attr.data-qa]="'pnx-occtax-taxon-form-taxa-head-' + i"
+              ></span>
+            </mat-panel-title>
+
+            <mat-panel-description>
               <span class="btn-actions d-none">
                 <button
                   mat-icon-button
@@ -62,15 +99,6 @@
                   <mat-icon matTooltip="Supprimer le taxon">clear</mat-icon>
                 </button>
               </span>
-            </mat-panel-title>
-
-            <mat-panel-description>
-              <span
-                [innerHTML]="taxonTitle(occurrence)"
-                [matTooltip]="occurrence.taxref?.nom_valide || removeHtml(occurrence.nom_cite)"
-                class="header-title"
-                [attr.data-qa]="'pnx-occtax-taxon-form-taxa-head-' + i"
-              ></span>
             </mat-panel-description>
           </mat-expansion-panel-header>
 
@@ -100,12 +128,12 @@
                   <div class="value">{{ occurrence?.taxref?.nom_complet }}</div>
                 </div>
 
-                <div *ngIf="this.config.OCCTAX.form_fields.determiner">
+                <div *ngIf="occtaxConfig.moduleConf.form_fields.determiner">
                   <div class="label">{{ 'Occtax.Taxon.Determiner' | translate }} :</div>
                   <div class="value">{{ occurrence?.determiner || '-' }}</div>
                 </div>
 
-                <div *ngIf="this.config.OCCTAX.form_fields.determination_method">
+                <div *ngIf="occtaxConfig.moduleConf.form_fields.determination_method">
                   <div class="label">{{ 'Occtax.Taxon.DeterminationMethod' | translate }} :</div>
                   <div class="value">
                     {{
@@ -116,7 +144,7 @@
                   </div>
                 </div>
 
-                <div *ngIf="this.config.OCCTAX.form_fields.observation_status">
+                <div *ngIf="occtaxConfig.moduleConf.form_fields.observation_status">
                   <div class="label">{{ 'Occtax.Taxon.ObservationStatus' | translate }} :</div>
                   <div class="value">
                     {{
@@ -127,7 +155,7 @@
                   </div>
                 </div>
 
-                <div *ngIf="this.config.OCCTAX.form_fields.obs_tech">
+                <div *ngIf="occtaxConfig.moduleConf.form_fields.obs_tech">
                   <div class="label">{{ 'Occtax.Taxon.ObsTech' | translate }} :</div>
                   <div
                     class="value"
@@ -141,7 +169,7 @@
                   </div>
                 </div>
 
-                <div *ngIf="this.config.OCCTAX.form_fields.bio_condition">
+                <div *ngIf="occtaxConfig.moduleConf.form_fields.bio_condition">
                   <div class="label">{{ 'Occtax.Taxon.BiologicalCondition' | translate }} :</div>
                   <div
                     class="value"
@@ -155,7 +183,7 @@
                   </div>
                 </div>
 
-                <div *ngIf="this.config.OCCTAX.form_fields.behaviour">
+                <div *ngIf="occtaxConfig.moduleConf.form_fields.behaviour">
                   <div class="label">{{ 'Occtax.Taxon.OccBehaviour' | translate }} :</div>
                   <div class="value">
                     {{
@@ -165,7 +193,7 @@
                   </div>
                 </div>
 
-                <div *ngIf="this.config.OCCTAX.form_fields.naturalness">
+                <div *ngIf="occtaxConfig.moduleConf.form_fields.naturalness">
                   <div class="label">{{ 'Occtax.Taxon.Naturalness' | translate }} :</div>
                   <div class="value">
                     {{
@@ -176,7 +204,7 @@
                   </div>
                 </div>
 
-                <div *ngIf="this.config.OCCTAX.form_fields.bio_status">
+                <div *ngIf="occtaxConfig.moduleConf.form_fields.bio_status">
                   <div class="label">{{ 'Occtax.Taxon.BiologicalStatus' | translate }} :</div>
                   <div class="value">
                     {{
@@ -187,7 +215,7 @@
                   </div>
                 </div>
 
-                <div *ngIf="this.config.OCCTAX.form_fields.source_status">
+                <div *ngIf="occtaxConfig.moduleConf.form_fields.source_status">
                   <div class="label">{{ 'Occtax.Taxon.StatusSource' | translate }} :</div>
                   <div class="value">
                     {{
@@ -198,7 +226,7 @@
                   </div>
                 </div>
 
-                <div *ngIf="this.config.OCCTAX.form_fields.blurring">
+                <div *ngIf="occtaxConfig.moduleConf.form_fields.blurring">
                   <div class="label">{{ 'Occtax.Taxon.Blurring' | translate }} :</div>
                   <div class="value">
                     {{
@@ -208,7 +236,7 @@
                   </div>
                 </div>
 
-                <div *ngIf="this.config.OCCTAX.form_fields.exist_proof">
+                <div *ngIf="occtaxConfig.moduleConf.form_fields.exist_proof">
                   <div class="label">{{ 'Occtax.Taxon.ExistProof' | translate }} :</div>
                   <div class="value">
                     {{
@@ -226,14 +254,14 @@
                     ) === 1
                   "
                 >
-                  <div *ngIf="this.config.OCCTAX.form_fields.digital_proof">
+                  <div *ngIf="occtaxConfig.moduleConf.form_fields.digital_proof">
                     <div class="label">{{ 'Occtax.Taxon.DigitalProof' | translate }} :</div>
                     <div class="value">
                       {{ occurrence?.digital_proof || '-' }}
                     </div>
                   </div>
 
-                  <div *ngIf="this.config.OCCTAX.form_fields.non_digital_proof">
+                  <div *ngIf="occtaxConfig.moduleConf.form_fields.non_digital_proof">
                     <div class="label">{{ 'Occtax.Taxon.NonDigitalProof' | translate }} :</div>
                     <div class="value">
                       {{ occurrence?.non_digital_proof || '-' }}
@@ -241,7 +269,7 @@
                   </div>
                 </ng-container>
 
-                <div *ngIf="this.config.OCCTAX.form_fields.comment_occ">
+                <div *ngIf="occtaxConfig.moduleConf.form_fields.comment_occ">
                   <div class="label">{{ 'Comment' | translate }} :</div>
                   <div class="value">{{ occurrence?.comment || '-' }}</div>
                 </div>
@@ -374,7 +402,7 @@
                       {{ counting.unique_id_sinp_occtax }}
                     </div>
                   </div>
-                  <div *ngIf="this.config.OCCTAX.form_fields.life_stage">
+                  <div *ngIf="occtaxConfig.moduleConf.form_fields.life_stage">
                     <div class="label">{{ 'Occtax.Counting.LifeStage' | translate }} :</div>
                     <div class="value">
                       {{
@@ -383,7 +411,7 @@
                       }}
                     </div>
                   </div>
-                  <div *ngIf="this.config.OCCTAX.form_fields.sex">
+                  <div *ngIf="occtaxConfig.moduleConf.form_fields.sex">
                     <div class="label">{{ 'Sex' | translate }} :</div>
                     <div class="value">
                       {{
@@ -391,15 +419,15 @@
                       }}
                     </div>
                   </div>
-                  <div *ngIf="this.config.OCCTAX.form_fields.count_min">
+                  <div *ngIf="occtaxConfig.moduleConf.form_fields.count_min">
                     <div class="label">{{ 'Occtax.Counting.NumberMin' | translate }} :</div>
                     <div class="value">{{ counting.count_min || '-' }}</div>
                   </div>
-                  <div *ngIf="this.config.OCCTAX.form_fields.count_max">
+                  <div *ngIf="occtaxConfig.moduleConf.form_fields.count_max">
                     <div class="label">{{ 'Occtax.Counting.NumberMax' | translate }} :</div>
                     <div class="value">{{ counting.count_max || '-' }}</div>
                   </div>
-                  <div *ngIf="this.config.OCCTAX.form_fields.obj_count">
+                  <div *ngIf="occtaxConfig.moduleConf.form_fields.obj_count">
                     <div class="label">{{ 'Occtax.Counting.CountingObject' | translate }} :</div>
                     <div class="value">
                       {{
@@ -408,7 +436,7 @@
                       }}
                     </div>
                   </div>
-                  <div *ngIf="this.config.OCCTAX.form_fields.type_count">
+                  <div *ngIf="occtaxConfig.moduleConf.form_fields.type_count">
                     <div class="label">{{ 'Occtax.Counting.CountingType' | translate }} :</div>
                     <div class="value">
                       {{

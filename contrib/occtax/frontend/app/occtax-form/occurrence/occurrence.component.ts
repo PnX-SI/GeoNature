@@ -12,6 +12,7 @@ import { OcctaxTaxaListService } from '../taxa-list/taxa-list.service';
 import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/confirmation.dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfigService } from '@geonature/services/config.service';
+import { OcctaxConfigService } from '../../services/occtax-config.service';
 import { ViewChild } from '@angular/core';
 import { OcctaxFormCountingComponent } from '../counting/counting.component';
 import { AdvancedSectionState } from '@geonature_common/form/advanced-section/advanced-section.component';
@@ -43,7 +44,8 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     private _coreFormService: FormService,
     private _occtaxTaxaListService: OcctaxTaxaListService,
     public dialog: MatDialog,
-    public config: ConfigService
+    public config: ConfigService,
+    public occtaxConfig: OcctaxConfigService
   ) {}
 
   ngOnInit() {
@@ -63,7 +65,9 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
         )
         .subscribe((display: boolean) => (this.displayProofFromElements = display))
     );
-    this.advancedSectionState = this.config.OCCTAX.EXPANDED_TAXON_ADVANCED_DETAILS ? AdvancedSectionState.EXPANDED : AdvancedSectionState.COLLAPSED;
+    this.advancedSectionState = this.occtaxConfig.moduleConf.EXPANDED_TAXON_ADVANCED_DETAILS
+      ? AdvancedSectionState.EXPANDED
+      : AdvancedSectionState.COLLAPSED;
     this.initTaxrefSearch();
   }
 

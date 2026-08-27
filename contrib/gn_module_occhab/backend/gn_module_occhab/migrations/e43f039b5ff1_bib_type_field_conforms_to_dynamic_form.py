@@ -22,7 +22,7 @@ depends_on = ("a94bea44ab56",)
 def upgrade():
     session = Session(bind=op.get_bind())
     conn = op.get_bind()
-    meta = sa.MetaData(bind=conn)
+    meta = sa.MetaData()
     bib_fields = sa.Table("bib_fields", meta, autoload_with=conn, schema="gn_imports")
 
     id_destination = session.scalar(

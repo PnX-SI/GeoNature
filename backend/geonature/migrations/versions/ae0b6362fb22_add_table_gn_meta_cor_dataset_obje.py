@@ -108,12 +108,12 @@ def upgrade():
 
 def downgrade():
     # Detect if there is a dataset with strictly more than objectives
-    list_id_datasets_with_strictly_more_than_one_objective = op.get_bind().execute("""
+    list_id_datasets_with_strictly_more_than_one_objective = op.get_bind().execute(sa.text("""
         SELECT id_dataset
         FROM gn_meta.cor_dataset_objectif
         GROUP BY id_dataset
         HAVING COUNT(id_nomenclature_objectif) > 1;
-        """).scalars().all()
+        """)).scalars().all()
     if list_id_datasets_with_strictly_more_than_one_objective:
         formatted_list_id_datasets = ", \n            - ".join(
             [

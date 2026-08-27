@@ -4,7 +4,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 . "${SCRIPT_DIR}/utils"
 
 cd "${BASE_DIR}"
-source backend/venv/bin/activate
+source "${VENV_PATH}/bin/activate"
 
 export BACKEND_PREFIX=$(geonature get-config APPLICATION_ROOT)
 export MEDIA_FOLDER=$(geonature get-config MEDIA_FOLDER)
