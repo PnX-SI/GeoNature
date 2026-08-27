@@ -95,7 +95,7 @@ export class OcctaxFormOccurrenceService {
       switchMap((occurrence): Observable<any[]> => {
         //observable : get occurrence & countinf filed in same array, explode for separate into double array (occ array & couting array)
         const $_globalFieldsObservable = this.occtaxFormService
-          .getAdditionnalFields(['OCCTAX_OCCURENCE'])
+          .getAdditionnalFields(['OCCTAX_OCCURRENCE'])
           .pipe(catchError(() => of([])));
 
         return forkJoin(of(occurrence), $_globalFieldsObservable);
@@ -110,7 +110,7 @@ export class OcctaxFormOccurrenceService {
       filter((id_dataset) => id_dataset !== undefined && id_dataset !== null),
       switchMap((id_dataset): Observable<any[]> => {
         return this.occtaxFormService
-          .getAdditionnalFields(['OCCTAX_OCCURENCE'], id_dataset)
+          .getAdditionnalFields(['OCCTAX_OCCURRENCE'], id_dataset)
           .pipe(catchError(() => of([])));
       })
     );
@@ -123,7 +123,7 @@ export class OcctaxFormOccurrenceService {
           return [occurrence, additional_fields];
         }),
         tap(([occurrence, additional_fields]) => {
-          if(occurrence.additional_fields) {
+          if (occurrence.additional_fields) {
             //manage occ_additional_f
             additional_fields.forEach((field) => {
               //Formattage des dates
@@ -136,13 +136,12 @@ export class OcctaxFormOccurrenceService {
                     );
                 }
               }
-  
+
               //set value of field (eq patchValue)
               if (occurrence.additional_fields[field.attribut_name] !== undefined) {
                 field.value = occurrence.additional_fields[field.attribut_name];
               }
             });
-
           }
 
           return [occurrence, additional_fields];

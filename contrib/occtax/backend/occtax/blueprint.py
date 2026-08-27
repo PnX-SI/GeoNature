@@ -301,7 +301,7 @@ def insertOrUpdateOneReleve():
             occ.pop("id_occurrence_occtax")
         occtax = TOccurrencesOccurrence(**occ)
         occtax.additional_fields = _add_label_nomenclature_data_dict(
-            occtax.additional_fields, module_code="OCCTAX", object_code="OCCTAX_OCCURENCE"
+            occtax.additional_fields, module_code="OCCTAX", object_code="OCCTAX_OCCURRENCE"
         )
 
         for cnt in cor_counting_occtax:

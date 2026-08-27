@@ -210,7 +210,7 @@ def additional_field(app, datasets):
 @pytest.fixture(scope="function")
 def additional_field_nomenclature(app, datasets):
     """
-    Nomenclature-widget additional field on OCCTAX_OCCURENCE, restricted to
+    Nomenclature-widget additional field on OCCTAX_OCCURRENCE, restricted to
     datasets["own_dataset"] only, used to check that CSV export replaces the
     nomenclature id with its label.
     """
@@ -218,7 +218,7 @@ def additional_field_nomenclature(app, datasets):
         select(TModules).where(TModules.module_code == "OCCTAX")
     ).scalar_one()
     obj = db.session.execute(
-        select(PermObject).where(PermObject.code_object == "OCCTAX_OCCURENCE")
+        select(PermObject).where(PermObject.code_object == "OCCTAX_OCCURRENCE")
     ).scalar_one()
     nomenclature_widget = db.session.execute(
         select(BibWidgets).where(BibWidgets.widget_name == "nomenclature")
@@ -299,7 +299,7 @@ def additional_fields_occtax_nomenclature(app, datasets):
     fields = {}
     for key, code_object, field_name in [
         ("releve", "OCCTAX_RELEVE", "releve_nomenclature_field"),
-        ("occurrence", "OCCTAX_OCCURENCE", "occurrence_nomenclature_field"),
+        ("occurrence", "OCCTAX_OCCURRENCE", "occurrence_nomenclature_field"),
         ("counting", "OCCTAX_DENOMBREMENT", "counting_nomenclature_field"),
     ]:
         obj = db.session.execute(
@@ -385,7 +385,7 @@ class TestOcctaxReleve:
         g.current_module = occtax_module
         expected = {
             ReleveSchema: "OCCTAX_RELEVE",
-            OccurrenceSchema: "OCCTAX_OCCURENCE",
+            OccurrenceSchema: "OCCTAX_OCCURRENCE",
             CountingSchema: "OCCTAX_DENOMBREMENT",
         }
         for schema_cls, object_code in expected.items():

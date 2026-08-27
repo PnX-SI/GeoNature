@@ -99,7 +99,7 @@ class OccurrenceSchema(MA.SQLAlchemyAutoSchema):
         load_instance = True
         include_fk = True
 
-    additional_fields = AdditionalDataWithNomenclatureField(object_code="OCCTAX_OCCURENCE")
+    additional_fields = AdditionalDataWithNomenclatureField(object_code="OCCTAX_OCCURRENCE")
     cor_counting_occtax = MA.Nested(CountingSchema, many=True)
     taxref = MA.Nested(TaxrefSchema, dump_only=True)
 
