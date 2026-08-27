@@ -12,10 +12,14 @@ repos:
   - repo: local
     hooks:
       - id: prettier
-        name: Prettier format check
-        entry: bash -c ". ${NVM_DIR}/nvm.sh; cd frontend; nvm use; npm run format:check"
+        name: Prettier auto-format
+        entry: >-
+          bash -c '. ${NVM_DIR}/nvm.sh; nvm use --silent --prefix frontend;
+          npx --prefix frontend prettier --write "$@"' --
         language: system
+        files: ^frontend/.*\.(js|jsx|ts|tsx|css|scss|json|md)$
         pass_filenames: true
+
   - repo: https://github.com/commit-check/commit-check
     rev: v0.9.6
     hooks: # support hooks
