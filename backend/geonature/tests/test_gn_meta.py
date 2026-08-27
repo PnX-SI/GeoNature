@@ -18,7 +18,7 @@ from geonature.core.gn_meta.repositories import (
 from geonature.core.gn_meta.routes import get_af_from_id
 from geonature.core.gn_meta.schemas import AcquisitionFrameworkSchema, DatasetSchema
 from geonature.core.gn_synthese.models import Synthese
-from geonature.core.schemas import AdditionnalDataDuplicateField
+from geonature.core.schemas import AdditionalDataWithNomenclatureField
 from geonature.utils.env import db
 from pypnusershub.schemas import UserSchema
 from ref_geo.models import BibAreasTypes, LAreas
@@ -153,7 +153,7 @@ def test_dataset_schema_additional_data_field():
     scoped to METADATA / METADATA_JEU_DE_DONNEES, not a plain Dict field.
     """
     field = DatasetSchema()._declared_fields["additional_data"]
-    assert isinstance(field, AdditionnalDataDuplicateField)
+    assert isinstance(field, AdditionalDataWithNomenclatureField)
     assert field.module_code == "METADATA"
     assert field.object_code == "METADATA_JEU_DE_DONNEES"
 
@@ -165,7 +165,7 @@ def test_acquisition_framework_schema_additional_data_field():
     not a plain Dict field.
     """
     field = AcquisitionFrameworkSchema()._declared_fields["additional_data"]
-    assert isinstance(field, AdditionnalDataDuplicateField)
+    assert isinstance(field, AdditionalDataWithNomenclatureField)
     assert field.module_code == "METADATA"
     assert field.object_code == "METADATA_CADRE_ACQUISITION"
 

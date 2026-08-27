@@ -16,7 +16,7 @@ from geonature.core.gn_meta.schemas import DatasetSchema
 from geonature.core.gn_commons.schemas import MediaSchema
 from geonature.core.taxonomie.schemas import TaxrefSchema
 from geonature.core.gn_monitoring.schema import TIndividualsSchema
-from geonature.core.schemas import AdditionnalDataDuplicateField
+from geonature.core.schemas import AdditionalDataWithNomenclatureField
 from geonature.utils.config import config
 from pypnusershub.db.models import User
 from pypn_habref_api.schemas import HabrefSchema
@@ -77,7 +77,7 @@ class CountingSchema(MA.SQLAlchemyAutoSchema):
         model = CorCountingOccurrence
         load_instance = True
 
-    additional_fields = AdditionnalDataDuplicateField(object_code="OCCTAX_DENOMBREMENT")
+    additional_fields = AdditionalDataWithNomenclatureField(object_code="OCCTAX_DENOMBREMENT")
     medias = MA.Nested(MediaSchema, many=True)
     id_individual = MA.auto_field()
     individual = MA.Nested(TIndividualsSchema, dump_only=True)
@@ -99,7 +99,7 @@ class OccurrenceSchema(MA.SQLAlchemyAutoSchema):
         load_instance = True
         include_fk = True
 
-    additional_fields = AdditionnalDataDuplicateField(object_code="OCCTAX_OCCURENCE")
+    additional_fields = AdditionalDataWithNomenclatureField(object_code="OCCTAX_OCCURENCE")
     cor_counting_occtax = MA.Nested(CountingSchema, many=True)
     taxref = MA.Nested(TaxrefSchema, dump_only=True)
 
@@ -128,7 +128,7 @@ class ReleveSchema(MA.SQLAlchemyAutoSchema):
     digitiser = MA.Nested(ObserverSchema, dump_only=True)
     dataset = MA.Nested(DatasetSchema, dump_only=True)
     habitat = MA.Nested(HabrefSchema, dump_only=True)
-    additional_fields = AdditionnalDataDuplicateField(object_code="OCCTAX_RELEVE")
+    additional_fields = AdditionalDataWithNomenclatureField(object_code="OCCTAX_RELEVE")
 
     # __init__ is overridden because g.module_conf is only available during
     # a request context (i.e., at instantiation time), not at class definition time.

@@ -70,7 +70,7 @@ def as_dict_with_add_cols(
     additional_data = row_as_dict.get(additional_cols_key, {}) or {}
     for col_name in addition_cols_to_export:
         if col_name in nomenclature_fields:
-            row_as_dict[col_name] = additional_data.get("_label_" + col_name, "")
+            row_as_dict[col_name] = additional_data.get(f"_label_{col_name}", "")
         else:
             row_as_dict[col_name] = additional_data.get(col_name, "")
     return row_as_dict

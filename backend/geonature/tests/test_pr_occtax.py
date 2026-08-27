@@ -15,7 +15,7 @@ from sqlalchemy import func, select
 from click.testing import CliRunner
 
 from geonature.core.gn_synthese.models import Synthese
-from geonature.core.schemas import AdditionnalDataDuplicateField
+from geonature.core.schemas import AdditionalDataWithNomenclatureField
 from geonature.utils.env import db
 from geonature.utils.config import config
 from .utils import set_logged_user
@@ -390,7 +390,7 @@ class TestOcctaxReleve:
         }
         for schema_cls, object_code in expected.items():
             field = schema_cls()._declared_fields["additional_fields"]
-            assert isinstance(field, AdditionnalDataDuplicateField)
+            assert isinstance(field, AdditionalDataWithNomenclatureField)
             assert field.object_code == object_code
 
     def test_get_releve(self, users: dict, releve_occtax: Any):
