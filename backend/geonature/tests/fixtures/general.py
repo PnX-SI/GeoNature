@@ -493,7 +493,7 @@ def nomenclatures_classe_ebv():
 
 
 @pytest.fixture(scope="class")
-def datasets(users, acquisition_frameworks, module, nomenclature_category):
+def datasets(users, acquisition_frameworks, module, nomenclature_category, first_nomenclature):
     principal_actor_role = db.session.execute(
         select(TNomenclatures)
         .join(BibNomenclaturesTypes, TNomenclatures.id_type == BibNomenclaturesTypes.id_type)
