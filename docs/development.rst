@@ -214,13 +214,13 @@ Si vous avez téléchargé GeoNature zippé (via la procédure d'installation gl
 Installation du venv en dev
 ***************************
 
-Il est nécessaire d’installer les dépendances (sous-modules Git présent dans ``backend/dependencies``) en mode éditable afin de travailler avec la dernière version de celles-ci.
+Il est nécessaire d’installer les dépendances (sous-modules Git présent dans ``backend/dependencies``) en mode éditable afin de travailler avec la dernière version de celles-ci. Ceci est réalisé via le workspace ``uv`` déclaré dans le ``pyproject.toml`` racine (``[tool.uv.workspace]``/``[tool.uv.sources]``), qui fait pointer chaque sous-module vers son répertoire local sous ``backend/dependencies``.
 
 .. code-block:: console
 
   cd backend
   source venv/bin/activate
-  pip install -e .. -r requirements-dev.txt
+  uv sync --project .. --active --extra tests --extra lint
 
 
 Configuration des URLs de développement
@@ -272,31 +272,31 @@ L’API est alors accessible à l’adresse http://127.0.0.1:8000.
 Arborescence de fichiers
 ************************
 
-Présentation rapide de l'arborescence des fichiers depuis la racine du backend `$HOME/geonature/backend`
+Présentation rapide de l'arborescence des fichiers depuis la racine du backend ``$HOME/geonature/backend``
 
-```
-/dependencies -- sous-modules (Git) des dépendances de GeoNature (UsersHub, Taxhub, RefGeo, etc..)
-/geonature
-    /core -- code du coeur de GeoNature, regroupe les différents modèles dont les noms sont proches des schémas de la BDD
-        /admin --  *Back office* de GeoNature (utilise *Flask-admin*)
-        /command -- Commandes accessibles depuis ``geonature *``
-        /gn_* -- Différents modules principaux
-        /imports -- Module Import
-        /health -- Route permettant vérifier le status de l'instance GeoNature
-        /notifications -- Notifications
-        /sensitivity -- Gestion de la sensibilité des données
-        /taxonomie -- Intégration de Taxhub dans le *back office* 
-        /users -- Gestion des utilisateurs
-    /middleware -- Custom Flask middleware 
-    /migrations -- Ensemble des révisions alembic permettant la mise à jour de la BDD de GeoNature
-    /tasks -- Tâches asynchrones gérées par Celery
-    /templates -- Templates pour surcoucher l'interface d'administration de Flask-Admin
-    /tests -- Tests unitaires du backend
-    /utils -- Différentes fonctions utilitaires (chargement de la configuration, initialisation de la connexion avec la BDD, etc.)
-    app.py -- Création de l'``app`` flask de GeoNature
-    requirements-*.txt -- Liste des dépendances Python de GeoNature
-    Dockerfile -- fichier de création de l'image Docker du backend
-```
+.. code::
+
+    /dependencies -- sous-modules (Git) des dépendances de GeoNature (UsersHub, Taxhub, RefGeo, etc..)
+    /geonature
+        /core -- code du coeur de GeoNature, regroupe les différents modèles dont les noms sont proches des schémas de la BDD
+            /admin --  *Back office* de GeoNature (utilise *Flask-admin*)
+            /command -- Commandes accessibles depuis ``geonature *``
+            /gn_* -- Différents modules principaux
+            /imports -- Module Import
+            /health -- Route permettant vérifier le status de l'instance GeoNature
+            /notifications -- Notifications
+            /sensitivity -- Gestion de la sensibilité des données
+            /taxonomie -- Intégration de Taxhub dans le *back office* 
+            /users -- Gestion des utilisateurs
+        /middleware -- Custom Flask middleware 
+        /migrations -- Ensemble des révisions alembic permettant la mise à jour de la BDD de GeoNature
+        /tasks -- Tâches asynchrones gérées par Celery
+        /templates -- Templates pour surcoucher l'interface d'administration de Flask-Admin
+        /tests -- Tests unitaires du backend
+        /utils -- Différentes fonctions utilitaires (chargement de la configuration, initialisation de la connexion avec la BDD, etc.)
+        app.py -- Création de l'``app`` flask de GeoNature
+        requirements-*.txt -- Liste des dépendances Python de GeoNature
+        Dockerfile -- fichier de création de l'image Docker du backend
 
 Base de données avec Flask-SQLAlchemy
 *************************************
@@ -1703,11 +1703,12 @@ Release
 Pour sortir une nouvelle version de GeoNature :
 
 - Faites les éventuelles Releases des dépendances (UsersHub, TaxHub, UsersHub-authentification-module, Nomenclature-api-module, RefGeo, Utils-Flask-SQLAlchemy, Utils-Flask-SQLAlchemy-Geo)
-- Assurez-vous que les sous-modules git de GeoNature pointent sur les bonnes versions des dépendances et que le ``requirements-dependencies.in`` a bien été mis à jour.
-- Regénérer les fichiers ``requirements.txt`` et ``requirements-dev.txt`` avec les commandes suivantes dans la plus petite version de python supportée par GeoNature
+- Assurez-vous que les sous-modules git de GeoNature pointent sur les bonnes versions des dépendances et que le ``backend/requirements.in`` a bien été mis à jour.
+- Regénérer ``uv.lock`` (résolution du workspace de dev) et ``backend/requirements.txt`` (résolution PyPI de prod) avec la commande suivante, ou directement via ``make compile_requirements``, dans la plus petite version de python supportée par GeoNature
   ::
-    pip-compile requirements.in > requirements.txt
-    pip-compile requirements-dev.in > requirements-dev.txt
+    uv lock
+    uv export --no-hashes --extra tests --extra lint -o backend/requirements-dev.txt > backend/requirements-dev.txt
+    cd backend && uv pip compile requirements.in -o requirements.txt
 
 - Mettez à jour la version de GeoNature et éventuellement des dépendances dans ``install/install_all/install_all.ini``
 - Complétez le fichier ``docs/CHANGELOG.md`` (en comparant les branches https://github.com/PnX-SI/GeoNature/compare/develop) et dater la version à sortir

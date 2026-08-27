@@ -2,6 +2,7 @@
 functions to insert update or delete data in table gn_synthese.synthese
 """
 
+from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError, ProgrammingError
 from geonature.utils.env import DB
 from geonature.utils.errors import GeonatureApiError
@@ -19,7 +20,7 @@ def import_from_table(schema_name, table_name, field_name, value, limit=50):
             schema_name, table_name, field_name, value
         )
 
-        nb_data = DB.engine.execute(txt).first()[0]
+        nb_data = DB.session.execute(text(txt)).first()[0]
 
         # request : call of function gn_synthese.import_row_from_table
         i = 0
@@ -34,7 +35,8 @@ def import_from_table(schema_name, table_name, field_name, value, limit=50):
                     {});""".format(
                 field_name, value, schema_name, table_name, limit, i * limit  # offset
             )
-            DB.engine.execution_options(autocommit=True).execute(txt)
+            DB.session.execute(text(txt))
+            DB.session.commit()
 
             i = i + 1
 

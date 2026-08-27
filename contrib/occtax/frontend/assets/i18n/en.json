@@ -85,6 +85,12 @@
       "StatusSource": "Source status",
       "OccBehaviour": "Behavior"
     },
+    "TaxaList": {
+      "SortByRecord": "Order added",
+      "SortByName": "Alphabetical order",
+      "SortAsc": "Ascending order",
+      "SortDesc": "Descending order"
+    },
     "Counting": {
       "Counting": "Count",
       "Countings": "Counts",

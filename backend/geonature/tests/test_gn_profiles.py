@@ -7,6 +7,7 @@ from flask import url_for
 import sqlalchemy as sa
 from sqlalchemy.sql.expression import func
 from geoalchemy2.elements import WKTElement
+from datetime import datetime
 
 from geonature.utils.env import db
 from geonature.core.gn_meta.models import TDatasets
@@ -20,9 +21,6 @@ from geonature.core.gn_profiles.models import (
 )
 from geonature.core.gn_synthese.models import Synthese
 from apptax.taxonomie.models import Taxref
-
-
-from .fixtures import *
 
 ALT_MIN = 1000
 ALT_MAX = 1200
@@ -147,7 +145,7 @@ def wrong_sample_synthese_records_for_profile(
     return wrong_new_obs
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.usefixtures("client_class")
 @pytest.mark.skipif(
     sys.version_info < (3, 9), reason="Profiles tests randomly fail with Python 3.7"
 )

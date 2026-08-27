@@ -24,18 +24,6 @@ if [ ! -d "${olddir}/backend" ] || [ ! -d "${olddir}/frontend" ] || [ ! -f "${ol
     exit 1
 fi
 
-# before 2.15 : suppression de l'application TaxHub - Rapatriement des médias TaxHub nécessite de connaitre l'emplacement de TaxHub
-if [ ! -d "${newdir}/backend/media/taxhub" ];then
-    TAXHUB_DIR="${HOME}/taxhub"
-    if (($# > 1)); then
-        TAXHUB_DIR="$(realpath "$2")"
-    fi
-    if [ ! -d "${TAXHUB_DIR}/apptax" ];then
-        echo $2
-        echo "Le dossier ${TAXHUB_DIR} ne semble pas contenir une installation de TaxHub. Veuillez spécifier le chemin vers TaxHub et celui de GeoNature : ./install/migration/migration.sh [OLD_GeoNature_dir] [OLD_TaxHub_dir]"
-    fi
-fi
-
 
 echo "Nouveau dossier GeoNature : ${newdir} ($(cat "${newdir}/VERSION"))"
 echo "Ancien dossier GeoNature : ${olddir} ($(cat "${olddir}/VERSION"))"
@@ -299,7 +287,14 @@ fi
 # before 2.15 - Suppression de l'application Taxhub et rapatriement des médias TaxHub
 if [ ! -d "${newdir}/backend/media/taxhub" ];then
     mkdir -p "${newdir}/backend/media/taxhub"
-    if [ -d "${TAXHUB_DIR}"/static/medias ]; then
+    TAXHUB_DIR="${HOME}/taxhub"
+    if (($# > 1)); then
+        TAXHUB_DIR="$(realpath "$2")"
+    fi
+    if [ ! -d "${TAXHUB_DIR}/apptax" ];then
+        echo $2
+        echo "Le dossier ${TAXHUB_DIR} ne semble pas contenir une installation de TaxHub. Veuillez spécifier le chemin vers TaxHub et celui de GeoNature : ./install/migration/migration.sh [OLD_GeoNature_dir] [OLD_TaxHub_dir]"
+    elif [ -d "${TAXHUB_DIR}"/static/medias ]; then
         cp -r "${TAXHUB_DIR}"/static/medias/* "${newdir}"/backend/media/taxhub/
     fi
 fi

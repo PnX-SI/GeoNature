@@ -125,20 +125,6 @@ class AlembicConfig(Schema):
     VERSION_LOCATIONS = fields.String()
 
 
-class AdditionalFields(Schema):
-    IMPLEMENTED_MODULES = fields.List(fields.String(), load_default=["OCCTAX", "METADATA"])
-    IMPLEMENTED_OBJECTS = fields.List(
-        fields.String(),
-        load_default=[
-            "OCCTAX_RELEVE",
-            "OCCTAX_OCCURENCE",
-            "OCCTAX_DENOMBREMENT",
-            "METADATA_CADRE_ACQUISITION",
-            "METADATA_JEU_DE_DONNEES",
-        ],
-    )
-
-
 class HomeConfig(Schema):
     TITLE = fields.String(load_default="Bienvenue dans GeoNature")
     INTRODUCTION = fields.String(
@@ -509,6 +495,7 @@ BASEMAP = [
     {
         "name": "OpenStreetMap",
         "url": "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+        "maxNativeZoom": 16,
         "options": {
             "attribution": "<a href='https://www.openstreetmap.org/copyright' target='_blank'>© OpenStreetMap contributors</a>",
         },
@@ -519,6 +506,7 @@ BASEMAP = [
         "options": {
             "attribution": "Map data: © <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap contributors</a>, SRTM | Map style: © <a href='https://opentopomap.org' target='_blank'>OpenTopoMap</a> (<a href='https://creativecommons.org/licenses/by-sa/3.0/' target='_blank'>CC-BY-SA</a>)",
         },
+        "maxNativeZoom": 17,
     },
     {
         "name": "GoogleSatellite",
@@ -527,6 +515,7 @@ BASEMAP = [
             "subdomains": ["mt0", "mt1", "mt2", "mt3"],
             "attribution": "© Google Maps",
         },
+        "maxNativeZoom": 15,
     },
 ]
 
@@ -537,9 +526,6 @@ class MapConfig(Schema):
     ZOOM_LEVEL = fields.Integer(load_default=6)
     ZOOM_LEVEL_RELEVE = fields.Integer(load_default=15)
     GEOLOCATION = fields.Boolean(load_default=False)
-    # zoom appliqué sur la carte lorsque l'on clique sur une liste
-    # ne s'applique qu'aux points
-    ZOOM_ON_CLICK = fields.Integer(load_default=18)
     # Restreindre la recherche OpenStreetMap (sur la carte dans l'encart "Rechercher un lieu")
     # à certains pays. Les pays doivent être au format ISO_3166-1 :
     # https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2 et séparés par une virgule.
@@ -616,7 +602,6 @@ class GnGeneralSchemaConf(Schema):
     MEDIA_URL = fields.String(load_default="/media")
     METADATA = fields.Nested(MetadataConfig, load_default=MetadataConfig().load({}))
     NB_MAX_DATA_SENSITIVITY_REPORT = fields.Integer(load_default=1000000)
-    ADDITIONAL_FIELDS = fields.Nested(AdditionalFields, load_default=AdditionalFields().load({}))
     PUBLIC_ACCESS_USERNAME = fields.String(load_default="")
     TAXHUB = fields.Nested(TaxhubAppConf, load_default=TaxhubAppConf().load({"API_PREFIX": "/api"}))
 

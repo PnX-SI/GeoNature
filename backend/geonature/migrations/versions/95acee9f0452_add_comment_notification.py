@@ -31,7 +31,7 @@ DB_CONTENT = (
 
 def upgrade():
     conn = op.get_bind()
-    metadata = sa.MetaData(bind=conn)
+    metadata = sa.MetaData()
 
     # Add category
     notification_category = sa.Table(
@@ -74,7 +74,7 @@ def upgrade():
 
 def downgrade():
     conn = op.get_bind()
-    metadata = sa.MetaData(bind=conn)
+    metadata = sa.MetaData()
     notification_category = sa.Table(
         "bib_notifications_categories", metadata, schema="gn_notifications", autoload_with=conn
     )

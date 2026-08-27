@@ -18,7 +18,7 @@ import { OcctaxDataService } from '../../services/occtax-data.service';
 import { OcctaxFormParamService } from '../form-param/form-param.service';
 import { OcctaxTaxaListService } from '../taxa-list/taxa-list.service';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { ConfigService } from '@geonature/services/config.service';
+import { OcctaxConfigService } from '../../services/occtax-config.service';
 
 @Injectable()
 export class OcctaxFormOccurrenceService {
@@ -47,7 +47,7 @@ export class OcctaxFormOccurrenceService {
     private occtaxParamS: OcctaxFormParamService,
     private occtaxTaxaListService: OcctaxTaxaListService,
     private dateParser: NgbDateParserFormatter,
-    public config: ConfigService
+    public occtaxConfig: OcctaxConfigService
   ) {
     this.initForm();
     this.setObservables();
@@ -123,24 +123,27 @@ export class OcctaxFormOccurrenceService {
           return [occurrence, additional_fields];
         }),
         tap(([occurrence, additional_fields]) => {
-          //manage occ_additional_f
-          additional_fields.forEach((field) => {
-            //Formattage des dates
-            if (field.type_widget == 'date') {
-              //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
-              if (typeof occurrence.additional_fields[field.attribut_name] !== 'object') {
-                occurrence.additional_fields[field.attribut_name] =
-                  this.occtaxFormService.formatDate(
-                    occurrence.additional_fields[field.attribut_name]
-                  );
+          if(occurrence.additional_fields) {
+            //manage occ_additional_f
+            additional_fields.forEach((field) => {
+              //Formattage des dates
+              if (field.type_widget == 'date') {
+                //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
+                if (typeof occurrence.additional_fields[field.attribut_name] !== 'object') {
+                  occurrence.additional_fields[field.attribut_name] =
+                    this.occtaxFormService.formatDate(
+                      occurrence.additional_fields[field.attribut_name]
+                    );
+                }
               }
-            }
+  
+              //set value of field (eq patchValue)
+              if (occurrence.additional_fields[field.attribut_name] !== undefined) {
+                field.value = occurrence.additional_fields[field.attribut_name];
+              }
+            });
 
-            //set value of field (eq patchValue)
-            if (occurrence.additional_fields[field.attribut_name] !== undefined) {
-              field.value = occurrence.additional_fields[field.attribut_name];
-            }
-          });
+          }
 
           return [occurrence, additional_fields];
         }),
@@ -166,7 +169,7 @@ export class OcctaxFormOccurrenceService {
           this.form
             .get('digital_proof')
             .setValidators(
-              this.config.OCCTAX.digital_proof_validator
+              this.occtaxConfig.moduleConf.digital_proof_validator
                 ? Validators.pattern('^(http://|https://|ftp://){1}.+$')
                 : []
             );

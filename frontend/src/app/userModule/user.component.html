@@ -91,6 +91,14 @@
               placeholder="Login"
               formControlName="identifiant"
             />
+            <div
+              class="invalid-feedback error"
+              *ngIf="
+                form.get('identifiant').errors?.['loginExists'] && form.get('identifiant').dirty
+              "
+            >
+              {{ 'Authentication.Errors.LoginExists' | translate }}
+            </div>
           </div>
         </div>
       </div>
@@ -156,6 +164,7 @@
             class="button-success ml-1"
             matTooltip="Enrigistrer modifications"
             (click)="save()"
+            [disabled]="form.invalid"
           >
             Enregistrer
             <mat-icon>save</mat-icon>

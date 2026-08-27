@@ -29,6 +29,9 @@ import { HomeValidationsComponent } from './components/home-content/home-validat
 import { SidenavItemsComponent } from './components/sidenav-items/sidenav-items.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { NavHomeComponent } from './components/nav-home/nav-home.component';
+import { GnToolbarUserComponent } from './components/nav-home/toolbar-components/gn-toolbar-user.component';
+import { GnToolbarLanguageComponent } from './components/nav-home/toolbar-components/gn-toolbar-language.component';
+import { GnToolbarActionsComponent } from './components/nav-home/toolbar-components/gn-toolbar-actions.component';
 import { LoginModule } from './modules/login/login.module';
 import { NotificationComponent } from './components/notification/notification.component';
 import { RulesComponent } from './components/notification/rules/rules.component';
@@ -118,6 +121,9 @@ registerLocaleData(localeEn);
     LoginModule,
     HomeDiscussionsComponent,
     HomeValidationsComponent,
+    GnToolbarUserComponent,
+    GnToolbarLanguageComponent,
+    GnToolbarActionsComponent,
   ],
   declarations: [
     AppComponent,

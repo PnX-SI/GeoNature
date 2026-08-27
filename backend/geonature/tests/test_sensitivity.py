@@ -14,7 +14,6 @@ from geonature.core.sensitivity.models import (
     CorSensitivityCriteria,
 )
 from geonature.core.gn_synthese.models import Synthese
-from geonature.tests.fixtures import source
 
 from ref_geo.models import LAreas, BibAreasTypes
 from apptax.taxonomie.models import Taxref
@@ -62,7 +61,7 @@ def client_click():
     return CliRunner()
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction", "clean_all_sensitivity_rules")
+@pytest.mark.usefixtures("client_class", "clean_all_sensitivity_rules")
 class TestSensitivity:
 
     def test_get_id_nomenclature_sensitivity(self, app):

@@ -9,13 +9,33 @@
   height: 90%;
   overflow-y: auto;
   background-color: #95949833;
-  box-shadow:
-    2px 3px 4px 0px rgba(0, 0, 0, 0.2),
-    -2px 3px 4px 0px rgba(0, 0, 0, 0.2);
+  border: 1px solid #cfcfcf;
+  border-radius: 5px;
 }
 
 #zero-taxon-container {
   padding: 10px;
+}
+
+.sort-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 8px;
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+}
+
+::ng-deep .sort-type-group .mat-button-toggle-label-content {
+  line-height: 26px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+::ng-deep .sort-type-group .mat-button-toggle-checked {
+  background-color: #5343da;
+  color: #fff;
 }
 
 .mat-expansion-panel-body {

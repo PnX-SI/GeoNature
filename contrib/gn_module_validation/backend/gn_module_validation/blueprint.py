@@ -1,15 +1,15 @@
 import logging
 
-from apptax.taxonomie.models import TaxrefTree
 from flask import Blueprint, request, jsonify, g
 from werkzeug.exceptions import BadRequest, Forbidden
 import sqlalchemy as sa
 from marshmallow import ValidationError
 
+
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 from utils_flask_sqla_geo.utilsgeometry import rows_to_geojson
-
-from geonature.utils.env import DB, db
+from geonature.utils.env import db
+from apptax.taxonomie.models import TaxrefTree
 from geonature.core.gn_synthese.models import Synthese
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from geonature.core.gn_permissions.decorators import permissions_required
@@ -183,7 +183,7 @@ def get_validations(permissions):
     paginated_query = filtered_query.limit(per_page).offset(offset)
 
     # Get total count
-    count = db.session.scalar(filtered_query.with_only_columns([sa.func.count()]).order_by(None))
+    count = db.session.scalar(filtered_query.with_only_columns(sa.func.count()).order_by(None))
 
     # Format output
     format_type = params.get("format", "json")
@@ -411,17 +411,17 @@ def create_validation(
     try:
         validation_schema = TValidationSchema()
         validation = validation_schema.load(
-            validation_data, instance=TValidations(), session=DB.session
+            validation_data, instance=TValidations(), session=db.session
         )
     except ValidationError as error:
         raise BadRequest(error.messages)
 
-    DB.session.add(validation)
+    db.session.add(validation)
 
     # Send notification
     notify_validation_state_change(synthese, validation, validation_status)
 
-    DB.session.commit()
+    db.session.commit()
 
 
 @blueprint.route("/date/<uuid:uuid>", methods=["GET"])

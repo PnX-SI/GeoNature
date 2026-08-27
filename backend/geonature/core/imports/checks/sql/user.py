@@ -1,12 +1,9 @@
-import sqlalchemy as sa
-from flask import jsonify
-from geonature.core.imports.checks.errors import ImportCodeError
-from geonature.core.imports.checks.sql.utils import report_erroneous_rows
+from sqlalchemy import Integer, and_, cast, desc, func, literal_column, select, update
+from sqlalchemy.dialects.postgresql import JSONB, ARRAY
 from geonature.core.imports.models import BibFields, Entity, TImports
 from geonature.utils.env import db
 from marshmallow import Schema, fields
 from pypnusershub.db.models import User
-from sqlalchemy.dialects.postgresql import JSONB, ARRAY
 from geonature.utils.config import config
 
 
@@ -42,42 +39,40 @@ def user_matching(imprt: TImports, field: BibFields):
     transient_table = imprt.destination.get_transient_table()
     column_transient = transient_table.c[field.source_column]
     if isinstance(column_transient.type, JSONB):
-        column_transient = sa.cast(column_transient, db.Unicode)
+        column_transient = cast(column_transient, db.Unicode)
     separators = config["IMPORT"]["OBSERVER_FIELD_SEPARATORS"]
     field_separators_as_regexp = rf"[{''.join(separators)}]+"
 
     cte_user_to_match = (
-        sa.select(
-            sa.func.distinct(
-                sa.func.trim(
-                    sa.func.regexp_split_to_table(column_transient, field_separators_as_regexp)
-                )
+        select(
+            func.distinct(
+                func.trim(func.regexp_split_to_table(column_transient, field_separators_as_regexp))
             ).label("user_to_match")
         )
-        .where(sa.and_(column_transient != None, sa.func.trim(column_transient) != ""))
+        .where(and_(column_transient != None, func.trim(column_transient) != ""))
         .where(transient_table.c.id_import == imprt.id_import)
         .cte("cte_user_to_match")
     )
 
-    cte_user_nom_complet = sa.select(
+    cte_user_nom_complet = select(
         User.id_role,
         User.identifiant,
         User.nom_complet,
     ).cte("cte_user_nom_complet")
 
-    matches = sa.select(
+    matches = select(
         cte_user_to_match.c.user_to_match,
         cte_user_nom_complet.c.id_role,
         cte_user_nom_complet.c.identifiant,
         cte_user_nom_complet.c.nom_complet,
-        sa.func.similarity(
+        func.similarity(
             cte_user_to_match.c.user_to_match, cte_user_nom_complet.c.nom_complet
         ).label("similarity"),
-        sa.func.row_number()
+        func.row_number()
         .over(
             partition_by=cte_user_to_match.c.user_to_match,
-            order_by=sa.desc(
-                sa.func.similarity(
+            order_by=desc(
+                func.similarity(
                     cte_user_to_match.c.user_to_match, cte_user_nom_complet.c.nom_complet
                 )
             ),
@@ -85,7 +80,7 @@ def user_matching(imprt: TImports, field: BibFields):
         .label("rang"),
     ).cte()
 
-    query = sa.select(matches).where(matches.c.rang == 1, matches.c.similarity > 0.7)
+    query = select(matches).where(matches.c.rang == 1, matches.c.similarity > 0.7)
 
     result = UserMatchingSchema(
         many=True,
@@ -95,12 +90,12 @@ def user_matching(imprt: TImports, field: BibFields):
     sim_match = {res["user_to_match"]: res for res in result}
 
     non_match = db.session.execute(
-        sa.select(cte_user_to_match.c.user_to_match)
+        select(cte_user_to_match.c.user_to_match)
         .where(cte_user_to_match.c.user_to_match.notin_(sim_match.keys()))
         .where(cte_user_to_match.c.user_to_match != None)
     ).all()
 
-    sim_match.update({res["user_to_match"]: {} for res in non_match})
+    sim_match.update({res.user_to_match: {} for res in non_match})
 
     return sim_match
 
@@ -112,17 +107,15 @@ def map_observer_matching(imprt: TImports, entity: Entity, observer_field: BibFi
     transient_table = imprt.destination.get_transient_table()
 
     observers_jsonb = (
-        sa.func.jsonb_each(TImports.observermapping.cast(JSONB))
+        func.jsonb_each(TImports.observermapping.cast(JSONB))
         .table_valued("key", "value")
         .alias("observer_jsonb")
     )
 
     observer_string_id_role = (
-        sa.select(
-            sa.literal_column("observer_jsonb.key").label("observer_string"),
-            sa.cast(sa.literal_column("(observer_jsonb.value->>'id_role')"), sa.Integer).label(
-                "id_role"
-            ),
+        select(
+            literal_column("observer_jsonb.key").label("observer_string"),
+            cast(literal_column("(observer_jsonb.value->>'id_role')"), Integer).label("id_role"),
         )
         .select_from(
             TImports,
@@ -133,7 +126,7 @@ def map_observer_matching(imprt: TImports, entity: Entity, observer_field: BibFi
     )
 
     query = (
-        sa.update(transient_table)
+        update(transient_table)
         .where(
             transient_table.c.id_import == imprt.id_import,
             transient_table.c[observer_field.dest_column] == None,

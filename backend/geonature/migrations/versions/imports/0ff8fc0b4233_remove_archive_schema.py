@@ -25,8 +25,8 @@ def upgrade():
     conn = op.get_bind()
     inspector = sa.inspect(conn.engine)
     archive_tables = inspector.get_table_names(schema="gn_import_archives")
-    metadata = MetaData(bind=op.get_bind())
-    imprt = Table("t_imports", metadata, autoload=True, schema="gn_imports")
+    metadata = MetaData()
+    imprt = Table("t_imports", metadata, autoload_with=conn, schema="gn_imports")
 
     for archive_table in list(filter(lambda x: x != "cor_import_archives", archive_tables)):
         # Read table with pandas

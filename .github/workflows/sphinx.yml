@@ -5,26 +5,18 @@ on:
     branches:
       - master
       - develop
+  pull_request:
+    branches:
+      - develop
+    paths:
+      - docs/**
+      - .github/workflows/sphinx.yml
 
 jobs:
   docs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    services:
-      postgres:
-        image: postgis/postgis:13-3.2
-        env:
-          POSTGRES_DB: geonature2db
-          POSTGRES_PASSWORD: geonatpasswd
-          POSTGRES_USER: geonatadmin
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     steps:
       - uses: actions/setup-python@v4
         with:
@@ -43,10 +35,9 @@ jobs:
         id: deployment
         with:
           requirements_path: docs/requirements.txt
+          pyproject_extras: ""
           python_version: 3.11
           publish: false
-        env:
-          GEONATURE_CONFIG_FILE: config/test_config.toml
 
       - name: Push changes
         if: github.ref == 'refs/heads/master'

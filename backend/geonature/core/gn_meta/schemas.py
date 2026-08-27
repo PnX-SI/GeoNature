@@ -15,7 +15,7 @@ from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_commons.schemas import ModuleSchema
 
 # Note: import of SourceSchema is importent as it trigger import of synthese models
-# which define TDatasets.sources & TDatasets.synthese_records_count, and these must be
+# which define TDatasets.sources and TDatasets.nb_observations_synthese, and these must be
 # defined before AutoSchema creation to be known by marshmallow!
 from geonature.core.gn_synthese.schemas import SourceSchema
 from geonature.core.gn_permissions.tools import get_scopes_by_action
@@ -34,6 +34,10 @@ class DatasetActorSchema(SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
     role = MA.Nested(UserSchema, dump_only=True)
     nomenclature_actor_role = MA.Nested(NomenclatureSchema, dump_only=True)
     organism = MA.Nested(OrganismeSchema, dump_only=True)
+    # id_nomenclature_actor_role is NOT NULL but auto-filled server-side (ROLE_ACTEUR default)
+    id_nomenclature_actor_role = MA.auto_field(required=False)
+    # id_dataset is NOT NULL but set by the parent TDatasets.cor_dataset_actor relationship
+    id_dataset = MA.auto_field(required=False)
 
     @pre_load
     def make_dataset_actor(self, data, **kwargs):
@@ -50,8 +54,18 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
 
     __module_code__ = "METADATA"
 
+    id_dataset = MA.auto_field(required=False, allow_none=True)
     meta_create_date = fields.DateTime(dump_only=True)
     meta_update_date = fields.DateTime(dump_only=True)
+    # NOT NULL columns populated server-side (Python default= / DB default) that clients
+    # legitimately omit or send as null on creation — see TDatasets model for the defaults.
+    unique_dataset_id = MA.auto_field(required=False, allow_none=True)
+    id_nomenclature_data_type = MA.auto_field(required=False)
+    id_nomenclature_collecting_method = MA.auto_field(required=False)
+    id_nomenclature_data_origin = MA.auto_field(required=False, allow_none=True)
+    id_nomenclature_source_status = MA.auto_field(required=False)
+    id_nomenclature_resource_type = MA.auto_field(required=False)
+    active = MA.auto_field(required=False)
     cor_dataset_actor = MA.Nested(DatasetActorSchema, many=True, unknown=EXCLUDE)
     modules = MA.Nested(
         ModuleSchema, many=True, exclude=("meta_create_date", "meta_update_date"), unknown=EXCLUDE
@@ -156,6 +170,11 @@ class AcquisitionFrameworkActorSchema(SmartRelationshipsMixin, MA.SQLAlchemyAuto
     nomenclature_actor_role = MA.Nested(NomenclatureSchema, dump_only=True)
     organism = MA.Nested(OrganismeSchema, dump_only=True)
     cor_volets_sinp = MA.Nested(OrganismeSchema, dump_only=True)
+    # id_nomenclature_actor_role is NOT NULL but auto-filled server-side (ROLE_ACTEUR default)
+    id_nomenclature_actor_role = MA.auto_field(required=False)
+    # id_acquisition_framework is NOT NULL but set by the parent
+    # TAcquisitionFramework.cor_af_actor relationship
+    id_acquisition_framework = MA.auto_field(required=False)
 
     @pre_load
     def make_af_actor(self, data, **kwargs):
@@ -176,6 +195,10 @@ class AcquisitionFrameworkSchema(
 
     meta_create_date = fields.DateTime(dump_only=True)
     meta_update_date = fields.DateTime(dump_only=True)
+    # NOT NULL columns populated server-side (Python default=) that clients legitimately
+    # omit — see TAcquisitionFramework model for the defaults.
+    unique_acquisition_framework_id = MA.auto_field(required=False, allow_none=True)
+    acquisition_framework_start_date = MA.auto_field(required=False)
     t_datasets = MA.Nested(DatasetSchema, many=True)
     datasets = MA.Nested(DatasetSchema, many=True)
     bibliographical_references = MA.Nested(BibliographicReferenceSchema, many=True)

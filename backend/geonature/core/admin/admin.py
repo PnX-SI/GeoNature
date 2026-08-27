@@ -1,10 +1,7 @@
-import os
-
 from flask import g
 from werkzeug.exceptions import Unauthorized
-from flask_admin import Admin, AdminIndexView, expose
+from flask_admin import Admin, AdminIndexView
 from flask_admin.menu import MenuLink
-from flask_admin.contrib.sqla import ModelView
 from flask_admin.theme import Bootstrap4Theme
 
 from geonature.utils.env import db
@@ -83,7 +80,7 @@ admin.add_link(
 admin.add_view(
     ProtectedBibNomenclaturesTypesAdmin(
         BibNomenclaturesTypes,
-        db.session,
+        db,
         name="Type de nomenclatures",
         category="Nomenclatures",
     )
@@ -92,7 +89,7 @@ admin.add_view(
 admin.add_view(
     ProtectedTNomenclaturesAdmin(
         TNomenclatures,
-        db.session,
+        db,
         name="Items de nomenclatures",
         category="Nomenclatures",
     )
@@ -103,7 +100,7 @@ admin.add_view(
 admin.add_view(
     NotificationTemplateAdmin(
         NotificationTemplate,
-        db.session,
+        db,
         name="Templates des notifications",
         category="Notifications",
     )
@@ -112,7 +109,7 @@ admin.add_view(
 admin.add_view(
     NotificationCategoryAdmin(
         NotificationCategory,
-        db.session,
+        db,
         name="Catégories des notifications",
         category="Notifications",
     )
@@ -121,7 +118,7 @@ admin.add_view(
 admin.add_view(
     NotificationMethodAdmin(
         NotificationMethod,
-        db.session,
+        db,
         name="Méthodes de notification",
         category="Notifications",
     )
@@ -130,7 +127,7 @@ admin.add_view(
 admin.add_view(
     BibFieldAdmin(
         TAdditionalFields,
-        db.session,
+        db,
         name="Champs additionnels",
         category="Autres",
     )
@@ -139,7 +136,7 @@ admin.add_view(
 admin.add_view(
     TMobileAppsAdmin(
         TMobileApps,
-        db.session,
+        db,
         name="Applications mobiles",
         category="Autres",
     )
@@ -148,7 +145,7 @@ admin.add_view(
 admin.add_view(
     TModulesAdmin(
         TModules,
-        db.session,
+        db,
         name="Modules",
         category="Autres",
     )

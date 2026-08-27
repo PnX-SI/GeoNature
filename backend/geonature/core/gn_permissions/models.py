@@ -2,22 +2,34 @@
 Models of gn_permissions schema
 """
 
-from flask import current_app
-
-from packaging import version
+from typing import Optional
 from datetime import datetime
 
-from ref_geo.models import LAreas
-import sqlalchemy as sa
-from sqlalchemy import ForeignKey, ForeignKeyConstraint
+from flask import current_app
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    ForeignKeyConstraint,
+    Integer,
+    Table,
+    Unicode,
+    and_,
+    case,
+    false,
+    func,
+    null,
+    or_,
+    true,
+)
 from sqlalchemy.sql import select
-from sqlalchemy.orm import foreign, joinedload, contains_eager
-import flask_sqlalchemy
+from sqlalchemy.orm import contains_eager, Mapped, mapped_column
 from utils_flask_sqla.models import qfilter
-
 from utils_flask_sqla.serializers import serializable
 from pypnusershub.db.models import User
 from apptax.taxonomie.models import Taxref
+from ref_geo.models import LAreas
 
 from geonature.utils.env import db
 from geonature.core.gn_commons.models.base import TModules
@@ -27,19 +39,19 @@ from geonature.core.gn_commons.models.base import TModules
 class PermFilterType(db.Model):
     __tablename__ = "bib_filters_type"
     __table_args__ = {"schema": "gn_permissions"}
-    id_filter_type = db.Column(db.Integer, primary_key=True)
-    code_filter_type = db.Column(db.Unicode)
-    label_filter_type = db.Column(db.Unicode)
-    description_filter_type = db.Column(db.Unicode)
+    id_filter_type: Mapped[int] = mapped_column(Integer, primary_key=True)
+    code_filter_type: Mapped[Optional[str]] = mapped_column(Unicode)
+    label_filter_type: Mapped[Optional[str]] = mapped_column(Unicode)
+    description_filter_type: Mapped[Optional[str]] = mapped_column(Unicode)
 
 
 @serializable
 class PermScope(db.Model):
     __tablename__ = "bib_filters_scope"
     __table_args__ = {"schema": "gn_permissions"}
-    value = db.Column(db.Integer, primary_key=True)
-    label = db.Column(db.Unicode)
-    description = db.Column(db.Unicode)
+    value: Mapped[int] = mapped_column(Integer, primary_key=True)
+    label: Mapped[Optional[str]] = mapped_column(Unicode)
+    description: Mapped[Optional[str]] = mapped_column(Unicode)
 
     def __str__(self):
         return self.description
@@ -49,29 +61,30 @@ class PermScope(db.Model):
 class PermAction(db.Model):
     __tablename__ = "bib_actions"
     __table_args__ = {"schema": "gn_permissions"}
-    id_action = db.Column(db.Integer, primary_key=True)
-    code_action = db.Column(db.Unicode)
-    description_action = db.Column(db.Unicode)
+    id_action: Mapped[int] = mapped_column(Integer, primary_key=True)
+    code_action: Mapped[Optional[str]] = mapped_column(Unicode)
+    description_action: Mapped[Optional[str]] = mapped_column(Unicode)
 
     def __str__(self):
         return self.description_action
 
 
-cor_object_module = db.Table(
+cor_object_module = Table(
     "cor_object_module",
-    db.Column(
+    db.metadata,
+    Column(
         "id_cor_object_module",
-        db.Integer,
+        Integer,
         primary_key=True,
     ),
-    db.Column(
+    Column(
         "id_object",
-        db.Integer,
+        Integer,
         ForeignKey("gn_permissions.t_objects.id_object"),
     ),
-    db.Column(
+    Column(
         "id_module",
-        db.Integer,
+        Integer,
         ForeignKey("gn_commons.t_modules.id_module"),
     ),
     schema="gn_permissions",
@@ -82,9 +95,10 @@ cor_object_module = db.Table(
 class PermObject(db.Model):
     __tablename__ = "t_objects"
     __table_args__ = {"schema": "gn_permissions"}
-    id_object = db.Column(db.Integer, primary_key=True)
-    code_object = db.Column(db.Unicode)
-    description_object = db.Column(db.Unicode)
+    id_object: Mapped[int] = mapped_column(Integer, primary_key=True)
+    code_object: Mapped[Optional[str]] = mapped_column(Unicode)
+    description_object: Mapped[Optional[str]] = mapped_column(Unicode)
+    support_additional_fields: Mapped[bool]
 
     def __str__(self):
         return f"{self.code_object} ({self.description_object})"
@@ -109,7 +123,7 @@ def _nice_order(model, qs):
         .order_by(
             TModules.module_code,
             # ensure ALL at first:
-            sa.case([(PermObject.code_object == "ALL", "1")], else_=PermObject.code_object),
+            case(*[(PermObject.code_object == "ALL", "1")], else_=PermObject.code_object),
             model.id_action,
         )
     )
@@ -119,26 +133,28 @@ class PermissionAvailable(db.Model):
     __tablename__ = "t_permissions_available"
     __table_args__ = {"schema": "gn_permissions"}
 
-    id_module = db.Column(
-        db.Integer, ForeignKey("gn_commons.t_modules.id_module"), primary_key=True
+    id_module: Mapped[int] = mapped_column(
+        Integer, ForeignKey("gn_commons.t_modules.id_module"), primary_key=True
     )
-    id_object = db.Column(
-        db.Integer,
+    id_object: Mapped[int] = mapped_column(
+        Integer,
         ForeignKey(PermObject.id_object),
         default=select(PermObject.id_object).where(PermObject.code_object == "ALL"),
         primary_key=True,
     )
-    id_action = db.Column(db.Integer, ForeignKey(PermAction.id_action), primary_key=True)
-    label = db.Column(db.Unicode)
+    id_action: Mapped[int] = mapped_column(
+        Integer, ForeignKey(PermAction.id_action), primary_key=True
+    )
+    label: Mapped[Optional[str]] = mapped_column(Unicode)
 
     module = db.relationship("TModules")
     object = db.relationship(PermObject)
     action = db.relationship(PermAction)
 
-    scope_filter = db.Column(db.Boolean, server_default=sa.false())
-    sensitivity_filter = db.Column(db.Boolean, server_default=sa.false(), nullable=False)
-    areas_filter = db.Column(db.Boolean, server_default=sa.false(), nullable=False)
-    taxons_filter = db.Column(db.Boolean, server_default=sa.false(), nullable=False)
+    scope_filter: Mapped[Optional[bool]] = mapped_column(Boolean, server_default=false())
+    sensitivity_filter: Mapped[bool] = mapped_column(Boolean, server_default=false())
+    areas_filter: Mapped[bool] = mapped_column(Boolean, server_default=false())
+    taxons_filter: Mapped[bool] = mapped_column(Boolean, server_default=false())
 
     filters_fields = {
         "SCOPE": "scope_filter",
@@ -206,28 +222,30 @@ class PermFilter:
                 return """<i class="fa fa-tree" aria-hidden="true"></i>  Tous les taxons"""
 
 
-cor_permission_area = db.Table(
+cor_permission_area = Table(
     "cor_permission_area",
-    sa.Column(
+    db.metadata,
+    Column(
         "id_permission",
-        sa.Integer,
-        sa.ForeignKey("gn_permissions.t_permissions.id_permission"),
+        Integer,
+        ForeignKey("gn_permissions.t_permissions.id_permission"),
         primary_key=True,
     ),
-    sa.Column("id_area", sa.Integer, sa.ForeignKey("ref_geo.l_areas.id_area"), primary_key=True),
+    Column("id_area", Integer, ForeignKey("ref_geo.l_areas.id_area"), primary_key=True),
     schema="gn_permissions",
 )
 
 
-cor_permission_taxref = db.Table(
+cor_permission_taxref = Table(
     "cor_permission_taxref",
-    sa.Column(
+    db.metadata,
+    Column(
         "id_permission",
-        sa.Integer,
-        sa.ForeignKey("gn_permissions.t_permissions.id_permission"),
+        Integer,
+        ForeignKey("gn_permissions.t_permissions.id_permission"),
         primary_key=True,
     ),
-    sa.Column("cd_nom", sa.Integer, sa.ForeignKey("taxonomie.taxref.cd_nom"), primary_key=True),
+    Column("cd_nom", Integer, ForeignKey("taxonomie.taxref.cd_nom"), primary_key=True),
     schema="gn_permissions",
 )
 
@@ -247,28 +265,27 @@ class Permission(db.Model):
         {"schema": "gn_permissions"},
     )
 
-    id_permission = db.Column(db.Integer, primary_key=True)
-    id_role = db.Column(db.Integer, ForeignKey("utilisateurs.t_roles.id_role"), nullable=False)
-    id_action = db.Column(db.Integer, ForeignKey(PermAction.id_action), nullable=False)
-    id_module = db.Column(db.Integer, ForeignKey("gn_commons.t_modules.id_module"), nullable=False)
-    id_object = db.Column(
-        db.Integer,
+    id_permission: Mapped[int] = mapped_column(Integer, primary_key=True)
+    id_role: Mapped[int] = mapped_column(Integer, ForeignKey("utilisateurs.t_roles.id_role"))
+    id_action: Mapped[int] = mapped_column(Integer, ForeignKey(PermAction.id_action))
+    id_module: Mapped[int] = mapped_column(Integer, ForeignKey("gn_commons.t_modules.id_module"))
+    id_object: Mapped[int] = mapped_column(
+        Integer,
         ForeignKey(PermObject.id_object),
         default=select(PermObject.id_object).where(PermObject.code_object == "ALL"),
-        nullable=False,
     )
-    created_on = db.Column(sa.DateTime, server_default=sa.func.now())
-    expire_on = db.Column(db.DateTime)
-    validated = db.Column(sa.Boolean, server_default=sa.true())
+    created_on: Mapped[Optional[datetime]] = mapped_column(DateTime, server_default=func.now())
+    expire_on: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    validated: Mapped[Optional[bool]] = mapped_column(Boolean, server_default=true())
 
     role = db.relationship(User, backref=db.backref("permissions", cascade_backrefs=False))
     action = db.relationship(PermAction)
     module = db.relationship(TModules)
     object = db.relationship(PermObject)
 
-    scope_value = db.Column(db.Integer, ForeignKey(PermScope.value), nullable=True)
+    scope_value: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey(PermScope.value))
     scope = db.relationship(PermScope)
-    sensitivity_filter = db.Column(db.Boolean, server_default=sa.false(), nullable=False)
+    sensitivity_filter: Mapped[bool] = mapped_column(Boolean, server_default=false())
     areas_filter = db.relationship(LAreas, secondary=cor_permission_area)
     taxons_filter = db.relationship(Taxref, secondary=cor_permission_taxref)
 
@@ -370,7 +387,7 @@ class Permission(db.Model):
 
     @classmethod
     def active_filter(cls):
-        return sa.and_(
-            sa.or_(cls.expire_on.is_(sa.null()), cls.expire_on > datetime.now()),
+        return and_(
+            or_(cls.expire_on.is_(null()), cls.expire_on > datetime.now()),
             cls.validated.is_(True),
         )

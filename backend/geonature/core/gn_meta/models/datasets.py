@@ -1,10 +1,11 @@
 import datetime
+from typing import Any, Optional
 
 from flask import g
 import sqlalchemy as sa
-from sqlalchemy import ForeignKey, or_, func
+from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, Unicode, or_, func
 from sqlalchemy.sql import select, func
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import JSONB, UUID as UUIDType
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.schema import FetchedValue
@@ -28,10 +29,12 @@ class TDatasets(db.Model):
     __tablename__ = "t_datasets"
     __table_args__ = {"schema": "gn_meta"}
 
-    id_dataset = DB.Column(DB.Integer, primary_key=True)
-    unique_dataset_id = DB.Column(UUIDType(as_uuid=True), default=select(func.uuid_generate_v4()))
-    id_acquisition_framework = DB.Column(
-        DB.Integer,
+    id_dataset: Mapped[int] = mapped_column(Integer, primary_key=True)
+    unique_dataset_id: Mapped[Any] = mapped_column(
+        UUIDType(as_uuid=True), default=select(func.uuid_generate_v4())
+    )
+    id_acquisition_framework: Mapped[int] = mapped_column(
+        Integer,
         ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
     )
     acquisition_framework = DB.relationship(
@@ -39,46 +42,50 @@ class TDatasets(db.Model):
         back_populates="datasets",
         #   lazy="joined"
     )  # join AF as required for permissions checks
-    dataset_name = DB.Column(DB.Unicode)
-    dataset_shortname = DB.Column(DB.Unicode)
-    dataset_desc = DB.Column(DB.Unicode)
-    id_nomenclature_data_type = DB.Column(
-        DB.Integer,
+    dataset_name: Mapped[str] = mapped_column(Unicode)
+    dataset_shortname: Mapped[str] = mapped_column(Unicode)
+    dataset_desc: Mapped[str] = mapped_column(Unicode)
+    id_nomenclature_data_type: Mapped[int] = mapped_column(
+        Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         default=lambda: TNomenclatures.get_default_nomenclature("DATA_TYP"),
     )
-    keywords = DB.Column(DB.Unicode)
-    marine_domain = DB.Column(DB.Boolean)
-    terrestrial_domain = DB.Column(DB.Boolean)
-    bbox_west = DB.Column(DB.Float)
-    bbox_east = DB.Column(DB.Float)
-    bbox_south = DB.Column(DB.Float)
-    bbox_north = DB.Column(DB.Float)
-    id_nomenclature_collecting_method = DB.Column(
-        DB.Integer,
+    keywords: Mapped[Optional[str]] = mapped_column(Unicode)
+    marine_domain: Mapped[bool] = mapped_column(Boolean)
+    terrestrial_domain: Mapped[bool] = mapped_column(Boolean)
+    bbox_west: Mapped[Optional[float]] = mapped_column(Float)
+    bbox_east: Mapped[Optional[float]] = mapped_column(Float)
+    bbox_south: Mapped[Optional[float]] = mapped_column(Float)
+    bbox_north: Mapped[Optional[float]] = mapped_column(Float)
+    id_nomenclature_collecting_method: Mapped[int] = mapped_column(
+        Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         default=lambda: TNomenclatures.get_default_nomenclature("METHO_RECUEIL"),
     )
-    id_nomenclature_data_origin = DB.Column(
-        DB.Integer,
+    id_nomenclature_data_origin: Mapped[int] = mapped_column(
+        Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         default=lambda: TNomenclatures.get_default_nomenclature("DS_PUBLIQUE"),
     )
-    id_nomenclature_source_status = DB.Column(
-        DB.Integer,
+    id_nomenclature_source_status: Mapped[int] = mapped_column(
+        Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         default=lambda: TNomenclatures.get_default_nomenclature("STATUT_SOURCE"),
     )
-    id_nomenclature_resource_type = DB.Column(
-        DB.Integer,
+    id_nomenclature_resource_type: Mapped[int] = mapped_column(
+        Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         default=lambda: TNomenclatures.get_default_nomenclature("RESOURCE_TYP"),
     )
-    meta_create_date = DB.Column(DB.DateTime, server_default=FetchedValue())
-    meta_update_date = DB.Column(DB.DateTime, server_default=FetchedValue())
-    active = DB.Column(DB.Boolean, default=True)
-    validable = DB.Column(DB.Boolean, server_default=FetchedValue())
-    id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
+    meta_create_date: Mapped[datetime.datetime] = mapped_column(
+        DateTime, server_default=FetchedValue()
+    )
+    meta_update_date: Mapped[Optional[datetime.datetime]] = mapped_column(
+        DateTime, server_default=FetchedValue()
+    )
+    active: Mapped[bool] = mapped_column(Boolean, default=True)
+    validable: Mapped[Optional[bool]] = mapped_column(Boolean, server_default=FetchedValue())
+    id_digitizer: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey(User.id_role))
     digitizer = DB.relationship(
         User,
         # lazy="joined",
@@ -88,10 +95,10 @@ class TDatasets(db.Model):
         # lazy="joined",
         overlaps="digitizer",
     )  # overlaps as alias of digitizer
-    id_taxa_list = DB.Column(DB.Integer)
+    id_taxa_list: Mapped[Optional[int]] = mapped_column(Integer)
     modules = DB.relationship("TModules", secondary=cor_module_dataset, backref="datasets")
 
-    additional_data = db.Column(JSONB, nullable=True, server_default="{}")
+    additional_data: Mapped[Optional[Any]] = mapped_column(JSONB, server_default="{}")
 
     nomenclature_data_type = DB.relationship(
         TNomenclatures,
@@ -373,9 +380,7 @@ class TDatasets(db.Model):
 
         from geonature.utils.module import is_module_installed
 
-        is_module_OCCHAB_installed = is_module_installed(
-            "gn_module_occhab", check_if_all_revisions_have_been_applied=False
-        )
+        is_module_OCCHAB_installed = is_module_installed("gn_module_occhab")
         if is_module_OCCHAB_installed:
             from gn_module_occhab.models import OccurenceHabitat, Station
 

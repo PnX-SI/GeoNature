@@ -16,7 +16,7 @@ fi
 
 cd "${BASE_DIR}"
 
-source backend/venv/bin/activate
+source "${VENV_PATH}/bin/activate"
 which geonature > /dev/null
 if [ $? -ne 0 ]; then
   echo "La commande geonature n’a pas été installé dans le venv" >&2 |& tee -a "${LOG_FILE}"

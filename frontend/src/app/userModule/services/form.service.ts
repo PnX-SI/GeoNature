@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { DataFormService } from '@geonature_common/form/data-form.service';
+import { LoginExistsValidator } from './login-exists.validator';
 
 export interface Role {
   id_role?: string;
@@ -20,7 +21,8 @@ export class RoleFormService {
 
   constructor(
     private fb: UntypedFormBuilder,
-    private dataService: DataFormService
+    private dataService: DataFormService,
+    private loginExistsValidator: LoginExistsValidator
   ) {
     this.setForm();
   }
@@ -34,13 +36,10 @@ export class RoleFormService {
 
   private setForm() {
     this.roleForm = this.fb.group({
-      identifiant: ['', Validators.required],
+      identifiant: ['', Validators.required, [this.loginExistsValidator]],
       nom_role: ['', Validators.required],
       prenom_role: ['', Validators.required],
-      email: [
-        '',
-        [Validators.pattern('^[a-z0-9._-]+@[a-z0-9._-]{2,}.[a-z]{2,4}$'), Validators.required],
-      ],
+      email: ['', [Validators.pattern('^[a-z0-9._-]+@[a-z0-9._-]{2,}.[a-z]{2,4}$')]],
       remarques: ['', null],
     });
     this.roleForm.disable();

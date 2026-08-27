@@ -87,6 +87,12 @@
       "StatusSource": "Statut source",
       "OccBehaviour": "Comportement"
     },
+    "TaxaList": {
+      "SortByRecord": "Ordre d'ajout",
+      "SortByName": "Ordre alphabétique",
+      "SortAsc": "Ordre croissant",
+      "SortDesc": "Ordre décroissant"
+    },
     "Counting": {
       "Counting": "Dénombrement",
       "Countings": "Dénombrements",

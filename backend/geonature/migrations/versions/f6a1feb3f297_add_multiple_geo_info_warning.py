@@ -18,8 +18,10 @@ depends_on = None
 
 
 def upgrade():
-    metadata = MetaData(bind=op.get_bind())
-    bib_errors_types = Table("bib_errors_types", metadata, schema="gn_imports", autoload=True)
+    metadata = MetaData()
+    bib_errors_types = Table(
+        "bib_errors_types", metadata, schema="gn_imports", autoload_with=op.get_bind()
+    )
     op.execute(
         sa.insert(bib_errors_types).values(
             error_type="Géometrie",
@@ -35,8 +37,10 @@ def upgrade():
 
 
 def downgrade():
-    metadata = MetaData(bind=op.get_bind())
-    bib_errors_types = Table("bib_errors_types", metadata, schema="gn_imports", autoload=True)
+    metadata = MetaData()
+    bib_errors_types = Table(
+        "bib_errors_types", metadata, schema="gn_imports", autoload_with=op.get_bind()
+    )
     op.execute(
         sa.delete(bib_errors_types).where(bib_errors_types.c.name == "MULTIPLE_GEO_INFO_WARNING")
     )

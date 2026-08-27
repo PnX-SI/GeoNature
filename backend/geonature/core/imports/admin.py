@@ -1,23 +1,12 @@
-import json
-from itertools import groupby
 from pprint import pformat
 
 from markupsafe import Markup
-from flask_admin.contrib.sqla import ModelView
-from flask_admin.form import BaseForm
 from wtforms.validators import StopValidation
-from jsonschema.exceptions import ValidationError as JSONValidationError
-from wtforms.fields import StringField
+from flask_admin.contrib.sqla import ModelView
 
 from geonature.utils.env import db
 from geonature.core.admin.admin import admin as geonature_admin, CruvedProtectedMixin
-
-from pypnnomenclature.models import TNomenclatures
-
 from geonature.core.imports.models import Destination, FieldMapping, ContentMapping
-
-from flask_admin.contrib.sqla.form import AdminModelConverter
-from flask_admin.model.form import converts
 
 
 class MappingView(CruvedProtectedMixin, ModelView):
@@ -94,9 +83,7 @@ class ContentMappingView(MappingView):
     }
 
 
+geonature_admin.add_view(FieldMappingView(FieldMapping, db, name="Champs", category="Import"))
 geonature_admin.add_view(
-    FieldMappingView(FieldMapping, db.session, name="Champs", category="Import")
-)
-geonature_admin.add_view(
-    ContentMappingView(ContentMapping, db.session, name="Nomenclatures", category="Import")
+    ContentMappingView(ContentMapping, db, name="Nomenclatures", category="Import")
 )

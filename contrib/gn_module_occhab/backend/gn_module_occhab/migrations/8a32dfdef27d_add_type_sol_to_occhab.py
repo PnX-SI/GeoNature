@@ -19,8 +19,9 @@ depends_on = ("8eb9a12db289",)
 
 
 def upgrade():
-    metadata = MetaData(bind=op.get_bind())
-    session = Session(bind=op.get_bind())
+    conn = op.get_bind()
+    metadata = MetaData()
+    session = Session(bind=conn)
 
     op.add_column(
         "t_stations",
@@ -54,11 +55,13 @@ def upgrade():
         schema="gn_imports",
     )
 
-    field = sa.Table("bib_fields", metadata, schema="gn_imports", autoload=True)
-    cor_entity_field = sa.Table("cor_entity_field", metadata, schema="gn_imports", autoload=True)
-    destination = sa.Table("bib_destinations", metadata, schema="gn_imports", autoload=True)
-    theme = sa.Table("bib_themes", metadata, schema="gn_imports", autoload=True)
-    entity = sa.Table("bib_entities", metadata, schema="gn_imports", autoload=True)
+    field = sa.Table("bib_fields", metadata, schema="gn_imports", autoload_with=conn)
+    cor_entity_field = sa.Table(
+        "cor_entity_field", metadata, schema="gn_imports", autoload_with=conn
+    )
+    destination = sa.Table("bib_destinations", metadata, schema="gn_imports", autoload_with=conn)
+    theme = sa.Table("bib_themes", metadata, schema="gn_imports", autoload_with=conn)
+    entity = sa.Table("bib_entities", metadata, schema="gn_imports", autoload_with=conn)
 
     id_dest_occhab = session.scalar(
         sa.select(destination.c.id_destination).where(destination.c.code == "occhab")
@@ -101,11 +104,14 @@ def upgrade():
 
 
 def downgrade():
-    metadata = MetaData(bind=op.get_bind())
-    session = Session(bind=op.get_bind())
+    conn = op.get_bind()
+    metadata = MetaData()
+    session = Session(bind=conn)
 
-    field = sa.Table("bib_fields", metadata, schema="gn_imports", autoload=True)
-    cor_entity_field = sa.Table("cor_entity_field", metadata, schema="gn_imports", autoload=True)
+    field = sa.Table("bib_fields", metadata, schema="gn_imports", autoload_with=conn)
+    cor_entity_field = sa.Table(
+        "cor_entity_field", metadata, schema="gn_imports", autoload_with=conn
+    )
 
     id_field = session.scalar(
         sa.select(field.c.id_field).where(field.c.name_field == "id_nomenclature_type_sol")

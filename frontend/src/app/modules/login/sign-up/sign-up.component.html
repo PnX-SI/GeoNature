@@ -133,6 +133,14 @@
                   >
                     Ce champ est nécessaire
                   </small>
+                  <small
+                    *ngIf="
+                      form.get('identifiant').hasError('loginExists') &&
+                      form.get('identifiant').dirty
+                    "
+                  >
+                    {{ 'Authentication.Errors.LoginExists' | translate }}
+                  </small>
                 </div>
               </div>
 

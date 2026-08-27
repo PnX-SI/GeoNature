@@ -1,6 +1,5 @@
-from sqlalchemy import func
+from sqlalchemy import and_, func, true
 from sqlalchemy.sql.expression import select, update, insert, literal
-import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql import array_agg, aggregate_order_by
 
 from geonature.utils.env import db
@@ -21,9 +20,9 @@ __all__ = [
 ]
 
 
-def get_duplicates_query(imprt, dest_field, whereclause=sa.true()):
+def get_duplicates_query(imprt, dest_field, whereclause=true()):
     transient_table = imprt.destination.get_transient_table()
-    whereclause = sa.and_(
+    whereclause = and_(
         transient_table.c.id_import == imprt.id_import,
         whereclause,
     )
@@ -39,7 +38,7 @@ def get_duplicates_query(imprt, dest_field, whereclause=sa.true()):
         .alias("partitions")
     )
     duplicates = (
-        select([func.unnest(partitions.c.duplicate_lines).label("lines")])
+        select(func.unnest(partitions.c.duplicate_lines).label("lines"))
         .where(func.array_length(partitions.c.duplicate_lines, 1) > 1)
         .distinct("lines")
         .alias("duplicates")
@@ -149,7 +148,7 @@ def report_erroneous_rows(
         )
 
     # Create the final insert statement
-    error_select = select(insert_args.values()).alias("error")
+    error_select = select(*list(insert_args.values())).alias("error")
     stmt = insert(ImportUserError).from_select(
         names=insert_args.keys(),
         select=(select(error_select).where(error_select.c.rows != None)),
@@ -190,7 +189,7 @@ def transient_table_to_dataframe(imprt: TImports, columns=None) -> pd.DataFrame:
     """
     trans_table = imprt.destination.get_transient_table()
     res = db.session.execute(
-        sa.select(*([trans_table.c[col] for col in columns] if columns else [trans_table]))
+        select(*([trans_table.c[col] for col in columns] if columns else [trans_table]))
         .where(imprt.id_import == trans_table.c.id_import)
         .order_by(trans_table.c.line_no)
     ).all()

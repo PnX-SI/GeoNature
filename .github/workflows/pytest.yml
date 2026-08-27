@@ -65,7 +65,14 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-          cache: "pip"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.0.1
+        with:
+          enable-cache: true
+          cache-dependency-glob: |
+            uv.lock
+            backend/requirements.txt
+            contrib/*/pyproject.toml
       - name: Install GDAL
         run: |
           sudo apt update
@@ -74,8 +81,7 @@ jobs:
         if: github.base_ref == 'master'
         run: |
           echo 'Installation des requirements de prod'
-          python -m pip install --upgrade pip
-          python -m pip install \
+          uv pip install --system \
             -e ..[tests] \
             -r requirements.txt
         working-directory: ./backend
@@ -83,17 +89,16 @@ jobs:
         if: github.base_ref != 'master'
         run: |
           echo 'Installation des requirements de dev'
-          python -m pip install --upgrade pip
-          python -m pip install \
-            -e ..[tests] \
-            -r requirements-dev.txt
+          # Siblings resolve to their local backend/dependencies/* submodule checkout
+          # via [tool.uv.sources] in the root pyproject.toml (uv workspace).
+          uv pip install --system -e ..[tests,lint]
         working-directory: ./backend
 
       - name: Install core modules backend
         run: |
-          pip install -e contrib/occtax
-          pip install -e contrib/gn_module_occhab
-          pip install -e contrib/gn_module_validation
+          uv pip install --system -e contrib/occtax
+          uv pip install --system -e contrib/gn_module_occhab
+          uv pip install --system -e contrib/gn_module_validation
       - name: Install core modules database
         run: |
           geonature db autoupgrade

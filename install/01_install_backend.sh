@@ -50,6 +50,17 @@ parseScriptOptions "${@}"
 
 cd "${BASE_DIR}"
 
+url_application_prefix_path="${url_application_prefix_path:-geonature}"
+url_application_prefix_path="${url_application_prefix_path#/}"
+url_application_prefix_path="${url_application_prefix_path%/}"
+my_url_no_trailing_slash="${my_url%/}"
+if [ -n "${url_application_prefix_path}" ]; then
+  URL_APPLICATION_VALUE="${my_url_no_trailing_slash}/${url_application_prefix_path}"
+else
+  URL_APPLICATION_VALUE="${my_url_no_trailing_slash}"
+fi
+API_ENDPOINT_VALUE="${URL_APPLICATION_VALUE}/api"
+
 if [ -f config/geonature_config.toml ]; then
   echo "Utilisation du fichier de configuration GeoNature exisant"
 else
@@ -57,8 +68,8 @@ else
   cp config/geonature_config.toml.sample config/geonature_config.toml
   echo "Préparation du fichier de configuration..."
   sed -i "s|^SQLALCHEMY_DATABASE_URI = .*$|SQLALCHEMY_DATABASE_URI = \"postgresql:\/\/$user_pg:$user_pg_pass@$db_host:$db_port\/$db_name?application_name=geonature\"|" config/geonature_config.toml
-  sed -i "s|^URL_APPLICATION = .*$|URL_APPLICATION = '${my_url}geonature'|" config/geonature_config.toml
-  sed -i "s|^API_ENDPOINT = .*$|API_ENDPOINT = '${my_url}geonature\/api'|" config/geonature_config.toml 
+  sed -i "s|^URL_APPLICATION = .*$|URL_APPLICATION = '${URL_APPLICATION_VALUE}'|" config/geonature_config.toml
+  sed -i "s|^API_ENDPOINT = .*$|API_ENDPOINT = '${API_ENDPOINT_VALUE}'|" config/geonature_config.toml
   sed -i "s|^SECRET_KEY = .*$|SECRET_KEY = '`openssl rand -hex 16`'|" config/geonature_config.toml
   sed -i "s|^DEFAULT_LANGUAGE = .*$|DEFAULT_LANGUAGE = '${default_language}'|" config/geonature_config.toml
   sed -i "s|^SECRET_KEY = .*$|SECRET_KEY = '`openssl rand -hex 32`'|" config/geonature_config.toml
@@ -66,15 +77,23 @@ fi
 
 cd "${BASE_DIR}"/backend
 
-# Installation du virtual env
-if [ ! -d 'venv/' ]; then
+if ! command -v uv >/dev/null 2>&1; then
+  echo "Installation de uv..."
+  pip install --user uv
+fi
+
+# Chemin du venv géré automatiquement par uv (VENV_PATH est déjà exporté par `utils`,
+# depuis settings.ini ou l'environnement).
+export UV_PROJECT_ENVIRONMENT="${BASE_DIR}/${VENV_PATH}"
+
+if [ ! -d "${UV_PROJECT_ENVIRONMENT}" ]; then
   echo "Création du virtual env…"
-  python3 -m venv venv
+  # --seed installe pip/setuptools/wheel dans le venv (requis par `geonature install-gn-module`).
+  uv venv --seed "${UV_PROJECT_ENVIRONMENT}"
 fi
 
 echo "Activation du virtual env..."
-source venv/bin/activate
-
+source "${UV_PROJECT_ENVIRONMENT}/bin/activate"
 
 echo "Installation des dépendances Python..."
 pip install --upgrade "pip>=19.3"  "wheel"  # https://www.python.org/dev/peps/pep-0440/#direct-references
@@ -86,12 +105,15 @@ if [[ "${MODE}" == "dev" ]]; then
       echo "Avez-vous lancé 'git submodule init && git submodule update' ?"
       exit 1
   fi
-  pip install -e "${BASE_DIR}"[tests] -r requirements-dev.txt
+  # Uses the uv workspace (backend/dependencies/*) declared in the root pyproject.toml:
+  # siblings are installed editable from their local submodule checkout.
+  uv sync --project "${BASE_DIR}" --active --extra tests --extra lint
 else
-  pip install -e "${BASE_DIR}" -r requirements.txt
+  # Siblings resolved from PyPI per backend/requirements.txt, no workspace/local sources involved.
+  uv pip install -e "${BASE_DIR}" -r requirements.txt
 fi
 
-readonly BIN_VENV_DIR="${BASE_DIR}/backend/venv/bin"
+readonly BIN_VENV_DIR="${UV_PROJECT_ENVIRONMENT}/bin"
 readonly ACTIVATE_FILE="${BIN_VENV_DIR}/activate"
 readonly COMPLETION_FILE_NAME="geonature_completion"
 

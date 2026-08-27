@@ -8,6 +8,7 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
 import { DataFormService, ParamsDict } from '@geonature_common/form/data-form.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { PageEvent } from '@angular/material/paginator';
+import { valueOrDefault } from 'chart.js/helpers';
 
 const SELECTORS = { datasets: 0, creator: 1, actors: 1 };
 
@@ -18,6 +19,7 @@ interface MetadataSearchForm {
   date?: string | null;
   organism?: string | null;
   person?: string | null;
+
   [key: `area_${string}`]: Array<any>;
 }
 
@@ -60,7 +62,13 @@ export class MetadataService {
     });
 
     this.config.METADATA.METADATA_AREA_FILTERS.forEach((area) => {
-      const control_name = 'area_' + area['type_code'].toLowerCase();
+      let control_name: string;
+      if (typeof area['type_code'] === 'string') {
+        control_name = 'area_' + area['type_code'].toLowerCase();
+      } else if (Array.isArray(area['type_code'])) {
+        control_name =
+          'area_' + area['type_code'].map((code: string) => code.toLowerCase()).join('_');
+      }
       this.form.addControl(control_name, new UntypedFormControl(new Array()));
       const control = this.form.controls[control_name];
       area['control'] = control;
@@ -80,17 +88,16 @@ export class MetadataService {
    */
   search(search_only: boolean = false) {
     let params = {};
-
-    if (search_only)
-      params = Object.entries(this.form.value).reduce((acc, [key, value]) => {
-        if (value !== null && !key.startsWith('area_')) {
-          acc[key] = value;
-        }
-        return acc;
-      });
-    else if (this.form.value.search) {
+    if (!search_only) {
+      params = this.form.value;
+    } else if (this.form.value.search) {
       params = { search: this.form.value.search };
     }
+    Object.keys(params).forEach((value, index) => {
+      if (value.startsWith('area_') || !params[value]) {
+        delete params[value];
+      }
+    });
 
     return this.getMetadataObservable(params).pipe(
       tap((response) => {
@@ -108,6 +115,7 @@ export class MetadataService {
     this.pageSize.next(page_size);
     this.pageIndex.next(page_index);
   }
+
   changePageEvent(pageEvent: PageEvent) {
     this.changePage(pageEvent.pageIndex, pageEvent.pageSize);
     this.search().subscribe(() => {
@@ -156,6 +164,11 @@ export class MetadataService {
       )
       .subscribe((datasets) => {
         af.t_datasets = datasets;
+        for (const dataset of af.t_datasets) {
+          this.dataFormService
+            .getDatasetStats(dataset.id_dataset)
+            .subscribe((stats) => (dataset.dict_stats = stats));
+        }
       });
   }
 

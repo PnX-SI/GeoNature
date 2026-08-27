@@ -170,10 +170,9 @@ def insert_sensitivity_referential(source, csvfile):
                FROM ref_geo.bib_areas_types
                WHERE type_code ='DEP')
             AND regexp_replace(s.id_territory, '^([0-9])$', '0\\1') = a.area_code
-            OR s.id_territory = a.area_code
-            WHERE s.source = :source
-            """),
-        source=source,
+        WHERE s.source = :source
+    """),
+        dict(source=source),
     )
 
     return len(rules)

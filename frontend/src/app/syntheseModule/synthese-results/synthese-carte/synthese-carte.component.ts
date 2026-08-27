@@ -131,7 +131,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
         selectedLayers.forEach((layer) => {
           tempFeatureGroup.addLayer(layer);
         });
-        this._ms.map.fitBounds(tempFeatureGroup.getBounds(), { maxZoom: 18 });
+        this._ms.map.fitBounds(tempFeatureGroup.getBounds());
       } else {
         this._commonService.regularToaster(
           'warning',

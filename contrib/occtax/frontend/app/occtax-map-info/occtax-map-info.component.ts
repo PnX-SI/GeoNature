@@ -13,6 +13,7 @@ import { ModuleService } from '@geonature/services/module.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ActionService } from '@geonature/services/action.service';
+import { OcctaxConfigService } from '../services/occtax-config.service';
 
 const NOMENCLATURES = [
   'TECHNIQUE_OBS',
@@ -98,6 +99,7 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
     public config: ConfigService,
     private translate: TranslateService,
     private actionService: ActionService,
+    public occtaxConfig: OcctaxConfigService
   ) {}
 
   ngOnInit() {

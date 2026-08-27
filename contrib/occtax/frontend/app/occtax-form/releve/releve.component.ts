@@ -10,6 +10,7 @@ import { OcctaxFormReleveService } from './releve.service';
 import { OcctaxFormMapService } from '../map/occtax-map.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { OcctaxDataService } from '../../services/occtax-data.service';
+import { OcctaxConfigService } from '../../services/occtax-config.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { FormService as GlobalFormService } from '@geonature_common/form/form.service';
 
@@ -41,6 +42,7 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
     public moduleService: ModuleService,
     public occtaxDataService: OcctaxDataService,
     public config: ConfigService,
+    public occtaxConfig: OcctaxConfigService,
     public globalFormService: GlobalFormService
   ) {}
 

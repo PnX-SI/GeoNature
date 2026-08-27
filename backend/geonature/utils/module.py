@@ -16,7 +16,8 @@ from geonature.utils.utilstoml import load_and_validate_toml
 from geonature.utils.env import db, CONFIG_FILE
 from geonature.core.gn_commons.models import TModules
 
-from sqlalchemy import exists, select
+from sqlalchemy import select, text
+from sqlalchemy.exc import ProgrammingError
 
 
 def iter_modules_dist():
@@ -169,16 +170,29 @@ def exists_in_t_modules(module_code: str):
     module_code : str
         The code of the module (for ex. : SYNTHESE, OCCHAB, etc...)
     """
-    return db.session.execute(
-        exists(TModules).where(TModules.module_code == module_code).select()
-    ).scalar()
+    try:
+        return db.session.scalar(
+            text(
+                "SELECT 1 WHERE EXISTS(SELECT m.module_code FROM gn_commons.t_modules m WHERE m.module_code = :module_code);"
+            ),
+            {"module_code": module_code},
+        )
+    except ProgrammingError as e:
+        db.session.rollback()
+        if (
+            '(psycopg2.errors.UndefinedTable) relation "gn_commons.t_modules" does not exist'
+            in str(e)
+        ):
+            return False
+        else:
+            raise e
 
 
 def is_module_installed(
     python_module_name: str,
     migrations_dir: str = None,
     alembic_branch_name: str = None,
-    check_if_all_revisions_have_been_applied: bool = True,
+    check_if_all_revisions_have_been_applied: bool = False,
 ):
     """Is a GeoNature module installed.
 
@@ -199,7 +213,8 @@ def is_module_installed(
     ----------
     python_module_name : str
         The name of the python module.
-        Can be found in the root file "setup.py" of the module repository.
+        Can be found in the root file "pyproject.toml" of the module repository
+        (under the "[project.entry-points.gn_module]" table).
         Examples:
             - "gn_module_occhab"
             - "occtax"
@@ -232,6 +247,7 @@ def is_module_installed(
 
     # Verify if the module is registered in the database
     if not exists_in_t_modules(module_code):
+        print("daaaa")
         # Module not installed because not registered in the database
         return False
     if check_if_all_revisions_have_been_applied:
