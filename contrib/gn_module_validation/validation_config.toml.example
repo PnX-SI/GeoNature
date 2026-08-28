@@ -4,7 +4,7 @@
 #AUTO_VALIDATION_ENABLED = true 
 
 ### Cron parameters for the auto-validation 
-#AUTO_VALIDATION_CRONTAB = "* 1 * * *"
+#AUTO_VALIDATION_CRONTAB = "0 * * * *"
 
 ## If the auto-validation function does not fit your usecase, be sure to create your own
 ## and indicate its name in the following variable

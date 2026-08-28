@@ -2474,7 +2474,7 @@ Le processus de validation automatique est exécuté à une fréquence définie,
 
 Ce paramètre est composé de cinq valeurs, chacune séparée par un espace: minute, heure, jour du mois, mois de l'année, journée de la semaine. Dans l'exemple ci-dessus, il est indiqué que le processus d'auto-validation sera répété toutes les minutes. Pour plus d'informations, vous pouvez consulter la documentation de Celery à ce sujet : https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html#crontab-schedules.
 
-**Note** Si vous ne voulez pas définir un des paramètres de périodicité, utilisez un astérisque (``*``).
+**Note** Un astérisque (``*``) signifie « toutes les valeurs » pour le champ concerné, et non « valeur non définie ». Ainsi ``* 1 * * *`` déclenche le processus toutes les minutes entre 01h00 et 01h59 ; pour un unique passage quotidien à 01h00, écrivez ``0 1 * * *``.
 
 Modification de la fonction de validation automatique
 `````````````````````````````````````````````````````
