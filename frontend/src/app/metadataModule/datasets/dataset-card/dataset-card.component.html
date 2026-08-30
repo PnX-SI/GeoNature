@@ -199,12 +199,23 @@
           </div>
           <br />
 
-          <div class="b">{{ 'MetaData.DatasetCard.DataType' | translate }}</div>
+          <div class="b">{{ 'MetaData.DatasetCard.DataCategory' | translate }}</div>
           <div class="a">
-            {{ dataset?.nomenclature_data_type.label_default || 'Non renseigné' }}
+            <ng-container *ngIf="dataset?.precision_data_category; else noDataCategoryPrecision">
+              {{ 'MetaData.DatasetCard.CustomDataCategory' | translate }}:
+              {{ dataset?.precision_data_category }}
+            </ng-container>
+            <ng-template #noDataCategoryPrecision>
+              {{ dataset?.nomenclature_data_category.label_default }}
+            </ng-template>
           </div>
           <br />
 
+          <div class="b">{{ 'MetaData.DatasetCard.DataType' | translate }}</div>
+          <div class="a">
+            {{ dataset?.nomenclature_data_type?.label_default }}
+          </div>
+          <br />
           <div class="b">{{ 'Objective(s)' | translate }}</div>
           <div
             *ngFor="let objectif of dataset?.cor_objectifs"
@@ -214,20 +225,14 @@
           </div>
           <br />
 
-          <div class="b">{{ 'Geo.Territories' | translate }}</div>
-          <ul class="a">
-            <li *ngFor="let ter of dataset?.cor_territories">- {{ ter.label_default }}</li>
-          </ul>
-          <div class="a">
-            <b>{{ 'MetaData.DatasetCard.LandCoverage' | translate }} :</b>
-            {{ dataset.terrestrial_domain ? 'oui' : 'non' }}
+          <!-- TODO: decide whether to display this section even when there is no territory to be displayed -->
+          <div *ngIf="dataset?.cor_territories.length">
+            <div class="b">{{ 'Geo.Territories' | translate }}</div>
+            <ul class="a">
+              <li *ngFor="let ter of dataset?.cor_territories">- {{ ter.label_default }}</li>
+            </ul>
+            <br />
           </div>
-          <div class="a">
-            <b>{{ 'MetaData.DatasetCard.MarineAreaCoverage' | translate }} :</b>
-            {{ dataset.marine_domain ? 'oui' : 'non' }}
-          </div>
-
-          <br />
 
           <div class="b">{{ 'MetaData.DatasetCard.TermsReference' | translate }}</div>
           <div class="a">
@@ -294,15 +299,31 @@
 
           <br />
 
-          <div class="b">Type de financement :</div>
+          <div class="b">Type de financement</div>
 
           <div class="a">
             <b>Financement :</b>
             {{ dataset?.nomenclature_data_origin?.label_default }}
           </div>
-
           <br />
-
+          <div *ngIf="dataset.production_database">
+            <div class="b">{{ 'MetaData.ProductionDatabase.ProductionDatabase' | translate }}</div>
+            <div class="a">
+              <b>{{ 'Name' | translate }} :</b>
+              {{ dataset.production_database.name }}
+            </div>
+            <div
+              class="a"
+              *ngIf="dataset.production_database.contact"
+            >
+              <b>{{ 'MetaData.DatasetCard.Contact' | translate }} :</b>
+              {{
+                dataset.production_database.contact.identifiant ||
+                  ('MetaData.DatasetCard.None' | translate)
+              }}
+            </div>
+          </div>
+          <br />
           <div *ngIf="dataset.keywords">
             <div class="b">{{ 'Keywords' | translate }} :</div>
             <div class="a">{{ dataset.keywords }}</div>
@@ -515,32 +536,22 @@
         <div class="card-header">
           <h3>{{ 'AcquisitionFramework' | translate }}</h3>
         </div>
-        <div class="card-body">
-          <div class="row">
-            <div
-              class="col-auto"
-              width="60"
-            >
-              <img
-                src="./assets/images/Taxon_icon_vert.svg"
-                width="64"
-              />
-            </div>
-            <div class="col">
-              <div>
-                <a
-                  [routerLink]="['/metadata/af_detail', dataset.id_acquisition_framework]"
-                  style="color: black"
-                >
-                  {{ dataset.acquisition_framework.acquisition_framework_name }}
-                </a>
-              </div>
-              <div>
-                <small>{{ dataset.acquisition_framework.unique_acquisition_framework_id }}</small>
-              </div>
-            </div>
-          </div>
+        <pnx-associated-af-card-list
+          [acquisitionFrameworks]="[dataset.acquisition_framework]"
+        ></pnx-associated-af-card-list>
+        <div class="card-header d-flex justify-content-between">
+          <h3>{{ 'MetaData.Publications.LinkedPublication' | translate }}</h3>
+          <pnx-publication-associate-button
+            [elementId]="dataset?.id_dataset"
+            [from]="'Dataset'"
+            [to]="'Publication'"
+          ></pnx-publication-associate-button>
         </div>
+        <pnx-associated-publication-card-list
+          [publications]="dataset?.publications"
+          [association]="'Dataset'"
+          [elementId]="dataset?.id_dataset"
+        ></pnx-associated-publication-card-list>
       </div>
       <!-- Fin bloc AF -->
     </div>

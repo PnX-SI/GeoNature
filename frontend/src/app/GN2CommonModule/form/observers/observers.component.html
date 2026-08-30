@@ -1,33 +1,79 @@
-<small>{{ label }}</small>
-<ng-select
-  [ngClass]="class"
-  [items]="observers | async"
-  bindLabel="nom_complet"
-  [bindValue]="bindValue"
-  [compareWith]="compareWith"
-  [multiple]="multiSelect"
-  [clearable]="clearable"
-  [placeholder]="placeHolder || label"
-  data-qa="gn-common-form-observers-select"
-  [virtualScroll]="true"
-  [formControl]="parentFormControl"
+<div
+  *ngIf="designStyle === 'material'; else bootstrapBlock"
+  class="observers-material-field"
 >
-  <ng-template
-    ng-option-tmp
-    let-item="item"
-    let-index="index"
-    let-search="searchTerm"
+  <mat-form-field
+    class="observers-material-form-field"
+    appearance="outline"
   >
-    <div
-      matTooltip="{{ item.nom_complet }}"
-      matTooltipPosition="after"
+    <mat-label>{{ placeHolder || label }}</mat-label>
+    <mat-select
+      [formControl]="parentFormControl"
+      [multiple]="multiSelect"
+      [compareWith]="compareObservers"
+      data-qa="gn-common-form-observers-select"
     >
-      <span
-        class="pre-wrap"
+      <mat-form-field class="observers-material-search-field">
+        <mat-label>{{ 'Search' | translate }}</mat-label>
+        <input
+          [ngModel]="search"
+          (ngModelChange)="searchChanged($event)"
+          [ngModelOptions]="{ standalone: true }"
+          matInput
+          type="text"
+          [attr.aria-label]="'Search' | translate"
+        />
+      </mat-form-field>
+      <mat-option
+        *ngIf="(filteredObservers$ | async)?.length === 0"
+        disabled
+      >
+        {{ 'NoElementFound' | translate }}
+      </mat-option>
+      <mat-option
+        *ngFor="let item of filteredObservers$ | async"
+        [value]="valueOf(item)"
+        [title]="item.nom_complet"
         [attr.data-qa]="'gn-common-form-observers-select-' + item.nom_complet"
       >
         {{ item.nom_complet }}
-      </span>
-    </div>
-  </ng-template>
-</ng-select>
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<ng-template #bootstrapBlock>
+  <small>{{ label }}</small>
+  <ng-select
+    [ngClass]="class"
+    [items]="observers | async"
+    bindLabel="nom_complet"
+    [bindValue]="bindValue"
+    [compareWith]="compareWith"
+    [multiple]="multiSelect"
+    [clearable]="clearable"
+    [placeholder]="placeHolder || label"
+    data-qa="gn-common-form-observers-select"
+    [virtualScroll]="true"
+    [formControl]="parentFormControl"
+  >
+    <ng-template
+      ng-option-tmp
+      let-item="item"
+      let-index="index"
+      let-search="searchTerm"
+    >
+      <div
+        matTooltip="{{ item.nom_complet }}"
+        matTooltipPosition="after"
+      >
+        <span
+          class="pre-wrap"
+          [attr.data-qa]="'gn-common-form-observers-select-' + item.nom_complet"
+        >
+          {{ item.nom_complet }}
+        </span>
+      </div>
+    </ng-template>
+  </ng-select>
+</ng-template>

@@ -1,0 +1,17 @@
+.return_button {
+  margin-top: 0.5rem;
+}
+button.disabled-look {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.create-publication-btn {
+  width: 100%;
+}
+.description-text {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}

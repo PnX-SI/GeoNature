@@ -18,7 +18,7 @@ branch_labels = ("import-samples",)
 depends_on = (
     "2b0b3bd0248c",  # import@2b0b3bd0248c - "multidest"
     "3d0bf4ee67d1",  # geonature-samples@3d0bf4ee67d1 - "geonature samples"
-    "ae0b6362fb22",  # geonature@ae0b6362fb22 - "cor_dataset_objectifs"
+    "7808ac8b10b6",  # geonature@7808ac8b10b6 - "refactor terrestrial and marine domain fields for metadata"
 )
 
 
@@ -82,12 +82,6 @@ def downgrade():
     # Delete the data from the gn_meta.cor_acquisition_framework_objectif table
     op.execute("""
         DELETE FROM gn_meta.cor_acquisition_framework_objectif
-        WHERE id_acquisition_framework = (SELECT id_acquisition_framework FROM gn_meta.t_acquisition_frameworks WHERE unique_acquisition_framework_id = '5b054340-210c-4350-9034-300543210c43');
-        """)
-
-    # Delete the data from the gn_meta.cor_acquisition_framework_voletsinp table
-    op.execute("""
-        DELETE FROM gn_meta.cor_acquisition_framework_voletsinp
         WHERE id_acquisition_framework = (SELECT id_acquisition_framework FROM gn_meta.t_acquisition_frameworks WHERE unique_acquisition_framework_id = '5b054340-210c-4350-9034-300543210c43');
         """)
 

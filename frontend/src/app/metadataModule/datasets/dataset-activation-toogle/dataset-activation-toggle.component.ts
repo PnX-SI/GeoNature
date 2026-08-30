@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { tap, map } from 'rxjs/operators';
-import { MetadataDataService } from '../services/metadata-data.service';
+import { MetadataDataService } from '../../services/metadata-data.service';
 import { ActionService } from '@geonature/services/action.service';
 
 @Component({

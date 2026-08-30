@@ -36,47 +36,6 @@ export class MetadataDatasetComponent implements OnInit {
 
   ngOnInit() {}
 
-  getSwitchTooltip() {
-    if (
-      !this.actionService.isActionAllowed(
-        this.dataset.cruved,
-        this.acquisitionFramework.opened,
-        'U'
-      )
-    ) {
-      return this.actionService.getActionTooltip(
-        this.dataset.cruved,
-        this.acquisitionFramework.opened,
-        'U',
-        'MetaData'
-      );
-    }
-    if (this.dataset.active) {
-      return this.translate.instant('MetaData.Tooltips.DatasetActive');
-    } else {
-      return this.translate.instant('MetaData.Tooltips.DatasetInactive');
-    }
-  }
-
-  isSwitchable() {
-    return this.actionService.isActionAllowed(
-      this.dataset.cruved,
-      this.acquisitionFramework.opened,
-      'U'
-    );
-  }
-
-  switchDatasetState(event) {
-    this.stateChangeSaving = true;
-    this.metadataDataS
-      .patchDataset(this.dataset.id_dataset, { active: event.checked })
-      .pipe(
-        tap(() => (this.stateChangeSaving = false)),
-        map((res: any): boolean => res.active)
-      )
-      .subscribe((state: boolean) => (this.dataset.active = state));
-  }
-
   deleteDs(dataset) {
     const message = `${this.translate.instant('Delete')} ${dataset.dataset_name} ?`;
     const dialogRef = this.dialog.open(ConfirmationDialog, {
@@ -107,14 +66,6 @@ export class MetadataDatasetComponent implements OnInit {
           dictNbObs[moduleCode]
       )
       .join('\n');
-  }
-
-  getDatasetSyntheseButtonTooltip(nbObservationsSynthese: number) {
-    if (nbObservationsSynthese == 0) {
-      return 'MetaData.DatasetSyntheseButtonTooltipNoData';
-    } else {
-      return 'MetaData.DatasetSyntheseButtonTooltipExistData';
-    }
   }
 
   getDatasetDeleteButtonTooltip(isForExistData: boolean) {

@@ -17,7 +17,7 @@ down_revision = "cce08a64eb4f"
 branch_labels = None
 depends_on = (
     "023b0be41829",  # add id_module in t_releves_occtax
-    "ae0b6362fb22",  # geonature@ae0b6362fb22 - "cor_dataset_objectifs"
+    "7808ac8b10b6",  # geonature@7808ac8b10b6 - "refactor terrestrial and marine domain fields for metadata"
 )
 
 

@@ -1,7 +1,7 @@
 import { OnInit, Component, Input, ViewEncapsulation, SimpleChanges } from '@angular/core';
 import { DataFormService } from '../data-form.service';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 
 /**
@@ -36,6 +36,11 @@ export class ObserversComponent extends GenericFormComponent implements OnInit {
   };
   @Input() observers: Observable<Array<any>>;
   @Input() placeHolder: string = null;
+  @Input() designStyle: 'bootstrap' | 'material' = 'bootstrap';
+
+  search = '';
+  filteredObservers$: Observable<Array<any>> = new BehaviorSubject<Array<any>>([]);
+  private searchTerm$ = new BehaviorSubject<string>('');
 
   constructor(private _dfService: DataFormService) {
     super();
@@ -46,6 +51,7 @@ export class ObserversComponent extends GenericFormComponent implements OnInit {
     this.bindValue = this.bindAllItem ? null : this.bindValue;
     this.multiSelect = this.multiSelect ? true : this.multiSelect;
     this.placeHolder ??= this.label;
+    this.designStyle = this.designStyle || 'bootstrap';
 
     // uniformise as IdList the id of list
     // retrocompat: keep idMenu
@@ -70,9 +76,34 @@ export class ObserversComponent extends GenericFormComponent implements OnInit {
         this.observers = this._dfService.getObservers();
       }
     }
+
+    // share a single underlying request between the async pipe (options list)
+    // and the search-filtered observable below
+    this.observers = this.observers.pipe(shareReplay(1));
+
+    this.filteredObservers$ = combineLatest([this.observers, this.searchTerm$]).pipe(
+      map(([items, search]) =>
+        (items || []).filter(
+          (item) => !search || item.nom_complet?.toLowerCase().includes(search.toLowerCase())
+        )
+      )
+    );
   }
 
   formatobs(obs: string): string {
     return obs.toLowerCase().replace(' ', '');
   }
+
+  searchChanged(event: string) {
+    this.search = event;
+    this.searchTerm$.next(event);
+  }
+
+  valueOf(item: any) {
+    return this.bindValue ? item[this.bindValue] : item;
+  }
+
+  compareObservers = (c1: any, c2: any): boolean => {
+    return this.bindValue ? c1 === c2 : this.compareWith(c1, c2);
+  };
 }

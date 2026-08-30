@@ -1,11 +1,13 @@
 import datetime
-from typing import Optional
+from typing import Optional, Any
 
+from flask import g
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy import Column, ForeignKey, Integer, Table, Unicode
 from sqlalchemy.ext.hybrid import hybrid_property
 import marshmallow as ma
-
+from sqlalchemy.dialects.postgresql import UUID as UUIDType
+from sqlalchemy import func, select
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User, Organisme
@@ -66,26 +68,6 @@ cor_acquisition_framework_objectif = Table(
     ),
     schema="gn_meta",
 )
-
-
-cor_acquisition_framework_voletsinp = Table(
-    "cor_acquisition_framework_voletsinp",
-    DB.metadata,
-    Column(
-        "id_acquisition_framework",
-        Integer,
-        ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
-        primary_key=True,
-    ),
-    Column(
-        "id_nomenclature_voletsinp",
-        Integer,
-        ForeignKey(TNomenclatures.id_nomenclature),
-        primary_key=True,
-    ),
-    schema="gn_meta",
-)
-
 
 cor_acquisition_framework_territory = Table(
     "cor_acquisition_framework_territory",
@@ -211,6 +193,25 @@ cor_dataset_objectif = Table(
 )
 
 
+cor_dataset_classe_ebv = Table(
+    "cor_dataset_classe_ebv",
+    DB.metadata,
+    Column(
+        "id_dataset",
+        Integer,
+        ForeignKey("gn_meta.t_datasets.id_dataset"),
+        primary_key=True,
+    ),
+    Column(
+        "id_nomenclature_classe_ebv",
+        Integer,
+        ForeignKey(TNomenclatures.id_nomenclature),
+        primary_key=True,
+    ),
+    schema="gn_meta",
+)
+
+
 cor_dataset_territory = Table(
     "cor_dataset_territory",
     DB.metadata,
@@ -230,14 +231,82 @@ cor_dataset_territory = Table(
 )
 
 
-@serializable
-class TBibliographicReference(db.Model):
-    __tablename__ = "t_bibliographical_references"
-    __table_args__ = {"schema": "gn_meta"}
-    id_bibliographic_reference: Mapped[int] = mapped_column(Integer, primary_key=True)
-    id_acquisition_framework: Mapped[int] = mapped_column(
+cor_dataset_publication = Table(
+    "cor_dataset_publication",
+    DB.metadata,
+    Column(
+        "id_dataset",
+        Integer,
+        ForeignKey("gn_meta.t_datasets.id_dataset"),
+        primary_key=True,
+    ),
+    Column(
+        "id_publication",
+        Integer,
+        ForeignKey("gn_meta.datatype_publications.id_publication"),
+        primary_key=True,
+    ),
+    schema="gn_meta",
+)
+
+
+cor_acquisition_framework_publication = Table(
+    "cor_acquisition_framework_publication",
+    DB.metadata,
+    Column(
+        "id_acquisition_framework",
         Integer,
         ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
+        primary_key=True,
+    ),
+    Column(
+        "id_publication",
+        Integer,
+        ForeignKey("gn_meta.datatype_publications.id_publication"),
+        primary_key=True,
+    ),
+    schema="gn_meta",
+)
+
+
+@serializable
+class TDatatypePublication(db.Model):
+    __tablename__ = "datatype_publications"
+    __table_args__ = {"schema": "gn_meta"}
+    id_publication: Mapped[int] = mapped_column(Integer, primary_key=True)
+    unique_publication_id: Mapped[Optional[Any]] = mapped_column(
+        UUIDType(as_uuid=True), default=select(func.uuid_generate_v4())
     )
-    publication_url: Mapped[Optional[str]] = mapped_column(Unicode)
-    publication_reference: Mapped[str] = mapped_column(Unicode)
+    publication_reference: Mapped[str] = mapped_column(Unicode, nullable=False)
+    publication_url: Mapped[Optional[str]] = mapped_column(Unicode, nullable=True)
+    description_publication: Mapped[Optional[str]] = mapped_column(Unicode, nullable=True)
+    id_nomenclature_type_publication: Mapped[Optional[int]] = mapped_column(
+        Integer,
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+    )
+    id_digitizer: Mapped[int] = mapped_column(
+        Integer,
+        ForeignKey(User.id_role),
+        nullable=False,
+    )
+    digitizer: Mapped[User] = relationship(
+        User,
+        lazy="joined",
+    )
+    nomenclature_type_publication: Mapped[TNomenclatures] = relationship(
+        TNomenclatures,
+        lazy="joined",
+        foreign_keys=[id_nomenclature_type_publication],
+    )
+
+    def has_instance_permission(self, scope):
+        if scope == 0:
+            return False
+        elif scope in (1, 2):
+            if g.current_user.id_role == self.id_digitizer:
+                return True
+            if scope == 2 and g.current_user.organisme == self.digitizer.organisme:
+                return True
+            return False
+        else:
+            return True

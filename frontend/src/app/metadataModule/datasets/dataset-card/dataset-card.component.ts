@@ -11,7 +11,7 @@ import { ModuleService } from '@geonature/services/module.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/confirmation.dialog';
-import { MetadataDataService } from '../services/metadata-data.service';
+import { MetadataDataService } from '../../services/metadata-data.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { TitleCasePipe } from '@librairies/@angular/common';
 

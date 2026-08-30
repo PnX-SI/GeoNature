@@ -1,0 +1,31 @@
+<div class="card-body associated-list">
+  <table *ngIf="acquisitionFrameworks?.length">
+    <tr *ngFor="let af of acquisitionFrameworks">
+      <td>
+        <img
+          width="60"
+          [src]="getAfIcon()"
+          alt=""
+        />
+      </td>
+      <td>
+        <a
+          [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]"
+          class="text-dark"
+        >
+          {{ af.acquisition_framework_name }}
+        </a>
+        <div>
+          <small>{{ af.unique_acquisition_framework_id }}</small>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <div
+    *ngIf="!acquisitionFrameworks?.length"
+    class="text-muted"
+  >
+    {{ 'MetaData.Messages.NoLinkedAF' | translate }}
+  </div>
+</div>

@@ -454,7 +454,46 @@ def acquisition_frameworks(users, first_nomenclature):
 
 
 @pytest.fixture(scope="class")
-def datasets(users, acquisition_frameworks, module, first_nomenclature):
+def nomenclature_category():
+    category = (
+        db.session.query(TNomenclatures)
+        .join(BibNomenclaturesTypes)
+        .filter(
+            BibNomenclaturesTypes.mnemonique == "DATA_CATEGORY",
+            TNomenclatures.mnemonique == "taxons",
+        )
+        .first()
+    )
+    return category
+
+
+@pytest.fixture(scope="class")
+def nomenclature_data_type():
+    return (
+        db.session.query(TNomenclatures)
+        .join(BibNomenclaturesTypes)
+        .filter(
+            BibNomenclaturesTypes.mnemonique == "TYPE_DONNEES",
+            TNomenclatures.cd_nomenclature == "1",
+        )
+        .first()
+    )
+
+
+@pytest.fixture(scope="class")
+def nomenclatures_classe_ebv():
+    return (
+        db.session.query(TNomenclatures)
+        .join(BibNomenclaturesTypes)
+        .filter(BibNomenclaturesTypes.mnemonique == "JDD_CLASSE_EBV")
+        .order_by(TNomenclatures.cd_nomenclature)
+        .limit(2)
+        .all()
+    )
+
+
+@pytest.fixture(scope="class")
+def datasets(users, acquisition_frameworks, module, nomenclature_category, first_nomenclature):
     principal_actor_role = db.session.execute(
         select(TNomenclatures)
         .join(BibNomenclaturesTypes, TNomenclatures.id_type == BibNomenclaturesTypes.id_type)
@@ -471,7 +510,12 @@ def datasets(users, acquisition_frameworks, module, first_nomenclature):
     ).all()
 
     def create_dataset(
-        name, id_af, digitizer=None, modules=writable_module, active=True, private=False
+        name,
+        id_af,
+        digitizer=None,
+        modules=writable_module,
+        active=True,
+        private=False,
     ):
         with db.session.begin_nested():
             dataset = TDatasets(
@@ -479,10 +523,9 @@ def datasets(users, acquisition_frameworks, module, first_nomenclature):
                 dataset_name=name,
                 dataset_shortname=name,
                 dataset_desc="lorem ipsum" * 22,
-                marine_domain=True,
-                terrestrial_domain=True,
                 id_digitizer=digitizer.id_role if digitizer else None,
                 active=active,
+                id_nomenclature_data_category=nomenclature_category.id_nomenclature,
             )
             if digitizer and digitizer.organisme:
                 actor = CorDatasetActor(

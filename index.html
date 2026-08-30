@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="icon" type="image/svg+xml" href="/resources/6xcze/admin/keycloak.v2/favicon.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="description" content="The Keycloak Administration Console is a web-based interface for managing Keycloak.">
+    <title>Keycloak Administration Console</title>
+    <style>
+      body {
+        margin: 0;
+      }
+
+      body, #app {
+        height: 100%;
+      }
+
+      .container {
+        padding: 0;
+        margin: 0;
+        width: 100%;
+      }
+
+      .keycloak__loading-container {
+        height: 100vh;
+        width: 100%;
+        color: #151515;
+        background-color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        margin: 0;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .keycloak__loading-container {
+          color: #e0e0e0;
+          background-color: #1b1d21;
+        }
+      }
+
+      #loading-text {
+        z-index: 1000;
+        font-size: 20px;
+        font-weight: 600;
+        padding-top: 32px;
+      }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "/resources/6xcze/common/keycloak/vendor/react/react.production.min.js",
+          "react/jsx-runtime": "/resources/6xcze/common/keycloak/vendor/react/react-jsx-runtime.production.min.js",
+          "react-dom": "/resources/6xcze/common/keycloak/vendor/react-dom/react-dom.production.min.js"
+        }
+      }
+    </script>
+      <script type="module" async blocking="render">
+          const DARK_MODE_CLASS = "pf-v5-theme-dark";
+          const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+          updateDarkMode(mediaQuery.matches);
+          mediaQuery.addEventListener("change", (event) => updateDarkMode(event.matches));
+
+          function updateDarkMode(isEnabled) {
+            const { classList } = document.documentElement;
+
+            if (isEnabled) {
+              classList.add(DARK_MODE_CLASS);
+            } else {
+              classList.remove(DARK_MODE_CLASS);
+            }
+          }
+      </script>
+      <script type="module" src="/resources/6xcze/common/keycloak/vendor/web-crypto-shim/web-crypto-shim.js"></script>
+        <link rel="stylesheet" href="/resources/6xcze/admin/keycloak.v2/assets/main-DmoViYol.css">
+      <script type="module" src="/resources/6xcze/admin/keycloak.v2/assets/main-meeoogRY.js"></script>
+  </head>
+  <body data-page-id="admin">
+    <div id="app">
+      <main class="container">
+        <div class="keycloak__loading-container">
+          <svg class="pf-v5-c-spinner pf-m-xl" role="progressbar" aria-valuetext="Loading..." viewBox="0 0 100 100" aria-label="Contents">
+            <circle class="pf-v5-c-spinner__path" cx="50" cy="50" r="45" fill="none"></circle>
+          </svg>
+          <div>
+            <p id="loading-text">Loading the Administration Console</p>
+          </div>
+        </div>
+      </main>
+    </div>
+    <noscript>JavaScript is required to use the Administration Console.</noscript>
+    <script id="environment" type="application/json">
+      {
+        "serverBaseUrl": "http://keycloak.compose:7080",
+        "adminBaseUrl": "http://keycloak.compose:7080",
+        "authUrl": "http://keycloak.compose:7080",
+        "authServerUrl": "http://keycloak.compose:7080",
+        "realm": "master",
+        "clientId": "security-admin-console",
+        "resourceUrl": "/resources/6xcze/admin/keycloak.v2",
+        "logo": "",
+        "logoUrl": "",
+        "consoleBaseUrl": "/admin/master/console/",
+        "masterRealm": "master",
+        "resourceVersion": "6xcze"
+      }
+    </script>
+  </body>
+</html>

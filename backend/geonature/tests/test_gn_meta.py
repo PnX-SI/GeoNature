@@ -7,10 +7,15 @@ from geonature.core.gn_commons.models.additional_fields import TAdditionalFields
 from geonature.core.gn_commons.models.base import TModules, BibWidgets
 from geonature.core.gn_permissions.models import PermObject
 import pytest
-from flask import url_for, Flask
+from flask import url_for
 from kombu.asynchronous.http import Response
 
-from geonature.core.gn_meta.models import CorDatasetActor, TAcquisitionFramework, TDatasets
+from geonature.core.gn_meta.models import (
+    CorDatasetActor,
+    TAcquisitionFramework,
+    TDatasets,
+    TProductionDatabase,
+)
 from geonature.core.gn_meta.repositories import (
     cruved_af_filter,
     cruved_ds_filter,
@@ -24,7 +29,7 @@ from pypnusershub.schemas import UserSchema
 from ref_geo.models import BibAreasTypes, LAreas
 from sqlalchemy import func, select, exists
 from sqlalchemy.sql.selectable import Select
-from werkzeug.datastructures import Headers, MultiDict
+from werkzeug.datastructures import Headers
 from werkzeug.exceptions import (
     BadRequest,
     Conflict,
@@ -170,9 +175,28 @@ def test_acquisition_framework_schema_additional_data_field():
     assert field.object_code == "METADATA_CADRE_ACQUISITION"
 
 
+@pytest.fixture
+def production_database():
+    rd = TProductionDatabase(name="Test Production DB")
+    db.session.add(rd)
+    db.session.commit()
+    return rd
+
+
+@pytest.fixture
+def unexisted_production_database_id():
+    return (
+        db.session.scalar(
+            select(func.max(TProductionDatabase.id_production_database)).select_from(
+                TProductionDatabase
+            )
+        )
+        or 0
+    ) + 1
+
+
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestGNMeta:
-
     class TestGetAcquisitionFrameworkRoute:
         def test_get_acquisition_frameworks(self, users):
             acquisition_frameworks_url = url_for("gn_meta.get_acquisition_frameworks")
@@ -288,8 +312,6 @@ class TestGNMeta:
             get_af_url = url_for("gn_meta.get_acquisition_frameworks")
 
             response = self.client.post(get_af_url, json={"search": af1.acquisition_framework_name})
-            print(response.status_code)
-            print(response.json)
             af_list = [af["id_acquisition_framework"] for af in response.json["items"]]
             assert af1.id_acquisition_framework in af_list
             assert af2.id_acquisition_framework not in af_list
@@ -747,6 +769,163 @@ class TestGNMeta:
         assert response.status_code == 200
         assert data["type"] == "Polygon"
 
+    def test_close_acquisition_framework_no_data(self, users, acquisition_frameworks):
+        set_logged_user(self.client, users["user"])
+
+        af = acquisition_frameworks["own_af"]
+        response = self.client.get(
+            url_for(
+                "gn_meta.close_acquisition_framework",
+                af_id=af.id_acquisition_framework,
+            )
+        )
+        assert response.status_code == Conflict.code, response.json
+
+    def test_close_acquisition_framework_with_data(
+        self, users, acquisition_frameworks, synthese_data
+    ):
+        set_logged_user(self.client, users["stranger_user"])
+        af = acquisition_frameworks["af_1"]
+        response = self.client.get(
+            url_for(
+                "gn_meta.close_acquisition_framework",
+                af_id=af.id_acquisition_framework,
+            )
+        )
+        assert response.status_code == 200, response.json
+
+    def test_close_acquisition_frameworks_extended(
+        self, app, users, acquisition_frameworks, synthese_data
+    ):
+        """
+        We test if the mechanism of extension of acquisition framework publication works
+        """
+        # We use mock as extended function so we can keep track wether it's called
+        mocked_extended_close = MagicMock()
+        route_name = "test.extended_af_close"
+        app.config["METADATA"]["EXTENDED_AF_PUBLISH_ROUTE_NAME"] = route_name
+        app.view_functions[route_name] = mocked_extended_close
+        set_logged_user(self.client, users["stranger_user"])
+        af = acquisition_frameworks["af_1"]
+        response = self.client.get(
+            url_for(
+                "gn_meta.close_acquisition_framework",
+                af_id=af.id_acquisition_framework,
+            )
+        )
+        mocked_extended_close.assert_called_once()
+        assert response.status_code == 200, response.json
+        assert af.opened == False
+
+    def test_close_acquisition_frameworks_extended_with_exception(
+        self, app, users, acquisition_frameworks, synthese_data
+    ):
+        """
+        We test if when an error occur in the extended af closing, the af stay opened.
+        """
+
+        def mocked_close(_=None):
+            raise GeoNatureError()
+
+        route_name = "test.extended_af_close"
+        app.config["METADATA"]["EXTENDED_AF_PUBLISH_ROUTE_NAME"] = route_name
+        app.view_functions[route_name] = mocked_close
+        set_logged_user(self.client, users["stranger_user"])
+        af = acquisition_frameworks["af_1"]
+        response = self.client.get(
+            url_for(
+                "gn_meta.close_acquisition_framework",
+                af_id=af.id_acquisition_framework,
+            )
+        )
+        assert response.status_code == 500, response.json
+        assert af.opened == True
+
+    def test_open_acquisition_framework(self, app, users, acquisition_frameworks):
+        """
+        Test opening an acquisition framework
+        """
+        set_logged_user(self.client, users["stranger_user"])
+        af = acquisition_frameworks["af_1"]
+        af.opened = False
+        db.session.commit()
+
+        response = self.client.get(
+            url_for(
+                "gn_meta.open_acquisition_framework",
+                af_id=af.id_acquisition_framework,
+            )
+        )
+
+        assert response.status_code == 200
+        af_updated = db.session.get(TAcquisitionFramework, af.id_acquisition_framework)
+        assert af_updated.opened is True
+
+    def test_open_acquisition_framework_not_openable(self, app, users, acquisition_frameworks):
+        """
+        Test opening an acquisition framework when AF_OPENABLE is False
+        """
+        set_logged_user(self.client, users["stranger_user"])
+        af = acquisition_frameworks["af_1"]
+        af.opened = False
+        db.session.commit()
+        app.config["METADATA"]["AF_OPENABLE"] = False
+        response = self.client.get(
+            url_for(
+                "gn_meta.open_acquisition_framework",
+                af_id=af.id_acquisition_framework,
+            )
+        )
+        assert response.status_code == 500
+
+    def test_get_af_from_id(self, af_list):
+        id_af = 1
+
+        found_af = get_af_from_id(id_af=id_af, af_list=af_list)
+
+        assert isinstance(found_af, dict)
+        assert found_af.get("id_acquisition_framework") == id_af
+
+    def test_get_af_from_id_not_present(self, af_list):
+        id_af = 12
+
+        found_af = get_af_from_id(id_af=id_af, af_list=af_list)
+
+        assert found_af is None
+
+    def test_get_af_from_id_none(self):
+        id_af = 1
+        af_list = [{"test": 2}]
+
+        with pytest.raises(KeyError):
+            get_af_from_id(id_af=id_af, af_list=af_list)
+
+    def test_get_id_acquisition_framework(self, acquisition_frameworks):
+        af = acquisition_frameworks["associate_af"]
+
+        uuid_af = af.unique_acquisition_framework_id
+        id_af = TAcquisitionFramework.get_id(uuid_af)
+
+        assert id_af == af.id_acquisition_framework
+        assert TAcquisitionFramework.get_id(uuid.uuid4()) is None
+
+    def test_get_user_af(self, users, acquisition_frameworks):
+        # Test to complete
+        user = users["user"]
+
+        afquery = TAcquisitionFramework.get_user_af(user=user, only_query=True)
+        afuser = TAcquisitionFramework.get_user_af(user=user, only_user=True)
+        afdefault = TAcquisitionFramework.get_user_af(user=user)
+
+        assert isinstance(afquery, Select)
+        assert isinstance(afuser, list)
+        assert len(afuser) == 6
+        assert isinstance(afdefault, list)
+        assert len(afdefault) >= 1
+
+
+@pytest.mark.usefixtures("client_class", "temporary_transaction")
+class TestDataset:
     def test_datasets_permissions(self, app, datasets, users):
         ds = datasets["own_dataset"]
         with app.test_request_context(headers=logged_user_headers(users["user"])):
@@ -796,6 +975,22 @@ class TestGNMeta:
             assert set(sc(dsc.filter_by_scope(3, query=qs)).unique().all()) == set(
                 datasets.values()
             )
+
+    def test_dataset_nb_observations_hybrid_property(self, users, datasets, synthese_data):
+        ds = datasets["own_dataset"]
+        set_logged_user(self.client, users["user"])
+
+        nb_obs = db.session.execute(
+            select(TDatasets.nb_observations)
+            .select_from(TDatasets)
+            .where(TDatasets.id_dataset == ds.id_dataset)
+        ).scalar_one()
+
+        expected_nb_obs_habitats = 0
+        expected_nb_obs_synthese = len([s for s in synthese_data.values() if s.dataset == ds])
+        expected_nb_obs = expected_nb_obs_habitats + expected_nb_obs_synthese
+
+        assert nb_obs == expected_nb_obs
 
     def test_dataset_is_deletable(self, app, synthese_data, datasets):
         assert (
@@ -876,43 +1071,103 @@ class TestGNMeta:
 
         assert set(response.json.keys()) == {"data"}
 
-    def get_test_dataset_json(self, id_acquisition_framework):
+    def get_test_dataset_json(
+        self, id_acquisition_framework, nomenclature_category, nomenclature_data_type
+    ):
         return {
             "id_acquisition_framework": id_acquisition_framework,
             "dataset_name": "test",
             "dataset_shortname": "test",
             "dataset_desc": "test",
-            "terrestrial_domain": True,
-            "marine_domain": False,
             "unique_dataset_id": None,
+            "id_nomenclature_data_category": nomenclature_category.id_nomenclature,
+            "id_nomenclature_data_type": nomenclature_data_type.id_nomenclature,
         }
 
-    def test_create_dataset(self, users, datasets):
-        response = self.client.post(url_for("gn_meta.create_dataset"))
+    def test_create_dataset(self, users, datasets, nomenclature_category, nomenclature_data_type):
+        url = url_for("gn_meta.create_dataset")
+        response = self.client.post(url)
         assert response.status_code == Unauthorized.code
 
         set_logged_user(self.client, users["admin_user"])
 
-        response = self.client.post(url_for("gn_meta.create_dataset"))
+        response = self.client.post(url)
         assert response.status_code == UnsupportedMediaType.code
 
         set_logged_user(self.client, users["admin_user"])
         ds = datasets["own_dataset"].as_dict()
         ds["id_dataset"] = "takeonme"
-        response = self.client.post(url_for("gn_meta.create_dataset"), json=ds)
+        response = self.client.post(url, json=ds)
         assert response.status_code == BadRequest.code
-        ds_json = self.get_test_dataset_json(datasets["own_dataset"].id_acquisition_framework)
+        ds_json = self.get_test_dataset_json(
+            datasets["own_dataset"].id_acquisition_framework,
+            nomenclature_category,
+            nomenclature_data_type,
+        )
         response = self.client.post(
-            url_for("gn_meta.create_dataset"),
+            url,
             json=ds_json,
         )
         assert response.status_code == 200
+        assert response.json["id_nomenclature_data_type"] == nomenclature_data_type.id_nomenclature
 
-    def test_dataset_with_closed_af(self, users, datasets):
+        get_response = self.client.get(
+            url_for("gn_meta.get_dataset", id_dataset=response.json["id_dataset"])
+        )
+        assert get_response.json["nomenclature_data_type"]["cd_nomenclature"] == "1"
+
+    def test_create_dataset_missing_data_type(self, users, datasets, nomenclature_category):
+        set_logged_user(self.client, users["admin_user"])
+        ds_json = {
+            "id_acquisition_framework": datasets["own_dataset"].id_acquisition_framework,
+            "dataset_name": "test",
+            "dataset_shortname": "test",
+            "dataset_desc": "test",
+            "unique_dataset_id": None,
+            "id_nomenclature_data_category": nomenclature_category.id_nomenclature,
+        }
+        response = self.client.post(url_for("gn_meta.create_dataset"), json=ds_json)
+        assert response.status_code == BadRequest.code
+        assert "id_nomenclature_data_type" in response.json["description"]
+
+    def test_create_dataset_with_classes_ebv(
+        self,
+        users,
+        datasets,
+        nomenclature_category,
+        nomenclature_data_type,
+        nomenclatures_classe_ebv,
+    ):
+        set_logged_user(self.client, users["admin_user"])
+        ds_json = self.get_test_dataset_json(
+            datasets["own_dataset"].id_acquisition_framework,
+            nomenclature_category,
+            nomenclature_data_type,
+        )
+        ds_json["cor_classes_ebv"] = [
+            {"id_nomenclature": n.id_nomenclature} for n in nomenclatures_classe_ebv
+        ]
+        response = self.client.post(url_for("gn_meta.create_dataset"), json=ds_json)
+        assert response.status_code == 200
+
+        get_response = self.client.get(
+            url_for("gn_meta.get_dataset", id_dataset=response.json["id_dataset"])
+        )
+        assert {c["id_nomenclature"] for c in get_response.json["cor_classes_ebv"]} == {
+            n.id_nomenclature for n in nomenclatures_classe_ebv
+        }
+
+    def test_dataset_with_closed_af(
+        self, users, datasets, nomenclature_category, nomenclature_data_type
+    ):
         set_logged_user(self.client, users["admin_user"])
         datasets["own_dataset"].acquisition_framework.opened = False
         db.session.flush()
-        ds_json = self.get_test_dataset_json(datasets["own_dataset"].id_acquisition_framework)
+        ds_json = self.get_test_dataset_json(
+            datasets["own_dataset"].id_acquisition_framework,
+            nomenclature_category,
+            nomenclature_data_type,
+        )
         response = self.client.post(
             url_for("gn_meta.create_dataset"),
             json=ds_json,
@@ -1172,9 +1427,40 @@ class TestGNMeta:
             url_for("gn_meta.update_dataset", id_dataset=ds.id_dataset),
             data=dict(dataset_name=new_name),
         )
-
         assert response.status_code == 200
         assert response.json.get("dataset_name") == new_name
+
+    def test_update_dataset_data_type(self, users, datasets, nomenclature_data_type):
+        ds = datasets["own_dataset"]
+        set_logged_user(self.client, users["user"])
+
+        response = self.client.patch(
+            url_for("gn_meta.update_dataset", id_dataset=ds.id_dataset),
+            json={"id_nomenclature_data_type": nomenclature_data_type.id_nomenclature},
+        )
+        assert response.status_code == 200
+        assert (
+            response.json.get("id_nomenclature_data_type") == nomenclature_data_type.id_nomenclature
+        )
+
+    def test_update_dataset_classes_ebv(self, users, datasets, nomenclatures_classe_ebv):
+        ds = datasets["own_dataset"]
+        set_logged_user(self.client, users["user"])
+
+        response = self.client.patch(
+            url_for("gn_meta.update_dataset", id_dataset=ds.id_dataset),
+            json={
+                "cor_classes_ebv": [
+                    {"id_nomenclature": n.id_nomenclature} for n in nomenclatures_classe_ebv
+                ]
+            },
+        )
+        assert response.status_code == 200
+
+        get_response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=ds.id_dataset))
+        assert {c["id_nomenclature"] for c in get_response.json["cor_classes_ebv"]} == {
+            n.id_nomenclature for n in nomenclatures_classe_ebv
+        }
 
     def test_update_dataset_not_found(self, users, datasets, unexisted_id):
         set_logged_user(self.client, users["user"])
@@ -1220,6 +1506,66 @@ class TestGNMeta:
         )
         assert response.status_code == 200
 
+    def test__get_create_scope(self, app, users):
+        modcode = "METADATA"
+
+        with app.test_request_context(headers=logged_user_headers(users["user"])):
+            app.preprocess_request()
+            create = TDatasets._get_create_scope(module_code=modcode)
+
+        usercreate = TDatasets._get_create_scope(module_code=modcode, user=users["user"])
+        norightcreate = TDatasets._get_create_scope(module_code=modcode, user=users["noright_user"])
+        associatecreate = TDatasets._get_create_scope(
+            module_code=modcode, user=users["associate_user"]
+        )
+        admincreate = TDatasets._get_create_scope(module_code=modcode, user=users["admin_user"])
+
+        assert create == 2
+        assert usercreate == 2
+        assert norightcreate == 0
+        assert associatecreate == 2
+        assert admincreate == 3
+
+    def test___str__(self, datasets):
+        dataset = datasets["associate_dataset"]
+
+        assert isinstance(dataset.__str__(), str)
+        assert dataset.__str__() == dataset.dataset_name
+
+    def test_get_id_dataset(self, datasets):
+        dataset = datasets["associate_dataset"]
+        uuid_dataset = dataset.unique_dataset_id
+
+        id_dataset = TDatasets.get_id(uuid_dataset)
+
+        assert id_dataset == dataset.id_dataset
+        assert TDatasets.get_id(uuid.uuid4()) is None
+
+    def test_get_uuid(self, datasets):
+        dataset = datasets["associate_dataset"]
+        id_dataset = dataset.id_dataset
+
+        uuid_dataset = TDatasets.get_uuid(id_dataset)
+
+        assert uuid_dataset == dataset.unique_dataset_id
+        assert TDatasets.get_uuid(None) is None
+
+    def test_actor(self, users):
+        user = users["user"]
+
+        empty = CorDatasetActor(role=None, organism=None)
+        roleonly = CorDatasetActor(role=user, organism=None)
+        organismonly = CorDatasetActor(role=None, organism=user.organisme)
+        complete = CorDatasetActor(role=user, organism=user.organisme)
+
+        assert not empty.actor
+        assert roleonly.actor == user
+        assert organismonly.actor == user.organisme
+        assert complete.actor == user
+
+
+@pytest.mark.usefixtures("client_class", "temporary_transaction")
+class TestReports:
     def test_uuid_report(self, users, synthese_data):
         observations_nbr = db.session.scalar(
             select(func.count(Synthese.id_synthese)).select_from(Synthese)
@@ -1279,216 +1625,664 @@ class TestGNMeta:
         # BadRequest because for now id_dataset query is required
         assert response.status_code == BadRequest.code
 
-    def test_get_af_from_id(self, af_list):
-        id_af = 1
 
-        found_af = get_af_from_id(id_af=id_af, af_list=af_list)
+@pytest.mark.usefixtures("client_class", "temporary_transaction")
+class TestProductionDatabase:
+    def test_get_production_databases(self, users, production_database):
+        url = url_for("gn_meta.get_production_databases")
 
-        assert isinstance(found_af, dict)
-        assert found_af.get("id_acquisition_framework") == id_af
+        response = self.client.get(url)
+        assert response.status_code == Unauthorized.code
 
-    def test_get_af_from_id_not_present(self, af_list):
-        id_af = 12
+        set_logged_user(self.client, users["noright_user"])
+        response = self.client.get(url)
+        assert response.status_code == Forbidden.code
 
-        found_af = get_af_from_id(id_af=id_af, af_list=af_list)
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.get(url)
+        assert response.status_code == 200
+        names = [production_db["name"] for production_db in response.json]
+        assert production_database.name in names
 
-        assert found_af is None
-
-    def test_get_af_from_id_none(self):
-        id_af = 1
-        af_list = [{"test": 2}]
-
-        with pytest.raises(KeyError):
-            get_af_from_id(id_af=id_af, af_list=af_list)
-
-    def test__get_create_scope(self, app, users):
-        modcode = "METADATA"
-
-        with app.test_request_context(headers=logged_user_headers(users["user"])):
-            app.preprocess_request()
-            create = TDatasets._get_create_scope(module_code=modcode)
-
-        usercreate = TDatasets._get_create_scope(module_code=modcode, user=users["user"])
-        norightcreate = TDatasets._get_create_scope(module_code=modcode, user=users["noright_user"])
-        associatecreate = TDatasets._get_create_scope(
-            module_code=modcode, user=users["associate_user"]
+    def test_get_production_database(self, users, production_database):
+        url = url_for(
+            "gn_meta.get_production_database",
+            id_production_database=production_database.id_production_database,
         )
-        admincreate = TDatasets._get_create_scope(module_code=modcode, user=users["admin_user"])
 
-        assert create == 2
-        assert usercreate == 2
-        assert norightcreate == 0
-        assert associatecreate == 2
-        assert admincreate == 3
+        response = self.client.get(url)
+        assert response.status_code == Unauthorized.code
 
-    def test___str__(self, datasets):
-        dataset = datasets["associate_dataset"]
+        set_logged_user(self.client, users["noright_user"])
+        response = self.client.get(url)
+        assert response.status_code == Forbidden.code
 
-        assert isinstance(dataset.__str__(), str)
-        assert dataset.__str__() == dataset.dataset_name
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.get(url)
+        assert response.status_code == 200
+        assert response.json["id_production_database"] == production_database.id_production_database
+        assert response.json["name"] == production_database.name
+        assert response.json["id_contact"] is None
 
-    def test_get_id_dataset(self, datasets):
-        dataset = datasets["associate_dataset"]
-        uuid_dataset = dataset.unique_dataset_id
-
-        id_dataset = TDatasets.get_id(uuid_dataset)
-
-        assert id_dataset == dataset.id_dataset
-        assert TDatasets.get_id(uuid.uuid4()) is None
-
-    def test_get_uuid(self, datasets):
-        dataset = datasets["associate_dataset"]
-        id_dataset = dataset.id_dataset
-
-        uuid_dataset = TDatasets.get_uuid(id_dataset)
-
-        assert uuid_dataset == dataset.unique_dataset_id
-        assert TDatasets.get_uuid(None) is None
-
-    def test_get_id_acquisition_framework(self, acquisition_frameworks):
-        af = acquisition_frameworks["associate_af"]
-
-        uuid_af = af.unique_acquisition_framework_id
-        id_af = TAcquisitionFramework.get_id(uuid_af)
-
-        assert id_af == af.id_acquisition_framework
-        assert TAcquisitionFramework.get_id(uuid.uuid4()) is None
-
-    def test_get_user_af(self, users, acquisition_frameworks):
-        # Test to complete
-        user = users["user"]
-
-        afquery = TAcquisitionFramework.get_user_af(user=user, only_query=True)
-        afuser = TAcquisitionFramework.get_user_af(user=user, only_user=True)
-        afdefault = TAcquisitionFramework.get_user_af(user=user)
-
-        assert isinstance(afquery, Select)
-        assert isinstance(afuser, list)
-        assert len(afuser) == 6
-        assert isinstance(afdefault, list)
-        assert len(afdefault) >= 1
-
-    def test_actor(self, users):
-        user = users["user"]
-
-        empty = CorDatasetActor(role=None, organism=None)
-        roleonly = CorDatasetActor(role=user, organism=None)
-        organismonly = CorDatasetActor(role=None, organism=user.organisme)
-        complete = CorDatasetActor(role=user, organism=user.organisme)
-
-        assert not empty.actor
-        assert roleonly.actor == user
-        assert organismonly.actor == user.organisme
-        assert complete.actor == user
-
-    def test_close_acquisition_framework_no_data(self, users, acquisition_frameworks):
-        set_logged_user(self.client, users["user"])
-
-        af = acquisition_frameworks["own_af"]
-        response = self.client.get(
-            url_for(
-                "gn_meta.close_acquisition_framework",
-                af_id=af.id_acquisition_framework,
-            )
-        )
-        assert response.status_code == Conflict.code, response.json
-
-    def test_close_acquisition_framework_with_data(
-        self, users, acquisition_frameworks, synthese_data
-    ):
-        set_logged_user(self.client, users["stranger_user"])
-        af = acquisition_frameworks["af_1"]
-        response = self.client.get(
-            url_for(
-                "gn_meta.close_acquisition_framework",
-                af_id=af.id_acquisition_framework,
-            )
-        )
-        assert response.status_code == 200, response.json
-
-    def test_close_acquisition_frameworks_extended(
-        self, app, users, acquisition_frameworks, synthese_data
-    ):
-        """
-        We test if the mechanism of extension of acquisition framework publication works
-        """
-        # We use mock as extended function so we can keep track wether it's called
-        mocked_extended_close = MagicMock()
-        route_name = "test.extended_af_close"
-        app.config["METADATA"]["EXTENDED_AF_PUBLISH_ROUTE_NAME"] = route_name
-        app.view_functions[route_name] = mocked_extended_close
-        set_logged_user(self.client, users["stranger_user"])
-        af = acquisition_frameworks["af_1"]
-        response = self.client.get(
-            url_for(
-                "gn_meta.close_acquisition_framework",
-                af_id=af.id_acquisition_framework,
-            )
-        )
-        mocked_extended_close.assert_called_once()
-        assert response.status_code == 200, response.json
-        assert af.opened == False
-
-    def test_close_acquisition_frameworks_extended_with_exception(
-        self, app, users, acquisition_frameworks, synthese_data
-    ):
-        """
-        We test if when an error occur in the extended af closing, the af stay opened.
-        """
-
-        def mocked_close(_=None):
-            raise GeoNatureError()
-
-        route_name = "test.extended_af_close"
-        app.config["METADATA"]["EXTENDED_AF_PUBLISH_ROUTE_NAME"] = route_name
-        app.view_functions[route_name] = mocked_close
-        set_logged_user(self.client, users["stranger_user"])
-        af = acquisition_frameworks["af_1"]
-        response = self.client.get(
-            url_for(
-                "gn_meta.close_acquisition_framework",
-                af_id=af.id_acquisition_framework,
-            )
-        )
-        assert response.status_code == 500, response.json
-        assert af.opened == True
-
-    def test_open_acquisition_framework(self, app, users, acquisition_frameworks):
-        """
-        Test opening an acquisition framework
-        """
-        set_logged_user(self.client, users["stranger_user"])
-        af = acquisition_frameworks["af_1"]
-        af.opened = False
+    def test_get_production_database_with_contact(self, users, production_database):
+        production_database.id_contact = users["user"].id_role
         db.session.commit()
 
+        set_logged_user(self.client, users["admin_user"])
         response = self.client.get(
             url_for(
-                "gn_meta.open_acquisition_framework",
-                af_id=af.id_acquisition_framework,
+                "gn_meta.get_production_database",
+                id_production_database=production_database.id_production_database,
             )
+        )
+        assert response.status_code == 200
+        assert response.json["id_contact"] == users["user"].id_role
+        assert response.json["id_contact"] == users["user"].id_role
+
+    def test_get_production_database_not_found(self, users, unexisted_production_database_id):
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.get(
+            url_for(
+                "gn_meta.get_production_database",
+                id_production_database=unexisted_production_database_id,
+            )
+        )
+        assert response.status_code == NotFound.code
+
+    def test_create_production_database(self, users):
+        url = url_for("gn_meta.create_production_database")
+
+        response = self.client.post(url, json={"name": "New Production DB"})
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user(self.client, users["noright_user"])
+        response = self.client.post(url, json={"name": "New Production DB"})
+        assert response.status_code == Forbidden.code
+
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.post(url, json={"name": "New Production DB"})
+        assert response.status_code == 200
+        assert response.json["name"] == "New Production DB"
+        assert response.json["id_production_database"] is not None
+        assert response.json["id_contact"] is None
+
+    def test_create_production_database_with_contact(self, users):
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.post(
+            url_for("gn_meta.create_production_database"),
+            json={"name": "DB with contact", "id_contact": users["user"].id_role},
+        )
+        assert response.status_code == 200
+        assert response.json["id_contact"] == users["user"].id_role
+
+    def test_create_production_database_duplicate_name(self, users, production_database):
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.post(
+            url_for("gn_meta.create_production_database"),
+            json={"name": production_database.name},
+        )
+        assert response.status_code != 200
+
+    def test_create_production_database_missing_name(self, users):
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.post(
+            url_for("gn_meta.create_production_database"),
+            json={},
+        )
+        assert response.status_code == BadRequest.code
+
+    def test_update_production_database(self, users, production_database):
+        url = url_for(
+            "gn_meta.update_production_database",
+            id_production_database=production_database.id_production_database,
+        )
+
+        response = self.client.put(url, json={"name": "Updated name"})
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user(self.client, users["noright_user"])
+        response = self.client.put(url, json={"name": "Updated name"})
+        assert response.status_code == Forbidden.code
+
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.put(url, json={"name": "Updated name"})
+        assert response.status_code == 200
+        assert response.json["name"] == "Updated name"
+
+        updated = db.session.get(TProductionDatabase, production_database.id_production_database)
+        assert updated.name == "Updated name"
+
+    def test_update_production_database_partial(self, users, production_database):
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.put(
+            url_for(
+                "gn_meta.update_production_database",
+                id_production_database=production_database.id_production_database,
+            ),
+            json={"id_contact": users["user"].id_role},
+        )
+        assert response.status_code == 200
+        assert response.json["id_contact"] == users["user"].id_role
+        assert response.json["name"] == production_database.name
+
+    def test_update_production_database_not_found(self, users, unexisted_production_database_id):
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.put(
+            url_for(
+                "gn_meta.update_production_database",
+                id_production_database=unexisted_production_database_id,
+            ),
+            json={"name": "Doesn't matter"},
+        )
+        assert response.status_code == NotFound.code
+
+    def test_delete_production_database(self, users, production_database):
+        url = url_for(
+            "gn_meta.delete_production_database",
+            id_production_database=production_database.id_production_database,
+        )
+
+        response = self.client.delete(url)
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user(self.client, users["noright_user"])
+        response = self.client.delete(url)
+        assert response.status_code == Forbidden.code
+
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.delete(url)
+        assert response.status_code == 204
+
+        assert (
+            db.session.get(TProductionDatabase, production_database.id_production_database) is None
+        )
+
+    def test_delete_production_database_not_found(self, users, unexisted_production_database_id):
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.delete(
+            url_for(
+                "gn_meta.delete_production_database",
+                id_production_database=unexisted_production_database_id,
+            )
+        )
+        assert response.status_code == NotFound.code
+
+
+@pytest.mark.usefixtures("client_class", "temporary_transaction")
+class TestPublication:
+
+    def test_get_publications(self, users):
+        """Test getting list of publications"""
+        publications_url = url_for("gn_meta.get_publications")
+        response = self.client.get(publications_url)
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.get(publications_url)
+        assert response.status_code == 200
+        assert "items" in response.json
+        assert "total" in response.json
+        assert "page" in response.json
+
+    def test_get_publications_pagination(self, users):
+        """Test publications pagination"""
+        from geonature.core.gn_meta.models import TDatatypePublication
+
+        publications_url = url_for("gn_meta.get_publications")
+        set_logged_user(self.client, users["admin_user"])
+
+        for i in range(15):
+            pub = TDatatypePublication(
+                publication_reference=f"Test Publication {i}",
+                id_digitizer=users["admin_user"].id_role,
+            )
+            db.session.add(pub)
+        db.session.commit()
+
+        # Test default pagination (10 per page)
+        response = self.client.get(publications_url)
+        assert response.status_code == 200
+        data = response.json
+        assert len(data["items"]) <= 10
+        assert data["page"] == 1
+
+        # Test custom page size
+        response = self.client.get(f"{publications_url}?per_page=5")
+        assert response.status_code == 200
+        data = response.json
+        assert len(data["items"]) <= 5
+
+    def test_get_publications_search(self, users):
+        """Test searching publications"""
+        from geonature.core.gn_meta.models import TDatatypePublication
+
+        set_logged_user(self.client, users["admin_user"])
+
+        # Create test publications
+        pub1 = TDatatypePublication(
+            publication_reference="Unique Reference ABC",
+            id_digitizer=users["admin_user"].id_role,
+        )
+        pub2 = TDatatypePublication(
+            publication_reference="Another Publication",
+            id_digitizer=users["admin_user"].id_role,
+        )
+        db.session.add(pub1)
+        db.session.add(pub2)
+        db.session.commit()
+
+        publications_url = url_for("gn_meta.get_publications")
+        response = self.client.get(f"{publications_url}?search=Unique")
+        assert response.status_code == 200
+        results = [p["publication_reference"] for p in response.json["items"]]
+        assert "Unique Reference ABC" in results
+
+    def test_get_publication(self, users):
+        """Test getting a single publication"""
+        from geonature.core.gn_meta.models import TDatatypePublication
+
+        # Create a test publication
+        pub = TDatatypePublication(
+            publication_reference="Test Publication",
+            id_digitizer=users["admin_user"].id_role,
+        )
+        db.session.add(pub)
+        db.session.commit()
+
+        get_pub_url = url_for("gn_meta.get_publication", id_publication=pub.id_publication)
+
+        # Without authentication
+        response = self.client.get(get_pub_url)
+        assert response.status_code == Unauthorized.code
+
+        # With authentication
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.get(get_pub_url)
+        assert response.status_code == 200
+        assert response.json["publication_reference"] == "Test Publication"
+        assert response.json["id_publication"] == pub.id_publication
+
+    def test_create_publication(self, users):
+        """Test creating a publication"""
+        set_logged_user(self.client, users["admin_user"])
+
+        publication_data = {
+            "publication_reference": "New Publication",
+            "publication_url": "http://example.com",
+            "description_publication": "Test description",
+        }
+
+        response = self.client.post(
+            url_for("gn_meta.create_publication"),
+            json=publication_data,
         )
 
         assert response.status_code == 200
-        af_updated = db.session.get(TAcquisitionFramework, af.id_acquisition_framework)
-        assert af_updated.opened is True
+        assert response.json["publication_reference"] == "New Publication"
+        assert "id_publication" in response.json
 
-    def test_open_acquisition_framework_not_openable(self, app, users, acquisition_frameworks):
-        """
-        Test opening an acquisition framework when AF_OPENABLE is False
-        """
-        set_logged_user(self.client, users["stranger_user"])
-        af = acquisition_frameworks["af_1"]
-        af.opened = False
-        db.session.commit()
-        app.config["METADATA"]["AF_OPENABLE"] = False
-        response = self.client.get(
-            url_for(
-                "gn_meta.open_acquisition_framework",
-                af_id=af.id_acquisition_framework,
-            )
+    def test_create_publication_forbidden(self, users):
+        """Test that users without CRUVED:C cannot create publications"""
+        set_logged_user(self.client, users["noright_user"])
+
+        publication_data = {
+            "publication_reference": "New Publication",
+            "publication_url": "http://example.com",
+        }
+
+        response = self.client.post(
+            url_for("gn_meta.create_publication"),
+            json=publication_data,
         )
-        assert response.status_code == 500
+
+        assert response.status_code == Forbidden.code
+
+    def test_update_publication(self, users):
+        """Test updating a publication"""
+        from geonature.core.gn_meta.models import TDatatypePublication
+
+        set_logged_user(self.client, users["admin_user"])
+
+        # Create a test publication
+        pub = TDatatypePublication(
+            publication_reference="Original Name",
+            id_digitizer=users["admin_user"].id_role,
+        )
+        db.session.add(pub)
+        db.session.commit()
+
+        # Update it
+        updated_data = {
+            "publication_reference": "Updated Name",
+            "description_publication": "Updated description",
+        }
+
+        response = self.client.post(
+            url_for("gn_meta.update_publication", id_publication=pub.id_publication),
+            json=updated_data,
+        )
+
+        assert response.status_code == 200
+        assert response.json["publication_reference"] == "Updated Name"
+        assert response.json["description_publication"] == "Updated description"
+
+    def test_delete_publication(self, users):
+        """Test deleting a publication"""
+        from geonature.core.gn_meta.models import TDatatypePublication
+
+        set_logged_user(self.client, users["admin_user"])
+
+        # Create a test publication
+        pub = TDatatypePublication(
+            publication_reference="To Delete",
+            id_digitizer=users["admin_user"].id_role,
+        )
+        db.session.add(pub)
+        db.session.commit()
+        pub_id = pub.id_publication
+
+        # Delete it
+        response = self.client.delete(url_for("gn_meta.delete_publication", id_publication=pub_id))
+
+        assert response.status_code == 204
+
+        # Verify it's deleted
+        deleted_pub = db.session.get(TDatatypePublication, pub_id)
+        assert deleted_pub is None
+
+    def test_delete_publication_not_found(self, users):
+        """Test deleting a non-existent publication"""
+        set_logged_user(self.client, users["admin_user"])
+
+        response = self.client.delete(url_for("gn_meta.delete_publication", id_publication=99999))
+
+        assert response.status_code == NotFound.code
+
+    def test_associate_dataset_to_publication(self, users, datasets):
+        """Test associating a dataset to a publication"""
+        from geonature.core.gn_meta.models import TDatatypePublication
+
+        set_logged_user(self.client, users["admin_user"])
+        # Create a test publication
+        pub = TDatatypePublication(
+            publication_reference="Test Publication",
+            id_digitizer=users["admin_user"].id_role,
+        )
+        db.session.add(pub)
+        db.session.commit()
+
+        dataset = datasets["own_dataset"]
+
+        response = self.client.post(
+            url_for("gn_meta.associate_dataset_to_publication"),
+            json={
+                "publication_id": pub.id_publication,
+                "dataset_id": dataset.id_dataset,
+            },
+        )
+
+        assert response.status_code == 200
+        # Verify association
+        assert len(pub.datasets) == 1
+        assert pub.datasets[0].id_dataset == dataset.id_dataset
+
+    def test_disassociate_dataset_from_publication(self, users, datasets):
+        """Test disassociating a dataset from a publication"""
+        from geonature.core.gn_meta.models import TDatatypePublication
+
+        set_logged_user(self.client, users["admin_user"])
+
+        # Create a test publication and associate a dataset
+        pub = TDatatypePublication(
+            publication_reference="Test Publication",
+            id_digitizer=users["admin_user"].id_role,
+        )
+        dataset = datasets["own_dataset"]
+        pub.datasets.append(dataset)
+        db.session.add(pub)
+        db.session.commit()
+
+        # Disassociate
+        response = self.client.post(
+            url_for("gn_meta.disassociate_dataset_from_publication"),
+            json={
+                "publication_id": pub.id_publication,
+                "dataset_id": dataset.id_dataset,
+            },
+        )
+
+        assert response.status_code == 200
+        db.session.refresh(pub)
+        # Verify disassociation
+        assert len(pub.datasets) == 0
+
+    def test_associate_af_to_publication(self, users, acquisition_frameworks):
+        """Test associating an acquisition framework to a publication"""
+        from geonature.core.gn_meta.models import TDatatypePublication
+
+        set_logged_user(self.client, users["admin_user"])
+
+        # Create a test publication
+        pub = TDatatypePublication(
+            publication_reference="Test Publication",
+            id_digitizer=users["admin_user"].id_role,
+        )
+        db.session.add(pub)
+        db.session.commit()
+
+        af = acquisition_frameworks["own_af"]
+
+        response = self.client.post(
+            url_for("gn_meta.associate_af_to_publication"),
+            json={
+                "publication_id": pub.id_publication,
+                "af_id": af.id_acquisition_framework,
+            },
+        )
+
+        assert response.status_code == 200
+        # Verify association
+        assert len(pub.acquisition_frameworks) == 1
+        assert pub.acquisition_frameworks[0].id_acquisition_framework == af.id_acquisition_framework
+
+    def test_disassociate_af_from_publication(self, users, acquisition_frameworks):
+        """Test disassociating an acquisition framework from a publication"""
+        from geonature.core.gn_meta.models import TDatatypePublication
+
+        set_logged_user(self.client, users["admin_user"])
+
+        # Create a test publication and associate an AF
+        pub = TDatatypePublication(
+            publication_reference="Test Publication",
+            id_digitizer=users["admin_user"].id_role,
+        )
+        af = acquisition_frameworks["own_af"]
+        pub.acquisition_frameworks.append(af)
+        db.session.add(pub)
+        db.session.commit()
+
+        # Disassociate
+        response = self.client.post(
+            url_for("gn_meta.disassociate_af_from_publication"),
+            json={
+                "publication_id": pub.id_publication,
+                "af_id": af.id_acquisition_framework,
+            },
+        )
+
+        assert response.status_code == 200
+        # Verify disassociation
+        db.session.refresh(pub)
+
+        assert len(pub.acquisition_frameworks) == 0
+
+    def test_publication_permissions(self, app, users):
+        """Test publication instance permissions"""
+        from geonature.core.gn_meta.models import TDatatypePublication
+
+        pub = TDatatypePublication(
+            publication_reference="Test",
+            id_digitizer=users["user"].id_role,
+        )
+        db.session.add(pub)
+        db.session.commit()
+
+        with app.test_request_context(headers=logged_user_headers(users["user"])):
+            app.preprocess_request()
+            assert pub.has_instance_permission(0) == False
+            assert pub.has_instance_permission(1) == True
+            assert pub.has_instance_permission(2) == True
+            assert pub.has_instance_permission(3) == True
+
+        with app.test_request_context(headers=logged_user_headers(users["associate_user"])):
+            app.preprocess_request()
+            assert pub.has_instance_permission(0) == False
+            assert pub.has_instance_permission(1) == False
+            assert pub.has_instance_permission(2) == True
+            assert pub.has_instance_permission(3) == True
+
+    def test_disassociate_dataset_from_publication(self, users, datasets):
+        """Test disassociating a dataset from a publication"""
+        from geonature.core.gn_meta.models import TDatatypePublication
+
+        set_logged_user(self.client, users["admin_user"])
+
+        # Create a test publication and associate a dataset
+        pub = TDatatypePublication(
+            publication_reference="Test Publication",
+            id_digitizer=users["admin_user"].id_role,
+        )
+        dataset = datasets["own_dataset"]
+        pub.datasets.append(dataset)
+        db.session.add(pub)
+        db.session.commit()
+
+        # Disassociate
+        response = self.client.post(
+            url_for("gn_meta.disassociate_dataset_from_publication"),
+            json={
+                "publication_id": pub.id_publication,
+                "dataset_id": dataset.id_dataset,
+            },
+        )
+
+        assert response.status_code == 200
+        db.session.refresh(pub)
+        # Verify disassociation
+        assert len(pub.datasets) == 0
+
+    def test_disassociate_dataset_from_publication_unique_violation(self, users, datasets):
+        """Test disassociating a dataset with unique constraint violation"""
+        from geonature.core.gn_meta.models import TDatatypePublication
+
+        set_logged_user(self.client, users["admin_user"])
+
+        # Create a test publication with a dataset
+        pub = TDatatypePublication(
+            publication_reference="Test Publication",
+            id_digitizer=users["admin_user"].id_role,
+        )
+        dataset = datasets["own_dataset"]
+        pub.datasets.append(dataset)
+        db.session.add(pub)
+        db.session.commit()
+
+        # Try to disassociate with invalid IDs that might cause unique constraint issue
+        response = self.client.post(
+            url_for("gn_meta.disassociate_dataset_from_publication"),
+            json={
+                "publication_id": pub.id_publication,
+                "dataset_id": 999999,  # Non-existent dataset
+            },
+        )
+
+        # Should return an error status code (NotFound or Conflict)
+        assert response.status_code in [NotFound.code, Conflict.code]
+        # Verify the original association still exists
+        db.session.refresh(pub)
+        assert len(pub.datasets) == 1
+
+    def test_get_publications_search_similarity(self, users):
+        """Test searching publications by similarity"""
+        from geonature.core.gn_meta.models import TDatatypePublication
+
+        set_logged_user(self.client, users["admin_user"])
+
+        # Create test publications with similar names
+        pub1 = TDatatypePublication(
+            publication_reference="Publication Biodiversity 2024",
+            id_digitizer=users["admin_user"].id_role,
+        )
+        pub2 = TDatatypePublication(
+            publication_reference="Publication Biology 2023",
+            id_digitizer=users["admin_user"].id_role,
+        )
+        pub3 = TDatatypePublication(
+            publication_reference="Report Environment 2024",
+            id_digitizer=users["admin_user"].id_role,
+        )
+        db.session.add(pub1)
+        db.session.add(pub2)
+        db.session.add(pub3)
+        db.session.commit()
+
+        publications_url = url_for("gn_meta.get_publications")
+
+        # Search by partial similarity
+        response = self.client.get(f"{publications_url}?search=Publication")
+        assert response.status_code == 200
+        results = [p["publication_reference"] for p in response.json["items"]]
+        assert "Publication Biodiversity 2024" in results
+        assert "Publication Biology 2023" in results
+        assert "Report Environment 2024" not in results
+
+        # Search by another term
+        response = self.client.get(f"{publications_url}?search=2024")
+        assert response.status_code == 200
+        results = [p["publication_reference"] for p in response.json["items"]]
+        assert "Publication Biodiversity 2024" in results
+        assert "Report Environment 2024" in results
+
+        def test_publication_type_publication_negative_value(self, users):
+            """Test filtering publications with type_publication = -1 (None type)"""
+            from geonature.core.gn_meta.models import TDatatypePublication
+            from pypnnomenclature.models import TNomenclatures
+            from sqlalchemy import select
+
+            set_logged_user(self.client, users["admin_user"])
+
+            # Get a valid PUBLICATION_TYPE nomenclature
+            pub_type = db.session.scalars(
+                select(TNomenclatures)
+                .join(TNomenclatures.type)
+                .where(TNomenclatures.type.has(mnemonique="PUBLICATION_TYPE"))
+                .limit(1)
+            ).first()
+
+            # Create a publication with a type
+            pub_with_type = TDatatypePublication(
+                publication_reference="Publication with type",
+                id_digitizer=users["admin_user"].id_role,
+                id_nomenclature_type_publication=pub_type.id_nomenclature if pub_type else None,
+            )
+            # Create a publication without type
+            pub_without_type = TDatatypePublication(
+                publication_reference="Publication without type",
+                id_digitizer=users["admin_user"].id_role,
+            )
+            db.session.add(pub_with_type)
+            db.session.add(pub_without_type)
+            db.session.commit()
+
+            publications_url = url_for("gn_meta.get_publications")
+
+            # Filter by type_publication = -1 should return only publications with None type
+            response = self.client.get(f"{publications_url}?type_publication=-1")
+            assert response.status_code == 200
+            results = [p["publication_reference"] for p in response.json["items"]]
+            assert "Publication without type" in results
+            if pub_type:
+                assert "Publication with type" not in results
 
 
 @pytest.mark.usefixtures("client_class", "users", "datasets", "acquisition_frameworks")

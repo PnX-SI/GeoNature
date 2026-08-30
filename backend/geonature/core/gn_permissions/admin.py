@@ -500,8 +500,6 @@ class ObjectAdmin(CruvedProtectedMixin, ModelView):
     }
 
 
-# self.allow_blank = (True,)
-# self.blank_test = "lalala"
 class PermissionAdmin(CruvedProtectedMixin, ModelView):
     module_code = "ADMIN"
     object_code = "PERMISSIONS"

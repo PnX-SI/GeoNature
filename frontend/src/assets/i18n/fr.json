@@ -9,7 +9,15 @@
     "Chinese": "🇨🇳 中文 (Chinois)"
   },
   "Calendar": {
-    "Weekdays": ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
+    "Weekdays": [
+      "Lundi",
+      "Mardi",
+      "Mercredi",
+      "Jeudi",
+      "Vendredi",
+      "Samedi",
+      "Dimanche"
+    ],
     "Months": [
       "janvier",
       "février",
@@ -43,7 +51,9 @@
     "PDFExport": "Exporter en PDF",
     "DownloadData": "Télécharger les données",
     "Copy": "Copier",
-    "Clear": "Effacer"
+    "Clear": "Effacer",
+    "Associate": "Associer",
+    "Disassociate": "Désassocier"
   },
   "Messages": {
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire"
@@ -52,9 +62,9 @@
     "ErrorOccurs": "Une erreur s'est produite",
     "DatesReversed": "La date de début ne peut pas être postérieure à la date de fin",
     "AltitudeError": "L'altitude max ne peut être inférieure à l'altitude min",
-    "NotAllowed": "Vous n'avez pas les permissions pour effectuer cette action"
+    "NotAllowed": "Vous n'avez pas les permissions pour effectuer cette action",
+    "InvalidURL": "Format de l'URL incorrect"
   },
-
   "Authentication": {
     "Authentication": "Authentification",
     "Email": "Adresse mail",
@@ -125,7 +135,6 @@
       "EmailChangeError": "Une erreur s'est produite"
     }
   },
-
   "Observer": "Observateur",
   "Observers": "Observateurs",
   "Observers?": "Observateur(s)",
@@ -147,7 +156,6 @@
   "Creator": "Créateur",
   "Creators": "Créateurs",
   "Creators?": "Créateur(s)",
-
   "Dataset": "Jeu de données",
   "Datasets": "Jeux de données",
   "AcquisitionFramework": "Cadre d'acquisition",
@@ -164,23 +172,21 @@
   "SelectModules": "Sélectionner un ou plusieurs modules",
   "Habitat": "Habitat",
   "Habitats": "Habitats",
-
   "Sex": "Sexe",
   "LifeStage": "Stade de vie",
-
   "By": "Par",
   "On": " Sur",
   "Of": "de",
   "Columns": "Colonnes",
   "DisplayColumns": "Colonnes à afficher",
-
   "Yes": "Oui",
   "No": "Non",
+  "UUID": "UUID",
+  "NotValidUUID": "Le champ doit contenir un UUID valide.",
   "Previous": "Précédent",
   "Next": "Suivant",
   "Back": "Retour",
   "Confirmation": "Confirmation",
-
   "Report": "Rapport",
   "Comment": "Commentaire",
   "Discussion": "Discussion",
@@ -190,7 +196,6 @@
   "Optional": "Facultatif",
   "OptionalIf": "Optionnel si",
   "RequiredIf": "Requis si",
-
   "Name": "Nom",
   "What": "Quoi ?",
   "When": "Quand ?",
@@ -198,7 +203,6 @@
   "How": "Comment ?",
   "Where": "Où ?",
   "New": "Nouveau",
-
   "Advanced": "Avancé",
   "All": "Tous",
   "Objective": "Objectif",
@@ -210,7 +214,6 @@
   "Valid": "Valide",
   "Invalid": "Invalide",
   "Active": "Actif",
-
   "Date": "Date",
   "Dates": "Dates",
   "MaxDate": "Date fin",
@@ -226,24 +229,21 @@
   "Label": "Libellé",
   "Url": "URL",
   "Keywords": "Mots-clés",
-
   "Detail": "Détail",
   "Details": "Détails",
-
   "Search": "Rechercher",
+  "NoElementFound": "Pas d'élément trouvé",
   "Documentation": {
     "Documentation": "Documentation",
     "OpenDocumentation": "Ouvrir la documentation"
   },
   "Downloading": "Téléchargement en cours",
-
   "DownloadOverflow": "Le nombre d'élément est trop important pour être téléchargé, veuillez affiner votre recherche ou contacter votre administrateur",
   "DynamicForm": {
     "Errors": {
       "CheckBoxError": "Veuillez choisir au moins une option"
     }
   },
-
   "Toolbar": {
     "Language": {
       "FrenchTooltip": "Afficher l'interface en français",
@@ -285,7 +285,9 @@
     },
     "Messages": {
       "NoJDD": "Aucun jeu de données n'a été trouvé, contactez votre administrateur",
+      "NoLinkedJDD": "Aucun jeu de données associé",
       "NoJDDMTD": "Aucun jeu de données n'a été trouvé, veuillez d'abord les saisir dans l'application MTD",
+      "NoLinkedAF": "Aucun cadre d'acquisition associé",
       "AF404": "Cadre d'acquisition inexistant",
       "DatasetAdded": "Jeu de donnée ajouté avec succès",
       "DatasetRemoved": "Jeu de donnée supprimé avec succès",
@@ -302,6 +304,7 @@
     "Actions": {
       "AddDataset": "Ajouter un jeu de données",
       "AddAF": "Ajouter un cadre d'acquisition",
+      "HandlePublications": "Gérer les publications",
       "CloseAF": "Fermer le cadre d'acquisition",
       "OpenAF": "Ouvrir le cadre d'acquisition",
       "EditAF": "Editer ce cadre d'acquisition",
@@ -341,7 +344,6 @@
     "Creator": "Créateur du cadre d'acquisition",
     "FinancingType": "Type de financement",
     "Financing": "Financement",
-    "BibliographicalReferences": "Références bibliographiques",
     "GeographicalArea": "Zone géographique",
     "SpeciesDistribution": "Répartition des espèces",
     "AssociatedDatasets": "Jeux de données associés",
@@ -354,7 +356,6 @@
     "DatasetDeleteButtonTooltipNotPossibleExistData": "Ce jeu de données contient des données et ne peut donc pas être supprimé",
     "DatasetDeleteButtonTooltipNotPossibleMissingPermissions": "Vous n'avez pas les droits nécessaires pour supprimer ce jeu de données",
     "DatasetDeleteButtonTooltipPossible": "Supprimer le jeu de données",
-
     "DatasetCard": {
       "Actions": {
         "DisplayData": "Afficher les données"
@@ -368,11 +369,9 @@
       "SpeciesDistribution": "Répartition des espèces",
       "DescriptiveForm": "Fiche descriptive",
       "ID": "Identification",
-
       "GeographicalScope": "Périmètre géographique",
       "UUIDReport": "Rapport d'UUID",
       "SensitivityReport": "Rapport de sensibilité",
-
       "IntegratedOn": "Intégré le",
       "NumberOfData": "Nombre de données",
       "WidgetType": "Type de widget",
@@ -383,17 +382,20 @@
       "TaxaListID": "ID de liste de taxon",
       "GNSpecificFeatures": "Spécificités GeoNature",
       "DatasetCreator": "Créateur du jeu de données",
-
       "DatasetSINPID": "Identifiant SINP du jeu de données",
       "DatasetGeoNatureID": "Identifiant GeoNature du jeu de données",
       "ShortName": "Libellé court",
       "DataType": "Type de données",
-
+      "DataCategory": "Catégorie de données",
+      "PrecisionDataCategory": "Précision sur la catégorie de données",
+      "CustomDataCategory": "Catégorie de données personnalisée",
       "LandCoverage": "Couverture du territoire terrestre",
       "MarineAreaCoverage": "Couverture du territoire marin",
       "TermsReference": "Cadre de référence",
       "TitleAF": "Titre du cadre d'acquisition",
-      "IDAF": "Identifiant du cadre d'acquisition"
+      "IDAF": "Identifiant du cadre d'acquisition",
+      "Contact": "Contact",
+      "None": "Aucun"
     },
     "DatasetForm": {
       "Actions": {
@@ -407,7 +409,6 @@
         "SizeShortNameJDD": "Le nom court du JDD doit être inférieur ou égal à 30 caractères",
         "NoList": "Aucune liste (tous Taxref)"
       },
-
       "ShortNameJDD": "Nom court du JDD",
       "Field": "Domaine",
       "LandField": "Domaine terrestre",
@@ -417,8 +418,8 @@
       "OtherStakeholders": "Autre(s) acteur(s)",
       "MainContact": "Contact principal",
       "DataOrigin": "Origine des données",
-
       "ResourceType": "Type de ressource",
+      "EbvClasses": "Classe(s) EBV",
       "FacultativeTaxaList": "Liste de taxons (facultatif)",
       "SpecificGeonature": "Spécifique GeoNature",
       "RequiredToImportAndEnterData": "Requis pour saisir et importer des données dans le jeu de données"
@@ -434,6 +435,16 @@
         "DeleteActor": "Supprimer cet acteur",
         "CreateOrganism": "Ajouter un organisme"
       }
+    },
+    "ProductionDatabase": {
+      "ProductionDatabase": "Base de données de production",
+      "AddDatabase": "Ajouter une base de données de production",
+      "Name": "Nom",
+      "NameRequired": "Nom requis",
+      "CreateTitle": "Créer base de données de production",
+      "CreatedSuccess": "Base de données de production créée avec succès",
+      "CreatedError": "La base de données de production n'a pas pu être créée",
+      "NameAlreadyExists": "Ce nom existe déjà"
     },
     "Organisms": {
       "CreateOrganism": "Ajouter un organisme",
@@ -459,6 +470,50 @@
     "Statistics": {
       "OccurrencesSynthese": "Occurrence(s) de taxon(s)",
       "OccurrencesOcchab": "Occurrence(s) d'habitat(s)"
+    },
+    "Publications": {
+      "Catalog": "Catalogue des publications",
+      "Publication": "Publication",
+      "Publications": "Publications",
+      "Reference": "Référence",
+      "URL": "URL",
+      "Type": "Type de publication",
+      "Description": "Description",
+      "SearchPlaceholder": "Rechercher dans : \"Référence\", \"Description\" ou \"URL\" ",
+      "Consult": "Consulter la publication",
+      "NoURL": "Aucune URL disponible",
+      "Create": "Créer",
+      "ConfirmDelete": "Êtes-vous sûr de vouloir supprimer cette publication ?",
+      "SeePublication": "Consulter la publication",
+      "LinkedDataset": "Jeux de données associés",
+      "LinkedAF": "Cadres d'acquisition associés",
+      "LinkedPublication": "Publications associées",
+      "NoLinkedPublication": "Pas de publication associée",
+      "AssociateToPublication": "Associer à une publication",
+      "ConfirmDisassociate": "Voulez-vous désassocier {{publication}} ?",
+      "ExternalLink": {
+        "Title": "Redirection externe",
+        "Warning": "Attention : Ce lien externe peut vous rediriger vers un site tiers et vous exposer à des risques de sécurité.",
+        "Confirm": "Confirmer la redirection",
+        "Link": "Lien externe : "
+      },
+      "Errors": {
+        "DeletionImpossible": "Suppression impossible:",
+        "LinkedDatasets": "Des jeux de données sont liés à cette publication",
+        "LinkedAcquisitionFrameworks": "Des cadres d'acquisition sont liés à cette publication",
+        "Update": "Une erreur est survenue lors de la mise à jour de la publication",
+        "Create": "Une erreur est survenue lors de la création de la publication",
+        "Deleted": "Publication supprimée avec succès",
+        "SimilarReferencesWarning": "Des publications avec une réference similaires existent déjà",
+        "ExactMatchExists": "Une publication avec une réference identique existe déjà",
+        "DisassociationFailed": "Erreur lors de la désassociation"
+      },
+      "Messages": {
+        "PublicationUpdated": "Publication mise à jour",
+        "PublicationCreated": "Publication créée",
+        "Disassociated": "Publication désassociée avec succès",
+        "Deleted": "Publication désassociée avec succès"
+      }
     }
   },
   "Filters": {
@@ -501,11 +556,9 @@
     "Errors": {
       "PeriodCompleteness": "Le champs 'periode début' ET 'periode fin' doivent être remplis si vous souhaitez faire une recherche par période"
     },
-
     "Commented": "a commenté le",
     "ChangeStatus": "a modifié le statut le",
     "ModalTitle": "Information sur l'observation",
-
     "LocationName": "Nom du lieux",
     "Accuracy": "Précision du pointage",
     "Owner": "Observation de",
@@ -588,7 +641,6 @@
         "Choose": "Utiliser un modèle d'import prédéfini",
         "Rename": "Renommer le modèle d'import",
         "Delete": "Supprimer le modèle d'import",
-
         "Update": "Mettre à jour le modèle existant",
         "Save": "Enregistrer un nouveau modèle",
         "NoSave": "Ne pas enregistrer",

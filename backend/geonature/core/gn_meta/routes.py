@@ -7,18 +7,22 @@ import json
 import logging
 
 from flask import Blueprint, current_app, request, Response, g, render_template, jsonify
+from psycopg2.errors import UniqueViolation
+from sqlalchemy import or_, true
 
 from geonature.utils.module import is_module_installed
-from sqlalchemy.exc import DatabaseError
+from sqlalchemy.exc import DatabaseError, IntegrityError
 from sqlalchemy.sql import select
 from sqlalchemy.sql.functions import func
 from sqlalchemy.orm import Load, joinedload, undefer
-from werkzeug.exceptions import Conflict, BadRequest, Forbidden, InternalServerError, NotFound
+from werkzeug.exceptions import Conflict, BadRequest, Forbidden, NotFound
 from werkzeug.datastructures import MultiDict, TypeConversionDict
-from marshmallow import ValidationError, EXCLUDE
-from sqlalchemy.exc import IntegrityError
-from psycopg2.errors import UniqueViolation
 
+from geonature.core.gn_meta.handlers import (
+    publication_handler,
+    dataset_handler,
+    acquisition_framework_handler,
+)
 from geonature.core.gn_meta.utils import (
     get_acquisition_framework_stats,
     MetadataPdfBuilder,
@@ -40,16 +44,21 @@ from geonature.core.gn_meta.models import (
     CorDatasetActor,
     TAcquisitionFramework,
     CorAcquisitionFrameworkActor,
+    TDatatypePublication,
+    cor_dataset_publication,
+    cor_acquisition_framework_publication,
+    TProductionDatabase,
 )
 from geonature.core.gn_meta.schemas import (
     AcquisitionFrameworkSchema,
     DatasetSchema,
+    PublicationSchema,
+    ProductionDatabaseSchema,
 )
 from utils_flask_sqla.response import json_resp, to_csv_resp, generate_csv_content
 from utils_flask_sqla.db import ordered
 from werkzeug.datastructures import Headers
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.tools import get_scopes_by_action
 
 from ref_geo.models import LAreas
 
@@ -153,7 +162,17 @@ def get_dataset(scope, id_dataset):
     :param type: int
     :returns: dict<TDataset>
     """
-    dataset = db.get_or_404(TDatasets, id_dataset)
+    dataset = (
+        db.session.execute(
+            select(TDatasets)
+            .options(
+                joinedload(TDatasets.production_database).joinedload(TProductionDatabase.contact)
+            )
+            .where(TDatasets.id_dataset == id_dataset)
+        )
+    ).scalar_one_or_none()
+    if dataset is None:
+        raise NotFound(f"Dataset {id_dataset} not found")
     if not dataset.has_instance_permission(scope=scope):
         raise Forbidden(f"User {g.current_user} cannot read dataset {dataset.id_dataset}")
 
@@ -166,6 +185,7 @@ def get_dataset(scope, id_dataset):
             "cor_dataset_actor.organism",
             "cor_dataset_actor.role",
             "modules",
+            "nomenclature_data_category",
             "nomenclature_data_type",
             "nomenclature_collecting_method",
             "nomenclature_data_origin",
@@ -173,6 +193,7 @@ def get_dataset(scope, id_dataset):
             "nomenclature_resource_type",
             "cor_objectifs",
             "cor_territories",
+            "cor_classes_ebv",
             "acquisition_framework",
             "acquisition_framework.creator",
             "acquisition_framework.cor_af_actor",
@@ -180,6 +201,11 @@ def get_dataset(scope, id_dataset):
             "acquisition_framework.cor_af_actor.organism",
             "acquisition_framework.cor_af_actor.role",
             "sources",
+            "publications",
+            "production_database.id_production_database",
+            "production_database.name",
+            "production_database.contact.identifiant",
+            "production_database.contact.id_role",
         ]
     )
     return dataset_schema.jsonify(dataset)
@@ -204,6 +230,306 @@ def delete_dataset(scope, ds_id):
         )
     db.session.delete(dataset)
     db.session.commit()
+    return "", 204
+
+
+@routes.route("/publications", methods=["GET", "POST"])
+@permissions.check_cruved_scope("R", module_code="METADATA")
+@login_required
+def get_publications():
+    """
+    Get publications list, paginated and searchable
+    .. :quickref: Metadata;
+    :query int page: page number (default 1)
+    :query int per_page: items per page (default 10)
+    :query str search: search term in reference, publication or url
+    :query int type_publication: filter by publication type. If -1 we get one that have no type
+    :query int orderby: order by column (default id_publication)
+    :query str order: order direction (default desc)
+    """
+    page = request.args.get("page", type=int, default=1)
+    per_page = request.args.get("per_page", type=int, default=10)
+    search = request.args.get("search", type=str, default="").strip()
+    similarity_search = request.args.get("similarity_search", type=str, default="").strip()
+    type_publication = request.args.get("type_publication", type=int, default=None)
+    orderby = request.args.get("orderby", type=str, default="id_publication")
+    order = request.args.get("order", type=str, default="desc").lower()
+
+    query = select(TDatatypePublication)
+
+    if search:
+        search_pattern = f"%{search}%"
+        query = query.where(
+            or_(
+                TDatatypePublication.publication_reference.ilike(search_pattern),
+                TDatatypePublication.description_publication.ilike(search_pattern),
+                TDatatypePublication.publication_url.ilike(search_pattern),
+            )
+        )
+
+    if similarity_search:
+        similarity = func.word_similarity(
+            TDatatypePublication.publication_reference, similarity_search
+        )
+        query = query.where(similarity > 0.7).order_by(similarity.desc())
+
+    if type_publication == -1:
+        query = query.where(TDatatypePublication.id_nomenclature_type_publication.is_(None))
+    elif type_publication is not None:
+        query = query.where(
+            TDatatypePublication.id_nomenclature_type_publication == type_publication
+        )
+
+    sortable_columns = {
+        "id_publication": TDatatypePublication.id_publication,
+        "publication_reference": TDatatypePublication.publication_reference,
+        "publication_url": TDatatypePublication.publication_url,
+        "id_nomenclature_type_publication": (TDatatypePublication.id_nomenclature_type_publication),
+    }
+    sort_column = sortable_columns.get(
+        orderby,
+        TDatatypePublication.id_publication,
+    )
+
+    if order == "asc":
+        query = query.order_by(sort_column.asc())
+    else:
+        query = query.order_by(sort_column.desc())
+
+    pagination = db.paginate(
+        query,
+        page=page,
+        per_page=per_page,
+        error_out=False,
+        max_per_page=100,
+    )
+
+    return jsonify(
+        {
+            "items": PublicationSchema(
+                many=True,
+                only=["+digitizer.nom_complet", "+cruved", "+datasets", "+acquisition_frameworks"],
+            ).dump(pagination.items),
+            "total": pagination.total,
+            "page": pagination.page,
+            "pages": pagination.pages,
+            "per_page": pagination.per_page,
+        }
+    )
+
+
+@routes.route("/publication/<int:id_publication>", methods=["GET"])
+@permissions.check_cruved_scope("R", module_code="METADATA")
+@login_required
+def get_publication(id_publication):
+    publication = db.get_or_404(TDatatypePublication, id_publication)
+    return PublicationSchema(
+        only=[
+            "+digitizer.nom_complet",
+            "+cruved",
+            "+datasets",
+            "+datasets.id_nomenclature_data_category",
+            "+acquisition_frameworks",
+        ]
+    ).jsonify(publication)
+
+
+def _get_required_ids(*keys):
+    values = [request.json.get(key) for key in keys]
+    if not all(values):
+        return None, (jsonify({"error": f"Missing {' or '.join(keys)}"}), 400)
+    return values, None
+
+
+def _get_publication_and_related(scope, publication_id, model, related_id):
+    publication = db.get_or_404(
+        TDatatypePublication, publication_id, description="Publication not found"
+    )
+    publication.has_instance_permission(scope=scope)
+    related = db.get_or_404(model, related_id, description=f"{{model}} not found")
+    related.has_instance_permission(scope=scope)
+    return publication, related
+
+
+def _associate(table, **values):
+    try:
+        db.session.execute(table.insert().values(**values))
+        db.session.commit()
+    except IntegrityError as err:
+        db.session.rollback()
+        if isinstance(err.orig, UniqueViolation):
+            raise BadRequest("This association already exists.")
+        raise
+
+
+def _disassociate(table, condition):
+    try:
+        db.session.execute(table.delete().where(condition))
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        raise
+
+
+@routes.route("/publication/associate_dataset", methods=["POST"])
+@permissions.check_cruved_scope("U", get_scope=true, module_code="METADATA")
+@login_required
+def associate_dataset_to_publication(scope):
+    ids, error = _get_required_ids("publication_id", "dataset_id")
+    if error:
+        return error
+    publication_id, dataset_id = ids
+
+    publication, dataset = _get_publication_and_related(
+        scope, publication_id, TDatasets, dataset_id
+    )
+    _associate(
+        cor_dataset_publication,
+        id_dataset=dataset.id_dataset,
+        id_publication=publication.id_publication,
+    )
+    return jsonify({"message": "Dataset associated to publication"}), 200
+
+
+@routes.route("/publication/associate_af", methods=["POST"])
+@permissions.check_cruved_scope("U", get_scope=true, module_code="METADATA")
+@login_required
+def associate_af_to_publication(scope):
+    ids, error = _get_required_ids("publication_id", "af_id")
+    if error:
+        return error
+    publication_id, af_id = ids
+
+    publication, af = _get_publication_and_related(
+        scope, publication_id, TAcquisitionFramework, af_id
+    )
+    _associate(
+        cor_acquisition_framework_publication,
+        id_acquisition_framework=af.id_acquisition_framework,
+        id_publication=publication.id_publication,
+    )
+    return jsonify({"message": "Af associated to publication"}), 200
+
+
+@routes.route("/publication/disassociate_dataset", methods=["POST"])
+@permissions.check_cruved_scope("U", get_scope=true, module_code="METADATA")
+@login_required
+def disassociate_dataset_from_publication(scope):
+    publication_id = request.json.get("publication_id", None)
+    dataset_id = request.json.get("dataset_id", None)
+    if not publication_id or not dataset_id:
+        return jsonify({"error": "Missing publication or dataset id"}), 400
+    publication = db.get_or_404(TDatatypePublication, publication_id)
+    dataset = db.get_or_404(TDatasets, dataset_id)
+    publication.has_instance_permission(scope=scope)
+    dataset.has_instance_permission(scope=scope)
+    try:
+        db.session.execute(
+            cor_dataset_publication.delete().where(
+                (cor_dataset_publication.c.id_dataset == dataset.id_dataset)
+                & (cor_dataset_publication.c.id_publication == publication.id_publication)
+            )
+        )
+        db.session.commit()
+    except Exception as err:
+        db.session.rollback()
+        raise err
+    return jsonify({"message": "Dataset disassociated from publication"}), 200
+
+
+@routes.route("/publication/disassociate_af", methods=["POST", "GET"])
+@permissions.check_cruved_scope("U", get_scope=true, module_code="METADATA")
+@login_required
+def disassociate_af_from_publication(scope):
+    publication_id = request.json.get("publication_id", None)
+    af_id = request.json.get("af_id", None)
+    if not publication_id or not af_id:
+        return jsonify({"error": "Missing publication or af id"}), 400
+    publication = db.get_or_404(TDatatypePublication, publication_id)
+    af = db.get_or_404(TAcquisitionFramework, af_id)
+    publication.has_instance_permission(scope=scope)
+    af.has_instance_permission(scope=scope)
+    try:
+        db.session.execute(
+            cor_acquisition_framework_publication.delete().where(
+                (
+                    cor_acquisition_framework_publication.c.id_acquisition_framework
+                    == af.id_acquisition_framework
+                )
+                & (
+                    cor_acquisition_framework_publication.c.id_publication
+                    == publication.id_publication
+                )
+            )
+        )
+        db.session.commit()
+    except Exception as err:
+        db.session.rollback()
+        raise err
+    return jsonify({"message": "Af disassociated from publication"}), 200
+
+
+@routes.route("/publication", methods=["POST"])
+@permissions.check_cruved_scope("C", module_code="METADATA")
+def create_publication():
+    """
+    Post one Dataset data
+    .. :quickref: Metadata;
+    """
+    return PublicationSchema().jsonify(
+        publication_handler(
+            publication=TDatatypePublication(id_digitizer=g.current_user.id_role),
+            data=request.get_json(),
+        )
+    )
+
+
+@routes.route("/publication/<int:id_publication>", methods=["POST"])
+@permissions.check_cruved_scope("U", get_scope=True, module_code="METADATA")
+def update_publication(id_publication, scope):
+    """
+    Update publication
+    .. :quickref: Metadata;
+    """
+    publication = db.get_or_404(TDatatypePublication, id_publication)
+    if not publication.has_instance_permission(scope):
+        raise Forbidden(
+            f"User {g.current_user} cannot update publication {publication.id_publication}"
+        )
+    return PublicationSchema().jsonify(
+        publication_handler(
+            publication=publication,
+            data=request.get_json(),
+        )
+    )
+
+
+@routes.route("/publication/<int:id_publication>", methods=["DELETE"])
+@permissions.check_cruved_scope("D", get_scope=True, module_code="METADATA")
+def delete_publication(id_publication, scope):
+    """
+    Delete publication
+    .. :quickref: Metadata;
+    """
+    publication = db.get_or_404(TDatatypePublication, id_publication)
+    if not publication.has_instance_permission(scope):
+        raise Forbidden(
+            f"User {g.current_user} cannot delete publication {publication.id_publication}"
+        )
+    if publication.acquisition_frameworks:
+        raise Conflict(
+            "La suppression de la publication est impossible "
+            "car elle contient des cadres d'acquisition."
+        )
+
+    if publication.datasets:
+        raise Conflict(
+            "La suppression de la publication est impossible "
+            "car elle contient des jeux de données."
+        )
+    db.session.delete(publication)
+    db.session.commit()
+
     return "", 204
 
 
@@ -383,35 +709,6 @@ def my_csv_resp(filename, data, columns, _header, separator=";"):
     return Response(out, headers=headers)
 
 
-def datasetHandler(dataset, data):
-    datasetSchema = DatasetSchema(
-        only=["cor_dataset_actor", "modules", "cor_objectifs", "cor_territories"],
-        unknown=EXCLUDE,
-    )
-    # a dataset already having an id_dataset is being updated: allow partial payloads
-    is_update = dataset.id_dataset is not None
-    try:
-        dataset = datasetSchema.load(data, instance=dataset, partial=is_update)
-    except ValidationError as error:
-        raise BadRequest(error.messages)
-
-    db.session.add(dataset)
-
-    try:
-        db.session.commit()
-    except IntegrityError as err:
-        db.session.rollback()
-
-        if isinstance(err.orig, UniqueViolation):
-            detail = getattr(getattr(err.orig, "diag", None), "message_detail", None)
-            if not detail:
-                detail = str(err.orig).splitlines()[0]
-
-            raise Conflict(detail) from err
-        raise InternalServerError("An error occured while creating/updating a dataset !")
-    return dataset
-
-
 @routes.route("/dataset", methods=["POST"])
 @permissions.check_cruved_scope("C", module_code="METADATA")
 def create_dataset():
@@ -420,7 +717,7 @@ def create_dataset():
     .. :quickref: Metadata;
     """
     return DatasetSchema().jsonify(
-        datasetHandler(
+        dataset_handler(
             dataset=TDatasets(id_digitizer=g.current_user.id_role),
             data=request.get_json(),
         )
@@ -439,7 +736,9 @@ def update_dataset(id_dataset, scope):
     if not dataset.has_instance_permission(scope):
         raise Forbidden(f"User {g.current_user} cannot update dataset {dataset.id_dataset}")
     # TODO: specify which fields may be updated
-    return DatasetSchema().jsonify(datasetHandler(dataset=dataset, data=request.get_json()))
+    return DatasetSchema().jsonify(
+        dataset_handler(dataset=dataset, data=request.get_json(), partial=True)
+    )
 
 
 @routes.route("/dataset/export_pdf/<id_dataset>", methods=["GET", "POST"])
@@ -453,7 +752,7 @@ def get_export_pdf_dataset(id_dataset, scope):
         raise Forbidden("Vous n'avez pas les droits d'exporter ces informations")
     dataset_schema = DatasetSchema(
         only=[
-            "nomenclature_data_type",
+            "nomenclature_data_category",
             "nomenclature_collecting_method",
             "acquisition_framework",
             "cor_dataset_actor.nomenclature_actor_role",
@@ -716,16 +1015,16 @@ def get_acquisition_framework(scope, id_acquisition_framework):
                 "cor_af_actor.nomenclature_actor_role",
                 "cor_af_actor.organism",
                 "cor_af_actor.role",
-                "cor_volets_sinp",
                 "cor_objectifs",
                 "cor_territories",
                 "datasets",
                 "datasets.creator",
-                "datasets.nomenclature_data_type",
+                "datasets.nomenclature_data_category",
                 "datasets.cor_dataset_actor",
                 "datasets.cor_dataset_actor.nomenclature_actor_role",
                 "datasets.cor_dataset_actor.organism",
                 "datasets.cor_dataset_actor.role",
+                "publications",
             ],
             exclude=exclude,
         )
@@ -763,54 +1062,6 @@ def delete_acquisition_framework(scope, af_id):
     return "", 204
 
 
-def acquisitionFrameworkHandler(request, *, acquisition_framework):
-    # Test des droits d'édition du acquisition framework si modification
-
-    # 🔎 Récupération des données brutes du body
-
-    is_update = acquisition_framework.id_acquisition_framework is not None
-    if is_update:
-        user_cruved = get_scopes_by_action(module_code="METADATA")
-
-        # verification des droits d'édition pour le acquisition framework
-        if not acquisition_framework.has_instance_permission(user_cruved["U"]):
-            raise Forbidden(
-                "User {} has no right in acquisition_framework {}".format(
-                    g.current_user, acquisition_framework.id_acquisition_framework
-                )
-            )
-    else:
-        acquisition_framework.id_digitizer = g.current_user.id_role
-
-    acquisitionFrameworkSchema = AcquisitionFrameworkSchema(
-        only=["cor_af_actor", "cor_volets_sinp", "cor_objectifs", "cor_territories"],
-        unknown=EXCLUDE,
-    )
-    try:
-        acquisition_framework = acquisitionFrameworkSchema.load(
-            request.get_json(), instance=acquisition_framework, partial=is_update
-        )
-    except ValidationError as error:
-        log.exception(error)
-        raise BadRequest(error.messages)
-
-    db.session.add(acquisition_framework)
-    try:
-        db.session.commit()
-    except IntegrityError as err:
-        db.session.rollback()
-
-        if isinstance(err.orig, UniqueViolation):
-            detail = getattr(getattr(err.orig, "diag", None), "message_detail", None)
-            if not detail:
-                detail = str(err.orig).splitlines()[0]
-
-            raise Conflict(detail) from err
-        raise InternalServerError("An error occured while creating/updating a dataset !")
-
-    return acquisition_framework
-
-
 @routes.route("/acquisition_framework", methods=["POST"])
 @permissions.check_cruved_scope("C", module_code="METADATA")
 def create_acquisition_framework():
@@ -821,7 +1072,9 @@ def create_acquisition_framework():
     # TODO: spécifier only
     # create new acquisition_framework
     return AcquisitionFrameworkSchema(only=[]).dump(
-        acquisitionFrameworkHandler(request=request, acquisition_framework=TAcquisitionFramework())
+        acquisition_framework_handler(
+            request=request, acquisition_framework=TAcquisitionFramework()
+        )
     )
 
 
@@ -839,7 +1092,7 @@ def updateAcquisitionFramework(id_acquisition_framework, scope):
             f"acquisition framework {af.id_acquisition_framework}"
         )
     return AcquisitionFrameworkSchema().dump(
-        acquisitionFrameworkHandler(request=request, acquisition_framework=af)
+        acquisition_framework_handler(request=request, acquisition_framework=af, partial=True)
     )
 
 
@@ -1014,3 +1267,73 @@ def close_acquisition_framework(af_id):
         db.session.commit()  # On commit que si tout a bien fonctionné
 
     return af.as_dict()
+
+
+@routes.route("/production_database", methods=["GET"])
+@permissions.check_cruved_scope("R", module_code="METADATA")
+@json_resp
+def get_production_databases() -> list[dict]:
+    """
+    Get all production databases
+    """
+    databases = (
+        db.session.execute(select(TProductionDatabase).order_by(TProductionDatabase.name))
+        .scalars()
+        .all()
+    )
+    schema = ProductionDatabaseSchema(many=True)
+    return schema.dump(databases)
+
+
+@routes.route("/production_database/<int:id_production_database>", methods=["GET"])
+@permissions.check_cruved_scope("R", module_code="METADATA", object_code="PRODUCTION_DATABASE")
+@json_resp
+def get_production_database(id_production_database: int) -> dict:
+    """
+    Get production database detail
+    """
+    database = db.get_or_404(TProductionDatabase, id_production_database)
+    schema = ProductionDatabaseSchema()
+    return schema.dump(database)
+
+
+@routes.route("/production_database", methods=["POST"])
+@permissions.check_cruved_scope("C", module_code="METADATA", object_code="PRODUCTION_DATABASE")
+@json_resp
+def create_production_database() -> dict:
+    """
+    Create a new production database
+    """
+    data = request.get_json()
+    schema = ProductionDatabaseSchema()
+    data = schema.load(data)
+
+    db.session.add(data)
+    db.session.commit()
+
+    return schema.dump(data)
+
+
+@routes.route("/production_database/<int:id_production_database>", methods=["PUT"])
+@permissions.check_cruved_scope("U", module_code="METADATA", object_code="PRODUCTION_DATABASE")
+@json_resp
+def update_production_database(id_production_database: int) -> dict:
+    """
+    Update a production database
+    """
+    database = db.get_or_404(TProductionDatabase, id_production_database)
+    data = request.get_json()
+    schema = ProductionDatabaseSchema()
+    updated_database = schema.load(data, instance=database, partial=True)
+
+    db.session.commit()
+    return schema.dump(updated_database)
+
+
+@routes.route("/production_database/<int:id_production_database>", methods=["DELETE"])
+@permissions.check_cruved_scope("D", module_code="METADATA", object_code="PRODUCTION_DATABASE")
+def delete_production_database(id_production_database: int):
+    database = db.get_or_404(TProductionDatabase, id_production_database)
+    db.session.delete(database)
+    db.session.commit()
+    return "", 204

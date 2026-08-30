@@ -104,9 +104,12 @@
             {{ data.dataset_desc }}
             {% endif %}
             <br>
-            Type de données :
-            {% if data.nomenclature_data_type.label_default: %}
-            {{ data.nomenclature_data_type.label_default }}
+            Catégorie de données :
+            {% if data.nomenclature_data_category.label_default: %}
+            {{ data.nomenclature_data_category.label_default }}
+            {% endif %}
+            {% if data.precision_data_category: %}
+            : {{ data.precision_data_category }}
             {% endif %}
           </p>
         </div>
@@ -125,19 +128,6 @@
           </p>
         </div>
         {% endif %}
-
-        <div class="information">
-          <p class="info-titre">Territoires</p>
-          <p class="info-contenu">
-            {% if data.terrestrial_domain: %}
-            Domaine continental
-            {% endif %}
-            <br>
-            {% if data.marine_domain: %}
-            Domaine marin
-            {% endif %}
-          </p>
-        </div>
 
         <div class="information">
           <p class="info-titre">Cadre de référence</p>

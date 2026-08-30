@@ -344,7 +344,9 @@ INSERT INTO gn_meta.t_acquisition_frameworks (
         acquisition_framework_start_date,
         acquisition_framework_end_date,
         meta_create_date,
-        meta_update_date
+        meta_update_date,
+        marine_domain,
+        terrestrial_domain
     )
 VALUES (
         '5b054340-210c-4350-9034-300543210c43',
@@ -361,7 +363,9 @@ VALUES (
         '1973-03-27',
         null,
         '2018-09-01 10:35:08',
-        null
+        null,
+        false,
+        true
     );
 ;
 INSERT INTO gn_meta.t_acquisition_frameworks (
@@ -406,10 +410,8 @@ INSERT INTO gn_meta.t_datasets (
         dataset_name,
         dataset_shortname,
         dataset_desc,
-        id_nomenclature_data_type,
+        id_nomenclature_data_category,
         keywords,
-        marine_domain,
-        terrestrial_domain,
         bbox_west,
         bbox_east,
         bbox_south,
@@ -434,10 +436,8 @@ VALUES (
         'JDD-TEST-IMPORT-ADMIN',
         'Jeu de données - test import admin',
         'JDD-TEST-IMPORT-ADMIN',
-        ref_nomenclatures.get_id_nomenclature('DATA_TYP', '1'),
+        ref_nomenclatures.get_id_nomenclature('DATA_CATEGORY', '1'),
         'Aléatoire, hors protocole, faune, flore, fonge',
-        false,
-        true,
         4.85695,
         6.85654,
         44.5020,
@@ -462,10 +462,8 @@ VALUES (
         'JDD-TEST-IMPORT-2',
         'Jeu de données - test import 2',
         'Jeu de données - test import 2',
-        ref_nomenclatures.get_id_nomenclature('DATA_TYP', '1'),
+        ref_nomenclatures.get_id_nomenclature('DATA_CATEGORY', '1'),
         'Aléatoire, ATBI, biodiversité, faune, flore, fonge',
-        false,
-        true,
         4.85695,
         6.85654,
         44.5020,
@@ -490,10 +488,8 @@ VALUES (
         'JDD-TEST-IMPORT-3',
         'Jeu de données - test import 3',
         'Jeu de données - test import 3',
-        ref_nomenclatures.get_id_nomenclature('DATA_TYP', '1'),
+        ref_nomenclatures.get_id_nomenclature('DATA_CATEGORY', '1'),
         'Aléatoire, hors protocole, faune, flore, fonge',
-        false,
-        true,
         4.85695,
         6.85654,
         44.5020,
@@ -518,10 +514,8 @@ VALUES (
         'JDD-TEST-IMPORT-INACTIF',
         'Jeu de données - test import inactif',
         'Jeu de données - test import inactif',
-        ref_nomenclatures.get_id_nomenclature('DATA_TYP', '1'),
+        ref_nomenclatures.get_id_nomenclature('DATA_CATEGORY', '1'),
         'Aléatoire, hors protocole, faune, flore, fonge',
-        false,
-        true,
         4.85695,
         6.85654,
         44.5020,
@@ -622,18 +616,6 @@ VALUES (
         )
     );
 -- Renseigner les tables de correspondance
-INSERT INTO gn_meta.cor_acquisition_framework_voletsinp (
-        id_acquisition_framework,
-        id_nomenclature_voletsinp
-    )
-VALUES (
-        (
-            SELECT id_acquisition_framework
-            FROM gn_meta.t_acquisition_frameworks
-            WHERE unique_acquisition_framework_id = '5b054340-210c-4350-9034-300543210c43'
-        ),
-        ref_nomenclatures.get_id_nomenclature('VOLET_SINP', '1')
-    );
 INSERT INTO gn_meta.cor_acquisition_framework_objectif (
         id_acquisition_framework,
         id_nomenclature_objectif

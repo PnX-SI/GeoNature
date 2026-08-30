@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { MetadataService } from '../services/metadata.service';
+import { MetadataService } from '../../services/metadata.service';
 import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/confirmation.dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';

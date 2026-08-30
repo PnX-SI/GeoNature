@@ -47,8 +47,6 @@ export class DatasetFormService {
       map((id_nomenclature: number): any => {
         //formate les donnés par défauts envoyées au formulaire
         return {
-          terrestrial_domain: true,
-          marine_domain: false,
           validable: true,
           active: true,
           cor_dataset_actor: [{ id_nomenclature_actor_role: id_nomenclature }],
@@ -65,20 +63,22 @@ export class DatasetFormService {
       dataset_name: [null, [Validators.required]],
       dataset_shortname: [null, [Validators.required, Validators.maxLength(30)]],
       dataset_desc: [null, Validators.required],
-      id_nomenclature_data_type: [null, Validators.required],
+      id_nomenclature_data_category: [null, Validators.required],
+      precision_data_category: null,
       keywords: null,
-      terrestrial_domain: null,
-      marine_domain: null,
       id_nomenclature_collecting_method: [null, Validators.required],
       id_nomenclature_data_origin: [null, Validators.required],
       id_nomenclature_source_status: [null, Validators.required],
       id_nomenclature_resource_type: [null, Validators.required],
+      id_nomenclature_data_type: [null, Validators.required],
       validable: null,
       active: [null, Validators.required],
       id_taxa_list: null,
       modules: [[]],
       cor_objectifs: [[], Validators.required],
       cor_territories: [[], Validators.required],
+      id_production_database: null,
+      cor_classes_ebv: [[]],
       cor_dataset_actor: this.fb.array(
         [],
         [

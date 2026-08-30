@@ -106,6 +106,17 @@
                 <span>{{ 'Taxons' | translate }}</span>
                 <span class="af-stat-badge__value">{{ stats.nb_taxons }}</span>
               </span>
+              <span
+                *ngIf="stats.nb_habitats"
+                class="badge badge-pill badge-light border mr-2 mb-2 af-stat-badge"
+              >
+                <img
+                  src="./assets/images/Habitat_icon.svg"
+                  alt="Icône Habitat"
+                />
+                <span>{{ 'Habitats' | translate }}</span>
+                <span class="af-stat-badge__value">{{ stats.nb_habitats }}</span>
+              </span>
             </div>
           </div>
         </div>
@@ -187,6 +198,14 @@
               <b>{{ 'MetaData.TerritorialExtent' | translate }} :</b>
               {{ af?.nomenclature_territorial_level?.label_default }}
             </div>
+            <div class="a">
+              <b>{{ 'MetaData.DatasetCard.LandCoverage' | translate }} :</b>
+              {{ (af?.terrestrial_domain ? 'Yes' : 'No') | translate }}
+            </div>
+            <div class="a">
+              <b>{{ 'MetaData.DatasetCard.MarineAreaCoverage' | translate }} :</b>
+              {{ (af?.marine_domain ? 'Yes' : 'No') | translate }}
+            </div>
 
             <br />
           </div>
@@ -244,21 +263,6 @@
 
           <div *ngIf="af?.keywords">
             <div class="b">{{ 'Keywords' | translate }}</div>
-            <div class="a">{{ af?.keywords }}</div>
-            <br />
-          </div>
-
-          <div *ngIf="af?.bibliographical_references">
-            <div class="b">{{ 'MetaData.BibliographicalReferences' | translate }}</div>
-            <ul class="a">
-              <li *ngFor="let ref of af?.bibliographical_references">
-                -
-                <b>{{ 'Url' | translate }} :</b>
-                <a [href]="ref.publication_url">{{ ref.publication_url }}</a>
-                <b>{{ 'MetaData.Reference' | translate }} :</b>
-                {{ ref.publication_reference }}
-              </li>
-            </ul>
             <div class="a">{{ af?.keywords }}</div>
             <br />
           </div>
@@ -331,10 +335,7 @@
         </div>
       </div>
 
-      <div
-        *ngIf="stats && stats.nb_dataset"
-        class="card"
-      >
+      <div class="card">
         <div class="card-header d-flex justify-content-between">
           <h3>{{ 'MetaData.AssociatedDatasets' | translate }}</h3>
           <button
@@ -349,43 +350,22 @@
             <mat-icon>add</mat-icon>
           </button>
         </div>
-        <div class="card-body associated-datasets">
-          <table>
-            <tr *ngFor="let dataset of af?.datasets">
-              <td [ngSwitch]="dataset.nomenclature_data_type.cd_nomenclature">
-                <img
-                  width="60"
-                  *ngSwitchCase="'1'"
-                  src="./assets/images/Taxon_icon_vert.svg"
-                  alt=""
-                />
-                <img
-                  width="60"
-                  *ngSwitchCase="'2'"
-                  src="./assets/images/Habitat_icon_vert.svg"
-                  alt=""
-                />
-                <img
-                  width="60"
-                  *ngSwitchDefault
-                  src="./assets/images/Taxon_icon_vert.svg"
-                  alt=""
-                />
-              </td>
-              <td>
-                <a
-                  [routerLink]="['/metadata/dataset_detail', dataset.id_dataset]"
-                  class="text-dark"
-                >
-                  {{ dataset.dataset_name }}
-                </a>
-                <div>
-                  <small>{{ dataset.unique_dataset_id }}</small>
-                </div>
-              </td>
-            </tr>
-          </table>
+        <pnx-associated-dataset-card-list
+          [datasets]="af?.datasets"
+        ></pnx-associated-dataset-card-list>
+        <div class="card-header d-flex justify-content-between">
+          <h3>{{ 'MetaData.Publications.LinkedPublication' | translate }}</h3>
+          <pnx-publication-associate-button
+            [elementId]="af?.id_acquisition_framework"
+            [from]="'AcquisitionFramework'"
+            [to]="'Publication'"
+          ></pnx-publication-associate-button>
         </div>
+        <pnx-associated-publication-card-list
+          [publications]="af?.publications"
+          [association]="'AcquisitionFramework'"
+          [elementId]="af?.id_acquisition_framework"
+        ></pnx-associated-publication-card-list>
       </div>
     </div>
   </div>

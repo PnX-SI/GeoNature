@@ -1,0 +1,10 @@
+<button
+  [class.disabled-look]="!isDeletable()"
+  mat-icon-button
+  type="button"
+  (click)="onDeletePublication()"
+  [matTooltip]="getDeleteTooltip()"
+  [attr.data-qa]="'pnx-publications-delete-link'"
+>
+  <mat-icon>delete</mat-icon>
+</button>

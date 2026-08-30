@@ -7,17 +7,17 @@ import { switchMap, tap, map } from 'rxjs/operators';
 
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { CommonService } from '@geonature_common/service/common.service';
-import { ActorFormService } from '../services/actor-form.service';
-import { AcquisitionFrameworkFormService } from '../services/af-form.service';
-import { MetadataService } from '../services/metadata.service';
-import { MetadataDataService } from '../services/metadata-data.service';
+import { ActorFormService } from '../../services/actor-form.service';
+import { AcquisitionFrameworkFormService } from '../../services/af-form.service';
+import { MetadataService } from '../../services/metadata.service';
+import { MetadataDataService } from '../../services/metadata-data.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { TranslateService } from '@librairies/@ngx-translate/core';
 
 @Component({
   selector: 'pnx-af-form',
   templateUrl: './af-form.component.html',
-  styleUrls: ['../form.component.scss'],
+  styleUrls: ['../../form.component.scss'],
   providers: [AcquisitionFrameworkFormService],
 })
 export class AfFormComponent implements OnInit, AfterViewInit {

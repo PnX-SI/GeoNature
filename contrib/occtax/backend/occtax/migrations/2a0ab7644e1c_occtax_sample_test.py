@@ -18,7 +18,8 @@ branch_labels = ("occtax-samples-test",)
 depends_on = (
     "3d0bf4ee67d1",  # geonature samples data
     "addb71d8efad",  # occtax
-    "ae0b6362fb22",  # geonature@ae0b6362fb22 - "cor_dataset_objectifs"
+    "7808ac8b10b6",  # geonature@7808ac8b10b6 - "refactor terrestrial and marine domain fields for metadata"
+    "83572524f062",  # geonature needed migration
 )
 
 
@@ -111,12 +112,6 @@ def downgrade():
     DELETE FROM gn_meta.cor_acquisition_framework_objectif cafo
     USING gn_meta.t_acquisition_frameworks taf
     WHERE cafo.id_acquisition_framework = taf.id_acquisition_framework
-    AND taf.unique_acquisition_framework_id='57b7d0f2-4183-4b7b-8f08-6e105d476dc5'
-    """)
-    op.execute("""
-    DELETE FROM gn_meta.cor_acquisition_framework_voletsinp cafv
-    USING gn_meta.t_acquisition_frameworks taf
-    WHERE cafv.id_acquisition_framework = taf.id_acquisition_framework
     AND taf.unique_acquisition_framework_id='57b7d0f2-4183-4b7b-8f08-6e105d476dc5'
     """)
     op.execute("""

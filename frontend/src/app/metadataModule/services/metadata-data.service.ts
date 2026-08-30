@@ -33,4 +33,12 @@ export class MetadataDataService {
   patchDataset(id_dataset, value) {
     return this._api.patch<any>(`${this.config.API_ENDPOINT}/meta/dataset/${id_dataset}`, value);
   }
+
+  getProductionDatabases() {
+    return this._api.get<any>(`${this.config.API_ENDPOINT}/meta/production_database`);
+  }
+
+  createProductionDatabase(data: any) {
+    return this._api.post<any>(`${this.config.API_ENDPOINT}/meta/production_database`, data);
+  }
 }

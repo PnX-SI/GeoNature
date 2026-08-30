@@ -7,11 +7,10 @@ from .models import (
     TAcquisitionFramework,
     CorAcquisitionFrameworkActor,
     CorDatasetActor,
-    TBibliographicReference,
+    TDatatypePublication,
 )
 from geonature.utils.env import MA, db
 from geonature.utils.schema import CruvedSchemaMixin
-from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_commons.schemas import ModuleSchema
 from geonature.core.schemas import AdditionalDataWithNomenclatureField
 
@@ -24,6 +23,8 @@ from geonature.core.gn_permissions.tools import get_scopes_by_action
 from utils_flask_sqla.schema import SmartRelationshipsMixin
 from pypnusershub.schemas import UserSchema, OrganismeSchema
 from pypnnomenclature.schemas import NomenclatureSchema
+
+from .models.productiondatabase import TProductionDatabase
 
 
 class DatasetActorSchema(SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
@@ -47,6 +48,19 @@ class DatasetActorSchema(SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
         return data
 
 
+class ProductionDatabaseSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
+    class Meta:
+        model = TProductionDatabase
+        include_fk = True
+        load_instance = True
+        sqla_session = db.session
+
+    name = fields.String(required=True)
+    id_contact = fields.Integer(allow_none=True)
+    uuid_production_database = fields.String(allow_none=True)
+    contact = MA.Nested(UserSchema, dump_only=True, allow_none=True)
+
+
 class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
     class Meta:
         model = TDatasets
@@ -61,11 +75,12 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
     # NOT NULL columns populated server-side (Python default= / DB default) that clients
     # legitimately omit or send as null on creation — see TDatasets model for the defaults.
     unique_dataset_id = MA.auto_field(required=False, allow_none=True)
-    id_nomenclature_data_type = MA.auto_field(required=False)
+    id_nomenclature_data_category = MA.auto_field(required=False)
     id_nomenclature_collecting_method = MA.auto_field(required=False)
     id_nomenclature_data_origin = MA.auto_field(required=False, allow_none=True)
     id_nomenclature_source_status = MA.auto_field(required=False)
     id_nomenclature_resource_type = MA.auto_field(required=False)
+    id_nomenclature_data_type = MA.auto_field(required=True)
     active = MA.auto_field(required=False)
     cor_dataset_actor = MA.Nested(DatasetActorSchema, many=True, unknown=EXCLUDE)
     modules = MA.Nested(
@@ -76,6 +91,7 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
     additional_data = AdditionalDataWithNomenclatureField(
         module_code="METADATA", object_code="METADATA_JEU_DE_DONNEES"
     )
+    nomenclature_data_category = MA.Nested(NomenclatureSchema, dump_only=True, required=True)
     nomenclature_data_type = MA.Nested(NomenclatureSchema, dump_only=True)
     nomenclature_collecting_method = MA.Nested(NomenclatureSchema, dump_only=True)
     nomenclature_data_origin = MA.Nested(NomenclatureSchema, dump_only=True)
@@ -83,8 +99,12 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
     nomenclature_resource_type = MA.Nested(NomenclatureSchema, dump_only=True)
     cor_objectifs = MA.Nested(NomenclatureSchema, many=True, unknown=EXCLUDE)
     cor_territories = MA.Nested(NomenclatureSchema, many=True, unknown=EXCLUDE)
+    cor_classes_ebv = MA.Nested(NomenclatureSchema, many=True, required=False, unknown=EXCLUDE)
     acquisition_framework = MA.Nested("AcquisitionFrameworkSchema", dump_only=True)
     sources = MA.Nested(SourceSchema, many=True, dump_only=True)
+    publications = MA.Nested("PublicationSchema", many=True, dump_only=True, exclude=("datasets",))
+    id_production_database = fields.Integer(allow_none=True)
+    production_database = MA.Nested(ProductionDatabaseSchema, dump_only=True, allow_none=True)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -149,21 +169,6 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
         return data
 
 
-class BibliographicReferenceSchema(SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
-    class Meta:
-        model = TBibliographicReference
-        load_instance = True
-        include_fk = True
-
-    acquisition_framework = MA.Nested("AcquisitionFrameworkSchema", dump_only=True)
-
-    @pre_load
-    def make_biblio_ref(self, data, **kwargs):
-        if data.get("id_bibliographic_reference") is None:
-            data.pop("id_bibliographic_reference", None)
-        return data
-
-
 class AcquisitionFrameworkActorSchema(SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
     class Meta:
         model = CorAcquisitionFrameworkActor
@@ -173,7 +178,6 @@ class AcquisitionFrameworkActorSchema(SmartRelationshipsMixin, MA.SQLAlchemyAuto
     role = MA.Nested(UserSchema, dump_only=True)
     nomenclature_actor_role = MA.Nested(NomenclatureSchema, dump_only=True)
     organism = MA.Nested(OrganismeSchema, dump_only=True)
-    cor_volets_sinp = MA.Nested(OrganismeSchema, dump_only=True)
     # id_nomenclature_actor_role is NOT NULL but auto-filled server-side (ROLE_ACTEUR default)
     id_nomenclature_actor_role = MA.auto_field(required=False)
     # id_acquisition_framework is NOT NULL but set by the parent
@@ -209,11 +213,28 @@ class AcquisitionFrameworkSchema(
 
     t_datasets = MA.Nested(DatasetSchema, many=True)
     datasets = MA.Nested(DatasetSchema, many=True)
-    bibliographical_references = MA.Nested(BibliographicReferenceSchema, many=True)
     cor_af_actor = MA.Nested(AcquisitionFrameworkActorSchema, many=True, unknown=EXCLUDE)
-    cor_volets_sinp = MA.Nested(NomenclatureSchema, many=True, unknown=EXCLUDE)
     cor_objectifs = MA.Nested(NomenclatureSchema, many=True, unknown=EXCLUDE)
     cor_territories = MA.Nested(NomenclatureSchema, many=True, unknown=EXCLUDE)
     nomenclature_territorial_level = MA.Nested(NomenclatureSchema, dump_only=True)
     nomenclature_financing_type = MA.Nested(NomenclatureSchema, dump_only=True)
     creator = MA.Nested(UserSchema, dump_only=True)
+    publications = MA.Nested(
+        "PublicationSchema", many=True, dump_only=True, exclude=("acquisition_frameworks",)
+    )
+
+
+class PublicationSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
+    __module_code__ = "METADATA"
+
+    class Meta:
+        model = TDatatypePublication
+        load_instance = True
+        include_fk = True
+
+    nomenclature_type_publication = fields.Nested(NomenclatureSchema, dump_only=True)
+    digitizer = MA.Nested(UserSchema, dump_only=True)
+    datasets = MA.Nested(DatasetSchema, many=True, dump_only=True, exclude=("publications",))
+    acquisition_frameworks = MA.Nested(
+        "AcquisitionFrameworkSchema", many=True, dump_only=True, exclude=("publications",)
+    )

@@ -1,0 +1,117 @@
+<div
+  class="container-fluid mt-4"
+  *ngIf="publication && !isLoading"
+>
+  <div class="row">
+    <div class="col-12 col-md-5">
+      <a
+        mat-raised-button
+        routerLink="/metadata/publication"
+        class="mb-2"
+        data-qa="pnx-metadata-exit-publication"
+      >
+        <mat-icon>chevron_left</mat-icon>
+        Retour
+      </a>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12 col-xl-8">
+      <div class="card">
+        <div class="card-body publication-card-header">
+          <div class="row">
+            <div class="col">
+              <h3>{{ 'MetaData.Publications.Publication' | translate }}</h3>
+              <h4 class="text-muted">
+                {{ publication?.publication_reference }}
+              </h4>
+            </div>
+
+            <div class="col action-buttons">
+              <button
+                mat-mini-fab
+                class="mr-2"
+                matTooltip="{{ 'Actions.Edit' | translate }}"
+                [disabled]="!publication?.cruved?.U"
+                (click)="onEditPublication()"
+              >
+                <mat-icon>create</mat-icon>
+              </button>
+              <pnx-publication-consult-button
+                [publicationUrl]="publication.publication_url"
+                displayStyle="detailLook"
+              ></pnx-publication-consult-button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>{{ 'MetaData.DescriptiveForm' | translate }}</h3>
+        </div>
+
+        <div class="card-body">
+          <div class="b">{{ 'MetaData.ID' | translate }}</div>
+          <div class="a">
+            <b>Id publication :</b>
+            {{ publication?.id_publication }}
+          </div>
+
+          <div class="a">
+            <b>{{ 'MetaData.Publications.Reference' | translate }} :</b>
+            {{ publication?.publication_reference }}
+          </div>
+
+          <div class="a">
+            <b>{{ 'MetaData.Publications.Type' | translate }} :</b>
+            {{ getPublicationTypeLabel(+publication?.id_nomenclature_type_publication) || '-' }}
+          </div>
+
+          <div class="a">
+            <b>{{ 'MetaData.Publications.Description' | translate }} :</b>
+            {{ publication?.description_publication || '-' }}
+          </div>
+
+          <div class="a">
+            <b>{{ 'Url' | translate }} :</b>
+            <pnx-publication-consult-button
+              [publicationUrl]="publication.publication_url"
+              displayStyle="simpleUrl"
+            ></pnx-publication-consult-button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-4">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between">
+          <h3>{{ 'MetaData.Publications.LinkedDataset' | translate }}</h3>
+          <pnx-publication-associate-button
+            [elementId]="publication.id_publication"
+            [from]="'Publication'"
+            [to]="'Dataset'"
+          ></pnx-publication-associate-button>
+        </div>
+        <pnx-associated-dataset-card-list
+          [datasets]="publication.datasets"
+        ></pnx-associated-dataset-card-list>
+      </div>
+      <div class="card">
+        <div class="card-header d-flex justify-content-between">
+          <h3>{{ 'MetaData.Publications.LinkedAF' | translate }}</h3>
+          <pnx-publication-associate-button
+            [elementId]="publication.id_publication"
+            [from]="'Publication'"
+            [to]="'AcquisitionFramework'"
+          ></pnx-publication-associate-button>
+        </div>
+        <pnx-associated-af-card-list
+          [acquisitionFrameworks]="publication.acquisition_frameworks"
+        ></pnx-associated-af-card-list>
+      </div>
+    </div>
+  </div>
+</div>

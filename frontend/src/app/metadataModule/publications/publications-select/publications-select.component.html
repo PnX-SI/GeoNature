@@ -1,0 +1,28 @@
+<small>{{ label }}</small>
+<ng-select
+  [ngClass]="class"
+  [items]="publications | async"
+  bindLabel="publication_reference"
+  bindValue="id_publication"
+  [placeholder]="label"
+  [multiple]="multiSelect"
+  [clearable]="clearable"
+  [virtualScroll]="true"
+  [formControl]="parentFormControl"
+  [loading]="isLoading"
+>
+  <ng-template
+    ng-option-tmp
+    let-item="item"
+    let-index="index"
+    let-search="searchTerm"
+  >
+    <div
+      matTooltip="{{ item.publication_reference }}"
+      matTooltipPosition="after"
+      [attr.data-qa]="item.publication_reference"
+    >
+      <span class="pre-wrap">{{ item.publication_reference }}</span>
+    </div>
+  </ng-template>
+</ng-select>
