@@ -67,13 +67,15 @@ export class OcchabStoreService {
         object_code: objectCode,
       })
       .pipe(
+        // le service est fourni à l'échelle du module : une seule requête,
+        // partagée entre le formulaire de saisie et la fiche d'information.
+        // catchError est placé après : shareReplay ne met pas l'erreur en
+        // cache, chaque nouvel abonnement retente donc la requête
+        shareReplay({ bufferSize: 1, refCount: false }),
         catchError((error) => {
           console.error("Error while getting additional fields", error);
           return of([]);
-        }),
-        // le service est fourni à l'échelle du module : une seule requête,
-        // partagée entre le formulaire de saisie et la fiche d'information
-        shareReplay({ bufferSize: 1, refCount: false })
+        })
       );
   }
 

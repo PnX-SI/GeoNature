@@ -27,8 +27,12 @@ export class OcchabFormService {
   /** Définitions brutes, telles que renvoyées par l'API */
   private _rawStationDefs: Array<any> = [];
   private _rawHabitatDefs: Array<any> = [];
-  /** additional_data de la station en cours d'édition, le temps que les définitions arrivent */
-  private _stationAdditionalData = null;
+  /**
+   * Valeurs connues des champs additionnels de la station (serveur puis saisies) :
+   * elles survivent à la destruction des contrôles par le générateur (changement
+   * de JDD, définitions pas encore chargées) et complètent l'envoi au serveur.
+   */
+  private _stationAdditionalData: { [key: string]: any } | null = null;
   constructor(
     private _fb: UntypedFormBuilder,
     private _dateParser: NgbDateParserFormatter,
@@ -41,8 +45,15 @@ export class OcchabFormService {
     this.typoHabControl.valueChanges.subscribe((data) => {
       this.selectedTypo = { cd_typo: data };
     });
-    // les définitions et la station éditée arrivent dans un ordre non garanti :
-    // chacune déclenche le recalcul de son côté
+  }
+
+  /**
+   * Appelé à chaque initialisation du formulaire : sur succès le shareReplay du
+   * store rend l'abonnement immédiat, sur échec précédent il relance la requête.
+   * Les définitions et la station éditée arrivent dans un ordre non garanti :
+   * chacune déclenche le recalcul de son côté.
+   */
+  private loadAdditionalFieldsDefs() {
     this._storeService.stationAdditionalFields$.subscribe((defs) => {
       this._rawStationDefs = defs;
       this.refreshStationAdditionalFieldsDef();
@@ -88,8 +99,10 @@ export class OcchabFormService {
       const value = values[def.attribut_name];
       return {
         ...def,
+        // les dates arrivent en chaîne ISO du serveur mais en NgbDateStruct
+        // depuis les contrôles du formulaire : seule la chaîne se parse
         value:
-          def.type_widget === "date" && value
+          def.type_widget === "date" && typeof value === "string" && value
             ? this._dateParser.parse(value)
             : value,
       };
@@ -97,14 +110,20 @@ export class OcchabFormService {
   }
 
   refreshStationAdditionalFieldsDef() {
-    // les valeurs déjà saisies priment sur celles reçues du serveur : ce recalcul
-    // est aussi déclenché par un changement de JDD, en pleine saisie
+    // le générateur détruit les contrôles des champs écartés par le JDD courant :
+    // _stationAdditionalData accumule les valeurs (serveur puis saisies, ces
+    // dernières priment) pour qu'un aller-retour de JDD ne perde rien — un champ
+    // délibérément vidé reste présent à null, il ne ressuscite donc pas
     const liveValues = this.stationForm
       ? this.stationForm.get("additional_data").value
       : null;
+    this._stationAdditionalData = {
+      ...(this._stationAdditionalData || {}),
+      ...(liveValues || {}),
+    };
     this.stationAdditionalFieldsDef = this.cloneDefsWithValues(
       this._rawStationDefs,
-      { ...(this._stationAdditionalData || {}), ...(liveValues || {}) }
+      this._stationAdditionalData
     );
   }
 
@@ -115,6 +134,22 @@ export class OcchabFormService {
       this._rawHabitatDefs,
       currentHab ? currentHab.value.additional_data : null
     );
+    // FormGroup.addControl ne remplace jamais un contrôle existant : on retire
+    // ceux couverts par une définition pour que le générateur les recrée avec
+    // leur valeur (portée par la définition clonée ci-dessus, dates parsées) et
+    // leurs validateurs. Les contrôles sans définition gardent leur valeur.
+    if (currentHab) {
+      const additionalDataForm = currentHab.get(
+        "additional_data"
+      ) as UntypedFormGroup;
+      this.currentHabAdditionalFieldsDef.forEach((def) => {
+        if (additionalDataForm.get(def.attribut_name)) {
+          additionalDataForm.removeControl(def.attribut_name, {
+            emitEvent: false,
+          });
+        }
+      });
+    }
   }
 
   /**
@@ -136,10 +171,11 @@ export class OcchabFormService {
   private formatAdditionalDataBeforePost(defs: Array<any>, data: any) {
     const formatedData = this.withoutNomenclatureLabels(data);
     (defs || []).forEach((def) => {
-      if (def.type_widget === "date" && formatedData[def.attribut_name]) {
-        formatedData[def.attribut_name] = this._dateParser.format(
-          formatedData[def.attribut_name]
-        );
+      const value = formatedData[def.attribut_name];
+      // une chaîne est une date ISO jamais éditée (contrôle pré-créé) : elle
+      // repart telle quelle, seul un NgbDateStruct se formate
+      if (def.type_widget === "date" && value && typeof value !== "string") {
+        formatedData[def.attribut_name] = this._dateParser.format(value);
       }
     });
     return formatedData;
@@ -194,6 +230,17 @@ export class OcchabFormService {
         "invalidAlt"
       ),
     ]);
+
+    // remise à zéro de l'état d'une éventuelle visite précédente du formulaire
+    this._stationAdditionalData = null;
+    this.stationAdditionalFieldsDef = [];
+    this.currentHabAdditionalFieldsDef = [];
+    this.currentEditingHabForm = null;
+    this.currentHabCopy = null;
+    // l'abonnement aux définitions (rejoué de façon synchrone par le store)
+    // recalcule les defs : le formulaire doit être en place avant
+    this.stationForm = stationForm;
+    this.loadAdditionalFieldsDefs();
 
     return stationForm;
   }
@@ -320,8 +367,8 @@ export class OcchabFormService {
    * Le générateur dynamique ajoute ses contrôles après la prise de la copie de
    * l'habitat : setValue échouerait sur les contrôles absents de cette copie.
    * On réaligne donc la forme du sous-groupe sur celle de la copie. Les contrôles
-   * recréés ici n'ont pas de validateur, mais ils seront remplacés par ceux du
-   * générateur à la prochaine édition de cet habitat.
+   * recréés ici n'ont pas de validateur : refreshCurrentHabAdditionalFieldsDef
+   * les retire à la prochaine édition pour que le générateur les recrée validés.
    */
   private restoreAdditionalDataShape(
     additionalDataForm: UntypedFormGroup,
@@ -330,13 +377,7 @@ export class OcchabFormService {
     Object.keys(additionalDataForm.controls).forEach((name) =>
       additionalDataForm.removeControl(name, { emitEvent: false })
     );
-    Object.keys(previousValue || {}).forEach((name) =>
-      additionalDataForm.addControl(
-        name,
-        new UntypedFormControl(previousValue[name]),
-        { emitEvent: false }
-      )
-    );
+    this.presetAdditionalDataControls(additionalDataForm, previousValue);
   }
 
   /**
@@ -459,9 +500,11 @@ export class OcchabFormService {
 
   /**
    * Crée les contrôles d'un sous-groupe `additional_data` à partir des valeurs
-   * enregistrées. Le générateur dynamique les recréera avec leurs validateurs
-   * à l'affichage du niveau concerné, mais les valeurs doivent être présentes
-   * dans le formulaire avant cela : un patchValue sur un groupe vide ne fait rien.
+   * enregistrées, pour qu'elles soient présentes dans le formulaire avant que
+   * le générateur ne s'affiche (un patchValue sur un groupe vide ne fait rien).
+   * Ces contrôles n'ont ni validateur ni date parsée : c'est
+   * refreshCurrentHabAdditionalFieldsDef qui les retire au moment de l'édition
+   * afin que le générateur les recrée correctement.
    */
   private presetAdditionalDataControls(
     additionalDataForm: UntypedFormGroup,
@@ -488,6 +531,13 @@ export class OcchabFormService {
       (this.stationForm.controls.habitats as UntypedFormArray).push(habForm);
     }
 
+    // les valeurs des champs additionnels sont portées par les définitions,
+    // pas par le FormGroup (cf. cloneDefsWithValues) ; à renseigner avant le
+    // patchValue, qui déclenche un refresh via id_dataset.valueChanges
+    this._stationAdditionalData = this.withoutNomenclatureLabels(
+      oneStation.properties.additional_data
+    );
+
     const formatedData = this.formatStationAndHabtoPatch(oneStation.properties);
     this.stationForm.patchValue(formatedData);
     this.stationForm.patchValue({
@@ -497,9 +547,6 @@ export class OcchabFormService {
       geom_4326: oneStation.geometry,
     });
     this.currentEditingHabForm = null;
-    // les valeurs des champs additionnels sont portées par les définitions,
-    // pas par le FormGroup (cf. cloneDefsWithValues)
-    this._stationAdditionalData = oneStation.properties.additional_data || null;
     this.refreshStationAdditionalFieldsDef();
   }
 
@@ -534,10 +581,13 @@ export class OcchabFormService {
       this.formatNomenclature(element);
     });
 
-    // format additional fields (dates) for both levels
+    // format additional fields (dates) for both levels.
+    // le backend remplace additional_data en bloc : les valeurs sans contrôle
+    // vivant (définitions non chargées, champ d'un autre JDD ou supprimé de
+    // l'Admin) sont réinjectées depuis l'accumulateur pour ne pas être effacées
     formData.additional_data = this.formatAdditionalDataBeforePost(
       this._rawStationDefs,
-      formData.additional_data
+      { ...(this._stationAdditionalData || {}), ...(formData.additional_data || {}) }
     );
     formData.habitats.forEach((element) => {
       element.additional_data = this.formatAdditionalDataBeforePost(
