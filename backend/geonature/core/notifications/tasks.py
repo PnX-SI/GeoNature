@@ -1,7 +1,7 @@
 from celery.utils.log import get_task_logger
 
 from geonature.utils.celery import celery_app
-import geonature.utils.utilsmails as mail
+import geonature.utils.mail.utilsmails as mail
 
 logger = get_task_logger(__name__)
 

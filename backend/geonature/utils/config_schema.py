@@ -26,7 +26,7 @@ from geonature.core.gn_synthese.synthese_config import (
 from geonature.core.imports.config_schema import ImportConfigSchema
 from geonature.utils.env import GEONATURE_VERSION, BACKEND_DIR, ROOT_DIR
 from geonature.utils.module import iter_modules_dist, get_module_config
-from geonature.utils.utilsmails import clean_recipients
+from geonature.utils.mail.utilsmails import clean_recipients
 from pypnusershub.auth.authentication import ProviderConfigurationSchema
 from apptax.utils.config.config_schema import TaxhubAppConf
 
@@ -71,6 +71,11 @@ class MailConfig(Schema):
     MAIL_SUPPRESS_SEND = fields.Boolean(required=False)
     MAIL_ASCII_ATTACHMENTS = fields.Boolean(required=False)
     ERROR_MAIL_TO = EmailStrOrListOfEmailStrField(load_default=None)
+    # Specific configuration for Microsoft GraphAPI (https://learn.microsoft.com/fr-fr/graph/use-the-api)
+    GRAPH_API_MAIL_TENANT_ID = fields.String(required=False)
+    GRAPH_API_MAIL_CLIENT_ID = fields.String(required=False)
+    GRAPH_API_MAIL_CLIENT_SECRET = fields.String(required=False)
+    GRAPH_API_MAIL_SCOPE = fields.String(required=False)
 
 
 class CeleryConfig(Schema):
