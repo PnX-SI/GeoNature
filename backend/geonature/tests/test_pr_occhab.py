@@ -16,6 +16,9 @@ import sqlalchemy as sa
 from marshmallow import EXCLUDE
 
 from geonature.utils.env import db
+from geonature.core.gn_commons.models.base import TModules, BibWidgets
+from geonature.core.gn_commons.models.additional_fields import TAdditionalFields
+from geonature.core.gn_permissions.models import PermObject
 
 from pypn_habref_api.models import Habref
 from pypnnomenclature.models import TNomenclatures
@@ -27,6 +30,46 @@ occhab = pytest.importorskip("gn_module_occhab")
 
 from gn_module_occhab.models import Station, OccurenceHabitat
 from gn_module_occhab.schemas import StationSchema
+
+
+@pytest.fixture(scope="function")
+def occhab_additional_fields():
+    """
+    Un champ texte et un champ nomenclature pour chacun des deux niveaux du
+    formulaire Occhab. Ces champs ne sont rattachés à aucun jeu de données :
+    ils s'appliquent donc à toutes les stations du module.
+    """
+    module = db.session.execute(
+        sa.select(TModules).where(TModules.module_code == "OCCHAB")
+    ).scalar_one()
+    widgets = {
+        widget_name: db.session.execute(
+            sa.select(BibWidgets).where(BibWidgets.widget_name == widget_name)
+        ).scalar_one()
+        for widget_name in ("text", "nomenclature")
+    }
+
+    fields = {}
+    for level, code_object in [
+        ("station", "OCCHAB_STATION"),
+        ("habitat", "OCCHAB_HABITAT"),
+    ]:
+        obj = db.session.execute(
+            sa.select(PermObject).where(PermObject.code_object == code_object)
+        ).scalar_one()
+        for widget_name, widget in widgets.items():
+            field_name = f"{level}_{widget_name}_field"
+            fields[f"{level}_{widget_name}"] = TAdditionalFields(
+                field_name=field_name,
+                field_label=field_name,
+                required=False,
+                id_widget=widget.id_widget,
+                modules=[module],
+                objects=[obj],
+            )
+    with db.session.begin_nested():
+        db.session.add_all(fields.values())
+    return fields
 
 
 @pytest.mark.usefixtures("client_class")
@@ -595,3 +638,95 @@ class TestOcchab:
             url_for("occhab.export_all_habitats", export_format="shapefile"), data=data
         )
         assert response.status_code == 200
+
+    def test_create_station_with_additional_data(
+        self, users, datasets, station, occhab_additional_fields
+    ):
+        """
+        Les champs additionnels sont enregistrés aux deux niveaux, et ceux de type
+        nomenclature sont accompagnés de leur libellé sous une clé `_label_`.
+        """
+        nomenc_nat_obj_geo = db.session.execute(
+            sa.select(TNomenclatures).where(
+                sa.and_(
+                    TNomenclatures.nomenclature_type.has(mnemonique="NAT_OBJ_GEO"),
+                    TNomenclatures.mnemonique == "Stationnel",
+                )
+            )
+        ).scalar_one()
+        nomenc_tech_collect = db.session.execute(
+            sa.select(TNomenclatures).where(
+                sa.and_(
+                    TNomenclatures.nomenclature_type.has(mnemonique="TECHNIQUE_COLLECT_HAB"),
+                    TNomenclatures.label_fr == "Lidar",
+                )
+            )
+        ).scalar_one()
+        habref = db.session.scalars(sa.select(Habref).limit(1)).first()
+
+        feature = Feature(
+            geometry=Point(3.634, 44.399),
+            properties={
+                "id_dataset": datasets["own_dataset"].id_dataset,
+                "id_nomenclature_geographic_object": nomenc_nat_obj_geo.id_nomenclature,
+                "observers": [{"id_role": users["user"].id_role}],
+                "additional_data": {
+                    "station_text_field": "une station",
+                    "station_nomenclature_field": nomenc_nat_obj_geo.id_nomenclature,
+                },
+                "habitats": [
+                    {
+                        "cd_hab": habref.cd_hab,
+                        "id_nomenclature_collection_technique": nomenc_tech_collect.id_nomenclature,
+                        "nom_cite": "prairie",
+                        "additional_data": {
+                            "habitat_text_field": "un habitat",
+                            "habitat_nomenclature_field": nomenc_tech_collect.id_nomenclature,
+                        },
+                    },
+                ],
+            },
+        )
+
+        set_logged_user(self.client, users["user"])
+        response = self.client.post(url_for("occhab.create_or_update_station"), data=feature)
+        assert response.status_code == 200, response.json
+
+        new_station = db.session.get(Station, FeatureSchema().load(response.json)["id"])
+        assert new_station.additional_data["station_text_field"] == "une station"
+        assert (
+            new_station.additional_data["station_nomenclature_field"]
+            == nomenc_nat_obj_geo.id_nomenclature
+        )
+        assert (
+            new_station.additional_data["_label_station_nomenclature_field"]
+            == nomenc_nat_obj_geo.label_default
+        )
+
+        habitat = new_station.habitats[0]
+        assert habitat.additional_data["habitat_text_field"] == "un habitat"
+        assert (
+            habitat.additional_data["habitat_nomenclature_field"]
+            == nomenc_tech_collect.id_nomenclature
+        )
+        assert (
+            habitat.additional_data["_label_habitat_nomenclature_field"]
+            == nomenc_tech_collect.label_default
+        )
+
+        # les données des deux niveaux ne se mélangent pas
+        assert "habitat_text_field" not in new_station.additional_data
+        assert "station_text_field" not in habitat.additional_data
+
+    def test_get_station_with_additional_data(self, users, station, occhab_additional_fields):
+        with db.session.begin_nested():
+            station.additional_data = {"station_text_field": "une station"}
+            station.habitats[0].additional_data = {"habitat_text_field": "un habitat"}
+
+        set_logged_user(self.client, users["user"])
+        response = self.client.get(url_for("occhab.get_station", id_station=station.id_station))
+        assert response.status_code == 200
+
+        properties = response.json["properties"]
+        assert properties["additional_data"]["station_text_field"] == "une station"
+        assert properties["habitats"][0]["additional_data"]["habitat_text_field"] == "un habitat"

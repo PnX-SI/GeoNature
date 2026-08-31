@@ -136,6 +136,20 @@
             <h5><b class="text-muted">UUID de la station :</b></h5>
             <p>{{ station?.properties.unique_id_sinp_station }}</p>
           </div>
+
+          <div
+            class="col-xs-12 col-sm-4 col-md-4 col-lg-4"
+            *ngIf="stationAdditionalFields.length"
+          >
+            <h5><b class="text-muted">Champs additionnels :</b></h5>
+            <p *ngFor="let field of stationAdditionalFields">
+              <b class="text-muted">{{ field.attribut_label }} :</b>
+              {{
+                station?.properties.additional_data
+                  | additionalFieldValue: field.attribut_name
+              }}
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -166,6 +180,18 @@
             <b class="text-muted">Abondance :</b>
             {{ currentHab?.nomenclature_abundance?.label_default }}
             <br />
+            <ng-container *ngIf="habitatAdditionalFields.length">
+              <b class="text-muted">Champs additionnels :</b>
+              <br />
+              <ng-container *ngFor="let field of habitatAdditionalFields">
+                <b class="text-muted">{{ field.attribut_label }} :</b>
+                {{
+                  currentHab?.additional_data
+                    | additionalFieldValue: field.attribut_name
+                }}
+                <br />
+              </ng-container>
+            </ng-container>
           </div>
           <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 padding-sm">
             <h5 class="text-muted">

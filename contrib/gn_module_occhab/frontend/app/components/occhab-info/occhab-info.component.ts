@@ -8,6 +8,7 @@ import {CommonService} from '@geonature_common/service/common.service';
 import {TranslateService} from '@ngx-translate/core';
 import {ActionService} from '@geonature/services/action.service';
 
+import {OcchabStoreService} from '../../services/store.service';
 import {StationFeature} from '../../models';
 
 @Component({
@@ -21,6 +22,8 @@ export class OcchabInfoComponent implements OnInit, OnDestroy {
   public habInfo: Array<any>;
   public modalContent;
   public selectedIndex;
+  public stationAdditionalFields: Array<any> = [];
+  public habitatAdditionalFields: Array<any> = [];
 
   constructor(
     private _occHabDataService: OccHabDataService,
@@ -31,13 +34,35 @@ export class OcchabInfoComponent implements OnInit, OnDestroy {
     private _commonService: CommonService,
     private translate: TranslateService,
     private actionService: ActionService,
+    private _storeService: OcchabStoreService,
   ) {
   }
 
   ngOnInit() {
     this._route.data.subscribe(({station}) => {
       this.station = station;
+      this._storeService.stationAdditionalFields$.subscribe(
+        (fields) => (this.stationAdditionalFields = this.displayableFields(fields))
+      );
+      this._storeService.habitatAdditionalFields$.subscribe(
+        (fields) => (this.habitatAdditionalFields = this.displayableFields(fields))
+      );
     });
+  }
+
+  /**
+   * Écarte les champs de mise en page et ceux rattachés à un autre jeu de données
+   * que celui de la station consultée.
+   */
+  private displayableFields(fields: Array<any>): Array<any> {
+    const idDataset = this.station?.properties.id_dataset;
+    return (fields || []).filter(
+      (field) =>
+        field.type_widget !== 'html' &&
+        (!field.datasets ||
+          field.datasets.length === 0 ||
+          field.datasets.some((dataset) => dataset.id_dataset === idDataset))
+    );
   }
 
   setCurrentHab(index) {
