@@ -80,22 +80,31 @@ export class OcchabFormService {
    */
   private cloneDefsWithValues(defs: Array<any>, values: any): Array<any> {
     return this.filterByDataset(defs).map((def) => {
-      const value = values ? values[def.attribut_name] : undefined;
-      if (value === undefined || value === null) {
+      // une clé absente laisse jouer la valeur par défaut du champ, alors qu'une
+      // clé à null est un champ que l'on a délibérément vidé : il doit le rester
+      if (!values || !(def.attribut_name in values)) {
         return { ...def };
       }
+      const value = values[def.attribut_name];
       return {
         ...def,
         value:
-          def.type_widget === "date" ? this._dateParser.parse(value) : value,
+          def.type_widget === "date" && value
+            ? this._dateParser.parse(value)
+            : value,
       };
     });
   }
 
   refreshStationAdditionalFieldsDef() {
+    // les valeurs déjà saisies priment sur celles reçues du serveur : ce recalcul
+    // est aussi déclenché par un changement de JDD, en pleine saisie
+    const liveValues = this.stationForm
+      ? this.stationForm.get("additional_data").value
+      : null;
     this.stationAdditionalFieldsDef = this.cloneDefsWithValues(
       this._rawStationDefs,
-      this._stationAdditionalData
+      { ...(this._stationAdditionalData || {}), ...(liveValues || {}) }
     );
   }
 
@@ -108,9 +117,24 @@ export class OcchabFormService {
     );
   }
 
+  /**
+   * Les libellés des champs de type nomenclature sont recalculés par le serveur
+   * à chaque enregistrement : renvoyer ceux reçus les figerait sur l'ancienne
+   * valeur, car ils sont réappliqués après le libellé fraîchement calculé.
+   */
+  private withoutNomenclatureLabels(data: any): { [key: string]: any } {
+    const cleanedData: { [key: string]: any } = {};
+    Object.keys(data || {}).forEach((key) => {
+      if (!key.startsWith("_label_")) {
+        cleanedData[key] = data[key];
+      }
+    });
+    return cleanedData;
+  }
+
   /** Reformate les widgets date avant envoi au serveur */
   private formatAdditionalDataBeforePost(defs: Array<any>, data: any) {
-    const formatedData = { ...(data || {}) };
+    const formatedData = this.withoutNomenclatureLabels(data);
     (defs || []).forEach((def) => {
       if (def.type_widget === "date" && formatedData[def.attribut_name]) {
         formatedData[def.attribut_name] = this._dateParser.format(
@@ -443,10 +467,11 @@ export class OcchabFormService {
     additionalDataForm: UntypedFormGroup,
     values: any
   ) {
-    Object.keys(values || {}).forEach((name) =>
+    const cleanedValues = this.withoutNomenclatureLabels(values);
+    Object.keys(cleanedValues).forEach((name) =>
       additionalDataForm.addControl(
         name,
-        new UntypedFormControl(values[name]),
+        new UntypedFormControl(cleanedValues[name]),
         { emitEvent: false }
       )
     );

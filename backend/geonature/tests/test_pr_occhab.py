@@ -718,6 +718,52 @@ class TestOcchab:
         assert "habitat_text_field" not in new_station.additional_data
         assert "station_text_field" not in habitat.additional_data
 
+    def test_update_station_additional_nomenclature_label(
+        self, users, station, occhab_additional_fields
+    ):
+        """
+        À la mise à jour d'un champ additionnel de type nomenclature, le libellé
+        `_label_` doit suivre la nouvelle valeur. Le client ne doit donc pas
+        renvoyer celui qu'il a reçu : il serait réappliqué après le libellé
+        recalculé et figerait l'ancienne valeur.
+        """
+        nomenclatures = (
+            db.session.scalars(
+                sa.select(TNomenclatures)
+                .where(TNomenclatures.nomenclature_type.has(mnemonique="TECHNIQUE_COLLECT_HAB"))
+                .order_by(TNomenclatures.id_nomenclature)
+                .limit(2)
+            )
+            .unique()
+            .all()
+        )
+        before, after = nomenclatures[0], nomenclatures[1]
+
+        with db.session.begin_nested():
+            station.additional_data = {
+                "station_nomenclature_field": before.id_nomenclature,
+                "_label_station_nomenclature_field": before.label_default,
+            }
+
+        set_logged_user(self.client, users["user"])
+        url = url_for("occhab.create_or_update_station", id_station=station.id_station)
+        feature = StationSchema(as_geojson=True, only=["habitats", "observers", "dataset"]).dump(
+            station
+        )
+        # le client renvoie la valeur seule, sans le libellé reçu
+        feature["properties"]["additional_data"] = {
+            "station_nomenclature_field": after.id_nomenclature
+        }
+
+        response = self.client.post(url, data=feature)
+        assert response.status_code == 200, response.json
+
+        updated = db.session.get(Station, station.id_station)
+        assert updated.additional_data["station_nomenclature_field"] == after.id_nomenclature
+        assert (
+            updated.additional_data["_label_station_nomenclature_field"] == after.label_default
+        )
+
     def test_get_station_with_additional_data(self, users, station, occhab_additional_fields):
         with db.session.begin_nested():
             station.additional_data = {"station_text_field": "une station"}
