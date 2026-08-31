@@ -114,6 +114,7 @@ jobs:
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          API_ENDPOINT: "http://127.0.0.1:8000/"
 
       - name: Upload Cypress screenshots
         if: failure()

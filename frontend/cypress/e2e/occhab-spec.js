@@ -1,11 +1,9 @@
-import promisify from 'cypress-promise';
-
 describe('Testing occhab', () => {
   beforeEach(() => {
     cy.geonatureLogin();
   });
 
-  it('should create an habitation', async () => {
+  it('should create an habitation', () => {
     cy.visit('/#/occhab');
 
     const canvas =
@@ -17,7 +15,8 @@ describe('Testing occhab', () => {
     cy.get(
       '[data-qa="pnx-occhab-form"] > div:nth-child(1) > pnx-map > div > div.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom > div.leaflet-control-container > div.leaflet-top.leaflet-left > div.leaflet-draw.leaflet-control > div:nth-child(1) > div > a'
     ).click();
-    cy.wait(2000);
+    // Leaflet.draw creates its tooltip only once the draw handler is enabled
+    cy.get('.leaflet-draw-tooltip').should('exist');
     const positions = [
       [250, 250],
       [300, 250],
@@ -27,7 +26,7 @@ describe('Testing occhab', () => {
     ];
     positions.forEach((pos) => {
       cy.get(canvas).click(pos[0], pos[1]);
-      cy.wait(500);
+      cy.wait(750);
     });
     cy.get('#validateButton').should('be.disabled');
 
@@ -55,15 +54,15 @@ describe('Testing occhab', () => {
       cy.get('#validateButton').click();
     });
 
-    const listHabit = await promisify(
-      cy.get(
-        '[data-qa="pnx-occhab-map-list-datatable"] > div > datatable-body > datatable-selection > datatable-scroller'
-      )
-    );
-    cy.wait(1000);
-    expect(listHabit[0].children[0].children[0].children[1].children[4].innerText).contains(
-      selected_element
-    );
-    listHabit[0].children[0].children[0].children[1].children[2].children[0].children[0].click();
+    const rowSelector =
+      '[data-qa="pnx-occhab-map-list-datatable"] > div > datatable-body > datatable-selection > datatable-scroller';
+    cy.get(rowSelector).should(($el) => {
+      expect($el[0].children[0].children[0].children[1].children[4].innerText).contains(
+        selected_element
+      );
+    });
+    cy.get(rowSelector).then(($el) => {
+      $el[0].children[0].children[0].children[1].children[2].children[0].children[0].click();
+    });
   });
 });

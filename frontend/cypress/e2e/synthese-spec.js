@@ -15,9 +15,10 @@ describe('Tests gn_synthese', () => {
     cy.get('#taxonInput').type('lynx');
     cy.get('ngb-typeahead-window button').first().click({ force: true });
 
+    cy.intercept(Cypress.env('apiEndpoint') + 'synthese/for_web?**').as('searchByTaxa');
     cy.get('[data-qa="synthese-search-btn"]').click();
+    cy.wait('@searchByTaxa');
 
-    cy.wait(500);
     cy.get('.synthese-list-col-nom_vern_or_lb_nom').as('cells');
     cy.get('@cells').then((d) => {
       expect(d.length).to.greaterThan(0);
@@ -65,8 +66,9 @@ describe('Tests gn_synthese', () => {
     // cliquer sur rechercher et vérifier que les observations retournées ont bien pour observateur des personnes contenant 'Admin'
     cy.get(':nth-child(4) > .ng-star-inserted > .input-group > .form-control').clear();
     cy.get(':nth-child(4) > .ng-star-inserted > .input-group > .form-control').type('Admin');
+    cy.intercept(Cypress.env('apiEndpoint') + 'synthese/for_web?**').as('searchByObserver');
     cy.get('[data-qa="synthese-search-btn"]').click();
-    cy.wait(500);
+    cy.wait('@searchByObserver');
     // get datatable cells containing the observater info
     cy.get('.synthese-list-col-observers').as('cells');
     cy.get('@cells').then((d) => {
@@ -100,32 +102,36 @@ describe('Tests gn_synthese', () => {
     // ce test permet de faire une suite d'actions basées sur la sélection des CA et des JDD
     // vérifie que la sélection d'un cadre d'acquisition filtre bien les jeux de données
     // objectifs : pouvoir sélectionnner un jeu de données dans la liste déroulante,
+    cy.intercept(Cypress.env('apiEndpoint') + 'synthese/for_web?**').as('searchByCaDataset');
     cy.get('[data-qa="synthese-form-ca"] ng-select').click();
     // Intercept request to datasets which must have a parameter to "id_acquisition_framework"
+    // Guarded with caSelected: selecting CA-1 below itself fires a new matching request
+    // (id_acquisition_frameworks changes on the dataset filter), which would otherwise
+    // re-enter this handler and click CA-1 again indefinitely.
+    let caSelected = false;
     cy.intercept(Cypress.env('apiEndpoint') + 'meta/datasets?**', (req) => {
-      if (req.body.hasOwnProperty('id_acquisition_frameworks')) {
+      if (!caSelected && req.body.hasOwnProperty('id_acquisition_frameworks')) {
+        caSelected = true;
         // select CA 1 and check JDD-1 is in list
         cy.get('[data-qa="synthese-form-ca"] ng-select').click();
         cy.get('[data-qa="CA-1"]').click();
         cy.get('[data-qa="synthese-form-dataset"] ng-select').click();
         cy.get('[data-qa="JDD-1"]').click();
-        cy.get('[data-qa="synthese-search-btn"]')
-          .click()
-          .wait(1000)
-          .then(() => {
-            cy.get('.synthese-list-col-dataset_name').as('resultsCells');
-            cy.get('@resultsCells').then((d) => {
-              expect(d.length).to.greaterThan(0);
-            });
-            cy.get('@resultsCells').each(($el, index, $list) => {
-              expect($el.text().trim()).to.be.equal('JDD-1');
-            });
-          });
+        cy.get('[data-qa="synthese-search-btn"]').click();
       }
     });
     // select a CA without dataset and check JDD 1 is not in list
     cy.get('[data-qa="CA-2-empty"]').click();
-    // wait for the filtered request
+
+    cy.wait('@searchByCaDataset').then(() => {
+      cy.get('.synthese-list-col-dataset_name').as('resultsCells');
+      cy.get('@resultsCells').then((d) => {
+        expect(d.length).to.greaterThan(0);
+      });
+      cy.get('@resultsCells').each(($el, index, $list) => {
+        expect($el.text().trim()).to.be.equal('JDD-1');
+      });
+    });
   });
 
   it('Should open the observation details pop-up and check its content', () => {
