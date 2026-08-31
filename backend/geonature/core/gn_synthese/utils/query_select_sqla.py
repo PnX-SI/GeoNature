@@ -641,11 +641,11 @@ class SyntheseQuery:
 
         Objectif : filtrer les données ayant :
           - les statuts du type demandé par l'utilisateur
-          - les status s'appliquent bien sur la zone géographique de la donnée (c-a-d le département)
+          - les statuts s'appliquent bien sur la zone géographique de la donnée (c-a-d le département)
 
-        Idée de façon à limiter le nombre de sous requêtes (le nombre de status demandé ne dégrade pas les performances),
-            la liste des status selectionnés par l'utilisateur s'appliquant à l'observation est
-            aggrégée de façon à tester le nombre puis jointer sur le département de la donnée
+        Idée pour limiter le nombre de sous-requêtes (le nombre de statuts demandés ne dégrade pas les performances) :
+            les couples (taxon, zone d'application) sont groupés puis comptés, de sorte que la
+            jointure sur le département de la donnée soit une simple égalité, indexable
 
         Chaque groupe de filtre (un champ "<id>_protection_status", ou une catégorie de liste
         rouge) peut être satisfait par plusieurs valeurs (ex: "PN" ou "PD" pour un même champ
@@ -654,7 +654,7 @@ class SyntheseQuery:
         (`group_label`) avec le groupe qu'elle satisfait, et c'est ce label (et non le
         `cd_type_statut` brut) qui sert à compter les conditions satisfaites.
         """
-        # Ajout de la table taxref si non ajouté
+        # Ajout de la table taxref si non ajoutée
         self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
 
         # Ajout jointure permettant d'avoir le département pour chaque donnée
@@ -670,8 +670,8 @@ class SyntheseQuery:
 
         nb_status_groups = len(protection_status_filters) + len(red_list_filters)
 
-        # On construit une CTE pour avoir chaque taxon / id_area par "type d'input" de filtre (protection / reglementation / LRR etc...)
-        # Ceci permet via le .distinct ci dessous de faire des OR dans un filtre et des AND entre les filtres
+        # On construit une CTE pour avoir chaque taxon / id_area par "type d'input" de filtre (protection / réglementation / LRR etc...)
+        # Ceci permet via le .distinct ci-dessous de faire des OR dans un filtre et des AND entre les filtres
         # Exemple : protection_status_filters = {"protections": ["PN", "PD"], "regulations": ["REGLLUTTE"]}
         # donne, une fois appliqué aux lignes de la CTE (cd_ref, id_area, group_label) :
         #   (2679, 60, 'protection:protections')  <- texte PD, taxon 2679, département 60
@@ -695,8 +695,8 @@ class SyntheseQuery:
         #   CASE WHEN cond1 THEN res1 WHEN cond2 THEN res2 END
         group_label = case(*group_label_cases).label("group_label")
 
-        # Creation requête CTE : taxon, zone d'application départementale des textes
-        #   pour les taxons répondant aux critères de selection
+        # Création requête CTE : taxon, zone d'application départementale des textes
+        #   pour les taxons répondant aux critères de sélection
         bdc_status_by_type_cte = (
             select(
                 TaxrefBdcStatutTaxon.cd_ref,
@@ -726,7 +726,7 @@ class SyntheseQuery:
             .where(TaxrefBdcStatutText.enable == True)
         )
 
-        # ajout des filtres de selection des textes (un groupe matché = OR sur ses valeurs)
+        # ajout des filtres de sélection des textes (un groupe matché = OR sur ses valeurs)
         bdc_status_by_type_cte = bdc_status_by_type_cte.where(
             or_(*(condition for condition, _ in group_label_cases))
         )
@@ -734,18 +734,14 @@ class SyntheseQuery:
             name="bdc_status_by_type_" + str(uuid.uuid4())[:4]
         )
 
-        # group by de façon à ne selectionner que les taxons
-        #   qui ont l'ensemble des groupes de statuts selectionnés par l'utilisateur
-        #   c-a-d dont le nombre de group_label distincts correspond au nombre de groupes demandés
-        bdc_status_cte = select(
-            bdc_status_by_type_cte.c.cd_ref,
-            func.array_agg(bdc_status_by_type_cte.c.id_area).label("ids_area"),
+        # group by (taxon, zone) de façon à ne sélectionner que les couples
+        #   où l'ensemble des groupes de statuts demandés s'applique
+        bdc_status_cte = (
+            select(bdc_status_by_type_cte.c.cd_ref, bdc_status_by_type_cte.c.id_area)
+            .group_by(bdc_status_by_type_cte.c.cd_ref, bdc_status_by_type_cte.c.id_area)
+            .having(func.count(distinct(bdc_status_by_type_cte.c.group_label)) == nb_status_groups)
+            .cte()
         )
-        bdc_status_cte = bdc_status_cte.group_by(bdc_status_by_type_cte.c.cd_ref).having(
-            func.count(distinct(bdc_status_by_type_cte.c.group_label)) == nb_status_groups
-        )
-
-        bdc_status_cte = bdc_status_cte.cte()
 
         # Jointure sur le taxon
         # et vérification que l'ensemble des groupes de statuts demandés
@@ -754,10 +750,7 @@ class SyntheseQuery:
             bdc_status_cte,
             [
                 bdc_status_cte.c.cd_ref == Taxref.cd_ref,
-                func.array_length(
-                    func.array_positions(bdc_status_cte.c.ids_area, cas_dep.id_area), 1
-                )
-                == nb_status_groups,
+                bdc_status_cte.c.id_area == cas_dep.id_area,
             ],
         )
 
