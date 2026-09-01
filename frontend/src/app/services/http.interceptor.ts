@@ -21,7 +21,7 @@ export class MyCustomInterceptor implements HttpInterceptor {
     public config: ConfigService
   ) {}
 
-  private handleError(error: any) {
+  handleError(error: any) {
     let errTitle: string;
     let errMsg: string;
     let enableHtml: boolean = false;
