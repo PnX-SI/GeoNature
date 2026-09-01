@@ -29,7 +29,6 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
   @Input() orderBy: 'asc' | 'desc';
 
   @Input() default;
-  @Input() nullDefault;
 
   @Input() dataPath: string; // pour atteindre la liste si elle n'est pas à la racine de la réponse de l'api.
   // si on a 'data/liste' on mettra dataPath='data'
@@ -63,15 +62,6 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
 
   getFilteredValues() {
     let values = this.values || [];
-    // if(this.nullDefault){
-    //   values.push()
-    // }
-    if (this.nullDefault && !this.required) {
-      let obj = {};
-      obj[this.keyValue] = null;
-      obj[this.keyLabel] = '-- Aucun --';
-      values.unshift(obj);
-    }
     values = values
       // filter search
       .filter(
@@ -141,8 +131,8 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
       this.filteredValues.length === 1 &&
       !(this.parentFormControl.value && this.parentFormControl.value.length)
     ) {
-      const val = this.nullDefault ? null : this.values[0][this.keyValue];
-      this.parentFormControl.patchValue(this.multiple && !this.nullDefault ? [val] : val);
+      const val = this.values[0][this.keyValue];
+      this.parentFormControl.patchValue(this.multiple ? [val] : val);
     }
 
     // valeur par défaut (depuis input value)
@@ -190,5 +180,11 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
     } else if (this.values) {
       this.initValues(this.values);
     }
+  }
+
+  clearSelection(event: MouseEvent) {
+    event.stopPropagation();
+    this.parentFormControl.reset(null);
+    this.parentFormControl.markAsTouched();
   }
 }
