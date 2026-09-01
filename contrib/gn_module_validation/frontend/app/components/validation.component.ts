@@ -35,7 +35,7 @@ export class ValidationComponent implements OnInit {
     this._fs.selectedCdRefFromTree = [];
     this._fs.selectedTaxonFromRankInput = [];
     this._fs.selectedtaxonFromComponent = [];
-    this._fs.processedDefaultFilters = {};
+    this._fs.processedFilters = {};
     this.getStatusNames();
     this._commonService.translateToaster(
       'info',

@@ -19,7 +19,10 @@
     #navBar
     [(ngbCollapse)]="isSearchBarReduced"
   >
-    <pnx-synthese-search (searchClicked)="onSearchEvent()"></pnx-synthese-search>
+    <pnx-synthese-search
+      (searchClicked)="onSearchEvent($event)"
+      (resetFilter)="onResetFilters()"
+    ></pnx-synthese-search>
   </nav>
 
   <div class="row row-sm page-content">

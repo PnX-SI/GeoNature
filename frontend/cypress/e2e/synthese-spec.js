@@ -9,6 +9,66 @@ describe('Tests gn_synthese', () => {
     cy.get('[data-qa="synthese-refresh-btn"]').click();
   });
 
+  it('Should fill form filters from query params', () => {
+    const apiEndpoint = Cypress.env('apiEndpoint');
+    cy.request({
+      url: `${apiEndpoint}synthese/taxons_autocomplete`,
+      qs: { search_name: 'lynx', limit: 1 },
+    }).then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body.length).to.be.greaterThan(0);
+      const taxon = response.body[0];
+      expect(taxon).to.have.property('cd_ref');
+      const cdRef = taxon.cd_ref;
+      const taxonLabel = taxon.nom_valide || taxon.lb_nom || taxon.search_name;
+
+      cy.visit(`/#/synthese?cd_ref=${cdRef}&id_import=42&date_max=2017-01-02`);
+
+      cy.get('input[id^="id_import_"]').should('have.value', '42');
+      cy.get('[data-qa="synthese-form-date-max"] [data-qa="input-date"]').should(
+        'have.value',
+        '02/01/2017'
+      );
+      cy.get('.taxon-list li').contains(taxonLabel).should('exist');
+    });
+  });
+
+  it('Should update query params after a search', () => {
+    const apiEndpoint = Cypress.env('apiEndpoint');
+    cy.request({
+      url: `${apiEndpoint}synthese/taxons_autocomplete`,
+      qs: { search_name: 'lynx', limit: 1 },
+    }).then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body.length).to.be.greaterThan(0);
+      const taxon = response.body[0];
+      const searchName = taxon.search_name || taxon.nom_valide || taxon.lb_nom || 'lynx';
+
+      cy.get('#taxonInput').clear();
+      cy.get('#taxonInput').type(searchName);
+      cy.get('ngb-typeahead-window button').first().click({ force: true });
+
+      cy.get('[data-qa="synthese-form-date-max"]').click();
+      cy.get('[aria-label="Select year"]').select('2017');
+      cy.get('[aria-label="Select month"]').select('Jan');
+      cy.get('[aria-label="Monday, January 2, 2017"]').click();
+
+      cy.get('pnx-dynamic-form-generator select').select('ID import');
+      cy.get('input[id^="id_import_"]').clear().type('42');
+
+      cy.get('[data-qa="synthese-search-btn"]').click();
+
+      cy.location('hash').should((hash) => {
+        const query = hash.split('?')[1] || '';
+        const params = new URLSearchParams(query);
+        expect(params.get('id_import')).to.eq('42');
+        expect(params.getAll('cd_ref').length).to.be.greaterThan(0);
+        const dateMax = params.get('date_max');
+        expect(['2017-01-02', '02/01/2017']).to.include(dateMax);
+      });
+    });
+  });
+
   it('Should search by taxa name', function () {
     // objectifs : pouvoir rentrer un nom d'espèce dans le filtre, que cela affiche le ou les observations sur la liste correspondant à ce nom
     cy.get('#taxonInput').clear();

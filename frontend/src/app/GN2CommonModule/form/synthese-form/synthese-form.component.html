@@ -378,10 +378,10 @@
     <legend>{{ 'Filters.Actions.Advanced' | translate }}</legend>
     <small>{{ 'Filters.Actions.Add' | translate }}</small>
     <pnx-dynamic-form-generator
-      *ngIf="formService.processedDefaultFilters"
+      *ngIf="formService.processedFilters"
       [myFormGroup]="formService.searchForm"
       [formsDefinition]="formService.dynamycFormDef"
-      [defaults]="formService.processedDefaultFilters"
+      [defaults]="formService.processedFilters"
     ></pnx-dynamic-form-generator>
   </fieldset>
 </div>
