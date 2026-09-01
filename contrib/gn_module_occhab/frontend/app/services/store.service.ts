@@ -4,6 +4,13 @@ import { Observable, BehaviorSubject, of } from "rxjs";
 import { catchError, shareReplay } from "rxjs/operators";
 import { ConfigService } from "@geonature/services/config.service";
 
+/**
+ * Préfixe des libellés que le serveur ajoute aux champs additionnels de type
+ * nomenclature. GN2CommonModule définit la même constante pour son pipe et sa
+ * directive, mais ne l'exporte pas.
+ */
+export const ADDITIONAL_FIELD_LABEL_PREFIX = "_label_";
+
 @Injectable()
 export class OcchabStoreService {
   public nomenclatureItems = {};
@@ -77,6 +84,23 @@ export class OcchabStoreService {
           return of([]);
         })
       );
+  }
+
+  /**
+   * Ne conserve que les champs globaux et ceux rattachés au jeu de données donné.
+   * L'API renvoie les deux : ce tri local évite une requête à chaque changement
+   * de jeu de données.
+   */
+  filterFieldsByDataset(
+    fields: Array<any>,
+    idDataset?: number | null
+  ): Array<any> {
+    return (fields || []).filter(
+      (field) =>
+        !field.datasets ||
+        field.datasets.length === 0 ||
+        field.datasets.some((dataset) => dataset.id_dataset === idDataset)
+    );
   }
 
   get defaultNomenclature() {

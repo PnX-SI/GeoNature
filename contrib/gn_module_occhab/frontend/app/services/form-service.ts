@@ -10,7 +10,10 @@ import {
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { FormService } from "@geonature_common/form/form.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
-import { OcchabStoreService } from "./store.service";
+import {
+  ADDITIONAL_FIELD_LABEL_PREFIX,
+  OcchabStoreService,
+} from "./store.service";
 import { ConfigService } from "@geonature/services/config.service";
 import { Station, StationFeature } from "../models";
 
@@ -66,20 +69,11 @@ export class OcchabFormService {
     });
   }
 
-  /**
-   * Ne conserve que les champs globaux et ceux rattachés au jeu de données courant.
-   * L'API renvoie les deux, le tri se fait ici pour rester réactif au changement de JDD
-   * sans requête supplémentaire.
-   */
+  /** Champs applicables au jeu de données actuellement sélectionné dans le formulaire */
   private filterByDataset(defs: Array<any>): Array<any> {
-    const idDataset = this.stationForm
-      ? this.stationForm.get("id_dataset").value
-      : null;
-    return (defs || []).filter(
-      (def) =>
-        !def.datasets ||
-        def.datasets.length === 0 ||
-        def.datasets.some((dataset) => dataset.id_dataset === idDataset)
+    return this._storeService.filterFieldsByDataset(
+      defs,
+      this.stationForm ? this.stationForm.get("id_dataset").value : null
     );
   }
 
@@ -160,7 +154,7 @@ export class OcchabFormService {
   private withoutNomenclatureLabels(data: any): { [key: string]: any } {
     const cleanedData: { [key: string]: any } = {};
     Object.keys(data || {}).forEach((key) => {
-      if (!key.startsWith("_label_")) {
+      if (!key.startsWith(ADDITIONAL_FIELD_LABEL_PREFIX)) {
         cleanedData[key] = data[key];
       }
     });

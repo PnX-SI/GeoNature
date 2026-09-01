@@ -24,6 +24,9 @@ export class OcchabInfoComponent implements OnInit, OnDestroy {
   public selectedIndex;
   public stationAdditionalFields: Array<any> = [];
   public habitatAdditionalFields: Array<any> = [];
+  private _rawStationFields: Array<any> = [];
+  private _rawHabitatFields: Array<any> = [];
+  private _subscriptions: Array<Subscription> = [];
 
   constructor(
     private _occHabDataService: OccHabDataService,
@@ -39,15 +42,39 @@ export class OcchabInfoComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this._route.data.subscribe(({station}) => {
-      this.station = station;
-      this._storeService.stationAdditionalFields$.subscribe(
-        (fields) => (this.stationAdditionalFields = this.displayableFields(fields))
-      );
-      this._storeService.habitatAdditionalFields$.subscribe(
-        (fields) => (this.habitatAdditionalFields = this.displayableFields(fields))
-      );
-    });
+    // abonnements à plat : imbriqués, chaque émission de la route en aurait créé
+    // de nouveaux sans jamais libérer les précédents
+    this._subscriptions.push(
+      this._route.data.subscribe(({station}) => {
+        this.station = station;
+        this.refreshAdditionalFields();
+      }),
+      this._storeService.stationAdditionalFields$.subscribe((fields) => {
+        this._rawStationFields = fields;
+        this.refreshAdditionalFields();
+      }),
+      this._storeService.habitatAdditionalFields$.subscribe((fields) => {
+        this._rawHabitatFields = fields;
+        this.refreshAdditionalFields();
+      })
+    );
+  }
+
+  ngOnDestroy() {
+    this._subscriptions.forEach((subscription) => subscription.unsubscribe());
+  }
+
+  /**
+   * La station et les définitions arrivent dans un ordre non garanti : les deux
+   * listes sont recalculées dès que l'une des sources change.
+   */
+  private refreshAdditionalFields() {
+    this.stationAdditionalFields = this.displayableFields(
+      this._rawStationFields
+    );
+    this.habitatAdditionalFields = this.displayableFields(
+      this._rawHabitatFields
+    );
   }
 
   /**
@@ -55,14 +82,9 @@ export class OcchabInfoComponent implements OnInit, OnDestroy {
    * que celui de la station consultée.
    */
   private displayableFields(fields: Array<any>): Array<any> {
-    const idDataset = this.station?.properties.id_dataset;
-    return (fields || []).filter(
-      (field) =>
-        field.type_widget !== 'html' &&
-        (!field.datasets ||
-          field.datasets.length === 0 ||
-          field.datasets.some((dataset) => dataset.id_dataset === idDataset))
-    );
+    return this._storeService
+      .filterFieldsByDataset(fields, this.station?.properties.id_dataset)
+      .filter((field) => field.type_widget !== 'html');
   }
 
   setCurrentHab(index) {
@@ -92,9 +114,6 @@ export class OcchabInfoComponent implements OnInit, OnDestroy {
 
   openDeleteModal(modalDelete) {
     this._ngbModal.open(modalDelete);
-  }
-
-  ngOnDestroy() {
   }
 
   getTooltip(action: 'U' | 'D'): string {
