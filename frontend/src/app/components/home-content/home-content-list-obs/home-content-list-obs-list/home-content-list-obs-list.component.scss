@@ -1,0 +1,128 @@
+:host {
+  display: flex;
+  min-height: 0;
+}
+
+:host ::ng-deep gn-loadable-layout {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+:host ::ng-deep .ngx-datatable.material {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  font-size: 0.9rem;
+}
+
+:host ::ng-deep .ngx-datatable.material .datatable-header {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+:host ::ng-deep .ngx-datatable.material .datatable-header .datatable-header-inner {
+  display: flex;
+  align-items: center;
+  min-height: 100%;
+}
+
+:host ::ng-deep .ngx-datatable.material .datatable-header .datatable-header-cell {
+  padding: 0.35rem 0.5rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+:host
+  ::ng-deep
+  .ngx-datatable.material
+  .datatable-header
+  .datatable-header-cell
+  .datatable-header-cell-template-wrap {
+  display: flex;
+  align-items: center;
+  min-height: 100%;
+}
+
+:host ::ng-deep .ngx-datatable.material .datatable-body .datatable-body-row {
+  cursor: pointer;
+}
+
+:host
+  ::ng-deep
+  .ngx-datatable.material
+  .datatable-body
+  .datatable-body-row.is-selected
+  .datatable-row-group {
+  background-color: rgb(117, 227, 118) !important;
+}
+
+:host ::ng-deep .ngx-datatable.material .datatable-body .datatable-body-row .datatable-body-cell {
+  padding: 0.25rem 0.5rem;
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+}
+
+:host ::ng-deep .ngx-datatable.material .datatable-footer {
+  padding-top: 0;
+  flex: 0 0 auto;
+}
+
+::ng-deep .ngx-datatable {
+  height: 100%;
+  box-shadow: none !important;
+  ::ng-deep .visible {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    .datatable-body {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+  }
+}
+
+.TaxonCell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+
+  &__thumbnail {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    flex: 0 0 2rem;
+
+    &Image {
+      width: 2rem;
+      height: 2rem;
+      object-fit: cover;
+      border-radius: 0.25rem;
+    }
+  }
+
+  &__label {
+    min-width: 0;
+  }
+
+  &__link {
+    min-width: 0;
+    color: var(--purple);
+    filter: brightness(70%);
+    text-decoration: none;
+
+    &:hover .TaxonCell__label {
+      text-decoration: underline;
+    }
+  }
+}

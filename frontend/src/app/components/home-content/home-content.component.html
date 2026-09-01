@@ -3,14 +3,18 @@
   data-qa="pnx-home-content"
 >
   <div class="row">
-    <div [className]="showLastObsMap ? 'col-xs-12 col-sm-12 col-md-6 col-lg-6' : 'col-12'">
+    <div
+      [className]="
+        showLastObsMap || showLastObsList ? 'col-xs-12 col-sm-12 col-md-6 col-lg-6' : 'col-12'
+      "
+    >
       <pnx-introduction></pnx-introduction>
     </div>
     <div
-      class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
-      *ngIf="showLastObsMap"
+      class="col-xs-12 col-sm-12 col-md-6 col-lg-6 home-content-side-panel"
+      *ngIf="showLastObsMap || showLastObsList"
     >
-      <div class="panel panel-default panel-intro">
+      <div class="panel panel-default panel-intro home-content-last-obs-panel">
         <!-- mr-0 and ml-0 since row puts margin-left and right at -15px... -->
         <div class="panel-heading row mr-0 ml-0">
           <div class="col-12 col-lg-5 col-xl-7">
@@ -28,13 +32,16 @@
             </button>
           </div>
         </div>
-
-        <div id="map-title"></div>
-
         <pnx-map
+          *ngIf="showLastObsMap"
           class="map-card panel-body-intro"
           height="100%"
         ></pnx-map>
+
+        <pnx-home-content-list-obs
+          class="home-content-list-obs home-content-last-obs-body"
+          *ngIf="showLastObsList"
+        ></pnx-home-content-list-obs>
       </div>
     </div>
   </div>

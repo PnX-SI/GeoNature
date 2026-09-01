@@ -131,6 +131,9 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
 
     # Affiche la carte des 100 dernieres observations sur la page d'accueil
     DISPLAY_MAP_LAST_OBS = true
+    # Affiche la liste des 100 dernieres observations sur la page d'accueil
+    # Si DISPLAY_MAP_LAST_OBS = true, la carte reste prioritaire sur la liste
+    DISPLAY_LIST_LAST_OBS = false
 
     # Affiche le selecteur de langue dans l'interface
     MULTILINGUAL = false
@@ -146,6 +149,19 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # Activer l'affichage des informations liées aux profils de taxons (dans les modules Validation, Synthèse et Occtax)
     ENABLE_PROFILES = true
 
+[FRONTEND.LIST_LAST_OBS_CONFIG]
+    # Colonnes affichées dans la liste des dernières observations
+    # Les colonnes doivent exister dans SYNTHESE.LIST_COLUMNS_FRONTEND
+    # ou SYNTHESE.ADDITIONAL_COLUMNS_FRONTEND, sinon elles ne pourront pas être prises en compte.
+    COLUMNS = [
+        { prop = "nom_vern_or_lb_nom", name = "Taxon" },
+        { prop = "date_min", name = "Date" },
+        { prop = "observers", name = "Observateur" },
+    ]
+
+[FRONTEND.LIST_LAST_OBS_CONFIG.FILTERS]
+    TAXONOMY_GROUP2_INPN = true
+    TAXONOMY_GROUP3_INPN = true
     # Afficher l'organisme de l'utilisateur dans la barre de navigation (true / false)
     DISPLAY_USER_ORGANISM = true
 
