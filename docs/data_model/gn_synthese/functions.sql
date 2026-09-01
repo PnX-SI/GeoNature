@@ -13,9 +13,11 @@ AS $function$
                   new_row.the_geom_local,
                   jsonb_build_object(
                     'STATUT_BIO', new_row.id_nomenclature_bio_status,
-                    'OCC_COMPORTEMENT', new_row.id_nomenclature_behaviour
-                  )
-                ) AS id_nomenclature_sensitivity
+                    'OCC_COMPORTEMENT', new_row.id_nomenclature_behaviour,
+                    'STADE_VIE', new_row.id_nomenclature_life_stage,
+                    'METH_OBS',new_row.id_nomenclature_obs_technique
+                )
+              ) AS id_nomenclature_sensitivity
               FROM
                 NEW AS new_row
             )
@@ -91,7 +93,9 @@ AS $function$
                 NEW.the_geom_local,
                 jsonb_build_object(
                   'STATUT_BIO', NEW.id_nomenclature_bio_status,
-                  'OCC_COMPORTEMENT', NEW.id_nomenclature_behaviour
+                  'OCC_COMPORTEMENT', NEW.id_nomenclature_behaviour,
+                  'STADE_VIE', NEW.id_nomenclature_life_stage,
+                  'METH_OBS', NEW.id_nomenclature_obs_technique
                 )
             );
             RETURN NEW;
@@ -478,7 +482,9 @@ AS $function$
                           the_geom_local,
                           jsonb_build_object(
                             'STATUT_BIO', id_nomenclature_bio_status,
-                            'OCC_COMPORTEMENT', id_nomenclature_behaviour
+                            'OCC_COMPORTEMENT', id_nomenclature_behaviour,
+                            'METH_OBS', id_nomenclature_obs_technique,
+                            'STADE_VIE', id_nomenclature_life_stage
                           )
                         ) AS new_sensitivity
                     FROM
