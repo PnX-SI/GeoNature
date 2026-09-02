@@ -1,10 +1,11 @@
-import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
-import { leafletDrawOption } from '@geonature_common/map/leaflet-draw.options';
-import { CommonService } from '@geonature_common/service/common.service';
-import { MapService } from '@geonature_common/map/map.service';
-import { OcctaxFormMapService } from './occtax-map.service';
-import { OcctaxConfigService } from '../../services/occtax-config.service';
-
+import {Component, OnInit, AfterViewInit, OnDestroy} from '@angular/core';
+import {leafletDrawOption} from '@geonature_common/map/leaflet-draw.options';
+import {CommonService} from '@geonature_common/service/common.service';
+import {MapService} from '@geonature_common/map/map.service';
+import {OcctaxFormMapService} from './occtax-map.service';
+import {OcctaxConfigService} from '../../services/occtax-config.service';
+import {filter} from 'rxjs/operators';
+import * as L from 'leaflet';
 @Component({
   selector: 'pnx-occtax-form-map',
   templateUrl: 'occtax-map.component.html',
@@ -22,7 +23,8 @@ export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy 
     private _commonService: CommonService,
     private _mapService: MapService,
     public occtaxConfig: OcctaxConfigService
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     // overight the leaflet draw object to set options
@@ -51,9 +53,25 @@ export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy 
 
     filelayerFeatures.forEach((el) => {
       if ((el as any).getLayers()[0].options.color == 'red') {
-        (el as any).setStyle({ color: 'green', opacity: 0.2 });
+        (el as any).setStyle({color: 'green', opacity: 0.2});
       }
     });
+    this.ms.geometry.valueChanges
+      .pipe(filter((geojson) => geojson != null))
+      .subscribe(() => {
+        setTimeout(() => this.fitToGeometry());
+      });
+
+    // if geom already set
+    if (this.ms.geometry.value) {
+      setTimeout(() => this.fitToGeometry());
+    }
+  }
+
+  private fitToGeometry() {
+      const layers = this._mapService.leafletDrawFeatureGroup?.getLayers();
+      if (layers && layers.length > 0)
+        this._mapService.zoomOnSelectedLayer(this._mapService.map, layers[0]);
   }
 
   // display help toaster for filelayer

@@ -92,6 +92,12 @@ export class MapService {
     this.map.setView(new L.LatLng(coordinates[1], coordinates[0]), zoomLevel);
   }
 
+  zoomOnSelectedLayer(map, layer) {
+    const tempFeatureGroup = new L.FeatureGroup();
+    tempFeatureGroup.addLayer(layer);
+    map.fitBounds(tempFeatureGroup.getBounds());
+  }
+
   /**
    * Function who disable marker editing (click event and control) mode via an observable
    * @param isEditing : boolean
@@ -291,6 +297,7 @@ export class MapService {
       });
     }
   }
+
   removeLayerFeatureGroups(featureGroups: Array<any>) {
     featureGroups.forEach((featureGroup) => {
       if (featureGroup) {
@@ -325,8 +332,7 @@ export class MapService {
       });
 
       this.map.addLayer(this.marker);
-      // zoom to the layer
-      this.map.setView(this.marker.getLatLng(), 15);
+      this.zoomOnSelectedLayer(this.map, this.marker);
     } else {
       let layer;
       if (data.geometry.type === 'LineString') {
