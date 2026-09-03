@@ -88,14 +88,23 @@ export class MapService {
     this._geojsonCoord.next(geojsonCoord);
   }
 
-  zoomOnMarker(coordinates, zoomLevel = 15) {
-    this.map.setView(new L.LatLng(coordinates[1], coordinates[0]), zoomLevel);
+  zoomOnMarker(geom, zoomLevel = 15) {
+    // Kept zoomLevel for retro-compatibility
+    if (!geom) return;
+    const tempLayer = L.geoJSON(geom);
+    if (tempLayer.getLayers().length === 0) return;
+    this.zoomOnSelectedLayer(this.map, tempLayer);
   }
 
   zoomOnSelectedLayer(map, layer) {
     const tempFeatureGroup = new L.FeatureGroup();
     tempFeatureGroup.addLayer(layer);
     map.fitBounds(tempFeatureGroup.getBounds());
+  }
+
+  fitToGeometry() {
+    const layers = this.leafletDrawFeatureGroup?.getLayers();
+    if (layers && layers.length > 0) this.zoomOnSelectedLayer(this.map, layers[0]);
   }
 
   /**
