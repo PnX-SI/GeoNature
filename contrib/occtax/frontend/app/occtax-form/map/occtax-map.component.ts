@@ -1,15 +1,18 @@
-import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
-import { leafletDrawOption } from '@geonature_common/map/leaflet-draw.options';
-import { CommonService } from '@geonature_common/service/common.service';
-import { MapService } from '@geonature_common/map/map.service';
-import { OcctaxFormMapService } from './occtax-map.service';
-import { OcctaxConfigService } from '../../services/occtax-config.service';
-
+import { Component, OnInit, AfterViewInit, OnDestroy } from "@angular/core";
+import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
+import { CommonService } from "@geonature_common/service/common.service";
+import { MapService } from "@geonature_common/map/map.service";
+import { OcctaxFormMapService } from "./occtax-map.service";
+import { OcctaxConfigService } from "../../services/occtax-config.service";
+import { filter } from "rxjs/operators";
+import * as L from "leaflet";
 @Component({
-  selector: 'pnx-occtax-form-map',
-  templateUrl: 'occtax-map.component.html',
+  selector: "pnx-occtax-form-map",
+  templateUrl: "occtax-map.component.html",
 })
-export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy {
+export class OcctaxFormMapComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   public leafletDrawOptions: any;
   public firstFileLayerMessage = true;
 
@@ -21,7 +24,7 @@ export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy 
     public ms: OcctaxFormMapService,
     private _commonService: CommonService,
     private _mapService: MapService,
-    public occtaxConfig: OcctaxConfigService
+    public occtaxConfig: OcctaxConfigService,
   ) {}
 
   ngOnInit() {
@@ -39,7 +42,7 @@ export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy 
     if (this._mapService.currentExtend) {
       this._mapService.map.setView(
         this._mapService.currentExtend.center,
-        this._mapService.currentExtend.zoom
+        this._mapService.currentExtend.zoom,
       );
     }
     let filelayerFeatures = this._mapService.fileLayerFeatureGroup.getLayers();
@@ -50,16 +53,24 @@ export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy 
     }
 
     filelayerFeatures.forEach((el) => {
-      if ((el as any).getLayers()[0].options.color == 'red') {
-        (el as any).setStyle({ color: 'green', opacity: 0.2 });
+      if ((el as any).getLayers()[0].options.color == "red") {
+        (el as any).setStyle({ color: "green", opacity: 0.2 });
       }
     });
+    this.ms.geometry.valueChanges
+      .pipe(filter((geojson) => geojson != null))
+      .subscribe(() => {
+        setTimeout(() => this._mapService.fitToGeometry());
+      });
   }
 
   // display help toaster for filelayer
   infoMessageFileLayer() {
     if (this.firstFileLayerMessage) {
-      this._commonService.translateToaster('info', 'Map.Messages.FileLayerInfo');
+      this._commonService.translateToaster(
+        "info",
+        "Map.Messages.FileLayerInfo",
+      );
     }
     this.firstFileLayerMessage = false;
   }
