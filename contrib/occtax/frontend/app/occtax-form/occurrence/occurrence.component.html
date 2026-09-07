@@ -353,8 +353,7 @@
     [matBadge]="countings.length"
     matBadgeOverlap="false"
   >
-    {{ 'Occtax.Counting.Counting' | translate }}
-    <ng-container *ngIf="countings.length > 1">s</ng-container>
+    {{ (countings.length > 1 ? 'Occtax.Counting.Countings' : 'Occtax.Counting.Counting') | translate }}
   </span>
 </h5>
 
