@@ -11,8 +11,8 @@ import click
 from flask.cli import run_command
 
 import geonature
-from geonature.utils.env import GEONATURE_VERSION, ROOT_DIR
-from geonature.utils.module import iter_modules_dist
+from geonature.utils.env import GEONATURE_VERSION, CONFIG_FILE
+from geonature.utils.module import iter_modules_config, iter_modules_dist
 from geonature import create_app
 from geonature.utils.config import config
 from geonature.utils.config_schema import GnGeneralSchemaConf, GnPySchemaConf
@@ -64,11 +64,12 @@ def dev_back(ctx, host, port):
     """
     if not environ.get("FLASK_DEBUG"):
         environ["FLASK_DEBUG"] = "true"
+    extra_files = [CONFIG_FILE] + list(iter_modules_config())
     ctx.invoke(
         run_command,
         host=host,
         port=port,
-        extra_files=[file for file in glob.glob(join(ROOT_DIR, "config", "*.toml"))],
+        extra_files=extra_files,
     )
 
 
