@@ -1,15 +1,16 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { OcchabFormService } from '../../services/form-service';
-import { OcchabStoreService } from '../../services/store.service';
-import { OccHabDataService } from '../../services/data.service';
-import { leafletDrawOption } from '@geonature_common/map/leaflet-draw.options';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
-import { CommonService } from '@geonature_common/service/common.service';
-import { filter } from 'rxjs/operators';
-import { ConfigService } from '@geonature/services/config.service';
-import { StationFeature } from '../../models';
-import { FormService } from '@geonature_common/form/form.service';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {OcchabFormService} from '../../services/form-service';
+import {OcchabStoreService} from '../../services/store.service';
+import {OccHabDataService} from '../../services/data.service';
+import {leafletDrawOption} from '@geonature_common/map/leaflet-draw.options';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Subscription} from 'rxjs/Subscription';
+import {CommonService} from '@geonature_common/service/common.service';
+import {filter} from 'rxjs/operators';
+import {ConfigService} from '@geonature/services/config.service';
+import {StationFeature} from '../../models';
+import {FormService} from '@geonature_common/form/form.service';
+import {MapService} from "@geonature_common/map/map.service";
 
 @Component({
   selector: 'pnx-occhab-form',
@@ -47,8 +48,10 @@ export class OccHabFormComponent implements OnInit, OnDestroy {
     private _router: Router,
     private _commonService: CommonService,
     public config: ConfigService,
-    public globalFormService: FormService
-  ) {}
+    public globalFormService: FormService,
+    private _mapService: MapService,
+  ) {
+  }
 
   ngOnInit() {
     this.leafletDrawOptions;
@@ -96,10 +99,12 @@ export class OccHabFormComponent implements OnInit, OnDestroy {
               this.occHabForm.stationForm.get('date_min').markAsDirty();
               this.occHabForm.stationForm.get('date_max').markAsDirty();
             }
+            this._mapService.zoomOnMarker(station.geometry);
           });
         }
       })
     );
+
   }
 
   formIsDisable() {

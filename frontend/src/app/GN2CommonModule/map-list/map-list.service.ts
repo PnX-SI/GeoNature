@@ -240,9 +240,7 @@ export class MapListService {
   }
 
   zoomOnSelectedLayer(map, layer) {
-    const tempFeatureGroup = new L.FeatureGroup();
-    tempFeatureGroup.addLayer(layer);
-    map.fitBounds(tempFeatureGroup.getBounds());
+    return this._ms.zoomOnSelectedLayer(map, layer);
   }
 
   zoomOnSeveralSelectedLayers(map, layers) {
