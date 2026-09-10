@@ -56,7 +56,8 @@ FROM ${NGINX_IMAGE} AS prod-base
 
 ENV NGINX_PORT=80
 ENV NGINX_HOST=localhost
-ENV NGINX_LOCATION=/
+
+ENV GEONATURE_FRONTEND_PREFIX=/
 
 ENV ASSETS_DIRECTORY=/usr/share/nginx/html/assets
 COPY ./frontend/50-set-api-endpoint.sh /docker-entrypoint.d/
