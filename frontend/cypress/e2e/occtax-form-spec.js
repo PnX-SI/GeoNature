@@ -46,7 +46,6 @@ describe('Testing adding an observation in OccTax', { testIsolation: false }, ()
     cy.get(
       'pnx-map > div > div.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom'
     ).click(100, 100);
-    cy.wait(500);
     cy.get("[data-qa='pnx-occtax-releve-form-observers'] #overlay").should('not.exist');
 
     cy.get('[data-qa="pnx-occtax-releve-submit-btn"]').should('be.disabled');

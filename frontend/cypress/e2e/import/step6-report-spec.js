@@ -1,6 +1,5 @@
 import { USERS } from './constants/users';
 import { TIMEOUT_WAIT, VIEWPORTS } from './constants/common';
-import { FILES } from './constants/files';
 import {
   SELECTOR_IMPORT_REPORT,
   SELECTOR_IMPORT_REPORT_CHART,
@@ -20,16 +19,7 @@ const USER_ADMIN = USERS[0];
 const VIEWPORT = VIEWPORTS[0];
 
 function runTheProcess(user) {
-  cy.visitImport();
-  cy.startImport();
-  cy.pickDestination();
-  cy.loadImportFile(FILES.synthese.valid.fixture);
-  cy.configureImportFile();
-  cy.configureImportFieldMapping(user.dataset);
-  cy.configureImportContentMapping();
-  cy.configureImportObserverMapping();
-  cy.triggerImportVerification();
-  cy.executeImport();
+  cy.setupImportViaApi('report', { datasetName: user.dataset }).as('currentImportId');
 }
 
 // ////////////////////////////////////////////////////////////////////////////
@@ -82,14 +72,10 @@ describe('Import - Report step', () => {
     });
 
     afterEach(() => {
-      cy.url().then((url) => {
-        // Extract the ID using string manipulation
-        const parts = url.split('/');
-        const importID = parts[parts.length - 2]; // Get the penultimate element
-        const destination = parts[parts.length - 3];
-        cy.deleteImport(importID, destination);
-        cy.visitImport();
+      cy.get('@currentImportId').then((importId) => {
+        cy.deleteImport(importId, 'synthese');
       });
+      cy.visitImport();
     });
   });
 });

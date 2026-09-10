@@ -114,16 +114,18 @@ describe('Tests Filter Search List Import', () => {
   }
 
   function performSearchAndAssertRowCount(filter, searchTerm, expectedRowsCount) {
+    cy.intercept(Cypress.env('apiEndpoint') + 'import/imports/?**').as('searchImports');
     filterMapList(searchTerm);
-    cy.wait(TIMEOUT_WAIT);
+    cy.wait('@searchImports');
     cy.get(`${SELECTOR_IMPORT_LIST_TABLE} datatable-body`, { timeout: TIMEOUT_WAIT }).within(() => {
       cy.get('datatable-body-row').should('have.length', expectedRowsCount);
     });
   }
 
   function performSearchAndAssertRowContent(filter, searchTerm) {
+    cy.intercept(Cypress.env('apiEndpoint') + 'import/imports/?**').as('searchImports');
     filterMapList(searchTerm);
-    cy.wait(TIMEOUT_WAIT);
+    cy.wait('@searchImports');
     cy.get(`${SELECTOR_IMPORT_LIST_TABLE} datatable-body-row`, { timeout: TIMEOUT_WAIT })
       .eq(0)
       .as('firstRow');

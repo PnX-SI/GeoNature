@@ -1,5 +1,5 @@
 import { USERS } from './constants/users';
-import { TIMEOUT_WAIT, VIEWPORTS } from './constants/common';
+import { VIEWPORTS } from './constants/common';
 import {
   getSelectorImportListTableRowFile,
   SELECTOR_IMPORT_LIST_TABLE,
@@ -64,7 +64,6 @@ describe('File Upload and POST Request Test', () => {
               //Delete file if exist before downdload it
               cy.deleteFileIfExist(FILENAME, DOWNLOADS_FOLDER);
               cy.get(getSelectorImportListTableRowFile(rowIndex)).click();
-              cy.wait(TIMEOUT_WAIT);
               // Verify the file has been downloaded
               cy.verifyDownload(FILENAME, DOWNLOADS_FOLDER).then(() => {
                 // Delete the file after verification
