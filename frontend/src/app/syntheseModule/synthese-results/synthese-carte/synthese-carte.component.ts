@@ -269,7 +269,9 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
       click: (e) => {
         this.toggleStyleFromMap(feature, layer);
         this.mapListService.mapSelected.next(idSyntheseIds);
-        if (this.areasEnable) {
+        if (this.config.SYNTHESE.MAP_POPUP_FIELDS.length > 0) {
+          this.bindObsPopup(layer, idSyntheseIds);
+        } else if (this.areasEnable) {
           this.bindAreasPopup(layer, idSyntheseIds);
         }
       },
@@ -408,6 +410,43 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
 
   private bindAreasPopup(layer, ids) {
     let popupContent = `<b>${ids.length} observation(s)</b>`;
+    layer.bindPopup(popupContent).openPopup();
+  }
+
+  private bindObsPopup(layer, idSyntheseIds) {
+    const popupFields = this.config.SYNTHESE.MAP_POPUP_FIELDS || [];
+    if (popupFields.length === 0) {
+      return;
+    }
+
+    const maxCount = this.config.SYNTHESE.MAP_POPUP_MAX_OBS_COUNT ?? 10;
+    const obsList = this.mapListService.tableData;
+    const matchingObs = idSyntheseIds
+      .map((id) => obsList.find((o) => o['id_synthese'] === id))
+      .filter((o) => o != null);
+
+    if (matchingObs.length === 0) {
+      return;
+    }
+
+    const displayedObs = matchingObs.slice(0, maxCount);
+    const remainingCount = matchingObs.length - displayedObs.length;
+
+    let popupContent = '';
+    displayedObs.forEach((obs, index) => {
+      if (index > 0) {
+        popupContent += '<hr class="my-1">';
+      }
+      popupFields.forEach((fieldDef) => {
+        const value = obs[fieldDef['field']];
+        popupContent += `<b>${fieldDef['label']}</b>: ${value}<br>`;
+      });
+    });
+
+    if (remainingCount > 0) {
+      popupContent += `<div class="mt-1"><i>+ ${remainingCount} autre(s) observation(s)</i></div>`;
+    }
+
     layer.bindPopup(popupContent).openPopup();
   }
 
