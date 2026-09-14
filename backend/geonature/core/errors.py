@@ -44,14 +44,15 @@ def handle_validation_error(e):
 def handle_http_exception(e):
     response = e.get_response()
     if request.accept_mimetypes.best == "application/json":
-        response.data = json.dumps(
-            {
-                "code": e.code,
-                "name": e.name,
-                "description": e.description,
-                "request_id": request.environ["FLASK_REQUEST_ID"],
-            }
-        )
+        data = {
+            "code": e.code,
+            "name": e.name,
+            "description": e.description,
+            "request_id": request.environ["FLASK_REQUEST_ID"],
+        }
+        if hasattr(e, "extra"):
+            data.update(e.extra)
+        response.data = json.dumps(data)
         response.content_type = "application/json"
     return response
 
