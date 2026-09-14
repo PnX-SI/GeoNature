@@ -206,10 +206,16 @@ class SyntheseQuery:
                 ]
                 perm_filters.append(or_(*scope_filters))
             if perm.areas_filter:
-                areas_subquery = select(CorAreaSynthese.id_synthese).where(
-                    CorAreaSynthese.id_area.in_([a.id_area for a in perm.areas_filter])
+                # correlated exists: this predicate is or_ed with the other permissions, where no
+                # semi-join is possible, and stays an index lookup on pk_cor_area_synthese
+                where_clause = (
+                    select(1)
+                    .where(
+                        CorAreaSynthese.id_synthese == self.model_id_syn_col,
+                        CorAreaSynthese.id_area.in_([a.id_area for a in perm.areas_filter]),
+                    )
+                    .exists()
                 )
-                where_clause = self.model_id_syn_col.in_(areas_subquery)
 
                 perm_filters.append(where_clause)
             if perm.taxons_filter:
