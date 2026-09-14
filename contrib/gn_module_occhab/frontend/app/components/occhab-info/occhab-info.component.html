@@ -144,10 +144,7 @@
             <h5><b class="text-muted">Champs additionnels :</b></h5>
             <p *ngFor="let field of stationAdditionalFields">
               <b class="text-muted">{{ field.attribut_label }} :</b>
-              {{
-                station?.properties.additional_data
-                  | additionalFieldValue: field.attribut_name
-              }}
+              {{ station?.properties.additional_data | additionalFieldValue: field.attribut_name }}
             </p>
           </div>
         </div>
@@ -185,10 +182,7 @@
               <br />
               <ng-container *ngFor="let field of habitatAdditionalFields">
                 <b class="text-muted">{{ field.attribut_label }} :</b>
-                {{
-                  currentHab?.additional_data
-                    | additionalFieldValue: field.attribut_name
-                }}
+                {{ currentHab?.additional_data | additionalFieldValue: field.attribut_name }}
                 <br />
               </ng-container>
             </ng-container>

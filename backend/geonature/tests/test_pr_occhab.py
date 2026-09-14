@@ -759,9 +759,7 @@ class TestOcchab:
 
         updated = db.session.get(Station, station.id_station)
         assert updated.additional_data["station_nomenclature_field"] == after.id_nomenclature
-        assert (
-            updated.additional_data["_label_station_nomenclature_field"] == after.label_default
-        )
+        assert updated.additional_data["_label_station_nomenclature_field"] == after.label_default
 
     def test_get_station_with_additional_data(self, users, station, occhab_additional_fields):
         with db.session.begin_nested():
