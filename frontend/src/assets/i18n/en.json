@@ -58,6 +58,7 @@
 
   "Authentication": {
     "Authentication": "Authentication",
+    "ConnectTo": "Log in to",
     "Email": "Email",
     "Username": "Username",
     "Password": "Password",
@@ -69,7 +70,8 @@
       "CreateAccount": "Create an account",
       "ActivateAccount": "Activate my account",
       "ActivateAccountValidator": "Activate this account",
-      "Send": "Send"
+      "Send": "Send",
+      "PublicAccess": "Public access"
     },
     "Errors": {
       "WrongLoginOrPassword": "Incorrect username or password.",
@@ -98,7 +100,22 @@
       "MailMandatory": "Email is mandatory.",
       "InvalidMail": "Please enter a valid email address."
     },
-    "OtherAuthProviders": "Other login methods"
+    "OtherAuthProviders": "Other login methods",
+    "SignUp": {
+      "Title": "Sign up",
+      "SectionUser": "Personal information",
+      "SectionAccount": "Account",
+      "SectionAdditional": "Additional information",
+      "Firstname": "First name",
+      "Identifiant": "Username",
+      "IdentifiantTooltip": "This username will be requested to authenticate you in GeoNature.",
+      "PasswordConfirmationTooltip": "Repeat the password entered above.",
+      "ConfirmationError": "Confirmation error",
+      "Remarks": "Remarks",
+      "PasswordCriteriaTitle": "Password requirements",
+      "Submit": "Sign up",
+      "FieldRequired": "This field is required"
+    }
   },
   "MyAccount": {
     "MyAccount": "My account",
