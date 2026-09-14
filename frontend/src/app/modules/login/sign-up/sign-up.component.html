@@ -7,241 +7,229 @@
   <div class="container">
     <div class="row">
       <div class="col-md-12 col-lg-8 mx-auto">
-        <div
-          class="panel panel-default panel-signin"
-          style="padding: 20px"
-        >
-          <div class="panel-heading">
-            <div class="float-left">
-              <button
-                mat-mini-fab
-                mat-accent
-                routerLink="/login"
-              >
-                <mat-icon>arrow_back</mat-icon>
-              </button>
-            </div>
-            INSCRIPTION
+        <mat-card class="gn-signup-card">
+          <div class="gn-card-header">
+            <button
+              mat-icon-button
+              routerLink="/login"
+            >
+              <mat-icon>arrow_back</mat-icon>
+            </button>
+            <span class="gn-card-title">{{ 'Authentication.SignUp.Title' | translate }}</span>
           </div>
-          <div class="panel-body">
-            <form [formGroup]="form">
-              <h5>Utilisateur</h5>
 
-              <div class="form-group row">
-                <label
-                  for="prenom_role"
-                  class="col-md-3 col-form-label text-md-right"
+          <mat-card-content>
+            <form [formGroup]="form">
+              <div class="gn-section-title">
+                <span class="gn-section-badge">
+                  <mat-icon>person</mat-icon>
+                </span>
+                {{ 'Authentication.SignUp.SectionUser' | translate }}
+              </div>
+
+              <div class="gn-grid-2">
+                <mat-form-field
+                  appearance="outline"
+                  class="gn-field"
                 >
-                  Prénom
-                </label>
-                <div class="col-md-9 col-lg-7">
+                  <mat-label>{{ 'Authentication.SignUp.Firstname' | translate }}</mat-label>
                   <input
+                    matInput
                     type="text"
-                    class="form-control"
                     id="prenom_role"
-                    placeholder="Prénom"
                     formControlName="prenom_role"
                   />
-                  <small
+                  <mat-error
                     *ngIf="
                       form.get('prenom_role').hasError('required') &&
                       form.get('prenom_role').touched
                     "
                   >
-                    Ce champ est nécessaire
-                  </small>
-                </div>
-              </div>
+                    {{ 'Authentication.SignUp.FieldRequired' | translate }}
+                  </mat-error>
+                </mat-form-field>
 
-              <div class="form-group row">
-                <label
-                  for="nom_role"
-                  class="col-md-3 col-form-label text-md-right"
+                <mat-form-field
+                  appearance="outline"
+                  class="gn-field"
                 >
-                  Nom
-                </label>
-                <div class="col-md-9 col-lg-7">
+                  <mat-label>{{ 'Name' | translate }}</mat-label>
                   <input
+                    matInput
                     type="text"
-                    class="form-control"
                     id="nom_role"
-                    placeholder="Nom"
                     formControlName="nom_role"
                   />
-                  <small
+                  <mat-error
                     *ngIf="
                       form.get('nom_role').hasError('required') && form.get('nom_role').touched
                     "
                   >
-                    Ce champ est nécessaire
-                  </small>
-                </div>
+                    {{ 'Authentication.SignUp.FieldRequired' | translate }}
+                  </mat-error>
+                </mat-form-field>
               </div>
 
-              <div class="form-group row">
-                <label
-                  for="email"
-                  class="col-md-3 col-form-label text-md-right"
+              <mat-form-field
+                appearance="outline"
+                class="gn-field"
+              >
+                <mat-label>{{ 'Authentication.Email' | translate }}</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  id="email"
+                  formControlName="email"
+                />
+                <mat-error
+                  *ngIf="form.get('email').hasError('required') && form.get('email').touched"
                 >
-                  Adresse email
-                </label>
-                <div class="col-md-9 col-lg-7">
-                  <input
-                    type="text"
-                    [ngClass]="form.disabled ? 'form-control-plaintext' : 'form-control'"
-                    id="email"
-                    placeholder="Email"
-                    formControlName="email"
-                  />
-                  <small
-                    *ngIf="
-                      form.get('password_confirmation').hasError('required') &&
-                      form.get('password_confirmation').touched
-                    "
-                  >
-                    Ce champ est nécessaire
-                  </small>
-                </div>
+                  {{ 'Authentication.SignUp.FieldRequired' | translate }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-divider style="margin: 24px 0"></mat-divider>
+
+              <div class="gn-section-title">
+                <span class="gn-section-badge">
+                  <mat-icon>lock</mat-icon>
+                </span>
+                {{ 'Authentication.SignUp.SectionAccount' | translate }}
               </div>
 
-              <mat-divider></mat-divider>
-
-              <h5>Compte</h5>
-
-              <div class="form-group row">
-                <label
-                  for="identifiant"
-                  class="col-md-3 col-form-label text-md-right"
+              <mat-form-field
+                appearance="outline"
+                class="gn-field"
+              >
+                <mat-label>{{ 'Authentication.SignUp.Identifiant' | translate }}</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  id="identifiant"
+                  formControlName="identifiant"
+                  matTooltipPosition="above"
+                  [matTooltip]="'Authentication.SignUp.IdentifiantTooltip' | translate"
+                />
+                <mat-error
+                  *ngIf="
+                    form.get('identifiant').hasError('required') && form.get('identifiant').touched
+                  "
                 >
-                  Identifiant
-                </label>
-                <div class="col-md-9 col-lg-7">
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="identifiant"
-                    placeholder="Identifiant"
-                    formControlName="identifiant"
-                    matTooltipPosition="above"
-                    matTooltip="Cet identifiant vous sera demandé pour vous authentifier dans GeoNature."
-                  />
-                  <small
-                    *ngIf="
-                      form.get('identifiant').hasError('required') &&
-                      form.get('identifiant').touched
-                    "
-                  >
-                    Ce champ est nécessaire
-                  </small>
-                  <small
-                    *ngIf="
-                      form.get('identifiant').hasError('loginExists') &&
-                      form.get('identifiant').dirty
-                    "
-                  >
-                    {{ 'Authentication.Errors.LoginExists' | translate }}
-                  </small>
-                </div>
-              </div>
-
-              <div class="form-group row">
-                <label
-                  for="password"
-                  class="col-md-3 col-form-label text-md-right"
+                  {{ 'Authentication.SignUp.FieldRequired' | translate }}
+                </mat-error>
+                <mat-error
+                  *ngIf="
+                    form.get('identifiant').hasError('loginExists') && form.get('identifiant').dirty
+                  "
                 >
-                  Mot de passe
-                </label>
-                <div class="col-md-9 col-lg-7">
-                  <input
-                    type="password"
-                    class="form-control"
-                    id="password"
-                    placeholder="Mot de passe"
-                    formControlName="password"
-                  />
-                  <small *ngFor="let error of getPasswordErrors()">
-                    <span
-                      *ngIf="form.get('password').touched && form.get('password').dirty"
-                      style="display: block"
+                  {{ 'Authentication.Errors.LoginExists' | translate }}
+                </mat-error>
+              </mat-form-field>
+
+              <div class="gn-grid-2">
+                <div class="gn-password-field-wrap">
+                  <mat-form-field
+                    appearance="outline"
+                    class="gn-field"
+                  >
+                    <mat-label>{{ 'Authentication.Password' | translate }}</mat-label>
+                    <input
+                      matInput
+                      type="password"
+                      id="password"
+                      formControlName="password"
+                    />
+                    <mat-error
+                      *ngIf="
+                        form.get('password').touched &&
+                        form.get('password').dirty &&
+                        form.get('password').value
+                      "
                     >
-                      {{ error }}
-                    </span>
-                  </small>
+                      {{ getPasswordErrors()[0] }}
+                    </mat-error>
+                  </mat-form-field>
+
+                  <div class="gn-password-popover">
+                    <div class="gn-password-popover-title">
+                      {{ 'Authentication.SignUp.PasswordCriteriaTitle' | translate }}
+                    </div>
+                    <div
+                      class="gn-password-criterion"
+                      [class.valid]="criterion.valid"
+                      *ngFor="let criterion of getPasswordCriteria()"
+                    >
+                      <mat-icon>{{ criterion.valid ? 'check_circle' : 'cancel' }}</mat-icon>
+                      <span>{{ criterion.label }}</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div class="form-group row">
-                <label
-                  for="password_confirmation"
-                  class="col-md-3 col-form-label text-md-right"
+
+                <mat-form-field
+                  appearance="outline"
+                  class="gn-field"
                 >
-                  Confirmation
-                </label>
-                <div class="col-md-9 col-lg-7">
+                  <mat-label>{{ 'Confirmation' | translate }}</mat-label>
                   <input
+                    matInput
                     type="password"
-                    class="form-control"
                     id="password_confirmation"
-                    placeholder="Confirmation du mot de passe"
-                    matTooltipPosition="above"
-                    matTooltip="Répéter le mot de passe précédemment saisi."
                     formControlName="password_confirmation"
+                    matTooltipPosition="above"
+                    [matTooltip]="'Authentication.SignUp.PasswordConfirmationTooltip' | translate"
                   />
-                  <small
+                  <mat-error
                     *ngIf="
                       form.get('password_confirmation').hasError('required') &&
                       form.get('password_confirmation').touched
                     "
                   >
-                    Ce champ est nécessaire
-                  </small>
-                  <small
+                    {{ 'Authentication.SignUp.FieldRequired' | translate }}
+                  </mat-error>
+                  <mat-error
                     *ngIf="
                       form.hasError('similarError') && form.get('password_confirmation').touched
                     "
                   >
-                    Erreur de confirmation
-                  </small>
-                </div>
+                    {{ 'Authentication.SignUp.ConfirmationError' | translate }}
+                  </mat-error>
+                </mat-form-field>
               </div>
 
-              <mat-divider></mat-divider>
+              <mat-divider style="margin: 24px 0"></mat-divider>
 
-              <h5>Informations complémentaires</h5>
-
-              <div class="form-group row">
-                <label
-                  for="organisme"
-                  class="col-md-3 col-form-label text-md-right"
-                >
-                  Organisme
-                </label>
-                <div class="col-md-9 col-lg-7">
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="organisme"
-                    placeholder="Organisme"
-                    formControlName="organisme"
-                  />
-                </div>
+              <div class="gn-section-title">
+                <span class="gn-section-badge">
+                  <mat-icon>info</mat-icon>
+                </span>
+                {{ 'Authentication.SignUp.SectionAdditional' | translate }}
               </div>
 
-              <div class="form-group row">
-                <label
-                  for="remarques"
-                  class="col-md-3 col-form-label text-md-right"
-                >
-                  Remarques
-                </label>
-                <div class="col-md-9 col-lg-7">
-                  <textarea
-                    id="remarques"
-                    class="form-control"
-                    placeholder="Précisions diverses..."
-                    formControlName="remarques"
-                  ></textarea>
-                </div>
-              </div>
+              <mat-form-field
+                appearance="outline"
+                class="gn-field"
+              >
+                <mat-label>{{ 'Organism' | translate }}</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  id="organisme"
+                  formControlName="organisme"
+                />
+              </mat-form-field>
+
+              <mat-form-field
+                appearance="outline"
+                class="gn-field"
+              >
+                <mat-label>{{ 'Authentication.SignUp.Remarks' | translate }}</mat-label>
+                <textarea
+                  matInput
+                  id="remarques"
+                  rows="3"
+                  formControlName="remarques"
+                ></textarea>
+              </mat-form-field>
 
               <pnx-dynamic-form-generator
                 [autoGenerated]="true"
@@ -249,27 +237,28 @@
                 [formsDefinition]="FORM_CONFIG"
               ></pnx-dynamic-form-generator>
 
-              <div class="text-center">
+              <div class="text-center gn-submit-row">
                 <button
+                  mat-raised-button
                   type="button"
-                  class="btn btn-success"
+                  class="gn-btn-primary"
                   [disabled]="!form.valid || !dynamicFormGroup.valid || disableSubmit"
                   (click)="save()"
                 >
-                  S'inscrire
+                  {{ 'Authentication.SignUp.Submit' | translate }}
                 </button>
               </div>
             </form>
             <ngb-alert
               type="danger"
               *ngIf="errorMsg"
-              style="margin-top: 5px"
+              class="gn-alert-error"
               [dismissible]="false"
             >
               {{ errorMsg }}
             </ngb-alert>
-          </div>
-        </div>
+          </mat-card-content>
+        </mat-card>
       </div>
     </div>
   </div>

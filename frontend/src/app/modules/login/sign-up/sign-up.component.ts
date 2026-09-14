@@ -73,6 +73,44 @@ export class SignUpComponent implements OnInit {
     });
   }
 
+  getPasswordCriteria(): { label: string; valid: boolean }[] {
+    const password: string = this.form.get('password').value || '';
+    const criteria = [
+      {
+        label: this.translate.instant('Authentication.Errors.Password.MinLength', {
+          requiredLength: this.passwordService.min_password_size,
+          actualLength: password.length,
+        }),
+        valid: this.passwordService.check_password_length(password),
+      },
+    ];
+    if (this.passwordService.case_required) {
+      criteria.push(
+        {
+          label: this.translate.instant('Authentication.Errors.Password.UpperCase'),
+          valid: this.passwordService.check_password_uppercase(password),
+        },
+        {
+          label: this.translate.instant('Authentication.Errors.Password.LowerCase'),
+          valid: this.passwordService.check_password_lowercase(password),
+        }
+      );
+    }
+    if (this.passwordService.digit_required) {
+      criteria.push({
+        label: this.translate.instant('Authentication.Errors.Password.Digit'),
+        valid: this.passwordService.check_password_digit(password),
+      });
+    }
+    if (this.passwordService.special_char_required) {
+      criteria.push({
+        label: this.translate.instant('Authentication.Errors.Password.SpecialChar'),
+        valid: this.passwordService.check_special_char(password),
+      });
+    }
+    return criteria;
+  }
+
   save() {
     if (this.form.valid) {
       this.errorMsg = ''; // raz de l'erreur
