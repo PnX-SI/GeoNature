@@ -1,4 +1,4 @@
-ARG NODE_IMAGE="node:20-bullseye"
+ARG NODE_IMAGE="node:24"
 ARG NGINX_IMAGE="nginx:mainline-alpine"
 
 
