@@ -4,29 +4,42 @@
     this.config.STATIC_URL
   }}/images/login_background.jpg) center; background-size:cover;"
 >
+  <div
+    class="gn-public-access-corner"
+    *ngIf="enablePublicAccess"
+  >
+    <form
+      (ngSubmit)="registerPublic()"
+      #userForm="ngForm"
+    >
+      <button
+        mat-stroked-button
+        class="gn-btn-accent gn-btn-corner"
+        type="submit"
+      >
+        {{ 'Authentication.Actions.PublicAccess' | translate }}
+      </button>
+    </form>
+  </div>
+
   <ng-container>
     <div class="container">
       <div class="row">
         <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
-          <div
-            class="panel panel-default panel-signin"
-            style="padding: 20px"
-          >
-            <div class="panel-heading">
-              <div
-                class="float-left"
+          <mat-card class="gn-login-card">
+            <div class="gn-card-header">
+              <button
+                mat-icon-button
                 *ngIf="login_or_pass_recovery"
+                (click)="login_or_pass_recovery = false; errorMsg = ''"
               >
-                <button
-                  mat-mini-fab
-                  (click)="login_or_pass_recovery = false; errorMsg = ''"
-                >
-                  <mat-icon>arrow_back</mat-icon>
-                </button>
-              </div>
-              {{ APP_NAME }}
+                <mat-icon>arrow_back</mat-icon>
+              </button>
+              {{ 'Authentication.ConnectTo' | translate }}
+              <span class="gn-card-title">{{ APP_NAME }}</span>
             </div>
-            <div class="panel-body">
+
+            <mat-card-content>
               <ng-container *ngIf="!login_or_pass_recovery; else logPwdRecoBlock">
                 <div>
                   <ng-container *ngFor="let provider of primaryProviders">
@@ -35,43 +48,44 @@
                         *ngTemplateOutlet="providerTemplate; context: { provider: provider }"
                       />
                     </div>
-                    <br
+                    <mat-divider
                       *ngIf="primaryProviders.length > 1 && primaryProviders.indexOf(provider) == 0"
-                    />
+                      style="margin: 20px 0"
+                    ></mat-divider>
                   </ng-container>
 
-                  <ng-container *ngIf="hasSecondaryProviders">
-                    <br />
-                    <details>
-                      <summary>{{ 'Authentication.OtherAuthProviders' | translate }}</summary>
-                      <br />
-                      <ng-container *ngFor="let provider of secondaryProviders">
-                        <div class="text-center">
-                          <ng-container
-                            *ngTemplateOutlet="providerTemplate; context: { provider: provider }"
-                          />
-                        </div>
-                        <br
-                          *ngIf="
-                            secondaryProviders.length > 1 &&
-                            secondaryProviders.indexOf(provider) != secondaryProviders.length - 1
-                          "
+                  <mat-expansion-panel
+                    *ngIf="hasSecondaryProviders"
+                    class="gn-secondary-providers"
+                  >
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        {{ 'Authentication.OtherAuthProviders' | translate }}
+                      </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <ng-container *ngFor="let provider of secondaryProviders">
+                      <div class="text-center">
+                        <ng-container
+                          *ngTemplateOutlet="providerTemplate; context: { provider: provider }"
                         />
-                      </ng-container>
-                    </details>
-                  </ng-container>
+                      </div>
+                    </ng-container>
+                  </mat-expansion-panel>
                 </div>
 
-                <div>
-                  <hr />
-                  <div
+                <div
+                  class="gn-footer-links"
+                  *ngIf="enable_sign_up || external_links?.length"
+                >
+                  <mat-divider style="margin-bottom: 16px"></mat-divider>
+                  <button
+                    mat-button
                     *ngIf="enable_sign_up"
-                    class="inscription"
+                    class="gn-btn-accent"
+                    routerLink="/login/inscription"
                   >
-                    <a routerLink="/login/inscription">
-                      {{ 'Authentication.Actions.CreateAccount' | translate }}
-                    </a>
-                  </div>
+                    {{ 'Authentication.Actions.CreateAccount' | translate }}
+                  </button>
                   <div
                     *ngFor="let link of external_links"
                     class="external_link"
@@ -84,17 +98,16 @@
                     </a>
                   </div>
                 </div>
-                <!-- <input type="submit" class="btn btn-success" value="Connexion"> -->
               </ng-container>
 
               <ng-template #logPwdRecoBlock>
                 <ng-container *ngIf="login_or_pass_recovery">
-                  <div>
-                    <small style="color: white !important">
+                  <div class="gn-recovery-hint">
+                    <small>
                       {{ 'Authentication.Messages.Recovery.MailAsked' | translate }}
                     </small>
                     <br />
-                    <small style="color: white !important">
+                    <small>
                       {{ 'Authentication.Messages.Recovery.Process' | translate }}
                     </small>
                   </div>
@@ -103,35 +116,39 @@
                     (ngSubmit)="loginOrPwdRecovery(identifiantForm.value)"
                     #identifiantForm="ngForm"
                   >
-                    <div class="form-group">
-                      <i class="addon fa fa-envelope-o"></i>
+                    <mat-form-field
+                      appearance="outline"
+                      class="gn-field"
+                    >
+                      <mat-label>{{ 'Authentication.Email' | translate }}</mat-label>
+                      <mat-icon
+                        matPrefix
+                        class="gn-field-icon"
+                      >
+                        email
+                      </mat-icon>
                       <input
+                        matInput
                         type="email"
                         id="email"
-                        class="form-control"
                         name="email"
                         ngModel
-                        placeholder="{{ 'Authentication.Email' | translate }}"
                         autofocus
                         required
                         email
                         #emailModel="ngModel"
                       />
-                      <div
-                        *ngIf="emailModel.invalid && emailModel.touched"
-                        class="text-danger"
-                      >
-                        <small *ngIf="emailModel.errors?.required">
-                          {{ 'Authentication.Messages.MailMandatory' | translate }}
-                        </small>
-                        <small *ngIf="emailModel.errors?.email">
-                          {{ 'Authentication.Messages.InvalidMail' | translate }}
-                        </small>
-                      </div>
-                    </div>
+                      <mat-error *ngIf="emailModel.errors?.required">
+                        {{ 'Authentication.Messages.MailMandatory' | translate }}
+                      </mat-error>
+                      <mat-error *ngIf="emailModel.errors?.email">
+                        {{ 'Authentication.Messages.InvalidMail' | translate }}
+                      </mat-error>
+                    </mat-form-field>
                     <button
+                      mat-raised-button
+                      class="gn-btn-primary w-100"
                       [disabled]="disableSubmit || identifiantForm.invalid"
-                      class="btn btn-lg btn-success btn-block text-uppercase"
                       type="submit"
                     >
                       {{ 'Authentication.Actions.Send' | translate }}
@@ -142,9 +159,8 @@
 
               <p
                 *ngIf="_authService.loginError || errorMsg"
-                class="alert alert-danger"
+                class="gn-alert-error"
                 role="alert"
-                style="margin-top: 5px"
               >
                 <strong>
                   {{
@@ -152,30 +168,18 @@
                   }}
                 </strong>
               </p>
-              <img
-                style="margin-left: 40%"
+
+              <div
+                class="gn-loading"
                 *ngIf="_authService.isLoading"
-                src="assets/images/Spinner.gif"
-                alt="Chargement..."
-                height="60"
-                width="60"
-              />
-            </div>
-          </div>
-          <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
-            <form
-              (ngSubmit)="registerPublic()"
-              #userForm="ngForm"
-            >
-              <button
-                class="btn btn-lg btn-success btn-block text-uppercase"
-                type="submit"
-                *ngIf="enablePublicAccess"
               >
-                Accès public
-              </button>
-            </form>
-          </div>
+                <mat-progress-spinner
+                  diameter="36"
+                  mode="indeterminate"
+                ></mat-progress-spinner>
+              </div>
+            </mat-card-content>
+          </mat-card>
         </div>
       </div>
     </div>
@@ -195,40 +199,55 @@
 </ng-template>
 
 <ng-template #localProviderForm>
-  <ng-container *ngIf="!isLocalProviderOnlyPrimaryProvider">
-    {{ 'Authentication.Authentication' | translate }} GeoNature
-  </ng-container>
   <form
     (ngSubmit)="register(userForm.value)"
     #userForm="ngForm"
   >
-    <div class="form-group">
-      <i class="addon fa fa-user"></i>
+    <mat-form-field
+      appearance="outline"
+      class="gn-field"
+    >
+      <mat-label>{{ 'Authentication.Username' | translate }}</mat-label>
+      <mat-icon
+        matPrefix
+        class="gn-field-icon"
+      >
+        person
+      </mat-icon>
       <input
+        matInput
         type="text"
         id="login"
-        class="form-control"
         name="login"
         ngModel
-        placeholder="{{ 'Authentication.Username' | translate }}"
         autofocus
         data-qa="gn-connection-id"
       />
-    </div>
-    <div class="form-group password-field">
-      <i class="addon fa fa-lock"></i>
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="outline"
+      class="gn-field"
+    >
+      <mat-label>{{ 'Authentication.Password' | translate }}</mat-label>
+      <mat-icon
+        matPrefix
+        class="gn-field-icon"
+      >
+        lock
+      </mat-icon>
       <input
         #password
+        matInput
         [type]="showPassword ? 'text' : 'password'"
         name="password"
-        class="form-control"
-        placeholder="Mot de passe"
         ngModel
         data-qa="gn-connection-pwd"
       />
       <button
+        mat-icon-button
+        matSuffix
         type="button"
-        class="password-toggle-btn"
         (click)="togglePasswordVisibility()"
         [attr.aria-label]="
           showPassword
@@ -245,18 +264,21 @@
       >
         <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
       </button>
-    </div>
+    </mat-form-field>
+
     <div
       *ngIf="enable_user_management"
-      class="forgot"
+      class="gn-forgot"
       (click)="login_or_pass_recovery = true; _authService.loginError = false"
     >
       {{ 'Authentication.Messages.Recovery.ForgotPasswordOrLogin' | translate }}
     </div>
 
     <button
-      class="btn btn-lg btn-success btn-block text-uppercase"
+      mat-raised-button
+      class="gn-btn-primary w-100"
       type="submit"
+      [disabled]="_authService.isLoading"
       data-qa="gn-connection-button"
     >
       {{ 'Authentication.Actions.LogIn' | translate }}
@@ -270,16 +292,18 @@
 >
   <button
     *ngIf="!provider.is_external; else externalAuthBlock"
+    mat-stroked-button
     (click)="openDialog(provider)"
-    class="btn btn-primary rounded mr-2 mt-2"
+    class="gn-btn-neutral w-100"
   >
     <span [innerHTML]="provider.logo | safeHTML"></span>
     {{ provider.label }}
   </button>
   <ng-template #externalAuthBlock>
     <a
+      mat-stroked-button
       [href]="getProviderLoginUrl(provider.id_provider)"
-      class="btn btn-primary rounded mr-2 mt-2"
+      class="gn-btn-neutral w-100"
     >
       <span [innerHTML]="provider.logo | safeHTML"></span>
       {{ provider.label }}
