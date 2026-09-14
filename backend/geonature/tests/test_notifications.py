@@ -488,7 +488,7 @@ class TestNotification:
         url = "https://geonature.fr"
         context = {"message": "msg"}
 
-        with patch("geonature.utils.utilsmails.send_mail") as mock:
+        with patch("geonature.utils.mail.utilsmails.send_mail") as mock:
             utils.dispatch_notifications(
                 ["Code_CATEGORY"],
                 [users["user"].id_role, users["admin_user"].id_role],

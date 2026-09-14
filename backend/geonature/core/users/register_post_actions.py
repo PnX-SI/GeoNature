@@ -19,7 +19,7 @@ from geonature.core.gn_meta.models import (
     CorDatasetActor,
     CorAcquisitionFrameworkActor,
 )
-from geonature.utils.utilsmails import send_mail
+from geonature.utils.mail.utilsmails import send_mail
 from geonature.utils.env import db, DB
 
 
