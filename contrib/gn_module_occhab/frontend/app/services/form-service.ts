@@ -147,9 +147,9 @@ export class OcchabFormService {
   }
 
   /**
-   * Les libellés des champs de type nomenclature sont recalculés par le serveur
-   * à chaque enregistrement : renvoyer ceux reçus les figerait sur l'ancienne
-   * valeur, car ils sont réappliqués après le libellé fraîchement calculé.
+   * Écarte les libellés `_label_` accompagnant les champs de type nomenclature.
+   * Ils sont calculés par le serveur à partir de la valeur : ils n'ont pas de
+   * contrôle dans le formulaire, et n'ont pas à repartir à l'enregistrement.
    */
   private withoutNomenclatureLabels(data: any): { [key: string]: any } {
     const cleanedData: { [key: string]: any } = {};

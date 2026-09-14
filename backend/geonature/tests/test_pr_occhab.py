@@ -723,9 +723,8 @@ class TestOcchab:
     ):
         """
         À la mise à jour d'un champ additionnel de type nomenclature, le libellé
-        `_label_` doit suivre la nouvelle valeur. Le client ne doit donc pas
-        renvoyer celui qu'il a reçu : il serait réappliqué après le libellé
-        recalculé et figerait l'ancienne valeur.
+        `_label_` enregistré doit suivre la nouvelle valeur — le client
+        n'envoyant que celle-ci, le libellé précédent ne doit pas subsister.
         """
         nomenclatures = (
             db.session.scalars(
