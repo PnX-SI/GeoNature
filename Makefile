@@ -148,7 +148,7 @@ install_modules: install_contrib install_extra
 reset_install: install_backend install_db install_modules
 
 ##############################
-##### DEPLOYMENT ###########
+##### DEPLOYMENT #############
 ##############################
 
 back:
@@ -197,6 +197,68 @@ lint_backend:
 supergrant:
 	if [ "${SUPERGRANT_ISGROUP}" = true ]; then source $(VENV_PATH)/bin/activate && geonature permissions supergrant --group --nom ${SUPERGRANT_NOM_ROLE} --yes; fi
 	if [ "${SUPERGRANT_ISGROUP}" = false ]; then source $(VENV_PATH)/bin/activate && geonature permissions supergrant --nom ${SUPERGRANT_NOM_ROLE} --yes; fi
+
+
+##############################
+##### DOCKER #################
+##############################
+
+GEONATURE_IMAGE_PREFIX ?= geonature-
+TAG ?= $(shell git describe --tags --always --dirty)
+
+GEONATURE_BACKEND_IMAGE ?= $(GEONATURE_IMAGE_PREFIX)backend:$(TAG)
+GEONATURE_BACKEND_DEV_IMAGE ?= $(GEONATURE_BACKEND_IMAGE)-dev
+GEONATURE_FRONTEND_IMAGE ?= $(GEONATURE_IMAGE_PREFIX)frontend:$(TAG)
+GEONATURE_FRONTEND_NGINX_IMAGE ?= $(GEONATURE_FRONTEND_IMAGE)-nginx
+GEONATURE_FRONTEND_SOURCE_IMAGE ?= $(GEONATURE_FRONTEND_IMAGE)-source
+GEONATURE_FRONTEND_DEV_IMAGE ?= $(GEONATURE_FRONTEND_IMAGE)-dev
+
+docker-list-images:
+	@printf "%25s: %s\n" "backend" "${GEONATURE_BACKEND_IMAGE}"
+	@printf "%25s: %s\n" "backend-dev" "${GEONATURE_BACKEND_DEV_IMAGE}"
+	@printf "%25s: %s\n" "frontend" "${GEONATURE_FRONTEND_IMAGE}"
+	@printf "%25s: %s\n" "frontend-nginx" "${GEONATURE_FRONTEND_NGINX_IMAGE}"
+	@printf "%25s: %s\n" "frontend-source" "${GEONATURE_FRONTEND_SOURCE_IMAGE}"
+	@printf "%25s: %s\n" "frontend-dev" "${GEONATURE_FRONTEND_DEV_IMAGE}"
+
+docker-backend:
+	docker build -f backend/Dockerfile \
+		-t ${GEONATURE_BACKEND_IMAGE} \
+		--target=prod \
+		.
+
+docker-backend-dev:
+	docker build -f backend/Dockerfile \
+		-t ${GEONATURE_BACKEND_DEV_IMAGE} \
+		--target=dev \
+		.
+
+docker-frontend:
+	docker build -f frontend/Dockerfile \
+		-t ${GEONATURE_FRONTEND_IMAGE} \
+		--target=prod \
+		.
+
+docker-frontend-nginx:
+	docker build -f frontend/Dockerfile \
+		-t ${GEONATURE_FRONTEND_NGINX_IMAGE} \
+		--target=prod-base \
+		.
+
+docker-frontend-source:
+	docker build -f frontend/Dockerfile \
+		-t ${GEONATURE_FRONTEND_SOURCE_IMAGE} \
+		--target=source \
+		.
+
+docker-frontend-dev:
+	docker build -f frontend/Dockerfile \
+		-t ${GEONATURE_FRONTEND_DEV_IMAGE} \
+		--target=dev \
+		.
+
+docker: docker-backend docker-frontend
+docker-dev: docker-backend-dev docker-frontend-dev
 
 # Add other targets in a Makefile.local file if you wish to extend the make file
 -include Makefile.local

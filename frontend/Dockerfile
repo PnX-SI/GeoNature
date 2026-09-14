@@ -34,7 +34,7 @@ COPY ./contrib/occtax/frontend/ .
 
 WORKDIR /build/external_modules/occhab
 COPY ./contrib/gn_module_occhab/frontend/ .
-COPY --from=occhab-node-modules /dist/gn_module_occhab/node_modules .
+COPY --from=occhab-node-modules /dist/gn_module_occhab/node_modules node_modules
 
 WORKDIR /build/external_modules/validation
 COPY ./contrib/gn_module_validation/frontend/ .
