@@ -25,7 +25,14 @@ def _add_label_nomenclature_data_dict(value, module_code, object_code):
     nomenclature_fields_name = [
         field.field_name for field in fields if field.type_widget.widget_name == "nomenclature"
     ]
+    # Les libellés sont entièrement recalculés à partir des valeurs. Ceux que le
+    # client renvoie tels qu'il les a reçus sont donc écartés : conservés, ils
+    # écraseraient le libellé recalculé dès qu'ils apparaissent après leur valeur
+    # dans le JSON, et figeraient le libellé de la valeur précédente.
+    computed_label_keys = {f"_label_{name}" for name in nomenclature_fields_name}
     for key, val in (value or {}).items():
+        if key in computed_label_keys:
+            continue
         duplicate_key_dict[key] = val
         if key in nomenclature_fields_name:
             if nomenclature := db.session.get(TNomenclatures, val):

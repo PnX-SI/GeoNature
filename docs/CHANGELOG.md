@@ -6,6 +6,7 @@
 
 ### 🐛 Corrections
 
+- [Champs additionnels] Correction du libellé des champs de type nomenclature, qui restait figé sur la valeur précédente lorsque le client renvoyait la clé `_label_` reçue de l'API
 - Suppression de la section de configuration `ADDITIONAL_FIELDS` et des variables de configuration `IMPLEMENTED_MODULES` et `IMPLEMENTED_MODULES`, maintenant géré en base de donnée (la migration alambic gère la rétro-compatibilité)
 
 ## 2.17.2 (2026-06-09)

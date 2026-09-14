@@ -501,6 +501,77 @@ class TestOcctaxReleve:
         )
         assert "_label_" + nomenclature_field.field_name not in releve.additional_fields
 
+    def test_releve_additional_fields_load_stale_label(
+        self,
+        app: Flask,
+        users: dict,
+        releve_data: dict[str, Any],
+        occtax_module: Any,
+        additional_fields_releve: dict[str, TAdditionalFields],
+    ):
+        """
+        A client editing a releve gets the "_label_" keys back in the GET
+        response and may post them back untouched. The label must always be
+        recomputed from the posted value, whatever its position in the payload.
+        """
+        g.current_module = occtax_module
+        nomenclature_field = additional_fields_releve["nomenclature"]
+        before, after = (
+            db.session.scalars(
+                select(TNomenclatures).order_by(TNomenclatures.id_nomenclature).limit(2)
+            )
+            .unique()
+            .all()
+        )
+
+        data = releve_data["properties"]
+        data["geom_4326"] = releve_data["geometry"]
+        data["observers"] = [users["user"].id_role]
+        # the label key comes after the value it describes, as a client
+        # resending an object it received from the API would send it
+        data["additional_fields"] = {
+            nomenclature_field.field_name: after.id_nomenclature,
+            "_label_" + nomenclature_field.field_name: before.label_default,
+        }
+
+        releve = ReleveSchema().load(data)
+
+        assert releve.additional_fields[nomenclature_field.field_name] == after.id_nomenclature
+        assert (
+            releve.additional_fields["_label_" + nomenclature_field.field_name]
+            == after.label_default
+        )
+
+    def test_releve_additional_fields_load_stale_label_unknown_nomenclature(
+        self,
+        app: Flask,
+        users: dict,
+        releve_data: dict[str, Any],
+        occtax_module: Any,
+        additional_fields_releve: dict[str, TAdditionalFields],
+    ):
+        """
+        A label posted along a value that matches no nomenclature must be
+        dropped rather than kept: it would describe a value that is gone.
+        """
+        g.current_module = occtax_module
+        nomenclature_field = additional_fields_releve["nomenclature"]
+        unexisting_id_nomenclature = (
+            db.session.execute(select(func.max(TNomenclatures.id_nomenclature))).scalar() or 0
+        ) + 1
+
+        data = releve_data["properties"]
+        data["geom_4326"] = releve_data["geometry"]
+        data["observers"] = [users["user"].id_role]
+        data["additional_fields"] = {
+            nomenclature_field.field_name: unexisting_id_nomenclature,
+            "_label_" + nomenclature_field.field_name: "libellé obsolète",
+        }
+
+        releve = ReleveSchema().load(data)
+
+        assert "_label_" + nomenclature_field.field_name not in releve.additional_fields
+
     def test_insertOrUpdate_releve(
         self,
         users: dict,
