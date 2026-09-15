@@ -1222,6 +1222,31 @@ class TestSynthese:
         assert data["nb_observers"] == 1
         assert data["nb_species"] == 1
 
+    def test_general_stat_user_with_areas_filter(
+        self, synthese_data, users, add_synthese_read_permissions
+    ):
+        """A geographic permission must neither duplicate nor discard observations
+        granted by another permission of the same user."""
+        user = users["noright_user"]
+        add_synthese_read_permissions(user, scope_value=None, sensitivity_filter=True)
+        set_logged_user(self.client, user)
+
+        response = self.client.get(url_for("gn_synthese.synthese_statistics.general_stats"))
+        assert response.status_code == 200
+        nb_data = response.get_json()["nb_data"]
+
+        # not comparable to the first one, so both permissions remain
+        chambery = db.session.execute(
+            sa.select(LAreas).where(LAreas.area_name == "Chambéry")
+        ).scalar_one()
+        add_synthese_read_permissions(
+            user, scope_value=None, sensitivity_filter=False, areas_filter=[chambery]
+        )
+
+        response = self.client.get(url_for("gn_synthese.synthese_statistics.general_stats"))
+        assert response.status_code == 200
+        assert response.get_json()["nb_data"] == nb_data
+
     def test_taxon_stats(self, synthese_data, users):
         set_logged_user(self.client, users["stranger_user"])
 
