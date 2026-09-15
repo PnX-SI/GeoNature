@@ -61,7 +61,9 @@
     "ConnectTo": "Log in to",
     "Email": "Email",
     "Username": "Username",
+    "UsernamePlaceholder": "Your username",
     "Password": "Password",
+    "PasswordPlaceholder": "Your password",
     "LogIn": "Login",
     "LogOut": "Logout",
     "Actions": {
@@ -71,7 +73,7 @@
       "ActivateAccount": "Activate my account",
       "ActivateAccountValidator": "Activate this account",
       "Send": "Send",
-      "PublicAccess": "Public access"
+      "PublicAccess": "Access publicly without an account"
     },
     "Errors": {
       "WrongLoginOrPassword": "Incorrect username or password.",
@@ -194,6 +196,7 @@
 
   "Yes": "Yes",
   "No": "No",
+  "Or": "or",
   "Previous": "Previous",
   "Next": "Next",
   "Back": "Back",

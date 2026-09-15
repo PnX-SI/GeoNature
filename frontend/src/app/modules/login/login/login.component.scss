@@ -16,6 +16,18 @@ $gn-accent: #673ab7;
   overflow: hidden;
 }
 
+.gn-card-logo {
+  display: flex;
+  justify-content: center;
+  padding: 24px 24px 0;
+}
+
+.gn-card-logo img {
+  max-height: 20svh;
+  max-width: 100%;
+  object-fit: contain;
+}
+
 .gn-card-header {
   display: flex;
   align-items: center;
@@ -23,18 +35,23 @@ $gn-accent: #673ab7;
   padding: 20px 24px 4px;
 }
 
-.gn-public-access-corner {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  z-index: 5;
+.gn-divider-with-text {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
 }
 
-.gn-btn-corner {
-  height: 36px;
-  padding: 0 18px;
-  font-size: 12.5px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+.gn-divider-with-text mat-divider {
+  flex: 1;
+}
+
+.gn-divider-with-text span {
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: capitalize;
+  color: rgba(0, 0, 0, 0.5);
 }
 
 .gn-recovery-hint small {
@@ -44,18 +61,7 @@ $gn-accent: #673ab7;
 
 @media (max-width: 576px) {
   #login-body {
-    padding: 76px 0 24px;
-  }
-
-  .gn-public-access-corner {
-    top: 12px;
-    right: 12px;
-  }
-
-  .gn-btn-corner {
-    height: 32px;
-    padding: 0 12px;
-    font-size: 11.5px;
+    padding: 24px 0;
   }
 
   .gn-card-header {
@@ -121,17 +127,37 @@ mat-card-content.mat-mdc-card-content {
   margin-bottom: 16px;
 }
 
+.gn-form-links-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: -6px 0 16px;
+}
+
 .gn-forgot {
-  text-align: right;
   font-size: 12.5px;
   font-weight: 500;
   color: $gn-accent;
+  text-decoration: none;
   cursor: pointer;
-  margin: -6px 0 16px;
 }
 
 .gn-forgot:hover {
   text-decoration: underline;
+}
+
+.gn-btn-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.gn-btn-label mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
 }
 
 // Buttons — Material 15 MDC theming tokens, scoped per button so the primary CTA,
@@ -155,15 +181,6 @@ mat-card-content.mat-mdc-card-content {
   justify-content: center;
   gap: 10px;
   margin-bottom: 10px;
-}
-
-.gn-btn-accent {
-  --mdc-outlined-button-outline-color: #{$gn-accent};
-  --mdc-outlined-button-label-text-color: #fff;
-  --mdc-text-button-label-text-color: #fff;
-  background-color: $gn-accent !important;
-  color: #fff !important;
-  font-weight: 500;
 }
 
 .w-100 {

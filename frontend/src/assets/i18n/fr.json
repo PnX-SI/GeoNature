@@ -60,7 +60,9 @@
     "ConnectTo": "Se connecter à",
     "Email": "Adresse mail",
     "Username": "Nom d'utilisateur",
+    "UsernamePlaceholder": "Votre identifiant",
     "Password": "Mot de passe",
+    "PasswordPlaceholder": "Votre mot de passe",
     "Actions": {
       "LogIn": "Se connecter",
       "LogOut": "Déconnexion",
@@ -68,7 +70,7 @@
       "ActivateAccount": "Activer mon compte",
       "ActivateAccountValidator": "Activer le compte",
       "Send": "Envoyer",
-      "PublicAccess": "Accès public"
+      "PublicAccess": "Accéder publiquement sans compte"
     },
     "Errors": {
       "WrongLoginOrPassword": "Identifiant ou mot de passe incorrect",
@@ -193,6 +195,7 @@
 
   "Yes": "Oui",
   "No": "Non",
+  "Or": "ou",
   "Previous": "Précédent",
   "Next": "Suivant",
   "Back": "Retour",

@@ -4,29 +4,20 @@
     this.config.STATIC_URL
   }}/images/login_background.jpg) center; background-size:cover;"
 >
-  <div
-    class="gn-public-access-corner"
-    *ngIf="enablePublicAccess"
-  >
-    <form
-      (ngSubmit)="registerPublic()"
-      #userForm="ngForm"
-    >
-      <button
-        mat-stroked-button
-        class="gn-btn-accent gn-btn-corner"
-        type="submit"
-      >
-        {{ 'Authentication.Actions.PublicAccess' | translate }}
-      </button>
-    </form>
-  </div>
-
   <ng-container>
     <div class="container">
       <div class="row">
         <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
           <mat-card class="gn-login-card">
+            <div class="gn-card-logo">
+              <img
+                src="{{ this.config.API_ENDPOINT }}{{
+                  this.config.STATIC_URL
+                }}/images/logo_structure.png"
+                alt=""
+              />
+            </div>
+
             <div class="gn-card-header">
               <button
                 mat-icon-button
@@ -35,8 +26,6 @@
               >
                 <mat-icon>arrow_back</mat-icon>
               </button>
-              {{ 'Authentication.ConnectTo' | translate }}
-              <span class="gn-card-title">{{ APP_NAME }}</span>
             </div>
 
             <mat-card-content>
@@ -48,10 +37,14 @@
                         *ngTemplateOutlet="providerTemplate; context: { provider: provider }"
                       />
                     </div>
-                    <mat-divider
+                    <div
+                      class="gn-divider-with-text"
                       *ngIf="primaryProviders.length > 1 && primaryProviders.indexOf(provider) == 0"
-                      style="margin: 20px 0"
-                    ></mat-divider>
+                    >
+                      <mat-divider></mat-divider>
+                      <span>{{ 'Or' | translate }}</span>
+                      <mat-divider></mat-divider>
+                    </div>
                   </ng-container>
 
                   <mat-expansion-panel
@@ -71,21 +64,33 @@
                       </div>
                     </ng-container>
                   </mat-expansion-panel>
+
+                  <ng-container *ngIf="enablePublicAccess">
+                    <div class="gn-divider-with-text">
+                      <mat-divider></mat-divider>
+                      <span>{{ 'Or' | translate }}</span>
+                      <mat-divider></mat-divider>
+                    </div>
+                    <form
+                      (ngSubmit)="registerPublic()"
+                      #userForm="ngForm"
+                    >
+                      <button
+                        mat-stroked-button
+                        type="submit"
+                        class="gn-btn-neutral w-100"
+                      >
+                        <mat-icon>public</mat-icon>
+                        {{ 'Authentication.Actions.PublicAccess' | translate }}
+                      </button>
+                    </form>
+                  </ng-container>
                 </div>
 
                 <div
                   class="gn-footer-links"
-                  *ngIf="enable_sign_up || external_links?.length"
+                  *ngIf="external_links?.length"
                 >
-                  <mat-divider style="margin-bottom: 16px"></mat-divider>
-                  <button
-                    mat-button
-                    *ngIf="enable_sign_up"
-                    class="gn-btn-accent"
-                    routerLink="/login/inscription"
-                  >
-                    {{ 'Authentication.Actions.CreateAccount' | translate }}
-                  </button>
                   <div
                     *ngFor="let link of external_links"
                     class="external_link"
@@ -221,6 +226,7 @@
         name="login"
         ngModel
         autofocus
+        placeholder="{{ 'Authentication.UsernamePlaceholder' | translate }}"
         data-qa="gn-connection-id"
       />
     </mat-form-field>
@@ -242,6 +248,7 @@
         [type]="showPassword ? 'text' : 'password'"
         name="password"
         ngModel
+        placeholder="{{ 'Authentication.PasswordPlaceholder' | translate }}"
         data-qa="gn-connection-pwd"
       />
       <button
@@ -266,12 +273,21 @@
       </button>
     </mat-form-field>
 
-    <div
-      *ngIf="enable_user_management"
-      class="gn-forgot"
-      (click)="login_or_pass_recovery = true; _authService.loginError = false"
-    >
-      {{ 'Authentication.Messages.Recovery.ForgotPasswordOrLogin' | translate }}
+    <div class="gn-form-links-row">
+      <div
+        *ngIf="enable_user_management"
+        class="gn-forgot"
+        (click)="login_or_pass_recovery = true; _authService.loginError = false"
+      >
+        {{ 'Authentication.Messages.Recovery.ForgotPasswordOrLogin' | translate }}
+      </div>
+      <a
+        *ngIf="enable_sign_up"
+        class="gn-forgot gn-create-account"
+        routerLink="/login/inscription"
+      >
+        {{ 'Authentication.Actions.CreateAccount' | translate }}
+      </a>
     </div>
 
     <button
@@ -281,7 +297,10 @@
       [disabled]="_authService.isLoading"
       data-qa="gn-connection-button"
     >
-      {{ 'Authentication.Actions.LogIn' | translate }}
+      <span class="gn-btn-label">
+        {{ 'Authentication.Actions.LogIn' | translate }}
+        <mat-icon>arrow_forward</mat-icon>
+      </span>
     </button>
   </form>
 </ng-template>
