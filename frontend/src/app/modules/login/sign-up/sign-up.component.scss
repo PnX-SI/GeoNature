@@ -1,44 +1,19 @@
-$gn-accent: #673ab7;
-
-#login-body {
-  background-size: cover;
-  min-height: 100svh;
-  padding: 40px 0;
-}
+@use '../_auth-shared' as * with (
+  $form-max-width: 620px,
+  $brand-overlay-opacity: 0,
+  $card-header-h-pad: 32px,
+  $card-content-pad: 8px 32px 28px
+);
 
 .gn-signup-card {
   border-radius: 4px;
-  background-color: #fbfdfb !important;
-}
-
-.gn-card-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 20px 32px 4px;
-}
-
-.gn-brand-icon {
-  width: 40px;
-  height: 40px;
-  flex: none;
-  border-radius: 50%;
-  background-color: rgba($gn-accent, 0.1);
-  color: $gn-accent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
 }
 
 .gn-card-title {
-  font-size: 17px;
-  font-weight: 500;
-  color: rgba(0, 0, 0, 0.87);
   letter-spacing: 0.02em;
-}
-
-mat-card-content.mat-mdc-card-content {
-  padding: 8px 32px 28px !important;
 }
 
 .gn-section-title {
@@ -82,102 +57,12 @@ mat-card-content.mat-mdc-card-content {
   }
 }
 
-.gn-password-field-wrap {
-  position: relative;
-}
-
-.gn-password-popover {
-  display: none;
-  position: absolute;
-  top: 0;
-  right: 100%;
-  margin-right: 12px;
-  width: 230px;
-  background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
-  padding: 12px 14px;
-  z-index: 10;
-}
-
-.gn-password-field-wrap:focus-within .gn-password-popover {
-  display: block;
-}
-
-.gn-password-popover-title {
-  font-size: 11.5px;
-  font-weight: 700;
-  color: rgba(0, 0, 0, 0.6);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  margin-bottom: 8px;
-}
-
-.gn-password-criterion {
-  display: flex;
-  align-items: flex-start;
-  gap: 7px;
-  font-size: 12.5px;
-  line-height: 1.35;
-  color: rgba(0, 0, 0, 0.45);
-  padding: 3px 0;
-}
-
-.gn-password-criterion mat-icon {
-  font-size: 16px;
-  width: 16px;
-  height: 16px;
-  flex: none;
-  margin-top: 1px;
-  color: rgba(0, 0, 0, 0.25);
-}
-
-.gn-password-criterion.valid {
-  color: $gn-accent;
-}
-
-.gn-password-criterion.valid mat-icon {
-  color: $gn-accent;
-}
-
-@media (max-width: 991.98px) {
-  .gn-password-popover {
-    display: block !important;
-    position: static;
-    width: 100%;
-    margin: 8px 0 0;
-    box-shadow: none;
-  }
-}
-
-// mat-form-field theming (Material 15 / MDC outline tokens) — brand green instead of the
-// app's global deeppurple-amber theme, scoped to this page only.
-.gn-field {
-  width: 100%;
-  margin-bottom: 4px;
-
-  --mdc-outlined-text-field-outline-color: rgba(0, 0, 0, 0.38);
-  --mdc-outlined-text-field-hover-outline-color: rgba(0, 0, 0, 0.6);
-  --mdc-outlined-text-field-focus-outline-color: #{$gn-accent};
-  --mdc-outlined-text-field-label-text-color: rgba(0, 0, 0, 0.6);
-  --mdc-outlined-text-field-hover-label-text-color: rgba(0, 0, 0, 0.6);
-  --mdc-outlined-text-field-focus-label-text-color: #{$gn-accent};
-  --mdc-outlined-text-field-input-text-color: rgba(0, 0, 0, 0.87);
-  --mdc-outlined-text-field-caret-color: #{$gn-accent};
-}
-
 .gn-submit-row {
   margin-top: 24px;
 }
 
 .gn-btn-primary {
-  --mdc-protected-button-container-color: #{$gn-accent};
-  --mdc-protected-button-label-text-color: #fff;
   padding: 0 40px;
-  height: 42px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
 }
 
 .gn-alert-error {

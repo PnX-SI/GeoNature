@@ -22,6 +22,7 @@ export class SignUpComponent implements OnInit {
   public formControlBuilded = false;
   public FORM_CONFIG = null;
   public errorMsg = '';
+  public passwordPopoverStyle: { [key: string]: string } = {};
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -71,6 +72,20 @@ export class SignUpComponent implements OnInit {
       const error = control.errors[errorKey];
       return error.message || 'Erreur inconnue';
     });
+  }
+
+  // The password-criteria popover floats to the left of the field, which overflows the
+  // scrollable split-form panel (clipped by its `overflow-y: auto`). Positioning it with
+  // `position: fixed` computed from the input's bounding rect escapes that clipping so it
+  // stays visible above the brand panel instead of being hidden behind it.
+  updatePasswordPopoverPosition(target: EventTarget): void {
+    const inputRect = (target as HTMLElement).getBoundingClientRect();
+    const popoverWidth = 230;
+    const gap = 12;
+    this.passwordPopoverStyle = {
+      top: `${inputRect.top}px`,
+      left: `${inputRect.left - popoverWidth - gap}px`,
+    };
   }
 
   getPasswordCriteria(): { label: string; valid: boolean }[] {

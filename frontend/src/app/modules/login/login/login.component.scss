@@ -1,38 +1,49 @@
-$gn-accent: #673ab7;
-
-#login-body {
-  position: relative;
-  min-height: 100svh;
-  background-size: cover;
-  display: flex;
-  align-items: center;
-  padding: 32px 0;
-  box-sizing: border-box;
-}
+@use '../_auth-shared' as * with (
+  $brand-overlay-opacity: 0
+);
 
 .gn-login-card {
   border-radius: 4px;
-  background-color: #fbfdfb !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
   overflow: hidden;
 }
 
-.gn-card-logo {
+.gn-form-brand {
   display: flex;
-  justify-content: center;
-  padding: 24px 24px 0;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 24px;
 }
 
-.gn-card-logo img {
-  max-height: 20svh;
+.gn-form-brand-logo {
+  max-height: 15svh;
   max-width: 100%;
   object-fit: contain;
+  margin-bottom: 12px;
 }
 
-.gn-card-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 20px 24px 4px;
+.gn-form-brand-name {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+@media (max-width: 767.98px) {
+  .gn-form-brand-logo {
+    max-height: 10svh;
+  }
+
+  .gn-card-header {
+    padding: 16px 16px 4px;
+  }
+
+  mat-card-content.mat-mdc-card-content {
+    padding: 8px 16px 16px !important;
+  }
 }
 
 .gn-divider-with-text {
@@ -57,67 +68,6 @@ $gn-accent: #673ab7;
 .gn-recovery-hint small {
   color: rgba(0, 0, 0, 0.7) !important;
   font-size: 13px;
-}
-
-@media (max-width: 576px) {
-  #login-body {
-    padding: 24px 0;
-  }
-
-  .gn-card-header {
-    padding: 16px 16px 4px;
-  }
-
-  mat-card-content.mat-mdc-card-content {
-    padding: 8px 16px 16px !important;
-  }
-}
-
-.gn-brand-icon {
-  width: 40px;
-  height: 40px;
-  flex: none;
-  border-radius: 50%;
-  background-color: rgba($gn-accent, 0.1);
-  color: $gn-accent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.gn-card-title {
-  font-size: 17px;
-  font-weight: 500;
-  color: rgba(0, 0, 0, 0.87);
-}
-
-mat-card-content.mat-mdc-card-content {
-  padding: 8px 24px 20px !important;
-}
-
-// mat-form-field theming (Material 15 / MDC outline tokens) — brand green instead of the
-// app's global deeppurple-amber theme, scoped to this page only.
-.gn-field {
-  width: 100%;
-  margin-bottom: 6px;
-
-  --mdc-outlined-text-field-outline-color: rgba(0, 0, 0, 0.38);
-  --mdc-outlined-text-field-hover-outline-color: rgba(0, 0, 0, 0.6);
-  --mdc-outlined-text-field-focus-outline-color: #{$gn-accent};
-  --mdc-outlined-text-field-label-text-color: rgba(0, 0, 0, 0.6);
-  --mdc-outlined-text-field-hover-label-text-color: rgba(0, 0, 0, 0.6);
-  --mdc-outlined-text-field-focus-label-text-color: #{$gn-accent};
-  --mdc-outlined-text-field-input-text-color: rgba(0, 0, 0, 0.87);
-  --mdc-outlined-text-field-caret-color: #{$gn-accent};
-}
-
-.gn-field-icon {
-  color: rgba(0, 0, 0, 0.54);
-  margin-right: 6px;
-}
-
-.gn-field.mat-focused .gn-field-icon {
-  color: $gn-accent;
 }
 
 .gn-form-subtitle {
@@ -160,15 +110,8 @@ mat-card-content.mat-mdc-card-content {
   height: 18px;
 }
 
-// Buttons — Material 15 MDC theming tokens, scoped per button so the primary CTA,
-// neutral (Google/other providers) and accent (secondary actions) variants can coexist.
 .gn-btn-primary {
-  --mdc-protected-button-container-color: #{$gn-accent};
-  --mdc-protected-button-label-text-color: #fff;
   width: 100%;
-  height: 42px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
 }
 
 .gn-btn-neutral {
@@ -181,10 +124,6 @@ mat-card-content.mat-mdc-card-content {
   justify-content: center;
   gap: 10px;
   margin-bottom: 10px;
-}
-
-.w-100 {
-  width: 100%;
 }
 
 .gn-secondary-providers.mat-expansion-panel {
@@ -233,8 +172,4 @@ mat-card-content.mat-mdc-card-content {
 
 .gn-loading .mat-mdc-progress-spinner circle {
   stroke: $gn-accent;
-}
-
-small {
-  color: red;
 }

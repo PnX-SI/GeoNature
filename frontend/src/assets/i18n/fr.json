@@ -88,7 +88,7 @@
     },
     "Messages": {
       "Recovery": {
-        "ForgotPasswordOrLogin": "Identifiant ou mot de passe oublié ?",
+        "ForgotPassword": "Mot de passe oublié ?",
         "MailAsked": "Veuillez renseigner l'adresse email utilisée lors de votre inscription.",
         "Process": "Un message y sera envoyé avec votre identifiant et la possibilité de renouveler votre mot de passe."
       },
@@ -116,6 +116,10 @@
       "PasswordCriteriaTitle": "Critères du mot de passe",
       "Submit": "S'inscrire",
       "FieldRequired": "Ce champ est nécessaire"
+    },
+    "NewPassword": {
+      "Title": "Nouveau mot de passe",
+      "Submit": "Modifier"
     }
   },
   "MyAccount": {
