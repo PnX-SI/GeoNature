@@ -60,9 +60,9 @@ ENV NGINX_HOST=localhost
 ENV GEONATURE_FRONTEND_PREFIX=/
 
 ENV ASSETS_DIRECTORY=/usr/share/nginx/html/assets
-COPY ./frontend/50-set-api-endpoint.sh /docker-entrypoint.d/
+COPY ./frontend/docker/50-set-api-endpoint.sh /docker-entrypoint.d/
 
-COPY ./frontend/nginx.conf /etc/nginx/templates/default.conf.template
+COPY ./frontend/docker/nginx.conf /etc/nginx/templates/default.conf.template
 
 EXPOSE 80
 
@@ -98,8 +98,8 @@ RUN mkdir external_modules \
 
 ENV ASSETS_DIRECTORY=/dist/geonature/src/assets
 RUN mkdir /docker-entrypoint.d/
-COPY ./frontend/50-set-api-endpoint.sh /docker-entrypoint.d/
-COPY ./frontend/docker-entrypoint.sh /docker-entrypoint.sh
+COPY ./frontend/docker/50-set-api-endpoint.sh /docker-entrypoint.d/
+COPY ./frontend/docker/entrypoint-dev.sh /docker-entrypoint.sh
 
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
 
