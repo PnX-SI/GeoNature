@@ -4,6 +4,8 @@
 
 ### 🚀 Nouveautés
 
+- [Occhab] Ajout des champs additionnels aux stations et aux habitats (#951). Ils se déclarent depuis le module Admin sur le module `OCCHAB` et les objets `OCCHAB_STATION` et `OCCHAB_HABITAT`, et peuvent être rattachés à un jeu de données.
+
 ### 🐛 Corrections
 
 - Suppression de la section de configuration `ADDITIONAL_FIELDS` et des variables de configuration `IMPLEMENTED_MODULES` et `IMPLEMENTED_MODULES`, maintenant géré en base de donnée (la migration alambic gère la rétro-compatibilité)

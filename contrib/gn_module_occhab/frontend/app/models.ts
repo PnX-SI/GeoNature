@@ -7,13 +7,21 @@ export interface CRUVED {
   D: boolean;
 }
 
-export interface OccurenceHabitat {}
+export interface AdditionalData {
+  [key: string]: any;
+}
+
+export interface OccurenceHabitat {
+  additional_data?: AdditionalData;
+}
 
 export interface Station {
   id_station?: number;
+  id_dataset?: number;
   habitats: Array<OccurenceHabitat>;
   cruved: CRUVED;
     dataset?: Dataset;
+  additional_data?: AdditionalData;
 
 }
 export interface AcquistionFramework {
