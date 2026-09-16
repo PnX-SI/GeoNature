@@ -122,6 +122,7 @@ export class SyntheseComponent implements OnInit {
     let geojson = cloneDeep(rawGeojson);
     geojson.features.forEach((feature) => {
       this.idsByFeature = new Set();
+      this.criteriaByFeature = new Set();
       this.checkGeomAbsence(feature);
 
       feature.properties.observations.forEach((obs) => {
@@ -146,7 +147,6 @@ export class SyntheseComponent implements OnInit {
     this.mapListService.idName = 'id_synthese';
     this.mapListService.tableData = [];
     this.noGeomMessage = false;
-    this.criteriaByFeature = new Set();
   }
 
   private getCurrentStoreType() {
