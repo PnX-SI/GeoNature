@@ -25,8 +25,6 @@ import { SyntheseCriteriaService } from '@geonature/syntheseModule/services/crit
     AlertInfoComponent,
     TaxonomyComponent,
   ],
-  providers: [
-    SyntheseCriteriaService
-  ],
+  providers: [SyntheseCriteriaService],
 })
 export class SharedSyntheseModule {}

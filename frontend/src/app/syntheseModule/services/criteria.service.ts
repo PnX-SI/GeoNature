@@ -41,6 +41,9 @@ export class SyntheseCriteriaService implements OnDestroy {
     color: '#FF0000', // Red
     weight: 3,
   };
+  // Leaflet's default fillOpacity fallback for Path/CircleMarker, used as the
+  // unselected fill opacity in criteria mode.
+  private criteriaOriginFillOpacity = 0.2;
 
   private criteriaConfig;
   private nomenclatures;
@@ -603,7 +606,16 @@ export class SyntheseCriteriaService implements OnDestroy {
   getOriginStyle(layer) {
     let originStyle = this.getOriginDefaultStyle();
     if (!this.isDefaultDisplay() && !this.isAreasAggDisplay()) {
-      originStyle = this.getCriteriaStyle(layer.feature.properties.observations);
+      // Explicitly reset fill/fillColor/fillOpacity: Leaflet's setStyle merges the
+      // given keys onto the existing options, so getSelectedStyle's fillOpacity: 1
+      // would otherwise never be cleared when restoring the unselected style.
+      const criteriaStyle = this.getCriteriaStyle(layer.feature.properties.observations);
+      originStyle = {
+        ...criteriaStyle,
+        fill: true,
+        fillColor: criteriaStyle.color,
+        fillOpacity: this.criteriaOriginFillOpacity,
+      };
     }
     return originStyle;
   }
@@ -612,11 +624,19 @@ export class SyntheseCriteriaService implements OnDestroy {
     return this.isAreasAggDisplay() ? this.originAreasStyle : this.originDefaultStyle;
   }
 
-  getSelectedStyle() {
-    let selectedStyle = this.isAreasAggDisplay()
-      ? this.selectedAreasStyle
-      : this.selectedDefaultStyle;
-    return selectedStyle;
+  getSelectedStyle(layer?) {
+    if (!this.isDefaultDisplay() && !this.isAreasAggDisplay()) {
+      // Criteria mode: don't override the criteria color with red, highlight the
+      // selection by fully filling the shape with its own color instead.
+      const criteriaStyle = this.getCriteriaStyle(layer.feature.properties.observations);
+      return {
+        ...criteriaStyle,
+        fill: true,
+        fillColor: criteriaStyle.color,
+        fillOpacity: 1,
+      };
+    }
+    return this.isAreasAggDisplay() ? this.selectedAreasStyle : this.selectedDefaultStyle;
   }
 
   getCriteriaStyle(observations) {
