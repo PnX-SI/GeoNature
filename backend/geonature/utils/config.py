@@ -23,7 +23,7 @@ if "GEONATURE_SETTINGS" in os.environ:
 
 # Load toml file and override with env & py config
 
-config_toml = load_toml(CONFIG_FILE) if CONFIG_FILE else {}
+config_toml = load_toml(CONFIG_FILE) if os.path.exists(CONFIG_FILE) else {}
 config_toml.update(config_programmatic)
 
 # Validate config
