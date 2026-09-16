@@ -19,7 +19,10 @@ import { CommonService } from '@geonature_common/service/common.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 
-import { EventDisplayCriteria, SyntheseCriteriaService } from '@geonature/syntheseModule/services/criteria.service';
+import {
+  EventDisplayCriteria,
+  SyntheseCriteriaService,
+} from '@geonature/syntheseModule/services/criteria.service';
 
 @Component({
   selector: 'pnx-synthese-carte',
@@ -134,7 +137,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
   }
 
   private addCriteriaMapLegend() {
-    this.removeCriteriaMapLegend()
+    this.removeCriteriaMapLegend();
     const onAddFunc = this.criteriaService.buildLegendControl();
 
     if (onAddFunc) {
@@ -286,7 +289,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     }
 
     // Set selected style
-    layer.setStyle(this.criteriaService.getSelectedStyle());
+    layer.setStyle(this.criteriaService.getSelectedStyle(layer));
     this.selectedLayers = [layer];
   }
 
@@ -302,7 +305,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     this.selectedLayers = currentSelectedLayers;
 
     this.selectedLayers.forEach((layer) => {
-      (layer as L.GeoJSON).setStyle(this.criteriaService.getSelectedStyle());
+      (layer as L.GeoJSON).setStyle(this.criteriaService.getSelectedStyle(layer));
     });
   }
 

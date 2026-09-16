@@ -65,7 +65,7 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     public _cruvedStore: CruvedStoreService,
     public config: ConfigService,
     private _moduleService: ModuleService,
-    public criteriaService: SyntheseCriteriaService,
+    public criteriaService: SyntheseCriteriaService
   ) {
     this.SYNTHESE_CONFIG = this.config.SYNTHESE;
     const currentModule = this._moduleService.currentModule;
