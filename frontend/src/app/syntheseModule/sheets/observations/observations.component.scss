@@ -18,7 +18,7 @@
 ::ng-deep .Observations .custom-control-label::after {
   top: calc(0.05rem + 2px);
 }
-::ng-deep .legend {
+::ng-deep .observations-legend {
   line-height: 10px;
   font-size: 14px;
   color: #555;
@@ -28,13 +28,13 @@
   border-radius: 4px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
 }
-::ng-deep .legend i {
+::ng-deep .observations-legend i {
   width: 18px;
   height: 18px;
   float: left;
   margin-right: 8px;
 }
-::ng-deep .legend:hover {
+::ng-deep .observations-legend:hover {
   opacity: 1;
 }
 
