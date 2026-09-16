@@ -32,6 +32,7 @@
     *ngIf="config.OCCTAX.form_fields.individual"
   >
     <pnx-individuals
+      *ngIf="moduleService.currentModule.module_objects.INDIVIDUALS.cruved.R > 0"
       [hidden]="nbIndiv === 0 || cdNomenclatureObjDen !== 'IND'"
       moduleCode="OCCTAX"
       [parentFormControl]="form.get('id_individual')"
