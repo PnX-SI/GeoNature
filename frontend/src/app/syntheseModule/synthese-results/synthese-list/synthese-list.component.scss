@@ -27,6 +27,8 @@
   text-align: center;
   vertical-align: baseline;
   padding: 0;
+  border-radius: 50%;
+  border-color: none;
 }
 
 :host ::ng-deep .datatable-body-cell .btn-map-criteria i {
