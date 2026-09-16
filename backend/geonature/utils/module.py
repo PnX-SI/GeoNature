@@ -25,6 +25,14 @@ def iter_modules_dist():
         yield module_code_entry.dist
 
 
+def iter_modules_config():
+    for dist in iter_modules_dist():
+        module_code = dist.entry_points["code"].load()
+        module_config_path = get_module_config_path(module_code)
+        if module_config_path:
+            yield (str(module_config_path))
+
+
 def get_module_config_path(module_code):
     config_path = os.environ.get(f"GEONATURE_{module_code}_CONFIG_FILE")
     if config_path:

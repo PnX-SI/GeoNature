@@ -122,6 +122,7 @@ WORKDIR /dist/geonature
 
 COPY --chmod=755 /install/03b_populate_db.sh /populate_db.sh
 COPY --chmod=755 /install/assets/docker_entrypoint.sh /entrypoint.sh
+COPY /install/assets/gunicorn.conf.py .
 
 ENV GEONATURE_CONFIG_FILE=""
 

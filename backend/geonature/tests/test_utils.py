@@ -1,7 +1,9 @@
+import os
 import tempfile
 
 import pytest
-from unittest.mock import MagicMock
+from contextlib import ExitStack
+from unittest.mock import MagicMock, patch
 
 import sqlalchemy as sa
 from flask import g
@@ -12,7 +14,12 @@ from geonature.utils.env import db
 from geonature.utils.config_schema import GnPySchemaConf
 from geonature.utils.utilstoml import *
 from geonature.utils.errors import GeoNatureError, ConfigError
-from geonature.utils.module import alembic_branch_in_use, is_module_installed
+from geonature.utils.module import (
+    alembic_branch_in_use,
+    is_module_installed,
+    iter_modules_config,
+    iter_modules_dist,
+)
 from jsonschema import validate
 from json import loads
 
@@ -132,6 +139,48 @@ class TestUtils:
                     config["SYNTHESE"]["TAXON_SHEET"]["ENABLE_TAB_PROFILE"]
                     == expected_enable_tab_profile
                 )
+
+    @pytest.mark.parametrize(
+        "config_file,config_env",
+        [
+            pytest.param([], [], id="no-config"),
+            pytest.param(["OCCTAX"], [], id="one-config-file"),
+            pytest.param(["OCCHAB", "VALIDATION"], [], id="two-config-files"),
+            pytest.param([], ["VALIDATION"], id="env-config-only"),
+            pytest.param(["OCCTAX"], ["OCCTAX"], id="env-config-overrides-config-file"),
+            pytest.param(["OCCHAB"], ["VALIDATION"], id="env-config-and-config-file"),
+        ],
+    )
+    def test_iter_modules_config(self, tmp_path, config_file, config_env):
+        installed_codes = {dist.entry_points["code"].load() for dist in iter_modules_dist()}
+        if not set(config_file + config_env) <= installed_codes:
+            pytest.skip("Some expected GeoNature modules are not installed")
+
+        with ExitStack() as stack:
+            # Define CONFIG_FILE as modules config are loaded relatively to GeoNature config file.
+            stack.enter_context(
+                patch(
+                    "geonature.utils.module.CONFIG_FILE",
+                    str(tmp_path / "geonature_config.toml"),
+                )
+            )
+
+            expected_by_code = {}
+            for code in config_file:
+                config_path = tmp_path / f"{code.lower()}_config.toml"
+                config_path.write_text("[section]\n")
+                expected_by_code[code] = str(config_path)
+            for code in config_env:
+                config_path = tmp_path / f"{code}_env_config.toml"
+                # Note: when env var is set, the path becomes the reference even if the file does not exists
+                stack.enter_context(
+                    patch.dict(os.environ, {f"GEONATURE_{code}_CONFIG_FILE": str(config_path)})
+                )
+                expected_by_code[code] = str(config_path)
+
+            result = list(iter_modules_config())
+
+        assert sorted(result) == sorted(expected_by_code.values())
 
     def test_alembic_branch_in_use(self):
         assert alembic_branch_in_use(branch_name="occhab", directory=None, x_arg=[])
