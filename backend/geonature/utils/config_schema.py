@@ -380,7 +380,7 @@ class MapCriteria(Schema):
         h = random.randrange(start, end) / 360
         l = random.randrange(40, 60) / 100
         s = random.randrange(90, 100) / 100
-        (r, g, b) = colorsys.hls_to_rgb(h, l, s)
+        r, g, b = colorsys.hls_to_rgb(h, l, s)
         hex = "#{:02x}{:02x}{:02x}".format(int(r * 255), int(g * 255), int(b * 255))
         return hex
 
