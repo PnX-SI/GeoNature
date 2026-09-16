@@ -9,6 +9,7 @@
 set -o errexit
 set -o pipefail
 
+rm -f /tmp/ready
 
 # creer les tables et peupler la base
 if [ "${GEONATURE_SKIP_POPULATE_DB}" = true ]; then
@@ -16,11 +17,9 @@ if [ "${GEONATURE_SKIP_POPULATE_DB}" = true ]; then
     :
 else
     . /populate_db.sh
-    if [ "$usershub" = true ];
-    then
+    if [ "$usershub" = true ]; then
         geonature db upgrade usershub@head
-        if [ "$usershub_samples" = true ];
-        then
+        if [ "$usershub_samples" = true ]; then
             geonature db upgrade usershub-samples@head
         fi
     fi
@@ -31,5 +30,7 @@ else
         geonature permissions supergrant --yes ${GEONATURE_SUPERGRANT_ARGS}
     fi
 fi
+
+touch /tmp/ready
 
 exec "$@"
