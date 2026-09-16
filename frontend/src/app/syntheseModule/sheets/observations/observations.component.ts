@@ -226,7 +226,7 @@ export class ObservationsComponent extends Loadable implements OnInit {
     }))();
 
     this.areasLegend.onAdd = (map: L.Map): HTMLElement => {
-      let div: HTMLElement = L.DomUtil.create('div', 'info legend');
+      let div: HTMLElement = L.DomUtil.create('div', 'info observations-legend');
       let grades: number[] = this.config['SYNTHESE']['AREA_AGGREGATION_LEGEND_CLASSES']
         .map((legendClass: { min: number; color: string }) => legendClass.min)
         .reverse();
