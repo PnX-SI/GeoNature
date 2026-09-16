@@ -7,31 +7,6 @@
   *ngIf="header"
   class="modal-header padding-md-all"
 >
-  <span
-    *ngIf="!alertOpen && criteriaService.isCriteriaDisplay() && criteriaInfos"
-    [ngbTooltip]="criteriaService.buildCriteriaTxt(criteriaInfos)"
-    class="map-criteria-badge"
-    style="
-        background-color: {{ criteriaInfos.color }};
-        color: {{ criteriaInfos?.icon?.color }} !important;
-      "
-    aria-hidden="false"
-    [aria-label]="criteriaInfos.label"
-  >
-    <i
-      *ngIf="criteriaInfos?.icon?.font.startsWith('material')"
-      class="{{ criteriaInfos?.icon?.font }}"
-    >
-      {{ criteriaInfos?.icon?.name }}
-    </i>
-    <i
-      *ngIf="criteriaInfos?.icon?.font.startsWith('fa')"
-      class="{{ criteriaInfos?.icon?.font }} {{ criteriaInfos?.icon?.name }}"
-      aria-hidden="false"
-      [aria-label]="criteriaInfos.label"
-    ></i>
-  </span>
-
   <h5 class="my-3 ml-3">
     <ng-container *ngIf="!alertOpen; else alertTitle">
       {{ 'Synthese.ModalTitle' | translate }}
@@ -74,6 +49,30 @@
 >
   <div class="d-flex w-100 justify-content-between align-items-center info-obs-header">
     <div class="d-flex align-items-center flex-wrap info-obs-header-titles">
+      <span
+        *ngIf="!alertOpen && criteriaService.isCriteriaDisplay() && criteriaInfos"
+        [ngbTooltip]="criteriaService.buildCriteriaTxt(criteriaInfos)"
+        class="map-criteria-badge"
+        style="
+        background-color: {{ criteriaInfos.color }};
+        color: {{ criteriaInfos?.icon?.color }} !important;
+      "
+        aria-hidden="false"
+        [aria-label]="criteriaInfos.label"
+      >
+        <i
+          *ngIf="criteriaInfos?.icon?.font.startsWith('material')"
+          class="{{ criteriaInfos?.icon?.font }}"
+        >
+          {{ criteriaInfos?.icon?.name }}
+        </i>
+        <i
+          *ngIf="criteriaInfos?.icon?.font.startsWith('fa')"
+          class="{{ criteriaInfos?.icon?.font }} {{ criteriaInfos?.icon?.name }}"
+          aria-hidden="false"
+          [aria-label]="criteriaInfos.label"
+        ></i>
+      </span>
       <a
         class="no-link-style"
         ngbTooltip="{{ 'Synthese.GnRecord' | translate }}"

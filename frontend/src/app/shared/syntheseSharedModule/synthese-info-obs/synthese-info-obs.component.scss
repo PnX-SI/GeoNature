@@ -84,12 +84,13 @@
 }
 .map-criteria-badge {
   display: inline-block;
-  height: 50px;
-  width: 50px;
+  height: 25px;
+  width: 25px;
   border-radius: 5px;
   text-align: center;
   line-height: 40px;
   font-size: 40px;
+  border-radius: 50%;
 }
 .map-criteria-badge i[class^='material'] {
   vertical-align: baseline;
