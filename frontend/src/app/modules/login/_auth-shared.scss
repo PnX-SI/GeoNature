@@ -1,59 +1,12 @@
-// Shared styles for the split-screen auth pages (login / sign-up / new-password).
+// Shared styles for the card/field/password-popover chrome used by the auth pages
+// (login / sign-up / new-password). The split-screen layout shell itself (background
+// image, brand overlay, scroll panel) lives in AuthLayoutComponent, not here.
 // Import with `@use '../_auth-shared' as * with (...)` to override any of the
-// `!default` variables below (e.g. form width, brand overlay opacity, card padding).
+// `!default` variables below (e.g. accent color, card padding).
 
 $gn-accent: #673ab7 !default;
-$form-max-width: 440px !default;
-$brand-overlay-opacity: 0.45 !default;
 $card-header-h-pad: 24px !default;
 $card-content-pad: 8px 24px 20px !default;
-
-#login-body {
-  height: 100svh;
-  display: flex;
-  overflow: hidden;
-}
-
-.gn-split-brand {
-  position: relative;
-  flex: 1 1 50%;
-  background-size: cover;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.gn-split-brand-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, $brand-overlay-opacity);
-}
-
-.gn-split-form {
-  // positioned + explicit z-index so this panel (and floating content inside it,
-  // e.g. the password-criteria popover) paints above .gn-split-brand — otherwise
-  // that sibling, itself `position: relative`, always wins the stacking order
-  // over this non-positioned one regardless of any z-index set deeper inside it.
-  position: relative;
-  z-index: 1;
-  flex: 1 1 50%;
-  min-height: 0;
-  display: flex;
-  justify-content: center;
-  background: #f4f6f4;
-  padding: 32px;
-  box-sizing: border-box;
-  overflow-y: auto;
-}
-
-.gn-split-form-inner {
-  width: 100%;
-  max-width: $form-max-width;
-  // auto vertical margins center the panel without the flexbox
-  // align-items:center overflow bug that clips the top when content is tall
-  margin: auto 0;
-}
 
 .gn-brand-icon {
   width: 40px;
@@ -84,20 +37,6 @@ mat-card-content.mat-mdc-card-content {
   padding: $card-content-pad !important;
 }
 
-@media (max-width: 767.98px) {
-  #login-body {
-    flex-direction: column;
-  }
-
-  .gn-split-brand {
-    display: none;
-  }
-
-  .gn-split-form {
-    padding: 24px 16px;
-  }
-}
-
 // mat-form-field theming (Material 15 / MDC outline tokens) — brand color instead of the
 // app's global deeppurple-amber theme, scoped to these pages only.
 .gn-field {
@@ -123,52 +62,25 @@ mat-card-content.mat-mdc-card-content {
   color: $gn-accent;
 }
 
-.gn-password-field-wrap {
-  position: relative;
-}
-
-// `position: fixed` (coordinates computed in TS from the input's bounding rect on focus)
-// rather than `absolute; right: 100%` — the popover needs to escape .gn-split-form's
-// `overflow-y: auto`, which clips any content overflowing past its left edge.
-.gn-password-popover {
-  display: none;
-  position: fixed;
-  width: 230px;
-  background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
-  padding: 12px 14px;
-  z-index: 1000;
-}
-
-.gn-password-field-wrap:focus-within .gn-password-popover {
-  display: block;
-}
-
-.gn-password-popover-title {
-  font-size: 11.5px;
-  font-weight: 700;
-  color: rgba(0, 0, 0, 0.6);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  margin-bottom: 8px;
+.gn-password-criteria {
+  width: 100%;
+  margin: 2px 0 6px;
 }
 
 .gn-password-criterion {
   display: flex;
   align-items: flex-start;
-  gap: 7px;
-  font-size: 12.5px;
-  line-height: 1.35;
+  gap: 6px;
+  font-size: 11.5px;
+  line-height: 1.3;
   color: rgba(0, 0, 0, 0.45);
-  padding: 3px 0;
+  padding: 1px 0;
 }
 
 .gn-password-criterion mat-icon {
-  font-size: 16px;
-  width: 16px;
-  height: 16px;
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
   flex: none;
   margin-top: 1px;
   color: rgba(0, 0, 0, 0.25);
@@ -180,16 +92,6 @@ mat-card-content.mat-mdc-card-content {
 
 .gn-password-criterion.valid mat-icon {
   color: $gn-accent;
-}
-
-@media (max-width: 991.98px) {
-  .gn-password-popover {
-    display: block !important;
-    position: static;
-    width: 100%;
-    margin: 8px 0 0;
-    box-shadow: none;
-  }
 }
 
 .gn-btn-primary {

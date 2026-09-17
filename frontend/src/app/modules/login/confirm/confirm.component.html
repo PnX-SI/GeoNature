@@ -1,6 +1,6 @@
 <div
   class="confirm-body"
-  style="background: url({{ background_url }}) center; background-size:cover;"
+  [style.background-image]="'url(' + background_url + ')'"
 >
   <div class="modal-container">
     {{ confirmationDivMessage }}

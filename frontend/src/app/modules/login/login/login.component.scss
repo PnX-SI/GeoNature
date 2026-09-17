@@ -1,11 +1,4 @@
-@use '../_auth-shared' as * with (
-  $brand-overlay-opacity: 0
-);
-
-.gn-split-brand {
-  background-position: center center;
-  background-repeat: no-repeat;
-}
+@use '../_auth-shared' as *;
 
 .gn-login-card {
   border-radius: 4px;

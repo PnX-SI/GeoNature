@@ -1,14 +1,7 @@
 @use '../_auth-shared' as * with (
-  $form-max-width: 620px,
-  $brand-overlay-opacity: 0,
   $card-header-h-pad: 32px,
   $card-content-pad: 8px 32px 28px
 );
-
-.gn-split-brand {
-  background-position: center center;
-  background-repeat: no-repeat;
-}
 
 .gn-signup-card {
   border-radius: 4px;
@@ -53,6 +46,7 @@
 .gn-grid-2 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
   gap: 0 16px;
 }
 
