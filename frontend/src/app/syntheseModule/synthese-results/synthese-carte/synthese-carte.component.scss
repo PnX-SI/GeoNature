@@ -6,20 +6,10 @@
   box-shadow: none;
   /* font-size:2; */
 }
-::ng-deep .synthese-map-areas {
-  background-color: rgba(255, 255, 255, 0.8);
-}
-::ng-deep .synthese-map-areas .custom-control-label {
-  margin: 0.2rem;
-}
-::ng-deep .synthese-map-areas .custom-control-label::before {
-  top: 0.05rem;
-}
-::ng-deep .synthese-map-areas .custom-control-label::after {
-  top: calc(0.05rem + 2px);
-}
+
+// Synthese map legend (now also embeds the display mode <select> picker)
 ::ng-deep .legend {
-  line-height: 10px;
+  line-height: 24px;
   font-size: 14px;
   color: #555;
   background-color: white;
@@ -28,12 +18,34 @@
   border-radius: 4px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
 }
-::ng-deep .legend i {
-  width: 18px;
-  height: 18px;
-  float: left;
-  margin-right: 8px;
-}
 ::ng-deep .legend:hover {
   opacity: 1;
+}
+::ng-deep .legend .legend-title {
+  margin: 0 0 4px 0;
+  font-weight: bold;
+}
+::ng-deep .legend .criteria-control-select {
+  display: block;
+  width: 100%;
+  margin-bottom: 5px;
+}
+::ng-deep .legend i.legend-color {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+::ng-deep .legend.criteria i.legend-color {
+  border-radius: 10px;
+}
+::ng-deep .legend.areas i.legend-color {
+  border-radius: 2px;
+}
+::ng-deep .legend i.legend-symbol {
+  display: inline-block;
+  font-size: inherit !important;
+  text-align: center;
+  vertical-align: middle;
 }
