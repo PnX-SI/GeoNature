@@ -603,10 +603,9 @@ class GnGeneralSchemaConf(Schema):
     METADATA = fields.Nested(MetadataConfig, load_default=MetadataConfig().load({}))
     NB_MAX_DATA_SENSITIVITY_REPORT = fields.Integer(load_default=1000000)
     PUBLIC_ACCESS_USERNAME = fields.String(load_default="")
-    # Lien de contact (URL, mailto:, etc.) affiché sur la page de connexion en cas de problème de connexion
-    ADMINISTRATOR_CONTACT_URL = fields.String(
-        load_default="mailto:administrateur@monassociation.fr"
-    )
+    # Lien de contact (URL, mailto:, etc.) affiché sur la page de connexion en cas de problème de connexion.
+    # Laisser vide pour ne pas afficher ce lien.
+    ADMINISTRATOR_CONTACT_URL = fields.String(load_default="")
     TAXHUB = fields.Nested(TaxhubAppConf, load_default=TaxhubAppConf().load({"API_PREFIX": "/api"}))
 
     HOME = fields.Nested(HomeConfig, load_default=HomeConfig().load({}))
