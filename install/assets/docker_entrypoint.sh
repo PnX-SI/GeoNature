@@ -15,6 +15,8 @@ if [ "${GEONATURE_SKIP_POPULATE_DB}" = true ]; then
     # pass
     :
 else
+    rm -f /tmp/db-populated
+
     . /populate_db.sh
     if [ "$usershub" = true ];
     then
@@ -26,6 +28,12 @@ else
     fi
 
     geonature upgrade-modules-db
+
+    if [ -n "${GEONATURE_SUPERGRANT_ARGS:-}" ]; then
+        geonature permissions supergrant --yes ${GEONATURE_SUPERGRANT_ARGS}
+    fi
+
+    touch /tmp/db-populated
 fi
 
 exec "$@"
