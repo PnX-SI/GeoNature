@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit {
     this.enable_user_management =
       this.config['ACCOUNT_MANAGEMENT']['ENABLE_USER_MANAGEMENT'] || false;
     this.external_links = this.config['ACCOUNT_MANAGEMENT']['EXTERNAL_LINKS'];
-    this.administratorContactUrl = this.config['ADMINISTRATOR_CONTACT_URL'];
+    this.administratorContactUrl = this.config['HELP_CONTACT_URL'];
   }
 
   ngOnInit() {

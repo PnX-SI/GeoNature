@@ -99,7 +99,8 @@
       "InvalidMail": "Veuillez saisir une adresse email valide.",
       "ShowPassword": "Afficher le mot de passe",
       "HidePassword": "Masquer le mot de passe",
-      "InvalidMail": "Veuillez saisir une adresse email valide."
+      "InvalidMail": "Veuillez saisir une adresse email valide.",
+      "ContactAdministrator": "Un problème de connexion ? Contactez-nous"
     },
     "OtherAuthProviders": "Autres moyens de connexion",
     "SignUp": {

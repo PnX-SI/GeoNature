@@ -605,7 +605,7 @@ class GnGeneralSchemaConf(Schema):
     PUBLIC_ACCESS_USERNAME = fields.String(load_default="")
     # Lien de contact (URL, mailto:, etc.) affiché sur la page de connexion en cas de problème de connexion.
     # Laisser vide pour ne pas afficher ce lien.
-    ADMINISTRATOR_CONTACT_URL = fields.String(load_default="")
+    HELP_CONTACT_URL = fields.String(load_default="")
     TAXHUB = fields.Nested(TaxhubAppConf, load_default=TaxhubAppConf().load({"API_PREFIX": "/api"}))
 
     HOME = fields.Nested(HomeConfig, load_default=HomeConfig().load({}))

@@ -1647,13 +1647,13 @@ Lien de contact de l'administrateur
 
 Un lien "Un problème de connexion ? Contactez-nous" peut être affiché en bas de la page de connexion de GeoNature, pour permettre aux utilisateurs rencontrant un problème (compte non encore validé, identifiants oubliés, etc.) de contacter facilement l'administrateur de l'instance.
 
-Ce lien est configurable via le paramètre général ``ADMINISTRATOR_CONTACT_URL``. Il accepte n'importe quelle URL : un lien ``mailto:`` vers une adresse email, ou un lien ``https://`` vers un formulaire de contact par exemple.
+Ce lien est configurable via le paramètre général ``HELP_CONTACT_URL``. Il accepte n'importe quelle URL : un lien ``mailto:`` vers une adresse email, ou un lien ``https://`` vers un formulaire de contact par exemple.
 
 .. code:: toml
 
-    ADMINISTRATOR_CONTACT_URL = "mailto:contact@monassociation.fr"
+    HELP_CONTACT_URL = "mailto:contact@monassociation.fr"
     # ou
-    ADMINISTRATOR_CONTACT_URL = "https://monassociation.fr/contact"
+    HELP_CONTACT_URL = "https://monassociation.fr/contact"
 
 Par défaut, ce paramètre est vide et le lien n'est alors pas affiché sur la page de connexion. Il doit être explicitement renseigné par l'administrateur pour que le lien apparaisse.
 
