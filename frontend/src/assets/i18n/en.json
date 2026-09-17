@@ -292,6 +292,10 @@
       "ZoomWarning": "Inappropriate scale, please zoom in further to point the survey",
       "FileLayerInfo": "Click on the layer (point/line/polygon) to make it the point of your survey. The selected layer appears in red on the map. Right-click to display the layer info",
       "FileLayerInfoSynthese": "File imported. Right-click on an object to display its info"
+    },
+    "LayersControl": {
+      "BaseLayersLabel": "Base maps",
+      "OverlaysLabel": "Additional layers"
     }
   },
   "MapList": {
@@ -573,7 +577,6 @@
     },
     "Map": {
       "LegendTitle": "Observations display",
-      "AreasToggleBtn": "Grid cells",
       "SeveralValues": "Several values",
       "UnknownValue": "Other values",
       "Criteria": {

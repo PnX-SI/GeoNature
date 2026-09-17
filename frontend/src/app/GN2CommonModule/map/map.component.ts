@@ -18,6 +18,7 @@ import {
   map,
 } from 'rxjs/operators';
 import { ConfigService } from '@geonature/services/config.service';
+import { TranslateService } from '@ngx-translate/core';
 
 const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search';
 
@@ -89,7 +90,8 @@ export class MapComponent implements OnInit {
     private mapService: MapService,
     private _commonService: CommonService,
     private _nominatim: NominatimService,
-    public config: ConfigService
+    public config: ConfigService,
+    private _translate: TranslateService
   ) {
     this.searchLocation = '';
     this.zoom = this.config.MAPCONFIG.ZOOM_LEVEL;
@@ -189,6 +191,33 @@ export class MapComponent implements OnInit {
       collapsed: true, //If true, the control will be collapsed into an icon and expanded on mouse hover
     });
     this.mapService.layerControl.addTo(this.map);
+
+    // Add a text label above the baselayers section, and another one between the
+    // baselayers and the overlays sections of the layers control, in addition to
+    // Leaflet's native (text-less) separator.
+    const layersControlContainer = this.mapService.layerControl.getContainer();
+    const insertLayersControlSectionLabel = (sectionSelector: string, translationKey: string) => {
+      const sectionEl = layersControlContainer?.querySelector<HTMLElement>(sectionSelector);
+      const parentEl = sectionEl?.parentElement;
+      if (!sectionEl || !parentEl) {
+        return;
+      }
+      const sectionLabel = L.DomUtil.create(
+        'div',
+        'leaflet-control-layers-section-label',
+        parentEl
+      );
+      sectionLabel.innerText = this._translate.instant(translationKey);
+      parentEl.insertBefore(sectionLabel, sectionEl);
+    };
+    insertLayersControlSectionLabel(
+      '.leaflet-control-layers-base',
+      'Map.LayersControl.BaseLayersLabel'
+    );
+    insertLayersControlSectionLabel(
+      '.leaflet-control-layers-overlays',
+      'Map.LayersControl.OverlaysLabel'
+    );
 
     this.mapService.setMap(this.map);
 

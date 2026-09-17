@@ -338,7 +338,7 @@ export class SyntheseCriteriaService implements OnDestroy {
   private appendCriteriaLegendContent(container) {
     let content = L.DomUtil.create('div', 'legend-content', container);
 
-    let labels = [`<strong> ${this.selectedCriteria.label} </strong>`];
+    let labels = [];
     // Loop through our criteria prepared legend styles and
     // generate a label with a colored square for each interval
     for (var i = 0; i < this.selectedCriteria.preparedLegendStyles.length; i++) {
@@ -392,10 +392,7 @@ export class SyntheseCriteriaService implements OnDestroy {
     let grades = this.config['SYNTHESE']['AREA_AGGREGATION_LEGEND_CLASSES']
       .map((legendClass) => legendClass.min)
       .reverse();
-    let title = this.translateService.instant(
-      `Synthese.Map.Criteria.${this.areaAggregationCriteriaCode}`
-    );
-    let labels = [`<strong> ${title.replace(' ', '<br>')} </strong>`];
+    let labels = [];
 
     // Loop through our density intervals and generate a label with
     // a colored square for each interval
@@ -652,7 +649,18 @@ export class SyntheseCriteriaService implements OnDestroy {
   private getObservationsCriteriaValues(observations) {
     const field = this.getCurrentField();
     let values = [];
-    if (observations[field]) {
+    if (Array.isArray(observations)) {
+      // Raw API shape (used e.g. by the taxon/observer sheets' map): an array
+      // of individual observation objects, each possibly holding the field as
+      // a scalar or array value, instead of the single object with array-typed
+      // fields built by SyntheseComponent.parseGeoJson() for the main map.
+      observations.forEach((obs) => {
+        if (obs[field] === undefined || obs[field] === null) {
+          return;
+        }
+        values.push(...(Array.isArray(obs[field]) ? obs[field] : [obs[field]]));
+      });
+    } else if (observations[field]) {
       values = Array.isArray(observations[field]) ? observations[field] : [observations[field]];
     }
     return values;
