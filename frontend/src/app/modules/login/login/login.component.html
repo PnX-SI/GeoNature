@@ -176,13 +176,10 @@
 
       <div
         class="gn-contact-admin"
-        *ngIf="administratorContactMail"
+        *ngIf="administratorContactUrl"
       >
-        <a href="mailto:{{ administratorContactMail }}">
-          {{
-            'Authentication.Messages.ContactAdministrator'
-              | translate: { email: administratorContactMail }
-          }}
+        <a href="{{ administratorContactUrl }}">
+          {{ 'Authentication.Messages.ContactAdministrator' | translate }}
         </a>
       </div>
     </mat-card-content>
