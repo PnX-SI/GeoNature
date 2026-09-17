@@ -78,8 +78,18 @@ def get_datasets():
         params.update(request.json)
     fields = params.get("fields", type=str, default=[])
 
-    if fields:
+    # Clause `and "modules" not in fields` to ensure retro-compatibility
+    if fields and "modules" not in fields:
         fields = fields.split(",")
+        only = fields
+    else:
+        only = [
+            "+cruved",
+            "cor_dataset_actor",
+            "cor_dataset_actor.nomenclature_actor_role",
+            "cor_dataset_actor.organism",
+            "cor_dataset_actor.role",
+        ]
 
     if "create" in params:
         create = params.pop("create").split(".")
@@ -106,13 +116,6 @@ def get_datasets():
             joinedload(TAcquisitionFramework.cor_af_actor),
         ),
     )
-    only = [
-        "+cruved",
-        "cor_dataset_actor",
-        "cor_dataset_actor.nomenclature_actor_role",
-        "cor_dataset_actor.organism",
-        "cor_dataset_actor.role",
-    ]
 
     if params.get("nb_observations_synthese", type=int, default=0):
         query = query.options(undefer(TDatasets.nb_observations_synthese))
@@ -120,7 +123,6 @@ def get_datasets():
 
     if "modules" in fields:
         query = query.options(joinedload(TDatasets.modules))
-        only.append("modules")
 
     dataset_schema = DatasetSchema(only=only)
 
