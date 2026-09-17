@@ -99,8 +99,7 @@
       "InvalidMail": "Veuillez saisir une adresse email valide.",
       "ShowPassword": "Afficher le mot de passe",
       "HidePassword": "Masquer le mot de passe",
-      "InvalidMail": "Veuillez saisir une adresse email valide.",
-      "ContactAdministrator": "Un problème de connexion ? Contactez-nous"
+      "InvalidMail": "Veuillez saisir une adresse email valide."
     },
     "OtherAuthProviders": "Autres moyens de connexion",
     "SignUp": {
@@ -119,8 +118,9 @@
       "FieldRequired": "Ce champ est nécessaire"
     },
     "NewPassword": {
-      "Title": "Nouveau mot de passe",
-      "Submit": "Modifier"
+      "Title": "Renouvellement de mot de passe",
+      "FormLabel": "Nouveau mot de passe",
+      "Submit": "Changer le mot de passe"
     }
   },
   "MyAccount": {

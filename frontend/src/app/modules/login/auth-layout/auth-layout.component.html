@@ -5,10 +5,7 @@
       'url(' + config.API_ENDPOINT + config.STATIC_URL + '/images/login_background.jpg)'
     "
   >
-    <div
-      class="gn-split-brand-overlay"
-      [style.background]="'rgba(0, 0, 0, ' + overlayOpacity + ')'"
-    ></div>
+    <div class="gn-split-brand-overlay"></div>
     <ng-content select="[gnBrand]"></ng-content>
   </div>
 

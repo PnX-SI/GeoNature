@@ -120,8 +120,9 @@
       "FieldRequired": "This field is required"
     },
     "NewPassword": {
-      "Title": "New password",
-      "Submit": "Update"
+      "Title": "Password renewal",
+      "FormLabel": "New password",
+      "Submit": "Update the password"
     }
   },
   "MyAccount": {
