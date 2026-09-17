@@ -172,180 +172,94 @@ export class SyntheseCriteriaService implements OnDestroy {
     return this.selectedCriteria.code;
   }
 
-  buildSelectionControl() {
-    if (this.config.SYNTHESE.AREA_AGGREGATION_ENABLED || this.config.SYNTHESE.MAP_CRITERIA_LIST) {
-      if (this.config.SYNTHESE.MAP_CRITERIA_LIST) {
-        return this.buildCriteriaListControl();
-      } else {
-        return this.buildCriteriaButtonControl();
-      }
+  /**
+   * Build the "Affichage des observations" title + <select> mode picker that sits
+   * at the top of the merged legend control, mirroring the options previously
+   * offered by the (now removed) standalone radio-button selector control.
+   * @param container The legend control root element to append the title/select to.
+   * @param includeCriteriaList Whether to also list the configured MAP_CRITERIA_LIST
+   * entries (false when only the area aggregation toggle is available).
+   */
+  private buildLegendModeSelector(container, includeCriteriaList: boolean) {
+    let title = L.DomUtil.create('h6', 'legend-title', container);
+    this.translateService
+      .stream('Synthese.Map.LegendTitle')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((txt) => {
+        title.innerText = txt;
+      });
+
+    let select = L.DomUtil.create('select', 'criteria-control-select', container);
+    L.DomEvent.disableClickPropagation(select);
+
+    // Add default display entry
+    let defaultOption = L.DomUtil.create('option', '', select);
+    defaultOption.value = this.defaultCriteriaCode;
+    if (this.selectedCriteria.code == this.defaultCriteriaCode) {
+      defaultOption.selected = true;
     }
-    return null;
-  }
+    this.translateService
+      .stream(`Synthese.Map.Criteria.${this.defaultCriteriaCode}`)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((txt) => {
+        defaultOption.innerText = txt;
+      });
 
-  private buildCriteriaListControl() {
-    return (map) => {
-      let criteriaContainer = L.DomUtil.create(
-        'div',
-        'leaflet-bar leaflet-control-layers custom-control leaflet-control-custom synthese-map-criteria'
-      );
-      criteriaContainer.setAttribute('aria-haspopup', 'true');
-      L.DomEvent.disableClickPropagation(criteriaContainer);
-      L.DomEvent.disableScrollPropagation(criteriaContainer);
-
-      const collapseCriteriaList = (evt) => {
-        if (!evt || !(evt.type === 'pointerleave' && evt['pointerType'] === 'touch')) {
-          criteriaContainer.classList.remove('criteria-control-list-expanded');
-        }
-      };
-
-      const expandCriteriaList = () => {
-        criteriaContainer.classList.add('criteria-control-list-expanded');
-      };
-
-      L.DomEvent.on(
-        criteriaContainer,
-        {
-          pointerenter: expandCriteriaList,
-          pointerleave: collapseCriteriaList,
-        },
-        this
-      );
-      map.on('click', collapseCriteriaList);
-
-      let criteriaBtn = L.DomUtil.create('a', 'criteria-control-toggle', criteriaContainer);
-      criteriaBtn.href = '#';
-      L.DomEvent.disableClickPropagation(criteriaBtn);
-
-      let section = L.DomUtil.create('section', 'criteria-control-list', criteriaContainer);
-
-      // Add default display entry
-      let label = L.DomUtil.create('label', '', section);
-      let span = L.DomUtil.create('span', '', label);
-      let inputBtn = L.DomUtil.create('input', 'criteria-control-selector', span);
-      inputBtn.setAttribute('id', `criteria-radio-btn-${this.defaultCriteriaCode}`);
-      inputBtn.setAttribute('name', 'criteria-radio-btn');
-      inputBtn.setAttribute('type', 'radio');
-      inputBtn.onchange = () => {
-        if (inputBtn.checked) {
-          this.selectedCriteria = {
-            code: this.defaultCriteriaCode,
-          };
-        }
-        this.activateMapDisplayCriteria();
-      };
-      if (this.selectedCriteria.code == this.defaultCriteriaCode) {
-        inputBtn.checked = true;
+    // Add observations area aggregation display entry
+    if (this.config.SYNTHESE.AREA_AGGREGATION_ENABLED) {
+      let areaOption = L.DomUtil.create('option', '', select);
+      areaOption.value = this.areaAggregationCriteriaCode;
+      if (this.selectedCriteria.code == this.areaAggregationCriteriaCode) {
+        areaOption.selected = true;
       }
-      let textLabelSpan = L.DomUtil.create('span', '', span);
       this.translateService
-        .stream(`Synthese.Map.Criteria.${this.defaultCriteriaCode}`)
+        .stream(`Synthese.Map.Criteria.${this.areaAggregationCriteriaCode}`)
         .pipe(takeUntil(this.destroy$))
         .subscribe((txt) => {
-          textLabelSpan.innerText = ' ' + txt;
+          areaOption.innerText = txt;
         });
+    }
 
-      // Add observations area aggregation display entry
-      if (this.config.SYNTHESE.AREA_AGGREGATION_ENABLED) {
-        let label = L.DomUtil.create('label', '', section);
-        let span = L.DomUtil.create('span', '', label);
-        let inputBtn = L.DomUtil.create('input', 'criteria-control-selector', span);
-        inputBtn.setAttribute('id', `criteria-radio-btn-${this.areaAggregationCriteriaCode}`);
-        inputBtn.setAttribute('name', 'criteria-radio-btn');
-        inputBtn.setAttribute('type', 'radio');
-        inputBtn.onchange = () => {
-          if (inputBtn.checked) {
-            this.selectedCriteria = {
-              code: this.areaAggregationCriteriaCode,
-            };
-          }
-          this.activateMapDisplayCriteria();
-        };
-        if (this.selectedCriteria.code == this.areaAggregationCriteriaCode) {
-          inputBtn.checked = true;
+    // Add criteria display list
+    if (includeCriteriaList && this.config.SYNTHESE.MAP_CRITERIA_LIST) {
+      for (const criteriaCode in this.criteriaConfig) {
+        const criteria = this.criteriaConfig[criteriaCode];
+        criteria.code = criteriaCode;
+        if (criteria.activate === false) {
+          // This criterion is disabled in the configuration file
+          continue;
         }
-        let textLabelSpan = L.DomUtil.create('span', '', span);
-        this.translateService
-          .stream(`Synthese.Map.Criteria.${this.areaAggregationCriteriaCode}`)
-          .pipe(takeUntil(this.destroy$))
-          .subscribe((txt) => {
-            textLabelSpan.innerText = ' ' + txt;
-          });
-      }
 
-      // Add criteria display list
-      if (this.config.SYNTHESE.MAP_CRITERIA_LIST) {
-        L.DomUtil.create('div', 'criteria-control-list-separator', section);
-
-        for (const criteriaCode in this.criteriaConfig) {
-          const criteria = this.criteriaConfig[criteriaCode];
-          criteria.code = criteriaCode;
-          if (criteria.activate === false) {
-            // This criterion is disabled in the configuration file
-            continue;
-          }
-
-          let label = L.DomUtil.create('label', '', section);
-          let span = L.DomUtil.create('span', '', label);
-          if (criteria.description) {
-            span.setAttribute('title', criteria.description);
-          }
-          let inputBtn = L.DomUtil.create('input', 'criteria-control-selector', span);
-          inputBtn.setAttribute('id', `criteria-radio-btn-${criteria.code}`);
-          inputBtn.setAttribute('name', 'criteria-radio-btn');
-          inputBtn.setAttribute('type', 'radio');
-          inputBtn.onchange = () => {
-            this.selectedCriteria = criteria;
-            this.activateMapDisplayCriteria();
-          };
-          if (criteria.code == this.selectedCriteria.code) {
-            inputBtn.checked = true;
-            this.prepareMarkerStyles();
-          }
-          let textLabelSpan = L.DomUtil.create('span', '', span);
-          textLabelSpan.innerText = ` ${criteria.label}`;
+        let option = L.DomUtil.create('option', '', select);
+        option.value = criteria.code;
+        option.innerText = criteria.label;
+        if (criteria.description) {
+          option.setAttribute('title', criteria.description);
+        }
+        if (criteria.code == this.selectedCriteria.code) {
+          option.selected = true;
+          this.prepareMarkerStyles();
         }
       }
+    }
 
-      return criteriaContainer;
-    };
-  }
-
-  private buildCriteriaButtonControl() {
-    return (map) => {
-      let switchBtnContainer = L.DomUtil.create(
-        'div',
-        'leaflet-bar custom-control custom-switch leaflet-control-custom synthese-map-areas'
-      );
-
-      let switchBtn = L.DomUtil.create('input', 'custom-control-input', switchBtnContainer);
-      switchBtn.id = 'toggle-areas-btn';
-      switchBtn.type = 'checkbox';
-      switchBtn.onclick = () => {
+    select.onchange = () => {
+      const value = select.value;
+      if (value == this.defaultCriteriaCode) {
         this.selectedCriteria = {
-          code: switchBtn.checked ? this.areaAggregationCriteriaCode : this.defaultCriteriaCode,
+          code: this.defaultCriteriaCode,
         };
-        this.activateMapDisplayCriteria();
-      };
-
-      switchBtn.checked =
-        this.selectedCriteria.code == this.areaAggregationCriteriaCode ? true : false;
-
-      this.buildCriteriaButtonLabel(switchBtnContainer);
-
-      return switchBtnContainer;
+      } else if (value == this.areaAggregationCriteriaCode) {
+        this.selectedCriteria = {
+          code: this.areaAggregationCriteriaCode,
+        };
+      } else if (this.criteriaConfig && this.criteriaConfig[value]) {
+        this.selectedCriteria = this.criteriaConfig[value];
+      }
+      this.activateMapDisplayCriteria();
     };
-  }
 
-  private buildCriteriaButtonLabel(container) {
-    let switchBtn = L.DomUtil.create('label', 'custom-control-label', container);
-    switchBtn.setAttribute('for', 'toggle-areas-btn');
-    this.translateService
-      .stream('Synthese.Map.AreasToggleBtn')
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((translatedTxt: string) => {
-        switchBtn.innerText = translatedTxt;
-      });
+    return select;
   }
 
   private activateMapDisplayCriteria() {
@@ -378,42 +292,68 @@ export class SyntheseCriteriaService implements OnDestroy {
     this.onCriteriaActivated.next(event);
   }
 
+  /**
+   * The legend control now doubles as the display mode picker (dropdown), so it
+   * must always be built (not only once a non-default mode is active) whenever a
+   * mode picker is available at all, mirroring the previous buildSelectionControl
+   * availability condition.
+   */
   buildLegendControl() {
     if (this.config.SYNTHESE.AREA_AGGREGATION_ENABLED || this.config.SYNTHESE.MAP_CRITERIA_LIST) {
-      if (this.selectedCriteria.code == this.areaAggregationCriteriaCode) {
-        return this.buildAreasLegend();
-      } else if (this.selectedCriteria.code != this.defaultCriteriaCode) {
+      if (this.config.SYNTHESE.MAP_CRITERIA_LIST) {
         return this.buildCriteriaLegend();
+      } else {
+        return this.buildAreasLegend();
       }
     }
     return null;
   }
 
+  private legendContainerModeClass(): string {
+    return this.isAreasAggDisplay() ? 'areas' : 'criteria';
+  }
+
   private buildCriteriaLegend() {
-    this.prepareCriteriaLegend();
+    if (this.isCriteriaDisplay()) {
+      this.prepareCriteriaLegend();
+    }
     // TODO: return only the add function et create Control.Extend in synthese-carte
     return (map) => {
-      let div = L.DomUtil.create('div', 'info legend criteria');
+      let div = L.DomUtil.create('div', `info legend ${this.legendContainerModeClass()}`);
+      L.DomEvent.disableClickPropagation(div);
+      L.DomEvent.disableScrollPropagation(div);
 
-      let labels = [`<strong> ${this.selectedCriteria.label} </strong>`];
-      // Loop through our criteria prepared legend styles and
-      // generate a label with a colored square for each interval
-      for (var i = 0; i < this.selectedCriteria.preparedLegendStyles.length; i++) {
-        let grade = this.selectedCriteria.preparedLegendStyles[i];
-        let colorBlock = this.prepareLegendColorBlock(grade);
-        let symbol = this.prepareLegendSymbol(grade);
-        if (grade.description) {
-          labels.push(
-            `<span title="${grade.description}">${colorBlock} ${symbol} ${grade.label}</span>`
-          );
-        } else {
-          labels.push(`${colorBlock} ${symbol} ${grade.label}`);
-        }
+      this.buildLegendModeSelector(div, true);
+
+      if (this.isAreasAggDisplay()) {
+        this.appendAreasLegendContent(div);
+      } else if (this.isCriteriaDisplay()) {
+        this.appendCriteriaLegendContent(div);
       }
-      div.innerHTML = labels.join('<br>');
 
       return div;
     };
+  }
+
+  private appendCriteriaLegendContent(container) {
+    let content = L.DomUtil.create('div', 'legend-content', container);
+
+    let labels = [`<strong> ${this.selectedCriteria.label} </strong>`];
+    // Loop through our criteria prepared legend styles and
+    // generate a label with a colored square for each interval
+    for (var i = 0; i < this.selectedCriteria.preparedLegendStyles.length; i++) {
+      let grade = this.selectedCriteria.preparedLegendStyles[i];
+      let colorBlock = this.prepareLegendColorBlock(grade);
+      let symbol = this.prepareLegendSymbol(grade);
+      if (grade.description) {
+        labels.push(
+          `<span title="${grade.description}">${colorBlock} ${symbol} ${grade.label}</span>`
+        );
+      } else {
+        labels.push(`${colorBlock} ${symbol} ${grade.label}`);
+      }
+    }
+    content.innerHTML = labels.join('<br>');
   }
 
   private prepareLegendColorBlock(grade) {
@@ -431,28 +371,40 @@ export class SyntheseCriteriaService implements OnDestroy {
   }
 
   private buildAreasLegend() {
-    const vm = this;
     return (map) => {
-      let div = L.DomUtil.create('div', 'info legend areas');
-      let grades = this.config['SYNTHESE']['AREA_AGGREGATION_LEGEND_CLASSES']
-        .map((legendClass) => legendClass.min)
-        .reverse();
-      let title = this.translateService.instant(
-        `Synthese.Map.Criteria.${this.areaAggregationCriteriaCode}`
-      );
-      let labels = [`<strong> ${title.replace(' ', '<br>')} </strong>`];
+      let div = L.DomUtil.create('div', `info legend ${this.legendContainerModeClass()}`);
+      L.DomEvent.disableClickPropagation(div);
+      L.DomEvent.disableScrollPropagation(div);
 
-      // Loop through our density intervals and generate a label with
-      // a colored square for each interval
-      for (var i = 0; i < grades.length; i++) {
-        let color = vm.getColor(grades[i] + 1);
-        let label = grades[i] + (grades[i + 1] ? ` &ndash; ${grades[i + 1]}` : '+');
-        labels.push(`<i class="legend-color" style="background: ${color}"></i> ${label}`);
+      this.buildLegendModeSelector(div, false);
+
+      if (this.isAreasAggDisplay()) {
+        this.appendAreasLegendContent(div);
       }
-      div.innerHTML = labels.join('<br>');
 
       return div;
     };
+  }
+
+  private appendAreasLegendContent(container) {
+    const vm = this;
+    let content = L.DomUtil.create('div', 'legend-content', container);
+    let grades = this.config['SYNTHESE']['AREA_AGGREGATION_LEGEND_CLASSES']
+      .map((legendClass) => legendClass.min)
+      .reverse();
+    let title = this.translateService.instant(
+      `Synthese.Map.Criteria.${this.areaAggregationCriteriaCode}`
+    );
+    let labels = [`<strong> ${title.replace(' ', '<br>')} </strong>`];
+
+    // Loop through our density intervals and generate a label with
+    // a colored square for each interval
+    for (var i = 0; i < grades.length; i++) {
+      let color = vm.getColor(grades[i] + 1);
+      let label = grades[i] + (grades[i + 1] ? ` &ndash; ${grades[i + 1]}` : '+');
+      labels.push(`<i class="legend-color" style="background: ${color}"></i> ${label}`);
+    }
+    content.innerHTML = labels.join('<br>');
   }
 
   public getColor(obsNbr) {

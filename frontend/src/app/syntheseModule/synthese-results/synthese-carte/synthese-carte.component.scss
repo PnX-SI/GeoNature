@@ -7,21 +7,7 @@
   /* font-size:2; */
 }
 
-// Synthese map criteria toggle button
-::ng-deep .synthese-map-areas {
-  background-color: rgba(255, 255, 255, 0.8);
-}
-::ng-deep .synthese-map-areas .custom-control-label {
-  margin: 0.2rem;
-}
-::ng-deep .synthese-map-areas .custom-control-label::before {
-  top: 0.05rem;
-}
-::ng-deep .synthese-map-areas .custom-control-label::after {
-  top: calc(0.05rem + 2px);
-}
-
-// Synthese map legend
+// Synthese map legend (now also embeds the display mode <select> picker)
 ::ng-deep .legend {
   line-height: 24px;
   font-size: 14px;
@@ -34,6 +20,15 @@
 }
 ::ng-deep .legend:hover {
   opacity: 1;
+}
+::ng-deep .legend .legend-title {
+  margin: 0 0 4px 0;
+  font-weight: bold;
+}
+::ng-deep .legend .criteria-control-select {
+  display: block;
+  width: 100%;
+  margin-bottom: 5px;
 }
 ::ng-deep .legend i.legend-color {
   display: inline-block;
@@ -53,40 +48,4 @@
   font-size: inherit !important;
   text-align: center;
   vertical-align: middle;
-}
-
-// Synthese map criteria list
-::ng-deep .synthese-map-criteria.leaflet-bar {
-  padding-left: 0;
-  border: 2px solid rgba(0, 0, 0, 0.2);
-}
-::ng-deep .synthese-map-criteria .criteria-control-toggle {
-  width: 44px;
-  height: 44px;
-  background-image: url(../../../../assets/images/map_criteria.png);
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
-}
-::ng-deep .synthese-map-criteria .criteria-control-list-separator {
-  height: 0;
-  border-top: 1px solid #ddd;
-  margin: 5px -10px 5px -6px;
-}
-::ng-deep .synthese-map-criteria .criteria-control-list {
-  display: none;
-}
-::ng-deep .synthese-map-criteria.criteria-control-list-expanded {
-  padding: 6px 10px 6px 6px;
-}
-::ng-deep .synthese-map-criteria.criteria-control-list-expanded .criteria-control-toggle {
-  display: none;
-}
-::ng-deep .synthese-map-criteria.criteria-control-list-expanded .criteria-control-list {
-  display: block;
-  position: relative;
-}
-::ng-deep .synthese-map-criteria .criteria-control-selector {
-  margin-top: 2px;
-  position: relative;
-  top: 1px;
 }

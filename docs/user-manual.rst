@@ -454,6 +454,8 @@ Toutes les données de la synthèse sont ramenées au niveau du dénombrement de
 
 .. image :: https://geonature.fr/docs/img/user-manual/synthese/03-detail-synthese.jpg
 
+.. include:: utilisateur/synthese-criteres.rst
+
 Rechercher des observations
 """""""""""""""""""""""""""
 

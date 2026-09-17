@@ -110,30 +110,15 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     // Add the featureGroup to the map
     this.clusterOrSimpleFeatureGroup.addTo(this._ms.map);
 
-    // Handle areas button, criteria list and legend
-    this.addCriteriaSelectionControl();
+    // Handle the display mode + legend, merged into a single bottom-right control
+    // (the mode picker used to be a separate top-right control, see
+    // SyntheseCriteriaService.buildLegendControl()).
     this.addCriteriaMapLegend();
     this.subscribeToCriteriaActivated();
   }
 
   ngOnDestroy(): void {
     this.criteriaActivatedSubscription.unsubscribe();
-  }
-
-  private addCriteriaSelectionControl() {
-    const onAddFunc = this.criteriaService.buildSelectionControl();
-
-    if (onAddFunc) {
-      const SelectionControl = L.Control.extend({
-        options: {
-          position: 'topright',
-        },
-        onAdd: onAddFunc,
-      });
-
-      const map = this._ms.getMap();
-      map.addControl(new SelectionControl());
-    }
   }
 
   private addCriteriaMapLegend() {

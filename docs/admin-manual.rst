@@ -2350,9 +2350,10 @@ Il est possible d'activer, éventuellement par défaut
 (`AREA_AGGREGATION_ENABLED`) aggrégée en fonction d'un type de zone
 géographique (`AREA_AGGREGATION_TYPE`). Les classes de densité peuvent être
 personnaliées à l'aide du paramètre `AREA_AGGREGATION_LEGEND_CLASSES`.
-Par défaut, cette fonctionnalité est désactivée. Quand elle est active, un
-bouton à bascule nommé "Mailles" apparait sur la carte sous le bouton de
-sélection des fonds de cartes.
+Par défaut, cette fonctionnalité est désactivée. Quand elle est active, une
+entrée "*Densité d'observations*" apparaît dans la liste déroulante du bloc
+« Légende » (en bas à droite de la carte), aux côtés de l'affichage par
+défaut et des éventuels critères configurés (voir la section suivante).
 Soit les paramètres suivants :
 
 .. code:: toml
@@ -2381,28 +2382,30 @@ Configurer d'autres critères d'affichage sur la carte
 La carte de la SYNTHESE peut permettre à l'utilisateur de sélectionner un
 critère (précision, validation, période, ...) d'affichage des observations.
 
-Lorsque la configuration contient le paramètre `MAP_CRITERIA_LIST` dans la
-section `SYNTHESE`, un bouton de sélection des modes d'affichage s'affiche
-sous le bouton de sélection des fonds de carte.
-Ces deux boutons fonctionnent sur le même principe. Au survol, un panneau
-s'ouvre et permet de sélectionner, à l'aide de boutons radio, le mode
-d'affichage.
+Dès lors que la configuration contient le paramètre `MAP_CRITERIA_LIST` dans
+la section `SYNTHESE` (et/ou que `AREA_AGGREGATION_ENABLED = true`), le bloc
+« Légende », affiché en bas à droite de la carte, est toujours visible. Il
+contient un titre « *Affichage des observations* » suivi d'une liste
+déroulante permettant de choisir le mode d'affichage.
 
-Une première liste permet de cocher "*Affichage par défaut*"
-(activé par défaut) ou "*Densité d'observations*"
-(si `AREA_AGGREGATION_ENABLED = true`).
+Cette liste déroulante propose "*Affichage par défaut*" (sélectionné par
+défaut), "*Densité d'observations*" (si `AREA_AGGREGATION_ENABLED = true`),
+puis un critère par entrée configurée par l'administrateur à l'aide du
+paramètre `MAP_CRITERIA_LIST`.
 
-Une seconde liste, séparée de la première par une ligne, permet de choisir
-un critère configuré par l'administrateur à l'aide du paramètre
-`MAP_CRITERIA_LIST`.
+En mode "*Affichage par défaut*", le bloc légende ne contient que le titre
+et la liste déroulante, puisqu'il n'y a alors rien à légender.
 
 La sélection d'un critère déclenche :
-  * l'affichage d'une légende sur la carte ;
+  * l'affichage, sous la liste déroulante, de la légende des valeurs du
+    critère sélectionné ;
   * l'affichage des observations sur la carte avec un marqueur dont le
     contour correspond à la couleur du critère ;
-  * la coloration du fond du bouton contenant l'icône 🛈 de la liste des
-    observations. Au survol, une infobulle affichera l'intitulé et la
-    description de la valeur du critère correspondant à l'observation ;
+  * dans la liste des observations, l'affichage d'une bordure verticale
+    colorée sur le bord gauche de chaque ligne (à la place de l'icône 🛈,
+    qui n'est plus colorée). Au survol de cette bordure, une infobulle
+    affiche l'intitulé et la description de la valeur du critère
+    correspondant à l'observation ;
   * l'apparition d'un badge au niveau de l'en-tête de la fiche d'une
     observation.
     La couleur et l'icône associées au critère sont utilisées comme couleur
