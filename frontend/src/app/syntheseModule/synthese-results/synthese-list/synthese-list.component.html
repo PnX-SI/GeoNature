@@ -39,51 +39,31 @@
       let-row="row"
       ngx-datatable-cell-template
     >
-      <ng-container *ngIf="criteriaService.isCriteriaDisplay(); else defaultInfoBtn">
-        <ng-template
-          #infoBtnWithCriteria
-          [ngTemplateOutlet]="infoBtnWithCriteria"
-          let-criteria
-          [ngTemplateOutletContext]="{ $implicit: criteriaService.getCriteriaStyle(row) }"
-        >
-          <a
-            [routerLink]="['occurrence', row['id_synthese'], 'details']"
-            [matTooltip]="
-              criteriaService.buildCriteriaTxt(criteria) +
-              '\n' +
-              'Id : ' +
-              row[mapListService.idName]
-            "
-            class="btn btn-light btn-map-criteria"
-            style="
-              background-color: {{ criteria.color }};
-              color: {{ criteria.icon?.color }} !important;
-            "
-            [aria-label]="criteria.label"
-          >
-            <i
-              class="fa fa-info"
-              aria-hidden="true"
-              data-qa="synthese-info-btn"
-            ></i>
-          </a>
-        </ng-template>
+      <ng-container
+        *ngIf="
+          criteriaService.isCriteriaDisplay() && criteriaService.getCriteriaStyle(row) as criteria
+        "
+      >
+        <div
+          class="criteria-border"
+          [style.background-color]="criteria.color"
+          [matTooltip]="criteriaService.buildCriteriaTxt(criteria)"
+          [aria-label]="criteria.label"
+        ></div>
       </ng-container>
 
-      <ng-template #defaultInfoBtn>
-        <a
-          class="link-dark"
-          [routerLink]="['occurrence', row['id_synthese'], 'details']"
-        >
-          <i
-            #iElement
-            matTooltip="{{ row[mapListService.idName] }}"
-            class="fa fa-info-circle"
-            aria-hidden="true"
-            data-qa="synthese-info-btn"
-          ></i>
-        </a>
-      </ng-template>
+      <a
+        class="link-dark"
+        [routerLink]="['occurrence', row['id_synthese'], 'details']"
+      >
+        <i
+          #iElement
+          matTooltip="{{ row[mapListService.idName] }}"
+          class="fa fa-info-circle"
+          aria-hidden="true"
+          data-qa="synthese-info-btn"
+        ></i>
+      </a>
     </ng-template>
   </ngx-datatable-column>
 

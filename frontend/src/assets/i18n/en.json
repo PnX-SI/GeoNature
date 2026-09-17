@@ -546,6 +546,7 @@
       }
     },
     "Map": {
+      "LegendTitle": "Observations display",
       "AreasToggleBtn": "Grid cells",
       "SeveralValues": "Several values",
       "UnknownValue": "Other values",

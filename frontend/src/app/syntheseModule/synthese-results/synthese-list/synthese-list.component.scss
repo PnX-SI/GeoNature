@@ -15,24 +15,21 @@
   padding-bottom: 15px !important;
   padding-top: 8px !important;
   padding-left: 15px !important;
+  position: relative;
 }
 :host ::ng-deep .datatable-body-cell i {
   font-size: 12px;
 }
 
-:host ::ng-deep .datatable-body-cell .btn-map-criteria {
-  display: inline-block;
-  height: 20px;
-  width: 20px;
-  text-align: center;
-  vertical-align: baseline;
-  padding: 0;
-  border-radius: 50%;
-  border-color: none;
-}
-
-:host ::ng-deep .datatable-body-cell .btn-map-criteria i {
-  vertical-align: text-top;
+// Colored vertical border, displayed on the left edge of the first column's
+// cell (which visually corresponds to the row's left edge), showing the
+// criteria color when the "affichage par critère" mode is enabled.
+:host ::ng-deep .datatable-body-cell .criteria-border {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 7px;
 }
 
 :host ::ng-deep .datatable-body {
