@@ -41,7 +41,7 @@ from apptax.taxonomie.models import (
     bdc_statut_cor_text_area,
 )
 
-from sqlalchemy import distinct, func, select
+from sqlalchemy import case, distinct, func, select
 from utils_flask_sqla.generic import GenericTable, serializeQuery
 from utils_flask_sqla.response import to_csv_resp, to_json_resp
 from utils_flask_sqla_geo.generic import GenericTableGeo
@@ -164,8 +164,6 @@ def export_observations_web(permissions):
         except StopIteration:
             raise Forbidden("This view is not available for export")
 
-    geojson_4326_field = config_view["geojson_4326_field"]
-    geojson_local_field = config_view["geojson_local_field"]
     try:
         schema_name, view_name = view_name_param.split(".")
     except ValueError:
@@ -191,6 +189,8 @@ def export_observations_web(permissions):
         geometry_field=None,
         srid=local_srid,
     )
+    geojson_4326_field = config_view["geojson_4326_field"]
+    geojson_local_field = config_view["geojson_local_field"]
     mandatory_columns = {"id_synthese", geojson_4326_field, geojson_local_field}
     if not mandatory_columns.issubset(set(map(lambda col: col.name, export_view.db_cols))):
         print(set(map(lambda col: col.name, export_view.db_cols)))
@@ -227,7 +227,7 @@ def export_observations_web(permissions):
         )
 
         # Overwrite geometry columns to compute the blurred geometry from the blurring cte
-        columns_with_geom_excluded = [
+        columns_excluded_by_blurring = [
             col
             for col in export_view.tableDef.columns
             if col.name
@@ -237,9 +237,11 @@ def export_observations_web(permissions):
                 "y_centroid_4326",
                 geojson_4326_field,
                 geojson_local_field,
+                current_app.config["SYNTHESE"]["EXPORT_FIELD_BLURRING"],
             ]
         ]
-        # Recomputed the blurred geometries
+
+        # Recomputed the blurred geometries fields
         blurred_geom_columns = [
             func.st_astext(cte_synthese_filtered.c.geom).label("geometrie_wkt_4326"),
             func.st_x(func.st_centroid(cte_synthese_filtered.c.geom)).label("x_centroid_4326"),
@@ -250,8 +252,20 @@ def export_observations_web(permissions):
             ),
         ]
 
+        # Recomputed blurring field ("DEE Floutage")
+        blurring_column = []
+        if current_app.config["SYNTHESE"]["EXPORT_FIELD_BLURRING"] in export_view.tableDef.columns:
+            blurring_column = [
+                case(
+                    [(cte_synthese_filtered.c.is_blurred == True, "OUI")],
+                    else_=export_view.tableDef.columns[
+                        current_app.config["SYNTHESE"]["EXPORT_FIELD_BLURRING"]
+                    ],
+                ).label(current_app.config["SYNTHESE"]["EXPORT_FIELD_BLURRING"]),
+            ]
+
         # Finally provide all the columns to be selected in the export query
-        selectable_columns = columns_with_geom_excluded + blurred_geom_columns
+        selectable_columns = columns_excluded_by_blurring + blurred_geom_columns + blurring_column
 
     # Get the query for export
     export_query = (
@@ -264,6 +278,7 @@ def export_observations_web(permissions):
         )
         .where(export_view.tableDef.columns["id_synthese"].in_(id_list))
         .distinct(export_view.tableDef.columns["id_synthese"])
+        .limit(current_app.config["SYNTHESE"]["NB_MAX_OBS_EXPORT"])
     )
     if blurring_permissions:
         # When blurring permission,to ensure the 'distinct on' priorise entry with higher priority (blurred obs => priority = 2 ; precise obs => priority = 1)
@@ -273,9 +288,7 @@ def export_observations_web(permissions):
         )
 
     # Get the results for export
-    results = DB.session.execute(
-        export_query.limit(current_app.config["SYNTHESE"]["NB_MAX_OBS_EXPORT"])
-    )
+    results = DB.session.execute(export_query)
 
     db_cols_for_shape = []
     columns_to_serialize = []
