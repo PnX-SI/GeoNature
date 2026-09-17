@@ -100,7 +100,8 @@
       "ShowPassword": "Show password",
       "HidePassword": "Hide password",
       "MailMandatory": "Email is mandatory.",
-      "InvalidMail": "Please enter a valid email address."
+      "InvalidMail": "Please enter a valid email address.",
+      "ContactAdministrator": "If you have connection issues, contact {{ email }}"
     },
     "OtherAuthProviders": "Other login methods",
     "SignUp": {

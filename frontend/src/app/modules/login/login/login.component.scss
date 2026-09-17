@@ -2,6 +2,11 @@
   $brand-overlay-opacity: 0
 );
 
+.gn-split-brand {
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
 .gn-login-card {
   border-radius: 4px;
   background-color: transparent !important;
@@ -172,4 +177,14 @@
 
 .gn-loading .mat-mdc-progress-spinner circle {
   stroke: $gn-accent;
+}
+
+.gn-contact-admin {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 12px;
+}
+
+.gn-contact-admin a {
+  color: rgba(0, 0, 0, 0.6);
 }

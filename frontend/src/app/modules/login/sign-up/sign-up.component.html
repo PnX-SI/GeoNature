@@ -1,9 +1,9 @@
 <div id="login-body">
   <div
     class="gn-split-brand"
-    style="background: url({{ this.config.API_ENDPOINT }}{{
-      this.config.STATIC_URL
-    }}/images/login_background.jpg) center; background-size:cover;"
+    [style.background-image]="
+      'url(' + config.API_ENDPOINT + config.STATIC_URL + '/images/login_background.jpg)'
+    "
   >
     <div class="gn-split-brand-overlay"></div>
     <div class="gn-split-brand-content"></div>
