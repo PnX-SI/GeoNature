@@ -7,7 +7,6 @@ from pathlib import Path
 
 from werkzeug.utils import secure_filename
 from flask import current_app, render_template
-from weasyprint import HTML, CSS
 
 
 def removeDisallowedFilenameChars(uncleanString):
@@ -41,6 +40,8 @@ def delete_recursively(path_folder, period=1, excluded_files=[]):
 
 
 def generate_pdf(template, data):
+    from weasyprint import HTML
+
     # flask render a template by name with the given context
     template_rendered = render_template(template, data=data)
     # weasyprint HTML document parsed

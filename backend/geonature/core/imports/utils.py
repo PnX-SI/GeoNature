@@ -19,7 +19,6 @@ from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.dialects.postgresql import ARRAY, JSONB
 from werkzeug.exceptions import BadRequest
 from geonature.utils.env import db
-from weasyprint import HTML
 
 from geonature.utils.sentry import start_sentry_child
 from geonature.core.imports.models import Entity, ImportUserError, BibFields, TImports
@@ -485,6 +484,8 @@ def generate_pdf_from_template(template: str, data: Any) -> bytes:
     bytes
         The PDF document as bytes.
     """
+    from weasyprint import HTML
+
     template_rendered = render_template(template, data=data)
     html_file = HTML(
         string=template_rendered,
