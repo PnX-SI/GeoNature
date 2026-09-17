@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { CommonModule } from '@angular/common';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
@@ -16,13 +16,7 @@ import { finalize } from 'rxjs/operators';
 import { CommonService } from '@geonature_common/service/common.service';
 import { Router } from '@angular/router';
 import { Filters, ObservationsFiltersService, YearInterval } from './observations-filters.service';
-
-interface MapAreasStyle {
-  color: string;
-  weight: number;
-  fillOpacity: number;
-  fillColor?: string;
-}
+import { SyntheseCriteriaService } from '@geonature/syntheseModule/services/criteria.service';
 
 @Component({
   standalone: true,
@@ -30,27 +24,20 @@ interface MapAreasStyle {
   templateUrl: 'observations.component.html',
   styleUrls: ['observations.component.scss'],
   imports: [GN2CommonModule, CommonModule, MatSliderModule],
+  // Own instances so switching display mode on this map never mutates the
+  // SyntheseFormService.selectors singleton shared with the main Synthese
+  // search page (synthese.module.ts) — that leakage used to survive SPA
+  // navigation back to the main map until a full reload reset it.
+  providers: [SyntheseCriteriaService, SyntheseFormService],
 })
-export class ObservationsComponent extends Loadable implements OnInit {
-  areasEnable: boolean;
-  areasLegend: any;
-  private _areasLabelSwitchBtn: any;
+export class ObservationsComponent extends Loadable implements OnInit, OnDestroy {
   styleTabGeoJson: any = {};
 
   yearInterval: YearInterval | null = null;
   yearIntervalBoundaries: YearInterval | null = null;
 
-  mapAreasStyle: MapAreasStyle = {
-    color: '#FFFFFF',
-    weight: 0.4,
-    fillOpacity: 0.8,
-  };
-
-  mapAreasStyleActive: MapAreasStyle = {
-    color: '#FFFFFF',
-    weight: 0.4,
-    fillOpacity: 0.3,
-  };
+  public criteriaActivatedSubscription;
+  private mapLegend;
 
   constructor(
     private _syntheseDataService: SyntheseDataService,
@@ -61,11 +48,10 @@ export class ObservationsComponent extends Loadable implements OnInit {
     private _ms: MapService,
     private _commonService: CommonService,
     private _router: Router,
-    private _os: ObservationsFiltersService
+    private _os: ObservationsFiltersService,
+    private criteriaService: SyntheseCriteriaService
   ) {
     super();
-
-    this.areasEnable = true;
   }
 
   formatLabel(value: number): string {
@@ -91,22 +77,39 @@ export class ObservationsComponent extends Loadable implements OnInit {
     this.initializeFormWithMapParams();
   }
 
+  ngAfterViewInit() {
+    this.addCriteriaMapLegend();
+    this.subscribeToCriteriaActivated();
+  }
+
+  ngOnDestroy(): void {
+    if (this.criteriaActivatedSubscription) {
+      this.criteriaActivatedSubscription.unsubscribe();
+    }
+  }
+
   updateObservations() {
     this.startLoading();
 
-    const format = this.areasEnable ? 'grouped_geom_by_areas' : 'grouped_geom';
+    const format = this.criteriaService.isAreasAggDisplay()
+      ? 'grouped_geom_by_areas'
+      : 'grouped_geom';
 
     const filters: Filters = this._os.filters.getValue();
     if (this.yearInterval) {
       filters.date_min = `${this.yearInterval.min}-01-01`;
       filters.date_max = `${this.yearInterval.max}-12-31`;
     }
-    const limit = this.areasEnable ? -1 : undefined;
+    const limit = this.criteriaService.isAreasAggDisplay() ? -1 : undefined;
+    const selectors: any = { format, limit };
+    if (this.criteriaService.isCriteriaDisplay()) {
+      selectors.with_field = this.criteriaService.getCurrentField();
+    }
     this._syntheseDataService
-      .getSyntheseData({ ...filters }, { format, limit })
+      .getSyntheseData({ ...filters }, selectors)
       .pipe(finalize(() => this.stopLoading()))
       .subscribe((data) => {
-        if (!this.areasEnable && this._os.isSuperiorToSyntheseLimit) {
+        if (!this.criteriaService.isAreasAggDisplay() && this._os.isSuperiorToSyntheseLimit) {
           this._commonService.regularToaster(
             'warning',
             `Pour des raisons de performances, le nombre d'observations affichées est limité à ${this.config['SYNTHESE']['NB_MAX_OBS_MAP']}`
@@ -117,12 +120,8 @@ export class ObservationsComponent extends Loadable implements OnInit {
 
         if (data) {
           const geoJSON = L.geoJSON(data, {
-            pointToLayer: (feature, latlng) => {
-              const circleMarker = L.circleMarker(latlng, {
-                radius: 10,
-              });
-              return circleMarker;
-            },
+            pointToLayer: (feature, latlng) => L.circleMarker(latlng, { radius: 10 }),
+            style: this.styleFeature.bind(this),
             onEachFeature: this.onEachFeature.bind(this),
           });
 
@@ -132,15 +131,24 @@ export class ObservationsComponent extends Loadable implements OnInit {
       });
   }
 
+  private styleFeature(feature) {
+    if (this.criteriaService.isAreasAggDisplay()) {
+      return {
+        ...this.criteriaService.originAreasStyle,
+        fillColor: this.criteriaService.getColor(feature.properties.observations.length),
+      };
+    } else if (this.criteriaService.isCriteriaDisplay()) {
+      return this.criteriaService.getCriteriaStyle(feature.properties.observations);
+    }
+  }
+
   onEachFeature(feature, layer) {
     const observations = feature.properties.observations;
     let popupContent = '';
 
     if (observations && observations.length > 0) {
-      if (this.areasEnable && feature.geometry.type === 'MultiPolygon') {
-        const obsCount = observations.length;
-        this.setAreasStyle(layer as L.Path, obsCount);
-        popupContent = `${obsCount} observations`;
+      if (this.criteriaService.isAreasAggDisplay() && feature.geometry.type === 'MultiPolygon') {
+        popupContent = `${observations.length} observations`;
       } else {
         const url = new URL(window.location.href);
         url.hash = this._router.serializeUrl(
@@ -163,123 +171,39 @@ export class ObservationsComponent extends Loadable implements OnInit {
 
   private initializeFormWithMapParams() {
     this.formService.searchForm.patchValue({
-      format: this.areasEnable ? 'grouped_geom_by_areas' : 'grouped_geom',
+      format: this.criteriaService.isAreasAggDisplay() ? 'grouped_geom_by_areas' : 'grouped_geom',
     });
   }
 
-  ngAfterViewInit() {
-    this.addAreasButton();
-    if (this.areasEnable) {
-      this.addAreasLegend();
-    }
-  }
+  private addCriteriaMapLegend() {
+    this.removeCriteriaMapLegend();
+    const onAddFunc = this.criteriaService.buildLegendControl();
 
-  addAreasButton() {
-    const LayerControl = L.Control.extend({
-      options: {
-        position: 'topright',
-      },
-      onAdd: (map) => {
-        let switchBtnContainer = L.DomUtil.create(
-          'div',
-          'leaflet-bar custom-control custom-switch leaflet-control-custom tab-geographic-overview'
-        );
+    if (onAddFunc) {
+      const LegendControl = L.Control.extend({
+        options: {
+          position: 'bottomright',
+        },
+        onAdd: onAddFunc,
+      });
 
-        let switchBtn = L.DomUtil.create('input', 'custom-control-input', switchBtnContainer);
-        switchBtn.id = 'toggle-areas-btn';
-        switchBtn.type = 'checkbox';
-        switchBtn.checked = this.areasEnable;
-
-        switchBtn.onclick = () => {
-          this.areasEnable = switchBtn.checked;
-          this.updateObservations();
-
-          if (this.areasEnable) {
-            this.addAreasLegend();
-          } else {
-            this.removeAreasLegend();
-          }
-        };
-
-        this._areasLabelSwitchBtn = L.DomUtil.create(
-          'label',
-          'custom-control-label',
-          switchBtnContainer
-        );
-        this._areasLabelSwitchBtn.setAttribute('for', 'toggle-areas-btn');
-        this._areasLabelSwitchBtn.innerText = this.translateService.instant(
-          'Synthese.Map.AreasToggleBtn'
-        );
-
-        return switchBtnContainer;
-      },
-    });
-
-    const map = this._ms.getMap();
-    map.addControl(new LayerControl());
-  }
-
-  private addAreasLegend() {
-    if (this.areasLegend) return;
-    this.areasLegend = new (L.Control.extend({
-      options: { position: 'bottomright' },
-    }))();
-
-    this.areasLegend.onAdd = (map: L.Map): HTMLElement => {
-      let div: HTMLElement = L.DomUtil.create('div', 'info observations-legend');
-      let grades: number[] = this.config['SYNTHESE']['AREA_AGGREGATION_LEGEND_CLASSES']
-        .map((legendClass: { min: number; color: string }) => legendClass.min)
-        .reverse();
-      let labels: string[] = ["<strong> Nombre <br> d'observations </strong> <br>"];
-
-      for (let i = 0; i < grades.length; i++) {
-        labels.push(
-          '<i style="background:' +
-            this.getColor(grades[i] + 1) +
-            '"></i> ' +
-            grades[i] +
-            (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+')
-        );
-      }
-      div.innerHTML = labels.join('<br>');
-
-      return div;
-    };
-
-    const map = this._ms.getMap();
-    this.areasLegend.addTo(map);
-  }
-
-  private removeAreasLegend() {
-    if (this.areasLegend) {
       const map = this._ms.getMap();
-      map.removeControl(this.areasLegend);
-      this.areasLegend = null;
+      this.mapLegend = new LegendControl();
+      this.mapLegend.addTo(map);
     }
   }
 
-  private setAreasStyle(layer: L.Layer, obsNbr: number) {
-    if (layer instanceof L.Path) {
-      this.mapAreasStyle['fillColor'] = this.getColor(obsNbr);
-      layer.setStyle(this.mapAreasStyle);
-      delete this.mapAreasStyle['fillColor'];
-      this.styleTabGeoJson = this.mapAreasStyleActive;
+  private removeCriteriaMapLegend() {
+    if (this.mapLegend) {
+      this.mapLegend.remove();
     }
   }
 
-  private getColor(obsNbr: number) {
-    let classesNbr = this.config['SYNTHESE']['AREA_AGGREGATION_LEGEND_CLASSES'].length;
-    let lastIndex = classesNbr - 1;
-    for (let i = 0; i < classesNbr; i++) {
-      let legendClass = this.config['SYNTHESE']['AREA_AGGREGATION_LEGEND_CLASSES'][i];
-      if (i != lastIndex) {
-        if (obsNbr > legendClass.min) {
-          return legendClass.color;
-        }
-      } else {
-        return legendClass.color;
-      }
-    }
+  private subscribeToCriteriaActivated() {
+    this.criteriaActivatedSubscription = this.criteriaService.onCriteriaActivated.subscribe(() => {
+      this.addCriteriaMapLegend();
+      this.updateObservations();
+    });
   }
 
   private clearObservationLayers() {
