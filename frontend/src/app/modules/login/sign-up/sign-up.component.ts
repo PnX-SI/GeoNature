@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 
 import { similarValidator } from '@geonature/services/validators/validators';
 import { CommonService } from '@geonature_common/service/common.service';
@@ -14,6 +15,11 @@ import { LoginExistsValidator } from '@geonature/userModule/services/login-exist
   selector: 'pnx-signup',
   templateUrl: './sign-up.component.html',
   styleUrls: ['./sign-up.component.scss'],
+  providers: [
+    // Avoid the fixed-height blank space mat-form-field reserves below each field
+    // for hints/errors when there is none to show on this page.
+    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { subscriptSizing: 'dynamic' } },
+  ],
 })
 export class SignUpComponent implements OnInit {
   form: UntypedFormGroup;

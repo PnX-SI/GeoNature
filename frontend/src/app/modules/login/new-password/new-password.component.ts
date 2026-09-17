@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 
 import { similarValidator } from '@geonature/services/validators';
 
@@ -13,6 +14,11 @@ import { CommonService } from '@geonature_common/service/common.service';
   selector: 'pnx-new-password',
   templateUrl: 'new-password.component.html',
   styleUrls: ['./new-password.component.scss'],
+  providers: [
+    // Avoid the fixed-height blank space mat-form-field reserves below each field
+    // for hints/errors when there is none to show on this page.
+    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { subscriptSizing: 'dynamic' } },
+  ],
 })
 export class NewPasswordComponent implements OnInit {
   token: string;
