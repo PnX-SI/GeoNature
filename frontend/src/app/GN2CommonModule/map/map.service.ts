@@ -6,6 +6,7 @@ import { find } from 'lodash';
 
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
+import 'leaflet.control.layers.tree';
 import { CommonService } from '../service/common.service';
 import { CustomMarkerIcon } from '@geonature_common/map/marker/marker.component';
 import { ConfigService } from '@geonature/services/config.service';
@@ -28,7 +29,9 @@ export class MapService {
   private _isEditingMarker = new Subject<boolean>();
   public isMarkerEditing$: Observable<any> = this._isEditingMarker.asObservable();
   public layerGroup: any;
-  public layerControl: L.Control.Layers;
+  public layerControl: L.Control.Layers.Tree;
+  // REF_LAYERS tree
+  public overlayTreeRef: any[] = [];
   // Leaflet reference for external module
   public L = L;
 
@@ -415,40 +418,88 @@ export class MapService {
   }
 
   /**
-   * will create overlays layers -> L.control.overlays
+   * will create overlays layers -> L.control.layers.tree structure
+   * @param map
    * @returns
    */
   createOverLayers(map) {
-    const OVERLAYERS = JSON.parse(JSON.stringify(this.config.MAPCONFIG.REF_LAYERS));
-    const overlaysLayers: { [legend: string]: any } = {};
-    OVERLAYERS.map((lyr) => [lyr, this.getLayerCreator(lyr.type)(lyr)])
-      .filter((l) => l[1])
-      .forEach((lyr) => {
-        let title = lyr[0]?.label || '';
-        let style = lyr[0]?.style || {};
+    this.overlayTreeRef = this.buildOverlayTree(
+      map,
+      false,
+      JSON.parse(JSON.stringify(this.config.MAPCONFIG.REF_LAYERS))
+    );
+    return this.overlayTreeRef;
+  }
 
-        // this code create dict for L.controler.layers
-        // key is name display as checkbox label
-        // value is layer
-        let layerLeaf = lyr[1];
-        let legendUrl = '';
-        layerLeaf.configId = lyr[0].code;
-        if (layerLeaf?.options?.service === 'wms' && layerLeaf._url) {
-          legendUrl = `${layerLeaf._url}?TRANSPARENT=TRUE&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=${layerLeaf.options.layers}&FORMAT=image%2Fpng&LEGEND_OPTIONS=forceLabels%3Aon%3BfontAntiAliasing%3Atrue`;
-        }
-        // leaflet layers controler required object
-        if (this.config.MAPCONFIG?.REF_LAYERS_LEGEND) {
-          overlaysLayers[this.getLegendBox({ title: title, ...style, legendUrl: legendUrl })] =
-            lyr[1];
+  buildOverlayTree(map, activatedByGroup: boolean, entries): any[] {
+    const nodes: any[] = [];
+    (entries || []).forEach((lyr) => {
+      if (lyr.type === 'group') {
+        // An activated group (activate: true) forces its children on, unless a
+        // child explicitly declares activate: false (or true).
+        let childrenActivated: boolean;
+        if (lyr.activate === true) {
+          childrenActivated = true;
+        } else if (lyr.activate === false) {
+          childrenActivated = false;
         } else {
-          overlaysLayers[`<span data-qa="title-overlay">${title}</span>`] = lyr[1];
+          childrenActivated = activatedByGroup;
         }
-        if (lyr[0].activate) {
-          map.addLayer(layerLeaf);
-          this.loadOverlay(layerLeaf);
-        }
-      });
-    return overlaysLayers;
+        const children = this.buildOverlayTree(map, childrenActivated, lyr.children);
+        // skip empty groups
+        if (!children.length) return;
+        const color = lyr?.color;
+        nodes.push({
+          label: color ? `<span style="color:${color}">${lyr?.label || ''}</span>` : lyr?.label,
+          selectAllCheckbox: true,
+          // tree_params: forwarded as-is to the leaflet.control.layers.tree
+          // node (e.g. { collapsed: true } to fold the group on load)
+          ...lyr.tree_params,
+          children,
+        });
+        return;
+      }
+
+      const layerLeaf = this.getLayerCreator(lyr.type)(lyr);
+      // unsupported layer type -> skip it
+      if (!layerLeaf) return;
+
+      const title = lyr?.label || '';
+      const style = lyr?.style || {};
+      let legendUrl = '';
+      // a leaf node in the tree
+      layerLeaf.configId = lyr.code;
+      if (layerLeaf?.options?.service === 'wms' && layerLeaf._url) {
+        legendUrl = `${layerLeaf._url}?TRANSPARENT=TRUE&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=${layerLeaf.options.layers}&FORMAT=image%2Fpng&LEGEND_OPTIONS=forceLabels%3Aon%3BfontAntiAliasing%3Atrue`;
+      }
+      let label;
+      if (this.config.MAPCONFIG?.REF_LAYERS_LEGEND) {
+        label = this.getLegendBox({ title, ...style, legendUrl });
+      } else {
+        label = `<span data-qa="title-overlay">${title}</span>`;
+      }
+      // activate: undefined -> default (off, unless forced by an activated
+      // group), activate: true -> on, activate: false -> off (even if forced)
+      const activated = lyr.activate === true || (activatedByGroup && lyr.activate !== false);
+      if (activated) {
+        map.addLayer(layerLeaf);
+        this.loadOverlay(layerLeaf);
+      }
+      nodes.push({ label, layer: layerLeaf });
+    });
+    return nodes;
+  }
+
+  /**
+   * Add a dynamic overlay and refresh the layers tree
+   * @param layer leaflet layer to add
+   * @param name label displayed in the control
+   */
+  addOverlay(layer, name) {
+    this.overlayTreeRef.push({ label: name, layer });
+    if (this.layerControl?.setOverlayTree) {
+      this.layerControl.setOverlayTree(this.overlayTreeRef as any);
+    }
   }
 
   /**
@@ -458,8 +509,10 @@ export class MapService {
    */
   loadOverlay(overlay) {
     let overlayer = overlay?.layer || overlay;
-    let cfgLayer = JSON.parse(JSON.stringify(this.config.MAPCONFIG.REF_LAYERS));
-    let layerAdded = cfgLayer.filter((o) => o.code === overlayer.configId)[0];
+    const layerAdded = this.findRefLayerConfig(
+      JSON.parse(JSON.stringify(this.config.MAPCONFIG.REF_LAYERS)),
+      overlayer.configId
+    );
 
     // If overlay definition is not in mapconfig
     if (!layerAdded) return;
@@ -486,5 +539,22 @@ export class MapService {
         overlayer.addData(geojson);
       });
     }
+  }
+
+  /**
+   * Recursively find a REF_LAYERS entry (leaf layer config) by its `code`.
+   * @param entries REF_LAYERS list (possibly nested with `type: "group"` nodes)
+   * @param code the layer code to find
+   */
+  findRefLayerConfig(entries, code) {
+    if (!entries) return null;
+    for (const entry of entries) {
+      if (entry && entry.code === code) return entry;
+      if (entry && entry.type === 'group' && Array.isArray(entry.children)) {
+        const found = this.findRefLayerConfig(entry.children, code);
+        if (found) return found;
+      }
+    }
+    return null;
   }
 }

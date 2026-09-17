@@ -181,10 +181,15 @@ export class MapComponent implements OnInit {
       }
     });
     // --- Layers selection
-    // overlays layers
-    const overlaysLayers = this.mapService.createOverLayers(this.map);
+    // overlays layers (REF_LAYERS)
+    const overlayTree = this.mapService.createOverLayers(this.map);
+    // basemap layers (BASEMAP)
+    const baseTree = Object.entries(baseControl).map(([name, layer]) => ({
+      label: name,
+      layer,
+    }));
     // create control layers
-    this.mapService.layerControl = L.control.layers(baseControl, overlaysLayers, {
+    this.mapService.layerControl = L.control.layers.tree(baseTree as any, overlayTree as any, {
       sortLayers: false, // When false, layers will keep the order in which they were added to the control
       collapsed: true, //If true, the control will be collapsed into an icon and expanded on mouse hover
     });

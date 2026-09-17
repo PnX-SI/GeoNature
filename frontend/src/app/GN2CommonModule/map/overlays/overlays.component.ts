@@ -17,7 +17,7 @@ export class MapOverLaysComponent implements OnInit, OnChanges {
     if (changes.layers && changes.layers.currentValue) {
       changes.layers.currentValue.forEach((layer) => {
         const geojsonLayer = L.geoJSON(layer.geojson);
-        this._mapService.layerControl.addOverlay(geojsonLayer, layer.layerName);
+        this._mapService.addOverlay(geojsonLayer, layer.layerName);
       });
     }
   }

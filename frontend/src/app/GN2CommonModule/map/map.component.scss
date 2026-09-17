@@ -47,3 +47,14 @@
   background-position: right center;
   background-repeat: no-repeat;
 }
+
+// leaflet.control.layers.tree: leave room between the checkbox and the label text
+:host ::ng-deep .leaflet-layerstree-header-name {
+  margin-left: 5px;
+}
+
+// leaflet.control.layers.tree: keep same space for leaf nodes which does not have +/- symbol
+:host ::ng-deep .leaflet-layerstree-header > span:first-child.leaflet-layerstree-nevershow {
+  display: initial;
+  visibility: hidden;
+}

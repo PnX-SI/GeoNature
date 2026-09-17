@@ -1488,6 +1488,57 @@ Il est possible de choisir les éléments des référentiels géographiques pouv
             style = { color = 'SlateGray', fill = true, fillOpacity = '0.2', weight = 1 }
             params = {limit = 5000}
 
+Il est également possible d'organiser les couches sous forme d'arborescence dans le sélecteur de couches.
+Pour cela, utiliser le type ``"group"``, et y déclarer ses couches dans le paramètre ``children``
+(même format qu’à la racine). Il est possible d’imbriquer un groupe dans un groupe !
+
+Un groupe prend les paramètres suivants :
+
+* ``label`` : Le nom du groupe.
+* ``color`` : Une éventuelle couleur pour le groupe.
+* ``activate`` : Si vrai, alors les couches enfantes auront ``activate = true`` par défaut, sauf valeur contraire.
+* ``tree_params`` : Paramètres passés tels quels au contrôleur. Typiquement ``tree_params = { collapsed = true }``
+  pour que le groupe apparaisse fermé par défaut.
+  Voir le dépôt du `plugin <https://github.com/jjimenezshaw/Leaflet.Control.Layers.Tree>`_ pour les autres paramètres.
+
+Exemple :
+
+.. code:: toml
+
+        [[MAPCONFIG.REF_LAYERS]]
+            code = "limitesadministratives"
+            label = "Limites administratives (IGN)"
+            type = "wms"
+            url = "https://data.geopf.fr/wms-r"
+            activate = false
+            params = { service = "wms", version = "1.3.0", request = "GetMap",
+                        layers = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST",
+                        styles = "normal", format = "image/png", crs = "CRS:84", dpiMode = 7 }
+
+        [[MAPCONFIG.REF_LAYERS]]
+            label = "ZNIEFF (IGN)"
+            type = "group"
+            color = "red"
+            tree_params = { collapsed = true }
+            [[MAPCONFIG.REF_LAYERS.children]]
+                code = "znieff1"
+                label = "ZNIEFF1"
+                type = "wms"
+                url = "https://data.geopf.fr/wms-v/ows"
+                activate = false
+                params = { service = "wms", version = "1.3.0", request = "GetMap",
+                            layers = "Patrinat_ZNIEFF1_France", format = "image/png",
+                            crs = "EPSG:4326", opacity = 0.2, transparent = true }
+            [[MAPCONFIG.REF_LAYERS.children]]
+                code = "znieff2"
+                label = "ZNIEFF2"
+                type = "wms"
+                url = "https://data.geopf.fr/wms-v/ows"
+                activate = false
+                params = { service = "wms", version = "1.3.0", request = "GetMap",
+                            layers = "Patrinat_ZNIEFF2_France", format = "image/png",
+                            crs = "EPSG:4326", opacity = 0.2, transparent = true }
+
 
 Données externes
 """"""""""""""""

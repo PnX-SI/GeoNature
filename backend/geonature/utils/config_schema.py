@@ -10,6 +10,7 @@ from warnings import warn
 
 from marshmallow import (
     INCLUDE,
+    EXCLUDE,
     Schema,
     fields,
     validates_schema,
@@ -520,6 +521,56 @@ BASEMAP = [
 ]
 
 
+class RefLayerSchema(Schema):
+    class Meta:
+        # For retro-compat. with previously not validated broken config
+        unknown = EXCLUDE
+
+    code = fields.String(allow_none=True)
+    label = fields.String(required=True, validate=Length(min=1))
+    type = fields.String(
+        required=True,
+        validate=OneOf(["wms", "wfs", "geojson", "area", "group"]),
+    )
+    url = fields.String(allow_none=True)
+    # enable a layer on first load. On a group, enable all children layers
+    activate = fields.Boolean()
+    # dict passed as-is to the leaflet.control.layers.tree node
+    # (e.g. `collapsed = true` to fold a group on load)
+    tree_params = fields.Dict()
+    # dict passed as-is to Leaflet (or the ref_geo API for `area`)
+    params = fields.Dict()
+    # dict passed as-is to the frontend legend / vector layer style
+    style = fields.Dict()
+    # for type="group", add color to the label
+    color = fields.String(allow_none=True)
+    # for type="group" only
+    children = fields.Nested("RefLayerSchema", many=True, load_default=list)
+
+    @validates_schema
+    def validate_entry(self, data, **kwargs):
+        layer_type = data.get("type")
+        if layer_type == "group":
+            return data
+        if data.get("tree_params"):
+            raise ValidationError(
+                {"tree_params": "Le champ 'tree_params' est réservé au type 'group'."}
+            )
+        if not data.get("code"):
+            raise ValidationError(
+                {
+                    "code": (
+                        f"Le champ 'code' est obligatoire pour une couche de type '{layer_type}'."
+                    )
+                }
+            )
+        if layer_type in ("wms", "wfs", "geojson") and not data.get("url"):
+            raise ValidationError(
+                {"url": f"Le champ 'url' est obligatoire pour une couche de type '{layer_type}'."}
+            )
+        return data
+
+
 class MapConfig(Schema):
     BASEMAP = fields.List(fields.Dict(), load_default=BASEMAP)
     CENTER = fields.List(fields.Float, load_default=[46.52863469527167, 2.43896484375])
@@ -534,7 +585,7 @@ class MapConfig(Schema):
     # Laisser à null pour n'avoir aucune restriction
     OSM_RESTRICT_COUNTRY_CODES = fields.String(load_default=None)
     REF_LAYERS = fields.List(
-        fields.Dict(),
+        fields.Nested(RefLayerSchema),
         load_default=[
             {
                 "code": "limitesadministratives",
@@ -554,21 +605,44 @@ class MapConfig(Schema):
                 },
             },
             {
-                "code": "znieff1",
-                "label": "ZNIEFF1 (INPN)",
-                "type": "wms",
-                "url": "https://ws.carmencarto.fr/WMS/119/fxx_inpn",
-                "activate": False,
-                "params": {
-                    "service": "wms",
-                    "version": "1.3.0",
-                    "request": "GetMap",
-                    "layers": "znieff1",
-                    "format": "image/png",
-                    "crs": "EPSG:4326",
-                    "opacity": 0.2,
-                    "transparent": True,
-                },
+                "type": "group",
+                "label": "ZNIEFF (IGN)",
+                "children": [
+                    {
+                        "code": "znieff1",
+                        "label": "ZNIEFF1",
+                        "type": "wms",
+                        "url": "https://data.geopf.fr/wms-v/ows",
+                        "activate": False,
+                        "params": {
+                            "service": "wms",
+                            "version": "1.3.0",
+                            "request": "GetMap",
+                            "layers": "Patrinat_ZNIEFF1_France",
+                            "format": "image/png",
+                            "crs": "EPSG:4326",
+                            "opacity": 0.2,
+                            "transparent": True,
+                        },
+                    },
+                    {
+                        "code": "znieff2",
+                        "label": "ZNIEFF2",
+                        "type": "wms",
+                        "url": "https://data.geopf.fr/wms-v/ows",
+                        "activate": False,
+                        "params": {
+                            "service": "wms",
+                            "version": "1.3.0",
+                            "request": "GetMap",
+                            "layers": "Patrinat_ZNIEFF2_France",
+                            "format": "image/png",
+                            "crs": "EPSG:4326",
+                            "opacity": 0.2,
+                            "transparent": True,
+                        },
+                    },
+                ],
             },
         ],
     )
