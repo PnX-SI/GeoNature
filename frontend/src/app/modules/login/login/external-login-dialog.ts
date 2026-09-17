@@ -12,7 +12,7 @@ export interface DialogData {
 @Component({
   selector: 'login-dialog',
   templateUrl: 'external-login-dialog.html',
-  styleUrls: ['./login.component.scss'],
+  styleUrls: ['./external-login-dialog.scss'],
 })
 export class LoginDialog {
   @Output() userLogged = new EventEmitter<any>();

@@ -19,7 +19,6 @@ export class ConfirmAccountComponent implements OnInit {
   token: string;
   confirmationDivMessage: string;
   confirmationButtonLabel: string;
-  background_url: string;
   isValidator: boolean = false;
 
   constructor(
@@ -40,7 +39,6 @@ export class ConfirmAccountComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.background_url = `${this.config.API_ENDPOINT}${this.config.STATIC_URL}/images/login_background.jpg`;
     let labelKey = 'Authentication.Actions.ActivateAccount';
     let messageKey = 'Authentication.Messages.ActivateAccountConfirmation';
     if (this.isValidator) {

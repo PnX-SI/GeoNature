@@ -35,6 +35,7 @@ export class LoginComponent implements OnInit {
   public secondaryProviders: Array<Provider>;
   public errorMsg = '';
   public showPassword: boolean = false;
+  public helpContactUrl = null;
 
   constructor(
     public _authService: AuthService, //FIXME : change to private (html must be modified)
@@ -53,6 +54,7 @@ export class LoginComponent implements OnInit {
     this.enable_user_management =
       this.config['ACCOUNT_MANAGEMENT']['ENABLE_USER_MANAGEMENT'] || false;
     this.external_links = this.config['ACCOUNT_MANAGEMENT']['EXTERNAL_LINKS'];
+    this.helpContactUrl = this.config['HELP_CONTACT_URL'];
   }
 
   ngOnInit() {
@@ -184,9 +186,8 @@ export class LoginComponent implements OnInit {
    */
   openDialog(provider) {
     const dialogRef = this.dialog.open(LoginDialog, {
-      height: '30%',
-      width: '30%',
-      position: { top: '10%' },
+      width: '420px',
+      maxWidth: '90vw',
       data: {
         provider: provider,
       },

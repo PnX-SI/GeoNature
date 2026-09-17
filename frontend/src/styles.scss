@@ -12,6 +12,12 @@ mat-sidenav-container {
   margin: 0;
   width: 100%;
   height: 100%;
+}
+
+// Viewport-based font scaling is scoped to the home page shell (nav-home's
+// mat-sidenav-container) only, so it doesn't shrink text on other pages
+// (e.g. login/sign-up) that never render a mat-sidenav-container.
+mat-sidenav-container {
   font-size: clamp(10px, 1vw, 20px);
 }
 
@@ -611,9 +617,6 @@ ngb-modal-backdrop {
 
 .mat-mdc-button-touch-target {
   display: none;
-}
-:root {
-  --mdc-typography-button-font-size: clamp(8px, 0.8vw, 18px);
 }
 
 .cdk-overlay-pane {
