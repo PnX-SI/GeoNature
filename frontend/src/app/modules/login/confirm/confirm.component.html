@@ -1,9 +1,4 @@
 <gn-auth-layout>
-  <div
-    gnBrand
-    class="gn-split-brand-content"
-  ></div>
-
   <mat-card class="gn-login-card">
     <div class="gn-card-header">
       <h2>{{ confirmationButtonLabel }}</h2>
@@ -13,7 +8,8 @@
       <p>{{ confirmationDivMessage }}</p>
       <button
         mat-raised-button
-        class="gn-btn-primary w-100"
+        color="primary"
+        class="gn-btn-primary"
         (click)="submit()"
       >
         {{ confirmationButtonLabel }}

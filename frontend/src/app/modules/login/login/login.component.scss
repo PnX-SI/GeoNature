@@ -1,13 +1,5 @@
 @use '../_auth-shared' as *;
 
-.gn-login-card {
-  border-radius: 4px;
-  background-color: transparent !important;
-  box-shadow: none !important;
-  border: none !important;
-  overflow: hidden;
-}
-
 .gn-form-brand {
   display: flex;
   flex-direction: column;
@@ -33,14 +25,6 @@
 @media (max-width: 767.98px) {
   .gn-form-brand-logo {
     max-height: 10svh;
-  }
-
-  .gn-card-header {
-    padding: 16px 16px 4px;
-  }
-
-  mat-card-content.mat-mdc-card-content {
-    padding: 8px 16px 16px !important;
   }
 }
 
@@ -108,10 +92,6 @@
   height: 18px;
 }
 
-.gn-btn-primary {
-  width: 100%;
-}
-
 .gn-btn-neutral {
   --mdc-outlined-button-outline-color: rgba(0, 0, 0, 0.24);
   --mdc-outlined-button-label-text-color: rgba(0, 0, 0, 0.75);
@@ -166,10 +146,6 @@
   display: flex;
   justify-content: center;
   padding: 12px 0;
-}
-
-.gn-loading .mat-mdc-progress-spinner circle {
-  stroke: $gn-accent;
 }
 
 .gn-contact-admin {

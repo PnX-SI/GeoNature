@@ -2,29 +2,37 @@
 // (login / sign-up / new-password). The split-screen layout shell itself (background
 // image, brand overlay, scroll panel) lives in AuthLayoutComponent, not here.
 // Import with `@use '../_auth-shared' as * with (...)` to override any of the
-// `!default` variables below (e.g. accent color, card padding).
+// `!default` variables below (e.g. card padding).
 
-$gn-accent: #673ab7 !default;
+@use '../../../conf/names_variables' as vars;
+
+$gn-accent: vars.$gn-accent !default;
 $card-header-h-pad: 24px !default;
 $card-content-pad: 8px 24px 20px !default;
-
-.gn-brand-icon {
-  width: 40px;
-  height: 40px;
-  flex: none;
-  border-radius: 50%;
-  background-color: rgba($gn-accent, 0.1);
-  color: $gn-accent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
 .gn-card-header {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 20px $card-header-h-pad 4px;
+}
+
+.gn-login-card {
+  border-radius: 4px;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  overflow: hidden;
+}
+
+@media (max-width: 767.98px) {
+  .gn-card-header {
+    padding: 16px 16px 4px;
+  }
+
+  mat-card-content.mat-mdc-card-content {
+    padding: 8px 16px 16px !important;
+  }
 }
 
 .gn-card-title {
@@ -37,20 +45,9 @@ mat-card-content.mat-mdc-card-content {
   padding: $card-content-pad !important;
 }
 
-// mat-form-field theming (Material 15 / MDC outline tokens) — brand color instead of the
-// app's global deeppurple-amber theme, scoped to these pages only.
 .gn-field {
   width: 100%;
   margin-bottom: 6px;
-
-  --mdc-outlined-text-field-outline-color: rgba(0, 0, 0, 0.38);
-  --mdc-outlined-text-field-hover-outline-color: rgba(0, 0, 0, 0.6);
-  --mdc-outlined-text-field-focus-outline-color: #{$gn-accent};
-  --mdc-outlined-text-field-label-text-color: rgba(0, 0, 0, 0.6);
-  --mdc-outlined-text-field-hover-label-text-color: rgba(0, 0, 0, 0.6);
-  --mdc-outlined-text-field-focus-label-text-color: #{$gn-accent};
-  --mdc-outlined-text-field-input-text-color: rgba(0, 0, 0, 0.87);
-  --mdc-outlined-text-field-caret-color: #{$gn-accent};
 }
 
 .gn-field-icon {
@@ -95,8 +92,6 @@ mat-card-content.mat-mdc-card-content {
 }
 
 .gn-btn-primary {
-  --mdc-protected-button-container-color: #{$gn-accent};
-  --mdc-protected-button-label-text-color: #fff;
   height: 42px;
   font-weight: 500;
   letter-spacing: 0.04em;

@@ -1,9 +1,4 @@
 <gn-auth-layout formMaxWidth="620px">
-  <div
-    gnBrand
-    class="gn-split-brand-content"
-  ></div>
-
   <mat-card class="gn-signup-card">
     <div class="gn-card-header">
       <button
@@ -200,6 +195,7 @@
         <div class="text-center gn-submit-row">
           <button
             mat-raised-button
+            color="primary"
             type="button"
             class="gn-btn-primary"
             [disabled]="!form.valid || !dynamicFormGroup.valid || disableSubmit"

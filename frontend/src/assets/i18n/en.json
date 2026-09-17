@@ -101,7 +101,7 @@
       "HidePassword": "Hide password",
       "MailMandatory": "Email is mandatory.",
       "InvalidMail": "Please enter a valid email address.",
-      "ContactAdministrator": "Connection issue? Contact us"
+      "HelpContact": "Connection issue? Contact us"
     },
     "OtherAuthProviders": "Other login methods",
     "SignUp": {

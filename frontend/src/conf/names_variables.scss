@@ -1,4 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
+@use 'sass:map';
+@use '@angular/material' as mat;
+
+// The app's Material primary color (angular.json -> deeppurple-amber prebuilt
+// theme). Single source of truth so other stylesheets don't hardcode the hex.
+$gn-accent: map.get(mat.$deep-purple-palette, 500);
+
 $alice-blue: #fbfcfd;
 $cello: #3f4f61;
 $solitude: #dce3e7;

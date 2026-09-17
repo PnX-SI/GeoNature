@@ -35,7 +35,7 @@ export class LoginComponent implements OnInit {
   public secondaryProviders: Array<Provider>;
   public errorMsg = '';
   public showPassword: boolean = false;
-  public administratorContactUrl = null;
+  public helpContactUrl = null;
 
   constructor(
     public _authService: AuthService, //FIXME : change to private (html must be modified)
@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit {
     this.enable_user_management =
       this.config['ACCOUNT_MANAGEMENT']['ENABLE_USER_MANAGEMENT'] || false;
     this.external_links = this.config['ACCOUNT_MANAGEMENT']['EXTERNAL_LINKS'];
-    this.administratorContactUrl = this.config['HELP_CONTACT_URL'];
+    this.helpContactUrl = this.config['HELP_CONTACT_URL'];
   }
 
   ngOnInit() {

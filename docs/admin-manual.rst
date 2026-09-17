@@ -1642,10 +1642,10 @@ Cet espace est activable grâce au paramètre ``ENABLE_USER_MANAGEMENT``. Par d�
         ENABLE_USER_MANAGEMENT = true
 
 
-Lien de contact de l'administrateur
-"""""""""""""""""""""""""""""""""""
+Lien de contact
+"""""""""""""""
 
-Un lien "Un problème de connexion ? Contactez-nous" peut être affiché en bas de la page de connexion de GeoNature, pour permettre aux utilisateurs rencontrant un problème (compte non encore validé, identifiants oubliés, etc.) de contacter facilement l'administrateur de l'instance.
+Un lien "Un problème de connexion ? Contactez-nous" peut être affiché en bas de la page de connexion de GeoNature, pour permettre aux utilisateurs rencontrant un problème (compte non encore validé, identifiants oubliés, etc.) de contacter facilement les administrateurs de l'instance.
 
 Ce lien est configurable via le paramètre général ``HELP_CONTACT_URL``. Il accepte n'importe quelle URL : un lien ``mailto:`` vers une adresse email, ou un lien ``https://`` vers un formulaire de contact par exemple.
 

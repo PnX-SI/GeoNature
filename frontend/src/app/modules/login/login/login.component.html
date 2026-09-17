@@ -144,6 +144,7 @@
             </mat-form-field>
             <button
               mat-raised-button
+              color="primary"
               class="gn-btn-primary w-100"
               [disabled]="disableSubmit || identifiantForm.invalid"
               type="submit"
@@ -171,15 +172,16 @@
         <mat-progress-spinner
           diameter="36"
           mode="indeterminate"
+          color="primary"
         ></mat-progress-spinner>
       </div>
 
       <div
         class="gn-contact-admin"
-        *ngIf="administratorContactUrl"
+        *ngIf="helpContactUrl"
       >
-        <a href="{{ administratorContactUrl }}">
-          {{ 'Authentication.Messages.ContactAdministrator' | translate }}
+        <a href="{{ helpContactUrl }}">
+          {{ 'Authentication.Messages.HelpContact' | translate }}
         </a>
       </div>
     </mat-card-content>
@@ -287,6 +289,7 @@
 
     <button
       mat-raised-button
+      color="primary"
       class="gn-btn-primary w-100"
       type="submit"
       [disabled]="_authService.isLoading"

@@ -1,23 +1,5 @@
 @use '../_auth-shared' as *;
 
-.gn-login-card {
-  border-radius: 4px;
-  background-color: transparent !important;
-  box-shadow: none !important;
-  border: none !important;
-  overflow: hidden;
-}
-
-@media (max-width: 767.98px) {
-  .gn-card-header {
-    padding: 16px 16px 4px;
-  }
-
-  mat-card-content.mat-mdc-card-content {
-    padding: 8px 16px 16px !important;
-  }
-}
-
 .gn-btn-primary {
   width: 100%;
 }
