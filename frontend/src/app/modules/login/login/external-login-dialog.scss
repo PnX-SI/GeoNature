@@ -1,0 +1,21 @@
+@use '../_auth-shared' as *;
+
+:host {
+  display: block;
+  max-width: 100%;
+}
+
+.gn-card-title {
+  margin: 0 0 4px;
+}
+
+.mat-mdc-dialog-content {
+  padding-top: 4px !important;
+}
+
+@media (max-width: 480px) {
+  .mat-mdc-dialog-content {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}

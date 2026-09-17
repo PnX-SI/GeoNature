@@ -186,9 +186,8 @@ export class LoginComponent implements OnInit {
    */
   openDialog(provider) {
     const dialogRef = this.dialog.open(LoginDialog, {
-      height: '30%',
-      width: '30%',
-      position: { top: '10%' },
+      width: '420px',
+      maxWidth: '90vw',
       data: {
         provider: provider,
       },
