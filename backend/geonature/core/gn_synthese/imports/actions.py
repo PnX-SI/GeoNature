@@ -3,7 +3,6 @@ from math import ceil
 
 import sqlalchemy as sa
 from apptax.taxonomie.models import Taxref
-from bokeh.embed.standalone import StandaloneEmbedJson
 from flask import current_app
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_synthese.models import (
@@ -59,7 +58,6 @@ from sqlalchemy import distinct, func, select
 from sqlalchemy.dialects.postgresql import JSONB
 
 from .geo import set_geom_columns_from_area_codes
-from .plot import taxon_distribution_plot
 from geonature.core.gn_meta.models import TDatasets
 
 
@@ -435,7 +433,9 @@ class SyntheseImportActions(ImportActions):
         }
 
     @staticmethod
-    def report_plot(imprt: TImports) -> StandaloneEmbedJson:
+    def report_plot(imprt: TImports):
+        from .plot import taxon_distribution_plot
+
         return taxon_distribution_plot(imprt)
 
     @staticmethod

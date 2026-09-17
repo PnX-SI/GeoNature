@@ -24,7 +24,6 @@ import typing
 from geonature.utils.env import db
 from geonature.core.imports.models import Entity, BibFields, TImports
 from geonature.core.imports.actions import ImportActions, ImportStatisticsLabels
-from .plot import distribution_plot
 
 from geonature.core.imports.utils import (
     get_mapping_data,
@@ -66,7 +65,6 @@ from geonature.core.imports.checks.sql.core import (
 from .checks import (
     check_existing_station_permissions,
 )
-from bokeh.embed.standalone import StandaloneEmbedJson
 
 
 def get_occhab_entities() -> typing.Tuple[Entity, Entity]:
@@ -586,7 +584,9 @@ class OcchabImportActions(ImportActions):
         ) and ImportActions.is_observer_mapping_enabled()
 
     @staticmethod
-    def report_plot(imprt: TImports) -> StandaloneEmbedJson:
+    def report_plot(imprt: TImports):
+        from .plot import distribution_plot
+
         return distribution_plot(imprt)
 
     @staticmethod

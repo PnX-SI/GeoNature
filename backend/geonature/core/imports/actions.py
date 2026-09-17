@@ -1,7 +1,5 @@
 import typing
 
-from bokeh.embed.standalone import StandaloneEmbedJson
-import sqlalchemy as sa
 from sqlalchemy.inspection import inspect
 from werkzeug.exceptions import Conflict
 
@@ -206,7 +204,7 @@ class ImportActions:
             )
 
     @staticmethod
-    def report_plot(imprt: TImports) -> StandaloneEmbedJson:
+    def report_plot(imprt: TImports):
         """
         Generate the report plot for the given import. The plot must be realized using the Bokeh library.
         Plot must be return as JSON using the Bokeh `json_item` function.
