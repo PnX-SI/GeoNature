@@ -420,6 +420,12 @@ class Synthese(Schema):
     NB_MAX_OBS_MAP = fields.Integer(load_default=50000)
     # Clusteriser les layers sur la carte
     ENABLE_LEAFLET_CLUSTER = fields.Boolean(load_default=True)
+    # Si non vide, affiche un popup lors du clic sur une obs sur la carte avec les champs listés
+    # Champs disponibles : MANDATORY_COLUMNS + LIST_COLUMNS_FRONTEND + ADDITIONAL_COLUMNS_FRONTEND
+    # Exemple: [{"label": "Taxon", "field": "nom_vern_or_lb_nom"}, {"label": "Date", "field": "date_min"}]
+    MAP_POPUP_FIELDS = fields.List(fields.Dict, load_default=[])
+    # Nombre maximum d'obs listées dans le popup (geom communes à plusieurs obs)
+    MAP_POPUP_MAX_OBS_COUNT = fields.Integer(load_default=10)
     # Nombre des "dernières observations" affichées à l'arrivée sur la synthese
     NB_LAST_OBS = fields.Integer(load_default=100)
 
