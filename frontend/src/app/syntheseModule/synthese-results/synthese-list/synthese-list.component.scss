@@ -29,7 +29,8 @@
   left: 0;
   top: 0;
   bottom: 0;
-  width: 7px;
+  width: 8px;
+  border-bottom: 1px solid #efefef;
 }
 
 :host ::ng-deep .datatable-body {

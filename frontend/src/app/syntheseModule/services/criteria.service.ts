@@ -232,7 +232,11 @@ export class SyntheseCriteriaService implements OnDestroy {
 
         let option = L.DomUtil.create('option', '', select);
         option.value = criteria.code;
-        option.innerText = criteria.label;
+        const prefix = this.translateService.instant('Synthese.Map.CriteriaPrefix');
+        const label = criteria.label || '';
+        const isAcronym =
+          label.length > 1 && label === label.toUpperCase() && label !== label.toLowerCase();
+        option.innerText = `${prefix} ${isAcronym ? label : label.charAt(0).toLowerCase() + label.slice(1)}`;
         if (criteria.description) {
           option.setAttribute('title', criteria.description);
         }

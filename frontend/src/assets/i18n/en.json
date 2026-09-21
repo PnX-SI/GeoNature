@@ -576,6 +576,7 @@
       }
     },
     "Map": {
+      "CriteriaPrefix": "By",
       "LegendTitle": "Observations display",
       "SeveralValues": "Several values",
       "UnknownValue": "Other values",

@@ -575,7 +575,8 @@
       }
     },
     "Map": {
-      "LegendTitle": "Affichage des observations",
+      "CriteriaPrefix": "Par",
+      "LegendTitle": "Observations",
       "SeveralValues": "Valeurs multiples",
       "UnknownValue": "Autres valeurs",
       "Criteria": {

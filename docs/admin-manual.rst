@@ -2406,10 +2406,10 @@ La sélection d'un critère déclenche :
     qui n'est plus colorée). Au survol de cette bordure, une infobulle
     affiche l'intitulé et la description de la valeur du critère
     correspondant à l'observation ;
-  * l'apparition d'un badge au niveau de l'en-tête de la fiche d'une
+  * l’apparition d’une bande colorée sur le bord gauche de la fiche d’une
     observation.
-    La couleur et l'icône associées au critère sont utilisées comme couleur
-    de fond et illustration du badge. Au survol, une infobulle affiche
+    La couleur associée au critère est utilisée comme couleur de la bande.
+    Au survol, une infobulle affiche
     l'intitulé et la description de la valeur critère correspondant à
     l'observation.
 
@@ -2486,17 +2486,17 @@ doit pas contenir de caractères spéciaux.
             ``value`` sont triées par ordre décroissant avant d'être comparées.
     *label* (*chaîne*)
         Intitulé court par défaut de la valeur. Servira à l'affichage dans
-        la légende, au survol de l'icône d'accès ou du badge de la fiche
+        la légende, au survol de l'icône d'accès ou de la bande colorée de la fiche
         d'une observation. Si cet attribut n'est pas renseigné, il prend
         la valeur de l'attribut ``value``.
     *description* (*chaîne*)
         Intitulé long de la valeur. Affiché principalement via des info-bulles
-        au survol d'une valeur de la légende, de l'icône d'accès ou du badge
+        au survol d'une valeur de la légende, de l'icône d'accès ou de la bande colorée
         de la fiche d'une observation.
     *color* (*chaîne*)
         Code hexadécimal de la couleur de la valeur. La valeur est utilisée
         pour le style *fillcolor* du marqueur sur la carte, au niveau de la
-        légende et en courleur de fond du badge de la fiche d'une observation.
+        légende et en couleur de la bande de la fiche d'une observation.
         Si non renseigné, une couleur est automatiquement attribuée. Dans
         ce dernier cas, il n'est pas garantie que la couleur soit
         systématiquement la même entre chaque rechargement de la configuration.
@@ -2512,8 +2512,8 @@ doit pas contenir de caractères spéciaux.
             Indique une icône à l'aide de son nom. Possibilité d'utiliser
             des icônes : `Fontawsome <https://fontawesome.com/v4/icons/>`_,
             `Angular Material <https://fonts.google.com/icons?hl=fr>`_.
-            L'icône est affichée au niveau de la légende sur la carte et dans
-            le badge affiché à gauche du titre de la fiche d'une observation.
+            L'icône est affichée au niveau de la légende sur la carte
+            (elle n'est plus affichée dans la fiche d'une observation).
         **font** (*chaîne*)
             Indique le nom de la police contenant l'icône. Par exemple, ``fa``
             pour Fontawesome ou ``material-icons-outlined`` pour les polices
