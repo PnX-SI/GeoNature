@@ -1,16 +1,19 @@
-<div
-  class="confirm-body"
-  style="background: url({{ background_url }}) center; background-size:cover;"
->
-  <div class="modal-container">
-    {{ confirmationDivMessage }}
-    <button
-      mat-raised-button
-      color="primary"
-      class="activate-button"
-      (click)="submit()"
-    >
-      {{ confirmationButtonLabel }}
-    </button>
-  </div>
-</div>
+<gn-auth-layout>
+  <mat-card class="gn-login-card">
+    <div class="gn-card-header">
+      <h2>{{ confirmationButtonLabel }}</h2>
+    </div>
+
+    <mat-card-content>
+      <p>{{ confirmationDivMessage }}</p>
+      <button
+        mat-raised-button
+        color="primary"
+        class="gn-btn-primary"
+        (click)="submit()"
+      >
+        {{ confirmationButtonLabel }}
+      </button>
+    </mat-card-content>
+  </mat-card>
+</gn-auth-layout>

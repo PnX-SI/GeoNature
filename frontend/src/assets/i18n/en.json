@@ -58,9 +58,12 @@
 
   "Authentication": {
     "Authentication": "Authentication",
+    "ConnectTo": "Log in to",
     "Email": "Email",
     "Username": "Username",
+    "UsernamePlaceholder": "Your username",
     "Password": "Password",
+    "PasswordPlaceholder": "Your password",
     "LogIn": "Login",
     "LogOut": "Logout",
     "Actions": {
@@ -69,7 +72,8 @@
       "CreateAccount": "Create an account",
       "ActivateAccount": "Activate my account",
       "ActivateAccountValidator": "Activate this account",
-      "Send": "Send"
+      "Send": "Send",
+      "PublicAccess": "Access publicly without an account"
     },
     "Errors": {
       "WrongLoginOrPassword": "Incorrect username or password.",
@@ -86,7 +90,7 @@
     },
     "Messages": {
       "Recovery": {
-        "ForgotPasswordOrLogin": "Forgot username or password?",
+        "ForgotPassword": "Forgot password?",
         "MailAsked": "Please enter the email address you used when registering.",
         "Process": "A message will be sent to this address with your username and the option to reset your password."
       },
@@ -96,9 +100,30 @@
       "ShowPassword": "Show password",
       "HidePassword": "Hide password",
       "MailMandatory": "Email is mandatory.",
-      "InvalidMail": "Please enter a valid email address."
+      "InvalidMail": "Please enter a valid email address.",
+      "HelpContact": "Connection issue? Contact us"
     },
-    "OtherAuthProviders": "Other login methods"
+    "OtherAuthProviders": "Other login methods",
+    "SignUp": {
+      "Title": "Sign up",
+      "SectionUser": "Personal information",
+      "SectionAccount": "Account",
+      "SectionAdditional": "Additional information",
+      "Firstname": "First name",
+      "Identifiant": "Username",
+      "IdentifiantTooltip": "This username will be requested to authenticate you in GeoNature.",
+      "PasswordConfirmationTooltip": "Repeat the password entered above.",
+      "ConfirmationError": "Confirmation error",
+      "Remarks": "Remarks",
+      "PasswordCriteriaTitle": "Password requirements",
+      "Submit": "Sign up",
+      "FieldRequired": "This field is required"
+    },
+    "NewPassword": {
+      "Title": "Password renewal",
+      "FormLabel": "New password",
+      "Submit": "Update the password"
+    }
   },
   "MyAccount": {
     "MyAccount": "My account",
@@ -177,6 +202,7 @@
 
   "Yes": "Yes",
   "No": "No",
+  "Or": "or",
   "Previous": "Previous",
   "Next": "Next",
   "Back": "Back",

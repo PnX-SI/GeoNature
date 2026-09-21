@@ -1,0 +1,19 @@
+<div id="login-body">
+  <div
+    class="gn-split-brand"
+    [style.background-image]="
+      'url(' + config.API_ENDPOINT + config.STATIC_URL + '/images/login_background.jpg)'
+    "
+  >
+    <div class="gn-split-brand-overlay"></div>
+  </div>
+
+  <div class="gn-split-form">
+    <div
+      class="gn-split-form-inner"
+      [style.max-width]="formMaxWidth"
+    >
+      <ng-content></ng-content>
+    </div>
+  </div>
+</div>

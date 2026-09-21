@@ -12,6 +12,9 @@ import { routes } from './login.routes';
 import { SignUpGuard, UserEditGuard, UserManagementGuard } from './routes-guard.service';
 import { LoginDialog } from './login/external-login-dialog';
 import { ConfirmAccountComponent } from './confirm/confirm.component';
+import { AuthLayoutComponent } from './auth-layout/auth-layout.component';
+import { PasswordFieldComponent } from './password-field/password-field.component';
+import { PasswordCriteriaComponent } from './password-criteria/password-criteria.component';
 
 @NgModule({
   imports: [CommonModule, GN2CommonModule, RouterModule.forChild(routes)],
@@ -21,6 +24,9 @@ import { ConfirmAccountComponent } from './confirm/confirm.component';
     SignUpComponent,
     LoginDialog,
     ConfirmAccountComponent,
+    AuthLayoutComponent,
+    PasswordFieldComponent,
+    PasswordCriteriaComponent,
   ],
   providers: [SignUpGuard, UserManagementGuard, UserEditGuard],
 })

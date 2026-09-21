@@ -57,16 +57,20 @@
 
   "Authentication": {
     "Authentication": "Authentification",
-    "Email": "Adresse mail",
+    "ConnectTo": "Se connecter à",
+    "Email": "Adresse email",
     "Username": "Nom d'utilisateur",
+    "UsernamePlaceholder": "Votre identifiant",
     "Password": "Mot de passe",
+    "PasswordPlaceholder": "Votre mot de passe",
     "Actions": {
       "LogIn": "Se connecter",
       "LogOut": "Déconnexion",
       "CreateAccount": "Créer un compte",
       "ActivateAccount": "Activer mon compte",
       "ActivateAccountValidator": "Activer le compte",
-      "Send": "Envoyer"
+      "Send": "Envoyer",
+      "PublicAccess": "Accéder publiquement sans compte"
     },
     "Errors": {
       "WrongLoginOrPassword": "Identifiant ou mot de passe incorrect",
@@ -84,7 +88,7 @@
     },
     "Messages": {
       "Recovery": {
-        "ForgotPasswordOrLogin": "Identifiant ou mot de passe oublié ?",
+        "ForgotPassword": "Mot de passe oublié ?",
         "MailAsked": "Veuillez renseigner l'adresse email utilisée lors de votre inscription.",
         "Process": "Un message y sera envoyé avec votre identifiant et la possibilité de renouveler votre mot de passe."
       },
@@ -95,9 +99,30 @@
       "InvalidMail": "Veuillez saisir une adresse email valide.",
       "ShowPassword": "Afficher le mot de passe",
       "HidePassword": "Masquer le mot de passe",
-      "InvalidMail": "Veuillez saisir une adresse email valide."
+      "InvalidMail": "Veuillez saisir une adresse email valide.",
+      "HelpContact": "Un problème de connexion ? Contactez-nous"
     },
-    "OtherAuthProviders": "Autres moyens de connexion"
+    "OtherAuthProviders": "Autres moyens de connexion",
+    "SignUp": {
+      "Title": "Inscription",
+      "SectionUser": "Informations personnelles",
+      "SectionAccount": "Compte",
+      "SectionAdditional": "Informations complémentaires",
+      "Firstname": "Prénom",
+      "Identifiant": "Identifiant",
+      "IdentifiantTooltip": "Cet identifiant vous sera demandé pour vous authentifier dans GeoNature.",
+      "PasswordConfirmationTooltip": "Répéter le mot de passe précédemment saisi.",
+      "ConfirmationError": "Erreur de confirmation",
+      "Remarks": "Remarques",
+      "PasswordCriteriaTitle": "Critères du mot de passe",
+      "Submit": "S'inscrire",
+      "FieldRequired": "Ce champ est nécessaire"
+    },
+    "NewPassword": {
+      "Title": "Renouvellement de mot de passe",
+      "FormLabel": "Nouveau mot de passe",
+      "Submit": "Changer le mot de passe"
+    }
   },
   "MyAccount": {
     "MyAccount": "Mon compte",
@@ -176,6 +201,7 @@
 
   "Yes": "Oui",
   "No": "Non",
+  "Or": "ou",
   "Previous": "Précédent",
   "Next": "Suivant",
   "Back": "Retour",

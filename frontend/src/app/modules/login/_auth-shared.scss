@@ -1,0 +1,106 @@
+// Shared styles for the card/field/password-popover chrome used by the auth pages
+// (login / sign-up / new-password). The split-screen layout shell itself (background
+// image, brand overlay, scroll panel) lives in AuthLayoutComponent, not here.
+// Import with `@use '../_auth-shared' as * with (...)` to override any of the
+// `!default` variables below (e.g. card padding).
+
+@use '../../../conf/names_variables' as vars;
+
+$gn-accent: vars.$gn-accent !default;
+$card-header-h-pad: 24px !default;
+$card-content-pad: 8px 24px 20px !default;
+
+.gn-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px $card-header-h-pad 4px;
+}
+
+.gn-login-card {
+  border-radius: 4px;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  overflow: hidden;
+}
+
+@media (max-width: 767.98px) {
+  .gn-card-header {
+    padding: 16px 16px 4px;
+  }
+
+  mat-card-content.mat-mdc-card-content {
+    padding: 8px 16px 16px !important;
+  }
+}
+
+.gn-card-title {
+  font-size: 17px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+mat-card-content.mat-mdc-card-content {
+  padding: $card-content-pad !important;
+}
+
+.gn-field {
+  width: 100%;
+  margin-bottom: 6px;
+}
+
+.gn-field-icon {
+  color: rgba(0, 0, 0, 0.54);
+  margin-right: 6px;
+}
+
+.gn-field.mat-focused .gn-field-icon {
+  color: $gn-accent;
+}
+
+.gn-password-criteria {
+  width: 100%;
+  margin: 2px 0 6px;
+}
+
+.gn-password-criterion {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 11.5px;
+  line-height: 1.3;
+  color: rgba(0, 0, 0, 0.45);
+  padding: 1px 0;
+}
+
+.gn-password-criterion mat-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+  flex: none;
+  margin-top: 1px;
+  color: rgba(0, 0, 0, 0.25);
+}
+
+.gn-password-criterion.valid {
+  color: $gn-accent;
+}
+
+.gn-password-criterion.valid mat-icon {
+  color: $gn-accent;
+}
+
+.gn-btn-primary {
+  height: 42px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+small {
+  color: red;
+}

@@ -1,0 +1,62 @@
+@use '../_auth-shared' as *;
+
+#login-body {
+  height: 100svh;
+  display: flex;
+  overflow: hidden;
+}
+
+.gn-split-brand {
+  position: relative;
+  flex: 1 1 50%;
+  background-size: cover;
+  background-position: right;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.gn-split-brand-overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.gn-split-form {
+  // positioned + explicit z-index so this panel (and floating content inside it,
+  // e.g. the password-criteria popover) paints above .gn-split-brand — otherwise
+  // that sibling, itself `position: relative`, always wins the stacking order
+  // over this non-positioned one regardless of any z-index set deeper inside it.
+  position: relative;
+  z-index: 1;
+  flex: 1 1 50%;
+  min-height: 0;
+  display: flex;
+  justify-content: center;
+  background: #f4f6f4;
+  padding: 32px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.gn-split-form-inner {
+  width: 100%;
+  // auto vertical margins center the panel without the flexbox
+  // align-items:center overflow bug that clips the top when content is tall
+  margin: auto 0;
+}
+
+@media (max-width: 767.98px) {
+  #login-body {
+    flex-direction: column;
+  }
+
+  .gn-split-brand {
+    display: none;
+  }
+
+  .gn-split-form {
+    padding: 24px 16px;
+  }
+}
