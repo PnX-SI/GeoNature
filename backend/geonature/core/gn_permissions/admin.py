@@ -425,6 +425,7 @@ class AreaAjaxModelLoader(QueryAjaxModelLoader):
                 BibAreasTypes.type_code.in_(config["PERMISSIONS"]["GEOGRAPHIC_FILTER_AREA_TYPES"])
             )
             .where(LAreas.area_name.is_not(None))
+            .where(LAreas.enable.is_(True))
         )
 
         if search:
