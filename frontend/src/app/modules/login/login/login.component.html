@@ -5,7 +5,7 @@
   >
     <img
       class="gn-form-brand-logo"
-      src="{{ this.config.API_ENDPOINT }}{{ this.config.STATIC_URL }}/images/logo_structure.png"
+      src="{{ this.config.API_ENDPOINT }}{{ this.config.STATIC_URL }}/images/logo_sidebar.jpg"
       alt=""
     />
     <div class="gn-form-brand-name">{{ APP_NAME }}</div>
@@ -87,12 +87,15 @@
             *ngFor="let link of external_links"
             class="external_link"
           >
-            <a
-              href="{{ link.url }}"
-              target="_blank"
-            >
-              {{ link.label }}
-            </a>
+            <span *ngIf="!link.url; else externalLinkTemplate">{{ link.label }}</span>
+            <ng-template #externalLinkTemplate>
+              <a
+                href="{{ link.url }}"
+                target="_blank"
+              >
+                {{ link.label }}
+              </a>
+            </ng-template>
           </div>
         </div>
       </ng-container>

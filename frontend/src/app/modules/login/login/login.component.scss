@@ -124,9 +124,14 @@
   margin-top: 8px;
 }
 
-.gn-footer-links .external_link a {
-  color: rgba(0, 0, 0, 0.5);
+.gn-footer-links .external_link {
   font-size: 12px;
+  a {
+    color: rgba(0, 0, 0, 0.5);
+  }
+  span {
+    color: rgba(0, 0, 0, 0.6);
+  }
 }
 
 .gn-alert-error {
@@ -146,6 +151,10 @@
   display: flex;
   justify-content: center;
   padding: 12px 0;
+}
+
+.gn-loading .mat-mdc-progress-spinner circle {
+  stroke: $gn-accent;
 }
 
 .gn-contact-admin {
