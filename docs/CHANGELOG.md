@@ -6,7 +6,12 @@
 
 ### 🐛 Corrections
 
-- Suppression de la section de configuration `ADDITIONAL_FIELDS` et des variables de configuration `IMPLEMENTED_MODULES` et `IMPLEMENTED_MODULES`, maintenant géré en base de donnée (la migration alambic gère la rétro-compatibilité)
+- CM - J'ai pas compris >> Suppression de la section de configuration `ADDITIONAL_FIELDS` et des variables de configuration `IMPLEMENTED_MODULES` et `IMPLEMENTED_MODULES`, maintenant géré en base de données (la migration alembic gère la rétro-compatibilité)
+
+### ⚠️ Notes de version
+
+- Renseigner (ou vider) `HELP_CONTACT_URL` (#4385)
+- logo_sidebar.jpg devient logo_sidebar.png. Modifiez votre fichier logo_sidebar.jpg en logo_sidebar.png dans le dossier XXXX si vous aviez surcouché le logo de l'application (logo GeoNature par défaut). (#4405)
 
 ## 2.17.2 (2026-06-09)
 
