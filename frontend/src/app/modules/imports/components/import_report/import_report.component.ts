@@ -106,7 +106,12 @@ export class ImportReportComponent implements OnInit {
       .getReportPlot(this.importData.destination.code, this.importData.id_import)
       .pipe(finalize(() => (this.loadingChart = false)))
       .subscribe((data) => {
-        Bokeh.embed.embed_item(data, 'chartreport');
+        // The backend may return an empty object when no plot can be generated
+        // (e.g. no taxon distribution for the imported data). Must not be passed
+        // to embed_item, which expects a full Bokeh item (with "roots").
+        if (data && data.roots) {
+          Bokeh.embed.embed_item(data, 'chartreport');
+        }
       });
   }
 
