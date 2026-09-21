@@ -1655,7 +1655,7 @@ Ce lien est configurable via le paramètre général ``HELP_CONTACT_URL``. Il ac
     # ou
     HELP_CONTACT_URL = "https://monassociation.fr/contact"
 
-Par défaut, ce paramètre est vide et le lien n'est alors pas affiché sur la page de connexion. Il doit être explicitement renseigné par l'administrateur pour que le lien apparaisse.
+Par défaut, ce paramètre est à ``#`` et ne redirige vers aucune page. 
 
 Accès public
 """"""""""""
