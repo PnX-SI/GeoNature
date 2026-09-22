@@ -104,9 +104,9 @@
     },
     "OtherAuthProviders": "Autres moyens de connexion",
     "SignUp": {
-      "Title": "Inscription",
+      "Title": "Création de compte",
       "SectionUser": "Informations personnelles",
-      "SectionAccount": "Compte",
+      "SectionAccount": "Identification",
       "SectionAdditional": "Informations complémentaires",
       "Firstname": "Prénom",
       "Identifiant": "Identifiant",

@@ -12,14 +12,17 @@
   </div>
 
   <mat-card class="gn-login-card">
-    <div class="gn-card-header">
+    <div
+      class="gn-card-header"
+      *ngIf="login_or_pass_recovery"
+    >
       <button
         mat-icon-button
-        *ngIf="login_or_pass_recovery"
         (click)="login_or_pass_recovery = false; errorMsg = ''"
       >
         <mat-icon>arrow_back</mat-icon>
       </button>
+      <h3>{{ 'Authentication.Messages.Recovery.ForgotPassword' | translate }}</h3>
     </div>
 
     <mat-card-content>
