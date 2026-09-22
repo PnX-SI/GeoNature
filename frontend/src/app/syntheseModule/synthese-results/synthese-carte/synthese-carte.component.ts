@@ -310,7 +310,34 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     if (!geojson?.features) return geojson;
     const rank = (f) =>
       ({ Polygon: 0, MultiPolygon: 0, LineString: 1, MultiLineString: 1 })[f.geometry?.type] ?? 2;
-    return { ...geojson, features: [...geojson.features].sort((a, b) => rank(a) - rank(b)) };
+    // Largest polygon first, so a smaller one on top stays clickable.
+    const keyed = geojson.features.map((f) => ({
+      feature: f,
+      rank: rank(f),
+      extent: this.bboxExtent(f.geometry),
+    }));
+    keyed.sort((a, b) => a.rank - b.rank || b.extent - a.extent);
+    return { ...geojson, features: keyed.map((k) => k.feature) };
+  }
+
+  // Bounding box, not the polygon's own area: containment is all it has to preserve.
+  private bboxExtent(geom): number {
+    if (geom?.type !== 'Polygon' && geom?.type !== 'MultiPolygon') return 0;
+    const rings = geom.type === 'Polygon' ? geom.coordinates : geom.coordinates.flat();
+    let xMin = Infinity,
+      yMin = Infinity,
+      xMax = -Infinity,
+      yMax = -Infinity;
+    for (const ring of rings) {
+      for (const [x, y] of ring) {
+        xMin = Math.min(xMin, x);
+        xMax = Math.max(xMax, x);
+        yMin = Math.min(yMin, y);
+        yMax = Math.max(yMax, y);
+      }
+    }
+    // Untouched bounds mean no coordinate at all
+    return xMax > xMin ? (xMax - xMin) * (yMax - yMin) : 0;
   }
 
   ngOnChanges(change) {
