@@ -2160,11 +2160,7 @@ Dans l'exemple on ajoute le type ZNIEFF1 (``code_type = "ZNIEFF1"``).
 **Attention**, dans ce cas les entités géographiques correspondantes au type
 `ZNIEFF1`, doivent également être présentes dans la table ``ref_geo.l_areas``.
 
-**Attention** : Si des données sont déjà présentes dans la synthèse et que l'on
-ajoute de nouvelles entités géographiques à ``ref_geo.l_areas``, il faut
-également recalculer les valeurs de la table
-``gn_synthese.cor_area_synthese`` qui assure la correspondance entre les
-données de la synthèse et les entités géographiques.
+
 
 .. code:: toml
 
@@ -2336,8 +2332,8 @@ Dans ce cas, il est conseillé de repasser le paramètre `NB_MAX_OBS_MAP`
         NB_MAX_OBS_EXPORT = 40000
 
 
-Configurer l'affichage de la densité d'observation sur la carte
-```````````````````````````````````````````````````````````````
+Configurer l'affichage par maille des observations
+``````````````````````````````````````````````````
 
 Par défaut, la carte du module Synthese affiche les observations sous forme
 de cercles (données ponctuelles) ou de polygones (données surfaciques) au
@@ -2345,13 +2341,15 @@ contour bleu.
 Pour les données représentées sous forme de cercle, le nombre d'observations
 est indiqué en son centre.
 
+.. image :: images/admin-manual/point_mode_preview.png
+
 Il est possible d'activer, éventuellement par défaut
-(`AREA_AGGREGATION_BY_DEFAULT`), un affichage de la densité d'observations
-(`AREA_AGGREGATION_ENABLED`) aggrégée en fonction d'un type de zone
-géographique (`AREA_AGGREGATION_TYPE`). Les classes de densité peuvent être
-personnaliées à l'aide du paramètre `AREA_AGGREGATION_LEGEND_CLASSES`.
+(``AREA_AGGREGATION_BY_DEFAULT``), un affichage par maille
+(``AREA_AGGREGATION_ENABLED``) agrégée en fonction d'un type de zone
+géographique (``AREA_AGGREGATION_TYPE``). Les classes de densité peuvent être
+personnaliées à l'aide du paramètre ``AREA_AGGREGATION_LEGEND_CLASSES``.
 Par défaut, cette fonctionnalité est désactivée. Quand elle est active, une
-entrée "*Densité d'observations*" apparaît dans la liste déroulante du bloc
+entrée "*Par maille*" apparaît dans la liste déroulante du bloc
 « Légende » (en bas à droite de la carte), aux côtés de l'affichage par
 défaut et des éventuels critères configurés (voir la section suivante).
 Soit les paramètres suivants :
@@ -2359,13 +2357,13 @@ Soit les paramètres suivants :
 .. code:: toml
 
     [SYNTHESE]
-        # Si `true`, rend possible l'affichage de la densité d'observations sur la carte
+        # Si `true`, rend possible l'affichage par maille sur la carte
         AREA_AGGREGATION_ENABLED = true
         # Groupement par mailles SINP de 10x10km par défaut. Utilisé un code de
         # `ref_geo.bib_areas_types.type_code` pour modifier le type de zone
         # géographique d'aggrégation.
         AREA_AGGREGATION_TYPE = "M10"
-        # Si `true`, l'affichage de la densité d'observation sera activé par défaut.
+        # Si `true`, l'affichage par maille sera activé par défaut.
         AREA_AGGREGATION_BY_DEFAULT = false
         # Tableau d'objets (Voir fichier de configuration d’exemple) :
         # `min` le nombre d'observations minimum que doit contenir la zone géographique
@@ -2379,19 +2377,19 @@ Soit les paramètres suivants :
 Configurer d'autres critères d'affichage sur la carte
 `````````````````````````````````````````````````````
 
-La carte de la SYNTHESE peut permettre à l'utilisateur de sélectionner un
+La carte de la Synthese peut permettre à l'utilisateur de sélectionner un
 critère (précision, validation, période, ...) d'affichage des observations.
 
-Dès lors que la configuration contient le paramètre `MAP_CRITERIA_LIST` dans
-la section `SYNTHESE` (et/ou que `AREA_AGGREGATION_ENABLED = true`), le bloc
+Dès lors que la configuration contient le paramètre ``MAP_CRITERIA_LIST`` dans
+la section ``SYNTHESE`` (et/ou que ``AREA_AGGREGATION_ENABLED = true``), le bloc
 « Légende », affiché en bas à droite de la carte, est toujours visible. Il
 contient un titre « *Affichage des observations* » suivi d'une liste
 déroulante permettant de choisir le mode d'affichage.
 
-Cette liste déroulante propose "*Affichage par défaut*" (sélectionné par
-défaut), "*Densité d'observations*" (si `AREA_AGGREGATION_ENABLED = true`),
+Cette liste déroulante propose "*Par défaut*" (sélectionné par
+défaut), "*Par maille*" (si ``AREA_AGGREGATION_ENABLED = true``),
 puis un critère par entrée configurée par l'administrateur à l'aide du
-paramètre `MAP_CRITERIA_LIST`.
+paramètre ``MAP_CRITERIA_LIST``.
 
 En mode "*Affichage par défaut*", le bloc légende ne contient que le titre
 et la liste déroulante, puisqu'il n'y a alors rien à légender.
@@ -2402,8 +2400,7 @@ La sélection d'un critère déclenche :
   * l'affichage des observations sur la carte avec un marqueur dont le
     contour correspond à la couleur du critère ;
   * dans la liste des observations, l'affichage d'une bordure verticale
-    colorée sur le bord gauche de chaque ligne (à la place de l'icône 🛈,
-    qui n'est plus colorée). Au survol de cette bordure, une infobulle
+    colorée sur le bord gauche de chaque ligne. Au survol de cette bordure, une infobulle
     affiche l'intitulé et la description de la valeur du critère
     correspondant à l'observation ;
   * l’apparition d’une bande colorée sur le bord gauche de la fiche d’une
@@ -2424,7 +2421,7 @@ Dans le cas des **géométries possédant des valeurs inconnues** (ou non prise
 en compte dans votre configuration), elles sont affichées à l'aide d'une
 couleur distinctive (**rouge** ; configurable pour chaque critère).
 
-Le paramètre `MAP_CRITERIA_LIST` est un dictionnaire où chacun de ses
+Le paramètre ``MAP_CRITERIA_LIST`` est un dictionnaire où chacune de ses
 entrées correspond également à un dictionnaire décrivant un critère. Les clés
 sont des codes alphanumériques qui permettent d'identifier ce critère d'un
 point de vue technique. Chaque code doit être unique dans la liste et ne
@@ -2458,7 +2455,7 @@ doit pas contenir de caractères spéciaux.
     nomenclature à la place des ``id_nomenclature`` pour la configuration
     des valeurs du critère (voir ci-dessous).
 *activate* (*booléen*, défaut : ``true``)
-    Indique si le critère doit être afficher (``true``) ou non (``false``)
+    Indique si le critère doit être affiché (``true``) ou non (``false``)
     dans la liste des modes d'affichage. Permet une désactivation temporaire
     sans avoir à commenter ou supprimer les paramètres de configuration.
 *default* (*booléen*, défaut : ``false``)
@@ -2506,7 +2503,7 @@ doit pas contenir de caractères spéciaux.
         `Color Brewer  <https://colorbrewer2.org/>`_ ou `ColorHexa
         <https://www.colorhexa.com/>`_.
 
-Exemples:
+**Exemples :**
 
     .. code:: toml
 
