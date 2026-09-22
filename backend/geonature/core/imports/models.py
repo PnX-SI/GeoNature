@@ -24,7 +24,7 @@ from sqlalchemy import (
     ForeignKey,
     Table,
 )
-from sqlalchemy.orm import relationship, deferred, joinedload, Mapped, mapped_column
+from sqlalchemy.orm import relationship, deferred, joinedload, selectinload, Mapped, mapped_column
 from sqlalchemy.types import ARRAY
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.ext.mutable import MutableDict
@@ -919,28 +919,34 @@ class ContentMapping(MappingTemplate):
 
     @staticmethod
     def validate_values(values, destination=None):
-        nomenclature_fields = (
-            BibFields.query.filter(
-                BibFields.destination == (g.destination if (destination is None) else destination),
+        destination = g.destination if (destination is None) else destination
+        # For each nomenclature type used by the destination, whether all the fields
+        # using it are mandatory: the "no nomenclature" choice (an empty string) is
+        # only allowed as soon as the type is used by at least one non-mandatory field.
+        nomenclature_types = db.session.execute(
+            sa.select(
+                BibNomenclaturesTypes,
+                sa.func.bool_and(BibFields.mandatory).label("all_mandatory"),
+            )
+            .join(BibFields, BibFields.mnemonique == BibNomenclaturesTypes.mnemonique)
+            .where(
+                BibFields.destination == destination,
                 BibFields.nomenclature_type != None,
             )
-            .options(
-                joinedload(BibFields.nomenclature_type).joinedload(
-                    BibNomenclaturesTypes.nomenclatures
-                ),
-            )
-            .all()
-        )
-        properties = {}
-        for nomenclature_field in nomenclature_fields:
+            .group_by(BibNomenclaturesTypes)
+            .order_by(BibNomenclaturesTypes.mnemonique)
+            .options(selectinload(BibNomenclaturesTypes.nomenclatures))
+        ).all()
+        properties: dict = {}
+        for nomenclature_type, all_mandatory in nomenclature_types:
             cd_nomenclatures = [
-                nomenclature.cd_nomenclature
-                for nomenclature in nomenclature_field.nomenclature_type.nomenclatures
+                nomenclature.cd_nomenclature for nomenclature in nomenclature_type.nomenclatures
             ]
             allowedValues = cd_nomenclatures
-            if not nomenclature_field.mandatory:
-                allowedValues.append(None)
-            properties[nomenclature_field.mnemonique] = {
+            if not all_mandatory:
+                # the "no nomenclature" choice is stored as an empty string
+                allowedValues = allowedValues + [""]
+            properties[nomenclature_type.mnemonique] = {
                 "type": "object",
                 "patternProperties": {
                     "^.*$": {

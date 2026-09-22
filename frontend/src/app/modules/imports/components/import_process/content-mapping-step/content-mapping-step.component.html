@@ -226,29 +226,35 @@
               >
                 <label
                   class="col-sm-4 col-form-label"
-                  [ngClass]="{ 'font-italic': value == null || value == '' }"
+                  [ngClass]="{ 'font-italic': value.value == null || value.value == '' }"
                 >
                   <i
-                    *ngIf="value == null || value == ''"
+                    *ngIf="value.value == null || value.value == ''"
                     matTooltip="Nomenclature à utiliser pour les cellules sans valeur (N/A, null)"
                     matTooltipClass="custom-tooltip"
                     class="fa fa-info-circle mr-1"
                     aria-hidden="true"
                   ></i>
-                  {{ value || 'Valeur vide' }} :
+                  {{ value.value || 'Valeur vide' }} :
                 </label>
                 <div class="col-sm-8">
                   <select
                     class="form-control form-control-sm"
                     formControlName="{{ targetField.key + '-' + index }}"
-                    [compareWith]="areNomenclaturesEqual"
                     id="{{ targetField.key + '-' + index }}"
                     (change)="onSelectNomenclature(targetField.key + '-' + index)"
                     [attr.data-qa]="'import-contentmapping-theme-' + targetField.key"
                   >
                     <option
+                      *ngIf="!value.mandatory"
+                      [ngValue]="''"
+                      [attr.data-qa]="'import-contentmapping-nomenclature-' + targetField.key"
+                    >
+                      Ne pas associer à une nomenclature
+                    </option>
+                    <option
                       *ngFor="let nomenclature of targetField.value.nomenclatures"
-                      [ngValue]="nomenclature"
+                      [ngValue]="nomenclature.cd_nomenclature"
                     >
                       {{
                         (nomenclature.cd_nomenclature ? nomenclature.cd_nomenclature + ' - ' : '') +

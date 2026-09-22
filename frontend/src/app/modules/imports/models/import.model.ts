@@ -103,11 +103,16 @@ export interface Nomenclature {
   meta_update_date: string;
 }
 
+export interface ImportValue {
+  value: string | null;
+  mandatory: boolean;
+}
+
 export interface ImportValues {
-  [target_field: string]: {
+  [mnemonique: string]: {
     nomenclature_type: NomenclatureType;
     nomenclatures: [Nomenclature];
-    values?: [string];
+    values?: [ImportValue];
   };
 }
 
