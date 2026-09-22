@@ -2505,27 +2505,6 @@ doit pas contenir de caractères spéciaux.
         possible de consulter des sites tels que
         `Color Brewer  <https://colorbrewer2.org/>`_ ou `ColorHexa
         <https://www.colorhexa.com/>`_.
-    *icon*  (*dictionnaire*)
-        Dictionnaire pouvant contenir les attributs suivants :
-
-        **name** (*chaîne*)
-            Indique une icône à l'aide de son nom. Possibilité d'utiliser
-            des icônes : `Fontawsome <https://fontawesome.com/v4/icons/>`_,
-            `Angular Material <https://fonts.google.com/icons?hl=fr>`_.
-            L'icône est affichée au niveau de la légende sur la carte
-            (elle n'est plus affichée dans la fiche d'une observation).
-        **font** (*chaîne*)
-            Indique le nom de la police contenant l'icône. Par exemple, ``fa``
-            pour Fontawesome ou ``material-icons-outlined`` pour les polices
-            Material.
-            Pour l'instant, l'affichage a été testé avec les icônes
-            "FontAwesome v4.7" et les icônes "Angular Material".
-        *color* (*chaîne*)
-            Code hexadécimal, valeur RGBA, nom web... de la couleur de l'icône.
-            La valeur de couleur sera utilisée avec `la propriété CSS <https://developer.mozilla.org/fr/docs/Web/CSS/color>`_ ``color``.
-            Ce paramètre peut donc prendre n'importe quelle valeur autorisée
-            par cette propriété. Si non précisé, une couleur par défaut
-            blanche (``white``) sera utilisée.
 
 Exemples:
 
@@ -2542,19 +2521,16 @@ Exemples:
                 label = "Supérieur à 250m"
                 description = "Observations dont la précision est supérieure ou égale à 250m."
                 color = "#ff8faa"
-                icon = { name="radio_button_unchecked", color="white", font="material-symbols-outlined" }
             [[SYNTHESE.MAP_CRITERIA_LIST.precision.values]]
                 value = 25
                 label = "Entre 25 et 250m"
                 description = "Observations dont la précision est supérieure ou égale à 25m et inférieure à 250m."
                 color = "#f95e9c"
-                icon = { name="radio_button_checked", color="white", font="material-symbols-outlined" }
             [[SYNTHESE.MAP_CRITERIA_LIST.precision.values]]
                 value = 0
                 label = "Inférieur à 25m"
                 description = "Observations dont la précision est supérieure ou égale à 0m et inférieure à 25m."
                 color = "#b000bb"
-                icon = { name="gps_fixed", color="white", font="material-symbols-outlined" }
             [[SYNTHESE.MAP_CRITERIA_LIST.precision.values]]
                 # Personnalisation de l'entrée "Valeurs multiples"
                 value = "*"
@@ -2577,13 +2553,11 @@ Exemples:
                 label = "Après 2000"
                 description = "Observations dont la date de fin est égale ou supérieure au 1er janvier 2000."
                 color = "#225ea8"
-                icon = { name="fa-angle-double-right", color="white", font="fa" }
             [[SYNTHESE.MAP_CRITERIA_LIST.period.values]]
                 value = "0000-01-01T00:00:00"
                 label = "Avant 2000"
                 description = "Observations dont la date de fin est avant le 1er janvier 2000."
                 color = "#2ca25f"
-                icon = { name="fa-angle-double-left", color="white", font="fa" }
             [[SYNTHESE.MAP_CRITERIA_LIST.period.values]]
                 # Personnalisation de l'entrée "Valeurs multiples"
                 value = "*"
@@ -2609,23 +2583,19 @@ Exemples:
                 label = "Probable"
                 description = "Certain à probable"
                 color = "#44ce1b"
-                icon = { name = "fa-check-square", font = "fa", color = "white" }
             [[SYNTHESE.MAP_CRITERIA_LIST.valid_status.values]]
                 value = "3"
                 label = "Douteux"
                 color = "#f2a134"
-                icon = { name = "fa-exclamation-triangle", font = "fa" }
             [[SYNTHESE.MAP_CRITERIA_LIST.valid_status.values]]
                 value = "4"
                 label =  "Invalide"
                 color = "#e51f1f"
-                icon = { name = "fa-minus-circle", font = "fa", color = "#FFFFFF" }
             [[SYNTHESE.MAP_CRITERIA_LIST.valid_status.values]]
                 value = ["5", "6", "0"]
                 label = "Indéterminé"
                 description = "Non réalisable, Inconnu ou en attente de validation"
                 color = "#f3f6f4"
-                icon = { name = "fa-question-circle", font = "fa", color = "white" }
         # Critère de type `nomenclatures` sur le statut de l'observation (code `observation_status`)
         [SYNTHESE.MAP_CRITERIA_LIST.observation_status]
             label = "Statut de l'observation"

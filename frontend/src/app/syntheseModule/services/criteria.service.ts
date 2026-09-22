@@ -348,13 +348,10 @@ export class SyntheseCriteriaService implements OnDestroy {
     for (var i = 0; i < this.selectedCriteria.preparedLegendStyles.length; i++) {
       let grade = this.selectedCriteria.preparedLegendStyles[i];
       let colorBlock = this.prepareLegendColorBlock(grade);
-      let symbol = this.prepareLegendSymbol(grade);
       if (grade.description) {
-        labels.push(
-          `<span title="${grade.description}">${colorBlock} ${symbol} ${grade.label}</span>`
-        );
+        labels.push(`<span title="${grade.description}">${colorBlock} ${grade.label}</span>`);
       } else {
-        labels.push(`${colorBlock} ${symbol} ${grade.label}`);
+        labels.push(`${colorBlock} ${grade.label}`);
       }
     }
     content.innerHTML = labels.join('<br>');
@@ -362,16 +359,6 @@ export class SyntheseCriteriaService implements OnDestroy {
 
   private prepareLegendColorBlock(grade) {
     return `<i class="legend-color" style="${grade.css.join(';')}"></i>`;
-  }
-
-  private prepareLegendSymbol(grade) {
-    let html = '';
-    if (grade.icon && grade.icon.font) {
-      html = grade.icon.font.startsWith('material')
-        ? `<i class="legend-symbol ${grade.icon.font}">${grade.icon.name}</i>`
-        : `<i class="legend-symbol ${grade.icon.font} ${grade.icon.name}"></i>`;
-    }
-    return html;
   }
 
   private buildAreasLegend() {
@@ -431,7 +418,6 @@ export class SyntheseCriteriaService implements OnDestroy {
       let legendItem = {
         label: item.label,
         description: item.description,
-        icon: item.icon ? item.icon : {},
         css: [],
       };
 

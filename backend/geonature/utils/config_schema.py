@@ -302,18 +302,11 @@ class ObserverSheet(Schema):
     ENABLE_TAB_MEDIA = fields.Boolean(load_default=True)
 
 
-class MapCriteriaIcon(Schema):
-    name = fields.String(required=True)
-    font = fields.String(required=True)
-    color = fields.String(load_default="white")
-
-
 class MapCriteriaValue(Schema):
     value = fields.Raw(required=True)
     label = fields.String()
     description = fields.String()
     color = fields.String()
-    icon = fields.Nested(MapCriteriaIcon)
 
 
 class MapCriteria(Schema):
@@ -335,7 +328,6 @@ class MapCriteria(Schema):
             "value": "*",
             "label": "",  # Left blank to be replaced by i18n value in frontend
             "color": "#8c8c8c",  # Grey
-            "icon": {"name": "fa-asterisk", "font": "fa", "color": " white"},
         }
 
         has_value_unknown = False
@@ -343,7 +335,6 @@ class MapCriteria(Schema):
             "value": "?",
             "label": "",  # Left blank to be replaced by i18n value in frontend
             "color": "#ec4300",  # Orange
-            "icon": {"name": "fa-question", "font": "fa", "color": " white"},
         }
 
         for idx, item in enumerate(data["values"]):
@@ -358,7 +349,6 @@ class MapCriteria(Schema):
                     "label": str(item["value"]),
                     "description": None,
                     "color": self.get_random_color(idx, len(data["values"])),
-                    "icon": None,
                 }
             data["values"][idx] = {**default_item, **item}
 

@@ -438,19 +438,16 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
             label = "Supérieur à 250m"
             description = "Observations dont la précision est supérieure ou égale à 250m."
             color = "#ff8faa"
-            icon = { name="radio_button_unchecked", color="white", font="material-symbols-outlined" }
         [[SYNTHESE.MAP_CRITERIA_LIST.precision.values]]
             value = 25
             label = "Entre 25 et 250m"
             description = "Observations dont la précision est supérieure ou égale à 25m et inférieure à 250m."
             color = "#f95e9c"
-            icon = { name="radio_button_checked", color="white", font="material-symbols-outlined" }
         [[SYNTHESE.MAP_CRITERIA_LIST.precision.values]]
             value = 0
             label = "Inférieur à 25m"
             description = "Observations dont la précision est supérieure ou égale à 0m et inférieure à 25m."
             color = "#b000bb"
-            icon = { name="gps_fixed", color="white", font="material-symbols-outlined" }
         [[SYNTHESE.MAP_CRITERIA_LIST.precision.values]]
             value = "*"
             description = "Observations sur une même géométrie avec des précisions différentes."
@@ -469,13 +466,11 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
             label = "Après 2000"
             description = "Observations dont la date de fin est égale ou supérieure au 1er janvier 2000."
             color = "#225ea8"
-            icon = { name="fa-angle-double-right", color="white", font="fa" }
         [[SYNTHESE.MAP_CRITERIA_LIST.period.values]]
             value = "0000-01-01T00:00:00"
             label = "Avant 2000"
             description = "Observations dont la date de fin est avant le 1er janvier 2000."
             color = "#2ca25f"
-            icon = { name="fa-angle-double-left", color="white", font="fa" }
         [[SYNTHESE.MAP_CRITERIA_LIST.period.values]]
             value = "*"
             description = "Observations sur une même géométrie avec des périodes de dates d'observation différentes."
@@ -493,23 +488,19 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
             label = "Probable"
             description = "Certain à probable"
             color = "#44ce1b"
-            icon = { name = "fa-check-square", font = "fa", color = "white" }
         [[SYNTHESE.MAP_CRITERIA_LIST.valid_status.values]]
             value = "3"
             label = "Douteux"
             color = "#f2a134"
-            icon = { name = "fa-exclamation-triangle", font = "fa" }
         [[SYNTHESE.MAP_CRITERIA_LIST.valid_status.values]]
             value = "4"
             label =  "Invalide"
             color = "#e51f1f"
-            icon = { name = "fa-minus-circle", font = "fa", color = "#FFFFFF" }
         [[SYNTHESE.MAP_CRITERIA_LIST.valid_status.values]]
             value = ["5", "6", "0"]
             label = "Indéterminé"
             description = "Non réalisable, Inconnu ou en attente de validation"
             color = "#f3f6f4"
-            icon = { name = "fa-question-circle", font = "fa", color = "white" }
     [SYNTHESE.MAP_CRITERIA_LIST.observation_status]
         label = "Statut de l'observation"
         type = "nomenclatures"
