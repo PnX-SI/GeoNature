@@ -409,14 +409,13 @@ def get_import_values(scope, imprt):
             continue
         # TODO: vérifier que l’on a pas trop de valeurs différentes ?
         column = field.source_column
-        values = [
-            value
-            for value, in db.session.execute(
-                select(transient_table.c[column])
+        values = list(
+            db.session.execute(
+                select(func.coalesce(transient_table.c[column], ""))
                 .where(transient_table.c.id_import == imprt.id_import)
                 .distinct(transient_table.c[column])
-            ).fetchall()
-        ]
+            ).scalars()
+        )
         set_committed_value(
             field.nomenclature_type,
             "nomenclatures",
