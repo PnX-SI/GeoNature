@@ -82,6 +82,7 @@ class GeoNatureClient(JSONClient):
 @pytest.fixture(scope="session")
 def _app():
     config["CELERY"]["task_always_eager"] = True
+    config["APPLICATION_ROOT"] = "/"
     app = create_app()
     app.testing = True
     app.test_client_class = GeoNatureClient
