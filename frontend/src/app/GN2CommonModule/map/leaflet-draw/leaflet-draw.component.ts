@@ -192,26 +192,15 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     if (!geojson) {
       return;
     }
-    let layer;
-    if (geojson.type === 'LineString' || geojson.type === 'MultiLineString') {
-      const latLng = L.GeoJSON.coordsToLatLngs(
-        geojson.coordinates,
-        geojson.type === 'LineString' ? 0 : 1
-      );
-      layer = L.polyline(latLng);
+    const lineOrPolygonTypes = ['LineString', 'MultiLineString', 'Polygon', 'MultiPolygon'];
+    let layer: any = this.mapservice.geometryToLayer(geojson);
+    if (layer && lineOrPolygonTypes.includes(geojson.type)) {
       this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
-    }
-    if (geojson.type === 'Polygon' || geojson.type === 'MultiPolygon') {
-      const latLng = L.GeoJSON.coordsToLatLngs(
-        geojson.coordinates,
-        geojson.type === 'Polygon' ? 1 : 2
-      );
-      layer = L.polygon(latLng);
-      this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
-      this.mapservice.map.fitBounds(layer.getBounds());
-    } else if (geojson.type === 'Point') {
+      if (geojson.type === 'Polygon' || geojson.type === 'MultiPolygon') {
+        this.mapservice.map.fitBounds(layer.getBounds());
+      }
+    } else if (layer && geojson.type === 'Point') {
       // marker
-      layer = L.marker(new L.LatLng(geojson.coordinates[1], geojson.coordinates[0]), {});
       this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
       if (this.bZoomOnPoint) {
         this.map.setView(layer.getLatLng(), 15);
