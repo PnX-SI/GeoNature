@@ -172,7 +172,7 @@ jsonschema_definitions = {
                 "type": "string",
             },
             "id_broader": {
-                "type": "integer",
+                "type": ["integer", "null"],
             },
             "hierarchy": {
                 "type": "string",
