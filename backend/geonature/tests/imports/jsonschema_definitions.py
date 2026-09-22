@@ -153,9 +153,7 @@ jsonschema_definitions = {
     "nomenclature": {
         "type": "object",
         "properties": {
-            "cd_nomenclature": {
-                "type": "string",
-            },
+            "cd_nomenclature": {"type": ["string", "null"]},
             "mnemonique": {
                 "type": "string",
             },

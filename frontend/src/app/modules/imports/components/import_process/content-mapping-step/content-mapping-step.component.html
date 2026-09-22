@@ -246,12 +246,14 @@
                     (change)="onSelectNomenclature(targetField.key + '-' + index)"
                     [attr.data-qa]="'import-contentmapping-theme-' + targetField.key"
                   >
-                    <option [ngValue]="null"></option>
                     <option
                       *ngFor="let nomenclature of targetField.value.nomenclatures"
                       [ngValue]="nomenclature"
                     >
-                      {{ nomenclature.cd_nomenclature }} - {{ nomenclature.label_default }}
+                      {{
+                        (nomenclature.cd_nomenclature ? nomenclature.cd_nomenclature + ' - ' : '') +
+                          nomenclature.label_default
+                      }}
                     </option>
                   </select>
                 </div>

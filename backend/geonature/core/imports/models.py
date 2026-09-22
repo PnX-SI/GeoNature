@@ -937,12 +937,14 @@ class ContentMapping(MappingTemplate):
                 nomenclature.cd_nomenclature
                 for nomenclature in nomenclature_field.nomenclature_type.nomenclatures
             ]
+            allowedValues = cd_nomenclatures
+            if not nomenclature_field.mandatory:
+                allowedValues.append(None)
             properties[nomenclature_field.mnemonique] = {
                 "type": "object",
                 "patternProperties": {
                     "^.*$": {
-                        "type": "string",
-                        "enum": cd_nomenclatures,
+                        "enum": allowedValues,
                     },
                 },
             }

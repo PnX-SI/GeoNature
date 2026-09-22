@@ -423,9 +423,28 @@ def get_import_values(scope, imprt):
                 collate(TNomenclatures.cd_nomenclature, "fr_numeric")
             ),
         )
+        nomenclatures = [n.as_dict() for n in field.nomenclature_type.nomenclatures]
+        if not field.mandatory:
+            # Add an explicit "no nomenclature" choice for non-mandatory fields
+            nomenclatures.insert(
+                0,
+                {
+                    "id_nomenclature": None,
+                    "id_type": field.nomenclature_type.id_type,
+                    "cd_nomenclature": None,
+                    "mnemonique": "",
+                    "label_default": "Ne pas associer à une nomenclature",
+                    "definition_default": "Ne pas associer à une nomenclature",
+                    "source": "",
+                    "statut": "",
+                    "id_broader": None,
+                    "hierarchy": "",
+                    "active": True,
+                },
+            )
         response[field.name_field] = {
             "nomenclature_type": field.nomenclature_type.as_dict(),
-            "nomenclatures": [n.as_dict() for n in field.nomenclature_type.nomenclatures],
+            "nomenclatures": nomenclatures,
             "values": values,
         }
     return jsonify(response)
