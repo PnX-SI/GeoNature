@@ -3,7 +3,8 @@
     *ngSwitchCase="ButtonType.Toolbar"
     mat-icon-button
     [disabled]="disabled"
-    matTooltip="Supprimer le cadre d'acquisition"
+    matTooltip="{{ 'MetaData.AcquisitionFrameworkForm.Actions.DeleteAF' | translate }}"
+    data-qa="gn-button-delete-af"
     (click)="deleteAcquisitionFramework()"
   >
     <mat-icon>delete</mat-icon>
@@ -13,7 +14,8 @@
     mat-mini-fab
     color="warn"
     [disabled]="disabled"
-    matTooltip="Supprimer le cadre d'acquisition"
+    matTooltip="{{ 'MetaData.AcquisitionFrameworkForm.Actions.DeleteAF' | translate }}"
+    data-qa="gn-button-delete-af"
     (click)="deleteAcquisitionFramework()"
     class="mr-2 float-right"
   >

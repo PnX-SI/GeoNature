@@ -80,9 +80,10 @@
                 <span
                   *ngIf="dataset.cruved.E"
                   [matTooltip]="
-                    nbObservations
-                      ? 'Télécharger le rapport sensibilité'
-                      : 'Le jeu de données ne comporte aucune donnée'
+                    (nbObservations
+                      ? 'MetaData.DatasetCard.Actions.DownloadSensitivityReport'
+                      : 'MetaData.DatasetCard.Messages.NoDataInDataset'
+                    ) | translate
                   "
                 >
                   <button
@@ -99,9 +100,10 @@
                 <span
                   *ngIf="dataset.cruved.E"
                   [matTooltip]="
-                    nbObservations
-                      ? 'Télécharger le rapport d\'UUID'
-                      : 'Le jeu de données ne comporte aucune donnée'
+                    (nbObservations
+                      ? 'MetaData.DatasetCard.Actions.DownloadUuidReport'
+                      : 'MetaData.DatasetCard.Messages.NoDataInDataset'
+                    ) | translate
                   "
                 >
                   <button
@@ -117,7 +119,9 @@
                   <span
                     *ngIf="module.input_label"
                     [matTooltip]="
-                      dataset.active ? module.input_label : 'Le jeu de données est inactif'
+                      dataset.active
+                        ? module.input_label
+                        : ('MetaData.Tooltips.DatasetInactive' | translate)
                     "
                   >
                     <button
@@ -201,7 +205,10 @@
 
           <div class="b">{{ 'MetaData.DatasetCard.DataType' | translate }}</div>
           <div class="a">
-            {{ dataset?.nomenclature_data_type.label_default || 'Non renseigné' }}
+            {{
+              dataset?.nomenclature_data_type.label_default ||
+                ('MetaData.Messages.NotProvided' | translate)
+            }}
           </div>
           <br />
 
@@ -220,11 +227,11 @@
           </ul>
           <div class="a">
             <b>{{ 'MetaData.DatasetCard.LandCoverage' | translate }} :</b>
-            {{ dataset.terrestrial_domain ? 'oui' : 'non' }}
+            {{ (dataset.terrestrial_domain ? 'Yes' : 'No') | translate }}
           </div>
           <div class="a">
             <b>{{ 'MetaData.DatasetCard.MarineAreaCoverage' | translate }} :</b>
-            {{ dataset.marine_domain ? 'oui' : 'non' }}
+            {{ (dataset.marine_domain ? 'Yes' : 'No') | translate }}
           </div>
 
           <br />
@@ -243,11 +250,17 @@
           <div class="b">{{ 'MetaData.DatasetForm.CollectionMethod' | translate }}</div>
           <div class="a">
             <b>{{ 'Label' | translate }} :</b>
-            {{ dataset?.nomenclature_collecting_method.label_default || 'Non renseigné' }}
+            {{
+              dataset?.nomenclature_collecting_method.label_default ||
+                ('MetaData.Messages.NotProvided' | translate)
+            }}
           </div>
           <div class="a">
             <b>{{ 'Description' | translate }} :</b>
-            {{ dataset?.nomenclature_collecting_method.definition_default || 'Non renseigné' }}
+            {{
+              dataset?.nomenclature_collecting_method.definition_default ||
+                ('MetaData.Messages.NotProvided' | translate)
+            }}
           </div>
 
           <br />
@@ -289,15 +302,15 @@
 
           <div class="a">
             <b>{{ 'MetaData.DatasetCard.DatasetCreator' | translate }} :</b>
-            {{ dataset.creator?.nom_complet || 'Non renseigné' }}
+            {{ dataset.creator?.nom_complet || ('MetaData.Messages.NotProvided' | translate) }}
           </div>
 
           <br />
 
-          <div class="b">Type de financement :</div>
+          <div class="b">{{ 'MetaData.FinancingType' | translate }} :</div>
 
           <div class="a">
-            <b>Financement :</b>
+            <b>{{ 'MetaData.Financing' | translate }} :</b>
             {{ dataset?.nomenclature_data_origin?.label_default }}
           </div>
 
@@ -337,11 +350,11 @@
             data-qa="pnx-metadata-dataset-status"
           >
             <b>{{ 'Active' | translate }} :</b>
-            {{ dataset.active ? 'Oui' : 'Non' }}
+            {{ (dataset.active ? 'Yes' : 'No') | translate }}
           </div>
           <div class="align">
             <b>{{ 'Validable' | translate }} :</b>
-            {{ dataset.validable ? 'Oui' : 'Non' }}
+            {{ (dataset.validable ? 'Yes' : 'No') | translate }}
           </div>
           <div
             *ngIf="dataset.id_taxa_list"
@@ -376,7 +389,7 @@
                 <span class="bold">{{ 'MetaData.DatasetCard.WidgetType' | translate }} :</span>
                 <span>{{ field.type_widget.widget_name }}</span>
                 <br />
-                <span class="bold">{{ 'MetaData.DatasetCard.Mandatory' | translate }} :</span>
+                <span class="bold">{{ 'Mandatory' | translate }} :</span>
                 <span>{{ field.required }}</span>
                 <br />
                 <span class="bold">{{ 'MetaData.DatasetCard.Quantitative' | translate }} :</span>
@@ -413,7 +426,7 @@
             [sorts]="[{ prop: 'meta_create_date', dir: 'desc' }]"
           >
             <ngx-datatable-column
-              name="Nom"
+              name="{{ 'Name' | translate }}"
               [sortable]="false"
             >
               <ng-template
@@ -432,7 +445,7 @@
               </ng-template>
             </ngx-datatable-column>
             <ngx-datatable-column
-              name="Description"
+              name="{{ 'Description' | translate }}"
               [sortable]="false"
             >
               <ng-template
@@ -463,7 +476,7 @@
               class="ml-2"
               color="primary"
               (click)="syntheseDs(dataset.id_dataset)"
-              matTooltip="Afficher les données dans la Synthèse"
+              matTooltip="{{ 'MetaData.DatasetSyntheseButtonTooltipExistData' | translate }}"
             >
               {{ 'MetaData.DatasetCard.Actions.DisplayData' | translate }}
               <mat-icon>room</mat-icon>

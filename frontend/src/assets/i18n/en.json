@@ -328,7 +328,11 @@
       "NoMetadata": "Oops! There is no metadata to display.",
       "UUIDFormPlaceHolder": "If not specified, identifier will be generated when the JDD is created.",
       "ImpossibleActionAFClosed": "Acquisition framework is closed, action cannot be performed",
-      "OpenAFImpossible": "A previously closed acquisition framework cannot be reopened"
+      "OpenAFImpossible": "A previously closed acquisition framework cannot be reopened",
+      "NotProvided": "Not provided",
+      "ConfirmDeleteAF": "Do you want to delete this acquisition framework?",
+      "MailSendError": "An error occurred while sending the confirmation email. The acquisition framework has been closed successfully",
+      "StakeholderExists": "This stakeholder is already in the list"
     },
     "Actions": {
       "AddDataset": "Add a dataset",
@@ -343,7 +347,8 @@
       "SeeAFSheet": "View the acquisition framework sheet",
       "FillOwnUUID": "I indicate my own SINP UUID",
       "Open/Close": "Open/close",
-      "Activate/Deactivate": "Activate/Deactivate"
+      "Activate/Deactivate": "Activate/Deactivate",
+      "AddStakeholder": "Add another stakeholder"
     },
     "Tooltips": {
       "DatasetActive": "The dataset is active",
@@ -354,6 +359,8 @@
     "AFAndDatasetsList": "List of acquisition frameworks and associated datasets",
     "CreationDate": "Launch date",
     "Stakeholders": "Stakeholders",
+    "MainContact": "Main contact",
+    "OtherStakeholders": "Other stakeholder(s)",
     "DatasetName": "Dataset name",
     "AFName": "Acquisition framework name",
     "CountObservations": "Number of observations",
@@ -361,15 +368,15 @@
     "DataSources": "Data sources",
     "DescriptiveForm": "Descriptive form",
     "ID": "Identification",
-    "IDSINPCA": "SINP ID of the acquisition framework",
+    "AFUUIDIdentifier": "UUID of the acquisition framework",
     "IDGeoNature": "GeoNature ID of the acquisition framework",
     "IsParent": "Is a meta framework",
     "ParentID": "Meta framework ID",
     "StartDate": "Start date of the acquisition framework",
     "EndDate": "End date of the acquisition framework",
     "CoveredTerritories": "Covered territories",
-    "TerritorialExtent": "Territorial extent",
-    "TaxonomicTarget": "Taxonomic target",
+    "TerritorialLevel": "Territorial level",
+    "TargetDescription": "Target description",
     "Creator": "Acquisition framework creator",
     "FinancingType": "Funding type",
     "Financing": "Funding",
@@ -389,10 +396,13 @@
 
     "DatasetCard": {
       "Actions": {
-        "DisplayData": "Display data"
+        "DisplayData": "Display data",
+        "DownloadSensitivityReport": "Download the sensitivity report",
+        "DownloadUuidReport": "Download the UUID report"
       },
       "Messages": {
-        "NoActorProvided": "No stakeholder provided"
+        "NoActorProvided": "No stakeholder provided",
+        "NoDataInDataset": "The dataset does not contain any data"
       },
       "Errors": {
         "ErrorDeleteDataset": "The dataset contains data and cannot be deleted"
@@ -430,10 +440,10 @@
     "DatasetForm": {
       "Actions": {
         "SaveDataset": "Save the dataset",
-        "SelectTaxaList": "--Select a taxon list--"
+        "SelectTaxaList": "--Select a taxon list--",
+        "AddMainContact": "Add another main contact"
       },
       "Messages": {
-        "StakeholderExists": "This stakeholder is already in the list",
         "MainContactExists": "This main contact is already in the list",
         "SizeNameJDD": "The JDD name must be less than or equal to 150 characters",
         "SizeShortNameJDD": "The short JDD name must be less than or equal to 30 characters",
@@ -446,8 +456,6 @@
       "MarineField": "Marine field",
       "SourceStatus": "Source status",
       "CollectionMethod": "Collection method",
-      "OtherStakeholders": "Other stakeholder(s)",
-      "MainContact": "Main contact",
       "DataOrigin": "Data origin",
 
       "ResourceType": "Resource type",
@@ -455,7 +463,20 @@
       "SpecificGeonature": "Specific GeoNature",
       "RequiredToImportAndEnterData": "Required to enter or import data in the dataset"
     },
-    "AcquisitionFrameworkForm": {},
+    "AcquisitionFrameworkForm": {
+      "Actions": {
+        "SaveAF": "Save the acquisition framework",
+        "DeleteAF": "Delete the acquisition framework"
+      },
+      "KeywordsTooltip": "Keyword(s) representative of the acquisition framework, separated by commas",
+      "IsParentCheckbox": "Is a parent acquisition framework",
+      "ParentAF": "Parent acquisition framework",
+      "TerritorialPrecision": "Territory precision",
+      "Objectives": "Acquisition framework objectives",
+      "SinpComponents": "SINP components",
+      "EcologicOrGeologicTarget": "Ecological or geological targets",
+      "EcologicOrGeologicTargetTooltip": "Must be composed of TAXREF CD_NOM, separated by semicolons, for taxa, or HABREF CD_HAB, separated by semicolons, for habitats"
+    },
     "Actors": {
       "Person": "Person",
       "RoleType": "Role type",

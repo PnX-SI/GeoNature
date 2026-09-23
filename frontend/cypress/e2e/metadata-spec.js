@@ -267,7 +267,7 @@ describe('Testing metadata', () => {
   it('should delete the new "cadre d\'acquisition"', () => {
     // Find the panel that contains the CA name and click its delete button
     cy.contains('mat-expansion-panel', newCadreAcq.name)
-      .find('[mattooltip="Supprimer le cadre d\'acquisition"]')
+      .find('[data-qa="gn-button-delete-af"]')
       .click({
         force: true,
         multiple: true,

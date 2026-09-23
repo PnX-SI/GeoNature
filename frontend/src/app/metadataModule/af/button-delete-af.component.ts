@@ -5,6 +5,7 @@ import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { CommonService } from '@geonature_common/service/common.service';
+import { TranslateService } from '@ngx-translate/core';
 
 enum ButtonType {
   Toolbar = 'Toolbar',
@@ -34,7 +35,8 @@ export class ButtonDeleteAfComponent {
     private _mds: MetadataService,
     private _dialog: MatDialog,
     private _router: Router,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    private _translate: TranslateService
   ) {}
 
   deleteAcquisitionFramework() {
@@ -42,7 +44,7 @@ export class ButtonDeleteAfComponent {
       width: 'auto',
       position: { top: '5%' },
       data: {
-        message: "Voulez-vous supprimer ce cadre d'acquisition ?",
+        message: this._translate.instant('MetaData.Messages.ConfirmDeleteAF'),
         yesColor: 'primary',
         noColor: 'warn',
       },
