@@ -301,10 +301,39 @@ export class MapService {
     });
   }
 
-  loadGeometryReleve(data, isDraggable) {
-    const coordinates = data.geometry.coordinates;
+  /**
+   * Convert a GeoJSON geometry into the corresponding Leaflet layer, using
+   * L.GeoJSON.coordsToLatLngs for the coordinates -> LatLng conversion (so Multi*
+   * variants of LineString/Polygon are supported the same way as simple ones).
+   * The Point marker built here is a sane default (non-draggable, GeoNature icon);
+   * callers needing custom marker behavior (draggable, popups, specific zoom handling, ...)
+   * are free to build/configure their own marker instead of using this default.
+   * @returns the created layer, or null if the geometry type isn't supported
+   */
+  geometryToLayer(geometry: any, isDraggable = false): L.Layer | null {
+    if (geometry.type === 'Point') {
+      return this.createMarker(geometry.coordinates[0], geometry.coordinates[1], isDraggable);
+    }
+    if (geometry.type === 'LineString' || geometry.type === 'MultiLineString') {
+      const latLngs = L.GeoJSON.coordsToLatLngs(
+        geometry.coordinates,
+        geometry.type === 'LineString' ? 0 : 1
+      );
+      return L.polyline(latLngs);
+    }
+    if (geometry.type === 'Polygon' || geometry.type === 'MultiPolygon') {
+      const latLngs = L.GeoJSON.coordsToLatLngs(
+        geometry.coordinates,
+        geometry.type === 'Polygon' ? 1 : 2
+      );
+      return L.polygon(latLngs);
+    }
+    return null;
+  }
+
+  loadGeometryOnMap(data, isDraggable) {
     if (data.geometry.type === 'Point') {
-      this.marker = this.createMarker(coordinates[0], coordinates[1], isDraggable);
+      this.marker = this.geometryToLayer(data.geometry, isDraggable) as L.Marker;
       // send observable
       let markerCoord = this.marker.getLatLng();
       let geojson = {
@@ -328,22 +357,16 @@ export class MapService {
       // zoom to the layer
       this.map.setView(this.marker.getLatLng(), 15);
     } else {
-      let layer;
-      if (data.geometry.type === 'LineString') {
-        const myLatLong = coordinates.map((point) => {
-          return L.latLng(point[1], point[0]);
-        });
-        layer = L.polyline(myLatLong);
-        this.leafletDrawFeatureGroup.addLayer(layer);
+      const layer = this.geometryToLayer(data.geometry);
+      if (!layer) {
+        this._commonService.translateToaster(
+          'error',
+          `Le type de géométrie "${data.geometry.type}" n'est pas supporté.`
+        );
+        return;
       }
-      if (data.geometry.type === 'Polygon') {
-        const myLatLong = coordinates[0].map((point) => {
-          return L.latLng(point[1], point[0]);
-        });
-        layer = L.polygon(myLatLong);
-        this.leafletDrawFeatureGroup.addLayer(layer);
-      }
-      this.map.fitBounds(layer.getBounds());
+      this.leafletDrawFeatureGroup.addLayer(layer);
+      this.map.fitBounds((layer as L.Polyline | L.Polygon).getBounds());
       // disable point event on the map
       this.setEditingMarker(false);
       // send observable

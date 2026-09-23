@@ -132,7 +132,7 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
       )
       .subscribe((geojson) => {
         this.geojson = geojson;
-        this._ms.loadGeometryReleve(geojson, false);
+        this._ms.loadGeometryOnMap(geojson, false);
       });
     this.cardHeight = this._commonService.calcCardContentHeight(50);
     if (this._ms.map) {

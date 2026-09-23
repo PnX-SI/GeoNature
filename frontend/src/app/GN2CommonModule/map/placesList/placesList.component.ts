@@ -76,7 +76,7 @@ export class PlacesListComponent extends MarkerComponent implements OnInit {
     this.mapservice.removeAllLayers(this.map, this.mapService.fileLayerFeatureGroup);
 
     this.layerDrawed.emit(L.geoJSON(this.selectedPlace));
-    this.mapService.loadGeometryReleve(this.selectedPlace, true);
+    this.mapService.loadGeometryOnMap(this.selectedPlace, true);
     this.modalService.dismissAll();
   }
 
