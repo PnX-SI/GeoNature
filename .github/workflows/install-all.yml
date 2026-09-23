@@ -1,0 +1,160 @@
+name: Classic install (install_all.sh)
+on:
+  push:
+    branches:
+      - develop
+      - ci/install_all
+  workflow_dispatch:
+
+concurrency:
+  group: install-all-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  install-all:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Start Debian 12 + systemd container
+        run: |
+          docker run -d --name gn-ci \
+            --privileged \
+            --cgroupns=host \
+            --tmpfs /tmp \
+            --tmpfs /run \
+            --tmpfs /run/lock \
+            -v /sys/fs/cgroup:/sys/fs/cgroup:rw \
+            geerlingguy/docker-debian12-ansible:latest
+
+      - name: Wait for systemd to be ready
+        run: |
+          timeout 30 bash -c 'until docker exec gn-ci systemctl is-system-running --wait 2>/dev/null; do sleep 1; done' || true
+
+      - name: Prepare container base user and packages
+        run: |
+          docker exec gn-ci bash -c '
+            set -e
+            apt-get update
+            apt-get install -y sudo ca-certificates curl wget locales
+            useradd -m -s /bin/bash ci
+            echo "ci ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/ci
+            chmod 0440 /etc/sudoers.d/ci
+            locale-gen fr_FR.UTF-8
+            update-locale LANG=fr_FR.UTF-8
+          '
+
+      - name: Copy checked-out branch into container
+        run: |
+          docker cp "${GITHUB_WORKSPACE}/." gn-ci:/home/ci/geonature
+          docker exec gn-ci chown -R ci:ci /home/ci/geonature
+
+      - name: Generate CI install_all.ini
+        run: |
+          cat > "${RUNNER_TEMP}/install_all.ini" <<'EOF'
+          mode=prod
+          my_local=fr_FR.UTF-8
+          my_url=http://localhost/
+          url_application_prefix_path=geonature
+          pg_host=localhost
+          pg_port=5432
+          user_pg=geonatadmin
+          user_pg_pass=geonatCiOnlyDummyPass123
+          install_usershub_app=false
+          usershub_release=2.4.8
+          geonature_release=develop
+          drop_geonaturedb=false
+          geonaturedb_name=geonature2db
+          srid_local=2154
+          install_bdc_statuts=false
+          taxref_region=fr
+          install_sig_layers=false
+          install_grid_layer=false
+          install_default_dem=false
+          vectorise_dem=false
+          install_ref_sensitivity=false
+          add_sample_data=false
+          install_module_validation=true
+          install_module_occhab=true
+          proxy_http=
+          proxy_https=
+          EOF
+          docker cp "${RUNNER_TEMP}/install_all.ini" gn-ci:/home/ci/geonature/install/install_all/install_all.ini
+          docker exec gn-ci chown ci:ci /home/ci/geonature/install/install_all/install_all.ini
+
+      - name: Run install_all.sh
+        run: |
+          docker exec --user ci -w /home/ci/geonature/install/install_all gn-ci \
+            bash -lc 'bash install_all.sh'
+
+      - name: Overlay unreleased backend submodule changes
+        if: github.ref_name != 'master'
+        run: |
+          docker exec --user ci -w /home/ci/geonature/backend gn-ci bash -lc '
+            set -e
+            source venv/bin/activate
+            # These siblings are resolved from PyPI by install_all.sh (mode=prod uses
+            # backend/requirements.txt), which would silently miss any local submodule
+            # commit not yet released. Re-install them editable from the checked-out
+            # submodules so the services below run the code checked out for this branch.
+            for pkg in \
+              dependencies/Habref-api-module \
+              dependencies/Nomenclature-api-module \
+              dependencies/RefGeo \
+              dependencies/TaxHub \
+              dependencies/UsersHub-authentification-module \
+              dependencies/Utils-Flask-SQLAlchemy \
+              dependencies/Utils-Flask-SQLAlchemy-Geo \
+            ; do
+              echo "=== Overlaying $pkg (editable, local submodule checkout) ==="
+              uv pip install -e "$pkg"
+            done
+          '
+
+      - name: Restart GeoNature services with overlaid code
+        if: github.ref_name != 'master'
+        run: docker exec gn-ci systemctl restart geonature geonature-worker
+
+      - name: Verify geonature systemd service is active
+        run: docker exec gn-ci systemctl is-active geonature
+
+      - name: Verify geonature-worker systemd service is active
+        run: docker exec gn-ci systemctl is-active geonature-worker
+
+      - name: Verify Angular frontend build succeeded
+        run: docker exec gn-ci test -f /home/ci/geonature/frontend/dist/index.html
+
+      - name: Verify GeoNature is reachable over HTTP
+        run: |
+          docker exec gn-ci bash -c '
+            set -e
+            body=$(curl -fsS http://localhost/geonature/)
+            echo "$body" | grep -q "<pnx-root"
+            echo "$body" | grep -q "<title>GeoNature</title>"
+          '
+
+      - name: Dump diagnostics on failure
+        if: failure()
+        run: |
+          docker exec gn-ci bash -c '
+            echo "=== install_all.sh log ==="
+            cat /home/ci/geonature/install/install.log 2>/dev/null || echo "(log not found)"
+            echo "=== journalctl geonature ==="
+            journalctl -u geonature -n 200 --no-pager || true
+            echo "=== journalctl geonature-worker ==="
+            journalctl -u geonature-worker -n 200 --no-pager || true
+            echo "=== journalctl apache2 ==="
+            journalctl -u apache2 -n 200 --no-pager || true
+            echo "=== journalctl postgresql (auto-detected unit) ==="
+            pg_unit=$(systemctl list-units --type=service --all --no-legend "postgresql*" | awk "{print \$1}" | grep -m1 postgresql)
+            if [ -n "$pg_unit" ]; then journalctl -u "$pg_unit" -n 200 --no-pager; else echo "(no postgresql unit found)"; fi
+            echo "=== systemctl status geonature/geonature-worker ==="
+            systemctl status geonature geonature-worker --no-pager || true
+          '
+
+      - name: Remove container
+        if: always()
+        run: docker rm -f gn-ci || true
