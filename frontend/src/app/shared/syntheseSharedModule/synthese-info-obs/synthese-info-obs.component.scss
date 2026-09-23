@@ -82,3 +82,14 @@
   color: var(--purple);
   filter: brightness(70%);
 }
+.info-obs-card {
+  position: relative;
+}
+
+.criteria-border {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+}

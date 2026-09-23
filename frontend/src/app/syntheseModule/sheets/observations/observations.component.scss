@@ -18,8 +18,10 @@
 ::ng-deep .Observations .custom-control-label::after {
   top: calc(0.05rem + 2px);
 }
+// Areas (zonages) legend box, styled consistently with the Synthese map legend
+// (see synthese-carte.component.scss `.legend`).
 ::ng-deep .legend {
-  line-height: 10px;
+  line-height: 24px;
   font-size: 14px;
   color: #555;
   background-color: white;
@@ -28,14 +30,30 @@
   border-radius: 4px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
 }
-::ng-deep .legend i {
-  width: 18px;
-  height: 18px;
-  float: left;
-  margin-right: 8px;
-}
 ::ng-deep .legend:hover {
   opacity: 1;
+}
+::ng-deep .legend .legend-title {
+  margin: 0 0 4px 0;
+  font-weight: bold;
+}
+::ng-deep .legend .criteria-control-select {
+  display: block;
+  width: 100%;
+  margin-bottom: 5px;
+}
+::ng-deep .legend i.legend-color {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+::ng-deep .legend.criteria i.legend-color {
+  border-radius: 10px;
+}
+::ng-deep .legend.areas i.legend-color {
+  border-radius: 2px;
 }
 
 .Observations {

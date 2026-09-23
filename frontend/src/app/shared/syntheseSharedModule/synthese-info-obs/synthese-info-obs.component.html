@@ -7,18 +7,13 @@
   *ngIf="header"
   class="modal-header padding-md-all"
 >
-  <h5
-    *ngIf="!alertOpen"
-    class="my-3 ml-3"
-  >
-    {{ 'Synthese.ModalTitle' | translate }}
+  <h5 class="my-3 ml-3">
+    <ng-container *ngIf="!alertOpen; else alertTitle">
+      {{ 'Synthese.ModalTitle' | translate }}
+    </ng-container>
+    <ng-template #alertTitle>Signalement</ng-template>
   </h5>
-  <h5
-    *ngIf="alertOpen"
-    class="my-3 ml-3"
-  >
-    Signalement
-  </h5>
+
   <button
     type="button"
     class="close"
@@ -49,9 +44,17 @@
 </mat-card>
 
 <mat-card
-  class="modal-body"
+  class="modal-body info-obs-card"
   *ngIf="!alertOpen"
 >
+  <div
+    *ngIf="criteriaService.isCriteriaDisplay() && criteriaInfos"
+    class="criteria-border"
+    [style.background-color]="criteriaInfos.color"
+    [ngbTooltip]="criteriaService.buildCriteriaTxt(criteriaInfos)"
+    placement="right"
+    [attr.aria-label]="criteriaInfos.label"
+  ></div>
   <div class="d-flex w-100 justify-content-between align-items-center info-obs-header">
     <div class="d-flex align-items-center flex-wrap info-obs-header-titles">
       <a
@@ -167,13 +170,13 @@
         {{ selectedObs?.observers }}
       </span>
       <br />
-      <span *ngIf="selectedObs?.date_min != selectedObs?.date_max; else elseBlock">
+      <span *ngIf="selectedObs?.date_min_fr != selectedObs?.date_max_fr; else elseBlock">
         <b>{{ 'Date' | translate }} :</b>
-        <span>{{ selectedObs?.date_min }} -> {{ selectedObs?.date_max }}</span>
+        <span>{{ selectedObs?.date_min_fr }} -> {{ selectedObs?.date_max_fr }}</span>
       </span>
       <ng-template #elseBlock>
         <b>{{ 'Date' | translate }} :</b>
-        <span data-qa="synthese-info-obs-date">{{ selectedObs?.date_min }}</span>
+        <span data-qa="synthese-info-obs-date">{{ selectedObs?.date_min_fr }}</span>
       </ng-template>
       <br />
       <span *ngIf="selectedObs?.altitude_min || selectedObs?.altitude_max">

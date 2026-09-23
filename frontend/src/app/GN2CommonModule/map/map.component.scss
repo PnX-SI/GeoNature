@@ -29,6 +29,25 @@
   z-index: 3000 !important;
 }
 
+// Both Leaflet corner containers default to z-index 1000 and the bottom one is
+// later in the DOM, so the expanded layer control (top-right) would slip under
+// the legend (bottom-right).
+:host ::ng-deep .leaflet-top {
+  z-index: 1001;
+}
+
+:host ::ng-deep .leaflet-control-layers-section-label {
+  font-size: 1.2em;
+  font-weight: 700;
+  color: #fff;
+  background-color: #aaa;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+  padding: 4px 10px;
+  margin-bottom: 0.5em;
+  border-radius: 3px;
+}
+
 .map-container {
   position: relative;
 }
