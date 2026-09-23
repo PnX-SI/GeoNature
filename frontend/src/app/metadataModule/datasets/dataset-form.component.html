@@ -290,7 +290,7 @@
     <div class="col-md-4">
       <div class="card">
         <div class="card-header">
-          <h3 class="main-color">{{ 'MetaData.DatasetForm.MainContact' | translate }}</h3>
+          <h3 class="main-color">{{ 'MetaData.MainContact' | translate }}</h3>
         </div>
         <div class="card-body">
           <ng-container *ngFor="let actorForm of datasetFormS.actors.controls; let idx = index">
@@ -321,7 +321,7 @@
             type="button"
             mat-mini-fab
             color="primary"
-            matTooltip="Ajouter un autre contact principal"
+            matTooltip="{{ 'MetaData.DatasetForm.Actions.AddMainContact' | translate }}"
             (click)="addMainContact()"
             [disabled]="!(datasetFormS.genericActorForm.valid && datasetFormS.actors.valid)"
             data-qa="pnx-dataset-form-add-main-contact"
@@ -333,7 +333,7 @@
 
       <div class="card">
         <div class="card-header">
-          <h3 class="main-color">{{ 'MetaData.DatasetForm.OtherStakeholders' | translate }}</h3>
+          <h3 class="main-color">{{ 'MetaData.OtherStakeholders' | translate }}</h3>
         </div>
         <div class="card-body">
           <ng-container
@@ -352,7 +352,7 @@
               "
             >
               <small class="mat-error">
-                {{ 'MetaData.DatasetForm.Messages.StakeholderExists' | translate }}
+                {{ 'MetaData.Messages.StakeholderExists' | translate }}
               </small>
             </ng-container>
 
@@ -363,7 +363,7 @@
             type="button"
             mat-mini-fab
             color="primary"
-            matTooltip="Ajouter un autre acteur"
+            matTooltip="{{ 'MetaData.Actions.AddStakeholder' | translate }}"
             (click)="addGenericContact()"
             [disabled]="!(datasetFormS.genericActorForm.valid && datasetFormS.actors.valid)"
           >

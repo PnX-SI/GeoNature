@@ -8,17 +8,17 @@
     routerLink="/metadata"
   >
     <mat-icon>chevron_left</mat-icon>
-    Retour
+    {{ 'Back' | translate }}
   </a>
 
   <div class="row">
     <div class="col-md-8">
       <div class="card">
         <div class="card-body">
-          <h3>Cadre d'acquisition</h3>
+          <h3>{{ 'AcquisitionFramework' | translate }}</h3>
 
           <div>
-            <small>Nom</small>
+            <small>{{ 'Name' | translate }}</small>
             <input
               class="form-control form-control-sm"
               type="text"
@@ -28,7 +28,7 @@
           </div>
 
           <div>
-            <small>Description</small>
+            <small>{{ 'Description' | translate }}</small>
             <textarea
               class="form-control form-control-sm"
               type="text"
@@ -39,9 +39,9 @@
 
           <div>
             <small>
-              Mots clés
+              {{ 'Keywords' | translate }}
               <mat-icon
-                matTooltip="Mot(s)-clé(s) représentatifs du cadre d'acquisition, séparés par des virgules"
+                matTooltip="{{ 'MetaData.AcquisitionFrameworkForm.KeywordsTooltip' | translate }}"
               >
                 info
               </mat-icon>
@@ -59,11 +59,11 @@
               [formControl]="form.get('is_parent')"
               type="checkbox"
             />
-            <small>Est un cadre d'acquisition parent</small>
+            <small>{{ 'MetaData.AcquisitionFrameworkForm.IsParentCheckbox' | translate }}</small>
           </div>
 
           <div>
-            <small>Cadre d'acquisition parent</small>
+            <small>{{ 'MetaData.AcquisitionFrameworkForm.ParentAF' | translate }}</small>
             <select
               class="form-control form-control-sm"
               [formControl]="form.get('acquisition_framework_parent_id')"
@@ -80,7 +80,7 @@
 
           <pnx-nomenclature
             [multiSelect]="true"
-            label="Territoires"
+            label="{{ 'Geo.Territories' | translate }}"
             [parentFormControl]="form.get('cor_territories')"
             codeNomenclatureType="TERRITOIRE"
             [bindAllItem]="true"
@@ -88,14 +88,16 @@
           ></pnx-nomenclature>
 
           <pnx-nomenclature
-            label="Niveau territorial"
+            label="{{ 'MetaData.TerritorialLevel' | translate }}"
             [parentFormControl]="form.get('id_nomenclature_territorial_level')"
             codeNomenclatureType="NIVEAU_TERRITORIAL"
             data-qa="pnx-metadata-af-form-territory-level"
           ></pnx-nomenclature>
 
           <div>
-            <small>Précision sur le territoire</small>
+            <small>
+              {{ 'MetaData.AcquisitionFrameworkForm.TerritorialPrecision' | translate }}
+            </small>
             <textarea
               class="form-control form-control-sm"
               type="text"
@@ -105,7 +107,7 @@
 
           <pnx-nomenclature
             [multiSelect]="true"
-            label="Objectifs du cadre d'acquisition"
+            label="{{ 'MetaData.AcquisitionFrameworkForm.Objectives' | translate }}"
             [parentFormControl]="form.get('cor_objectifs')"
             codeNomenclatureType="CA_OBJECTIFS"
             [bindAllItem]="true"
@@ -113,7 +115,7 @@
           ></pnx-nomenclature>
 
           <pnx-nomenclature
-            label="Volets SINP"
+            label="{{ 'MetaData.AcquisitionFrameworkForm.SinpComponents' | translate }}"
             [multiSelect]="true"
             [parentFormControl]="form.get('cor_volets_sinp')"
             codeNomenclatureType="VOLET_SINP"
@@ -121,7 +123,7 @@
           ></pnx-nomenclature>
 
           <pnx-nomenclature
-            label="Type de financement"
+            label="{{ 'MetaData.FinancingType' | translate }}"
             [parentFormControl]="form.get('id_nomenclature_financing_type')"
             codeNomenclatureType="TYPE_FINANCEMENT"
             data-qa="pnx-metadata-af-form-financing-type"
@@ -129,10 +131,11 @@
 
           <div>
             <small>
-              Cibles écologiques ou géologiques
+              {{ 'MetaData.AcquisitionFrameworkForm.EcologicOrGeologicTarget' | translate }}
               <mat-icon
-                matTooltip="Doit être composé de CD_NOM de TAXREF, séparés par des points virgules, s'il s'agit de taxons, ou de CD_HAB de
-                HABREF, séparés par des points virgules, s'il s'agit d'habitats"
+                matTooltip="{{
+                  'MetaData.AcquisitionFrameworkForm.EcologicOrGeologicTargetTooltip' | translate
+                }}"
               >
                 info
               </mat-icon>
@@ -145,7 +148,7 @@
           </div>
 
           <div>
-            <small>Description de la cible</small>
+            <small>{{ 'MetaData.TargetDescription' | translate }}</small>
             <textarea
               class="form-control form-control-sm"
               type="text"
@@ -153,14 +156,14 @@
             ></textarea>
           </div>
           <pnx-date
-            label="Date début"
+            label="{{ 'MinDate' | translate }}"
             [parentFormControl]="form.get('acquisition_framework_start_date')"
             data-qa="pnx-metadata-af-form-start-date"
             [noMaxDate]="true"
           ></pnx-date>
 
           <pnx-date
-            label="Date fin"
+            label="{{ 'MaxDate' | translate }}"
             [parentFormControl]="form.get('acquisition_framework_end_date')"
             [noMaxDate]="true"
           ></pnx-date>
@@ -286,7 +289,9 @@
     <div class="col-md-4">
       <div class="card">
         <div class="card-header">
-          <h3 class="main-color">Contact principal</h3>
+          <h3 class="main-color">
+            {{ 'MetaData.MainContact' | translate }}
+          </h3>
         </div>
         <div class="card-body">
           <ng-container *ngFor="let actorForm of afFormS.actors.controls; let idx = index">
@@ -308,7 +313,9 @@
 
       <div class="card">
         <div class="card-header">
-          <h3 class="main-color">Autre(s) acteur(s)</h3>
+          <h3 class="main-color">
+            {{ 'MetaData.OtherStakeholders' | translate }}
+          </h3>
         </div>
         <div class="card-body">
           <ng-container *ngFor="let actorForm of afFormS.actors.controls; let idx = index">
@@ -327,7 +334,9 @@
             <ng-container
               *ngIf="!afFormS.actors.valid && afFormS.actors.errors?.hasDoublons.index == idx"
             >
-              <small class="mat-error">Cet acteur est déjà présent dans la liste</small>
+              <small class="mat-error">
+                {{ 'MetaData.Messages.StakeholderExists' | translate }}
+              </small>
             </ng-container>
 
             <p></p>
@@ -337,7 +346,7 @@
             type="button"
             mat-mini-fab
             color="primary"
-            matTooltip="Ajouter un autre acteur"
+            matTooltip="{{ 'MetaData.Actions.AddStakeholder' | translate }}"
             (click)="addContact(afFormS.actors, false)"
             [disabled]="!afFormS.actors.valid"
           >
@@ -356,7 +365,7 @@
       color="warn"
       routerLink="/metadata"
     >
-      Annuler
+      {{ 'Actions.Cancel' | translate }}
     </button>
     <button
       [disabled]="form.invalid"
@@ -365,7 +374,7 @@
       (click)="postAf()"
       data-qa="pnx-metadata-save-af"
     >
-      Enregistrer le cadre d'acquisition
+      {{ 'MetaData.AcquisitionFrameworkForm.Actions.SaveAF' | translate }}
     </button>
   </div>
 </div>

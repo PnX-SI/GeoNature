@@ -327,7 +327,11 @@
       "NoMetadata": "Oups ! Il n'y a aucune métadonnée à afficher.",
       "UUIDFormPlaceHolder": "Si non renseigné, l'identifiant est généré lors de la création du {{ entity }}",
       "ImpossibleActionAFClosed": "Cadre d'acquisition fermé, action impossible",
-      "OpenAFImpossible": "L'ouverture d'un cadre d'acquisition préalablement fermé n'est pas autorisée"
+      "OpenAFImpossible": "L'ouverture d'un cadre d'acquisition préalablement fermé n'est pas autorisée",
+      "NotProvided": "Non renseigné",
+      "ConfirmDeleteAF": "Voulez-vous supprimer ce cadre d'acquisition ?",
+      "MailSendError": "Erreur lors de l'envoi de l'email de confirmation. Le cadre d'acquisition a bien été fermé",
+      "StakeholderExists": "Cet acteur est déjà présent dans la liste"
     },
     "Actions": {
       "AddDataset": "Ajouter un jeu de données",
@@ -341,7 +345,8 @@
       "SeeAFSheet": "Voir la fiche du cadre d'acquisition",
       "FillOwnUUID": "Saisie manuelle de l'UUID",
       "Open/Close": "Ouvrir/Fermer",
-      "Activate/Deactivate": "Activer/Désactiver"
+      "Activate/Deactivate": "Activer/Désactiver",
+      "AddStakeholder": "Ajouter un autre acteur"
     },
     "Tooltips": {
       "DatasetActive": "Le jeu de données est actif",
@@ -352,6 +357,8 @@
     "AFAndDatasetsList": "Liste des cadres d'acquisition et des jeux de données associés",
     "CreationDate": "Date de lancement",
     "Stakeholders": "Acteurs",
+    "MainContact": "Contact principal",
+    "OtherStakeholders": "Autre(s) acteur(s)",
     "DatasetName": "Nom du jeu de données",
     "AFName": "Nom du cadre d'acquisition",
     "CountObservations": "Nombre d'observations",
@@ -359,15 +366,15 @@
     "DataSources": "Sources des données",
     "DescriptiveForm": "Fiche descriptive",
     "ID": "Identification",
-    "IDSINPCA": "Identifiant SINP du cadre d'acquisition",
+    "AFUUIDIdentifier": "UUID du cadre d'acquisition",
     "IDGeoNature": "Identifiant GeoNature du cadre d'acquisition",
     "IsParent": "Est un méta-cadre",
     "ParentID": "Identifiant du méta-cadre",
     "StartDate": "Date de lancement du cadre d'acquisition",
     "EndDate": "Date de clôture du cadre d'acquisition",
     "CoveredTerritories": "Territoires concernés",
-    "TerritorialExtent": "Étendue territoriale",
-    "TaxonomicTarget": "Cible taxonomique",
+    "TerritorialLevel": "Niveau territorial",
+    "TargetDescription": "Description de la cible",
     "Creator": "Créateur du cadre d'acquisition",
     "FinancingType": "Type de financement",
     "Financing": "Financement",
@@ -387,10 +394,13 @@
 
     "DatasetCard": {
       "Actions": {
-        "DisplayData": "Afficher les données"
+        "DisplayData": "Afficher les données",
+        "DownloadSensitivityReport": "Télécharger le rapport de sensibilité",
+        "DownloadUuidReport": "Télécharger le rapport d'UUID"
       },
       "Messages": {
-        "NoActorProvided": "Aucun acteur renseigné"
+        "NoActorProvided": "Aucun acteur renseigné",
+        "NoDataInDataset": "Le jeu de données ne comporte aucune donnée"
       },
       "Errors": {
         "ErrorDeleteDataset": "Le jeu de données contient des données et ne peut pas être supprimé"
@@ -428,10 +438,10 @@
     "DatasetForm": {
       "Actions": {
         "SaveDataset": "Enregistrer le jeu de données",
-        "SelectTaxaList": "--Sélectionner une liste de taxons--"
+        "SelectTaxaList": "--Sélectionner une liste de taxons--",
+        "AddMainContact": "Ajouter un autre contact principal"
       },
       "Messages": {
-        "StakeholderExists": "Cet acteur est déjà présent dans la liste",
         "MainContactExists": "Ce contact principal est déjà présent dans la liste",
         "SizeNameJDD": "Le nom du JDD doit être inférieur ou égal à 150 caractères",
         "SizeShortNameJDD": "Le nom court du JDD doit être inférieur ou égal à 30 caractères",
@@ -444,8 +454,6 @@
       "MarineField": "Domaine marin",
       "SourceStatus": "Statut source",
       "CollectionMethod": "Méthode de collecte",
-      "OtherStakeholders": "Autre(s) acteur(s)",
-      "MainContact": "Contact principal",
       "DataOrigin": "Origine des données",
 
       "ResourceType": "Type de ressource",
@@ -453,7 +461,20 @@
       "SpecificGeonature": "Spécifique GeoNature",
       "RequiredToImportAndEnterData": "Requis pour saisir et importer des données dans le jeu de données"
     },
-    "AcquisitionFrameworkForm": {},
+    "AcquisitionFrameworkForm": {
+      "Actions": {
+        "SaveAF": "Enregistrer le cadre d'acquisition",
+        "DeleteAF": "Supprimer le cadre d'acquisition"
+      },
+      "KeywordsTooltip": "Mot(s)-clé(s) représentatifs du cadre d'acquisition, séparés par des virgules",
+      "IsParentCheckbox": "Est un cadre d'acquisition parent",
+      "ParentAF": "Cadre d'acquisition parent",
+      "TerritorialPrecision": "Précision sur le territoire",
+      "Objectives": "Objectifs du cadre d'acquisition",
+      "SinpComponents": "Volets SINP",
+      "EcologicOrGeologicTarget": "Cibles écologiques ou géologiques",
+      "EcologicOrGeologicTargetTooltip": "Doit être composé de CD_NOM de TAXREF, séparés par des points virgules, s'il s'agit de taxons, ou de CD_HAB de HABREF, séparés par des points virgules, s'il s'agit d'habitats"
+    },
     "Actors": {
       "Person": "Personne",
       "RoleType": "Type de rôle",

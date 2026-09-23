@@ -70,7 +70,7 @@ export class ButtonCloseAfComponent {
         if (error?.error?.name == 'mailError') {
           this._commonService.regularToaster(
             'warning',
-            "Erreur lors de l'envoi de l'email de confirmation. Le cadre d'acquisition a bien été fermé"
+            this.translate.instant('MetaData.Messages.MailSendError')
           );
           this.afClosed.emit();
         }

@@ -11,7 +11,7 @@
         data-qa="pnx-metadata-exit-af"
       >
         <mat-icon>chevron_left</mat-icon>
-        Retour
+        {{ 'Back' | translate }}
       </a>
     </div>
   </div>
@@ -33,7 +33,7 @@
                 [disabled]="!af?.cruved?.U"
                 mat-mini-fab
                 class="mr-2 af-edit-button"
-                matTooltip="Éditer le cadre d'acquisition"
+                matTooltip="{{ 'MetaData.Actions.EditAF' | translate }}"
               >
                 <mat-icon>create</mat-icon>
               </button>
@@ -53,7 +53,7 @@
                 (click)="getPdf()"
                 [disabled]="!af.cruved.E"
                 class="mr-2"
-                matTooltip="Exporter le PDF"
+                matTooltip="{{ 'Actions.PDFExport' | translate }}"
               >
                 <mat-icon>file_download</mat-icon>
               </button>
@@ -125,7 +125,7 @@
             {{ af?.acquisition_framework_name }}
           </div>
           <div class="a">
-            <b>{{ 'MetaData.IDSINPCA' | translate }} :</b>
+            <b>{{ 'MetaData.AFUUIDIdentifier' | translate }} :</b>
             {{ af?.unique_acquisition_framework_id }}
           </div>
           <div
@@ -145,7 +145,7 @@
           </div>
           <div class="a">
             <b>{{ 'MetaData.IsParent' | translate }} :</b>
-            {{ af?.is_parent ? 'Oui' : 'Non' }}
+            {{ (af?.is_parent ? 'Yes' : 'No') | translate }}
           </div>
           <div
             class="a"
@@ -184,7 +184,7 @@
               <li *ngFor="let ter of af?.cor_territories">- {{ ter.label_default }}</li>
             </ul>
             <div class="a">
-              <b>{{ 'MetaData.TerritorialExtent' | translate }} :</b>
+              <b>{{ 'MetaData.TerritorialLevel' | translate }} :</b>
               {{ af?.nomenclature_territorial_level?.label_default }}
             </div>
 
@@ -192,9 +192,8 @@
           </div>
 
           <div *ngIf="af?.target_description">
-            <div class="b">{{ 'MetaData.TaxonomicTarget' | translate }}</div>
+            <div class="b">{{ 'MetaData.TargetDescription' | translate }}</div>
             <div class="a">
-              <b>{{ 'Description' | translate }} :</b>
               {{ af?.target_description }}
             </div>
             <br />
@@ -218,7 +217,7 @@
             <ng-template #elifNoActor>
               <div class="a alert-actor">
                 <mat-icon>report</mat-icon>
-                <span>Aucun acteur renseigné</span>
+                <span>{{ 'MetaData.Messages.NoStakeholder' | translate }}</span>
               </div>
             </ng-template>
             <br />
@@ -228,7 +227,7 @@
 
           <div class="a">
             <b>{{ 'MetaData.Creator' | translate }} :</b>
-            {{ af?.creator?.nom_complet || 'Non renseigné' }}
+            {{ af?.creator?.nom_complet || ('MetaData.Messages.NotProvided' | translate) }}
           </div>
 
           <br />
