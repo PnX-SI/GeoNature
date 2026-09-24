@@ -12,27 +12,34 @@ concurrency:
 
 jobs:
   install-all:
+    name: install_all.sh (Debian ${{ matrix.debian-version }})
     runs-on: ubuntu-latest
     timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        # Every Debian version install_all.sh accepts (its own OS/VERSION_ID gate at
+        # install/install_all/install_all.sh checks for exactly 11, 12 or 13).
+        debian-version: ["12", "13"]
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
 
-      - name: Build Debian 12 + systemd image
+      - name: Build Debian + systemd image
         run: |
-          cat > "${RUNNER_TEMP}/Dockerfile.debian12-systemd" <<'EOF'
-          FROM debian:12
+          cat > "${RUNNER_TEMP}/Dockerfile.debian-systemd" <<'EOF'
+          FROM debian:${{ matrix.debian-version }}
           RUN apt-get update \
             && apt-get install -y --no-install-recommends systemd systemd-sysv \
             && rm -rf /var/lib/apt/lists/*
           STOPSIGNAL SIGRTMIN+3
           CMD ["/lib/systemd/systemd"]
           EOF
-          docker build -t gn-ci-debian12-systemd \
-            -f "${RUNNER_TEMP}/Dockerfile.debian12-systemd" "${RUNNER_TEMP}"
+          docker build -t gn-ci-debian-systemd \
+            -f "${RUNNER_TEMP}/Dockerfile.debian-systemd" "${RUNNER_TEMP}"
 
-      - name: Start Debian 12 + systemd container
+      - name: Start Debian + systemd container
         run: |
           docker run -d --name gn-ci \
             --privileged \
@@ -41,7 +48,7 @@ jobs:
             --tmpfs /run \
             --tmpfs /run/lock \
             -v /sys/fs/cgroup:/sys/fs/cgroup:rw \
-            gn-ci-debian12-systemd
+            gn-ci-debian-systemd
 
       - name: Wait for systemd to be ready
         run: |
@@ -75,7 +82,7 @@ jobs:
         run: |
           cat > "${RUNNER_TEMP}/install_all.ini" <<'EOF'
           mode=ci
-          my_local=C.utf8
+          my_local=C.UTF-8
           my_url=http://localhost/
           url_application_prefix_path=geonature
           pg_host=localhost
