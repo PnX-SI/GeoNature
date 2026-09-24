@@ -31,6 +31,7 @@ export class OcchabStoreService {
         "HAB_INTERET_COM",
         "ABONDANCE_HAB",
         "TYPE_SOL",
+        "ETAT_CONSERVATION_HAB",
       ])
       .subscribe((data) => {
         data.forEach((element) => {

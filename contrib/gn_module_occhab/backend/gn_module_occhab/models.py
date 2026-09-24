@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import Any, Optional
 
 from flask import g
@@ -6,6 +6,7 @@ from geoalchemy2 import Geometry
 from sqlalchemy import (
     BigInteger,
     Column,
+    Date,
     DateTime,
     Float,
     ForeignKey,
@@ -273,6 +274,17 @@ class OccurenceHabitat(NomenclaturesMixin, db.Model):
         Nomenclature,
         foreign_keys=[id_nomenclature_community_interest],
     )
+    id_nomenclature_etat_conservation: Mapped[Optional[int]] = mapped_column(
+        Integer,
+        ForeignKey(Nomenclature.id_nomenclature),
+    )
+    nomenclature_etat_conservation = db.relationship(
+        Nomenclature,
+        foreign_keys=[id_nomenclature_etat_conservation],
+    )
+    date_determ: Mapped[Optional[date]] = mapped_column(Date)
+    url_preuve_numerique: Mapped[Optional[str]] = mapped_column(Unicode)
+    commentaire: Mapped[Optional[str]] = mapped_column(Unicode)
 
 
 @serializable

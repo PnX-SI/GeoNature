@@ -34,3 +34,7 @@ NB_MAX_MAP_LIST = 5000
     recovery_percentage = true
     abundance = true
     community_interest = true
+    etat_conservation = true
+    date_determ = true
+    url_preuve_numerique = true
+    commentaire = true
