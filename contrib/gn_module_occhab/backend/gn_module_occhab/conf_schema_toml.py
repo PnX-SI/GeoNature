@@ -28,6 +28,10 @@ class FormConfig(Schema):
     recovery_percentage = fields.Boolean(load_default=False)
     abundance = fields.Boolean(load_default=True)
     community_interest = fields.Boolean(load_default=True)
+    etat_conservation = fields.Boolean(load_default=True)
+    date_determ = fields.Boolean(load_default=True)
+    url_preuve_numerique = fields.Boolean(load_default=True)
+    commentaire = fields.Boolean(load_default=True)
 
 
 class GnModuleSchemaConf(Schema):

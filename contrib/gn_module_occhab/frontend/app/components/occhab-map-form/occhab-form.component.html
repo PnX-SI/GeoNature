@@ -619,6 +619,76 @@
               [displayNullValue]="true"
             ></pnx-dumb-select>
 
+            <div class="form-row">
+              <div
+                class="col"
+                *ngIf="config.OCCHAB.formConfig['etat_conservation']"
+              >
+                <pnx-dumb-select
+                  label="Etat de conservation"
+                  [parentFormControl]="
+                    occHabForm.stationForm
+                      .get('habitats')
+                      .controls[
+                        occHabForm.currentEditingHabForm
+                      ].get('id_nomenclature_etat_conservation')
+                  "
+                  [items]="storeService.nomenclatureItems.ETAT_CONSERVATION_HAB"
+                  comparedKey="id_nomenclature"
+                  titleKey="definition_fr"
+                  displayedKey="label_fr"
+                  [displayNullValue]="true"
+                ></pnx-dumb-select>
+              </div>
+              <div
+                class="col"
+                *ngIf="config.OCCHAB.formConfig['date_determ']"
+              >
+                <small>Date de détermination</small>
+                <pnx-date
+                  [parentFormControl]="
+                    occHabForm.stationForm
+                      .get('habitats')
+                      .controls[occHabForm.currentEditingHabForm].get('date_determ')
+                  "
+                ></pnx-date>
+              </div>
+            </div>
+
+            <div
+              class="form-group"
+              *ngIf="config.OCCHAB.formConfig['url_preuve_numerique']"
+            >
+              <small>URL de la preuve numérique</small>
+              <input
+                type="text"
+                name="url_preuve_numerique"
+                class="form-control form-control-sm"
+                [formControl]="
+                  occHabForm.stationForm
+                    .get('habitats')
+                    .controls[occHabForm.currentEditingHabForm].get('url_preuve_numerique')
+                "
+              />
+            </div>
+
+            <div
+              class="form-group"
+              *ngIf="config.OCCHAB.formConfig['commentaire']"
+            >
+              <small>Commentaire</small>
+              <textarea
+                class="form-control form-control-sm"
+                type="textarea"
+                placeholder="Commentaire"
+                [formControl]="
+                  occHabForm.stationForm
+                    .get('habitats')
+                    .controls[occHabForm.currentEditingHabForm].get('commentaire')
+                "
+              ></textarea>
+            </div>
+
             <br />
 
             <button
