@@ -15,7 +15,7 @@ import { CruvedStoreService } from '@geonature_common/service/cruved-store.servi
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ContentMapping, ContentMappingValues } from '../../../models/mapping.model';
 import { Step } from '../../../models/enums.model';
-import { Import, ImportValues, Nomenclature } from '../../../models/import.model';
+import { Import, ImportValues } from '../../../models/import.model';
 import { ImportProcessService } from '../import-process.service';
 import _ from 'lodash';
 import { ModalData } from '@geonature/modules/imports/models/modal-data.model';
@@ -81,7 +81,11 @@ export class ContentMappingStepComponent implements OnInit {
       this.contentTargetForm = this._fb.group({});
       for (let targetField of Object.keys(this.importValues)) {
         this.importValues[targetField].values.forEach((value, index) => {
-          let control = new FormControl(null, [Validators.required]);
+          // each source value must be associated to a nomenclature or to the
+          // "no nomenclature" choice (empty string)
+          let control = new FormControl(null, [
+            (formControl) => (formControl.value == null ? { required: true } : null),
+          ]);
           let control_name = targetField + '-' + index;
           this.contentTargetForm.addControl(control_name, control);
         });
@@ -103,13 +107,6 @@ export class ContentMappingStepComponent implements OnInit {
     return (mc1 == null && mc2 == null) || (mc1 != null && mc2 != null && mc1.id === mc2.id);
   }
 
-  areNomenclaturesEqual(n1: Nomenclature, n2: Nomenclature): boolean {
-    return (
-      (n1 == null && n2 == null) ||
-      (n1 != null && n2 != null && n1.cd_nomenclature === n2.cd_nomenclature)
-    );
-  }
-
   onSelectMapping(mapping: ContentMapping) {
     this.contentTargetForm.reset();
     if (mapping) {
@@ -126,10 +123,10 @@ export class ContentMappingStepComponent implements OnInit {
       this.importValues[targetField].values.forEach((value, index) => {
         let control = this.contentTargetForm.get(targetField + '-' + index);
         let nomenclature = this.importValues[targetField].nomenclatures.find(
-          (n) => n.label_default == value
+          (n) => n.label_default == value.value
         );
         if (nomenclature) {
-          control.setValue(nomenclature);
+          control.setValue(nomenclature.cd_nomenclature);
           control.markAsDirty();
         }
       });
@@ -141,15 +138,10 @@ export class ContentMappingStepComponent implements OnInit {
       let type_mnemo = this.importValues[targetField].nomenclature_type.mnemonique;
       if (!(type_mnemo in mappingvalues)) continue;
       this.importValues[targetField].values.forEach((value, index) => {
-        if (value in mappingvalues[type_mnemo]) {
-          let control = this.contentTargetForm.get(targetField + '-' + index);
-          let nomenclature = this.importValues[targetField].nomenclatures.find(
-            (n) => n.cd_nomenclature === mappingvalues[type_mnemo][value]
-          );
-          if (nomenclature) {
-            control.setValue(nomenclature);
-          }
-        }
+        if (!(value.value in mappingvalues[type_mnemo])) return;
+        let mapped_cd = mappingvalues[type_mnemo][value.value];
+        let control = this.contentTargetForm.get(targetField + '-' + index);
+        control.setValue(mapped_cd);
       });
     }
   }
@@ -311,7 +303,9 @@ export class ContentMappingStepComponent implements OnInit {
       let _values = {};
       this.importValues[targetField].values.forEach((value, index) => {
         let control = this.contentTargetForm.controls[targetField + '-' + index];
-        _values[value] = control.value.cd_nomenclature;
+        // the control holds a cd_nomenclature (or an empty string for the
+        // "no nomenclature" choice), stored as-is in the contentmapping
+        _values[value.value] = control.value;
       });
       values[this.importValues[targetField].nomenclature_type.mnemonique] = _values;
     }
