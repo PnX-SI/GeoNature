@@ -19,6 +19,19 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Build Debian 12 + systemd image
+        run: |
+          cat > "${RUNNER_TEMP}/Dockerfile.debian12-systemd" <<'EOF'
+          FROM debian:12
+          RUN apt-get update \
+            && apt-get install -y --no-install-recommends systemd systemd-sysv \
+            && rm -rf /var/lib/apt/lists/*
+          STOPSIGNAL SIGRTMIN+3
+          CMD ["/lib/systemd/systemd"]
+          EOF
+          docker build -t gn-ci-debian12-systemd \
+            -f "${RUNNER_TEMP}/Dockerfile.debian12-systemd" "${RUNNER_TEMP}"
+
       - name: Start Debian 12 + systemd container
         run: |
           docker run -d --name gn-ci \
@@ -28,7 +41,7 @@ jobs:
             --tmpfs /run \
             --tmpfs /run/lock \
             -v /sys/fs/cgroup:/sys/fs/cgroup:rw \
-            geerlingguy/docker-debian12-ansible:latest
+            gn-ci-debian12-systemd
 
       - name: Wait for systemd to be ready
         run: |
@@ -113,6 +126,21 @@ jobs:
             body=$(curl -fsS http://localhost/geonature/)
             echo "$body" | grep -q "<pnx-root"
             echo "$body" | grep -q "<title>GeoNature</title>"
+          '
+
+      - name: Verify API login works
+        run: |
+          docker exec gn-ci bash -c '
+            set -e
+            # Proxied by Apache straight through to gunicorn (BACKEND_PREFIX is the path
+            # of API_ENDPOINT, /geonature/api here); /auth/login is the pypnusershub
+            # blueprint, mounted with its default "/auth" prefix. admin/admin is the
+            # built-in default account seeded by the GeoNature DB migrations regardless
+            # of add_sample_data.
+            response=$(curl -fsS -X POST http://localhost/geonature/api/auth/login \
+              -H "Content-Type: application/json" \
+              -d "{\"login\": \"admin\", \"password\": \"admin\"}")
+            echo "$response" | grep -q "\"token\""
           '
 
       - name: Dump diagnostics on failure
