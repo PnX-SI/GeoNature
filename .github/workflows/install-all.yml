@@ -47,11 +47,10 @@ jobs:
             printf "#!/bin/sh\nexit 0\n" > /usr/sbin/policy-rc.d
             chmod +x /usr/sbin/policy-rc.d
             apt-get update
-            apt-get install -y sudo ca-certificates curl wget locales
+            apt-get install -y sudo ca-certificates curl wget
             useradd -m -s /bin/bash ci
             echo "ci ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/ci
             chmod 0440 /etc/sudoers.d/ci
-            locale-gen fr_FR.UTF-8
           '
 
       - name: Copy checked-out branch into container
@@ -63,7 +62,7 @@ jobs:
         run: |
           cat > "${RUNNER_TEMP}/install_all.ini" <<'EOF'
           mode=ci
-          my_local=fr_FR.UTF-8
+          my_local=C.utf8
           my_url=http://localhost/
           url_application_prefix_path=geonature
           pg_host=localhost
