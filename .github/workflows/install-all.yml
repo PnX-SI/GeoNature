@@ -38,6 +38,14 @@ jobs:
         run: |
           docker exec gn-ci bash -c '
             set -e
+            # Debian container images ship a policy-rc.d that denies "invoke-rc.d start"
+            # from package postinst scripts, so apt-installed services (postgresql,
+            # apache2, redis) never actually start. install_all.sh relies on apt itself
+            # starting them (it only explicitly restarts apache2, never postgresql/redis),
+            # exactly as would happen on a real Debian machine. Allow starts so services
+            # behave the same way here as they would on a real install.
+            printf "#!/bin/sh\nexit 0\n" > /usr/sbin/policy-rc.d
+            chmod +x /usr/sbin/policy-rc.d
             apt-get update
             apt-get install -y sudo ca-certificates curl wget locales
             useradd -m -s /bin/bash ci
