@@ -69,6 +69,11 @@ jobs:
             apt-get update
             apt-get install -y sudo ca-certificates curl wget
             useradd -m -s /bin/bash ci
+            # Debian 13 useradd/adduser default to a 700 home dir (older versions used
+            # 755); Apache (www-data) then cannot traverse into it to serve frontend/dist,
+            # giving a 403. docs/installation.rst:104-110 already tells a real admin to
+            # check/fix this manually (chmod 755) after adduser - do the same here.
+            chmod 755 /home/ci
             echo "ci ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/ci
             chmod 0440 /etc/sudoers.d/ci
           '
