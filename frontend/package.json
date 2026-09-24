@@ -31,7 +31,7 @@
     "@circlon/angular-tree-component": "^11.0.4",
     "@ng-bootstrap/ng-bootstrap": "14.0.1",
     "@ng-select/ng-select": "^10.0.3",
-    "@ngx-translate/core": "^12.0.0",
+    "@ngx-translate/core": "^17.0.0",
     "@ngx-translate/http-loader": "^4.0.0",
     "@popperjs/core": "^2.11.8",
     "@swimlane/ngx-datatable": "^20.1.0",
