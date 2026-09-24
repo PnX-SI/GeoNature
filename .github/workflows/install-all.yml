@@ -44,7 +44,6 @@ jobs:
             echo "ci ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/ci
             chmod 0440 /etc/sudoers.d/ci
             locale-gen fr_FR.UTF-8
-            update-locale LANG=fr_FR.UTF-8
           '
 
       - name: Copy checked-out branch into container
