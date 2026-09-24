@@ -86,14 +86,16 @@ jobs:
 
       - name: Run install_all.sh
         run: |
-          docker exec --user ci -w /home/ci/geonature/install/install_all gn-ci \
-            bash -lc 'bash install_all.sh'
+          docker exec --user ci -e USER=ci -e LOGNAME=ci \
+            -w /home/ci/geonature/install/install_all gn-ci \
+            bash -c 'export PATH="$HOME/.local/bin:$PATH"; bash install_all.sh'
 
       - name: Overlay unreleased backend submodule changes
         if: github.ref_name != 'master'
         run: |
-          docker exec --user ci -w /home/ci/geonature/backend gn-ci bash -lc '
+          docker exec --user ci -w /home/ci/geonature/backend gn-ci bash -c '
             set -e
+            export PATH="$HOME/.local/bin:$PATH"
             source venv/bin/activate
             # These siblings are resolved from PyPI by install_all.sh (mode=prod uses
             # backend/requirements.txt), which would silently miss any local submodule
