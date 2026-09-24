@@ -4408,6 +4408,7 @@ tests = [
     { name = "marshmallow-sqlalchemy" },
     { name = "psycopg2-binary" },
     { name = "pytest" },
+    { name = "pytest-cov" },
     { name = "shapely" },
 ]
 
@@ -4423,6 +4424,7 @@ requires-dist = [
     { name = "marshmallow-sqlalchemy", marker = "extra == 'tests'" },
     { name = "psycopg2-binary", marker = "extra == 'tests'" },
     { name = "pytest", marker = "extra == 'tests'" },
+    { name = "pytest-cov", marker = "extra == 'tests'" },
     { name = "python-dateutil" },
     { name = "shapely", marker = "extra == 'tests'" },
     { name = "sqlalchemy", specifier = "<3" },
