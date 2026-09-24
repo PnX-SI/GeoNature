@@ -97,7 +97,7 @@ source "${UV_PROJECT_ENVIRONMENT}/bin/activate"
 
 echo "Installation des dépendances Python..."
 pip install --upgrade "pip>=19.3"  "wheel"  # https://www.python.org/dev/peps/pep-0440/#direct-references
-if [[ "${MODE}" == "dev" ]]; then
+if [[ "${MODE}" == "dev" || "${MODE}" == "ci" ]]; then
   echo "Installation des dépendances Python de l'environnement de DEV..."
   git submodule status | grep -E "^-" >/dev/null
   if [ $? -eq 0 ]; then
@@ -106,7 +106,11 @@ if [[ "${MODE}" == "dev" ]]; then
       exit 1
   fi
   # Uses the uv workspace (backend/dependencies/*) declared in the root pyproject.toml:
-  # siblings are installed editable from their local submodule checkout.
+  # siblings are installed editable from their local submodule checkout. MODE=ci also
+  # takes this path (unlike MODE=dev, everything else still runs as a prod install:
+  # systemd services, frontend build) so a checkout whose submodule commits are ahead of
+  # what's published on PyPI (backend/requirements.txt only ever reflects released
+  # versions) can still be installed and exercised end-to-end.
   uv sync --project "${BASE_DIR}" --active --extra tests --extra lint
 else
   # Siblings resolved from PyPI per backend/requirements.txt, no workspace/local sources involved.

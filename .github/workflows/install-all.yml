@@ -62,7 +62,7 @@ jobs:
       - name: Generate CI install_all.ini
         run: |
           cat > "${RUNNER_TEMP}/install_all.ini" <<'EOF'
-          mode=prod
+          mode=ci
           my_local=fr_FR.UTF-8
           my_url=http://localhost/
           url_application_prefix_path=geonature
@@ -97,35 +97,6 @@ jobs:
           docker exec --user ci -e USER=ci -e LOGNAME=ci \
             -w /home/ci/geonature/install/install_all gn-ci \
             bash -c 'export PATH="$HOME/.local/bin:$PATH"; bash install_all.sh'
-
-      - name: Overlay unreleased backend submodule changes
-        if: github.ref_name != 'master'
-        run: |
-          docker exec --user ci -w /home/ci/geonature/backend gn-ci bash -c '
-            set -e
-            export PATH="$HOME/.local/bin:$PATH"
-            source venv/bin/activate
-            # These siblings are resolved from PyPI by install_all.sh (mode=prod uses
-            # backend/requirements.txt), which would silently miss any local submodule
-            # commit not yet released. Re-install them editable from the checked-out
-            # submodules so the services below run the code checked out for this branch.
-            for pkg in \
-              dependencies/Habref-api-module \
-              dependencies/Nomenclature-api-module \
-              dependencies/RefGeo \
-              dependencies/TaxHub \
-              dependencies/UsersHub-authentification-module \
-              dependencies/Utils-Flask-SQLAlchemy \
-              dependencies/Utils-Flask-SQLAlchemy-Geo \
-            ; do
-              echo "=== Overlaying $pkg (editable, local submodule checkout) ==="
-              uv pip install -e "$pkg"
-            done
-          '
-
-      - name: Restart GeoNature services with overlaid code
-        if: github.ref_name != 'master'
-        run: docker exec gn-ci systemctl restart geonature geonature-worker
 
       - name: Verify geonature systemd service is active
         run: docker exec gn-ci systemctl is-active geonature
