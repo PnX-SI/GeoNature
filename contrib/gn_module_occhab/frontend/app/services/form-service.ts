@@ -108,6 +108,10 @@ export class OcchabFormService {
       recovery_percentage: null,
       id_nomenclature_abundance: null,
       technical_precision: null,
+      id_nomenclature_etat_conservation: null,
+      date_determ: null,
+      url_preuve_numerique: null,
+      commentaire: null,
     });
     habForm.setValidators([this.technicalValidator]);
     return habForm;
