@@ -10,7 +10,10 @@ import {
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { FormService } from "@geonature_common/form/form.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
-import { OcchabStoreService } from "./store.service";
+import {
+  ADDITIONAL_FIELD_LABEL_PREFIX,
+  OcchabStoreService,
+} from "./store.service";
 import { ConfigService } from "@geonature/services/config.service";
 import { Station, StationFeature } from "../models";
 
@@ -21,6 +24,18 @@ export class OcchabFormService {
   public selectedTypo: any;
   public currentEditingHabForm = null;
   public currentHabCopy = null;
+  /** Définitions des champs additionnels passées au générateur de formulaire dynamique */
+  public stationAdditionalFieldsDef: Array<any> = [];
+  public currentHabAdditionalFieldsDef: Array<any> = [];
+  /** Définitions brutes, telles que renvoyées par l'API */
+  private _rawStationDefs: Array<any> = [];
+  private _rawHabitatDefs: Array<any> = [];
+  /**
+   * Valeurs connues des champs additionnels de la station (serveur puis saisies) :
+   * elles survivent à la destruction des contrôles par le générateur (changement
+   * de JDD, définitions pas encore chargées) et complètent l'envoi au serveur.
+   */
+  private _stationAdditionalData: { [key: string]: any } | null = null;
   constructor(
     private _fb: UntypedFormBuilder,
     private _dateParser: NgbDateParserFormatter,
@@ -33,6 +48,131 @@ export class OcchabFormService {
     this.typoHabControl.valueChanges.subscribe((data) => {
       this.selectedTypo = { cd_typo: data };
     });
+  }
+
+  /**
+   * Appelé à chaque initialisation du formulaire : sur succès le shareReplay du
+   * store rend l'abonnement immédiat, sur échec précédent il relance la requête.
+   * Les définitions et la station éditée arrivent dans un ordre non garanti :
+   * chacune déclenche le recalcul de son côté.
+   */
+  private loadAdditionalFieldsDefs() {
+    this._storeService.stationAdditionalFields$.subscribe((defs) => {
+      this._rawStationDefs = defs;
+      this.refreshStationAdditionalFieldsDef();
+    });
+    this._storeService.habitatAdditionalFields$.subscribe((defs) => {
+      this._rawHabitatDefs = defs;
+      if (this.currentEditingHabForm !== null) {
+        this.refreshCurrentHabAdditionalFieldsDef();
+      }
+    });
+  }
+
+  /** Champs applicables au jeu de données actuellement sélectionné dans le formulaire */
+  private filterByDataset(defs: Array<any>): Array<any> {
+    return this._storeService.filterFieldsByDataset(
+      defs,
+      this.stationForm ? this.stationForm.get("id_dataset").value : null
+    );
+  }
+
+  /**
+   * Le générateur dynamique crée ses contrôles à partir de `def.value` et non de la
+   * valeur du FormGroup : patcher un `fb.group({})` vide serait sans effet. On clone
+   * donc les définitions en y injectant les valeurs — le clone fournit au passage la
+   * nouvelle référence de tableau qui déclenche la reconstruction des contrôles.
+   */
+  private cloneDefsWithValues(defs: Array<any>, values: any): Array<any> {
+    return this.filterByDataset(defs).map((def) => {
+      // une clé absente laisse jouer la valeur par défaut du champ, alors qu'une
+      // clé à null est un champ que l'on a délibérément vidé : il doit le rester
+      if (!values || !(def.attribut_name in values)) {
+        return { ...def };
+      }
+      const value = values[def.attribut_name];
+      return {
+        ...def,
+        // les dates arrivent en chaîne ISO du serveur mais en NgbDateStruct
+        // depuis les contrôles du formulaire : seule la chaîne se parse
+        value:
+          def.type_widget === "date" && typeof value === "string" && value
+            ? this._dateParser.parse(value)
+            : value,
+      };
+    });
+  }
+
+  refreshStationAdditionalFieldsDef() {
+    // le générateur détruit les contrôles des champs écartés par le JDD courant :
+    // _stationAdditionalData accumule les valeurs (serveur puis saisies, ces
+    // dernières priment) pour qu'un aller-retour de JDD ne perde rien — un champ
+    // délibérément vidé reste présent à null, il ne ressuscite donc pas
+    const liveValues = this.stationForm
+      ? this.stationForm.get("additional_data").value
+      : null;
+    this._stationAdditionalData = {
+      ...(this._stationAdditionalData || {}),
+      ...(liveValues || {}),
+    };
+    this.stationAdditionalFieldsDef = this.cloneDefsWithValues(
+      this._rawStationDefs,
+      this._stationAdditionalData
+    );
+  }
+
+  private refreshCurrentHabAdditionalFieldsDef() {
+    const habArrayForm = this.stationForm.controls.habitats as UntypedFormArray;
+    const currentHab = habArrayForm.controls[this.currentEditingHabForm];
+    this.currentHabAdditionalFieldsDef = this.cloneDefsWithValues(
+      this._rawHabitatDefs,
+      currentHab ? currentHab.value.additional_data : null
+    );
+    // FormGroup.addControl ne remplace jamais un contrôle existant : on retire
+    // ceux couverts par une définition pour que le générateur les recrée avec
+    // leur valeur (portée par la définition clonée ci-dessus, dates parsées) et
+    // leurs validateurs. Les contrôles sans définition gardent leur valeur.
+    if (currentHab) {
+      const additionalDataForm = currentHab.get(
+        "additional_data"
+      ) as UntypedFormGroup;
+      this.currentHabAdditionalFieldsDef.forEach((def) => {
+        if (additionalDataForm.get(def.attribut_name)) {
+          additionalDataForm.removeControl(def.attribut_name, {
+            emitEvent: false,
+          });
+        }
+      });
+    }
+  }
+
+  /**
+   * Écarte les libellés `_label_` accompagnant les champs de type nomenclature.
+   * Ils sont calculés par le serveur à partir de la valeur : ils n'ont pas de
+   * contrôle dans le formulaire, et n'ont pas à repartir à l'enregistrement.
+   */
+  private withoutNomenclatureLabels(data: any): { [key: string]: any } {
+    const cleanedData: { [key: string]: any } = {};
+    Object.keys(data || {}).forEach((key) => {
+      if (!key.startsWith(ADDITIONAL_FIELD_LABEL_PREFIX)) {
+        cleanedData[key] = data[key];
+      }
+    });
+    return cleanedData;
+  }
+
+  /** Reformate les widgets date avant envoi au serveur */
+  private formatAdditionalDataBeforePost(defs: Array<any>, data: any) {
+    const formatedData = this.withoutNomenclatureLabels(data);
+    (defs || []).forEach((def) => {
+      const value = formatedData[def.attribut_name];
+      // une chaîne est une date ISO jamais éditée (contrôle pré-créé) : elle
+      // repart telle quelle, seul un NgbDateStruct se formate
+      if (def.type_widget === "date" && value && typeof value !== "string") {
+        formatedData[def.attribut_name] = this._dateParser.format(value);
+      }
+    });
+    return formatedData;
   }
 
   initStationForm(): UntypedFormGroup {
@@ -62,7 +202,16 @@ export class OcchabFormService {
       id_nomenclature_type_sol: null,
       geom_4326: [null, Validators.required],
       comment: null,
+      additional_data: this._fb.group({}),
       habitats: this._fb.array([]),
+    });
+    // les champs additionnels peuvent être rattachés à un JDD : on rejoue le tri
+    // à chaque changement de jeu de données
+    stationForm.get("id_dataset").valueChanges.subscribe(() => {
+      this.refreshStationAdditionalFieldsDef();
+      if (this.currentEditingHabForm !== null) {
+        this.refreshCurrentHabAdditionalFieldsDef();
+      }
     });
     stationForm.setValidators([
       this._formService.dateValidator(
@@ -75,6 +224,17 @@ export class OcchabFormService {
         "invalidAlt"
       ),
     ]);
+
+    // remise à zéro de l'état d'une éventuelle visite précédente du formulaire
+    this._stationAdditionalData = null;
+    this.stationAdditionalFieldsDef = [];
+    this.currentHabAdditionalFieldsDef = [];
+    this.currentEditingHabForm = null;
+    this.currentHabCopy = null;
+    // l'abonnement aux définitions (rejoué de façon synchrone par le store)
+    // recalcule les defs : le formulaire doit être en place avant
+    this.stationForm = stationForm;
+    this.loadAdditionalFieldsDefs();
 
     return stationForm;
   }
@@ -108,6 +268,7 @@ export class OcchabFormService {
       recovery_percentage: null,
       id_nomenclature_abundance: null,
       technical_precision: null,
+      additional_data: this._fb.group({}),
     });
     habForm.setValidators([this.technicalValidator]);
     return habForm;
@@ -147,13 +308,14 @@ export class OcchabFormService {
   }
 
   addNewHab() {
-    const currentHabNumber = this.stationForm.value.habitats.length - 1;
     const habFormArray = this.stationForm.controls.habitats as UntypedFormArray;
     habFormArray.insert(
       0,
       this.initHabForm(this._storeService.defaultNomenclature)
     );
     this.currentEditingHabForm = 0;
+    this.currentHabCopy = null;
+    this.refreshCurrentHabAdditionalFieldsDef();
   }
 
   /**
@@ -166,6 +328,7 @@ export class OcchabFormService {
     this.currentHabCopy = {
       ...habArrayForm.controls[this.currentEditingHabForm].value,
     };
+    this.refreshCurrentHabAdditionalFieldsDef();
   }
 
   /** Cancel the current hab
@@ -176,14 +339,39 @@ export class OcchabFormService {
     if (this.currentEditingHabForm !== null) {
       const habArrayForm = this.stationForm.controls
         .habitats as UntypedFormArray;
-      if (this.currentHabCopy === null) habArrayForm.removeAt(0);
-      else
-        habArrayForm.controls[this.currentEditingHabForm].setValue(
-          this.currentHabCopy
+      if (this.currentHabCopy === null)
+        habArrayForm.removeAt(this.currentEditingHabForm);
+      else {
+        const habForm = habArrayForm.controls[
+          this.currentEditingHabForm
+        ] as UntypedFormGroup;
+        this.restoreAdditionalDataShape(
+          habForm.get("additional_data") as UntypedFormGroup,
+          this.currentHabCopy.additional_data
         );
+        habForm.setValue(this.currentHabCopy);
+      }
       this.currentHabCopy = null;
       this.currentEditingHabForm = null;
+      this.currentHabAdditionalFieldsDef = [];
     }
+  }
+
+  /**
+   * Le générateur dynamique ajoute ses contrôles après la prise de la copie de
+   * l'habitat : setValue échouerait sur les contrôles absents de cette copie.
+   * On réaligne donc la forme du sous-groupe sur celle de la copie. Les contrôles
+   * recréés ici n'ont pas de validateur : refreshCurrentHabAdditionalFieldsDef
+   * les retire à la prochaine édition pour que le générateur les recrée validés.
+   */
+  private restoreAdditionalDataShape(
+    additionalDataForm: UntypedFormGroup,
+    previousValue: any
+  ) {
+    Object.keys(additionalDataForm.controls).forEach((name) =>
+      additionalDataForm.removeControl(name, { emitEvent: false })
+    );
+    this.presetAdditionalDataControls(additionalDataForm, previousValue);
   }
 
   /**
@@ -281,7 +469,6 @@ export class OcchabFormService {
       formatedHabitats[index]["habref"]["search_name"] = hab.nom_cite;
     });
     station["habitats"] = formatedHabitats;
-    console.log(station);
     return {
       ...station,
       date_min: this._dateParser.parse(station.date_min),
@@ -305,13 +492,45 @@ export class OcchabFormService {
     };
   }
 
+  /**
+   * Crée les contrôles d'un sous-groupe `additional_data` à partir des valeurs
+   * enregistrées, pour qu'elles soient présentes dans le formulaire avant que
+   * le générateur ne s'affiche (un patchValue sur un groupe vide ne fait rien).
+   * Ces contrôles n'ont ni validateur ni date parsée : c'est
+   * refreshCurrentHabAdditionalFieldsDef qui les retire au moment de l'édition
+   * afin que le générateur les recrée correctement.
+   */
+  private presetAdditionalDataControls(
+    additionalDataForm: UntypedFormGroup,
+    values: any
+  ) {
+    const cleanedValues = this.withoutNomenclatureLabels(values);
+    Object.keys(cleanedValues).forEach((name) =>
+      additionalDataForm.addControl(
+        name,
+        new UntypedFormControl(cleanedValues[name]),
+        { emitEvent: false }
+      )
+    );
+  }
+
   patchStationForm(oneStation) {
     // create habitat formArray
     for (let i = 0; i < oneStation.properties.habitats.length; i++) {
-      (this.stationForm.controls.habitats as UntypedFormArray).push(
-        this.initHabForm(this._storeService.defaultNomenclature)
+      const habForm = this.initHabForm(this._storeService.defaultNomenclature);
+      this.presetAdditionalDataControls(
+        habForm.get("additional_data") as UntypedFormGroup,
+        oneStation.properties.habitats[i].additional_data
       );
+      (this.stationForm.controls.habitats as UntypedFormArray).push(habForm);
     }
+
+    // les valeurs des champs additionnels sont portées par les définitions,
+    // pas par le FormGroup (cf. cloneDefsWithValues) ; à renseigner avant le
+    // patchValue, qui déclenche un refresh via id_dataset.valueChanges
+    this._stationAdditionalData = this.withoutNomenclatureLabels(
+      oneStation.properties.additional_data
+    );
 
     const formatedData = this.formatStationAndHabtoPatch(oneStation.properties);
     this.stationForm.patchValue(formatedData);
@@ -322,6 +541,7 @@ export class OcchabFormService {
       geom_4326: oneStation.geometry,
     });
     this.currentEditingHabForm = null;
+    this.refreshStationAdditionalFieldsDef();
   }
 
   /** Format a station before post */
@@ -353,6 +573,21 @@ export class OcchabFormService {
 
     formData.habitats.forEach((element) => {
       this.formatNomenclature(element);
+    });
+
+    // format additional fields (dates) for both levels.
+    // le backend remplace additional_data en bloc : les valeurs sans contrôle
+    // vivant (définitions non chargées, champ d'un autre JDD ou supprimé de
+    // l'Admin) sont réinjectées depuis l'accumulateur pour ne pas être effacées
+    formData.additional_data = this.formatAdditionalDataBeforePost(
+      this._rawStationDefs,
+      { ...(this._stationAdditionalData || {}), ...(formData.additional_data || {}) }
+    );
+    formData.habitats.forEach((element) => {
+      element.additional_data = this.formatAdditionalDataBeforePost(
+        this._rawHabitatDefs,
+        element.additional_data
+      );
     });
 
     // Format data in geojson

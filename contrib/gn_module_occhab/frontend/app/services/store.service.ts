@@ -1,7 +1,15 @@
 import { Injectable } from "@angular/core";
 import { DataFormService } from "@geonature_common/form/data-form.service";
-import { Observable, BehaviorSubject } from "rxjs";
+import { Observable, BehaviorSubject, of } from "rxjs";
+import { catchError, shareReplay } from "rxjs/operators";
 import { ConfigService } from "@geonature/services/config.service";
+
+/**
+ * Préfixe des libellés que le serveur ajoute aux champs additionnels de type
+ * nomenclature. GN2CommonModule définit la même constante pour son pipe et sa
+ * directive, mais ne l'exporte pas.
+ */
+export const ADDITIONAL_FIELD_LABEL_PREFIX = "_label_";
 
 @Injectable()
 export class OcchabStoreService {
@@ -16,6 +24,14 @@ export class OcchabStoreService {
   );
   public defaultNomenclature$: Observable<any> =
     this._defaultNomenclature$.asObservable();
+  /**
+   * Définitions des champs additionnels, une requête par niveau du formulaire.
+   * Deux appels distincts sont nécessaires : le endpoint combine les object_code
+   * multiples avec un ET, une liste ne renverrait donc que les champs rattachés
+   * aux deux objets à la fois.
+   */
+  public stationAdditionalFields$: Observable<Array<any>>;
+  public habitatAdditionalFields$: Observable<Array<any>>;
   constructor(
     private _gnDataService: DataFormService,
     public config: ConfigService
@@ -47,6 +63,44 @@ export class OcchabStoreService {
       .subscribe((data) => {
         this._defaultNomenclature$.next(data);
       });
+    this.stationAdditionalFields$ = this.getAdditionalFields("OCCHAB_STATION");
+    this.habitatAdditionalFields$ = this.getAdditionalFields("OCCHAB_HABITAT");
+  }
+
+  private getAdditionalFields(objectCode: string): Observable<Array<any>> {
+    return this._gnDataService
+      .getadditionalFields({
+        module_code: "OCCHAB",
+        object_code: objectCode,
+      })
+      .pipe(
+        // le service est fourni à l'échelle du module : une seule requête,
+        // partagée entre le formulaire de saisie et la fiche d'information.
+        // catchError est placé après : shareReplay ne met pas l'erreur en
+        // cache, chaque nouvel abonnement retente donc la requête
+        shareReplay({ bufferSize: 1, refCount: false }),
+        catchError((error) => {
+          console.error("Error while getting additional fields", error);
+          return of([]);
+        })
+      );
+  }
+
+  /**
+   * Ne conserve que les champs globaux et ceux rattachés au jeu de données donné.
+   * L'API renvoie les deux : ce tri local évite une requête à chaque changement
+   * de jeu de données.
+   */
+  filterFieldsByDataset(
+    fields: Array<any>,
+    idDataset?: number | null
+  ): Array<any> {
+    return (fields || []).filter(
+      (field) =>
+        !field.datasets ||
+        field.datasets.length === 0 ||
+        field.datasets.some((dataset) => dataset.id_dataset === idDataset)
+    );
   }
 
   get defaultNomenclature() {
