@@ -153,7 +153,8 @@ html_theme_options = {
 html_static_path = ["_static"]
 
 # Classe les résultats de la référence API après ceux de la documentation
-html_search_scorer = "_static/search-scorer.js"
+# (chemin absolu : Sphinx l'ouvre relativement au répertoire courant, pas à docs/)
+html_search_scorer = str(Path(__file__).resolve().parent / "_static" / "search-scorer.js")
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
