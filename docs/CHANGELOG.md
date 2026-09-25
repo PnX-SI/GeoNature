@@ -1,17 +1,102 @@
 # CHANGELOG
 
-## 2.18.x
+## 2.18.0 - Sempervivum arachnoideum
+
+### ▶️ En bref
+
+- **Backend** Ajout de la compatibilité avec SQLAlchemy 2.x, Fin du support de Debian 11 et de la version Python 3.9.x. Utilisation de `uv`.
+- **Interface** Refonte de la page de connexion et menu supérieur adapté aux écrans mobiles
+- **Métadonnées** Ajout des champs additionnels dans les jeux de données. Ajout de la possibilité de saisir plusieurs objectifs dans les jeux de données
+- **Synthèse** Ajout de la possibilité de changer l'affichage des observations en fonctions de critères (e.g. stade de vie, précision de la données, etc.) Rendez-vous sur la [documentation](https://docs.geonature.fr/admin-manual.html#configurer-d-autres-criteres-d-affichage-sur-la-carte) pour plus de détails.
+- **Occtax** Ajout de la saisie d'individus dans Occtax. Configuration spécifique par module Occtax dupliqué et nouvelle commande pour dupliquer le module Occtax.
 
 ### 🚀 Nouveautés
 
+- [Général] Compatibilité avec SQLAlchemy 2 (#4130 par @jacquesfize)
+- [Installation] Utilisation de `uv` pour installer l'environnement Python du backend, remplacement des fichiers `setup.py` par des fichiers `pyproject.toml` et réduction des fichiers de requirements à un seul fichier `requirements.in` (#4320 par @jacquesfize)
+- [Installation] Le préfixe d'URL `/geonature` n'est plus codé en dur dans l'installation. Il est possible de le modifier dans `url_application_prefix_path` du fichier `settings.ini` (#3951 par @andriacap)
+- [Installation] Le backend de GeoNature peut être lancé sans fichier de configuration si tous les paramètres requis sont fournis par des variables d'environnement (#4407 par @bouttier)
+- [Authentification] Refonte de la page de connexion et du formulaire d'inscription : composants Angular Material, affichage adapté aux mobiles (#4385, #4408 par @jacquesfize)
+- [Authentification] Vérification de la validité de l'identifiant lors de sa modification dans l'espace utilisateur (#3891 par @christophe-ramet)
+- [Accueil] Le menu supérieur de GeoNature est maintenant responsive et s'adapte aux écrans de smartphones (#4166 par @jacquesfize)
+- [Synthèse] Amélioration des performances des filtres sur les statuts de la Bibliothèque des connaissances (#4356 par @IdrissaD)
+- [Synthèse] Mise en évidence sur la carte et dans la liste des résultats d'un critère sélectionné, y compris dans les fiches taxon et observateur (#3258 par @jpm-cbna)
+- [Synthèse] Ajout de `id_digitizer` comme synonyme de `id_digitiser` dans le modèle `Synthese` (#4196 par @bouttier)
+- [Individus] Ajout des individus dans GeoNature (@CynthiaBorotPNV, @amandine-sahl, @TheoLechemia, @Pierre-Narcisi, @ClaireLagaye, @jacquesfize)
+  - [Synthèse] Ajout du champ `id_individual` dans la Synthèse et d'un filtre sur les individus (#4281 par @jacquesfize)
+  - [Occtax] Possibilité de lier un dénombrement à un individu (module Monitoring), désactivable avec le paramètre `individual` de la section `form_fields` (#4281 par @jacquesfize, @TheoLechemia, @amandine-sahl)
+- [Occtax] Possibilité de définir une configuration spécifique pour chaque module Occtax dupliqué (#2641 par @TheoLechemia)
+- [Occtax] Ajout de la commande `geonature occtax create-duplicated-module` pour dupliquer le module Occtax (#4306 par @TheoLechemia)
+- [Occtax] Possibilité de trier la liste des taxons saisis par ordre alphabétique ou par ordre de saisie (#682 par @VincentCauchois)
+- [Métadonnées] Ajout de la mécanique de champs additionnels dans les formulaires de jeux de données (#4215 par @VincentCauchois)
+- [Métadonnées] Possibilité de renseigner plusieurs objectifs pour un jeu de données (#4102 par @VincentCauchois)
+- [Métadonnées] Les données d'Occhab sont prises en compte dans les statistiques et les fiches des métadonnées (#3923 par @VincentCauchois)
+- [Métadonnées] Suppression de la limite de 150 caractères du nom des jeux de données (#3646 par @jacquesfize)
+- [Métadonnées] Traduction du formulaire des cadres d'acquisition (#4417 par @jacquesfize)
+- [Import] Affichage des jeux de données dans la liste des imports, dans la fiche d'un import et dans le rapport d'import (#4146 par @christophe-ramet)
+- [Habref] Ajout de commandes de mise à jour du référentiel Habref (#4227 par @Pierre-Narcisi)
+- [Nomenclatures] Le libellé des nomenclatures des champs additionnels est désormais stocké en plus de leur identifiant (clé suffixée par `_label`). Les données historiques d'Occtax (web et mobile) sont migrées (#4329 par @TheoLechemia)
+- [Frontend] Remplacement du composant `pnx-taxa` (#4203 par @jpm-cbna)
+- [Frontend] Ajout d'une propriété `placeholder` au composant `pnx-observers` (#4174 par @CynthiaBorotPNV)
+- [Docker] Prise en charge des variables d'environnement suffixées par `_FILE` dans l'entrypoint du backend, permettant l'usage des secrets Docker (#4386 par @bouttier)
+- [Docker] Ajout de l'exécution de `supergrant` dans l'entrypoint (si `GEONATURE_SUPERGRANT_ARGS` est défini) et création du fichier `/tmp/ready` pour le healthcheck de l'installation de la base de données (#4391 par @bouttier)
+- [Performances] Import différé de `weasyprint` et `bokeh` pour accélérer le lancement de la commande `geonature` (#4396 par @bouttier)
+- [Admin des permissions] Ajout de tests pour l'interface de gestions des permissions (#4326 par @jacquesfize)
+- [Métadonnées] Possibilité de configurer plusieurs types de zonage pour un même libellé dans `METADATA_AREA_FILTERS` (#4294 par @christophe-ramet)
+
 ### 🐛 Corrections
 
-- CM - J'ai pas compris >> Suppression de la section de configuration `ADDITIONAL_FIELDS` et des variables de configuration `IMPLEMENTED_MODULES` et `IMPLEMENTED_MODULES`, maintenant géré en base de données (la migration alembic gère la rétro-compatibilité)
+- [Synthèse] Correction du décalage d'un jour sur les filtres par période (#4315 par @jacquesfize et @PaulLabruyere)
+- [Synthèse] Correction des filtres multiples sur les statuts (#3488 par @TheoLechemia)
+- [Synthèse] Correction de l'erreur générée par le filtre "Saisi par" (#4216 par @christophe-ramet)
+- [Synthèse] Correction de la requête d'export des statuts (#2613 par @Pierre-Narcisi)
+- [Occtax] Modification possible des relevés saisis depuis Occtax-mobile avec des champs additionnels sur le JDD (#3201 par @TheoLechemia)
+- [Occtax] Correction de la traduction du libellé "Preuve non numérique" (#4342 par @cedricroy)
+- [Occtax] Correction du titre "Dénombrement s" (#4364 par @jbrieuclp)
+- [Métadonnées] Correction de la recherche avancée (#4334 par @jacquesfize)
+- [Métadonnées] Le bouton d'ajout de jeu de données n'est plus affiché dans la fiche d'un cadre d'acquisition que si ce dernier est ouvert (#4186 par @jacquesfize)
+- [Métadonnées] Correction d'une coquille dans le template PDF des cadres d'acquisition (#4415 par @jacquesfize)
+- [Import] Correction d'une erreur lorsque `count_max` est vide (#4187 par @christophe-ramet)
+- [Import] Correction du chargement de la page de correspondance des champs à la reprise de certains imports (#4133 par @christophe-ramet)
+- [Accueil] Correction du tri et de la pagination du bloc des dernières discussions (#4333 par @jacquesfize)
+- [Authentification] Correction d'une erreur à la création de compte lorsque `ENABLE_USER_MANAGEMENT = false` (#4314 par @jacquesfize)
+- [Admin des permissions] Les zonages désactivés ne sont plus proposés dans le filtre géographique (#4402 par @IdrissaD)
+- [Validation] Correction de l'affichage de la toolbox d'édition des géométries sur la carte du module Validation (#3514 par @Pierre-Narcisi)
+- [Validation] La périodicité par défaut de la validation automatique (`AUTO_VALIDATION_CRONTAB`) correspond désormais à la documentation (`0 * * * *`) (#4355 par @cedricroy)
+- [Cartes] Correction des incohérences de zoom. Suppression du paramètre inutile `ZOOM_ON_CLICK` et ajout du zoom maximum pour un fond carto dans l (#4243 par @christophe-ramet)
+- [Cartes] Correction du rendu des légendes dans le gestionnaire de couches (#4301 par @IdrissaD)
+- [Cartes] Amélioration de la gestion des géométries de type LineString, MultiLineString, Polygon et MultiPolygon dans le `MapService` (#3024, #1335 par @jacquesfize)
+- [Traductions] Les fichiers de traduction sont rechargés automatiquement par le navigateur après une mise à jour de GeoNature (#4390 par @jacquesfize)
+- [Traductions] Traduction du sélecteur de date (par @jpm-cbna)
+- [Traductions] Traduction de l'infobulle "Tout effacer" du composant de nomenclatures (#4270 par @CynthiaBorotPNV)
+- [Frontend] Correction d'une erreur à l'initialisation du composant `pnx-taxonomy` (#4193 par @jpm-cbna)
+- [Notifications] Utilisation d'un environnement Jinja isolé (_sandbox_) pour le rendu des notifications (#4341 par @LisaAuger)
+- [Installation] Correction de la récupération du dossier TaxHub (#3884 par @jacquesfize)
+- [Installation] Correction de la détection des fichiers de configuration (`extra_files`) lorsque leur chemin est personnalisé (#4373 par @bouttier)
+- [Installation] Ajout d'une barre oblique manquante dans `geonature_apache.conf` (#4132 par @tsevere-cenpaca)
+- [Nginx] Ajout de `absolute_redirect off` pour éviter les redirections erronées derrière un proxy ou sur un port non standard (#4379 par @bouttier)
+
+### 💻 Développement
+
+- [Développement] Amélioration du hook pre-commit `prettier` (écriture directe et limitation aux fichiers modifiés) (#4351 par @christophe-ramet) et passage à `black` 26 (#4308 par @christophe-ramet)
+- [Développement] Suppression des tests de performance `pytest-benchmark`, remplacés par Locust (https://github.com/PnX-SI/geonature_benchmark) (#4319 par @jacquesfize)
+- [Développement] Suppression du dossier `data/scripts/import_mtd` (#4309 par @christophe-ramet) et du dossier `backend/geonature/tests/data` (par @VincentCauchois)
+- [Développement] Correction des tests lorsque la configuration contient un préfixe d'URL (#4412 par @bouttier)
+- [Docker] Ajout de cibles au `Makefile` pour construire les images Docker (#4371 par @bouttier)
+- [Docker] Ajout d'une étape de développement dans le Dockerfile frontend et corrections diverses (par @bouttier)
+- [Docker] Correction de la construction des sous-modules et régénération forcée de l'URL de l'API (#4161, #4151 par @bouttier)
+- [Frontend] Passage de Node.js 20 à Node.js 24 (#4374 par @bouttier)
+- [CI/CD] Suppression de Debian 11 de la CI et correction de l'envoi de la couverture de code vers Codecov (#4185 par @amandine-sahl)
+- [Documentation] Correction de la syntaxe RST dans la section "Arborescence" de la documentation développeur (#4304 par @raphj) et correction de la compilation de la documentation (#4340 par @jacquesfize)
 
 ### ⚠️ Notes de version
 
-- Renseigner (ou vider) `HELP_CONTACT_URL` (#4385)
-- logo_sidebar.jpg devient logo_sidebar.png. Modifiez votre fichier logo_sidebar.jpg en logo_sidebar.png dans le dossier XXXX si vous aviez surcouché le logo de l'application (logo GeoNature par défaut). (#4405)
+- Debian 11 n'est plus supporté.
+- Les paramètres de configuration `IMPLEMENTED_MODULES` et `IMPLEMENTED_OBJECTS` de la section `ADDITIONAL_FIELDS` sont supprimés. Les modules et objets pouvant avoir des champs additionnels sont désormais gérés en base de données avec les champs `support_additional_fields` des tables `gn_commons.t_modules` et `gn_permissions.t_objects` (la migration Alembic gère la rétro-compatibilité) (#4306)
+- La valeur par défaut du paramètre `HELP_CONTACT_URL` passe à `#`. Renseignez-le avec l'URL de contact de votre structure (ou videz-le) (#4405)
+- Le fichier `logo_sidebar.jpg` devient `logo_sidebar.png`. Si vous aviez surcouché le logo de l'application, renommez (et convertissez) votre fichier `custom/images/logo_sidebar.jpg` en `custom/images/logo_sidebar.png` (#4405)
+- La valeur par défaut du paramètre `AUTO_VALIDATION_CRONTAB` du module Validation passe de `* 1 * * *` à `0 * * * *`. Vérifiez votre configuration si vous l'aviez surcouchée.
+- La fonction `gn_commons.is_in_period` est supprimée (#4315)
 
 ## 2.17.2 (2026-06-09)
 
@@ -930,7 +1015,7 @@ Si vous mettez à jour GeoNature :
       AREA_AGGREGATION_ENABLED = true
       AREA_AGGREGATION_TYPE = "M10"
       AREA_AGGREGATION_BY_DEFAULT = false    # affichage groupé par défaut
-      AREA_AGGREGATION_LEGEND_CLASSES = .   # voir fichier de configuration d’exemple
+      # AREA_AGGREGATION_LEGEND_CLASSES : voir fichier de configuration d’exemple
   ```
 - Synthèse : Possibilité de définir des filtres par défaut avec le paramètre `SYNTHESE.DEFAULT_FILTERS` (#2261)
 - Métadonnées : Chargement des jeux de données seulement quand on clique sur un cadre d'acquisition dans la liste des métadonnées, pour améliorer les performances du module, en ne chargeant pas tous les jeux de données par défaut (#2004)
@@ -1315,6 +1400,7 @@ GeoNature :
 ### ⚠️ Notes de version
 
 - **Avant** de mettre à jour GeoNature :
+
   - Mettre à jour les versions de TaxHub (1.10.4) et UsersHub
     (2.3.1), sans la partie migration de la base de données avec
     Alembic (elle sera faite lors de la mise à jour de GeoNature)
@@ -1332,6 +1418,7 @@ GeoNature :
   - Supprimer les paramètres de configuration qui ont disparu s'ils
     sont présents dans votre fichier de configuration
     `geonature_config.toml` :
+
     - `LOCAL_SRID`
     - `CRUVED_SEARCH_WITH_OBSERVER_AS_TXT`
     - `id_area_type_municipality`
@@ -1821,6 +1908,7 @@ dépendances et ses modules principaux est disponible](https://geonature.fr/docu
   anciennes régions (branche Alembic `ref_geo_fr_regions_1970`) --
   l'installation de ces référentiels est automatique avec
   l’installation des règles de sensibilité.
+
   - Si vous possédez déjà le référentiel, vous pouvez l'indiquer à
     Alembic :
 
@@ -1963,6 +2051,7 @@ passage à la version 3 de Marshmallow.
   les schémas `taxonomie` et `utilisateurs`)
 
 - Suppression de `supervisor` :
+
   - Stopper GeoNature : `sudo supervisorctl stop geonature2`
   - Supprimer le fichier de configuration supervisor de GeoNature :
     `sudo rm /etc/supervisor/conf.d/geonature-service.conf`
@@ -1974,6 +2063,7 @@ passage à la version 3 de Marshmallow.
   (<http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application>)
 
 - Passage à `systemd` :
+
   - Copier le fichier `install/assets/geonature.service` dans
     `/etc/systemd/system/`
   - Éditer `/etc/systemd/system/geonature.service` et remplacer les
@@ -2011,6 +2101,7 @@ passage à la version 3 de Marshmallow.
   configuration : `sudo systemctl reload apache2`
 
 - Passage à Alembic :
+
   - S'assurer d'avoir une base de données de GeoNature en version
     2.7.5
   - Si vous avez UsersHub installé, ajoutez dans votre configuration
