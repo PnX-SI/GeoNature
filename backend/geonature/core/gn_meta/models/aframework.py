@@ -172,13 +172,22 @@ class TAcquisitionFramework(db.Model):
 
     @staticmethod
     def get_user_af(user, only_query=False, only_user=False):
-        """get the af(s) where the user is actor (himself or with its organism - only himelsemf id only_use=True) or digitizer
-        param:
-          - user from TRole model
-          - only_query: boolean (return the query not the id_datasets allowed if true)
-          - only_user: boolean: return only the dataset where user himself is actor (not with its organoism)
+        """get the af(s) where the user is actor (himself or with its organism - only himself if only_user=True) or digitizer
 
-        return: a list of id_dataset or a query"""
+        Parameters
+        ----------
+        user : TRole
+            The user
+        only_query : bool
+            Return the query instead of the allowed id_datasets
+        only_user : bool
+            Return only the datasets where the user himself is actor (not with its organism)
+
+        Returns
+        -------
+        list or Query
+            A list of id_dataset or a query
+        """
         query = select(TAcquisitionFramework.id_acquisition_framework).outerjoin(
             CorAcquisitionFrameworkActor,
             CorAcquisitionFrameworkActor.id_acquisition_framework

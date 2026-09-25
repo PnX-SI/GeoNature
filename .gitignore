@@ -100,7 +100,8 @@ instance/
 .scrapy
 
 # Sphinx documentation
-docs/_build/
+*/docs/_build/
+docs/autoapi/
 docs/external_doc/documentation_js
 
 # PyBuilder

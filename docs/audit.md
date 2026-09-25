@@ -1,3 +1,7 @@
+---
+orphan: true
+---
+
 # Priorités pour le référenciel
 
 HTTPS

@@ -5,8 +5,8 @@ from geonature.core.gn_permissions.tools import get_scopes_by_action
 
 class CruvedSchemaMixin:
     """
-    This mixin add a cruved field which serialize to a dict "{action: boolean}".
-        example: {"C": False, "R": True, "U": True, "V": False, "E": True, "D": False}
+    This mixin add a cruved field which serialize to a dict "{action: boolean}",
+    example: ``{"C": False, "R": True, "U": True, "V": False, "E": True, "D": False}``.
     The schema must have a __module_code__ property (and optionally a __object_code__property)
     to indicate from which permissions must be verified.
     The model must have an has_instance_permission method which take the scope and retrurn a boolean.

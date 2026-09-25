@@ -8,6 +8,8 @@ from flask.logging import default_handler
 
 
 class RequestIdFormatter(logging.Formatter):
+    """Log formatter prefixing messages with the Flask request id, when available."""
+
     def format(self, record):
         s = super().format(record)
         if has_request_context() and "FLASK_REQUEST_ID" in request.environ:

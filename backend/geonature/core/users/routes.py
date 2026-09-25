@@ -70,14 +70,7 @@ def get_roles_by_menu_id(id_menu=None):
     id_menu : int
         The id of user list (utilisateurs.bib_list)
     nom_complet : str, optional
-        Beginning of complete name of the role
-
-    GET parameters
-    --------------
-
-    :param id_menu: the id of user list (utilisateurs.bib_list)
-    :type id_menu: int
-    :query str nom_complet: beginning of complet name of the role
+        Beginning of complete name of the role (GET parameter)
     """
     query = select(VUserslistForallMenu).distinct(VUserslistForallMenu.nom_complet)
 

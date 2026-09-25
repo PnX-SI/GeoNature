@@ -17,12 +17,12 @@ def list_all_destinations(action_code):
     Return the list of all destinations. If an action code is provided, only the destinations
     that the user has permission (based on the action_code) to access are returned.
 
-    Parameters:
+    Parameters
     ----------
     action_code : str
         The action code to filter destinations. Possible values are 'C', 'R', 'U', 'V', 'E', 'D'.
 
-    Returns:
+    Returns
     -------
     destinations : List of Destination
         List of all destinations.

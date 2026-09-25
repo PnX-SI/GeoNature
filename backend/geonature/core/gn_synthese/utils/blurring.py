@@ -95,8 +95,8 @@ def build_blurred_precise_geom_queries(
 
     Returns
     -------
-        Tuple[SyntheseQuery, SyntheseQuery]
-            A tuple containing two `SyntheseQuery` objects representing the blurred and precise geometries queries.
+    Tuple[SyntheseQuery, SyntheseQuery]
+        A tuple containing two ``SyntheseQuery`` objects representing the blurred and precise geometries queries.
 
     """
 
@@ -208,9 +208,9 @@ def build_allowed_geom_cte(
         list contains permissions with a sensitivity scope filter
     precise_permissions : List[Permission]
         list that contains permissions without sensitivity scope
-    blurred_geom_query : SyntheseQuery
+    blurred_geom_query : geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery
         SyntheseQuery object used to fetch sensitive observations
-    precise_geom_query : SyntheseQuery
+    precise_geom_query : geonature.core.gn_synthese.utils.query_select_sqla.SyntheseQuery
         SyntheseQuery object used to fetch unsensitive observations
     limit : int
         limit of observations returned

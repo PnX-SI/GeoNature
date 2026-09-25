@@ -1,7 +1,7 @@
 """
 Modèles du schéma gn_monitoring
 Correspond a la centralisation des données de base
-    relatifs aux protocoles de suivis
+relatifs aux protocoles de suivis
 """
 
 from typing import Optional, Any

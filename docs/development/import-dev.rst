@@ -266,7 +266,7 @@ Il faut d'abord créer une classe héritant de la classe `ImportActions`
 Dans cette classe on retrouve toutes les fonctions obligatoires, à implementer pour pouvoir implementer l'import dans un module.
 
 Méthodes à implémenter
-"""""""""""""""""""""
+""""""""""""""""""""""
 
 ``statistics_labels()``
 

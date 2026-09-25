@@ -21,10 +21,15 @@ def delete_recursively(path_folder, period=1, excluded_files=[]):
     """
     Delete all the files and directory inside a directory
     which have been create before a certain period
-    Paramters:
-        path_folder(string): path to the fomlder to delete
-        period(integer): in days: delete the file older than this period
-        exluded_files(list<string>): list of files to not delete
+
+    Parameters
+    ----------
+    path_folder : str
+        path to the folder to delete
+    period : int
+        in days: delete the file older than this period
+    excluded_files : list[str]
+        list of files to not delete
     """
     for the_file in os.listdir(path_folder):
         file_path = os.path.join(path_folder, the_file)

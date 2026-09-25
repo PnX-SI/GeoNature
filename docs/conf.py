@@ -41,14 +41,28 @@ extensions = [
     "sphinx.ext.coverage",
     "sphinx.ext.viewcode",
     "sphinx.ext.githubpages",
+    "sphinx.ext.napoleon",
     "myst_parser",
 ]
 
 ## AUTOAPI
 extensions.append("autoapi.extension")
-autoapi_dirs = ["../backend/geonature", "../backend/dependencies"]
+autoapi_dirs = ["../backend/geonature"]
 autoapi_ignore = ["*migrations*", "*tests*", "*celery_app.py"]
 autoapi_add_toctree_entry = False
+# Pas de membres privés/spéciaux/importés : réduit fortement le volume généré
+# et évite les « description dupliquée » dues aux objets ré-exportés.
+autoapi_options = ["members", "undoc-members", "show-inheritance", "show-module-summary"]
+# Conserve les .rst générés pour que les builds incrémentaux ne relisent pas toute l'API
+autoapi_keep_files = True
+
+# Les sections « Attributes » des docstrings sont rendues en :ivar: pour ne pas
+# dupliquer les attributs déjà documentés par autoapi
+napoleon_use_ivar = True
+
+# Les imports non résolus par autoapi (objets définis dynamiquement, dépendances
+# non analysées) ne sont pas corrigeables côté documentation.
+suppress_warnings = ["autoapi.python_import_resolution"]
 
 
 # Add any paths that contain templates here, relative to this directory.
@@ -59,7 +73,6 @@ templates_path = ["_templates"]
 #
 source_suffix = {
     ".rst": "restructuredtext",
-    ".txt": "markdown",
     ".md": "markdown",
 }
 
@@ -90,7 +103,25 @@ language = "fr"
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ["venv*"]
+exclude_patterns = [
+    "venv*",
+    "build",
+    "_build",
+    "docs",
+    "__pycache__",
+    # Fichiers inclus dans d'autres pages via `.. include::` : ne pas les compiler
+    # une seconde fois comme pages autonomes (labels dupliqués, images introuvables)
+    "admin/*",
+    "utilisateur/*",
+    "development/*",
+    "installation-all.rst",
+    "installation-standalone.rst",
+    "installation-docker.rst",
+    "https.rst",
+    "sensitivity.rst",
+    "tests_backend.rst",
+    "tests_frontend.rst",
+]
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "sphinx"
@@ -111,26 +142,9 @@ html_logo = "./images/LogoGeonature.jpg"
 # documentation.
 #
 html_theme_options = {
-    "navigation_depth": 2,
-    "use_source_button": True,
-    "repository_provider": "github",
-    "repository_url": "https://github.com/PnX-SI/GeoNature",
-    "path_to_docs": "docs",
-    "repository_branch": "master",
-    "use_repository_button": True,
-    "collapse_navbar": True,
-    "icon_links": [
-        {
-            # Label for this link
-            "name": "GitHub",
-            # URL where the link will redirect
-            "url": "https://github.com/PnX-SI/GeoNature",  # required
-            # Icon class (if "type": "fontawesome"), or path to local image (if "type": "local")
-            "icon": "fa-brands fa-square-github",
-            # The type of image to be used (see below for details)
-            "type": "fontawesome",
-        }
-    ],
+    "source_repository": "https://github.com/PnX-SI/GeoNature/",
+    "source_branch": "master",
+    "source_directory": "docs/",
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -151,7 +165,7 @@ html_static_path = ["_static"]
 #     ]
 # }
 
-html_extra_path = ["CNAME", "sources/"]
+html_extra_path = ["CNAME"]
 
 
 # -- Options for HTMLHelp output ------------------------------------------

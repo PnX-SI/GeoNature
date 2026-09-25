@@ -16,7 +16,6 @@ from geonature.core.gn_synthese.models import (
     Synthese,
     VColorAreaTaxon,
 )
-from geonature.core.gn_commons.models import TMedias
 from geonature.core.gn_synthese.utils.taxon_sheet import TaxonSheet, TaxonSheetUtils
 from geonature.core.gn_synthese.utils.pagination_sorting import PaginationSortingUtils
 from pypnusershub.db import User
@@ -86,7 +85,9 @@ def get_color_taxon():
     :query str code_area_type: Type area code (ref_geo.bib_areas_types.type_code)
     :query int id_area: Id of area (ref_geo.l_areas.id_area)
     :query int cd_nom: taxon code (taxonomie.taxref.cd_nom)
+
     Those three parameters can be multiples
+
     :returns: Array<dict<VColorAreaTaxon>>
     """
     params = request.args
@@ -133,7 +134,7 @@ def get_autocomplete_taxons_synthese():
 
     :query str search_name: the search name (use sql ilike statement and puts "%" for spaces)
     :query str regne: filter with kingdom
-    :query str group2_inpn : filter with INPN group 2
+    :query str group2_inpn: filter with INPN group 2
     """
     search_name = request.args.get("search_name", "")
     query = (

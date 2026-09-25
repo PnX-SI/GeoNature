@@ -1,3 +1,7 @@
+---
+orphan: true
+---
+
 # Occtax - Champs additionnels
 
 Les champs additionnels peuvent être définis à chacun des trois niveaux du formulaire (objet de rattachement):

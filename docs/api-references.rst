@@ -1,8 +1,9 @@
-API REFERENCES
-==============
+:orphan:
+
+Référence API
+=============
 
 .. toctree::
-    ../../autoapi/geonature/index
-    ../../autoapi/pypnusershub/index
-    ../../autoapi/src/utils_flask_sqla/index
-    ../../autoapi/src/utils_flask_sqla_geo/index
+    :maxdepth: 1
+
+    autoapi/geonature/index

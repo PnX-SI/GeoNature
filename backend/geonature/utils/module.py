@@ -204,18 +204,19 @@ def is_module_installed(
 ):
     """Is a GeoNature module installed.
 
-    We consider a module is installed if and only if:
-    - The Python package is installed
-        and (
-            `check_if_all_revisions_have_been_applied` == true
-            and
-             (
-                all its Alembic migrations are stamped
-                or
-                there is no Alembic migration at all for the module
+    We consider a module is installed if and only if::
+
+        The Python package is installed
+            and (
+                `check_if_all_revisions_have_been_applied` == true
+                and
+                 (
+                    all its Alembic migrations are stamped
+                    or
+                    there is no Alembic migration at all for the module
+                )
             )
-        )
-        and the module is registered in the database
+            and the module is registered in the database
 
     Parameters
     ----------
@@ -224,12 +225,13 @@ def is_module_installed(
         Can be found in the root file "pyproject.toml" of the module repository
         (under the "[project.entry-points.gn_module]" table).
         Examples:
-            - "gn_module_occhab"
-            - "occtax"
-            - "gn_module_validation"
-            - "gn_module_dashboard"
-            - "gn_module_export"
-            - "gn_module_monitoring"
+
+        - "gn_module_occhab"
+        - "occtax"
+        - "gn_module_validation"
+        - "gn_module_dashboard"
+        - "gn_module_export"
+        - "gn_module_monitoring"
     migrations_dir : str
         The name of the directory containing the migrations files for the branch.
         Value of `None` defaults to "migrations".
