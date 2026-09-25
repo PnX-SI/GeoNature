@@ -1,48 +1,50 @@
 # CHANGELOG
 
-## 2.18.0 - Sempervivum arachnoideum
+## 2.18.0 - Sempervivum arachnoideum 🌱 (unreleased)
 
 ### ▶️ En bref
 
-- **Backend** Ajout de la compatibilité avec SQLAlchemy 2.x, Fin du support de Debian 11 et de la version Python 3.9.x. Utilisation de `uv`.
-- **Interface** Refonte de la page de connexion et menu supérieur adapté aux écrans mobiles
-- **Métadonnées** Ajout des champs additionnels dans les jeux de données. Ajout de la possibilité de saisir plusieurs objectifs dans les jeux de données
-- **Synthèse** Ajout de la possibilité de changer l'affichage des observations en fonctions de critères (e.g. stade de vie, précision de la données, etc.) Rendez-vous sur la [documentation](https://docs.geonature.fr/admin-manual.html#configurer-d-autres-criteres-d-affichage-sur-la-carte) pour plus de détails.
-- **Occtax** Ajout de la saisie d'individus dans Occtax. Configuration spécifique par module Occtax dupliqué et nouvelle commande pour dupliquer le module Occtax.
+- **Maintenance** : Mise à jour de SQLAlchemy en version 2.0. Fin du support de Debian 11 et de la version Python 3.9.x.
+  Si vous utilisez des modules externes spécifiques, vérifiez qu'ils disposent d'une version compatible avec SQLAlchemy 2.0. C'est le cas pour les modules Dashboard, Monitoring et Export que vous devez donc mettre à jour en même temps que GeoNature.
+- **Interface** : Refonte de la page de connexion et menu supérieur adapté aux écrans mobiles.
+- **Métadonnées** : Ajout des champs additionnels dans les jeux de données. Ajout de la possibilité de saisir plusieurs objectifs dans les jeux de données.
+- **Synthèse** : Ajout de la possibilité de changer l'affichage des observations en fonctions de critères (e.g. présence/absence, validation, stade de vie, période, etc.) Rendez-vous sur la [documentation](https://docs.geonature.fr/admin-manual.html#configurer-d-autres-criteres-d-affichage-sur-la-carte) pour plus de détails.
+- **Occtax** : Ajout de la possibilité d'associer un individu à une observation. Possibilité de définir une configuration spécifique par module Occtax dupliqué et nouvelle commande pour dupliquer le module Occtax.
+- **Occhab** : Ajout des commandes pour mettre à jour HabRef en version 7.
 
 ### 🚀 Nouveautés
 
-- [Général] Compatibilité avec SQLAlchemy 2 (#4130 par @jacquesfize)
-- [Installation] Utilisation de `uv` pour installer l'environnement Python du backend, remplacement des fichiers `setup.py` par des fichiers `pyproject.toml` et réduction des fichiers de requirements à un seul fichier `requirements.in` (#4320 par @jacquesfize)
-- [Installation] Le préfixe d'URL `/geonature` n'est plus codé en dur dans l'installation. Il est possible de le modifier dans `url_application_prefix_path` du fichier `settings.ini` (#3951 par @andriacap)
-- [Installation] Le backend de GeoNature peut être lancé sans fichier de configuration si tous les paramètres requis sont fournis par des variables d'environnement (#4407 par @bouttier)
+- [Général] Mise à jour de SQLAlchemy en version 2.0 (#4130 par @jacquesfize)
 - [Authentification] Refonte de la page de connexion et du formulaire d'inscription : composants Angular Material, affichage adapté aux mobiles (#4385, #4408 par @jacquesfize)
 - [Authentification] Vérification de la validité de l'identifiant lors de sa modification dans l'espace utilisateur (#3891 par @christophe-ramet)
-- [Accueil] Le menu supérieur de GeoNature est maintenant responsive et s'adapte aux écrans de smartphones (#4166 par @jacquesfize)
-- [Synthèse] Amélioration des performances des filtres sur les statuts de la Bibliothèque des connaissances (#4356 par @IdrissaD)
+- [Accueil] Le menu supérieur de GeoNature est maintenant responsive et s'adapte aux écrans mobiles (#4166 par @jacquesfize)
+- [Synthèse] Amélioration des performances des filtres sur les statuts (#4356 par @IdrissaD)
 - [Synthèse] Mise en évidence sur la carte et dans la liste des résultats d'un critère sélectionné, y compris dans les fiches taxon et observateur (#3258 par @jpm-cbna)
 - [Synthèse] Ajout de `id_digitizer` comme synonyme de `id_digitiser` dans le modèle `Synthese` (#4196 par @bouttier)
-- [Individus] Ajout des individus dans GeoNature (@CynthiaBorotPNV, @amandine-sahl, @TheoLechemia, @Pierre-Narcisi, @ClaireLagaye, @jacquesfize)
+- [Individus] Ajout des individus dans les modules Synthèse et Occtax (@CynthiaBorotPNV, @amandine-sahl, @TheoLechemia, @Pierre-Narcisi, @ClaireLagaye, @jacquesfize)
   - [Synthèse] Ajout du champ `id_individual` dans la Synthèse et d'un filtre sur les individus (#4281 par @jacquesfize)
-  - [Occtax] Possibilité de lier un dénombrement à un individu (module Monitoring), désactivable avec le paramètre `individual` de la section `form_fields` (#4281 par @jacquesfize, @TheoLechemia, @amandine-sahl)
+  - [Occtax] Possibilité d'associer un individu à un dénombrement, désactivable avec le paramètre `individual` de la section `form_fields` de la configuration d'Occtax et avec les nouvelles permissions associées (#4281 par @jacquesfize, @TheoLechemia, @amandine-sahl)
 - [Occtax] Possibilité de définir une configuration spécifique pour chaque module Occtax dupliqué (#2641 par @TheoLechemia)
 - [Occtax] Ajout de la commande `geonature occtax create-duplicated-module` pour dupliquer le module Occtax (#4306 par @TheoLechemia)
-- [Occtax] Possibilité de trier la liste des taxons saisis par ordre alphabétique ou par ordre de saisie (#682 par @VincentCauchois)
+- [Occtax] Possibilité de trier la liste des taxons saisis par ordre alphabétique ou par ordre de saisie (#c par @VincentCauchois)
 - [Métadonnées] Ajout de la mécanique de champs additionnels dans les formulaires de jeux de données (#4215 par @VincentCauchois)
 - [Métadonnées] Possibilité de renseigner plusieurs objectifs pour un jeu de données (#4102 par @VincentCauchois)
 - [Métadonnées] Les données d'Occhab sont prises en compte dans les statistiques et les fiches des métadonnées (#3923 par @VincentCauchois)
 - [Métadonnées] Suppression de la limite de 150 caractères du nom des jeux de données (#3646 par @jacquesfize)
 - [Métadonnées] Traduction du formulaire des cadres d'acquisition (#4417 par @jacquesfize)
 - [Import] Affichage des jeux de données dans la liste des imports, dans la fiche d'un import et dans le rapport d'import (#4146 par @christophe-ramet)
-- [Habref] Ajout de commandes de mise à jour du référentiel Habref (#4227 par @Pierre-Narcisi)
-- [Nomenclatures] Le libellé des nomenclatures des champs additionnels est désormais stocké en plus de leur identifiant (clé suffixée par `_label`). Les données historiques d'Occtax (web et mobile) sont migrées (#4329 par @TheoLechemia)
-- [Frontend] Remplacement du composant `pnx-taxa` (#4203 par @jpm-cbna)
+- [Habref] Ajout de commandes de mise à jour du référentiel Habref en version 7 (#2215 par @Pierre-Narcisi)
+- [Nomenclatures] Le libellé des nomenclatures des champs additionnels est désormais stocké en plus de leur identifiant (clé suffixée par `_label`). Les données historiques d'Occtax (web et mobile) sont migrées (#4297 par @TheoLechemia)
+- [Frontend] Remplacement du composant `pnx-taxa` (#4203 par @jpm-cbna) >>> **CM : Je comprends pas ce que ça veut dire ?**
 - [Frontend] Ajout d'une propriété `placeholder` au composant `pnx-observers` (#4174 par @CynthiaBorotPNV)
 - [Docker] Prise en charge des variables d'environnement suffixées par `_FILE` dans l'entrypoint du backend, permettant l'usage des secrets Docker (#4386 par @bouttier)
 - [Docker] Ajout de l'exécution de `supergrant` dans l'entrypoint (si `GEONATURE_SUPERGRANT_ARGS` est défini) et création du fichier `/tmp/ready` pour le healthcheck de l'installation de la base de données (#4391 par @bouttier)
 - [Performances] Import différé de `weasyprint` et `bokeh` pour accélérer le lancement de la commande `geonature` (#4396 par @bouttier)
 - [Admin des permissions] Ajout de tests pour l'interface de gestions des permissions (#4326 par @jacquesfize)
 - [Métadonnées] Possibilité de configurer plusieurs types de zonage pour un même libellé dans `METADATA_AREA_FILTERS` (#4294 par @christophe-ramet)
+- [Installation] Utilisation de `uv` pour installer l'environnement Python du backend, remplacement des fichiers `setup.py` par des fichiers `pyproject.toml` et réduction des fichiers de requirements à un seul fichier `requirements.in` (#4320 par @jacquesfize)
+- [Installation] Le préfixe d'URL `/geonature` n'est plus codé en dur dans l'installation. Il est possible de le modifier dans `url_application_prefix_path` du fichier `settings.ini` (#3951 par @andriacap)
+- [Installation] Le backend de GeoNature peut être lancé sans fichier de configuration si tous les paramètres requis sont fournis par des variables d'environnement (#4407 par @bouttier)
 
 ### 🐛 Corrections
 
@@ -91,7 +93,8 @@
 
 ### ⚠️ Notes de version
 
-- Debian 11 n'est plus supporté.
+- Debian 11 n'est plus supporté. Vérifiez la version de votre serveur pour passer en Debian 12 ou 13.
+- SQLAlchemy mis à jour en version 2.0. Si vous utilisez des modules externes spécifiques, vérifiez qu'ils disposent d'une version compatible avec SQLAlchemy 2.0. C'est le cas pour les modules Dashboard, Monitoring et Export que vous devez donc mettre à jour en même temps que GeoNature.
 - Les paramètres de configuration `IMPLEMENTED_MODULES` et `IMPLEMENTED_OBJECTS` de la section `ADDITIONAL_FIELDS` sont supprimés. Les modules et objets pouvant avoir des champs additionnels sont désormais gérés en base de données avec les champs `support_additional_fields` des tables `gn_commons.t_modules` et `gn_permissions.t_objects` (la migration Alembic gère la rétro-compatibilité) (#4306)
 - La valeur par défaut du paramètre `HELP_CONTACT_URL` passe à `#`. Renseignez-le avec l'URL de contact de votre structure (ou videz-le) (#4405)
 - Le fichier `logo_sidebar.jpg` devient `logo_sidebar.png`. Si vous aviez surcouché le logo de l'application, renommez (et convertissez) votre fichier `custom/images/logo_sidebar.jpg` en `custom/images/logo_sidebar.png` (#4405)
@@ -2769,7 +2772,7 @@ Si vous mettez à jour GeoNature :
   évolution de mise en cohérence puisque les modules héritaient déjà
   des permissions de GeoNature, mais pas leurs objets. Si vous avez
   défini des permissions particulières aux niveaux des objets,
-  vérifier leur cohérence avec le nouveau fonctionnement. NB : si vous
+   leur cohérence avec le nouveau fonctionnement. NB : si vous
   aviez mis des droits R=0 pour un groupe au module ’ADMIN’, les
   utilisateurs de ce groupe ne pourront pas accéder aux sous-modules
   ’permissions’ et ’nomenclatures’.
@@ -3003,7 +3006,7 @@ Si vous mettez à jour GeoNature :
   script SQL de mise à jour de la BDD de GeoNature pour s’adapter aux
   évolutions du standard Occtax en version 2.0.0. Révisez
   éventuellement ces vues avant et/ou après la mise à jour. Le script
-  SQL de mise à jour vérifiera aussi si vous avez d’autres vues (dans
+  SQL de mise à jour a aussi si vous avez d’autres vues (dans
   le module Export notamment) qui utilisent le champs
   `id_nomenclature_obs_technique` qui doit être renommé et
   l’indiquera dès le début de l’exécution du script, en l’arrêtant
@@ -3071,7 +3074,7 @@ Si vous mettez à jour GeoNature :
 - Vous pouvez alors lancer le script d’insertion des départements de
   France métropole dans le réferentiel géographique (optionnel) :
   <https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.0to2.4.1_insert_departments.sh>.
-  Vérifier le déroulement de l’import dans le fichier
+   le déroulement de l’import dans le fichier
   `var/log/insert_departements.log`
 
 ## 2.4.0 - Fiches de métadonnées (2020-06-22)
@@ -3465,7 +3468,7 @@ version. Compatibilité dans la 2.3.1.
   ./2.2.1to2.3.0.sh
   ```
 
-Vérifier que la migration s’est bien déroulée dans le fichier
+ que la migration s’est bien déroulée dans le fichier
 `var/log/2.2.1to2.3.0.log`.
 
 - Lancer le script SQL de mise à jour de la BDD de GeoNature
