@@ -11,5 +11,5 @@ Bienvenue dans la documentation de GeoNature
    FAQ
    authors
    CHANGELOG
-   api-references
 
+La documentation de l'API Python du backend est disponible dans la page :doc:`api-references`.

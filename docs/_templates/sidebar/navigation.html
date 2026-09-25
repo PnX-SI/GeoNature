@@ -1,0 +1,12 @@
+{#- Surcharge de sidebar/navigation.html (furo) : ajoute la référence API au menu
+    latéral sans l'inclure dans la toctree racine, ce qui obligerait furo à
+    calculer l'arbre de toutes les pages autoapi pour chaque page (build très lent). -#}
+{%- set api_current = pagename == "api-references" or pagename.startswith("autoapi/") %}
+<div class="sidebar-tree">
+  {{ furo_navigation_tree }}
+  <ul{% if api_current %} class="current"{% endif %}>
+    <li class="toctree-l1{% if api_current %} current{% endif %}{% if pagename == 'api-references' %} current-page{% endif %}">
+      <a class="reference internal{% if api_current %} current{% endif %}" href="{{ pathto('api-references') }}">Référence API</a>
+    </li>
+  </ul>
+</div>

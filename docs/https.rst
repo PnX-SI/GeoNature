@@ -64,7 +64,7 @@ Modification de la configuration du VirtualHost en éditant le fichier ``/etc/ap
 
     <VirtualHost *:443>
         ServerName x.x.x.x
-        […]
+        # […]
         SSLEngine on
         SSLCertificateFile /etc/ssl/certs/mailserver.crt
         SSLCertificateKeyFile /etc/ssl/private/mailserver.key

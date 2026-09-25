@@ -24,11 +24,15 @@ from pypnusershub.db.models import User
 
 
 class ImportStatisticsLabels(typing.TypedDict):
+    """Label of an import statistic, as displayed in the import report."""
+
     key: str
     value: str
 
 
 class ImportInputUrl(typing.TypedDict):
+    """Link to the page displaying the data imported in a destination."""
+
     url: str
     label: str
 

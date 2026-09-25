@@ -292,6 +292,7 @@ Pour rappel la maille de regroupement pour affichage dans le mode maille est dé
 suivant :
 
 .. code-block:: toml
+
    [SYNTHESE]
    AREA_AGGREGATION_TYPE = "M5"
 

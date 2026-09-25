@@ -126,7 +126,7 @@ def list_permissions_formatter(
     Render a list of permissions for module-object-action item as an HTML table.
 
     This function generates an HTML table that displays permissions associated to specific
-     module, object, or action. Each permission is rendered with its status, expiration
+    module, object, or action. Each permission is rendered with its status, expiration
     date, and associated filters. If the permissions are manageable, edit and delete options are
     included for each permission.
 
@@ -139,7 +139,7 @@ def list_permissions_formatter(
     managable : bool
         A boolean indicating whether the permissions are manageable. If True,
         edit and delete options will be included in the rendered HTML.
-    model : User
+    current_user : User
         current user
     return_url : str
         The URL to return to after performing an action (e.g., editing or
@@ -365,6 +365,7 @@ class UserAjaxModelLoader(QueryAjaxModelLoader):
         The third element of each tuple is the list of type of permissions the user already have, so it is useless
         to add this permission to the user, and they will be not available in the front select.
         Two remarks:
+
         - We only consider active permissions of the user
         - If the type of the permission allows two or more filters, we do not exclude it as it makes sens to add several
           permissions of the same type with differents set of filters.

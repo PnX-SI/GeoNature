@@ -199,7 +199,7 @@ projet avec le code suivant pour qu'il soit compatible avec GeoNature :
     }
 
 Exécuter un ou plusieurs test(s) en ligne de commande
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+*****************************************************
 
 Pour exécuter les tests de GeoNature placez vous à la racine du dossier où est 
 installé GeoNature et exécutez la commande suivante : 

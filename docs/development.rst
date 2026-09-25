@@ -318,7 +318,7 @@ Mais il fournit une base déclarative ``db.Model`` permettant d’interroger enc
 
     from geonature.utils.env import db
     class MyModel(db.Model):
-        …
+        ...
 
     obj = MyModel.query.get(1)
 
@@ -738,10 +738,10 @@ La bibliothèque maison `Utils-Flask-SQLAlchemy <https://github.com/PnX-SI/Utils
 
     @serializable
     class MyModel(db.Model):
-        …
+        ...
 
 
-    obj = MyModel(…)
+    obj = MyModel(...)
     obj.as_dict()
 
 
@@ -838,14 +838,14 @@ La bibliothèque maison `Utils-Flask-SQLAlchemy-Geo <https://github.com/PnX-SI/U
     La classe contient 3 méthodes de classe :
 
     - ``FionaShapeService.create_shapes_struct()`` : crée la structure de 3 shapefiles
-    (point, ligne, polygone) à partir des colonens et de la geométrie passée
-    en paramètre
+      (point, ligne, polygone) à partir des colonnes et de la géométrie passée
+      en paramètre
 
     - ``FionaShapeService.create_feature()`` : ajoute un enregistrement
-    aux shapefiles
+      aux shapefiles
 
     - ``FionaShapeService.save_and_zip_shapefiles()`` : sauvegarde et zip les
-    shapefiles qui ont au moins un enregistrement
+      shapefiles qui ont au moins un enregistrement
 
     .. code:: python
 
@@ -897,6 +897,7 @@ Voici quelques conseils sur l’envoi de réponse dans vos routes.
 - Pagination : Flask-SQLAlchemy fournit l’utilitaire `db.paginate <https://flask-sqlalchemy.readthedocs.io/en/stable/api/#flask_sqlalchemy.SQLAlchemy.paginate>`_. Notons qu’il n’est pas nécessaire de récupérer les paramètres ``page`` et ``per_page`` de la requête puisque cela est fait automatiquement par ``db.paginate``. Par ailleurs, l’objet `Pagination <https://flask-sqlalchemy.readthedocs.io/en/stable/api/#flask_sqlalchemy.pagination.Pagination>`_ créé par ``db.paginate`` peut directement être renvoyé passé à ``jsonify`` par votre route ; il sera sérialisé dans `une structure commune à l’ensemble de l’application <https://github.com/PnX-SI/GeoNature/blob/master/backend/geonature/utils/json.py>`_. Ce mécanisme nécessite que le schéma Marshmallow nécessaire à la sérialisation des objets paginés soit indiqué dans la variable ``g.pagination_schema``. Pour cela, vous pouvez utiliser la fonction ``pagination_schema`` qui crée un contexte et stocke le schéma de sérialisation dans la variable ``g.pagination_schema`` et le supprime après. Sinon, modifiez la variable ``g.pagination_schema`` manuellement. À défaut, GeoNature essayera d’appeler la méthode ``as_dict()`` sur vos objets.
 
     .. code-block:: python
+
         from geonature.utils.json import pagination_schema
         def my_route():
             query = sa.select(Item).where(Item.a.like("%foo%"))
@@ -1531,7 +1532,7 @@ Le service contient également deux propriétés publiques ``geoJsonData`` (le g
 
 Exemple d'utilisation avec une liste simple :
         
-.. code:: html
+.. code:: html+ng2
 
     <pnx-map-list
             idName="id_releve_occtax"
@@ -1705,7 +1706,9 @@ Pour sortir une nouvelle version de GeoNature :
 - Faites les éventuelles Releases des dépendances (UsersHub, TaxHub, UsersHub-authentification-module, Nomenclature-api-module, RefGeo, Utils-Flask-SQLAlchemy, Utils-Flask-SQLAlchemy-Geo)
 - Assurez-vous que les sous-modules git de GeoNature pointent sur les bonnes versions des dépendances et que le ``backend/requirements.in`` a bien été mis à jour.
 - Regénérer ``uv.lock`` (résolution du workspace de dev) et ``backend/requirements.txt`` (résolution PyPI de prod) avec la commande suivante, ou directement via ``make compile_requirements``, dans la plus petite version de python supportée par GeoNature
+
   ::
+
     uv lock
     uv export --no-hashes --extra tests --extra lint -o backend/requirements-dev.txt > backend/requirements-dev.txt
     cd backend && uv pip compile requirements.in -o requirements.txt

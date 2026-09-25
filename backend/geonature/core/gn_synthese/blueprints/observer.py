@@ -11,7 +11,6 @@ from geonature.core.gn_synthese.models import (
     CorAreaSynthese,
     Synthese,
 )
-from geonature.core.gn_commons.models import TMedias
 from geonature.core.gn_synthese.utils.observers import ObserversUtils
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from geonature.core.gn_synthese.utils.pagination_sorting import PaginationSortingUtils

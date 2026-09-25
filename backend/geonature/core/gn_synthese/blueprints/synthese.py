@@ -72,8 +72,8 @@ def get_observations_for_web(permissions):
     :qparam str taxonomy_group2_inpn: Filter by TAXREF group2_inpn attribute
     :qparam str taxonomy_id_hab: Filter by TAXREF id_habitat attribute
     :qparam str taxhub_attribut*: filtre générique TAXREF en fonction de l'attribut et de la valeur.
-    :qparam str *_red_lists: filtre générique de listes rouges. Filtre sur les valeurs. Voir config.
-    :qparam str *_protection_status: filtre générique de statuts (BdC Statuts). Filtre sur les types. Voir config.
+    :qparam str \\*_red_lists: filtre générique de listes rouges. Filtre sur les valeurs. Voir config.
+    :qparam str \\*_protection_status: filtre générique de statuts (BdC Statuts). Filtre sur les types. Voir config.
     :qparam str observers: Filter on observer
     :qparam str id_organism: Filter on organism
     :qparam str date_min: Start date

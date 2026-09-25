@@ -51,11 +51,14 @@ def error_replace(old_code, old_columns, new_code, new_column=None):
     For rows which trigger old_code error on all old_columns, these errors are replaced
     by new_code error on new_column.
     Usage example:
+
         @dataframe_check
         @error_replace(ImportCodeError.MISSING_VALUE, {"WKT","latitude","longitude"}, ImportCodeError.NO_GEOM, "Champs géométriques")
         def check_required_values:
             …
-        => MISSING_VALUE on WKT, latitude and longitude are replaced by NO-GEOM on "Champs géométrique"
+
+    => MISSING_VALUE on WKT, latitude and longitude are replaced by NO-GEOM on "Champs géométrique"
+
     If new_code is None, error is deleted
     """
 
@@ -120,14 +123,11 @@ def report_error(imprt: TImports, entity, df, error):
         The dataframe containing the data.
     error : dict
         The error to report. It should have the following keys:
-        - invalid_rows : DataFrame
-            The rows with errors.
-        - error_code : str
-            The name of the error code.
-        - column : str
-            The column with errors.
-        - comment : str, optional
-            A comment to add to the error.
+
+        - invalid_rows (DataFrame): the rows with errors.
+        - error_code (str): the name of the error code.
+        - column (str): the column with errors.
+        - comment (str, optional): a comment to add to the error.
 
     Returns
     -------

@@ -78,10 +78,13 @@ def report_erroneous_rows(
         Optional comment to include extra explanation to describe the error in the current import context.
     level_validity_mapping : dict, optional
         Dictionary mapping error levels to validity values:
+
         - If the level is not in the dictionary, the row validity remains unchanged.
         - If the level is present, validity is set according to the associated value:
+
           - `False`: The row is marked as erroneous.
           - `None`: The row is marked as should not be imported.
+
         By default, only the level "ERROR" is mapped to `False`.
 
     Raises

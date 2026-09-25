@@ -17,7 +17,7 @@ Pour des déploiements Docker plus avancés et spécifiques, des images Docker d
 Image backend
 -------------
 
-Des images pré-construites automatiquement sont présentes sur `Github <https://github.com/PnX-SI/GeoNature/pkgs/container/geonature-backend/versions?filters%5Bversion_type%5D=tagged>`_.
+Des images pré-construites automatiquement sont présentes sur `Github <https://github.com/PnX-SI/GeoNature/pkgs/container/geonature-backend/versions?filters%5Bversion_type%5D=tagged>`__.
 
 Les images tagguées `-wheels` contiennent les wheels Python de GeoNature, de ses dépendances et modules contrib, de manière à pouvoir être enrichies avec vos wheels provenant de vos propres modules (images de type « builder »).
 
@@ -45,7 +45,7 @@ Fonctionnement de l’image :
 Image frontend
 --------------
 
-Des images pré-construites automatiquement sont présentes sur `Github <https://github.com/PnX-SI/GeoNature/pkgs/container/geonature-frontend/versions?filters%5Bversion_type%5D=tagged>`_.
+Des images pré-construites automatiquement sont présentes sur `Github <https://github.com/PnX-SI/GeoNature/pkgs/container/geonature-frontend/versions?filters%5Bversion_type%5D=tagged>`__.
 
 Les images tagguées `-source` contiennent uniquement les sources de GeoNature et des modules contrib, et attendent d’être enrichies avec les sources de vos propres modules tandis que les images tagguées `-nginx` contiennent la configuration NGINX prête à l’emploi pour GeoNature (images de type « builder »).
 
