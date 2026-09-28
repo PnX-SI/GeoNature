@@ -18,6 +18,7 @@ from geonature.core.gn_commons.models import TModules
 
 from sqlalchemy import select, text
 from sqlalchemy.exc import ProgrammingError
+from psycopg2.errors import UndefinedTable
 
 
 def iter_modules_dist():
@@ -187,10 +188,8 @@ def exists_in_t_modules(module_code: str):
         )
     except ProgrammingError as e:
         db.session.rollback()
-        if (
-            '(psycopg2.errors.UndefinedTable) relation "gn_commons.t_modules" does not exist'
-            in str(e)
-        ):
+        psycopg2_error = e.orig
+        if isinstance(psycopg2_error, UndefinedTable):
             return False
         else:
             raise e
