@@ -57,6 +57,10 @@ class ObserverSchema(MA.SQLAlchemyAutoSchema):
             "groupe",
             "remarques",
             "identifiant",
+            "api_key",
+            "api_secret",
+            "champs_addi",
+            "uuid_role",
         )
 
     nom_complet = fields.Str(dump_only=True)

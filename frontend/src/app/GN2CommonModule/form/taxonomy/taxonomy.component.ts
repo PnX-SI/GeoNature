@@ -161,7 +161,7 @@ export class TaxonomyComponent implements OnInit, OnChanges {
       debounceTime(400),
       tap(() => (this.isLoading = true)),
       switchMap((search_name_) => {
-        const search_name = search_name_.toString();
+        const search_name = (search_name_ ?? '').toString().trim();
         if (search_name.length >= this.charNumber) {
           return this._dfService
             .autocompleteTaxon(this.apiEndPoint, search_name, {

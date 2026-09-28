@@ -1,4 +1,9 @@
 import promisify from 'cypress-promise';
+import {
+  OBSERVERS_DEBOUNCE_WAIT,
+  OBSERVERS_MIN_CHARS_MESSAGE,
+  USERS_MENU_URL,
+} from '../support/common/observersConstants';
 
 describe('Testing metadata', () => {
   const cadreAcq = 'CA-1';
@@ -20,6 +25,8 @@ describe('Testing metadata', () => {
     description: 'description de mon jdd',
     testAdditionalFieldValue: 'test de valeur',
   };
+
+  const actorPerson = { nomComplet: 'AGENT test', searchTerm: 'agent' };
 
   let newOrganism = {
     name: 'Ma structure 2',
@@ -65,6 +72,58 @@ describe('Testing metadata', () => {
       cy.get('[data-qa="pnx-metadata-jdd-' + jddUUID + '"]').contains(jdd);
     });
   });
+  it('should search the person filter server-side, only with enough non-blank characters', () => {
+    // Count every /users/menu* call made by the person filter (pnx-observers)
+    const usersMenuCalls = [];
+    cy.intercept({ method: 'GET', url: USERS_MENU_URL }, (req) => {
+      usersMenuCalls.push(req.query);
+    }).as('usersMenu');
+
+    const personField = '[data-qa="pnx-metadata-search-person"]';
+    const personSelect = `${personField} [data-qa="gn-common-form-observers-select"]`;
+
+    // Open the advanced search modal (button next to the reset button)
+    cy.get('[data-qa="pnx-metadata-refresh"]').siblings('button').first().click();
+    cy.get(personSelect).should('be.visible');
+
+    // Nothing is listed nor requested before typing
+    cy.get(`${personSelect} .ng-select-container`).click();
+    cy.get(`${personSelect} ng-dropdown-panel`).should('contain', OBSERVERS_MIN_CHARS_MESSAGE);
+
+    // Whitespace-only input: no request, still the "type at least N characters" hint
+    cy.get(`${personSelect} .ng-input input`).type('     ');
+    cy.wait(OBSERVERS_DEBOUNCE_WAIT);
+    cy.then(() => expect(usersMenuCalls, 'no /users/menu call on blank input').to.have.length(0));
+    cy.get(`${personSelect} ng-dropdown-panel`).should('contain', OBSERVERS_MIN_CHARS_MESSAGE);
+    cy.get(`${personSelect} [data-qa^="gn-common-form-observers-select-"]`).should('not.exist');
+
+    // A single non-blank character (surrounded by spaces) is still too short
+    cy.get(`${personSelect} .ng-input input`).type('a ');
+    cy.wait(OBSERVERS_DEBOUNCE_WAIT);
+    cy.then(() => expect(usersMenuCalls, 'no /users/menu call under 2 chars').to.have.length(0));
+    cy.get(`${personSelect} ng-dropdown-panel`).should('contain', OBSERVERS_MIN_CHARS_MESSAGE);
+
+    // 2+ non-blank characters: exactly one request, with the trimmed term
+    cy.get(`${personSelect} .ng-input input`).clear().type('  adm  ');
+    cy.wait('@usersMenu').then(({ request, response }) => {
+      expect(request.query.nom_complet).to.equal('adm');
+      expect(response.statusCode).to.equal(200);
+      expect(response.body.map((role) => role.nom_complet)).to.include('ADMINISTRATEUR test');
+    });
+    cy.wait(OBSERVERS_DEBOUNCE_WAIT);
+    cy.then(() => expect(usersMenuCalls, 'one debounced /users/menu call').to.have.length(1));
+
+    // Pick the result and use it as a search filter
+    cy.get(`${personSelect} [data-qa="gn-common-form-observers-select-ADMINISTRATEUR test"]`)
+      .should('be.visible')
+      .click();
+    cy.get(`${personSelect} .ng-value-label`).should('contain', 'ADMINISTRATEUR test');
+
+    cy.intercept('POST', '**/meta/acquisition_frameworks*').as('afSearch');
+    cy.get('.modal-body button.button-success').click();
+    cy.wait('@afSearch').its('request.body.person').should('be.a', 'number');
+  });
+
   it('should create a new "cadre d\'acquisition"', () => {
     // cy.visit('/#/metadata');
     // Generate a new organism based on newOrganism but with a slight modification
@@ -166,6 +225,15 @@ describe('Testing metadata', () => {
     cy.get('[data-qa="pnx-metadata-organism-' + newOrganism.name + '"]').click();
     cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
 
+    // ... also linked to a person (organism + person), searched server-side in pnx-observers
+    cy.get('pnx-metadata-actor').eq(1).find('mat-button-toggle[value="all"] button').click();
+    cy.selectObserver(
+      'pnx-metadata-actor:eq(1) [data-qa="pnx-metadata-actor-person"]',
+      actorPerson.nomComplet,
+      actorPerson.searchTerm
+    );
+    cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
+
     cy.get('[data-qa="pnx-dataset-form-select-cadre-acq"]').click();
     cy.get('[data-qa="pnx-metadata-jdd-' + cadreAcq + '"]').click({ force: true });
     cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
@@ -218,7 +286,13 @@ describe('Testing metadata', () => {
       .click()
       .type(newJdd.testAdditionalFieldValue);
 
+    cy.intercept('POST', '**/meta/dataset').as('createDataset');
     cy.get('[data-qa="pnx-dataset-form-save-jdd"]').click();
+    cy.wait('@createDataset').then(({ request, response }) => {
+      expect(response.statusCode).to.equal(200);
+      const personActors = request.body.cor_dataset_actor.filter((actor) => actor.id_role);
+      expect(personActors).to.have.length(1);
+    });
 
     cy.get('[data-qa="pnx-metadata-dataset-name"]').contains(newJdd.name);
     cy.get('[data-qa="pnx-metadata-additional-field-test_champs_additionnel"]').contains(

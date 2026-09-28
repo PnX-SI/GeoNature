@@ -4,7 +4,7 @@ from geonature.core.gn_commons.schemas import ModuleSchema, MediaSchema
 from geonature.utils.env import MA
 from geonature.core.gn_monitoring.models import TIndividuals, TMarkingEvent
 from pypnnomenclature.schemas import NomenclatureSchema
-from pypnusershub.schemas import UserSchema
+from geonature.core.users.schemas import MinimalUserSchema
 
 
 class TMarkingEventSchema(MA.SQLAlchemyAutoSchema):
@@ -13,7 +13,7 @@ class TMarkingEventSchema(MA.SQLAlchemyAutoSchema):
         include_fk = True
         load_instance = True
 
-    operator = MA.Nested(UserSchema, dump_only=True)
+    operator = MA.Nested(MinimalUserSchema, dump_only=True)
     medias = MA.Nested(MediaSchema, many=True)
 
 
@@ -24,7 +24,7 @@ class TIndividualsSchema(MA.SQLAlchemyAutoSchema):
         load_instance = True
 
     nomenclature_sex = MA.Nested(NomenclatureSchema, dump_only=True)
-    digitiser = MA.Nested(UserSchema, dump_only=True)
+    digitiser = MA.Nested(MinimalUserSchema, dump_only=True)
     modules = fields.List(MA.Nested(ModuleSchema, dump_only=True))
     markings = fields.List(MA.Nested(TMarkingEventSchema, dump_only=True))
     medias = MA.Nested(MediaSchema, many=True)

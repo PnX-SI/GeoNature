@@ -40,6 +40,7 @@ from ref_geo.models import BibAreasTypes, LAreas
 from apptax.tests.fixtures import noms_example, attribut_example, liste
 from pypnusershub.db.models import User
 from pypnusershub.tests.utils import logged_user_headers, set_logged_user
+from geonature.tests.utils import assert_no_user_data_leak
 
 from utils_flask_sqla_geo.schema import GeoModelConverter, GeoAlchemyAutoSchema
 
@@ -2534,3 +2535,65 @@ class TestSyntheseTaxonomicFilter:
                 url_for(route, cd_ref=202),
             )
             assert response.status_code == 403
+
+
+MINIMAL_USER_KEYS = {"id_role", "nom_role", "prenom_role", "nom_complet", "id_organisme"}
+MINIMAL_ORGANISM_KEYS = {"id_organisme", "uuid_organisme", "nom_organisme"}
+
+
+@pytest.mark.usefixtures("client_class", "temporary_transaction")
+class TestSyntheseNestedUsers:
+    """
+    Users and organisms nested in /synthese/vsynthese/<id> must only expose their minimal
+    fields (no email, identifiant, remarques, organism address/phone/email, ...).
+    Key sets are asserted exactly so that a future change of the UsersHub schemas can't
+    silently widen them.
+    """
+
+    # different SYNTHESE read scopes: 3 / 2 (digitizer of the dataset) / 1 (digitiser of the obs)
+    @pytest.mark.parametrize("username", ["admin_user", "user", "self_user"])
+    def test_get_one_synthese_nested_users(self, users, nested_users_data, username):
+        obs = nested_users_data["synthese"]
+        set_logged_user(self.client, users[username])
+
+        response = self.client.get(
+            url_for("gn_synthese.synthese.get_one_synthese", id_synthese=obs.id_synthese)
+        )
+
+        assert response.status_code == 200, response.data
+        data = response.json
+        props = data.get("properties", data)
+
+        # observers (+ their organism)
+        assert len(props["cor_observers"]) == 2
+        assert {o["id_role"] for o in props["cor_observers"]} == {
+            users["admin_user"].id_role,
+            users["user"].id_role,
+        }
+        for observer in props["cor_observers"]:
+            assert set(observer.keys()) == MINIMAL_USER_KEYS | {"organisme"}
+            assert set(observer["organisme"].keys()) == MINIMAL_ORGANISM_KEYS
+
+        # dataset creator and actors
+        dataset = props["dataset"]
+        assert set(dataset["creator"].keys()) == MINIMAL_USER_KEYS
+        assert dataset["creator"]["id_role"] == users["user"].id_role
+        role_actors = [a for a in dataset["cor_dataset_actor"] if a["id_role"] is not None]
+        organism_actors = [a for a in dataset["cor_dataset_actor"] if a["id_organism"] is not None]
+        assert len(role_actors) == 1 and len(organism_actors) == 1
+        assert set(role_actors[0]["role"].keys()) == MINIMAL_USER_KEYS
+        assert set(organism_actors[0]["organism"].keys()) == MINIMAL_ORGANISM_KEYS
+
+        # acquisition framework creator
+        af = dataset["acquisition_framework"]
+        assert set(af["creator"].keys()) == MINIMAL_USER_KEYS
+        assert af["creator"]["id_role"] == users["user"].id_role
+
+        # validator
+        validations = [v for v in props["validations"] if v["validator_role"]]
+        assert len(validations) == 1
+        assert set(validations[0]["validator_role"].keys()) == MINIMAL_USER_KEYS
+        assert validations[0]["validator_role"]["id_role"] == users["user"].id_role
+
+        # and nowhere else in the payload
+        assert_no_user_data_leak(data, min_users=5)

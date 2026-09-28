@@ -140,7 +140,7 @@ export class DatasetCardComponent implements OnInit {
   sensiReport(ds_id) {
     this._dataService.downloadSensiReport(
       `Sensibilite_JDD-${ds_id}_${this.dataset.unique_dataset_id}`,
-      { id_dataset: ds_id }
+      ds_id
     );
   }
 

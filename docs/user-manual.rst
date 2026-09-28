@@ -135,7 +135,7 @@ De la même manière que pour les Cadres d'acquisition, la page d'accueil du mod
 
 Ce formulaire permet à l'utilisateur de décrire son lot de données (nom, description, méthodes...) et d'indiquer à quel cadre d'acquisition (projet) il est rattaché. 
 
-Enfin comme pour les cadres d'acquisition, l'utilisateur devra définir le (ou les) acteur(s) associé(s) au jeu de données en question (producteur, financeur etc) : organismes, personnes, ou les deux. Ces choix permettront de définir les utilisateurs qui pourront - ou non - alimenter et consulter les données du jeu de données considéré en fonction des permissions configurées.
+Enfin comme pour les cadres d'acquisition, l'utilisateur devra définir le (ou les) acteur(s) associé(s) au jeu de données en question (producteur, financeur etc) : organismes, personnes, ou les deux. Pour choisir une personne, saisissez au moins 2 caractères de son nom : seules les personnes appartenant à une liste d'utilisateurs de UsersHub sont proposées. Ces choix permettront de définir les utilisateurs qui pourront - ou non - alimenter et consulter les données du jeu de données considéré en fonction des permissions configurées.
 
 .. image :: https://geonature.fr/docs/img/user-manual/mtd/mtd_09_Formulaire_JDD.png
 
@@ -314,6 +314,10 @@ Pour les afficher, il faut cliquer sur le bouton d'information :
 .. image :: https://geonature.fr/docs/img/user-manual/03-occtax-detail-geo-button.jpg
 
 .. image :: https://geonature.fr/docs/img/user-manual/05-occtax-create-geo.jpg
+
+Pour sélectionner un observateur, saisissez au moins 2 caractères de son nom ou de son prénom (n'importe quelle partie du nom complet) : 
+les observateurs correspondants de la liste configurée sont alors proposés (50 résultats au maximum, affinez la saisie si l'observateur recherché n'apparaît pas). 
+Ce fonctionnement est commun à tous les champs de sélection d'observateurs de GeoNature (Occtax, Occhab, Synthèse, Import, etc.).
 
 Une fois les informations du relevé renseignées (observateurs, jeu de données, date et commentaire optionnel), 
 vous pouvez ajouter un premier taxon à celui-ci en cliquant sur ``Ajouter un taxon sur ce relevé`` :
@@ -548,7 +552,7 @@ Vous pourrez :
 Il est également possible de filtrer :
 
 - sur une date ou une période donnée
-- sur un observateur
+- sur un observateur (si la recherche se fait dans une liste d'observateurs, saisir au moins 2 caractères de son nom pour obtenir des propositions)
 - sur un jeu de données
 
 .. image :: https://geonature.fr/docs/img/user-manual/synthese/09-filtre-autres.jpg

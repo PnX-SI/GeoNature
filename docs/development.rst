@@ -450,6 +450,36 @@ Pour demander la sérialisation d’un sous-schéma, il faut le spécifier avec 
         parent = ma.Nested(ParentModelSchema)
 
 
+Imbriquer des utilisateurs et des organismes
+""""""""""""""""""""""""""""""""""""""""""""
+
+Pour sérialiser un utilisateur ou un organisme imbriqué dans un autre objet (observateurs, numérisateur, acteurs, validateur...), utilisez les schémas ``MinimalUserSchema`` et ``MinimalOrganismeSchema`` du module ``geonature.core.users.schemas`` plutôt que les schémas ``UserSchema`` / ``OrganismeSchema`` de UsersHub-authentification-module.
+Ces schémas exposent une liste blanche explicite de champs, afin d'éviter toute fuite de données personnelles (email, identifiant, remarques, clés d'API, coordonnées des organismes...) via une relation :
+
+- ``MinimalUserSchema`` : ``id_role``, ``nom_role``, ``prenom_role``, ``nom_complet``, ``id_organisme``, ainsi que la relation ``organisme`` (sérialisée avec ``MinimalOrganismeSchema``, uniquement si elle est demandée explicitement dans ``only``, comme toute relation d'un schéma utilisant ``SmartRelationshipsMixin``) ;
+- ``MinimalOrganismeSchema`` : ``id_organisme``, ``uuid_organisme``, ``nom_organisme``.
+
+.. code:: python
+
+    from geonature.core.users.schemas import MinimalUserSchema, MinimalOrganismeSchema
+
+    class MyModelSchema(SmartRelationshipsMixin, ma.SQLAlchemyAutoSchema):
+        class Meta:
+            model = MyModel
+            include_fk = True
+
+        digitiser = ma.Nested(MinimalUserSchema, dump_only=True)
+        observers = ma.Nested(MinimalUserSchema, many=True, dump_only=True)
+        organism = ma.Nested(MinimalOrganismeSchema, dump_only=True)
+
+    # l'organisme des observateurs n'est sérialisé que s'il est demandé
+    MyModelSchema(only=["observers.organisme"]).dump(obj)
+
+``MinimalUserSchema`` accepte aussi, en chargement, un simple identifiant (``1`` est chargé comme ``{"id_role": 1}``).
+
+Si vous utilisez malgré tout ``pypnusershub.schemas.UserSchema``, notez que les champs ``email``, ``identifiant``, ``remarques``, ``desc_role``, ``date_insert``, ``date_update``, ``active``, ``groupe`` et ``max_level_profil`` y sont masqués par défaut : ils doivent être demandés explicitement avec la syntaxe ``"+champ"`` dans ``only`` (par exemple ``UserSchema(only=["+email"])``), et uniquement lorsque c'est réellement nécessaire.
+
+
 Modèles avec nomenclatures
 """"""""""""""""""""""""""
 
@@ -1423,6 +1453,36 @@ Ces composants peuvent être considérés comme des "dump components" ou
 "presentation components", puisque que la logique de contrôle est déportée
 au composant parent qui l'accueille
 (https://blog.angular-university.io/angular-2-smart-components-vs-presentation-components-whats-the-difference-when-to-use-each-and-why/)
+
+ObserversComponent
+""""""""""""""""""
+
+- Selector : ``pnx-observers``
+
+Ce composant affiche un champ d'autocomplétion permettant de sélectionner un ou plusieurs utilisateurs appartenant à une liste d'utilisateurs de UsersHub.
+
+La recherche est effectuée **côté serveur** via les routes ``/users/menu/<id_liste>``, ``/users/menu/`` (toutes les listes) ou ``/users/menu_from_code/<code_liste>`` : la liste complète des utilisateurs n'est jamais chargée dans le navigateur. Une requête est envoyée (avec un délai de 300 ms) dès que l'utilisateur a saisi au moins ``charNumber`` caractères hors espaces, avec les paramètres ``nom_complet`` (recherche sur une partie du nom complet, insensible à la casse) et ``limit``. Les valeurs déjà présentes dans le ``FormControl`` (mode édition, ``patchValue``...) sont résolues via le paramètre ``id_role`` pour afficher leur libellé.
+
+Inputs spécifiques (en plus des inputs communs décrits ci-dessus) :
+
+- ``idList`` (ou ``idMenu``, conservé pour rétrocompatibilité) : identifiant de la liste d'utilisateurs. ``codeList`` : code de la liste. Si aucun des deux n'est fourni, la recherche porte sur les utilisateurs de toutes les listes.
+- ``bindValue`` / ``bindAllItem`` : valeur stockée dans le ``FormControl`` (par exemple ``bindValue="id_role"`` pour ne stocker que l'identifiant, ``bindAllItem`` pour stocker l'objet complet).
+- ``charNumber`` (number, défaut : 2) : nombre minimum de caractères (hors espaces) avant de lancer une recherche.
+- ``limit`` (number, défaut : 50) : nombre maximum de résultats renvoyés par la recherche.
+- ``observers`` (``Observable<Array<any>>``, optionnel) : liste d'observateurs pré-chargée. Si elle est fournie, aucune recherche n'est faite côté serveur et le filtrage est réalisé localement.
+- ``placeHolder`` : texte affiché dans le champ vide (par défaut, le ``label``).
+
+.. code:: html+ng2
+
+    <pnx-observers
+      [parentFormControl]="form.get('observers')"
+      [idList]="config.MY_MODULE.ID_OBSERVERS_LIST"
+      [multiSelect]="true"
+      bindValue="id_role"
+      [label]="'Observers' | translate"
+    ></pnx-observers>
+
+Les méthodes ``getObservers(idMenu, params)`` et ``getObserversFromCode(codeList, params)`` du ``DataFormService`` acceptent les mêmes paramètres (``nom_complet``, ``limit``, ``id_role`` — un identifiant ou un tableau d'identifiants) pour interroger ces routes depuis un module.
 
 Un ensemble de composants permettant de simplifier l'affichage des cartographies
 Leaflet sont disponibles. Notamment un composant "map-list" permettant de

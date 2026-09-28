@@ -31,8 +31,8 @@ describe('Testing occhab', () => {
     });
     cy.get('#validateButton').should('be.disabled');
 
-    cy.get('[data-qa="gn-common-form-observers-select"]').click();
-    cy.get('[data-qa="gn-common-form-observers-select-AGENT test"]').click();
+    // Observers are searched server-side once at least 2 characters are typed
+    cy.selectObserver(null, 'AGENT test', 'agen');
     cy.get('#validateButton').should('be.disabled');
 
     cy.get('[data-qa="pnx-occhab-form-dataset"] > ng-select').click();

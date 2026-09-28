@@ -22,7 +22,7 @@ from apptax.taxonomie.models import (
 )
 from geonature import create_app
 from geonature.utils.config import config
-from geonature.core.gn_commons.models import BibTablesLocation, TMedias, TModules
+from geonature.core.gn_commons.models import BibTablesLocation, TMedias, TModules, TValidations
 from geonature.core.gn_meta.models import (
     CorAcquisitionFrameworkActor,
     CorDatasetActor,
@@ -1082,6 +1082,86 @@ def create_media(media_path=""):
     with db.session.begin_nested():
         db.session.add(new_media)
     return new_media
+
+
+@pytest.fixture()
+def nested_users_data(users, source):
+    """
+    Metadata and an observation referencing users (and organisms) through every nested
+    relationship serialized by the API: AF/dataset creator, AF/dataset actors (role and
+    organism), synthese observers (+ their organism), digitiser and validator.
+
+    Used to check that no personal data of these users leak into the payloads
+    (see ``geonature.tests.utils.assert_no_user_data_leak``).
+
+    The objects are readable by ``user`` (scope 2, digitizer of the dataset and creator
+    of the AF), ``associate_user`` (scope 2, same organism, actor) and ``admin_user``.
+    ``self_user`` (scope 1) is the digitiser of the observation.
+    """
+    id_actor_role = get_id_nomenclature("ROLE_ACTEUR", "1")  # Contact principal
+    organism = users["user"].organisme
+    with db.session.begin_nested():
+        af = TAcquisitionFramework(
+            acquisition_framework_name="nested_users_af",
+            acquisition_framework_desc="nested_users_af",
+            creator=users["user"],
+        )
+        af.cor_af_actor.append(
+            CorAcquisitionFrameworkActor(
+                role=users["associate_user"], id_nomenclature_actor_role=id_actor_role
+            )
+        )
+        af.cor_af_actor.append(
+            CorAcquisitionFrameworkActor(
+                organism=organism, id_nomenclature_actor_role=id_actor_role
+            )
+        )
+        db.session.add(af)
+    with db.session.begin_nested():
+        dataset = TDatasets(
+            acquisition_framework=af,
+            dataset_name="nested_users_dataset",
+            dataset_shortname="nested_users_dataset",
+            dataset_desc="nested_users_dataset",
+            marine_domain=True,
+            terrestrial_domain=True,
+            id_digitizer=users["user"].id_role,
+        )
+        dataset.cor_dataset_actor.append(
+            CorDatasetActor(role=users["associate_user"], id_nomenclature_actor_role=id_actor_role)
+        )
+        dataset.cor_dataset_actor.append(
+            CorDatasetActor(organism=organism, id_nomenclature_actor_role=id_actor_role)
+        )
+        dataset.modules.extend(
+            db.session.scalars(
+                select(TModules).where(TModules.module_code.in_(["OCCTAX", "OCCHAB"]))
+            ).all()
+        )
+        db.session.add(dataset)
+    with db.session.begin_nested():
+        taxon = db.session.execute(select(Taxref).filter_by(cd_nom=212)).scalar_one()
+        obs = create_synthese(
+            from_shape(Point(5.92, 45.56), srid=4326),
+            taxon,
+            users["self_user"],
+            dataset,
+            source,
+            cor_observers=[users["admin_user"], users["user"]],
+            observers=["Administrateur Test", "Bob Bobby"],
+        )
+        db.session.add(obs)
+    with db.session.begin_nested():
+        validation = TValidations(
+            uuid_attached_row=obs.unique_id_sinp,
+            id_nomenclature_valid_status=get_id_nomenclature("STATUT_VALID", "1"),
+            id_validator=users["user"].id_role,
+            validation_auto=False,
+            validation_comment="nested_users_data",
+            validation_date=datetime.datetime.now(),
+        )
+        db.session.add(validation)
+    return {"af": af, "dataset": dataset, "synthese": obs, "validation": validation}
 
 
 @pytest.fixture

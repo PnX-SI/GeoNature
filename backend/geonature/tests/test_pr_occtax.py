@@ -18,7 +18,7 @@ from geonature.core.gn_synthese.models import Synthese
 from geonature.core.schemas import AdditionalDataWithNomenclatureField
 from geonature.utils.env import db
 from geonature.utils.config import config
-from .utils import set_logged_user
+from .utils import assert_no_user_data_leak, set_logged_user
 
 occtax = pytest.importorskip("occtax")
 pytestmark = pytest.mark.skipif("OCCTAX" in config["DISABLED_MODULES"], reason="OccTax is disabled")
@@ -1152,3 +1152,79 @@ class TestOcctaxGetReleveFilterWrongType:
         response = self.client.get(url_for("pr_occtax.getReleves"), query_string=query_string)
 
         assert response.status_code == 500  # FIXME 500 should not be possible
+
+
+# Fields of the observers / digitiser of a releve (occtax lists users without id_organisme)
+OCCTAX_USER_KEYS = {"id_role", "nom_role", "prenom_role", "nom_complet"}
+
+
+@pytest.mark.usefixtures("client_class", "datasets")
+class TestOcctaxNestedUsers:
+    """
+    Observers and digitiser of the releves must only expose their minimal fields
+    (no email, identifiant, remarques, api_key, api_secret, champs_addi, ...).
+    Key sets are asserted exactly so that a future change can't silently widen them.
+    """
+
+    @pytest.fixture(autouse=True)
+    def releve_with_digitiser(self, users, releve_occtax):
+        # id_digitiser is dump_only in ReleveSchema: set it afterwards
+        with db.session.begin_nested():
+            releve_occtax.digitiser = users["self_user"]
+        return releve_occtax
+
+    # OCCTAX read scope 2 (dataset digitizer) / 2 (same organism) / 3
+    @pytest.mark.parametrize("username", ["user", "associate_user", "admin_user"])
+    def test_get_releves_nested_users(self, users, releve_occtax, username):
+        set_logged_user(self.client, users[username])
+
+        response = self.client.get(url_for("pr_occtax.getReleves"))
+
+        assert response.status_code == 200
+        releve = next(
+            f["properties"]
+            for f in response.json["items"]["features"]
+            if int(f["id"]) == releve_occtax.id_releve_occtax
+        )
+        assert {o["id_role"] for o in releve["observers"]} == {
+            users[u].id_role for u in ("user", "associate_user", "user_with_blurring")
+        }
+        for observer in releve["observers"]:
+            assert set(observer.keys()) == OCCTAX_USER_KEYS
+        assert set(releve["digitiser"].keys()) == OCCTAX_USER_KEYS
+        assert releve["digitiser"]["id_role"] == users["self_user"].id_role
+        assert_no_user_data_leak(response.json, min_users=4)
+
+    @pytest.mark.parametrize("username", ["user", "associate_user", "admin_user"])
+    def test_get_one_releve_nested_users(self, users, releve_occtax, username):
+        set_logged_user(self.client, users[username])
+
+        response = self.client.get(
+            url_for("pr_occtax.getOneReleve", id_releve=releve_occtax.id_releve_occtax)
+        )
+
+        assert response.status_code == 200
+        releve = response.json["releve"]["properties"]
+        assert len(releve["observers"]) == 3
+        for observer in releve["observers"]:
+            assert set(observer.keys()) == OCCTAX_USER_KEYS
+        assert set(releve["digitiser"].keys()) == OCCTAX_USER_KEYS
+        assert releve["digitiser"]["id_role"] == users["self_user"].id_role
+        assert_no_user_data_leak(response.json, min_users=4)
+
+    def test_get_one_releve_with_individual_nested_users(self, users, occurrence, individuals):
+        """The individual of a counting also nests its digitiser"""
+        set_logged_user(self.client, users["user"])
+
+        response = self.client.get(
+            url_for("pr_occtax.getOneReleve", id_releve=occurrence.id_releve_occtax)
+        )
+
+        assert response.status_code == 200
+        found = assert_no_user_data_leak(response.json, min_users=5)
+        individual_digitisers = [
+            obj for kind, path, obj in found if path.endswith(".individual.digitiser")
+        ]
+        assert len(individual_digitisers) == 1
+        assert set(individual_digitisers[0].keys()) == OCCTAX_USER_KEYS | {"id_organisme"}
+        assert individual_digitisers[0]["id_role"] == individuals[0].id_digitiser

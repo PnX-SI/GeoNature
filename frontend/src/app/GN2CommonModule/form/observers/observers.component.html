@@ -1,7 +1,7 @@
 <small>{{ label }}</small>
 <ng-select
   [ngClass]="class"
-  [items]="observers | async"
+  [items]="items$ | async"
   bindLabel="nom_complet"
   [bindValue]="bindValue"
   [compareWith]="compareWith"
@@ -10,8 +10,56 @@
   [placeholder]="placeHolder || label"
   data-qa="gn-common-form-observers-select"
   [virtualScroll]="true"
+  [typeahead]="serverSide ? observersInput$ : null"
+  [loading]="loading"
   [formControl]="parentFormControl"
 >
+  <ng-template ng-typetosearch-tmp>
+    <div class="ng-option disabled">
+      <span class="bg-info text-light p-2 rounded ObserversOption__hint">
+        <mat-icon>help_outline</mat-icon>
+        <span>Saisir au moins {{ charNumber }} caractères pour rechercher un observateur</span>
+      </span>
+    </div>
+  </ng-template>
+
+  <ng-template
+    ng-notfound-tmp
+    let-searchTerm="searchTerm"
+  >
+    <div class="ng-option disabled">
+      <span
+        *ngIf="serverSide && isTermTooShort(searchTerm); else notFoundBlock"
+        class="bg-info text-light p-2 rounded ObserversOption__hint"
+      >
+        <mat-icon>help_outline</mat-icon>
+        <span>Saisir au moins {{ charNumber }} caractères pour rechercher un observateur</span>
+      </span>
+      <ng-template #notFoundBlock>
+        <span
+          class="bg-warning p-2 rounded ObserversOption__hint"
+          matTooltip="Aucune correspondance pour «&nbsp;{{ searchTerm }}&nbsp;»"
+          matTooltipPosition="after"
+        >
+          <mat-icon>warning_amber</mat-icon>
+          <span>Aucune correspondance pour «&nbsp;{{ searchTerm }}&nbsp;»</span>
+        </span>
+      </ng-template>
+    </div>
+  </ng-template>
+
+  <ng-template
+    ng-loadingtext-tmp
+    let-searchTerm="searchTerm"
+  >
+    <div class="ng-option disabled">
+      <span class="bg-info text-light p-2 rounded ObserversOption__hint">
+        <mat-icon>autorenew</mat-icon>
+        <span>Chargement pour «&nbsp;{{ searchTerm }}&nbsp;»</span>
+      </span>
+    </div>
+  </ng-template>
+
   <ng-template
     ng-option-tmp
     let-item="item"

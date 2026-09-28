@@ -252,18 +252,12 @@ export class SyntheseDataService {
     this.subscribeAndDownload(source, filename, 'csv', false);
   }
 
-  downloadSensiReport(filename: string, args: { [key: string]: string }) {
-    let queryString: HttpParams = new HttpParams();
-    // eslint-disable-next-line guard-for-in
-    for (const key in args) {
-      queryString = queryString.set(key, args[key].toString());
-    }
-    const source = this._api.get(`${this.config.API_ENDPOINT}/meta/sensi_report`, {
+  downloadSensiReport(filename: string, idDataset: number) {
+    const source = this._api.get(`${this.config.API_ENDPOINT}/meta/sensi_report/${idDataset}`, {
       headers: new HttpHeaders().set('Content-Type', 'text/csv'),
       observe: 'events',
       responseType: 'blob',
       reportProgress: true,
-      params: queryString,
     });
     this.subscribeAndDownload(source, filename, 'csv', false);
   }

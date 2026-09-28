@@ -39,14 +39,19 @@ log = logging.getLogger()
 s = requests.Session()
 
 
-user_fields = {
+# Fields of a role visible by any logged-in user
+public_user_fields = {
     "id_role",
-    "identifiant",
     "nom_role",
     "prenom_role",
     "nom_complet",
     "id_organisme",
     "groupe",
+}
+# Fields of a role visible only by the role itself
+self_user_fields = public_user_fields | {
+    "identifiant",
+    "email",
     "active",
     "remarques",
 }
@@ -55,6 +60,50 @@ organism_fields = {
     "uuid_organisme",
     "nom_organisme",
 }
+
+
+def _filter_roles_list_query(query, parameters):
+    """
+    Apply the common filters of the user list routes (``/menu/...``, ``/menu_from_code/...``)
+
+    Parameters (GET)
+    ----------------
+    nom_complet : str, optional
+        part of the complete name of the role (case insensitive, whitespace-only is ignored)
+    id_role : int, optional, repeatable
+        restrict to these roles (``?id_role=1&id_role=2`` or ``?id_role=1,2``)
+    limit : int, optional
+        maximum number of returned roles (no limit if absent)
+    """
+    nom_complet = (parameters.get("nom_complet") or "").strip()
+    if nom_complet:
+        query = query.where(VUserslistForallMenu.nom_complet.ilike(f"%{nom_complet}%"))
+
+    id_roles = []
+    for value in parameters.getlist("id_role"):
+        for id_role in value.split(","):
+            id_role = id_role.strip()
+            if not id_role:
+                continue
+            try:
+                id_roles.append(int(id_role))
+            except ValueError:
+                raise BadRequest(f"id_role must be an integer, got '{id_role}'")
+    if id_roles:
+        query = query.where(VUserslistForallMenu.id_role.in_(id_roles))
+
+    query = query.order_by(VUserslistForallMenu.nom_complet.asc())
+
+    limit = parameters.get("limit")
+    if limit not in (None, ""):
+        try:
+            limit = int(limit)
+        except ValueError:
+            raise BadRequest("limit must be an integer")
+        if limit < 0:
+            raise BadRequest("limit must be positive")
+        query = query.limit(limit)
+    return query
 
 
 @routes.route("/menu/<int:id_menu>", methods=["GET"])
@@ -70,17 +119,19 @@ def get_roles_by_menu_id(id_menu=None):
     id_menu : int
         The id of user list (utilisateurs.bib_list)
     nom_complet : str, optional
-        Beginning of complete name of the role (GET parameter)
+        Part of the complete name of the role (GET parameter)
+    id_role : int, optional
+        Restrict to these roles, repeatable or comma-separated (GET parameter)
+    limit : int, optional
+        Maximum number of returned roles, no limit if absent (GET parameter)
     """
     query = select(VUserslistForallMenu).distinct(VUserslistForallMenu.nom_complet)
 
     if id_menu:
         query = query.filter_by(id_menu=id_menu)
 
-    if nom_complet := request.args.get("nom_complet"):
-        query = query.where(VUserslistForallMenu.nom_complet.ilike(f"{nom_complet}%"))
-
-    data = DB.session.scalars(query.order_by(VUserslistForallMenu.nom_complet.asc())).all()
+    query = _filter_roles_list_query(query, request.args)
+    data = DB.session.scalars(query).all()
     return [n.as_dict() for n in data]
 
 
@@ -96,7 +147,11 @@ def get_roles_by_menu_code(code_liste):
     code_liste : str
         The code of user list (utilisateurs.t_lists)
     nom_complet : str, optional
-        Beginning of complete name of the role, default None
+        Part of the complete name of the role (GET parameter)
+    id_role : int, optional
+        Restrict to these roles, repeatable or comma-separated (GET parameter)
+    limit : int, optional
+        Maximum number of returned roles, no limit if absent (GET parameter)
 
     Returns
     -------
@@ -112,12 +167,8 @@ def get_roles_by_menu_code(code_liste):
         ),
     )
 
-    parameters = request.args
-    if parameters.get("nom_complet"):
-        query = query.where(
-            VUserslistForallMenu.nom_complet.ilike("{}%".format(parameters.get("nom_complet")))
-        )
-    data = DB.session.scalars(query.order_by(VUserslistForallMenu.nom_complet.asc())).all()
+    query = _filter_roles_list_query(query, request.args)
+    data = DB.session.scalars(query).all()
     return [n.as_dict() for n in data]
 
 
@@ -148,32 +199,11 @@ def get_role(id_role):
         A dictionary containing the role detail
     """
     user = DB.get_or_404(User, id_role)
-    fields = user_fields.copy()
-    if g.current_user == user:
-        fields.add("email")
+    if g.current_user.id_role == user.id_role:
+        fields = self_user_fields
+    else:
+        fields = public_user_fields
     return user.as_dict(fields=fields)
-
-
-@routes.route("/roles", methods=["GET"])
-@permissions.login_required
-@json_resp
-def get_roles():
-    """
-    Get all roles
-
-    .. :quickref: User;
-    """
-    params = request.args.to_dict()
-    query = select(User)
-    if "group" in params:
-        query = query.where(User.groupe == params["group"])
-    if "orderby" in params:
-        try:
-            order_col = getattr(User.__table__.columns, params.pop("orderby"))
-            query = query.order_by(order_col)
-        except AttributeError:
-            raise BadRequest("the attribute to order on does not exist")
-    return [user.as_dict(fields=user_fields) for user in DB.session.scalars(query).all()]
 
 
 @routes.route("/organisms", methods=["GET"])
@@ -461,7 +491,7 @@ def update_role():
     DB.session.merge(user)
     DB.session.commit()
     DB.session.flush()
-    return user.as_dict()
+    return user.as_dict(fields=self_user_fields)
 
 
 @routes.route("/password/change", methods=["PUT"])

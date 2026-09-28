@@ -5,7 +5,7 @@ from unittest.mock import MagicMock
 
 from geonature.core.gn_commons.models.additional_fields import TAdditionalFields
 from geonature.core.gn_commons.models.base import TModules, BibWidgets
-from geonature.core.gn_permissions.models import PermObject
+from geonature.core.gn_permissions.models import PermAction, Permission, PermObject
 import pytest
 from flask import url_for, Flask
 from kombu.asynchronous.http import Response
@@ -20,6 +20,7 @@ from geonature.core.gn_meta.schemas import AcquisitionFrameworkSchema, DatasetSc
 from geonature.core.gn_synthese.models import Synthese
 from geonature.core.schemas import AdditionalDataWithNomenclatureField
 from geonature.utils.env import db
+from pypnusershub.db.models import User
 from pypnusershub.schemas import UserSchema
 from ref_geo.models import BibAreasTypes, LAreas
 from sqlalchemy import func, select, exists
@@ -34,7 +35,12 @@ from werkzeug.exceptions import (
     UnsupportedMediaType,
 )
 
-from .utils import logged_user_headers, set_logged_user
+from .utils import (
+    assert_no_user_data_leak,
+    get_id_nomenclature,
+    logged_user_headers,
+    set_logged_user,
+)
 from ..utils.errors import GeoNatureError
 
 
@@ -1232,52 +1238,26 @@ class TestGNMeta:
 
         set_logged_user(self.client, users["user"])
         response = self.client.get(url_for("gn_meta.uuid_report"))
-        assert response.status_code == 200
-
-    @pytest.mark.xfail(reason="FIXME")
-    def test_uuid_report_with_dataset_id(
-        self, synthese_corr, users, datasets, synthese_data, unexisted_id
-    ):
-        dataset_id = datasets["own_dataset"].id_dataset
-
-        set_logged_user(self.client, users["user"])
-
-        response = self.client.get(
-            url_for("gn_meta.uuid_report"), query_string={"id_dataset": dataset_id}
-        )
-        response_empty = self.client.get(
-            url_for("gn_meta.uuid_report"), query_string={"id_dataset": unexisted_id}
-        )
-
-        obs = synthese_data.values()
-        assert response.status_code == 200
-        rows = list(get_csv_from_response(response_empty.data))
-        # TODO check result
-
-        assert response_empty.status_code == 200
-        rows = list(get_csv_from_response(response_empty.data))
-        assert len(rows) == 1  # header only
+        # id_dataset is required
+        assert response.status_code == BadRequest.code
 
     def test_sensi_report(self, users, datasets):
         dataset_id = datasets["own_dataset"].id_dataset
-        response = self.client.get(
-            url_for("gn_meta.sensi_report"), query_string={"id_dataset": dataset_id}
-        )
+        response = self.client.get(url_for("gn_meta.sensi_report", ds_id=dataset_id))
         assert response.status_code == Unauthorized.code
 
         set_logged_user(self.client, users["user"])
 
-        response = self.client.get(
-            url_for("gn_meta.sensi_report"), query_string={"id_dataset": dataset_id}
-        )
+        response = self.client.get(url_for("gn_meta.sensi_report", ds_id=dataset_id))
         assert response.status_code == 200
 
     def test_sensi_report_fail(self, users):
         set_logged_user(self.client, users["admin_user"])
 
-        response = self.client.get(url_for("gn_meta.sensi_report"))
-        # BadRequest because for now id_dataset query is required
-        assert response.status_code == BadRequest.code
+        # the /sensi_report?id_dataset= alias has been removed
+        url = url_for("gn_meta.sensi_report", ds_id=1).rsplit("/", 1)[0]
+        response = self.client.get(url, query_string={"id_dataset": 1})
+        assert response.status_code == NotFound.code
 
     def test_get_af_from_id(self, af_list):
         id_af = 1
@@ -1531,3 +1511,465 @@ class TestRepository:
         assert not cruved_af_filter(
             acquisition_frameworks["associate_af"], users["stranger_user"], 1
         )
+
+
+def _parse_uuid_report(data):
+    """Return the rows of an uuid_report CSV response"""
+    with StringIO(data.decode("utf8")) as f:
+        return list(csv.DictReader(f, delimiter=";"))
+
+
+def _parse_sensi_report(data):
+    """
+    Return (header, rows) of a sensi_report response: a free-text header followed by a CSV
+    (starting at the "cdNom" column line)
+    """
+    lines = data.decode("utf8").splitlines()
+    # the free-text header is indented, so is the first line of the CSV part
+    start = next(i for i, line in enumerate(lines) if line.lstrip().lstrip('"').startswith("cdNom"))
+    header = "\n".join(lines[:start])
+    csv_part = [lines[start].lstrip()] + lines[start + 1 :]
+    rows = list(csv.DictReader(StringIO("\n".join(csv_part)), delimiter=";"))
+    return header, rows
+
+
+@pytest.fixture()
+def add_metadata_read_permission():
+    def _add_metadata_read_permission(role, scope_value=None):
+        module = db.session.execute(
+            select(TModules).where(TModules.module_code == "METADATA")
+        ).scalar_one()
+        action = db.session.execute(select(PermAction).filter_by(code_action="R")).scalar_one()
+        with db.session.begin_nested():
+            perm = Permission(role=role, action=action, module=module, scope_value=scope_value)
+            db.session.add(perm)
+        return perm
+
+    return _add_metadata_read_permission
+
+
+@pytest.fixture()
+def report_role(users):
+    """
+    A role without any permission, belonging to the organism of the "own_dataset" actor
+    """
+    with db.session.begin_nested():
+        role = User(
+            identifiant="report_role",
+            nom_role="Report",
+            prenom_role="Role",
+            id_organisme=users["user"].id_organisme,
+        )
+        db.session.add(role)
+    return role
+
+
+def _chambery():
+    return db.session.execute(select(LAreas).where(LAreas.area_name == "Chambéry")).scalar_one()
+
+
+def _perros_guirec():
+    return db.session.execute(
+        select(LAreas).where(LAreas.area_name == "Perros-Guirec")
+    ).scalar_one()
+
+
+# SYNTHESE "R" permissions given to a role which can read every dataset (METADATA scope 3),
+# and the observations of "own_dataset" (obs1..obs4) it must see in the reports.
+# obs1: Chambéry, taxon 2852 / obs2: Vendée, 212 / obs3, obs4: Perros-Guirec, 2497 and 212.
+# The role is neither observer nor digitiser of these observations, but belongs to
+# the organism which is actor of "own_dataset".
+SYNTHESE_PERMISSION_CASES = [
+    pytest.param([], set(), id="no_synthese_permission"),
+    pytest.param([{"scope_value": None}], {"obs1", "obs2", "obs3", "obs4"}, id="scope_3"),
+    pytest.param([{"scope_value": 2}], {"obs1", "obs2", "obs3", "obs4"}, id="scope_2"),
+    pytest.param([{"scope_value": 1}], set(), id="scope_1"),
+    pytest.param(
+        [{"scope_value": None, "taxons_filter": lambda data: [data["obs1"].taxref]}],
+        {"obs1"},
+        id="scope_3_taxon_filter",
+    ),
+    pytest.param(
+        [{"scope_value": 1, "taxons_filter": lambda data: [data["obs1"].taxref]}],
+        set(),
+        id="scope_1_taxon_filter",
+    ),
+    pytest.param(
+        [{"scope_value": None, "areas_filter": lambda data: [_chambery()]}],
+        {"obs1"},
+        id="scope_3_area_filter",
+    ),
+    pytest.param(
+        [{"scope_value": 2, "areas_filter": lambda data: [_chambery(), _perros_guirec()]}],
+        {"obs1", "obs3", "obs4"},
+        id="scope_2_area_filter",
+    ),
+    pytest.param(
+        [
+            {"scope_value": None, "taxons_filter": lambda data: [data["obs1"].taxref]},
+            {"scope_value": None, "areas_filter": lambda data: [_perros_guirec()]},
+        ],
+        {"obs1", "obs3", "obs4"},
+        id="taxon_or_area_permissions",
+    ),
+]
+
+
+@pytest.mark.usefixtures("client_class", "temporary_transaction")
+class TestGNMetaReports:
+    """
+    /meta/uuid_report and /meta/sensi_report/<id_dataset>: METADATA read scope on the
+    dataset + rows restricted by SYNTHESE read permissions.
+    """
+
+    REPORTS = ["uuid_report", "sensi_report"]
+
+    def _get_report(self, report, id_dataset, **query):
+        if report == "uuid_report":
+            return self.client.get(
+                url_for("gn_meta.uuid_report"), query_string={"id_dataset": id_dataset, **query}
+            )
+        return self.client.get(
+            url_for("gn_meta.sensi_report", ds_id=id_dataset), query_string=query
+        )
+
+    @pytest.mark.parametrize("report", REPORTS)
+    def test_report_no_auth(self, datasets, report):
+        response = self._get_report(report, datasets["own_dataset"].id_dataset)
+
+        assert response.status_code == Unauthorized.code
+
+    @pytest.mark.parametrize(
+        "query_string", [{}, {"id_dataset": ""}, {"id_dataset": "abc"}, {"id_dataset": "1.5"}]
+    )
+    def test_uuid_report_missing_or_invalid_dataset(self, users, query_string):
+        set_logged_user(self.client, users["admin_user"])
+
+        response = self.client.get(url_for("gn_meta.uuid_report"), query_string=query_string)
+
+        assert response.status_code == BadRequest.code
+
+    @pytest.mark.parametrize("report", REPORTS)
+    def test_report_unknown_dataset(self, users, unexisted_id, report):
+        set_logged_user(self.client, users["admin_user"])
+
+        response = self._get_report(report, unexisted_id)
+
+        assert response.status_code == NotFound.code
+
+    def test_sensi_report_alias_removed(self, users, datasets):
+        set_logged_user(self.client, users["admin_user"])
+        # /meta/sensi_report/<id> -> /meta/sensi_report
+        url = url_for("gn_meta.sensi_report", ds_id=1).rsplit("/", 1)[0]
+
+        response = self.client.get(
+            url, query_string={"id_dataset": datasets["own_dataset"].id_dataset}
+        )
+
+        assert response.status_code == NotFound.code
+
+    @pytest.mark.parametrize("report", REPORTS)
+    @pytest.mark.parametrize(
+        "username,dataset_name,expected_status",
+        [
+            # no METADATA permission at all
+            ("noright_user", "own_dataset", Forbidden.code),
+            # METADATA scope 1: not digitizer nor actor of the dataset
+            ("self_user", "own_dataset", Forbidden.code),
+            # METADATA scope 2, without organism
+            ("stranger_user", "own_dataset", Forbidden.code),
+            # METADATA scope 2, dataset of another organism
+            ("user", "stranger_dataset", Forbidden.code),
+            ("associate_user", "stranger_dataset", Forbidden.code),
+            # METADATA scope 2: digitizer of the dataset / same organism as the actor
+            ("user", "own_dataset", 200),
+            ("associate_user", "own_dataset", 200),
+            # METADATA scope 3
+            ("admin_user", "own_dataset", 200),
+            ("admin_user", "stranger_dataset", 200),
+        ],
+    )
+    def test_report_metadata_scope(
+        self, users, datasets, synthese_data, report, username, dataset_name, expected_status
+    ):
+        set_logged_user(self.client, users[username])
+
+        response = self._get_report(report, datasets[dataset_name].id_dataset)
+
+        assert response.status_code == expected_status, response.data
+
+    @pytest.mark.parametrize("metadata_scope", [None, 2])
+    def test_report_metadata_scope_without_synthese_permission(
+        self, datasets, synthese_data, report_role, add_metadata_read_permission, metadata_scope
+    ):
+        # METADATA read scope only: the dataset is readable, but no observation is
+        add_metadata_read_permission(report_role, scope_value=metadata_scope)
+        set_logged_user(self.client, report_role)
+
+        response = self._get_report("uuid_report", datasets["own_dataset"].id_dataset)
+
+        assert response.status_code == 200
+        assert _parse_uuid_report(response.data) == []
+
+    def test_report_synthese_permission_without_metadata_permission(
+        self, datasets, synthese_data, report_role, add_synthese_read_permissions
+    ):
+        # SYNTHESE read permission only: the METADATA route is forbidden
+        add_synthese_read_permissions(report_role, scope_value=None)
+        set_logged_user(self.client, report_role)
+
+        for report in self.REPORTS:
+            response = self._get_report(report, datasets["own_dataset"].id_dataset)
+            assert response.status_code == Forbidden.code
+
+    @pytest.mark.parametrize("synthese_permissions,expected_obs", SYNTHESE_PERMISSION_CASES)
+    def test_uuid_report_synthese_permissions(
+        self,
+        datasets,
+        synthese_data,
+        report_role,
+        add_metadata_read_permission,
+        add_synthese_read_permissions,
+        synthese_permissions,
+        expected_obs,
+    ):
+        add_metadata_read_permission(report_role, scope_value=None)
+        for perm in synthese_permissions:
+            perm = {k: v(synthese_data) if callable(v) else v for k, v in perm.items()}
+            add_synthese_read_permissions(report_role, **perm)
+        set_logged_user(self.client, report_role)
+
+        response = self._get_report("uuid_report", datasets["own_dataset"].id_dataset)
+
+        assert response.status_code == 200
+        rows = _parse_uuid_report(response.data)
+        assert {int(row["identifiant_gn"]) for row in rows} == {
+            synthese_data[name].id_synthese for name in expected_obs
+        }
+
+    def test_uuid_report_content(self, users, datasets, synthese_data):
+        set_logged_user(self.client, users["admin_user"])
+        dataset = datasets["own_dataset"]
+
+        response = self._get_report("uuid_report", dataset.id_dataset)
+
+        assert response.status_code == 200
+        rows = _parse_uuid_report(response.data)
+        expected = {
+            s.id_synthese: s for s in synthese_data.values() if s.id_dataset == dataset.id_dataset
+        }
+        assert {int(row["identifiant_gn"]) for row in rows} == set(expected)
+        for row in rows:
+            obs = expected[int(row["identifiant_gn"])]
+            assert row["identifiantPermanent (SINP)"] == str(obs.unique_id_sinp)
+            assert row["nomcite"] == obs.nom_cite
+            assert row["observateurIdentite"] == obs.observers
+
+    def test_uuid_report_filter_module(self, users, datasets, synthese_data):
+        set_logged_user(self.client, users["admin_user"])
+        obs1 = synthese_data["obs1"]
+
+        response = self._get_report(
+            "uuid_report", datasets["own_dataset"].id_dataset, id_module=obs1.id_module
+        )
+
+        assert response.status_code == 200
+        assert {int(row["identifiant_gn"]) for row in _parse_uuid_report(response.data)} == {
+            s.id_synthese
+            for s in synthese_data.values()
+            if s.id_dataset == obs1.id_dataset and s.id_module == obs1.id_module
+        }
+
+    @pytest.mark.parametrize("synthese_permissions,expected_obs", SYNTHESE_PERMISSION_CASES)
+    def test_sensi_report_synthese_permissions(
+        self,
+        users,
+        datasets,
+        synthese_data,
+        report_role,
+        add_metadata_read_permission,
+        add_synthese_read_permissions,
+        synthese_permissions,
+        expected_obs,
+    ):
+        dataset = datasets["own_dataset"]
+        # sensi_report only lists observations attached to a department: compute the
+        # reference rows with an unrestricted user
+        set_logged_user(self.client, users["admin_user"])
+        _, admin_rows = _parse_sensi_report(
+            self._get_report("sensi_report", dataset.id_dataset).data
+        )
+        admin_uuids = {row["identifiantPermanent"] for row in admin_rows}
+        assert admin_uuids, "prerequisite: own_dataset observations must be in a department"
+
+        add_metadata_read_permission(report_role, scope_value=None)
+        for perm in synthese_permissions:
+            perm = {k: v(synthese_data) if callable(v) else v for k, v in perm.items()}
+            add_synthese_read_permissions(report_role, **perm)
+        set_logged_user(self.client, report_role)
+
+        response = self._get_report("sensi_report", dataset.id_dataset)
+
+        assert response.status_code == 200
+        header, rows = _parse_sensi_report(response.data)
+        expected_uuids = {str(synthese_data[name].unique_id_sinp) for name in expected_obs}
+        assert {row["identifiantPermanent"] for row in rows} == expected_uuids & admin_uuids
+        assert f'"Nombre de données total dans le fichier";"{len(rows)}"' in header
+
+
+MINIMAL_USER_KEYS = {"id_role", "nom_role", "prenom_role", "nom_complet", "id_organisme"}
+MINIMAL_ORGANISM_KEYS = {"id_organisme", "uuid_organisme", "nom_organisme"}
+
+
+def _assert_minimal_actors(actors, users):
+    """Check the exact key sets of the role and organism of a list of AF/dataset actors"""
+    role_actors = [a for a in actors if a.get("id_role") is not None]
+    organism_actors = [a for a in actors if a.get("id_organism") is not None]
+    assert [a["role"]["id_role"] for a in role_actors] == [users["associate_user"].id_role]
+    assert len(organism_actors) == 1
+    for actor in role_actors:
+        assert set(actor["role"].keys()) == MINIMAL_USER_KEYS
+    for actor in organism_actors:
+        assert set(actor["organism"].keys()) == MINIMAL_ORGANISM_KEYS
+
+
+def _assert_minimal_creator(creator, users):
+    assert set(creator.keys()) == MINIMAL_USER_KEYS
+    assert creator["id_role"] == users["user"].id_role
+
+
+# METADATA read scope 3 / 2 (creator + digitizer) / 2 (actor, same organism)
+READERS = ["admin_user", "user", "associate_user"]
+
+
+@pytest.mark.usefixtures("client_class", "temporary_transaction")
+class TestGNMetaNestedUsers:
+    """
+    Users and organisms nested in the metadata payloads (creator, actors) must only expose
+    their minimal fields. Key sets are asserted exactly so that a future change of the
+    UsersHub schemas can't silently widen them.
+    """
+
+    @pytest.mark.parametrize("username", READERS)
+    def test_list_datasets_nested_users(self, users, nested_users_data, username):
+        dataset = nested_users_data["dataset"]
+        set_logged_user(self.client, users[username])
+
+        response = self.client.get(url_for("gn_meta.get_datasets"))
+
+        assert response.status_code == 200
+        ds_json = next(ds for ds in response.json if ds["id_dataset"] == dataset.id_dataset)
+        _assert_minimal_actors(ds_json["cor_dataset_actor"], users)
+        assert_no_user_data_leak(response.json)
+
+    @pytest.mark.parametrize("username", READERS)
+    def test_get_dataset_nested_users(self, users, nested_users_data, username):
+        dataset = nested_users_data["dataset"]
+        set_logged_user(self.client, users[username])
+
+        response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=dataset.id_dataset))
+
+        assert response.status_code == 200
+        ds_json = response.json
+        _assert_minimal_creator(ds_json["creator"], users)
+        _assert_minimal_actors(ds_json["cor_dataset_actor"], users)
+        _assert_minimal_creator(ds_json["acquisition_framework"]["creator"], users)
+        _assert_minimal_actors(ds_json["acquisition_framework"]["cor_af_actor"], users)
+        assert_no_user_data_leak(ds_json, min_users=4)
+
+    @pytest.mark.parametrize("username", READERS)
+    def test_list_acquisition_frameworks_nested_users(self, users, nested_users_data, username):
+        af = nested_users_data["af"]
+        set_logged_user(self.client, users[username])
+
+        response = self.client.get(
+            url_for("gn_meta.get_acquisition_frameworks"),
+            query_string={"creator": 1, "actors": 1, "datasets": 1, "per_page": -1},
+        )
+
+        assert response.status_code == 200
+        af_json = next(
+            a
+            for a in response.json["items"]
+            if a["id_acquisition_framework"] == af.id_acquisition_framework
+        )
+        _assert_minimal_creator(af_json["creator"], users)
+        _assert_minimal_actors(af_json["cor_af_actor"], users)
+        assert_no_user_data_leak(response.json, min_users=2)
+
+    @pytest.mark.parametrize("username", READERS)
+    def test_get_acquisition_framework_nested_users(self, users, nested_users_data, username):
+        af = nested_users_data["af"]
+        dataset = nested_users_data["dataset"]
+        set_logged_user(self.client, users[username])
+
+        response = self.client.get(
+            url_for(
+                "gn_meta.get_acquisition_framework",
+                id_acquisition_framework=af.id_acquisition_framework,
+            )
+        )
+
+        assert response.status_code == 200
+        af_json = response.json
+        _assert_minimal_creator(af_json["creator"], users)
+        _assert_minimal_actors(af_json["cor_af_actor"], users)
+        ds_json = next(ds for ds in af_json["datasets"] if ds["id_dataset"] == dataset.id_dataset)
+        _assert_minimal_creator(ds_json["creator"], users)
+        _assert_minimal_actors(ds_json["cor_dataset_actor"], users)
+        assert_no_user_data_leak(af_json, min_users=4)
+
+    def test_create_update_dataset_with_actors(self, users, acquisition_frameworks):
+        """Actors are still loaded from their id_role / id_organisme"""
+        set_logged_user(self.client, users["admin_user"])
+        id_actor_role = get_id_nomenclature("ROLE_ACTEUR", "1")
+        organism = users["user"].organisme
+        ds_json = {
+            "id_acquisition_framework": acquisition_frameworks["own_af"].id_acquisition_framework,
+            "dataset_name": "test_actors",
+            "dataset_shortname": "test_actors",
+            "dataset_desc": "test_actors",
+            "terrestrial_domain": True,
+            "marine_domain": False,
+            "cor_dataset_actor": [
+                {
+                    "id_role": users["associate_user"].id_role,
+                    "id_nomenclature_actor_role": id_actor_role,
+                },
+                {
+                    "id_organism": organism.id_organisme,
+                    "id_nomenclature_actor_role": id_actor_role,
+                },
+            ],
+        }
+
+        response = self.client.post(url_for("gn_meta.create_dataset"), json=ds_json)
+
+        assert response.status_code == 200, response.json
+        id_dataset = response.json["id_dataset"]
+        dataset = db.session.get(TDatasets, id_dataset)
+        assert {a.id_role for a in dataset.cor_dataset_actor} == {
+            users["associate_user"].id_role,
+            None,
+        }
+        assert {a.id_organism for a in dataset.cor_dataset_actor} == {organism.id_organisme, None}
+
+        # update: replace the role actor by another one
+        response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=id_dataset))
+        ds_json = response.json
+        ds_json["cor_dataset_actor"] = [
+            {
+                "id_role": users["self_user"].id_role,
+                "id_nomenclature_actor_role": id_actor_role,
+            }
+        ]
+        for key in ("creator", "acquisition_framework", "sources", "cruved"):
+            ds_json.pop(key, None)
+        response = self.client.post(
+            url_for("gn_meta.update_dataset", id_dataset=id_dataset), json=ds_json
+        )
+
+        assert response.status_code == 200, response.json
+        db.session.expire_all()
+        dataset = db.session.get(TDatasets, id_dataset)
+        assert [a.id_role for a in dataset.cor_dataset_actor] == [users["self_user"].id_role]

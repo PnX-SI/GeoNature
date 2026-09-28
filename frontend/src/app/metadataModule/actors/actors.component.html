@@ -110,31 +110,14 @@
     <!-- Personnes -->
     <ng-container *ngIf="toggleButtonValue == 'person' || toggleButtonValue == 'all'">
       <small>{{ 'MetaData.Actors.Person' | translate }}</small>
-      <ng-select
-        class="auto"
-        [items]="roles"
-        bindLabel="nom_complet"
+      <pnx-observers
+        [parentFormControl]="actorForm.get('id_role')"
         bindValue="id_role"
-        placeholder="{{ 'MetaData.Actors.Person' | translate }}"
-        [multiple]="false"
+        [multiSelect]="false"
         [clearable]="false"
-        [virtualScroll]="true"
-        formControlName="id_role"
-      >
-        <ng-template
-          ng-option-tmp
-          let-item="item"
-          let-index="index"
-          let-search="searchTerm"
-        >
-          <div
-            [matTooltip]="item.nom_complet"
-            matTooltipPosition="after"
-          >
-            <span class="pre-wrap">{{ item.nom_complet }}</span>
-          </div>
-        </ng-template>
-      </ng-select>
+        placeHolder="{{ 'MetaData.Actors.Person' | translate }}"
+        data-qa="pnx-metadata-actor-person"
+      ></pnx-observers>
     </ng-container>
   </form>
 </div>

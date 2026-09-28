@@ -21,7 +21,7 @@ from pypn_habref_api.models import Habref
 from pypnnomenclature.models import TNomenclatures
 from utils_flask_sqla_geo.schema import FeatureSchema, FeatureCollectionSchema
 
-from .utils import set_logged_user
+from .utils import assert_no_user_data_leak, set_logged_user
 
 occhab = pytest.importorskip("gn_module_occhab")
 
@@ -595,3 +595,51 @@ class TestOcchab:
             url_for("occhab.export_all_habitats", export_format="shapefile"), data=data
         )
         assert response.status_code == 200
+
+
+@pytest.mark.usefixtures("client_class", "temporary_transaction")
+class TestOcchabNestedUsers:
+    """
+    Observers of a station must only expose their minimal fields.
+    Key sets are asserted exactly so that a future change can't silently widen them.
+    """
+
+    MINIMAL_USER_KEYS = {"id_role", "nom_role", "prenom_role", "nom_complet", "id_organisme"}
+
+    @pytest.fixture(autouse=True)
+    def station_with_observers(self, users, station):
+        with db.session.begin_nested():
+            station.observers = [users["user"], users["associate_user"]]
+        return station
+
+    @pytest.mark.parametrize("username", ["user", "user_restricted_occhab", "admin_user"])
+    def test_get_station_nested_users(self, users, station, username):
+        set_logged_user(self.client, users[username])
+
+        response = self.client.get(url_for("occhab.get_station", id_station=station.id_station))
+
+        assert response.status_code == 200
+        observers = response.json["properties"]["observers"]
+        assert {o["id_role"] for o in observers} == {
+            users["user"].id_role,
+            users["associate_user"].id_role,
+        }
+        for observer in observers:
+            assert set(observer.keys()) == self.MINIMAL_USER_KEYS
+        assert_no_user_data_leak(response.json, min_users=2)
+
+    @pytest.mark.parametrize("fmt", ["json", "geojson"])
+    def test_list_stations_nested_users(self, users, station, fmt):
+        set_logged_user(self.client, users["user"])
+
+        response = self.client.get(url_for("occhab.list_stations"), query_string={"format": fmt})
+
+        assert response.status_code == 200
+        if fmt == "geojson":
+            stations = [f["properties"] for f in response.json["features"]]
+        else:
+            stations = response.json
+        station_json = next(s for s in stations if s["id_station"] == station.id_station)
+        for observer in station_json["observers"]:
+            assert set(observer.keys()) == self.MINIMAL_USER_KEYS
+        assert_no_user_data_leak(response.json, min_users=2)

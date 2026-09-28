@@ -49,7 +49,8 @@ from utils_flask_sqla.response import json_resp, to_csv_resp, generate_csv_conte
 from utils_flask_sqla.db import ordered
 from werkzeug.datastructures import Headers
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.tools import get_scopes_by_action
+from geonature.core.gn_permissions.tools import get_scopes_by_action, get_permissions
+from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 
 from ref_geo.models import LAreas
 
@@ -207,25 +208,59 @@ def delete_dataset(scope, ds_id):
     return "", 204
 
 
+def _get_readable_dataset(scope, id_dataset):
+    """
+    Return the dataset if the current user can read it with the given METADATA scope,
+    raise NotFound / Forbidden otherwise.
+    """
+    dataset = db.get_or_404(TDatasets, id_dataset)
+    if not dataset.has_instance_permission(scope=scope):
+        raise Forbidden(f"User {g.current_user} cannot read dataset {dataset.id_dataset}")
+    return dataset
+
+
+def _synthese_readable_ids_query():
+    """
+    Return a select of the id_synthese readable by the current user,
+    according to its permissions (R) on the SYNTHESE module.
+    """
+    synthese_query_obj = SyntheseQuery(
+        Synthese, select(Synthese.id_synthese).select_from(Synthese), {}
+    )
+    synthese_query_obj.filter_query_with_permissions(
+        g.current_user, get_permissions(module_code="SYNTHESE", action_code="R")
+    )
+    # correlate(None): the subquery must not be correlated to the Synthese of the outer query
+    return synthese_query_obj.build_query().correlate(None)
+
+
 @routes.route("/uuid_report", methods=["GET"])
-@permissions.check_cruved_scope("R", module_code="METADATA")
-def uuid_report():
+@permissions.check_cruved_scope("R", module_code="METADATA", get_scope=True)
+def uuid_report(scope):
     """
     get the UUID report of a dataset
 
     .. :quickref: Metadata;
+
+    :query int id_dataset: the dataset (required)
+    :query int id_import: restrict to an import
+    :query int id_module: restrict to a module
     """
 
     params = request.args
-    ds_id = params.get("id_dataset")
+    ds_id = params.get("id_dataset", type=int)
+    if ds_id is None:
+        raise BadRequest("id_dataset parameter is required and must be an integer")
+    dataset = _get_readable_dataset(scope, ds_id)
     id_import = params.get("id_import")
     id_module = params.get("id_module")
 
     query = (
         select(Synthese)
         .where(Synthese.id_module == id_module if id_module is not None else True)
-        .where(Synthese.id_dataset == ds_id if ds_id is not None else True)
+        .where(Synthese.id_dataset == dataset.id_dataset)
         .where(Synthese.id_import == id_import if id_import is not None else True)
+        .where(Synthese.id_synthese.in_(_synthese_readable_ids_query()))
     )
 
     query = query.order_by(Synthese.id_synthese)
@@ -258,21 +293,19 @@ def uuid_report():
     )
 
 
-@routes.route("/sensi_report", methods=["GET"])  # TODO remove later
 @routes.route("/sensi_report/<int:ds_id>", methods=["GET"])
-@permissions.check_cruved_scope("R", module_code="METADATA")
-def sensi_report(ds_id=None):
+@permissions.check_cruved_scope("R", module_code="METADATA", get_scope=True)
+def sensi_report(scope, ds_id):
     """
-    get the UUID report of a dataset
+    get the sensitivity report of a dataset
 
     .. :quickref: Metadata;
-    """
-    # TODO: put ds_id in /sensi_report/<int: ds_id>
 
+    :query int id_import: restrict to an import
+    :query int id_module: restrict to a module
+    """
     params = request.args
-    if not ds_id:
-        ds_id = params["id_dataset"]
-    dataset = db.get_or_404(TDatasets, ds_id)
+    dataset = _get_readable_dataset(scope, ds_id)
     id_import = params.get("id_import")
     id_module = params.get("id_module")
 
@@ -299,8 +332,9 @@ def sensi_report(ds_id=None):
         )
         .where(LAreas.id_type == func.ref_geo.get_id_area_type("DEP"))
         .where(Synthese.id_module == id_module if id_module else True)
-        .where(Synthese.id_dataset == ds_id)
+        .where(Synthese.id_dataset == dataset.id_dataset)
         .where(Synthese.id_import == id_import if id_import else True)
+        .where(Synthese.id_synthese.in_(_synthese_readable_ids_query()))
     )
 
     query = query.group_by(

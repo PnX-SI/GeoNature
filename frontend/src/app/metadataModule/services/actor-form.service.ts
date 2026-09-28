@@ -26,11 +26,6 @@ export class ActorFormService {
     this.paramsSetComplete.next(true);
   }
 
-  _roles: BehaviorSubject<any[]> = new BehaviorSubject([]);
-  get roles() {
-    return this._roles.getValue();
-  }
-
   _role_types: BehaviorSubject<any[]> = new BehaviorSubject([]);
   get role_types() {
     return this._role_types.getValue();
@@ -55,8 +50,6 @@ export class ActorFormService {
     private dfs: DataFormService
   ) {
     this.dfs.getOrganisms().subscribe((organisms: any[]) => this._organisms.next(organisms));
-
-    this.dfs.getRoles({ group: false }).subscribe((roles: any[]) => this._roles.next(roles));
 
     this.dfs
       .getNomenclature('ROLE_ACTEUR', null, null, null, { orderby: 'label_default' })

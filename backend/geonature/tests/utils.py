@@ -55,3 +55,94 @@ def dict2obj(dict_data):
         obj.__dict__[k] = dict2obj(dict_data[k])
 
     return obj
+
+
+# Keys that must never appear in a user nested in another payload
+SENSITIVE_USER_KEYS = frozenset(
+    {
+        "email",
+        "identifiant",
+        "remarques",
+        "desc_role",
+        "api_key",
+        "api_secret",
+        "champs_addi",
+        "pass",
+        "pass_plus",
+        "_password",
+        "_password_plus",
+        "password",
+    }
+)
+# Keys that must never appear in an organism nested in another payload
+SENSITIVE_ORGANISM_KEYS = frozenset(
+    {
+        "adresse_organisme",
+        "cp_organisme",
+        "ville_organisme",
+        "tel_organisme",
+        "fax_organisme",
+        "email_organisme",
+        "url_organisme",
+        "url_logo",
+    }
+)
+
+
+def _is_user_like(obj):
+    return isinstance(obj, dict) and ("nom_role" in obj or "prenom_role" in obj)
+
+
+def _is_organism_like(obj):
+    return isinstance(obj, dict) and (
+        "nom_organisme" in obj or not SENSITIVE_ORGANISM_KEYS.isdisjoint(obj)
+    )
+
+
+def iter_nested_users_and_organisms(payload, path="$"):
+    """
+    Walk a JSON payload and yield ``(kind, path, obj)`` for every user-like
+    (``kind == "user"``) and organism-like (``kind == "organism"``) dict found.
+    """
+    if isinstance(payload, dict):
+        if _is_user_like(payload):
+            yield "user", path, payload
+        elif _is_organism_like(payload):
+            yield "organism", path, payload
+        for key, value in payload.items():
+            yield from iter_nested_users_and_organisms(value, f"{path}.{key}")
+    elif isinstance(payload, list):
+        for i, value in enumerate(payload):
+            yield from iter_nested_users_and_organisms(value, f"{path}[{i}]")
+
+
+def assert_no_user_data_leak(payload, min_users=1):
+    """
+    Assert that every user nested in ``payload`` only carries minimal user keys
+    (``MINIMAL_USER_FIELDS`` + optional ``organisme``), and every organism only carries
+    ``MINIMAL_ORGANISM_FIELDS``.
+
+    ``min_users`` guards against the assertion passing vacuously (e.g. if the route stops
+    returning users at all).
+
+    Returns the list of ``(kind, path, obj)`` found, for further exact-path assertions.
+    """
+    from geonature.core.users.schemas import MINIMAL_USER_FIELDS, MINIMAL_ORGANISM_FIELDS
+
+    allowed_user_keys = set(MINIMAL_USER_FIELDS) | {"organisme"}
+    found = list(iter_nested_users_and_organisms(payload))
+    for kind, path, obj in found:
+        if kind == "user":
+            assert SENSITIVE_USER_KEYS.isdisjoint(obj), (path, SENSITIVE_USER_KEYS & set(obj))
+            assert set(obj) <= allowed_user_keys, (path, set(obj) - allowed_user_keys)
+        else:
+            assert SENSITIVE_ORGANISM_KEYS.isdisjoint(obj), (
+                path,
+                SENSITIVE_ORGANISM_KEYS & set(obj),
+            )
+            assert set(obj) <= set(MINIMAL_ORGANISM_FIELDS), (
+                path,
+                set(obj) - set(MINIMAL_ORGANISM_FIELDS),
+            )
+    assert len([f for f in found if f[0] == "user"]) >= min_users, found
+    return found

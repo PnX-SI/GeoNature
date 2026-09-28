@@ -53,80 +53,49 @@ describe('Testing adding an observation in OccTax', { testIsolation: false }, ()
   });
 
   it('should test the observer form', () => {
+    const observersField = "[data-qa='pnx-occtax-releve-form-observers']";
+    const observersSelect = `${observersField} [data-qa='gn-common-form-observers-select']`;
+
     // Test de l'existence d'une valeur initiale
     // Tester si une valeur d'observateur par défaut existe
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select']"
-    )
-      .find('.ng-value-container .ng-value')
-      .should('exist');
+    cy.get(observersSelect).find('.ng-value-container .ng-value').should('exist');
     // Tester si une unique valeur est selectionnée
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select']"
-    )
-      .find('.ng-value-container .ng-value')
-      .should('have.length', 1);
+    cy.get(observersSelect).find('.ng-value-container .ng-value').should('have.length', 1);
     // Tester si la valeur selectionnée correspond à 'ADMINISTRATEUR test'
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select']"
-    )
+    cy.get(observersSelect)
       .find('.ng-value-container .ng-value .ng-value-label')
       .contains('ADMINISTRATEUR test');
 
     // Test de la liste déroulante observateurs
     // Tester si la liste déroulante du champ observateur s'ouvre bien
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] ng-dropdown-panel"
-    ).should('not.exist');
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] .ng-select-container"
-    ).click();
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] ng-dropdown-panel"
-    ).should('exist');
-    //Tester s'il ya des valeurs dans la liste
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] ng-dropdown-panel div.ng-option"
-    ).should('exist');
-    //Tester si la valeur par défaut dans le input est bien indiquée selectionnée dans la liste
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] ng-dropdown-panel div.ng-option.ng-option-selected"
-    ).should('have.length', 1);
+    cy.get(`${observersSelect} ng-dropdown-panel`).should('not.exist');
+    cy.get(`${observersSelect} .ng-select-container`).click();
+    cy.get(`${observersSelect} ng-dropdown-panel`).should('exist');
+    // Avant toute recherche, seule la valeur par défaut est listée, et elle est sélectionnée
+    cy.get(`${observersSelect} ng-dropdown-panel div.ng-option.ng-option-selected`).should(
+      'have.length',
+      1
+    );
     //Tester la deselection d'un observateur déjà selectionné
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] ng-dropdown-panel div.ng-option.ng-option-selected"
-    ).click();
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] ng-dropdown-panel div.ng-option.ng-option-selected"
-    ).should('have.length', 0);
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select']"
-    )
-      .find('.ng-value-container .ng-value')
-      .should('have.length', 0);
-    //Tester la selection de deux observateurs
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] ng-dropdown-panel div.ng-option:nth-child(1)"
-    ).click();
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select']"
-    )
-      .find('.ng-value-container .ng-value')
-      .should('have.length', 1); //compte que le nombre de valeur selectionnée = 1
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] .ng-select-container"
-    ).click(); //recouverture de la liste
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] ng-dropdown-panel div.ng-option.ng-option-selected"
-    ).should('have.length', 1); //1 valeur selectionnée dans la liste
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] ng-dropdown-panel div.ng-option:nth-child(2)"
-    ).click(); //click sur une deuxième valeur
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select']"
-    )
-      .find('.ng-value-container .ng-value')
-      .should('have.length', 2); //compte que le nombre de valeur selectionnée = 2
+    cy.get(`${observersSelect} ng-dropdown-panel div.ng-option.ng-option-selected`).click();
+    cy.get(`${observersSelect} ng-dropdown-panel div.ng-option.ng-option-selected`).should(
+      'have.length',
+      0
+    );
+    cy.get(observersSelect).find('.ng-value-container .ng-value').should('have.length', 0);
+
+    // Une recherche sans correspondance affiche un message dédié
+    cy.interceptObserversSearch('observersNoMatch');
+    cy.typeInObservers(observersField, 'zzzzzz');
+    cy.wait('@observersNoMatch').its('request.query.nom_complet').should('equal', 'zzzzzz');
+    cy.get(`${observersSelect} ng-dropdown-panel`).should('contain', 'Aucune correspondance pour');
+    cy.get(`${observersSelect} .ng-input input`).clear();
+
+    //Tester la selection de deux observateurs (recherche côté serveur, >= 2 caractères)
+    cy.selectObserver(observersField, 'AGENT test', 'agen');
+    cy.get(observersSelect).find('.ng-value-container .ng-value').should('have.length', 1); //compte que le nombre de valeur selectionnée = 1
+    cy.selectObserver(observersField, 'ADMINISTRATEUR test', 'admin');
+    cy.get(observersSelect).find('.ng-value-container .ng-value').should('have.length', 2); //compte que le nombre de valeur selectionnée = 2
   });
 
   it('should test the dataset form', () => {

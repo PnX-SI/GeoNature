@@ -9,7 +9,7 @@ from geonature.utils.schema import CruvedSchemaMixin
 from geonature.core.gn_meta.schemas import DatasetSchema
 from geonature.utils.config import config
 
-from pypnusershub.schemas import UserSchema
+from geonature.core.users.schemas import MinimalUserSchema
 from pypnnomenclature.utils import NomenclaturesConverter
 from pypn_habref_api.schemas import HabrefSchema
 from utils_flask_sqla.schema import SmartRelationshipsMixin
@@ -44,8 +44,7 @@ class StationSchema(CruvedSchemaMixin, SmartRelationshipsMixin, GeoAlchemyAutoSc
     habitats = Nested("OccurenceHabitatSchema", unknown=EXCLUDE, many=True)
     # We don't need to supply observers if observers_as_txt_active is activated
     observers = Nested(
-        UserSchema,
-        exclude=["max_level_profil"],
+        MinimalUserSchema,
         unknown=EXCLUDE,
         many=True,
         allow_none=observers_as_txt_active,

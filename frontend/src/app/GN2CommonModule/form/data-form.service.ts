@@ -134,12 +134,47 @@ export class DataFormService {
   //   );
   // }
 
-  getObservers(idMenu: number | null = null) {
-    return this._http.get<any>(`${this.config.API_ENDPOINT}/users/menu/` + (idMenu ? idMenu : ''));
+  /**
+   * Build query params for the ``/users/menu*`` routes.
+   * Null/undefined/empty values are skipped, arrays are sent as repeated params
+   * (e.g. ``id_role=1&id_role=2``).
+   */
+  private buildObserversParams(params: ParamsDict = {}): HttpParams {
+    let queryString = new HttpParams();
+    for (const key of Object.keys(params ?? {})) {
+      const value = params[key];
+      if (value === null || value === undefined) continue;
+      if (Array.isArray(value)) {
+        for (const v of value) {
+          if (v !== null && v !== undefined && v.toString() !== '') {
+            queryString = queryString.append(key, v.toString());
+          }
+        }
+      } else if (value.toString() !== '') {
+        queryString = queryString.set(key, value.toString());
+      }
+    }
+    return queryString;
   }
 
-  getObserversFromCode(codeList) {
-    return this._http.get<any>(`${this.config.API_ENDPOINT}/users/menu_from_code/${codeList}`);
+  /**
+   * Observers of a list (``/users/menu/<idMenu>``) or of every list (``/users/menu/``).
+   * @param params supported: ``nom_complet`` (search term), ``limit``, ``id_role`` (id or array of ids)
+   */
+  getObservers(idMenu: number | null = null, params: ParamsDict = {}) {
+    return this._http.get<any>(`${this.config.API_ENDPOINT}/users/menu/` + (idMenu ? idMenu : ''), {
+      params: this.buildObserversParams(params),
+    });
+  }
+
+  /**
+   * Observers of a list identified by its code (``/users/menu_from_code/<codeList>``).
+   * @param params supported: ``nom_complet`` (search term), ``limit``, ``id_role`` (id or array of ids)
+   */
+  getObserversFromCode(codeList, params: ParamsDict = {}) {
+    return this._http.get<any>(`${this.config.API_ENDPOINT}/users/menu_from_code/${codeList}`, {
+      params: this.buildObserversParams(params),
+    });
   }
 
   autocompleteTaxon(api_endpoint: string, searh_name: string, params?: { [key: string]: string }) {
@@ -470,20 +505,6 @@ export class DataFormService {
 
   getRole(id: number) {
     return this._http.get<any>(`${this.config.API_ENDPOINT}/users/role/${id}`);
-  }
-
-  getRoles(params?: ParamsDict, orderByName = true) {
-    let queryString: HttpParams = new HttpParams();
-    if (orderByName) {
-      queryString = this.addOrderBy(queryString, 'nom_role');
-    }
-    // eslint-disable-next-line guard-for-in
-    for (let key in params) {
-      if (params[key] !== null) {
-        queryString = queryString.set(key, params[key]);
-      }
-    }
-    return this._http.get<any>(`${this.config.API_ENDPOINT}/users/roles`, { params: queryString });
   }
 
   getDataset(id) {

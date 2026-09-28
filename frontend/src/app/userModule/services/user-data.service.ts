@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Role } from './form.service';
@@ -20,17 +20,6 @@ export class UserDataService {
 
   getRole(id: number): Observable<Role> {
     return this._http.get<any>(`${this.config.API_ENDPOINT}/users/role/${id}`);
-  }
-
-  getRoles(params?: any) {
-    let queryString: HttpParams = new HttpParams();
-    // eslint-disable-next-line guard-for-in
-    for (let key in params) {
-      if (params[key] !== null) {
-        queryString = queryString.set(key, params[key]);
-      }
-    }
-    return this._http.get<any>(`${this.config.API_ENDPOINT}/users/roles`, { params: queryString });
   }
 
   putRole(role: Role): Observable<Role> {

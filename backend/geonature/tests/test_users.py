@@ -4,13 +4,19 @@ from pypnusershub.auth import user_manager
 from pypnusershub.db.models_register import TempUser
 import pytest
 from flask import url_for, current_app
-from sqlalchemy import select
-from pypnusershub.db.models import Application, CorRoleToken, Organisme
+from sqlalchemy import func, select
+from pypnusershub.db.models import Application, CorRoleToken, Organisme, User
 from unittest.mock import MagicMock
+from werkzeug.exceptions import NotFound, Unauthorized
 
 # Apparently: need to import both?
 from geonature.tests.utils import set_logged_user
 from geonature.utils.env import db
+
+# Exact field sets returned by GET /users/role/<id> (and PUT /users/role for SELF_ROLE_FIELDS).
+# Hard-coded on purpose, so that widening them has to be a deliberate test change.
+PUBLIC_ROLE_FIELDS = {"id_role", "nom_role", "prenom_role", "nom_complet", "id_organisme", "groupe"}
+SELF_ROLE_FIELDS = PUBLIC_ROLE_FIELDS | {"identifiant", "email", "active", "remarques"}
 
 
 @pytest.fixture
@@ -97,30 +103,55 @@ class TestUsers:
         assert response.status_code == 200
         assert self_user.id_role == response.json["id_role"]
 
-    def test_get_roles(self, users):
-        noright_user = users["noright_user"]
-        set_logged_user(self.client, users["admin_user"])
+    def test_get_role_no_auth(self, users):
+        response = self.client.get(url_for("users.get_role", id_role=users["self_user"].id_role))
 
-        response = self.client.get(url_for("users.get_roles"))
+        assert response.status_code == Unauthorized.code
+
+    def test_get_role_not_found(self, users):
+        set_logged_user(self.client, users["admin_user"])
+        max_id = db.session.scalar(select(func.max(User.id_role)))
+
+        response = self.client.get(url_for("users.get_role", id_role=max_id + 1))
+
+        assert response.status_code == NotFound.code
+
+    # get_role is only login_required: whatever the requester's scope (even an admin),
+    # another role only exposes its public fields
+    @pytest.mark.parametrize(
+        "requester", ["admin_user", "user", "associate_user", "self_user", "noright_user"]
+    )
+    def test_get_role_other_user_public_fields(self, users, requester):
+        target = users["stranger_user"]
+        set_logged_user(self.client, users[requester])
+
+        response = self.client.get(url_for("users.get_role", id_role=target.id_role))
 
         assert response.status_code == 200
-        assert noright_user.id_role in [j_resp["id_role"] for j_resp in response.json]
+        assert set(response.json.keys()) == PUBLIC_ROLE_FIELDS
+        assert response.json["id_role"] == target.id_role
 
-    def test_get_roles_group(self):
-        pass
+    @pytest.mark.parametrize("requester", ["admin_user", "user", "self_user", "noright_user"])
+    def test_get_role_self_fields(self, users, requester):
+        user = users[requester]
+        set_logged_user(self.client, user)
 
-    def test_get_roles_order_by(self, users):
-        set_logged_user(self.client, users["admin_user"])
-
-        response = self.client.get(
-            url_for("users.get_roles"), query_string={"orderby": "identifiant"}
-        )
+        response = self.client.get(url_for("users.get_role", id_role=user.id_role))
 
         assert response.status_code == 200
-        identifiants_resp = [resp["identifiant"] for resp in response.json]
-        assert identifiants_resp.index(users["admin_user"].identifiant) < identifiants_resp.index(
-            users["stranger_user"].identifiant
-        )
+        assert set(response.json.keys()) == SELF_ROLE_FIELDS
+        assert response.json["identifiant"] == user.identifiant
+        assert response.json["email"] == user.email
+
+    def test_get_roles_removed(self, users):
+        # GET /users/roles (listing every account) has been removed
+        set_logged_user(self.client, users["admin_user"])
+
+        # /users/role/1 -> /users/roles
+        roles_url = url_for("users.get_role", id_role=1).rsplit("/", 1)[0] + "s"
+        response = self.client.get(roles_url)
+
+        assert response.status_code == NotFound.code
 
     def test_get_organismes_jdd_no_auth(self):
         response = self.client.get(url_for("users.get_organismes_jdd"))
@@ -254,6 +285,10 @@ class TestUsers:
 
         assert resp.json["nom_role"] == "New Admin Name"
         assert resp.json["active"] == True
+        # the response only carries the fields a role may see about itself
+        assert set(resp.json.keys()) == SELF_ROLE_FIELDS
+        for key in ("pass", "pass_plus", "_password", "_password_plus", "api_key", "api_secret"):
+            assert key not in resp.json
 
     def test_password_new_cases(self, users):
         """

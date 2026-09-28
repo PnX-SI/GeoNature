@@ -1085,6 +1085,15 @@ Si vous souhaitez modifier de manière plus avancée la ligne de commande ``guni
 
   Note : le premier ``ExecStart`` permet de réinitialiser la commande de lancement de gunicorn.
 
+Accès aux fichiers médias
+"""""""""""""""""""""""""
+
+Les routes de l'API permettant de lister, consulter, ajouter, modifier ou supprimer des médias (``/gn_commons/medias/<uuid>``, ``/gn_commons/media/<id_media>``, ``/gn_commons/media/thumbnails/<id_media>/<size>``) nécessitent d'être authentifié.
+
+En revanche, les fichiers de médias eux-mêmes (photos, sons, PDF, vignettes, médias de TaxHub...) sont servis directement depuis le dossier ``MEDIA_FOLDER`` sous l'URL ``MEDIA_URL`` (``/media`` par défaut), **sans authentification** : toute personne connaissant l'URL d'un fichier peut le télécharger. Dans une installation standard, c'est le serveur web qui sert ce dossier (bloc ``Alias "${BACKEND_PREFIX}${MEDIA_URL}"`` avec ``Require all granted`` dans le fichier ``install/assets/geonature_apache.conf`` pour Apache) ; à défaut, ils sont servis par l'application Flask elle-même, toujours sans authentification.
+
+Si certains médias ne doivent pas être publics, il est recommandé d'en restreindre l'accès au niveau du serveur web (Apache ou NGINX) : restriction par adresse IP, authentification HTTP, ou exposition limitée à certains sous-dossiers. Attention à ne pas bloquer les usages qui ont besoin d'accéder à ces fichiers directement (affichage des médias dans l'interface de GeoNature, médias des taxons de TaxHub utilisés par exemple par GeoNature-atlas).
+
 
 Sauvegarde et restauration
 --------------------------

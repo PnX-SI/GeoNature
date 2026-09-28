@@ -4,9 +4,47 @@
 
 ### 🚀 Nouveautés
 
+- [Général] Le champ de sélection des observateurs (composant `pnx-observers`, utilisé dans Occtax, Occhab, la Synthèse, l'Import, les formulaires dynamiques...) effectue désormais une recherche côté serveur : il faut saisir au moins 2 caractères, la recherche porte sur n'importe quelle partie du nom complet et renvoie au plus 50 résultats. Les listes d'observateurs ne sont plus chargées intégralement dans le navigateur (par @jacquesfize)
+- [Métadonnées] Le choix d'un acteur de type « personne » (formulaires des cadres d'acquisition et des jeux de données, filtre de recherche « Acteur (personne) ») utilise le composant `pnx-observers` : seules les personnes appartenant à au moins une liste d'utilisateurs de UsersHub peuvent être sélectionnées (par @jacquesfize)
+- [Utilisateurs] Nouveaux paramètres de requête sur les routes `/users/menu/<id_liste>`, `/users/menu/` et `/users/menu_from_code/<code_liste>` (par @jacquesfize) :
+  - `nom_complet` : recherche insensible à la casse sur une partie du nom complet (et non plus seulement sur son début). Les espaces en début et fin sont ignorés, une valeur vide ou composée uniquement d'espaces n'applique aucun filtre
+  - `limit` : nombre maximum d'utilisateurs renvoyés (pas de limite si absent)
+  - `id_role` : restreint le résultat aux utilisateurs indiqués, répétable (`?id_role=1&id_role=2`) ou séparé par des virgules (`?id_role=1,2`)
+
 ### 🐛 Corrections
 
 - Suppression de la section de configuration `ADDITIONAL_FIELDS` et des variables de configuration `IMPLEMENTED_MODULES` et `IMPLEMENTED_MODULES`, maintenant géré en base de donnée (la migration alambic gère la rétro-compatibilité)
+- [Sécurité] Suppression de la route `GET /users/roles`, qui renvoyait la liste de tous les utilisateurs. Utiliser à la place `/users/menu/<id_liste>` ou `/users/menu_from_code/<code_liste>` (par @jacquesfize)
+- [Sécurité] La route `/users/role/<id_role>` ne renvoie plus qu'un jeu minimal d'informations (`id_role`, `nom_role`, `prenom_role`, `nom_complet`, `id_organisme`, `groupe`) lorsqu'elle concerne un autre utilisateur. Les champs `identifiant`, `email`, `active` et `remarques` ne sont renvoyés que pour l'utilisateur connecté lui-même (par @jacquesfize)
+- [Sécurité] Les utilisateurs imbriqués dans les réponses de l'API (observateurs et numérisateur de la Synthèse, d'Occtax et d'Occhab, acteurs et créateur des cadres d'acquisition et jeux de données, validateurs, opérateurs des événements de marquage et numérisateurs des individus (`gn_monitoring`), auteurs des signalements...) ne contiennent plus que les champs `id_role`, `nom_role`, `prenom_role`, `nom_complet` et `id_organisme`. Les organismes imbriqués ne contiennent plus que `id_organisme`, `uuid_organisme` et `nom_organisme` (par @jacquesfize)
+- [Sécurité] Les routes de l'API des médias (`/gn_commons/medias/<uuid>`, `/gn_commons/media/<id_media>`, `/gn_commons/media/thumbnails/<id_media>/<size>`, ainsi que l'ajout, la modification et la suppression de médias) nécessitent désormais d'être authentifié (par @jacquesfize)
+- [Sécurité] Rapports UUID et de sensibilité des jeux de données (par @jacquesfize) :
+  - le paramètre `id_dataset` de la route `/meta/uuid_report` est désormais obligatoire (erreur 400 sinon)
+  - la route `/meta/sensi_report?id_dataset=<id>` est supprimée au profit de `/meta/sensi_report/<id_dataset>`
+  - ces deux routes vérifient que l'utilisateur a le droit de lire le jeu de données (permission « R » du module Métadonnées), et ne renvoient que les observations que l'utilisateur peut consulter selon ses permissions de lecture dans le module Synthèse (y compris les filtres de sensibilité)
+
+### 💻 Développement
+
+- [Développement] Ajout des schémas `MinimalUserSchema` et `MinimalOrganismeSchema` (`geonature.core.users.schemas`), à utiliser pour imbriquer un utilisateur ou un organisme dans un schéma Marshmallow (par @jacquesfize)
+- [Développement] Nouveaux `Inputs` `charNumber` (nombre minimum de caractères avant recherche, défaut : 2) et `limit` (nombre maximum de résultats, défaut : 50) sur le composant `pnx-observers`. Les méthodes `getObservers()` et `getObserversFromCode()` du `DataFormService` acceptent un dictionnaire de paramètres (`nom_complet`, `limit`, `id_role`). Les méthodes `getRoles()` du `DataFormService` et du `UserDataService` sont supprimées (par @jacquesfize)
+
+### ⚠️ Notes de version
+
+**Sécurité et API 🔒**
+
+Cette version restreint les données personnelles exposées par l'API. Si vous utilisez des modules externes ou des outils tiers qui appellent l'API de GeoNature, vérifiez qu'ils ne dépendent pas des éléments suivants :
+
+- la route `GET /users/roles` (supprimée, utiliser `/users/menu/<id_liste>` ou `/users/menu_from_code/<code_liste>`) ;
+- la route `/meta/sensi_report?id_dataset=<id>` (utiliser `/meta/sensi_report/<id_dataset>`) et l'appel à `/meta/uuid_report` sans `id_dataset` ;
+- un accès anonyme aux routes `/gn_commons/media*` ;
+- les champs `email`, `identifiant`, `remarques`, `active`, etc. des utilisateurs imbriqués dans les réponses (Synthèse, Métadonnées, Occtax, Occhab, Validation, Monitoring, signalements) ;
+- le filtre `nom_complet` des routes `/users/menu*`, qui recherche désormais sur une partie du nom et non plus sur son début.
+
+Les fichiers de médias eux-mêmes, servis directement sous l'URL `MEDIA_URL` (`/media` par défaut), restent accessibles sans authentification. Voir la section « Accès aux fichiers médias » du manuel administrateur pour les protéger au niveau du serveur web si nécessaire.
+
+**Développeurs de modules externes 🧩**
+
+Le schéma `UserSchema` de UsersHub-authentification-module (`pypnusershub.schemas.UserSchema`) masque désormais par défaut les champs `email`, `identifiant`, `remarques`, `desc_role`, `date_insert`, `date_update`, `active`, `groupe` et `max_level_profil`. S'ils sont réellement nécessaires, ils doivent être demandés explicitement avec la syntaxe `"+champ"` dans l'argument `only` (par exemple `UserSchema(only=["+email"])`). Pour imbriquer un utilisateur ou un organisme dans vos propres schémas, utilisez de préférence `MinimalUserSchema` et `MinimalOrganismeSchema` (voir la documentation développeur).
 
 ## 2.17.2 (2026-06-09)
 

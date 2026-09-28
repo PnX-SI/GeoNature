@@ -104,6 +104,11 @@ def media_repository(medium):
 
 @pytest.mark.usefixtures("client_class")
 class TestMedia:
+    @pytest.fixture(autouse=True)
+    def logged_user(self, client, users):
+        # media routes require authentication
+        set_logged_user(client, users["user"])
+
     def test_get_medias(self, medium):
         response = self.client.get(
             url_for("gn_commons.get_medias", uuid_attached_row=str(medium.uuid_attached_row))
@@ -220,6 +225,63 @@ class TestMedia:
 
         assert response.status_code == 404
         assert response.json["description"] == "Media introuvable"
+
+
+@pytest.mark.usefixtures("client_class")
+class TestMediaAnonymous:
+    """
+    Every media route requires authentication (reads included: medias may be attached
+    to sensitive observations).
+    """
+
+    @pytest.mark.parametrize(
+        "method,endpoint,kwargs",
+        [
+            ("get", "gn_commons.get_medias", {"uuid_attached_row": "uuid"}),
+            ("get", "gn_commons.get_media", {"id_media": "id_media"}),
+            ("post", "gn_commons.insert_or_update_media", {}),
+            ("put", "gn_commons.insert_or_update_media", {}),
+            ("post", "gn_commons.insert_or_update_media", {"id_media": "id_media"}),
+            ("put", "gn_commons.insert_or_update_media", {"id_media": "id_media"}),
+            ("delete", "gn_commons.delete_media", {"id_media": "id_media"}),
+            ("get", "gn_commons.get_media_thumb", {"id_media": "id_media", "size": 300}),
+        ],
+    )
+    def test_media_routes_require_login(self, medium, method, endpoint, kwargs):
+        values = {"id_media": medium.id_media, "uuid": str(medium.uuid_attached_row)}
+        url_kwargs = {k: values.get(v, v) for k, v in kwargs.items()}
+        payload = {"title_fr": "anonymous", "media_path": medium.media_path}
+
+        call = getattr(self.client, method)
+        if method in ("post", "put"):
+            response = call(url_for(endpoint, **url_kwargs), json=payload)
+        else:
+            response = call(url_for(endpoint, **url_kwargs))
+
+        assert response.status_code == Unauthorized.code
+        # nothing has been modified nor deleted
+        db.session.refresh(medium)
+        assert medium.title_fr != "anonymous"
+        assert (medium.base_dir() / medium.media_path).exists()
+
+    def test_media_not_found_requires_login(self, nonexistent_media):
+        # authentication is checked before the media existence (no id enumeration)
+        response = self.client.get(url_for("gn_commons.get_media", id_media=nonexistent_media))
+
+        assert response.status_code == Unauthorized.code
+
+    @pytest.mark.parametrize("username", ["noright_user", "self_user", "user", "admin_user"])
+    def test_media_routes_any_logged_user(self, users, medium, username):
+        # only login_required: no module permission is checked on medias
+        set_logged_user(self.client, users[username])
+
+        response = self.client.get(url_for("gn_commons.get_media", id_media=medium.id_media))
+        assert response.status_code == 200
+
+        response = self.client.get(
+            url_for("gn_commons.get_medias", uuid_attached_row=str(medium.uuid_attached_row))
+        )
+        assert response.status_code == 200
 
 
 @pytest.mark.usefixtures("client_class")

@@ -22,7 +22,7 @@ from geonature.core.gn_synthese.schemas import SourceSchema
 from geonature.core.gn_permissions.tools import get_scopes_by_action
 
 from utils_flask_sqla.schema import SmartRelationshipsMixin
-from pypnusershub.schemas import UserSchema, OrganismeSchema
+from geonature.core.users.schemas import MinimalUserSchema, MinimalOrganismeSchema
 from pypnnomenclature.schemas import NomenclatureSchema
 
 
@@ -32,9 +32,9 @@ class DatasetActorSchema(SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
         load_instance = True
         include_fk = True
 
-    role = MA.Nested(UserSchema, dump_only=True)
+    role = MA.Nested(MinimalUserSchema, dump_only=True)
     nomenclature_actor_role = MA.Nested(NomenclatureSchema, dump_only=True)
-    organism = MA.Nested(OrganismeSchema, dump_only=True)
+    organism = MA.Nested(MinimalOrganismeSchema, dump_only=True)
     # id_nomenclature_actor_role is NOT NULL but auto-filled server-side (ROLE_ACTEUR default)
     id_nomenclature_actor_role = MA.auto_field(required=False)
     # id_dataset is NOT NULL but set by the parent TDatasets.cor_dataset_actor relationship
@@ -72,7 +72,7 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
         ModuleSchema, many=True, exclude=("meta_create_date", "meta_update_date"), unknown=EXCLUDE
     )
 
-    creator = MA.Nested(UserSchema, dump_only=True)
+    creator = MA.Nested(MinimalUserSchema, dump_only=True)
     additional_data = AdditionalDataWithNomenclatureField(
         module_code="METADATA", object_code="METADATA_JEU_DE_DONNEES"
     )
@@ -170,10 +170,9 @@ class AcquisitionFrameworkActorSchema(SmartRelationshipsMixin, MA.SQLAlchemyAuto
         load_instance = True
         include_fk = True
 
-    role = MA.Nested(UserSchema, dump_only=True)
+    role = MA.Nested(MinimalUserSchema, dump_only=True)
     nomenclature_actor_role = MA.Nested(NomenclatureSchema, dump_only=True)
-    organism = MA.Nested(OrganismeSchema, dump_only=True)
-    cor_volets_sinp = MA.Nested(OrganismeSchema, dump_only=True)
+    organism = MA.Nested(MinimalOrganismeSchema, dump_only=True)
     # id_nomenclature_actor_role is NOT NULL but auto-filled server-side (ROLE_ACTEUR default)
     id_nomenclature_actor_role = MA.auto_field(required=False)
     # id_acquisition_framework is NOT NULL but set by the parent
@@ -216,4 +215,4 @@ class AcquisitionFrameworkSchema(
     cor_territories = MA.Nested(NomenclatureSchema, many=True, unknown=EXCLUDE)
     nomenclature_territorial_level = MA.Nested(NomenclatureSchema, dump_only=True)
     nomenclature_financing_type = MA.Nested(NomenclatureSchema, dump_only=True)
-    creator = MA.Nested(UserSchema, dump_only=True)
+    creator = MA.Nested(MinimalUserSchema, dump_only=True)
