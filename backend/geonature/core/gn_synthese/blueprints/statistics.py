@@ -164,7 +164,9 @@ def general_stats(permissions):
         synthese_query = SyntheseQuery(Synthese, query, {})
         synthese_query.filter_query_with_permissions(g.current_user, permissions)
         synthese_query.build_query()
-        results[key] = db.session.scalar(select(func.count("*")).select_from(synthese_query.query))
+        results[key] = db.session.scalar(
+            select(func.count("*")).select_from(synthese_query.query.subquery())
+        )
     data = {
         "nb_data": results["nb_obs"],
         "nb_species": results["nb_distinct_species"],

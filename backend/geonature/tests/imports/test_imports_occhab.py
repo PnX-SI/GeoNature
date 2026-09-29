@@ -140,15 +140,15 @@ def station_stranger_dataset(import_datasets, coord_station):
 
 @pytest.fixture(scope="function")
 def habitat(station):
-    habitat = OccurenceHabitat(
-        station=station,
-        nom_cite="prairie",
-        cd_hab=24,
-        id_nomenclature_collection_technique=sa.func.pr_occhab.get_default_nomenclature_value(
-            "TECHNIQUE_COLLECT_HAB"
-        ),
-    )
     with db.session.begin_nested():
+        habitat = OccurenceHabitat(
+            station=station,
+            nom_cite="prairie",
+            cd_hab=24,
+            id_nomenclature_collection_technique=sa.func.pr_occhab.get_default_nomenclature_value(
+                "TECHNIQUE_COLLECT_HAB"
+            ),
+        )
         db.session.add(habitat)
     return habitat
 
@@ -475,8 +475,8 @@ class TestImportsOcchab:
             .scalars()
             .first()
         )
-        habitat = OccurenceHabitat(station=station, cd_hab=24, nom_cite="prairie")
         with db.session.begin_nested():
+            habitat = OccurenceHabitat(station=station, cd_hab=24, nom_cite="prairie")
             db.session.add(habitat)
         with logged_user(client, imported_import.authors[0]):
             r = client.delete(url_for("import.delete_import", import_id=imported_import.id_import))

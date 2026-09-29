@@ -34,8 +34,10 @@ def delete_recursively(path_folder, period=1, excluded_files=[]):
     for the_file in os.listdir(path_folder):
         file_path = os.path.join(path_folder, the_file)
 
-        now = datetime.datetime.now()
-        creation_date = datetime.datetime.utcfromtimestamp(os.path.getctime(file_path))
+        now = datetime.datetime.now(datetime.timezone.utc)
+        creation_date = datetime.datetime.fromtimestamp(
+            os.path.getctime(file_path), datetime.timezone.utc
+        )
         is_older_than_period = (now - creation_date).days >= period
         if is_older_than_period:
             if os.path.isfile(file_path) and not the_file in excluded_files:

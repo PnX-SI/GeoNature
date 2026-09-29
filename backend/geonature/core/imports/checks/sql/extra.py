@@ -169,6 +169,7 @@ def generate_altitudes(
             altitudes.c.altitude_min,
             altitudes.c.altitude_max,
         )
+        .select_from(transient_table.join(altitudes, sa.true()))
         .where(transient_table.c.id_import == imprt.id_import)
         .where(transient_table.c[geom_col] != None)
         .where(

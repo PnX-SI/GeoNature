@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, and_, cast, desc, func, literal_column, select, update
+from sqlalchemy import Integer, and_, cast, desc, func, literal_column, select, true, update
 from sqlalchemy.dialects.postgresql import JSONB, ARRAY
 from geonature.core.imports.models import BibFields, Entity, TImports
 from geonature.utils.env import db
@@ -60,25 +60,29 @@ def user_matching(imprt: TImports, field: BibFields):
         User.nom_complet,
     ).cte("cte_user_nom_complet")
 
-    matches = select(
-        cte_user_to_match.c.user_to_match,
-        cte_user_nom_complet.c.id_role,
-        cte_user_nom_complet.c.identifiant,
-        cte_user_nom_complet.c.nom_complet,
-        func.similarity(
-            cte_user_to_match.c.user_to_match, cte_user_nom_complet.c.nom_complet
-        ).label("similarity"),
-        func.row_number()
-        .over(
-            partition_by=cte_user_to_match.c.user_to_match,
-            order_by=desc(
-                func.similarity(
-                    cte_user_to_match.c.user_to_match, cte_user_nom_complet.c.nom_complet
-                )
-            ),
+    matches = (
+        select(
+            cte_user_to_match.c.user_to_match,
+            cte_user_nom_complet.c.id_role,
+            cte_user_nom_complet.c.identifiant,
+            cte_user_nom_complet.c.nom_complet,
+            func.similarity(
+                cte_user_to_match.c.user_to_match, cte_user_nom_complet.c.nom_complet
+            ).label("similarity"),
+            func.row_number()
+            .over(
+                partition_by=cte_user_to_match.c.user_to_match,
+                order_by=desc(
+                    func.similarity(
+                        cte_user_to_match.c.user_to_match, cte_user_nom_complet.c.nom_complet
+                    )
+                ),
+            )
+            .label("rang"),
         )
-        .label("rang"),
-    ).cte()
+        .select_from(cte_user_to_match.join(cte_user_nom_complet, true()))
+        .cte()
+    )
 
     query = select(matches).where(matches.c.rang == 1, matches.c.similarity > 0.7)
 

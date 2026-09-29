@@ -425,7 +425,7 @@ class TestSynthese:
         assert r.status_code == 200
 
         for synthese in r.json["features"]:
-            syn = db.session.query(Synthese).get(synthese["properties"]["id_synthese"])
+            syn = db.session.get(Synthese, synthese["properties"]["id_synthese"])
             assert syn.id_individual == individuals[0].id_individual
 
     def test_get_observations_for_web_filter_id_source(self, users, synthese_data, source):
@@ -1955,14 +1955,14 @@ class TestSynthese:
 def synthese_export_permissions(synthese_module):
     def _synthese_export_permissions(role, scope_value, action="E", **kwargs):
         action = PermAction.query.filter_by(code_action=action).one()
-        perm = Permission(
-            role=role,
-            action=action,
-            module=synthese_module,
-            scope_value=scope_value,
-            **kwargs,
-        )
         with db.session.begin_nested():
+            perm = Permission(
+                role=role,
+                action=action,
+                module=synthese_module,
+                scope_value=scope_value,
+                **kwargs,
+            )
             db.session.add(perm)
         return perm
 

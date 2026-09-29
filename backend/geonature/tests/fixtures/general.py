@@ -587,10 +587,14 @@ def individual(individuals):
 @pytest.fixture(scope="class")
 def sources_modules(modules):
     sources = []
-    for name_source, module in [("source test 1", modules[0]), ("source test 2", modules[1])]:
-        sources.append(TSources(name_source=name_source, module=module))
     with db.session.begin_nested():
-        db.session.add_all(sources)
+        for name_source, module in [
+            ("source test 1", modules[0]),
+            ("source test 2", modules[1]),
+        ]:
+            source = TSources(name_source=name_source, module=module)
+            db.session.add(source)
+            sources.append(source)
     return sources
 
 
@@ -1159,14 +1163,14 @@ def synthese_module():
 def add_synthese_read_permissions(synthese_module):
     def _add_synthese_read_permissions(role, scope_value, action="R", **kwargs):
         action = PermAction.query.filter_by(code_action=action).one()
-        perm = Permission(
-            role=role,
-            action=action,
-            module=synthese_module,
-            scope_value=scope_value,
-            **kwargs,
-        )
         with db.session.begin_nested():
+            perm = Permission(
+                role=role,
+                action=action,
+                module=synthese_module,
+                scope_value=scope_value,
+                **kwargs,
+            )
             db.session.add(perm)
         return perm
 

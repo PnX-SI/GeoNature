@@ -98,7 +98,6 @@ def get_script_from_config(directory: str, x_arg: []) -> ScriptDirectory:
 def get_all_current_alembic_heads(directory: str, x_arg: []) -> set:
     script = get_script_from_config(directory, x_arg)
 
-    db = current_app.extensions["sqlalchemy"].db
     migration_context = MigrationContext.configure(db.session.connection())
     current_heads = migration_context.get_current_heads()
     # get_current_heads does not return implicit revision through dependencies,

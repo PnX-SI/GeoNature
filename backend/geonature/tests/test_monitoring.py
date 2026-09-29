@@ -90,14 +90,14 @@ def monitoring_individual_perm_object():
 
 def set_permissions(module, role, scope_value, action="R", **kwargs):
     action = PermAction.query.filter_by(code_action=action).one()
-    perm = Permission(
-        role=role,
-        action=action,
-        module=module,
-        scope_value=scope_value,
-        **kwargs,
-    )
     with db.session.begin_nested():
+        perm = Permission(
+            role=role,
+            action=action,
+            module=module,
+            scope_value=scope_value,
+            **kwargs,
+        )
         db.session.add(perm)
     return perm
 
