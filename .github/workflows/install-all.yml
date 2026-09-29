@@ -1,0 +1,179 @@
+name: Classic install (install_all.sh)
+on:
+  push:
+    branches:
+      - develop
+      - ci/install_all
+  workflow_dispatch:
+
+concurrency:
+  group: install-all-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  install-all:
+    name: install_all.sh (Debian ${{ matrix.debian-version }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        # Every Debian version install_all.sh accepts (its own OS/VERSION_ID gate at
+        # install/install_all/install_all.sh checks for exactly 11, 12 or 13).
+        debian-version: ["12", "13"]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Build Debian + systemd image
+        run: |
+          cat > "${RUNNER_TEMP}/Dockerfile.debian-systemd" <<'EOF'
+          FROM debian:${{ matrix.debian-version }}
+          RUN apt-get update \
+            && apt-get install -y --no-install-recommends systemd systemd-sysv \
+            && rm -rf /var/lib/apt/lists/*
+          STOPSIGNAL SIGRTMIN+3
+          CMD ["/lib/systemd/systemd"]
+          EOF
+          docker build -t gn-ci-debian-systemd \
+            -f "${RUNNER_TEMP}/Dockerfile.debian-systemd" "${RUNNER_TEMP}"
+
+      - name: Start Debian + systemd container
+        run: |
+          docker run -d --name gn-ci \
+            --privileged \
+            --cgroupns=host \
+            --tmpfs /tmp \
+            --tmpfs /run \
+            --tmpfs /run/lock \
+            -v /sys/fs/cgroup:/sys/fs/cgroup:rw \
+            gn-ci-debian-systemd
+
+      - name: Wait for systemd to be ready
+        run: |
+          timeout 30 bash -c 'until docker exec gn-ci systemctl is-system-running --wait 2>/dev/null; do sleep 1; done' || true
+
+      - name: Prepare container base user and packages
+        run: |
+          docker exec gn-ci bash -c '
+            set -e
+            # Debian container images ship a policy-rc.d that denies "invoke-rc.d start"
+            # from package postinst scripts, so apt-installed services (postgresql,
+            # apache2, redis) never actually start. install_all.sh relies on apt itself
+            # starting them (it only explicitly restarts apache2, never postgresql/redis),
+            # exactly as would happen on a real Debian machine. Allow starts so services
+            # behave the same way here as they would on a real install.
+            printf "#!/bin/sh\nexit 0\n" > /usr/sbin/policy-rc.d
+            chmod +x /usr/sbin/policy-rc.d
+            apt-get update
+            apt-get install -y sudo ca-certificates curl wget
+            useradd -m -s /bin/bash ci
+            # Debian 13 useradd/adduser default to a 700 home dir (older versions used
+            # 755); Apache (www-data) then cannot traverse into it to serve frontend/dist,
+            # giving a 403. docs/installation.rst:104-110 already tells a real admin to
+            # check/fix this manually (chmod 755) after adduser - do the same here.
+            chmod 755 /home/ci
+            echo "ci ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/ci
+            chmod 0440 /etc/sudoers.d/ci
+          '
+
+      - name: Copy checked-out branch into container
+        run: |
+          docker cp "${GITHUB_WORKSPACE}/." gn-ci:/home/ci/geonature
+          docker exec gn-ci chown -R ci:ci /home/ci/geonature
+
+      - name: Generate CI install_all.ini
+        run: |
+          cat > "${RUNNER_TEMP}/install_all.ini" <<'EOF'
+          mode=ci
+          my_local=C.UTF-8
+          my_url=http://localhost/
+          url_application_prefix_path=geonature
+          pg_host=localhost
+          pg_port=5432
+          user_pg=geonatadmin
+          user_pg_pass=geonatCiOnlyDummyPass123
+          install_usershub_app=false
+          usershub_release=2.4.8
+          geonature_release=develop
+          drop_geonaturedb=false
+          geonaturedb_name=geonature2db
+          srid_local=2154
+          install_bdc_statuts=false
+          taxref_region=fr
+          install_sig_layers=false
+          install_grid_layer=false
+          install_default_dem=false
+          vectorise_dem=false
+          install_ref_sensitivity=false
+          add_sample_data=false
+          install_module_validation=true
+          install_module_occhab=true
+          proxy_http=
+          proxy_https=
+          EOF
+          docker cp "${RUNNER_TEMP}/install_all.ini" gn-ci:/home/ci/geonature/install/install_all/install_all.ini
+          docker exec gn-ci chown ci:ci /home/ci/geonature/install/install_all/install_all.ini
+
+      - name: Run install_all.sh
+        run: |
+          docker exec --user ci -e USER=ci -e LOGNAME=ci \
+            -w /home/ci/geonature/install/install_all gn-ci \
+            bash -c 'export PATH="$HOME/.local/bin:$PATH"; bash install_all.sh'
+
+      - name: Verify geonature systemd service is active
+        run: docker exec gn-ci systemctl is-active geonature
+
+      - name: Verify geonature-worker systemd service is active
+        run: docker exec gn-ci systemctl is-active geonature-worker
+
+      - name: Verify Angular frontend build succeeded
+        run: docker exec gn-ci test -f /home/ci/geonature/frontend/dist/index.html
+
+      - name: Verify GeoNature is reachable over HTTP
+        run: |
+          docker exec gn-ci bash -c '
+            set -e
+            body=$(curl -fsS http://localhost/geonature/)
+            echo "$body" | grep -q "<pnx-root"
+            echo "$body" | grep -q "<title>GeoNature</title>"
+          '
+
+      - name: Verify API login works
+        run: |
+          docker exec gn-ci bash -c '
+            set -e
+            # Proxied by Apache straight through to gunicorn (BACKEND_PREFIX is the path
+            # of API_ENDPOINT, /geonature/api here); /auth/login is the pypnusershub
+            # blueprint, mounted with its default "/auth" prefix. admin/admin is the
+            # built-in default account seeded by the GeoNature DB migrations regardless
+            # of add_sample_data.
+            response=$(curl -fsS -X POST http://localhost/geonature/api/auth/login \
+              -H "Content-Type: application/json" \
+              -d "{\"login\": \"admin\", \"password\": \"admin\"}")
+            echo "$response" | grep -q "\"token\""
+          '
+
+      - name: Dump diagnostics on failure
+        if: failure()
+        run: |
+          docker exec gn-ci bash -c '
+            echo "=== install_all.sh log ==="
+            cat /home/ci/geonature/install/install.log 2>/dev/null || echo "(log not found)"
+            echo "=== journalctl geonature ==="
+            journalctl -u geonature -n 200 --no-pager || true
+            echo "=== journalctl geonature-worker ==="
+            journalctl -u geonature-worker -n 200 --no-pager || true
+            echo "=== journalctl apache2 ==="
+            journalctl -u apache2 -n 200 --no-pager || true
+            echo "=== journalctl postgresql (auto-detected unit) ==="
+            pg_unit=$(systemctl list-units --type=service --all --no-legend "postgresql*" | awk "{print \$1}" | grep -m1 postgresql)
+            if [ -n "$pg_unit" ]; then journalctl -u "$pg_unit" -n 200 --no-pager; else echo "(no postgresql unit found)"; fi
+            echo "=== systemctl status geonature/geonature-worker ==="
+            systemctl status geonature geonature-worker --no-pager || true
+          '
+
+      - name: Remove container
+        if: always()
+        run: docker rm -f gn-ci || true
