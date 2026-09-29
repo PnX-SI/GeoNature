@@ -4,6 +4,7 @@ contenus dans gn_media
 """
 
 from flask import request, redirect, jsonify
+from flask_login import login_required
 from werkzeug.exceptions import NotFound
 
 from geonature.core.gn_commons.repositories import TMediaRepository
@@ -16,6 +17,7 @@ from ..routes import routes
 
 
 @routes.route("/medias/<string:uuid_attached_row>", methods=["GET"])
+@login_required
 @json_resp_accept_empty_list
 def get_medias(uuid_attached_row):
     """
@@ -30,6 +32,7 @@ def get_medias(uuid_attached_row):
 
 
 @routes.route("/media/<int:id_media>", methods=["GET"])
+@login_required
 def get_media(id_media):
     """
     Retourne un media
@@ -44,6 +47,7 @@ def get_media(id_media):
 
 @routes.route("/media", methods=["POST", "PUT"])
 @routes.route("/media/<int:id_media>", methods=["POST", "PUT"])
+@login_required
 @json_resp
 def insert_or_update_media(id_media=None):
     """
@@ -89,7 +93,7 @@ def insert_or_update_media(id_media=None):
 
 
 @routes.route("/media/<int:id_media>", methods=["DELETE"])
-@json_resp
+@login_required
 def delete_media(id_media):
     """
     Suppression d'un media
@@ -99,10 +103,11 @@ def delete_media(id_media):
 
     TMediaRepository(id_media=id_media).delete()
 
-    return {"resp": "media {} deleted".format(id_media)}
+    return jsonify({"resp": "media {} deleted".format(id_media)})
 
 
 @routes.route("/media/thumbnails/<int:id_media>/<int:size>", methods=["GET"])
+@login_required
 def get_media_thumb(id_media, size):
     """
     Retourne le thumbnail d'un media
