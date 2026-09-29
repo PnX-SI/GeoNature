@@ -10,9 +10,11 @@ from sqlalchemy import (
     desc,
     func,
     insert,
+    join,
     literal_column,
     select,
     case,
+    true,
     update,
 )
 from sqlalchemy.dialects.postgresql import JSONB
@@ -292,7 +294,7 @@ class ImportActions:
                     "id_role"
                 ),
             )
-            .select_from(TImports, observers_jsonb)
+            .select_from(join(TImports, observers_jsonb, true()))
             .where(TImports.id_import == imprt.id_import)
             .cte("observer_mapping")
         )
@@ -331,6 +333,7 @@ class ImportActions:
             )
             .join(User, User.id_role == observer_mapping.c.id_role, isouter=True)
             .where(model_observers.c[model_id_column] != None)
+            .subquery("matched_observers")
         )
 
         aggregated_observers = db.session.execute(
@@ -345,9 +348,10 @@ class ImportActions:
         ## Insert into corresponding table
         insert_stmt = insert(correspondence_model).from_select(
             names=correspondence_model_columns,
-            select=matched_observers.with_only_columns(
+            select=select(
                 *[getattr(matched_observers.c, col) for col in correspondence_model_columns]
             )
+            .select_from(matched_observers)
             .where(matched_observers.c.id_role != None)
             .distinct(),
         )

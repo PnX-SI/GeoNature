@@ -425,7 +425,7 @@ class TestSynthese:
         assert r.status_code == 200
 
         for synthese in r.json["features"]:
-            syn = db.session.query(Synthese).get(synthese["properties"]["id_synthese"])
+            syn = db.session.get(Synthese, synthese["properties"]["id_synthese"])
             assert syn.id_individual == individuals[0].id_individual
 
     def test_get_observations_for_web_filter_id_source(self, users, synthese_data, source):
