@@ -142,11 +142,11 @@ def get_parameters_list():
 @routes.route("/parameters/<param_name>/<int:id_org>", methods=["GET"])
 @json_resp
 def get_one_parameter(param_name, id_org=None):
-    data = DB.session.scalars(
+    data = db.one_or_404(
         select(TParameters)
         .where(TParameters.parameter_name == param_name)
-        .where(TParameters.id_organism == id_org if id_org else True)
-    ).one()
+        .where(TParameters.id_organism == id_org if id_org is not None else True)
+    )
     return [data.as_dict()]
 
 

@@ -104,7 +104,13 @@ def media_repository(medium):
 
 @pytest.mark.usefixtures("client_class")
 class TestMedia:
-    def test_get_medias(self, medium):
+    def test_get_medias(self, medium, users):
+        response = self.client.get(
+            url_for("gn_commons.get_medias", uuid_attached_row=str(medium.uuid_attached_row))
+        )
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user(self.client, users["user"])
         response = self.client.get(
             url_for("gn_commons.get_medias", uuid_attached_row=str(medium.uuid_attached_row))
         )
@@ -112,7 +118,11 @@ class TestMedia:
         assert response.status_code == 200
         assert response.json[0]["id_media"] == medium.id_media
 
-    def test_get_media(self, medium):
+    def test_get_media(self, medium, users):
+        response = self.client.get(url_for("gn_commons.get_media", id_media=medium.id_media))
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user(self.client, users["user"])
         response = self.client.get(url_for("gn_commons.get_media", id_media=medium.id_media))
 
         assert response.status_code == 200
@@ -125,9 +135,13 @@ class TestMedia:
 
         assert response.status_code == 404
 
-    def test_delete_media(self, app, medium):
+    def test_delete_media(self, app, medium, users):
         id_media = int(medium.id_media)
 
+        response = self.client.delete(url_for("gn_commons.delete_media", id_media=id_media))
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user(self.client, users["user"])
         response = self.client.delete(url_for("gn_commons.delete_media", id_media=id_media))
 
         assert response.status_code == 200
@@ -137,7 +151,7 @@ class TestMedia:
         media_path = medium.base_dir() / medium.media_path
         media_path.rename(media_path.parent / media_path.name[len("deleted_") :])
 
-    def test_create_media(self, medium):
+    def test_create_media(self, medium, users):
         title_fr = "test_test"
         image = Image.new("RGBA", size=(1, 1), color=(155, 0, 0))
         with tempfile.NamedTemporaryFile() as f:
@@ -148,6 +162,11 @@ class TestMedia:
                 "id_nomenclature_media_type": medium.id_nomenclature_media_type,
                 "id_table_location": medium.id_table_location,
             }
+            response = self.client.post(url_for("gn_commons.insert_or_update_media"), json=payload)
+            assert response.status_code == Unauthorized.code
+
+            set_logged_user(self.client, users["user"])
+
             # Test route with JSON Data
             response = self.client.post(url_for("gn_commons.insert_or_update_media"), json=payload)
 
@@ -176,7 +195,7 @@ class TestMedia:
             # assert response.status_code == 200
             # assert response.json["title_fr"] == title_fr
 
-    def test_update_media(self, medium):
+    def test_update_media(self, medium, users):
         title_fr = "New title"
         author = "New author"
         payload = {
@@ -189,12 +208,18 @@ class TestMedia:
         response = self.client.put(
             url_for("gn_commons.delete_media", id_media=medium.id_media), json=payload
         )
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user(self.client, users["user"])
+        response = self.client.put(
+            url_for("gn_commons.delete_media", id_media=medium.id_media), json=payload
+        )
         assert response.status_code == 200
         resp_json = response.json
         assert resp_json["title_fr"] == title_fr
         assert resp_json["author"] == author
 
-    def test_update_media_error(self, medium):
+    def test_update_media_error(self, medium, users):
         payload = {
             "media_path": "",
         }
@@ -202,10 +227,22 @@ class TestMedia:
         response = self.client.put(
             url_for("gn_commons.delete_media", id_media=medium.id_media), json=payload
         )
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user(self.client, users["user"])
+        response = self.client.put(
+            url_for("gn_commons.delete_media", id_media=medium.id_media), json=payload
+        )
         # FIXME: should not return 500
         assert response.status_code == 500
 
-    def test_get_media_thumb(self, medium):
+    def test_get_media_thumb(self, medium, users):
+        response = self.client.get(
+            url_for("gn_commons.get_media_thumb", id_media=medium.id_media, size=300)
+        )
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user(self.client, users["user"])
         response = self.client.get(
             url_for("gn_commons.get_media_thumb", id_media=medium.id_media, size=300)
         )
@@ -213,7 +250,13 @@ class TestMedia:
         # Redirection
         assert response.status_code == 302
 
-    def test_get_media_thumb_not_found(self, nonexistent_media):
+    def test_get_media_thumb_not_found(self, nonexistent_media, users):
+        response = self.client.get(
+            url_for("gn_commons.get_media_thumb", id_media=nonexistent_media, size=300)
+        )
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user(self.client, users["user"])
         response = self.client.get(
             url_for("gn_commons.get_media_thumb", id_media=nonexistent_media, size=300)
         )
@@ -378,7 +421,7 @@ class TestTMediaRepositoryHeader:
 
 
 @pytest.mark.usefixtures("client_class")
-class TestCommons:
+class TestModules:
     def test_list_modules(self, users):
         response = self.client.get(url_for("gn_commons.list_modules", exclude="GEONATURE"))
         assert response.status_code == Unauthorized.code
@@ -418,6 +461,15 @@ class TestCommons:
         assert response.status_code == 200
         assert response.json["module_code"] == module_code
 
+    def test_get_module_not_found(self):
+        response = self.client.get(
+            url_for("gn_commons.get_module", module_code="NOT_A_REAL_MODULE_CODE")
+        )
+        assert response.status_code == 404
+
+
+@pytest.mark.usefixtures("client_class")
+class TestParameters:
     def test_get_parameters_list(self, parameter):
         response = self.client.get(url_for("gn_commons.get_parameters_list"))
 
@@ -433,6 +485,15 @@ class TestCommons:
         assert response.status_code == 200
         assert response.json[0]["id_parameter"] == parameter.id_parameter
 
+    def test_get_parameter_not_found(self):
+        response = self.client.get(
+            url_for("gn_commons.get_one_parameter", param_name="NOT_A_REAL_PARAM")
+        )
+        assert response.status_code == 404
+
+
+@pytest.mark.usefixtures("client_class")
+class TestPlaces:
     def test_list_places(self, place, users):
         response = self.client.get(url_for("gn_commons.list_places"))
         assert response.status_code == Unauthorized.code
@@ -489,6 +550,9 @@ class TestCommons:
         assert response.status_code == 204
         assert not db.session.scalar(exists().where(TPlaces.id_place == place.id_place).select())
 
+
+@pytest.mark.usefixtures("client_class")
+class TestAdditionalFields:
     def test_get_additional_fields(self, datasets, additional_field):
         id_dataset = datasets["own_dataset"].id_dataset
         query_string = {"module_code": "SYNTHESE", "object_code": "ALL", "id_dataset": id_dataset}
@@ -573,9 +637,15 @@ class TestCommons:
         )
 
         assert response.status_code == 200
-        assert len(response.json) == 0
+        data = response.json
+        assert additional_field.id_field not in [f["id_field"] for f in data]
+        # every field genuinely returned by this filter must have no dataset attached
+        assert all(len(f["datasets"]) == 0 for f in data)
 
     def test_additional_field_admin(self, app, users, module, perm_object):
+        anon_req = self.client.get("/admin/tadditionalfields/new/?url=/admin/tadditionalfields/")
+        assert anon_req.status_code == Unauthorized.code
+
         set_logged_user(self.client, users["admin_user"])
         form_values = {
             "field_label": "pytest_valid",
@@ -616,13 +686,17 @@ class TestCommons:
         )
 
     @pytest.mark.parametrize(
-        "value, expected_type", [("1", int), ("1.0", float), ("1 ans", str), ("1,0", str)]
+        "value, expected_type",
+        [("1", int), ("1.0", int), ("1.5", float), ("1 ans", str), ("1,0", str)],
     )
     def test_castable_field(self, value, expected_type):
         # test the serialization of a model using CastableField
         result = DummySchema().dump({"test": value})
-        assert type(result["test"] == expected_type)
+        assert type(result["test"]) == expected_type
 
+
+@pytest.mark.usefixtures("client_class")
+class TestMobileApps:
     def test_get_t_mobile_apps(self, mobile_app):
         import os, shutil, time
         from pathlib import Path
@@ -643,20 +717,23 @@ class TestCommons:
 
             assert response.status_code == 200
             assert type(response.json) == list
+            assert app_code in [a["app_code"] for a in response.json]
 
             response = self.client.get(
                 url_for("gn_commons.get_t_mobile_apps"), data=dict(app_code=app_code)
             )
             assert response.status_code == 200
             assert type(response.json) == list
-
-        except Exception as e:
-            raise Exception()
+            assert app_code in [a["app_code"] for a in response.json]
+            assert all(a["app_code"].lower() == app_code.lower() for a in response.json)
 
         finally:
             if path_app_in_geonature.exists():
                 shutil.rmtree(path_app_in_geonature.absolute())
 
+
+@pytest.mark.usefixtures("client_class")
+class TestTableLocation:
     def test_api_get_id_table_location(self):
         schema = "gn_commons"
         table = "t_medias"

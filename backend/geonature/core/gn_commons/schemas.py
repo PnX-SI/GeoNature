@@ -87,10 +87,9 @@ class CastableField(fields.Field):
                 value = float(value)
             except ValueError:
                 log.warning("default value not castable to float")
-            try:
+                return value
+            if value.is_integer():
                 value = int(value)
-            except ValueError:
-                log.warning("default value not castable to int")
         return value
 
 
