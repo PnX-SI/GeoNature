@@ -285,8 +285,12 @@ export class FormService {
         // Ne pas valider si le champ est vide (laissons required s'en charger)
         return null;
       }
-      // Based on https://datatracker.ietf.org/doc/html/rfc4122#section-4.1.1
-      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      // Aligné sur les formats acceptés en entrée par le type `uuid` de PostgreSQL
+      // (https://www.postgresql.org/docs/current/datatype-uuid.html), plutôt que sur le seul
+      // format RFC 4122 v4 : certains CA/JDD existants (ex. import MTD du MNHN) ont un UUID
+      // valide en base mais non conforme au standard SINP, et ne doivent pas bloquer l'édition.
+      const uuidRegex =
+        /^(?:\{[0-9a-f]{4}(?:-?[0-9a-f]{4}){7}\}|[0-9a-f]{4}(?:-?[0-9a-f]{4}){7})$/i;
 
       return uuidRegex.test(value) ? null : { invalidUuid: true };
     };
