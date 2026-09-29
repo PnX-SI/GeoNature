@@ -97,8 +97,56 @@ Si les protocoles de connexion que nous avons implémentés ne vous suffisent pa
 
 
 .. note::
-    Plus de détails sur la classe ``pypnusershub.auth.Authentication`` sont disponibles dans la documentation de l'`API <https://github.com/PnX-SI/UsersHub-authentification-module?tab=readme-ov-file#ajouter-son-propre-protocole-de-connexion>`_. 
+    Plus de détails sur la classe ``pypnusershub.auth.Authentication`` sont disponibles dans la documentation de l'`API <https://github.com/PnX-SI/UsersHub-authentification-module?tab=readme-ov-file#ajouter-son-propre-protocole-de-connexion>`_.
 
+Où placer le code de votre module de connexion personnalisé
+````````````````````````````````````````````````````````````
+
+Si vous écrivez votre propre classe d'authentification (par exemple pour une réconciliation SSO 
+spécifique à votre structure), ne l'ajoutez pas directement dans les sources de GeoNature ou de
+``UsersHub-authentification-module`` : ces fichiers sont remplacés à chaque mise à jour
+et votre code personnalisé serait perdu ou entrerait en conflit avec les fichiers versionnés.
+
+GeoNature prévoit un répertoire dédié, ``custom/python/``, à la racine de l'instance
+(à côté de ``backend/``, ``config/`` et ``contrib/``) : c'est le même emplacement que celui déjà
+utilisé pour d'autres personnalisations qui doivent survivre aux mises à jour (par exemple le
+logo personnalisé de ``CUSTOM_STATIC_FOLDER``). Ce répertoire est ignoré par Git (à l'exception
+d'un fichier ``.gitkeep`` qui permet de le versionner vide) : aucune mise à jour ni migration ne
+touchera donc jamais aux fichiers que vous y déposez.
+
+Au démarrage de GeoNature, ce répertoire est automatiquement ajouté au ``sys.path`` Python (s'il
+existe). Il suffit donc d'y déposer un fichier ``.py`` définissant votre classe pour pouvoir le
+référencer depuis la configuration, exactement comme un fournisseur intégré :
+
+.. code:: python
+
+    # custom/python/mon_fournisseur_sso.py
+    from pypnusershub.auth import Authentication
+
+    class MonFournisseurSSO(Authentication):
+        ...  # cf. les fournisseurs intégrés ci-dessous pour un exemple d'implémentation complet
+
+.. code:: toml
+
+    [[AUTHENTICATION.PROVIDERS]]
+        module="mon_fournisseur_sso.MonFournisseurSSO"
+        id_provider="mon_sso"
+
+.. note::
+    Le chemin déclaré dans ``module`` correspond au nom du fichier (sans l'extension ``.py``)
+    suivi du nom de la classe, séparés par un point — comme si le fichier était un module Python
+    classique.
+
+.. warning::
+    Choisissez un nom de fichier distinctif, peu susceptible d'entrer en collision avec un paquet
+    Python déjà installé. Le répertoire ``custom/python/`` est ajouté à la fin du ``sys.path``
+    (et non au début) : il sert donc de solution de repli et ne peut pas masquer un paquet déjà
+    installé, mais en cas de nom identique à un module existant, c'est ce dernier qui sera résolu
+    en priorité.
+
+Pour l'implémentation de la classe elle-même, appuyez-vous sur les fournisseurs déjà fournis par
+``UsersHub-authentification-module`` comme exemples à copier/adapter : ``default.py``,
+``openid_provider.py`` (dans ``pypnusershub/auth/providers/``).
 
 Désactiver l'authentification par défaut
 ````````````````````````````````````````

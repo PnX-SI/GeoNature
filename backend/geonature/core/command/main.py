@@ -11,7 +11,7 @@ import click
 from flask.cli import run_command
 
 import geonature
-from geonature.utils.env import GEONATURE_VERSION, CONFIG_FILE
+from geonature.utils.env import GEONATURE_VERSION, CONFIG_FILE, CUSTOM_PYTHON_DIR
 from geonature.utils.module import iter_modules_config, iter_modules_dist
 from geonature import create_app
 from geonature.utils.config import config
@@ -65,6 +65,8 @@ def dev_back(ctx, host, port):
     if not environ.get("FLASK_DEBUG"):
         environ["FLASK_DEBUG"] = "true"
     extra_files = [CONFIG_FILE] + list(iter_modules_config())
+    if CUSTOM_PYTHON_DIR.is_dir():
+        extra_files.append(str(CUSTOM_PYTHON_DIR))
     ctx.invoke(
         run_command,
         host=host,

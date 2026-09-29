@@ -31,6 +31,9 @@ Pipfile.lock
 
 custom/*
 !custom/.gitkeep
+!custom/python
+custom/python/*
+!custom/python/.gitkeep
 
 environ
 
