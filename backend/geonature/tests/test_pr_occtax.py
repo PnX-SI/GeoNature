@@ -189,20 +189,20 @@ def additional_field(app, datasets):
     ).scalar_one()
     obj = db.session.execute(select(PermObject).where(PermObject.code_object == "ALL")).scalar_one()
     datasets = list(datasets.values())
-    additional_field = TAdditionalFields(
-        field_name="test",
-        field_label="Un label",
-        required=True,
-        description="une description",
-        quantitative=False,
-        unity="degré C",
-        field_values=["la", "li"],
-        id_widget=1,
-        modules=[module],
-        objects=[obj],
-        datasets=datasets,
-    )
     with db.session.begin_nested():
+        additional_field = TAdditionalFields(
+            field_name="test",
+            field_label="Un label",
+            required=True,
+            description="une description",
+            quantitative=False,
+            unity="degré C",
+            field_values=["la", "li"],
+            id_widget=1,
+            modules=[module],
+            objects=[obj],
+            datasets=datasets,
+        )
         db.session.add(additional_field)
     return additional_field
 
@@ -223,16 +223,16 @@ def additional_field_nomenclature(app, datasets):
     nomenclature_widget = db.session.execute(
         select(BibWidgets).where(BibWidgets.widget_name == "nomenclature")
     ).scalar_one()
-    additional_field = TAdditionalFields(
-        field_name="occurrence_nomenclature_export_field",
-        field_label="Champ nomenclature export",
-        required=False,
-        id_widget=nomenclature_widget.id_widget,
-        modules=[module],
-        objects=[obj],
-        datasets=[datasets["own_dataset"]],
-    )
     with db.session.begin_nested():
+        additional_field = TAdditionalFields(
+            field_name="occurrence_nomenclature_export_field",
+            field_label="Champ nomenclature export",
+            required=False,
+            id_widget=nomenclature_widget.id_widget,
+            modules=[module],
+            objects=[obj],
+            datasets=[datasets["own_dataset"]],
+        )
         db.session.add(additional_field)
     return additional_field
 
@@ -257,26 +257,27 @@ def additional_fields_releve(app, datasets):
     ).scalar_one()
     datasets = list(datasets.values())
 
-    text_field = TAdditionalFields(
-        field_name="releve_text_field",
-        field_label="Champ texte",
-        required=False,
-        id_widget=text_widget.id_widget,
-        modules=[module],
-        objects=[obj],
-        datasets=datasets,
-    )
-    nomenclature_field = TAdditionalFields(
-        field_name="releve_nomenclature_field",
-        field_label="Champ nomenclature",
-        required=False,
-        id_widget=nomenclature_widget.id_widget,
-        modules=[module],
-        objects=[obj],
-        datasets=datasets,
-    )
     with db.session.begin_nested():
-        db.session.add_all([text_field, nomenclature_field])
+        text_field = TAdditionalFields(
+            field_name="releve_text_field",
+            field_label="Champ texte",
+            required=False,
+            id_widget=text_widget.id_widget,
+            modules=[module],
+            objects=[obj],
+            datasets=datasets,
+        )
+        db.session.add(text_field)
+        nomenclature_field = TAdditionalFields(
+            field_name="releve_nomenclature_field",
+            field_label="Champ nomenclature",
+            required=False,
+            id_widget=nomenclature_widget.id_widget,
+            modules=[module],
+            objects=[obj],
+            datasets=datasets,
+        )
+        db.session.add(nomenclature_field)
     return {"text": text_field, "nomenclature": nomenclature_field}
 
 
@@ -297,25 +298,25 @@ def additional_fields_occtax_nomenclature(app, datasets):
     datasets = list(datasets.values())
 
     fields = {}
-    for key, code_object, field_name in [
-        ("releve", "OCCTAX_RELEVE", "releve_nomenclature_field"),
-        ("occurrence", "OCCTAX_OCCURRENCE", "occurrence_nomenclature_field"),
-        ("counting", "OCCTAX_DENOMBREMENT", "counting_nomenclature_field"),
-    ]:
-        obj = db.session.execute(
-            select(PermObject).where(PermObject.code_object == code_object)
-        ).scalar_one()
-        fields[key] = TAdditionalFields(
-            field_name=field_name,
-            field_label=field_name,
-            required=False,
-            id_widget=nomenclature_widget.id_widget,
-            modules=[module],
-            objects=[obj],
-            datasets=datasets,
-        )
     with db.session.begin_nested():
-        db.session.add_all(fields.values())
+        for key, code_object, field_name in [
+            ("releve", "OCCTAX_RELEVE", "releve_nomenclature_field"),
+            ("occurrence", "OCCTAX_OCCURRENCE", "occurrence_nomenclature_field"),
+            ("counting", "OCCTAX_DENOMBREMENT", "counting_nomenclature_field"),
+        ]:
+            obj = db.session.execute(
+                select(PermObject).where(PermObject.code_object == code_object)
+            ).scalar_one()
+            fields[key] = TAdditionalFields(
+                field_name=field_name,
+                field_label=field_name,
+                required=False,
+                id_widget=nomenclature_widget.id_widget,
+                modules=[module],
+                objects=[obj],
+                datasets=datasets,
+            )
+            db.session.add(fields[key])
     return fields
 
 

@@ -98,17 +98,17 @@ def groups():
 
 @pytest.fixture()
 def roles(groups):
-    roles = {
-        "r1": User(),
-        "r2": User(),
-        "g1_r1": User(groups=[groups["g1"]]),
-        "g1_r2": User(groups=[groups["g1"]]),
-        "g2_r1": User(groups=[groups["g2"]]),
-        "g2_r2": User(groups=[groups["g2"]]),
-        "g12_r1": User(groups=[groups["g1"], groups["g2"]]),
-        "g12_r2": User(groups=[groups["g1"], groups["g2"]]),
-    }
     with db.session.begin_nested():
+        roles = {
+            "r1": User(),
+            "r2": User(),
+            "g1_r1": User(groups=[groups["g1"]]),
+            "g1_r2": User(groups=[groups["g1"]]),
+            "g2_r1": User(groups=[groups["g2"]]),
+            "g2_r2": User(groups=[groups["g2"]]),
+            "g12_r1": User(groups=[groups["g1"], groups["g2"]]),
+            "g12_r2": User(groups=[groups["g1"], groups["g2"]]),
+        }
         for role in roles.values():
             db.session.add(role)
     return roles

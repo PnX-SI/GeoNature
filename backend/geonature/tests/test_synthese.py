@@ -1955,14 +1955,14 @@ class TestSynthese:
 def synthese_export_permissions(synthese_module):
     def _synthese_export_permissions(role, scope_value, action="E", **kwargs):
         action = PermAction.query.filter_by(code_action=action).one()
-        perm = Permission(
-            role=role,
-            action=action,
-            module=synthese_module,
-            scope_value=scope_value,
-            **kwargs,
-        )
         with db.session.begin_nested():
+            perm = Permission(
+                role=role,
+                action=action,
+                module=synthese_module,
+                scope_value=scope_value,
+                **kwargs,
+            )
             db.session.add(perm)
         return perm
 

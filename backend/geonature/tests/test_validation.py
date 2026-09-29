@@ -80,14 +80,14 @@ def add_validation_read_permissions(validation_module):
 
     def _add_validation_read_permissions(role, scope_value, action="R", **kwargs):
         action = PermAction.query.filter_by(code_action=action).one()
-        perm = Permission(
-            role=role,
-            action=action,
-            module=validation_module,
-            scope_value=scope_value,
-            **kwargs,
-        )
         with db.session.begin_nested():
+            perm = Permission(
+                role=role,
+                action=action,
+                module=validation_module,
+                scope_value=scope_value,
+                **kwargs,
+            )
             db.session.add(perm)
         return perm
 
