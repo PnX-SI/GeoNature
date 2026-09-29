@@ -5,7 +5,7 @@ from geonature.utils.env import db
 from ref_geo.models import LAreas, BibAreasTypes
 
 from geonature.core.gn_synthese.models import Synthese
-from sqlalchemy import select, desc, asc, column, func, and_, exists, or_
+from sqlalchemy import select, desc, asc, column, func, and_, exists, or_, true
 from apptax.taxonomie.models import Taxref, TaxrefTree
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from sqlalchemy.orm import Query, aliased
@@ -39,7 +39,10 @@ class TaxonSheet:
         )
         if len(list_cd_nom) > 0:
             is_authorized = db.session.scalar(
-                exists(TaxrefTree).where(child_taxon_cte.c.cd_nom.in_([self.cd_ref])).select()
+                exists(TaxrefTree)
+                .select_from(TaxrefTree.__table__.join(child_taxon_cte, true()))
+                .where(child_taxon_cte.c.cd_nom.in_([self.cd_ref]))
+                .select()
             )
             return is_authorized
 
@@ -58,6 +61,16 @@ class TaxonSheetUtils:
     ) -> SyntheseQuery:
         synthese_query_obj = SyntheseQuery(Synthese, query, {})
         synthese_query_obj.filter_query_with_permissions(current_user, permissions)
+        if isinstance(query, Select):
+            # For Core `select()`-based queries, permission joins accumulated in
+            # `query_joins` (e.g. the taxonomic filter's join to TaxrefTree) are only
+            # attached to the FROM clause by `build_query()`. Without this, TaxrefTree
+            # is still referenced by the WHERE clause (taxonomic filter) but gets
+            # implicitly added to FROM with no join condition, causing a cartesian
+            # product. Legacy `Query` objects (used e.g. by taxon_observers) already
+            # build their FROM/JOIN clauses eagerly and cannot call `select_from()`
+            # after a criterion has been applied, so they keep the previous behavior.
+            return synthese_query_obj.build_query()
         return synthese_query_obj.query
 
     @staticmethod
