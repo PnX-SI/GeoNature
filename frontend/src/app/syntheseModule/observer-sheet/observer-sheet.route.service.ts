@@ -16,6 +16,7 @@ import { ObservationsComponent } from '../sheets/observations/observations.compo
 import { ObserverSheetService } from './observer-sheet.service';
 import { Observer } from './observer';
 import { UserDataService } from '@geonature/userModule/services';
+import { AuthService } from '@geonature/components/auth/auth.service';
 
 export function getObserverSheetRoute(observer: string): [string] {
   return [`/synthese/observer/${encodeURIComponent(observer)}`];
@@ -51,7 +52,8 @@ export class ObserverSheetRouteService implements CanActivate, CanActivateChild 
     private _config: ConfigService,
     private _router: Router,
     private _oss: ObserverSheetService,
-    private _userDataService: UserDataService
+    private _userDataService: UserDataService,
+    private _authService: AuthService
   ) {
     if (
       this._config['SYNTHESE']?.['ENABLE_OBSERVER_SHEETS'] &&
@@ -67,6 +69,16 @@ export class ObserverSheetRouteService implements CanActivate, CanActivateChild 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
     if (!this._config['SYNTHESE']?.['ENABLE_OBSERVER_SHEETS']) {
       this._router.navigate(['/404'], { skipLocationChange: true });
+      return of(false);
+    }
+
+    const currentUserId = this._authService.getCurrentUser()?.id_role;
+    if (Number(route.paramMap.get('observer')) !== Number(currentUserId)) {
+      if (currentUserId) {
+        this._router.navigate(getObserverSheetRoute(String(currentUserId)));
+      } else {
+        this._router.navigate(['/404'], { skipLocationChange: true });
+      }
       return of(false);
     }
 

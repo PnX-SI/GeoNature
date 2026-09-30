@@ -12,7 +12,6 @@ import { Observable } from 'rxjs';
 import { ConfigService } from '@geonature/services/config.service';
 import { DEFAULT_PAGINATION, SyntheseDataPaginationItem } from './synthese-data-pagination-item';
 import { DEFAULT_SORT, SyntheseDataSortItem } from './synthese-data-sort-item';
-import { Observer } from '@geonature/syntheseModule/observer-sheet/observer';
 
 export type SheetStats = {
   area_count?: number;
@@ -72,34 +71,24 @@ export class SyntheseDataService {
     return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/general_stats`);
   }
 
-  getSyntheseObserverSheetStats(
-    observer: Observer,
-    areaType: string = 'COM'
-  ): Observable<ObserverStats> {
-    return this._api.get<any>(
-      `${this.config.API_ENDPOINT}/synthese/observer_stats/${encodeURIComponent(observer.nom_complet)}`,
-      {
-        params: new HttpParams().append('area_type', areaType),
-      }
-    );
+  getSyntheseObserverSheetStats(areaType: string = 'COM'): Observable<ObserverStats> {
+    return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/observer_stats`, {
+      params: new HttpParams().append('area_type', areaType),
+    });
   }
 
   getSyntheseObserverSheetTaxa(
-    observer: Observer,
     pagination: SyntheseDataPaginationItem = DEFAULT_PAGINATION,
     sort: SyntheseDataSortItem = DEFAULT_SORT
   ): Observable<any> {
-    return this._api.get<any>(
-      `${this.config.API_ENDPOINT}/synthese/observer_overview/${encodeURIComponent(observer.nom_complet)}`,
-      {
-        params: {
-          per_page: pagination.perPage,
-          page: pagination.currentPage,
-          sort_by: sort.sortBy,
-          sort_order: sort.sortOrder,
-        },
-      }
-    );
+    return this._api.get<any>(`${this.config.API_ENDPOINT}/synthese/observer_overview`, {
+      params: {
+        per_page: pagination.perPage,
+        page: pagination.currentPage,
+        sort_by: sort.sortBy,
+        sort_order: sort.sortOrder,
+      },
+    });
   }
 
   getSyntheseTaxonSheetStat(cd_ref: number, areaType: string = 'COM'): Observable<TaxonStats> {
@@ -114,13 +103,10 @@ export class SyntheseDataService {
     });
   }
 
-  getObserverMedias(observer: Observer, params?: {}): Observable<any> {
-    return this._api.get(
-      `${this.config.API_ENDPOINT}/synthese/observer_medias/${encodeURIComponent(observer.nom_complet)}`,
-      {
-        params,
-      }
-    );
+  getObserverMedias(params?: {}): Observable<any> {
+    return this._api.get(`${this.config.API_ENDPOINT}/synthese/observer_medias`, {
+      params,
+    });
   }
 
   getIsAuthorizedCdRefForUser(cd_ref: number) {
