@@ -35,7 +35,7 @@
 - [Import] Affichage des jeux de données dans la liste des imports, dans la fiche d'un import et dans le rapport d'import (#4146 par @christophe-ramet)
 - [Habref] Ajout de commandes de mise à jour du référentiel Habref en version 7 (#2215 par @Pierre-Narcisi)
 - [Nomenclatures] Le libellé des nomenclatures des champs additionnels est désormais stocké en plus de leur identifiant (clé suffixée par `_label`). Les données historiques d'Occtax (web et mobile) sont migrées (#4297 par @TheoLechemia)
-- [Frontend] Remplacement du composant `pnx-taxa` (#4203 par @jpm-cbna) >>> **CM : Je comprends pas ce que ça veut dire ?**
+- [Frontend] Amélioration et correction du composant `pnx-taxa` permettant de sélectionner plusieurs taxons (#4203 par @jpm-cbna)
 - [Frontend] Ajout d'une propriété `placeholder` au composant `pnx-observers` (#4174 par @CynthiaBorotPNV)
 - [Docker] Prise en charge des variables d'environnement suffixées par `_FILE` dans l'entrypoint du backend, permettant l'usage des secrets Docker (#4386 par @bouttier)
 - [Docker] Ajout de l'exécution de `supergrant` dans l'entrypoint (si `GEONATURE_SUPERGRANT_ARGS` est défini) et création du fichier `/tmp/ready` pour le healthcheck de l'installation de la base de données (#4391 par @bouttier)
