@@ -17,7 +17,6 @@ from geonature.core.gn_synthese.utils.pagination_sorting import PaginationSortin
 
 from ref_geo.models import BibAreasTypes, LAreas
 from utils_flask_sqla.response import json_resp
-from urllib.parse import unquote
 
 from sqlalchemy import distinct, func, select
 from werkzeug.exceptions import BadRequest
@@ -27,10 +26,11 @@ observer_info_routes = Blueprint("synthese_observer_info", __name__)
 
 if app.config["SYNTHESE"]["ENABLE_OBSERVER_SHEETS"]:
 
-    @observer_info_routes.route("/observer_stats/<string:observer>", methods=["GET"])
+    @observer_info_routes.route("/observer_stats", methods=["GET"])
+    @login_required
     @permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
     @json_resp
-    def observer_stats(scope, observer):
+    def observer_stats(scope):
         """Return stats for a specific taxon"""
 
         # Handle area type
@@ -54,7 +54,7 @@ if app.config["SYNTHESE"]["ENABLE_OBSERVER_SHEETS"]:
         )
 
         # Observer subquery
-        observer_subquery = ObserversUtils.get_observers_subquery(unquote(observer))
+        observer_subquery = ObserversUtils.get_observers_subquery(g.current_user.nom_complet)
 
         # Main query to fetch stats
         query = (
@@ -83,7 +83,7 @@ if app.config["SYNTHESE"]["ENABLE_OBSERVER_SHEETS"]:
         synthese_stats = result.fetchone()
 
         data = {
-            "observer": observer,
+            "observer": g.current_user.nom_complet,
             "observation_count": synthese_stats.observation_count,
             "taxa_count": synthese_stats.taxa_count,
             "area_count": synthese_stats.area_count,
@@ -95,15 +95,15 @@ if app.config["SYNTHESE"]["ENABLE_OBSERVER_SHEETS"]:
 
     if app.config["SYNTHESE"]["OBSERVER_SHEET"]["ENABLE_TAB_MEDIA"]:
 
-        @observer_info_routes.route("/observer_medias/<string:observer>", methods=["GET"])
+        @observer_info_routes.route("/observer_medias", methods=["GET"])
         @login_required
         @permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
         @json_resp
-        def observer_medias(scope, observer):
+        def observer_medias(scope):
             per_page = request.args.get("per_page", 10, int)
             page = request.args.get("page", 1, int)
 
-            observer_subquery = ObserversUtils.get_observers_subquery(unquote(observer))
+            observer_subquery = ObserversUtils.get_observers_subquery(g.current_user.nom_complet)
             query = (
                 select(TMedias)
                 .select_from(Synthese)
@@ -126,9 +126,10 @@ if app.config["SYNTHESE"]["ENABLE_OBSERVER_SHEETS"]:
 
     if app.config["SYNTHESE"]["OBSERVER_SHEET"]["ENABLE_TAB_TAXA"]:
 
-        @observer_info_routes.route("/observer_overview/<string:observer>", methods=["GET"])
+        @observer_info_routes.route("/observer_overview", methods=["GET"])
+        @login_required
         @permissions.permissions_required("R", module_code="SYNTHESE")
-        def observer_overview(permissions, observer):
+        def observer_overview(permissions):
             per_page = request.args.get("per_page", 10, int)
             page = request.args.get("page", 1, int)
             sort_by = request.args.get("sort_by", "observation_count")
@@ -138,7 +139,7 @@ if app.config["SYNTHESE"]["ENABLE_OBSERVER_SHEETS"]:
                 PaginationSortingUtils.SortOrder,
             )
 
-            observer_subquery = ObserversUtils.get_observers_subquery(unquote(observer))
+            observer_subquery = ObserversUtils.get_observers_subquery(g.current_user.nom_complet)
             query = (
                 db.session.query(
                     Taxref.cd_nom,
