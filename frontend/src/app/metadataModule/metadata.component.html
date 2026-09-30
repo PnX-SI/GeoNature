@@ -311,29 +311,10 @@
 
     <label>Acteur (personne)</label>
 
-    <ng-select
-      [items]="roles"
-      [formControl]="metadataService.form.get('person')"
-      bindLabel="nom_complet"
+    <pnx-observers
+      [parentFormControl]="metadataService.form.get('person')"
       bindValue="id_role"
-      [multiple]="false"
-      [virtualScroll]="true"
-    >
-      <ng-template
-        ng-option-tmp
-        let-item="item"
-        let-index="index"
-        let-search="searchTerm"
-      >
-        <div
-          [matTooltip]="item.nom_complet"
-          matTooltipPosition="after"
-          [attr.data-qa]="item.id_role"
-        >
-          <span class="pre-wrap">{{ item.nom_complet }}</span>
-        </div>
-      </ng-template>
-    </ng-select>
+    ></pnx-observers>
 
     <div *ngIf="displayMetaAreaFilters() && metadataService.formBuilded">
       <div *ngFor="let area of areaFilters; let i = index">

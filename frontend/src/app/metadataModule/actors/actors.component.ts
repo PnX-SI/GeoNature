@@ -32,11 +32,6 @@ export class ActorComponent implements OnInit {
     return this.actorFormS.organisms;
   }
 
-  //liste des roles pour peupler le select HTML
-  get roles() {
-    return this.actorFormS.roles;
-  }
-
   //liste des types de role pour peupler le select HTML
   get role_types() {
     if (!this._roleTypes) {
@@ -68,11 +63,6 @@ export class ActorComponent implements OnInit {
     return this.organisms.find(
       (organism: any) => organism.id_organisme == this.actorForm.get('id_organism').value
     );
-  }
-
-  //Retourne l'objet role à partir de son identifiant issu du formulaire (pour affiche son label en mode edition = false)
-  get roleValue() {
-    return this.roles.find((role: any) => role.id_role == this.actorForm.get('id_role').value);
   }
 
   //indique si c'est une formulaire d'édition ou de creation

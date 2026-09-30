@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
-import { DataFormService } from '@geonature_common/form/data-form.service';
+import { UserDataService } from './user-data.service';
 import { LoginExistsValidator } from './login-exists.validator';
 
 export interface Role {
@@ -21,7 +21,7 @@ export class RoleFormService {
 
   constructor(
     private fb: UntypedFormBuilder,
-    private dataService: DataFormService,
+    private dataService: UserDataService,
     private loginExistsValidator: LoginExistsValidator
   ) {
     this.setForm();
@@ -46,7 +46,7 @@ export class RoleFormService {
   }
 
   private getRole(role: number) {
-    this.dataService.getRole(role).subscribe((res) => {
+    this.dataService.getCurrentUserRole().subscribe((res) => {
       this.roleForm.patchValue(res);
     });
   }

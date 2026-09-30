@@ -32,8 +32,6 @@ export class MetadataComponent implements OnInit {
 
   /* liste des organismes issues de l'API pour le select. */
   public organisms: any[] = [];
-  /* liste des roles issues de l'API pour le select. */
-  public roles: any[] = [];
   public meta_type: any[] = [
     { label: 'Jeu de données', value: 'ds' },
     { label: "Cadre d'acquisition", value: 'af' },
@@ -62,8 +60,6 @@ export class MetadataComponent implements OnInit {
 
   ngOnInit() {
     this._dfs.getOrganisms().subscribe((organisms) => (this.organisms = organisms));
-
-    this._dfs.getRoles({ group: false }).subscribe((roles) => (this.roles = roles));
 
     //Combinaison des observables pour afficher les éléments filtrés en fonction de l'état du paginator
     this.acquisitionFrameworks = this.metadataService.acquisitionFrameworks.pipe(

@@ -15,7 +15,6 @@ import { ChildRouteDescription } from '@geonature/routing/childRouteDescription'
 import { ObservationsComponent } from '../sheets/observations/observations.component';
 import { ObserverSheetService } from './observer-sheet.service';
 import { Observer } from './observer';
-import { UserDataService } from '@geonature/userModule/services';
 import { AuthService } from '@geonature/components/auth/auth.service';
 
 export function getObserverSheetRoute(observer: string): [string] {
@@ -52,7 +51,6 @@ export class ObserverSheetRouteService implements CanActivate, CanActivateChild 
     private _config: ConfigService,
     private _router: Router,
     private _oss: ObserverSheetService,
-    private _userDataService: UserDataService,
     private _authService: AuthService
   ) {
     if (
@@ -112,16 +110,14 @@ export class ObserverSheetRouteService implements CanActivate, CanActivateChild 
     const observerId = Number(observerParam);
 
     if (Number.isNaN(observerId)) {
-      throw new Error('Observer is a not a valid id');
+      return throwError(() => new Error('Observer is a not a valid id'));
     }
 
-    return this._userDataService.getRole(observerId).pipe(
-      map((role: any) => {
-        if (role?.groupe) {
-          throw new Error('Observer is a group');
-        }
-        return role as Observer;
-      })
-    );
+    // canActivate guarantees that the observer is the authenticated user
+    const currentUser = this._authService.getCurrentUser();
+    return of({
+      id_role: observerId,
+      nom_complet: currentUser.nom_complet,
+    } as Observer);
   }
 }
