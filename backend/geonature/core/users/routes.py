@@ -39,17 +39,6 @@ log = logging.getLogger()
 s = requests.Session()
 
 
-user_fields = {
-    "id_role",
-    "identifiant",
-    "nom_role",
-    "prenom_role",
-    "nom_complet",
-    "id_organisme",
-    "groupe",
-    "active",
-    "remarques",
-}
 organism_fields = {
     "id_organisme",
     "uuid_organisme",
@@ -128,52 +117,6 @@ def get_listes():
     query = select(UserList)
     lists = DB.session.scalars(query).all()
     return [l.as_dict() for l in lists]
-
-
-@routes.route("/role/<int:id_role>", methods=["GET"])
-@permissions.login_required
-@json_resp
-def get_role(id_role):
-    """
-    Get role detail
-
-    Parameters
-    ----------
-    id_role : int
-        the id user
-
-    Returns
-    -------
-    dict
-        A dictionary containing the role detail
-    """
-    user = DB.get_or_404(User, id_role)
-    fields = user_fields.copy()
-    if g.current_user == user:
-        fields.add("email")
-    return user.as_dict(fields=fields)
-
-
-@routes.route("/roles", methods=["GET"])
-@permissions.login_required
-@json_resp
-def get_roles():
-    """
-    Get all roles
-
-    .. :quickref: User;
-    """
-    params = request.args.to_dict()
-    query = select(User)
-    if "group" in params:
-        query = query.where(User.groupe == params["group"])
-    if "orderby" in params:
-        try:
-            order_col = getattr(User.__table__.columns, params.pop("orderby"))
-            query = query.order_by(order_col)
-        except AttributeError:
-            raise BadRequest("the attribute to order on does not exist")
-    return [user.as_dict(fields=user_fields) for user in DB.session.scalars(query).all()]
 
 
 @routes.route("/organisms", methods=["GET"])

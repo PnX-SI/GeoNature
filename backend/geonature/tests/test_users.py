@@ -88,40 +88,6 @@ class TestUsers:
         )
         assert actual_names == expected_names
 
-    def test_get_role(self, users):
-        self_user = users["self_user"]
-        set_logged_user(self.client, users["admin_user"])
-
-        response = self.client.get(url_for("users.get_role", id_role=self_user.id_role))
-
-        assert response.status_code == 200
-        assert self_user.id_role == response.json["id_role"]
-
-    def test_get_roles(self, users):
-        noright_user = users["noright_user"]
-        set_logged_user(self.client, users["admin_user"])
-
-        response = self.client.get(url_for("users.get_roles"))
-
-        assert response.status_code == 200
-        assert noright_user.id_role in [j_resp["id_role"] for j_resp in response.json]
-
-    def test_get_roles_group(self):
-        pass
-
-    def test_get_roles_order_by(self, users):
-        set_logged_user(self.client, users["admin_user"])
-
-        response = self.client.get(
-            url_for("users.get_roles"), query_string={"orderby": "identifiant"}
-        )
-
-        assert response.status_code == 200
-        identifiants_resp = [resp["identifiant"] for resp in response.json]
-        assert identifiants_resp.index(users["admin_user"].identifiant) < identifiants_resp.index(
-            users["stranger_user"].identifiant
-        )
-
     def test_get_organismes_jdd_no_auth(self):
         response = self.client.get(url_for("users.get_organismes_jdd"))
 
