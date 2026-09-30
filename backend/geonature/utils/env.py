@@ -23,6 +23,13 @@ BACKEND_DIR = Path(__file__).absolute().parent.parent.parent
 ROOT_DIR = BACKEND_DIR.parent
 FRONTEND_DIR = ROOT_DIR / "frontend"
 
+# Directory where instance admins may drop custom Python modules (e.g. custom
+# authentication providers) that must survive `geonature update`/migrations.
+# Made importable under the `geonature.plugins` namespace (see
+# geonature/plugins/__init__.py), not via sys.path, so it never shadows real
+# installed packages.
+CUSTOM_PYTHON_DIR = ROOT_DIR / "custom" / "python"
+
 try:
     GEONATURE_VERSION = version("geonature")
 except PackageNotFoundError:

@@ -97,8 +97,48 @@ Si les protocoles de connexion que nous avons implémentés ne vous suffisent pa
 
 
 .. note::
-    Plus de détails sur la classe ``pypnusershub.auth.Authentication`` sont disponibles dans la documentation de l'`API <https://github.com/PnX-SI/UsersHub-authentification-module?tab=readme-ov-file#ajouter-son-propre-protocole-de-connexion>`_. 
+    Plus de détails sur la classe ``pypnusershub.auth.Authentication`` sont disponibles dans la documentation de l'`API <https://github.com/PnX-SI/UsersHub-authentification-module?tab=readme-ov-file#ajouter-son-propre-protocole-de-connexion>`_.
 
+Où placer le code de votre module de connexion personnalisé
+````````````````````````````````````````````````````````````
+
+Si vous écrivez votre propre classe d'authentification (par exemple pour une réconciliation SSO 
+spécifique à votre structure), ne l'ajoutez pas directement dans les sources de GeoNature ou de
+``UsersHub-authentification-module`` : ces fichiers sont remplacés à chaque mise à jour
+et votre code personnalisé serait perdu ou entrerait en conflit avec les fichiers versionnés.
+
+GeoNature prévoit un répertoire dédié, ``custom/python/providers/`` (sous-répertoire de
+``custom/python/``), à la racine de l'instance : c'est le même emplacement que celui déjà utilisé pour d'autres personnalisations
+qui doivent survivre aux mises à jour (e.g le logo personnalisé).
+
+Au démarrage de GeoNature, le paquet ``geonature.plugins`` étend son chemin de recherche de
+modules (``__path__``) pour y inclure ``custom/python/``. Vos fichiers sont ainsi exposés comme un
+sous-espace de noms de ``geonature.plugins``. Si je créer un module python ``test.py`` dans ``custom/python/providers/``, ce dernier peut être importer par le chemin suivant ``geonature.plugins.providers.test``. Il suffit donc d'y déposer un fichier ``.py`` définissant votre classe pour pouvoir le référencer depuis la configuration (aucun fichier ``__init__.py`` n'est
+nécessaire dans ``providers/``) :
+
+.. code:: python
+
+    # custom/python/providers/mon_fournisseur_sso.py
+    from pypnusershub.auth import Authentication
+
+    class MonFournisseurSSO(Authentication):
+        ...  # cf. les fournisseurs intégrés ci-dessous pour un exemple d'implémentation complet
+
+.. code:: toml
+
+    [[AUTHENTICATION.PROVIDERS]]
+        module="geonature.plugins.providers.mon_fournisseur_sso.MonFournisseurSSO"
+        id_provider="mon_sso"
+
+.. note::
+    Le chemin déclaré dans ``module`` suit la convention
+    ``geonature.plugins.providers.<nom_de_fichier>.<NomDeLaClasse>`` : le nom du fichier (sans
+    l'extension ``.py``) suivi du nom de la classe, préfixés par l'espace de noms
+    ``geonature.plugins.providers``.
+
+Pour l'implémentation de la classe elle-même, appuyez-vous sur les fournisseurs déjà fournis par
+``UsersHub-authentification-module`` comme exemples à copier/adapter : ``default.py``,
+``openid_provider.py`` (dans ``pypnusershub/auth/providers/``).
 
 Désactiver l'authentification par défaut
 ````````````````````````````````````````
