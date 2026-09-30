@@ -468,24 +468,6 @@ export class DataFormService {
     return this._http.get<any>(`${this.config.API_ENDPOINT}/users/organism/${id_organisme}`);
   }
 
-  getRole(id: number) {
-    return this._http.get<any>(`${this.config.API_ENDPOINT}/users/role/${id}`);
-  }
-
-  getRoles(params?: ParamsDict, orderByName = true) {
-    let queryString: HttpParams = new HttpParams();
-    if (orderByName) {
-      queryString = this.addOrderBy(queryString, 'nom_role');
-    }
-    // eslint-disable-next-line guard-for-in
-    for (let key in params) {
-      if (params[key] !== null) {
-        queryString = queryString.set(key, params[key]);
-      }
-    }
-    return this._http.get<any>(`${this.config.API_ENDPOINT}/users/roles`, { params: queryString });
-  }
-
   getDataset(id) {
     return this._http.get<any>(`${this.config.API_ENDPOINT}/meta/dataset/${id}`);
   }
