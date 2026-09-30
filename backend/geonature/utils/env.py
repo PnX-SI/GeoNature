@@ -25,10 +25,10 @@ FRONTEND_DIR = ROOT_DIR / "frontend"
 
 # Directory where instance admins may drop custom Python modules (e.g. custom
 # authentication providers) that must survive `geonature update`/migrations.
-# Appended (not inserted first) so it never shadows real installed packages.
+# Made importable under the `geonature.plugins` namespace (see
+# geonature/plugins/__init__.py), not via sys.path, so it never shadows real
+# installed packages.
 CUSTOM_PYTHON_DIR = ROOT_DIR / "custom" / "python"
-if CUSTOM_PYTHON_DIR.is_dir():
-    sys.path.append(str(CUSTOM_PYTHON_DIR))
 
 try:
     GEONATURE_VERSION = version("geonature")

@@ -34,6 +34,9 @@ custom/*
 !custom/python
 custom/python/*
 !custom/python/.gitkeep
+!custom/python/providers
+custom/python/providers/*
+!custom/python/providers/.gitkeep
 
 environ
 

@@ -107,20 +107,18 @@ spécifique à votre structure), ne l'ajoutez pas directement dans les sources d
 ``UsersHub-authentification-module`` : ces fichiers sont remplacés à chaque mise à jour
 et votre code personnalisé serait perdu ou entrerait en conflit avec les fichiers versionnés.
 
-GeoNature prévoit un répertoire dédié, ``custom/python/``, à la racine de l'instance
-(à côté de ``backend/``, ``config/`` et ``contrib/``) : c'est le même emplacement que celui déjà
-utilisé pour d'autres personnalisations qui doivent survivre aux mises à jour (par exemple le
-logo personnalisé de ``CUSTOM_STATIC_FOLDER``). Ce répertoire est ignoré par Git (à l'exception
-d'un fichier ``.gitkeep`` qui permet de le versionner vide) : aucune mise à jour ni migration ne
-touchera donc jamais aux fichiers que vous y déposez.
+GeoNature prévoit un répertoire dédié, ``custom/python/providers/`` (sous-répertoire de
+``custom/python/``), à la racine de l'instance : c'est le même emplacement que celui déjà utilisé pour d'autres personnalisations
+qui doivent survivre aux mises à jour (e.g le logo personnalisé).
 
-Au démarrage de GeoNature, ce répertoire est automatiquement ajouté au ``sys.path`` Python (s'il
-existe). Il suffit donc d'y déposer un fichier ``.py`` définissant votre classe pour pouvoir le
-référencer depuis la configuration, exactement comme un fournisseur intégré :
+Au démarrage de GeoNature, le paquet ``geonature.plugins`` étend son chemin de recherche de
+modules (``__path__``) pour y inclure ``custom/python/``. Vos fichiers sont ainsi exposés comme un
+sous-espace de noms de ``geonature.plugins``. Si je créer un module python ``test.py`` dans ``custom/python/providers/``, ce dernier peut être importer par le chemin suivant ``geonature.plugins.providers.test``. Il suffit donc d'y déposer un fichier ``.py`` définissant votre classe pour pouvoir le référencer depuis la configuration (aucun fichier ``__init__.py`` n'est
+nécessaire dans ``providers/``) :
 
 .. code:: python
 
-    # custom/python/mon_fournisseur_sso.py
+    # custom/python/providers/mon_fournisseur_sso.py
     from pypnusershub.auth import Authentication
 
     class MonFournisseurSSO(Authentication):
@@ -129,20 +127,14 @@ référencer depuis la configuration, exactement comme un fournisseur intégré 
 .. code:: toml
 
     [[AUTHENTICATION.PROVIDERS]]
-        module="mon_fournisseur_sso.MonFournisseurSSO"
+        module="geonature.plugins.providers.mon_fournisseur_sso.MonFournisseurSSO"
         id_provider="mon_sso"
 
 .. note::
-    Le chemin déclaré dans ``module`` correspond au nom du fichier (sans l'extension ``.py``)
-    suivi du nom de la classe, séparés par un point — comme si le fichier était un module Python
-    classique.
-
-.. warning::
-    Choisissez un nom de fichier distinctif, peu susceptible d'entrer en collision avec un paquet
-    Python déjà installé. Le répertoire ``custom/python/`` est ajouté à la fin du ``sys.path``
-    (et non au début) : il sert donc de solution de repli et ne peut pas masquer un paquet déjà
-    installé, mais en cas de nom identique à un module existant, c'est ce dernier qui sera résolu
-    en priorité.
+    Le chemin déclaré dans ``module`` suit la convention
+    ``geonature.plugins.providers.<nom_de_fichier>.<NomDeLaClasse>`` : le nom du fichier (sans
+    l'extension ``.py``) suivi du nom de la classe, préfixés par l'espace de noms
+    ``geonature.plugins.providers``.
 
 Pour l'implémentation de la classe elle-même, appuyez-vous sur les fournisseurs déjà fournis par
 ``UsersHub-authentification-module`` comme exemples à copier/adapter : ``default.py``,
