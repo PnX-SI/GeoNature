@@ -583,6 +583,67 @@ class TestOcctaxReleve:
         result = db.get_or_404(TRelevesOccurrence, response.json["id"])
         assert result.altitude_min == 200
 
+    def test_insertOrUpdate_releve_cannot_hijack_releve(
+        self,
+        users: dict,
+        datasets: dict[Any, TDatasets],
+        releve_mobile_data: dict[str, dict[str, Any]],
+    ):
+        """
+        Permissions must be checked against the stored releve: forging
+        id_digitiser / observers / id_dataset in the payload must not allow
+        to update someone else's releve.
+        """
+        set_logged_user(self.client, users["user"])
+        response = self.client.post(
+            url_for("pr_occtax.insertOrUpdateOneReleve"), json=releve_mobile_data
+        )
+        assert response.status_code == 200
+        id_releve = response.json["id"]
+
+        stranger = users["stranger_user"]
+        releve_mobile_data["properties"].update(
+            {
+                "id_releve_occtax": id_releve,
+                "id_digitiser": stranger.id_role,
+                "observers": [stranger.id_role],
+                "id_dataset": datasets["stranger_dataset"].id_dataset,
+                "altitude_min": 1,
+                "t_occurrences_occtax": [],
+            }
+        )
+        set_logged_user(self.client, stranger)
+        response = self.client.post(
+            url_for("pr_occtax.insertOrUpdateOneReleve"), json=releve_mobile_data
+        )
+        assert response.status_code == Forbidden.code
+
+        releve = db.session.get(TRelevesOccurrence, id_releve)
+        db.session.refresh(releve)
+        assert releve.altitude_min == 1000
+        assert releve.id_digitiser == users["user"].id_role
+        assert len(releve.t_occurrences_occtax) == 1
+
+    def test_insertOrUpdate_releve_cannot_move_to_forbidden_dataset(
+        self,
+        users: dict,
+        datasets: dict[Any, TDatasets],
+        releve_mobile_data: dict[str, dict[str, Any]],
+    ):
+        set_logged_user(self.client, users["user"])
+        response = self.client.post(
+            url_for("pr_occtax.insertOrUpdateOneReleve"), json=releve_mobile_data
+        )
+        assert response.status_code == 200
+
+        releve_mobile_data["properties"]["id_releve_occtax"] = response.json["id"]
+        releve_mobile_data["properties"]["id_digitiser"] = users["user"].id_role
+        releve_mobile_data["properties"]["id_dataset"] = datasets["stranger_dataset"].id_dataset
+        response = self.client.post(
+            url_for("pr_occtax.insertOrUpdateOneReleve"), json=releve_mobile_data
+        )
+        assert response.status_code == Forbidden.code
+
     def test_update_releve(self, users: dict, releve_occtax: Any, releve_data: dict[str, Any]):
         # FIX ME: CHECK CONTENT
         set_logged_user(self.client, users["stranger_user"])
