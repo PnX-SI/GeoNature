@@ -16,7 +16,7 @@ from sqlalchemy import (
     and_,
     or_,
 )
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import relationship, synonym, deferred, Mapped, mapped_column
 from sqlalchemy.schema import FetchedValue, UniqueConstraint
 from sqlalchemy.sql import func, select
@@ -84,6 +84,7 @@ class Station(NomenclaturesMixin, db.Model):
     geom_local: Mapped[Optional[Any]] = deferred(mapped_column(Geometry("GEOMETRY")))
     geom_4326: Mapped[Optional[Any]] = mapped_column(Geometry("GEOMETRY", 4326))
     id_import: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey(Import.id_import))
+    additional_data: Mapped[Optional[Any]] = mapped_column(JSONB, server_default="{}")
 
     habitats = relationship(
         "OccurenceHabitat",
@@ -230,6 +231,7 @@ class OccurenceHabitat(NomenclaturesMixin, db.Model):
     recovery_percentage: Mapped[Optional[float]] = mapped_column(Float)
     technical_precision: Mapped[Optional[str]] = mapped_column(Unicode)
     id_import: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey(Import.id_import))
+    additional_data: Mapped[Optional[Any]] = mapped_column(JSONB, server_default="{}")
 
     id_nomenclature_determination_type: Mapped[Optional[int]] = mapped_column(
         Integer, ForeignKey(Nomenclature.id_nomenclature)

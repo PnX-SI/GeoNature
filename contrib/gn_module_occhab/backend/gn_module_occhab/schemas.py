@@ -7,6 +7,7 @@ from marshmallow_sqlalchemy.fields import Nested
 from geonature.utils.env import db, ma
 from geonature.utils.schema import CruvedSchemaMixin
 from geonature.core.gn_meta.schemas import DatasetSchema
+from geonature.core.schemas import AdditionalDataWithNomenclatureField
 from geonature.utils.config import config
 
 from pypnusershub.schemas import UserSchema
@@ -52,6 +53,11 @@ class StationSchema(CruvedSchemaMixin, SmartRelationshipsMixin, GeoAlchemyAutoSc
     )
     dataset = Nested(DatasetSchema, dump_only=True)
     id_digitiser = ma.auto_field(dump_only=True)
+    # module_code passé explicitement : la route de création de station n'est pas
+    # rattachée à un module, g.current_module n'y est donc pas disponible.
+    additional_data = AdditionalDataWithNomenclatureField(
+        module_code="OCCHAB", object_code="OCCHAB_STATION"
+    )
 
     # TODO@TestImportsOcchab.test_import_valid_file: maybe add testcase
     @validates_schema
@@ -85,3 +91,6 @@ class OccurenceHabitatSchema(SmartRelationshipsMixin, ma.SQLAlchemyAutoSchema):
 
     station = Nested(StationSchema)
     habref = Nested(HabrefSchema, dump_only=True)
+    additional_data = AdditionalDataWithNomenclatureField(
+        module_code="OCCHAB", object_code="OCCHAB_HABITAT"
+    )
