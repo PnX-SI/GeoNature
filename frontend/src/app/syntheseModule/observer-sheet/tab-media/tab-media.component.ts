@@ -52,7 +52,7 @@ export class TabMediaComponent extends Loadable implements OnInit {
     this.startLoading();
 
     this._syntheseDataService
-      .getObserverMedias(this.observer, {
+      .getObserverMedias({
         page: pagination.currentPage,
         per_page: pagination.perPage,
       })

@@ -1320,7 +1320,6 @@ class TestSynthese:
         set_logged_user(self.client, users["admin_user"])
         url = url_for(
             "gn_synthese.synthese_observer_info.observer_stats",
-            observer=users["admin_user"].nom_complet,
         )
 
         # area_type required
@@ -1344,18 +1343,6 @@ class TestSynthese:
                     "observer": "TO_REPLACE",
                     "observation_count": 0,
                     "taxa_count": 0,
-                },
-            ),
-            (
-                "stranger_user",  # logged
-                "user",  # stats
-                {
-                    "area_count": 4,
-                    "date_max": "Sat, 05 Oct 2024 22:22:22 GMT",
-                    "date_min": "Wed, 02 Oct 2024 11:22:33 GMT",
-                    "observer": "TO_REPLACE",
-                    "observation_count": 7,
-                    "taxa_count": 3,
                 },
             ),
             (
@@ -1385,7 +1372,6 @@ class TestSynthese:
         response = self.client.get(
             url_for(
                 "gn_synthese.synthese_observer_info.observer_stats",
-                observer=users[observer_user_name].nom_complet,
                 area_type=AREA_TYPE_VALID,
             ),
         )
@@ -1467,7 +1453,6 @@ class TestSynthese:
         set_logged_user(self.client, users[logged_user_name])
         url = url_for(
             "gn_synthese.synthese_observer_info.observer_overview",
-            observer=users[logged_user_name].nom_complet,
         )
         response = self.client.get(
             url, query_string={"per_page": overview["per_page"], "page": overview["page"]}
@@ -1501,7 +1486,6 @@ class TestSynthese:
         set_logged_user(self.client, users[logged_user_name])
         url = url_for(
             "gn_synthese.synthese_observer_info.observer_medias",
-            observer=users[logged_user_name].nom_complet,
         )
         response = self.client.get(
             url, query_string={"per_page": medias["per_page"], "page": medias["page"]}

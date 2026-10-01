@@ -15,11 +15,7 @@ import { ChildRouteDescription } from '@geonature/routing/childRouteDescription'
 import { ObservationsComponent } from '../sheets/observations/observations.component';
 import { ObserverSheetService } from './observer-sheet.service';
 import { Observer } from './observer';
-import { UserDataService } from '@geonature/userModule/services';
-
-export function getObserverSheetRoute(observer: string): [string] {
-  return [`/synthese/observer/${encodeURIComponent(observer)}`];
-}
+import { AuthService } from '@geonature/components/auth/auth.service';
 
 export const ALL_OBSERVERS_ADVANCED_INFOS_ROUTES: Array<ChildRouteDescription> = [
   {
@@ -51,7 +47,7 @@ export class ObserverSheetRouteService implements CanActivate, CanActivateChild 
     private _config: ConfigService,
     private _router: Router,
     private _oss: ObserverSheetService,
-    private _userDataService: UserDataService
+    private _authService: AuthService
   ) {
     if (
       this._config['SYNTHESE']?.['ENABLE_OBSERVER_SHEETS'] &&
@@ -70,7 +66,7 @@ export class ObserverSheetRouteService implements CanActivate, CanActivateChild 
       return of(false);
     }
 
-    return this._loadObserver(route).pipe(
+    return this._loadCurrentObserver().pipe(
       tap((observer) => this._oss.setObserver(observer)),
       map(() => true),
       catchError(() => {
@@ -90,26 +86,16 @@ export class ObserverSheetRouteService implements CanActivate, CanActivateChild 
     return false;
   }
 
-  private _loadObserver(route: ActivatedRouteSnapshot): Observable<Observer> {
-    const observerParam = route.paramMap.get('observer');
+  private _loadCurrentObserver(): Observable<Observer> {
+    const currentUser = this._authService.getCurrentUser();
 
-    if (!observerParam) {
-      return throwError(() => new Error('Missing observer param'));
+    if (!currentUser?.id_role) {
+      return throwError(() => new Error('No user logged in'));
     }
 
-    const observerId = Number(observerParam);
-
-    if (Number.isNaN(observerId)) {
-      throw new Error('Observer is a not a valid id');
-    }
-
-    return this._userDataService.getRole(observerId).pipe(
-      map((role: any) => {
-        if (role?.groupe) {
-          throw new Error('Observer is a group');
-        }
-        return role as Observer;
-      })
-    );
+    return of({
+      id_role: Number(currentUser.id_role),
+      nom_complet: currentUser.nom_complet,
+    } as Observer);
   }
 }

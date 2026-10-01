@@ -95,7 +95,7 @@ export class TabTaxaComponent extends Loadable implements OnInit {
     }
 
     this._syntheseDataService
-      .getSyntheseObserverSheetTaxa(observer, this.pagination, this.sort)
+      .getSyntheseObserverSheetTaxa(this.pagination, this.sort)
       .pipe(finalize(() => this.stopLoading()))
       .subscribe((data) => {
         // Store result
