@@ -55,7 +55,7 @@
     "lodash": "^4.17.23",
     "material-design-icons": "^3.0.1",
     "material-icons": "^1.13.14",
-    "moment": "^2.30.1",
+    "moment": "^2.31.0",
     "ng2-charts": "^4.1.1",
     "ng2-cookies": "^1.0.12",
     "ngx-toastr": "^16.0.2",
