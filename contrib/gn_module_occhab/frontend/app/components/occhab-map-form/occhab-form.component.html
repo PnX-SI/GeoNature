@@ -481,23 +481,18 @@
                   </button>
                 </div>
               </div>
-              <div class="col-6 padding-sm">
-                <pnx-dumb-select
+              <div class="col-6 padding-sm d-flex align-items-end">
+                <mat-slide-toggle
                   *ngIf="config.OCCHAB.formConfig['community_interest']"
-                  label="Habitat d'interet communautaire"
-                  [parentFormControl]="
+                  color="primary"
+                  [formControl]="
                     occHabForm.stationForm
                       .get('habitats')
-                      .controls[
-                        occHabForm.currentEditingHabForm
-                      ].get('id_nomenclature_community_interest')
+                      .controls[occHabForm.currentEditingHabForm].get('community_interest')
                   "
-                  [items]="storeService.nomenclatureItems.HAB_INTERET_COM"
-                  comparedKey="id_nomenclature"
-                  titleKey="definition_fr"
-                  displayedKey="label_fr"
-                  [displayNullValue]="true"
-                ></pnx-dumb-select>
+                >
+                  <small>Habitat d'intérêt communautaire</small>
+                </mat-slide-toggle>
               </div>
             </div>
 

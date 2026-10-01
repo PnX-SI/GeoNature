@@ -98,7 +98,7 @@ export class OcchabFormService {
         ? defaultNomenclature["DETERMINATION_TYP_HAB"]
         : null,
       determiner: null,
-      id_nomenclature_community_interest: null,
+      community_interest: false,
       id_nomenclature_collection_technique: [
         defaultNomenclature
           ? defaultNomenclature["TECHNIQUE_COLLECT_HAB"]
@@ -273,10 +273,6 @@ export class OcchabFormService {
         id_nomenclature_abundance: this.getOrNull(
           hab,
           "nomenclature_abundance"
-        ),
-        id_nomenclature_community_interest: this.getOrNull(
-          hab,
-          "nomenclature_community_interest"
         ),
       };
     });
