@@ -5,6 +5,7 @@ from flask import g
 from geoalchemy2 import Geometry
 from sqlalchemy import (
     BigInteger,
+    Boolean,
     Column,
     Date,
     DateTime,
@@ -15,6 +16,7 @@ from sqlalchemy import (
     Table,
     Unicode,
     and_,
+    false,
     or_,
 )
 from sqlalchemy.dialects.postgresql import UUID
@@ -265,14 +267,8 @@ class OccurenceHabitat(NomenclaturesMixin, db.Model):
         Nomenclature,
         foreign_keys=[id_nomenclature_sensitivity],
     )
-    id_nomenclature_community_interest: Mapped[Optional[int]] = mapped_column(
-        "id_nomenclature_community_interest",
-        Integer,
-        ForeignKey(Nomenclature.id_nomenclature),
-    )
-    nomenclature_community_interest = db.relationship(
-        Nomenclature,
-        foreign_keys=[id_nomenclature_community_interest],
+    community_interest: Mapped[Optional[bool]] = mapped_column(
+        Boolean, default=False, server_default=false()
     )
     id_nomenclature_etat_conservation: Mapped[Optional[int]] = mapped_column(
         Integer,
