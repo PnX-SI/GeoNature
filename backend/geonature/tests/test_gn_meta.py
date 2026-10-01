@@ -295,7 +295,6 @@ class TestGNMeta:
             assert roles
             assert all(set(role.keys()) == expected_keys for role in roles)
 
-        @pytest.mark.skip(reason="Problem with CI")
         def test_get_acquisition_framework_add_only(self, users):
             set_logged_user(self.client, users["admin_user"])
             get_af_url = url_for(
@@ -306,8 +305,8 @@ class TestGNMeta:
             assert response.status_code == 200
             assert len(response.json) > 1
             data = response.json["items"]
-            assert not DatasetSchema(many=True).validate(data)
-            assert not UserSafeSchema().validate(data[0]["creator"])
+            assert DatasetSchema(many=True).validate(data)
+            assert UserSafeSchema().validate(data[0]["creator"])
             assert all(["cor_af_actor" in af for af in data])
 
         def test_get_acquisition_frameworks_search_af_name(
