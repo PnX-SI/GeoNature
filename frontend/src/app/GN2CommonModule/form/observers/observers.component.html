@@ -4,7 +4,7 @@
   [items]="observers | async"
   bindLabel="nom_complet"
   [bindValue]="bindValue"
-  [compareWith]="compareWith"
+  [compareWith]="bindValue ? null : compareWith"
   [multiple]="multiSelect"
   [clearable]="clearable"
   [placeholder]="placeHolder || label"
