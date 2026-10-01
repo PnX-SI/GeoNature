@@ -11,7 +11,7 @@ from geonature.core.gn_permissions.models import (
     PermissionAvailable,
 )
 
-from pypnusershub.schemas import UserSchema
+from pypnusershub.schemas import UserSafeSchema
 from ref_geo.schemas import AreaSchema
 from apptax.taxonomie.schemas import TaxrefSchema
 from utils_flask_sqla.schema import SmartRelationshipsMixin
@@ -46,7 +46,7 @@ class PermissionSchema(SmartRelationshipsMixin, ma.SQLAlchemyAutoSchema):
         sqla_session = db.session
         dump_only = ("role", "action", "module", "object")
 
-    role = Nested(UserSchema)
+    role = Nested(UserSafeSchema)
     action = Nested(PermActionSchema)
     module = Nested("ModuleSchema")
     object = Nested(PermObjectSchema)

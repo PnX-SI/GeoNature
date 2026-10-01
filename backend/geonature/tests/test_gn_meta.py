@@ -10,7 +10,12 @@ import pytest
 from flask import url_for, Flask
 from kombu.asynchronous.http import Response
 
-from geonature.core.gn_meta.models import CorDatasetActor, TAcquisitionFramework, TDatasets
+from geonature.core.gn_meta.models import (
+    CorAcquisitionFrameworkActor,
+    CorDatasetActor,
+    TAcquisitionFramework,
+    TDatasets,
+)
 from geonature.core.gn_meta.repositories import (
     cruved_af_filter,
     cruved_ds_filter,
@@ -20,7 +25,7 @@ from geonature.core.gn_meta.schemas import AcquisitionFrameworkSchema, DatasetSc
 from geonature.core.gn_synthese.models import Synthese
 from geonature.core.schemas import AdditionalDataWithNomenclatureField
 from geonature.utils.env import db
-from pypnusershub.schemas import UserSchema
+from pypnusershub.schemas import UserSafeSchema
 from ref_geo.models import BibAreasTypes, LAreas
 from sqlalchemy import func, select, exists
 from sqlalchemy.sql.selectable import Select
@@ -264,6 +269,32 @@ class TestGNMeta:
             response = self.client.get(get_af_url)
             assert response.status_code == 200
 
+        def test_get_acquisition_framework_user_fields(self, users, acquisition_frameworks):
+            af = acquisition_frameworks["own_af"]
+            with db.session.begin_nested():
+                af.cor_af_actor.append(
+                    CorAcquisitionFrameworkActor(
+                        role=users["associate_user"],
+                        nomenclature_actor_role=af.cor_af_actor[0].nomenclature_actor_role,
+                    )
+                )
+
+            set_logged_user(self.client, users["admin_user"])
+            response = self.client.get(
+                url_for(
+                    "gn_meta.get_acquisition_framework",
+                    id_acquisition_framework=af.id_acquisition_framework,
+                )
+            )
+            assert response.status_code == 200
+
+            # Only minimal user information must be exposed
+            expected_keys = {"id_role", "nom_complet"}
+            assert set(response.json["creator"].keys()) == expected_keys
+            roles = [actor["role"] for actor in response.json["cor_af_actor"] if actor.get("role")]
+            assert roles
+            assert all(set(role.keys()) == expected_keys for role in roles)
+
         @pytest.mark.skip(reason="Problem with CI")
         def test_get_acquisition_framework_add_only(self, users):
             set_logged_user(self.client, users["admin_user"])
@@ -275,8 +306,8 @@ class TestGNMeta:
             assert response.status_code == 200
             assert len(response.json) > 1
             data = response.json["items"]
-            assert DatasetSchema(many=True).validate(data)
-            assert UserSchema().validate(data[0]["creator"])
+            assert not DatasetSchema(many=True).validate(data)
+            assert not UserSafeSchema().validate(data[0]["creator"])
             assert all(["cor_af_actor" in af for af in data])
 
         def test_get_acquisition_frameworks_search_af_name(
@@ -968,6 +999,27 @@ class TestGNMeta:
             "number_field_used": 1,
         }
         assert response.json["id_dataset"] == ds.id_dataset
+
+    def test_get_dataset_user_fields(self, users, datasets):
+        ds = datasets["own_dataset"]
+        with db.session.begin_nested():
+            ds.cor_dataset_actor.append(
+                CorDatasetActor(
+                    role=users["associate_user"],
+                    nomenclature_actor_role=ds.cor_dataset_actor[0].nomenclature_actor_role,
+                )
+            )
+
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=ds.id_dataset))
+        assert response.status_code == 200
+
+        # Only minimal user information must be exposed
+        expected_keys = {"id_role", "nom_complet"}
+        assert set(response.json["creator"].keys()) == expected_keys
+        roles = [actor["role"] for actor in response.json["cor_dataset_actor"] if actor.get("role")]
+        assert roles
+        assert all(set(role.keys()) == expected_keys for role in roles)
 
     def test_get_datasets_nb_observations_synthese(self, users):
         # FIXME : verify content
