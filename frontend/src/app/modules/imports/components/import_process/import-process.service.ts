@@ -65,7 +65,7 @@ export class ImportProcessService {
   // If some steps must be skipped, implement it here
   getPreviousStep(step: Step): Step {
     let previousStep = step - 1;
-    if (!this.isObserverMappingAllowed && previousStep === Step.ContentMapping) {
+    if (!this.config.IMPORT.ALLOW_VALUE_MAPPING && previousStep === Step.ContentMapping) {
       previousStep -= 1;
     }
     if (!this.isObserverMappingAllowed && previousStep === Step.ObserverMapping) {
@@ -77,7 +77,7 @@ export class ImportProcessService {
   // If some steps must be skipped, implement it here
   getNextStep(step: Step): Step {
     let nextStep = step + 1;
-    if (!this.isObserverMappingAllowed && nextStep === Step.ContentMapping) {
+    if (!this.config.IMPORT.ALLOW_VALUE_MAPPING && nextStep === Step.ContentMapping) {
       nextStep += 1;
     }
     if (!this.isObserverMappingAllowed && nextStep === Step.ObserverMapping) {
