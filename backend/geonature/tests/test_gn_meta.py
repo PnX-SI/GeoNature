@@ -1279,6 +1279,34 @@ class TestGNMeta:
         # BadRequest because for now id_dataset query is required
         assert response.status_code == BadRequest.code
 
+    def test_uuid_report_scope(self, users, datasets, synthese_data):
+        set_logged_user(self.client, users["user"])
+
+        # dataset the user cannot read
+        response = self.client.get(
+            url_for("gn_meta.uuid_report"),
+            query_string={"id_dataset": datasets["belong_af_1"].id_dataset},
+        )
+        assert response.status_code == Forbidden.code
+
+        # without filter, observations of unreadable datasets must not be returned
+        response = self.client.get(url_for("gn_meta.uuid_report"))
+        assert response.status_code == 200
+        returned_ids = {
+            int(row["identifiant_gn"]) for _, row in get_csv_from_response(response.data)
+        }
+        assert synthese_data["obs1"].id_synthese in returned_ids
+        assert synthese_data["p1_af1"].id_synthese not in returned_ids
+
+    def test_sensi_report_scope(self, users, datasets):
+        set_logged_user(self.client, users["user"])
+
+        response = self.client.get(
+            url_for("gn_meta.sensi_report"),
+            query_string={"id_dataset": datasets["belong_af_1"].id_dataset},
+        )
+        assert response.status_code == Forbidden.code
+
     def test_get_af_from_id(self, af_list):
         id_af = 1
 
