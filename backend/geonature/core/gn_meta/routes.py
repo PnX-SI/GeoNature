@@ -208,8 +208,8 @@ def delete_dataset(scope, ds_id):
 
 
 @routes.route("/uuid_report", methods=["GET"])
-@permissions.check_cruved_scope("R", module_code="METADATA")
-def uuid_report():
+@permissions.check_cruved_scope("R", get_scope=True, module_code="METADATA")
+def uuid_report(scope):
     """
     get the UUID report of a dataset
 
@@ -217,9 +217,14 @@ def uuid_report():
     """
 
     params = request.args
-    ds_id = params.get("id_dataset")
-    id_import = params.get("id_import")
-    id_module = params.get("id_module")
+    ds_id = params.get("id_dataset", type=int)
+    id_import = params.get("id_import", type=int)
+    id_module = params.get("id_module", type=int)
+
+    if ds_id is not None:
+        dataset = db.session.get(TDatasets, ds_id)
+        if dataset is not None and not dataset.has_instance_permission(scope=scope):
+            raise Forbidden(f"User {g.current_user} cannot read dataset {dataset.id_dataset}")
 
     query = (
         select(Synthese)
@@ -227,6 +232,10 @@ def uuid_report():
         .where(Synthese.id_dataset == ds_id if ds_id is not None else True)
         .where(Synthese.id_import == id_import if id_import is not None else True)
     )
+    if scope != 3:
+        # only keep observations of datasets the user is allowed to read
+        readable_datasets = TDatasets.filter_by_scope(scope).with_only_columns(TDatasets.id_dataset)
+        query = query.where(Synthese.id_dataset.in_(readable_datasets))
 
     query = query.order_by(Synthese.id_synthese)
 
@@ -260,19 +269,20 @@ def uuid_report():
 
 @routes.route("/sensi_report", methods=["GET"])  # TODO remove later
 @routes.route("/sensi_report/<int:ds_id>", methods=["GET"])
-@permissions.check_cruved_scope("R", module_code="METADATA")
-def sensi_report(ds_id=None):
+@permissions.check_cruved_scope("R", get_scope=True, module_code="METADATA")
+def sensi_report(scope, ds_id=None):
     """
     get the UUID report of a dataset
 
     .. :quickref: Metadata;
     """
-    # TODO: put ds_id in /sensi_report/<int: ds_id>
 
     params = request.args
     if not ds_id:
         ds_id = params["id_dataset"]
     dataset = db.get_or_404(TDatasets, ds_id)
+    if not dataset.has_instance_permission(scope=scope):
+        raise Forbidden(f"User {g.current_user} cannot read dataset {dataset.id_dataset}")
     id_import = params.get("id_import")
     id_module = params.get("id_module")
 
