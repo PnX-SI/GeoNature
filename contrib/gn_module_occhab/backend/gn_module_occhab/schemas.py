@@ -45,7 +45,6 @@ class StationSchema(CruvedSchemaMixin, SmartRelationshipsMixin, GeoAlchemyAutoSc
     # We don't need to supply observers if observers_as_txt_active is activated
     observers = Nested(
         UserSchema,
-        exclude=["max_level_profil"],
         unknown=EXCLUDE,
         many=True,
         allow_none=observers_as_txt_active,

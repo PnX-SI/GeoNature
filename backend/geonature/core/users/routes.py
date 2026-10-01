@@ -30,6 +30,8 @@ from pypnusershub.organisms_manager import (
 from pypnusershub.auth import user_manager
 
 from sqlalchemy import and_, select, func
+
+from pypnusershub.schemas import UserSchema, UserSchemaFull
 from utils_flask_sqla.response import json_resp
 from werkzeug.exceptions import BadRequest, Forbidden, InternalServerError, NotFound
 from werkzeug.datastructures import MultiDict
@@ -148,10 +150,9 @@ def get_role(id_role):
         A dictionary containing the role detail
     """
     user = DB.get_or_404(User, id_role)
-    fields = user_fields.copy()
     if g.current_user == user:
-        fields.add("email")
-    return user.as_dict(fields=fields)
+        return UserSchemaFull().dump(user)
+    return UserSchema().dump(user)
 
 
 @routes.route("/roles", methods=["GET"])
@@ -453,6 +454,7 @@ def update_role():
         "pass_plus",
         "pn",
         "uuid_role",
+        "email",
     ]
     for key, value in data.items():
         if key not in black_list_att_update:
