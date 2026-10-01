@@ -1,6 +1,7 @@
 from pathlib import Path
 
-import toml
+# tomli plutôt que tomllib : les tables en ligne multilignes des configs sont du TOML 1.1
+import tomli
 from marshmallow import EXCLUDE
 from marshmallow.exceptions import ValidationError
 
@@ -29,4 +30,5 @@ def load_toml(toml_file):
     """
     if not Path(toml_file).is_file():
         raise GeoNatureError("Missing file {}".format(toml_file))
-    return toml.load(str(toml_file))
+    with open(toml_file, "rb") as f:
+        return tomli.load(f)

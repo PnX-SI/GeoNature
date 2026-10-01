@@ -29,7 +29,8 @@ pyproj;python_version>="3.10"  # imports
 python-dateutil
 shapely>=2.0.0
 sqlalchemy>=2,<2.1  # 2.1 : `postgresql://` utilise psycopg (v3) par défaut au lieu de psycopg2
-toml
+toml  # écriture de la config, la lecture passe par tomli
+tomli>=2.4  # TOML 1.1
 weasyprint
 # Compatibility with flask admin
 wtforms==3.1.2
