@@ -63,7 +63,7 @@ const routes: Routes = [
     ],
   },
   {
-    path: 'observer/:observer',
+    path: 'observer',
     component: ObserverSheetComponent,
     canActivate: [ObserverSheetRouteService],
     canActivateChild: [ObserverSheetRouteService],

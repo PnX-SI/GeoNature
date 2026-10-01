@@ -17,10 +17,6 @@ import { ObserverSheetService } from './observer-sheet.service';
 import { Observer } from './observer';
 import { AuthService } from '@geonature/components/auth/auth.service';
 
-export function getObserverSheetRoute(observer: string): [string] {
-  return [`/synthese/observer/${encodeURIComponent(observer)}`];
-}
-
 export const ALL_OBSERVERS_ADVANCED_INFOS_ROUTES: Array<ChildRouteDescription> = [
   {
     label: 'Observations',
@@ -70,17 +66,7 @@ export class ObserverSheetRouteService implements CanActivate, CanActivateChild 
       return of(false);
     }
 
-    const currentUserId = this._authService.getCurrentUser()?.id_role;
-    if (Number(route.paramMap.get('observer')) !== Number(currentUserId)) {
-      if (currentUserId) {
-        this._router.navigate(getObserverSheetRoute(String(currentUserId)));
-      } else {
-        this._router.navigate(['/404'], { skipLocationChange: true });
-      }
-      return of(false);
-    }
-
-    return this._loadObserver(route).pipe(
+    return this._loadCurrentObserver().pipe(
       tap((observer) => this._oss.setObserver(observer)),
       map(() => true),
       catchError(() => {
@@ -100,23 +86,15 @@ export class ObserverSheetRouteService implements CanActivate, CanActivateChild 
     return false;
   }
 
-  private _loadObserver(route: ActivatedRouteSnapshot): Observable<Observer> {
-    const observerParam = route.paramMap.get('observer');
-
-    if (!observerParam) {
-      return throwError(() => new Error('Missing observer param'));
-    }
-
-    const observerId = Number(observerParam);
-
-    if (Number.isNaN(observerId)) {
-      return throwError(() => new Error('Observer is a not a valid id'));
-    }
-
-    // canActivate guarantees that the observer is the authenticated user
+  private _loadCurrentObserver(): Observable<Observer> {
     const currentUser = this._authService.getCurrentUser();
+
+    if (!currentUser?.id_role) {
+      return throwError(() => new Error('No user logged in'));
+    }
+
     return of({
-      id_role: observerId,
+      id_role: Number(currentUser.id_role),
       nom_complet: currentUser.nom_complet,
     } as Observer);
   }

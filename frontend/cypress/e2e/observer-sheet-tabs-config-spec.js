@@ -26,10 +26,7 @@ describe('Observer sheet tabs configuration', () => {
     cy.visit('/#/');
     cy.wait('@globalConfig');
 
-    cy.window().then((win) => {
-      const currentUser = JSON.parse(win.localStorage.getItem('gn_current_user'));
-      cy.visit(`/#/synthese/observer/${currentUser.id_role}`);
-    });
+    cy.visit('/#/synthese/observer');
 
     cy.get('[data-qa="page-not-found-title"]').should('exist');
   });
