@@ -325,11 +325,23 @@ def insertOrUpdateOneReleve():
         releve.t_occurrences_occtax.append(occtax)
     # if its a update
     if releve.id_releve_occtax:
+        # check permissions against the stored releve, not the client payload
+        stored_releve = db.get_or_404(TRelevesOccurrence, releve.id_releve_occtax)
         scope = get_scopes_by_action()["U"]
-        if not releve.has_instance_permission(scope):
+        if not stored_releve.has_instance_permission(scope):
             raise Forbidden(
                 f"User {g.current_user.id_role} is not allowed to update releve {releve.id_releve_occtax}"
             )
+        # the releve may be moved to another dataset: user must be allowed to create in it
+        if releve.id_dataset is not None and releve.id_dataset != stored_releve.id_dataset:
+            scope = get_scopes_by_action()["C"]
+            dataset = db.get_or_404(TDatasets, releve.id_dataset)
+            if not dataset.has_instance_permission(scope):
+                raise Forbidden(
+                    f"User {g.current_user.id_role} is not allowed to create releve in dataset."
+                )
+        # the digitiser cannot be changed through an update
+        releve.id_digitiser = stored_releve.id_digitiser
         DB.session.merge(releve)
     # if its a simple post
     else:
