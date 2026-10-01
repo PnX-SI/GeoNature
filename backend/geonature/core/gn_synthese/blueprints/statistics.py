@@ -104,31 +104,6 @@ def get_bbox():
     return "", 204
 
 
-@statistics_routes.route("/observation_count_per_column/<column>", methods=["GET"])
-@login_required
-def observation_count_per_column(column):
-    """
-    Get observations count group by a given column
-
-    This function was used to count observations per dataset,
-    but this usage have been replaced by
-    TDatasets.nb_observations_synthese.
-    Remove this function as it is very inefficient?
-    """
-    if column not in inspect(Synthese).column_attrs:
-        raise BadRequest(f"No column name {column} in Synthese")
-    synthese_column = getattr(Synthese, column)
-    stmt = (
-        select(
-            func.count(Synthese.id_synthese).label("count"),
-            synthese_column.label(column),
-        )
-        .select_from(Synthese)
-        .group_by(synthese_column)
-    )
-    return jsonify(DB.session.execute(stmt).fetchall())
-
-
 @statistics_routes.route("/general_stats", methods=["GET"])
 @permissions_required("R", module_code="SYNTHESE")
 @json_resp

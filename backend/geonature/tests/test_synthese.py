@@ -1881,62 +1881,6 @@ class TestSynthese:
         assert response.status_code == 204
         assert response.json is None
 
-    def test_observation_count_per_column(self, users, synthese_data):
-        column_name_dataset = "id_dataset"
-        column_name_cd_nom = "cd_nom"
-        set_logged_user(self.client, users["self_user"])
-
-        response_dataset = self.client.get(
-            url_for(
-                "gn_synthese.synthese_statistics.observation_count_per_column",
-                column=column_name_dataset,
-            )
-        )
-        response_cd_nom = self.client.get(
-            url_for(
-                "gn_synthese.synthese_statistics.observation_count_per_column",
-                column=column_name_cd_nom,
-            )
-        )
-
-        ds_keyfunc = lambda s: s.id_dataset
-        partial_expected_ds_resp = [
-            {
-                "id_dataset": k,
-                "count": len(list(g)),
-            }
-            for k, g in itertools.groupby(
-                sorted(synthese_data.values(), key=ds_keyfunc), key=ds_keyfunc
-            )
-        ]
-
-        cn_keyfunc = lambda s: s.cd_nom
-        partial_expected_cn_resp = [
-            {
-                "cd_nom": k,
-                "count": len(list(g)),
-            }
-            for k, g in itertools.groupby(
-                sorted(synthese_data.values(), key=cn_keyfunc), key=cn_keyfunc
-            )
-        ]
-
-        resp_json = response_dataset.json
-        assert resp_json
-        for test_dataset in partial_expected_ds_resp:
-            assert test_dataset["id_dataset"] in [item["id_dataset"] for item in resp_json]
-            for item in resp_json:
-                if item["id_dataset"] == test_dataset["id_dataset"]:
-                    assert item["count"] == test_dataset["count"]
-
-        resp_json = response_cd_nom.json
-        assert resp_json
-        for test_cd_nom in partial_expected_cn_resp:
-            assert test_cd_nom["cd_nom"] in [item["cd_nom"] for item in resp_json]
-            for item in resp_json:
-                if item["cd_nom"] == test_cd_nom["cd_nom"]:
-                    assert item["count"] >= test_cd_nom["count"]
-
     def test_get_autocomplete_taxons_synthese(self, synthese_data, users):
         seach_name = synthese_data["obs1"].nom_cite
 
