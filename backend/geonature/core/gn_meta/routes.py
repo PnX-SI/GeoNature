@@ -944,10 +944,10 @@ def call_extended_af_publish(af_id):
             )
 
 
-@routes.route("/acquisition_framework/open/<int:af_id>", methods=["GET"])
-@permissions.check_cruved_scope("U", module_code="METADATA")
+@routes.route("/acquisition_framework/open/<int:af_id>", methods=["POST"])
+@permissions.check_cruved_scope("U", get_scope=True, module_code="METADATA")
 @json_resp
-def open_acquisition_framework(af_id):
+def open_acquisition_framework(scope, af_id):
     """
     Open an acquisition framework
     """
@@ -956,19 +956,28 @@ def open_acquisition_framework(af_id):
     af = db.session.get(TAcquisitionFramework, af_id)
     if not af:
         raise NotFound(f"Acquisition framework {af_id} not found")
+    if not af.has_instance_permission(scope):
+        raise Forbidden(
+            f"User {g.current_user} cannot open acquisition framework {af.id_acquisition_framework}"
+        )
     af.opened = True
     db.session.commit()
     return af.as_dict()
 
 
-@routes.route("/acquisition_framework/publish/<int:af_id>", methods=["GET"])
-@permissions.check_cruved_scope("U", module_code="METADATA")
+@routes.route("/acquisition_framework/publish/<int:af_id>", methods=["POST"])
+@permissions.check_cruved_scope("U", get_scope=True, module_code="METADATA")
 @json_resp
-def close_acquisition_framework(af_id):
+def close_acquisition_framework(scope, af_id):
     """
     close an acquisition framework
     .. :quickref: Metadata;
     """
+    af = db.get_or_404(TAcquisitionFramework, af_id)
+    if not af.has_instance_permission(scope):
+        raise Forbidden(
+            f"User {g.current_user} cannot close acquisition framework {af.id_acquisition_framework}"
+        )
 
     # The AF must contain DS to be published
     datasets = (
@@ -997,7 +1006,6 @@ def close_acquisition_framework(af_id):
         dataset.active = False
 
     # If the AF if closed for the first time, we set it an initial_closing_date as the actual time
-    af = db.session.get(TAcquisitionFramework, af_id)
     af.opened = False
     if af.initial_closing_date is None:
         af.initial_closing_date = dt.datetime.now()

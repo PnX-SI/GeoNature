@@ -29,6 +29,7 @@ from werkzeug.exceptions import (
     BadRequest,
     Conflict,
     Forbidden,
+    MethodNotAllowed,
     NotFound,
     Unauthorized,
     UnsupportedMediaType,
@@ -1385,7 +1386,7 @@ class TestGNMeta:
         set_logged_user(self.client, users["user"])
 
         af = acquisition_frameworks["own_af"]
-        response = self.client.get(
+        response = self.client.post(
             url_for(
                 "gn_meta.close_acquisition_framework",
                 af_id=af.id_acquisition_framework,
@@ -1398,7 +1399,7 @@ class TestGNMeta:
     ):
         set_logged_user(self.client, users["stranger_user"])
         af = acquisition_frameworks["af_1"]
-        response = self.client.get(
+        response = self.client.post(
             url_for(
                 "gn_meta.close_acquisition_framework",
                 af_id=af.id_acquisition_framework,
@@ -1419,7 +1420,7 @@ class TestGNMeta:
         app.view_functions[route_name] = mocked_extended_close
         set_logged_user(self.client, users["stranger_user"])
         af = acquisition_frameworks["af_1"]
-        response = self.client.get(
+        response = self.client.post(
             url_for(
                 "gn_meta.close_acquisition_framework",
                 af_id=af.id_acquisition_framework,
@@ -1444,7 +1445,7 @@ class TestGNMeta:
         app.view_functions[route_name] = mocked_close
         set_logged_user(self.client, users["stranger_user"])
         af = acquisition_frameworks["af_1"]
-        response = self.client.get(
+        response = self.client.post(
             url_for(
                 "gn_meta.close_acquisition_framework",
                 af_id=af.id_acquisition_framework,
@@ -1453,16 +1454,19 @@ class TestGNMeta:
         assert response.status_code == 500, response.json
         assert af.opened == True
 
-    def test_open_acquisition_framework(self, app, users, acquisition_frameworks):
+    def test_open_acquisition_framework(
+        self, app, users, acquisition_frameworks, datasets, monkeypatch
+    ):
         """
         Test opening an acquisition framework
         """
+        monkeypatch.setitem(app.config["METADATA"], "AF_OPENABLE", True)
         set_logged_user(self.client, users["stranger_user"])
         af = acquisition_frameworks["af_1"]
         af.opened = False
         db.session.commit()
 
-        response = self.client.get(
+        response = self.client.post(
             url_for(
                 "gn_meta.open_acquisition_framework",
                 af_id=af.id_acquisition_framework,
@@ -1473,7 +1477,9 @@ class TestGNMeta:
         af_updated = db.session.get(TAcquisitionFramework, af.id_acquisition_framework)
         assert af_updated.opened is True
 
-    def test_open_acquisition_framework_not_openable(self, app, users, acquisition_frameworks):
+    def test_open_acquisition_framework_not_openable(
+        self, app, users, acquisition_frameworks, monkeypatch
+    ):
         """
         Test opening an acquisition framework when AF_OPENABLE is False
         """
@@ -1481,14 +1487,62 @@ class TestGNMeta:
         af = acquisition_frameworks["af_1"]
         af.opened = False
         db.session.commit()
-        app.config["METADATA"]["AF_OPENABLE"] = False
-        response = self.client.get(
+        monkeypatch.setitem(app.config["METADATA"], "AF_OPENABLE", False)
+        response = self.client.post(
             url_for(
                 "gn_meta.open_acquisition_framework",
                 af_id=af.id_acquisition_framework,
             )
         )
         assert response.status_code == 500
+
+    def test_close_acquisition_framework_forbidden(
+        self, users, acquisition_frameworks, datasets, synthese_data
+    ):
+        """
+        A user without instance permission on the AF cannot close it
+        """
+        set_logged_user(self.client, users["self_user"])
+        af = acquisition_frameworks["af_1"]
+        response = self.client.post(
+            url_for(
+                "gn_meta.close_acquisition_framework",
+                af_id=af.id_acquisition_framework,
+            )
+        )
+        assert response.status_code == Forbidden.code, response.json
+        assert af.opened == True
+        assert datasets["belong_af_1"].active == True
+
+    def test_open_acquisition_framework_forbidden(
+        self, app, users, acquisition_frameworks, monkeypatch
+    ):
+        """
+        A user without instance permission on the AF cannot open it
+        """
+        monkeypatch.setitem(app.config["METADATA"], "AF_OPENABLE", True)
+        set_logged_user(self.client, users["self_user"])
+        af = acquisition_frameworks["af_1"]
+        af.opened = False
+        db.session.commit()
+        response = self.client.post(
+            url_for(
+                "gn_meta.open_acquisition_framework",
+                af_id=af.id_acquisition_framework,
+            )
+        )
+        assert response.status_code == Forbidden.code, response.json
+        assert af.opened == False
+
+    def test_close_open_acquisition_framework_get_not_allowed(self, users, acquisition_frameworks):
+        set_logged_user(self.client, users["admin_user"])
+        af = acquisition_frameworks["af_1"]
+        for endpoint in [
+            "gn_meta.close_acquisition_framework",
+            "gn_meta.open_acquisition_framework",
+        ]:
+            response = self.client.get(url_for(endpoint, af_id=af.id_acquisition_framework))
+            assert response.status_code == MethodNotAllowed.code
 
 
 @pytest.mark.usefixtures("client_class", "users", "datasets", "acquisition_frameworks")

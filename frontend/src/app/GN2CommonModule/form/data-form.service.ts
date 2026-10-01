@@ -628,13 +628,15 @@ export class DataFormService {
   }
 
   publishAf(af_id) {
-    return this._http.get<any>(
-      `${this.config.API_ENDPOINT}/meta/acquisition_framework/publish/${af_id}`
+    return this._http.post<any>(
+      `${this.config.API_ENDPOINT}/meta/acquisition_framework/publish/${af_id}`,
+      {}
     );
   }
   openAf(af_id) {
-    return this._http.get<any>(
-      `${this.config.API_ENDPOINT}/meta/acquisition_framework/open/${af_id}`
+    return this._http.post<any>(
+      `${this.config.API_ENDPOINT}/meta/acquisition_framework/open/${af_id}`,
+      {}
     );
   }
 
