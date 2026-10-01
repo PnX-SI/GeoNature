@@ -10,7 +10,12 @@ import pytest
 from flask import url_for, Flask
 from kombu.asynchronous.http import Response
 
-from geonature.core.gn_meta.models import CorDatasetActor, TAcquisitionFramework, TDatasets
+from geonature.core.gn_meta.models import (
+    CorAcquisitionFrameworkActor,
+    CorDatasetActor,
+    TAcquisitionFramework,
+    TDatasets,
+)
 from geonature.core.gn_meta.repositories import (
     cruved_af_filter,
     cruved_ds_filter,
@@ -20,7 +25,7 @@ from geonature.core.gn_meta.schemas import AcquisitionFrameworkSchema, DatasetSc
 from geonature.core.gn_synthese.models import Synthese
 from geonature.core.schemas import AdditionalDataWithNomenclatureField
 from geonature.utils.env import db
-from pypnusershub.schemas import UserSchema
+from pypnusershub.schemas import UserSafeSchema
 from ref_geo.models import BibAreasTypes, LAreas
 from sqlalchemy import func, select, exists
 from sqlalchemy.sql.selectable import Select
@@ -29,6 +34,7 @@ from werkzeug.exceptions import (
     BadRequest,
     Conflict,
     Forbidden,
+    MethodNotAllowed,
     NotFound,
     Unauthorized,
     UnsupportedMediaType,
@@ -263,7 +269,32 @@ class TestGNMeta:
             response = self.client.get(get_af_url)
             assert response.status_code == 200
 
-        @pytest.mark.skip(reason="Problem with CI")
+        def test_get_acquisition_framework_user_fields(self, users, acquisition_frameworks):
+            af = acquisition_frameworks["own_af"]
+            with db.session.begin_nested():
+                af.cor_af_actor.append(
+                    CorAcquisitionFrameworkActor(
+                        role=users["associate_user"],
+                        nomenclature_actor_role=af.cor_af_actor[0].nomenclature_actor_role,
+                    )
+                )
+
+            set_logged_user(self.client, users["admin_user"])
+            response = self.client.get(
+                url_for(
+                    "gn_meta.get_acquisition_framework",
+                    id_acquisition_framework=af.id_acquisition_framework,
+                )
+            )
+            assert response.status_code == 200
+
+            # Only minimal user information must be exposed
+            expected_keys = {"id_role", "nom_complet"}
+            assert set(response.json["creator"].keys()) == expected_keys
+            roles = [actor["role"] for actor in response.json["cor_af_actor"] if actor.get("role")]
+            assert roles
+            assert all(set(role.keys()) == expected_keys for role in roles)
+
         def test_get_acquisition_framework_add_only(self, users):
             set_logged_user(self.client, users["admin_user"])
             get_af_url = url_for(
@@ -275,7 +306,7 @@ class TestGNMeta:
             assert len(response.json) > 1
             data = response.json["items"]
             assert DatasetSchema(many=True).validate(data)
-            assert UserSchema().validate(data[0]["creator"])
+            assert UserSafeSchema().validate(data[0]["creator"])
             assert all(["cor_af_actor" in af for af in data])
 
         def test_get_acquisition_frameworks_search_af_name(
@@ -968,6 +999,27 @@ class TestGNMeta:
         }
         assert response.json["id_dataset"] == ds.id_dataset
 
+    def test_get_dataset_user_fields(self, users, datasets):
+        ds = datasets["own_dataset"]
+        with db.session.begin_nested():
+            ds.cor_dataset_actor.append(
+                CorDatasetActor(
+                    role=users["associate_user"],
+                    nomenclature_actor_role=ds.cor_dataset_actor[0].nomenclature_actor_role,
+                )
+            )
+
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=ds.id_dataset))
+        assert response.status_code == 200
+
+        # Only minimal user information must be exposed
+        expected_keys = {"id_role", "nom_complet"}
+        assert set(response.json["creator"].keys()) == expected_keys
+        roles = [actor["role"] for actor in response.json["cor_dataset_actor"] if actor.get("role")]
+        assert roles
+        assert all(set(role.keys()) == expected_keys for role in roles)
+
     def test_get_datasets_nb_observations_synthese(self, users):
         # FIXME : verify content
         set_logged_user(self.client, users["admin_user"])
@@ -1413,7 +1465,7 @@ class TestGNMeta:
         set_logged_user(self.client, users["user"])
 
         af = acquisition_frameworks["own_af"]
-        response = self.client.get(
+        response = self.client.post(
             url_for(
                 "gn_meta.close_acquisition_framework",
                 af_id=af.id_acquisition_framework,
@@ -1426,7 +1478,7 @@ class TestGNMeta:
     ):
         set_logged_user(self.client, users["stranger_user"])
         af = acquisition_frameworks["af_1"]
-        response = self.client.get(
+        response = self.client.post(
             url_for(
                 "gn_meta.close_acquisition_framework",
                 af_id=af.id_acquisition_framework,
@@ -1447,7 +1499,7 @@ class TestGNMeta:
         app.view_functions[route_name] = mocked_extended_close
         set_logged_user(self.client, users["stranger_user"])
         af = acquisition_frameworks["af_1"]
-        response = self.client.get(
+        response = self.client.post(
             url_for(
                 "gn_meta.close_acquisition_framework",
                 af_id=af.id_acquisition_framework,
@@ -1472,7 +1524,7 @@ class TestGNMeta:
         app.view_functions[route_name] = mocked_close
         set_logged_user(self.client, users["stranger_user"])
         af = acquisition_frameworks["af_1"]
-        response = self.client.get(
+        response = self.client.post(
             url_for(
                 "gn_meta.close_acquisition_framework",
                 af_id=af.id_acquisition_framework,
@@ -1481,16 +1533,19 @@ class TestGNMeta:
         assert response.status_code == 500, response.json
         assert af.opened == True
 
-    def test_open_acquisition_framework(self, app, users, acquisition_frameworks):
+    def test_open_acquisition_framework(
+        self, app, users, acquisition_frameworks, datasets, monkeypatch
+    ):
         """
         Test opening an acquisition framework
         """
+        monkeypatch.setitem(app.config["METADATA"], "AF_OPENABLE", True)
         set_logged_user(self.client, users["stranger_user"])
         af = acquisition_frameworks["af_1"]
         af.opened = False
         db.session.commit()
 
-        response = self.client.get(
+        response = self.client.post(
             url_for(
                 "gn_meta.open_acquisition_framework",
                 af_id=af.id_acquisition_framework,
@@ -1501,7 +1556,9 @@ class TestGNMeta:
         af_updated = db.session.get(TAcquisitionFramework, af.id_acquisition_framework)
         assert af_updated.opened is True
 
-    def test_open_acquisition_framework_not_openable(self, app, users, acquisition_frameworks):
+    def test_open_acquisition_framework_not_openable(
+        self, app, users, acquisition_frameworks, monkeypatch
+    ):
         """
         Test opening an acquisition framework when AF_OPENABLE is False
         """
@@ -1509,14 +1566,62 @@ class TestGNMeta:
         af = acquisition_frameworks["af_1"]
         af.opened = False
         db.session.commit()
-        app.config["METADATA"]["AF_OPENABLE"] = False
-        response = self.client.get(
+        monkeypatch.setitem(app.config["METADATA"], "AF_OPENABLE", False)
+        response = self.client.post(
             url_for(
                 "gn_meta.open_acquisition_framework",
                 af_id=af.id_acquisition_framework,
             )
         )
         assert response.status_code == 500
+
+    def test_close_acquisition_framework_forbidden(
+        self, users, acquisition_frameworks, datasets, synthese_data
+    ):
+        """
+        A user without instance permission on the AF cannot close it
+        """
+        set_logged_user(self.client, users["self_user"])
+        af = acquisition_frameworks["af_1"]
+        response = self.client.post(
+            url_for(
+                "gn_meta.close_acquisition_framework",
+                af_id=af.id_acquisition_framework,
+            )
+        )
+        assert response.status_code == Forbidden.code, response.json
+        assert af.opened == True
+        assert datasets["belong_af_1"].active == True
+
+    def test_open_acquisition_framework_forbidden(
+        self, app, users, acquisition_frameworks, monkeypatch
+    ):
+        """
+        A user without instance permission on the AF cannot open it
+        """
+        monkeypatch.setitem(app.config["METADATA"], "AF_OPENABLE", True)
+        set_logged_user(self.client, users["self_user"])
+        af = acquisition_frameworks["af_1"]
+        af.opened = False
+        db.session.commit()
+        response = self.client.post(
+            url_for(
+                "gn_meta.open_acquisition_framework",
+                af_id=af.id_acquisition_framework,
+            )
+        )
+        assert response.status_code == Forbidden.code, response.json
+        assert af.opened == False
+
+    def test_close_open_acquisition_framework_get_not_allowed(self, users, acquisition_frameworks):
+        set_logged_user(self.client, users["admin_user"])
+        af = acquisition_frameworks["af_1"]
+        for endpoint in [
+            "gn_meta.close_acquisition_framework",
+            "gn_meta.open_acquisition_framework",
+        ]:
+            response = self.client.get(url_for(endpoint, af_id=af.id_acquisition_framework))
+            assert response.status_code == MethodNotAllowed.code
 
 
 @pytest.mark.usefixtures("client_class", "users", "datasets", "acquisition_frameworks")

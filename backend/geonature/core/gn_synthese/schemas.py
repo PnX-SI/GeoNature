@@ -13,7 +13,7 @@ from geonature.core.gn_synthese.models import (
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 
 from pypn_habref_api.schemas import HabrefSchema
-from pypnusershub.schemas import UserSchema
+from pypnusershub.schemas import UserSchema, UserSafeSchema
 from pypnnomenclature.utils import NomenclaturesConverter
 from ref_geo.schemas import AreaSchema
 from utils_flask_sqla.schema import SmartRelationshipsMixin
@@ -63,7 +63,7 @@ class SyntheseSchema(SmartRelationshipsMixin, GeoAlchemyAutoSchema):
     dataset = ma.Nested("DatasetSchema", dump_only=True)
     individual = ma.Nested(TIndividualsSchema, dump_only=True)
     habitat = ma.Nested(HabrefSchema, dump_only=True)
-    digitiser = ma.Nested(UserSchema, dump_only=True)
+    digitiser = ma.Nested(UserSafeSchema, dump_only=True)
     cor_observers = ma.Nested(UserSchema, many=True, dump_only=True)
     medias = ma.Nested(MediaSchema, many=True, dump_only=True)
     areas = ma.Nested(AreaSchema, many=True, dump_only=True)

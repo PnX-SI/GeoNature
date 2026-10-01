@@ -5,7 +5,7 @@ from utils_flask_sqla.schema import SmartRelationshipsMixin
 
 from pypnnomenclature.schemas import NomenclatureSchema, BibNomenclaturesTypesSchema
 
-from pypnusershub.schemas import UserSchema
+from pypnusershub.schemas import UserSafeSchema
 from geonature.utils.env import MA
 from geonature.core.gn_commons.models import (
     TModules,
@@ -61,7 +61,7 @@ class TValidationSchema(MA.SQLAlchemyAutoSchema):
         include_fk = True
 
     validation_label = fields.Nested(NomenclatureSchema, dump_only=True)
-    validator_role = MA.Nested(UserSchema, dump_only=True)
+    validator_role = MA.Nested(UserSafeSchema, dump_only=True)
 
 
 class BibWidgetSchema(MA.SQLAlchemyAutoSchema):
