@@ -73,7 +73,7 @@ paramètres seront automatiquement détectés par GeoNature. Une fois, les champ
 
     .. image:: images/import/import_steps/05_mapping_value.png
 
-7.  Si le paramètre ``ALLOW_VALUE_MAPPING`` dans la configuration (section ``[IMPORT]``) est activé, il est possible de mettre en correspondance les noms des observateurs 
+7.  Si le paramètre ``ALLOW_USER_MAPPING`` dans la configuration (section ``[IMPORT]``) est activé, il est possible de mettre en correspondance les noms des observateurs
     trouvés dans le fichier source avec les utilisateurs de la base de données. 
     
     Un premier mapping est effectué automatiquement en comparant les noms d'observateurs dans le fichier
