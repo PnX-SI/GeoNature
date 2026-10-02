@@ -13,7 +13,7 @@ from geonature.core.gn_synthese.models import (
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 
 from pypn_habref_api.schemas import HabrefSchema
-from pypnusershub.schemas import UserSchema, UserSafeSchema
+from pypnusershub.schemas import UserSafeSchema
 from pypnnomenclature.utils import NomenclaturesConverter
 from ref_geo.schemas import AreaSchema
 from utils_flask_sqla.schema import SmartRelationshipsMixin
@@ -30,7 +30,7 @@ class ReportSchema(SmartRelationshipsMixin, ma.SQLAlchemyAutoSchema):
         model = TReport
 
     report_type = ma.Nested(ReportTypeSchema, dump_only=True)
-    user = ma.Nested(UserSchema, dump_only=True)
+    user = ma.Nested(UserSafeSchema, dump_only=True)
 
 
 class SourceSchema(ma.SQLAlchemyAutoSchema):
@@ -64,7 +64,7 @@ class SyntheseSchema(SmartRelationshipsMixin, GeoAlchemyAutoSchema):
     individual = ma.Nested(TIndividualsSchema, dump_only=True)
     habitat = ma.Nested(HabrefSchema, dump_only=True)
     digitiser = ma.Nested(UserSafeSchema, dump_only=True)
-    cor_observers = ma.Nested(UserSchema, many=True, dump_only=True)
+    cor_observers = ma.Nested(UserSafeSchema, many=True, dump_only=True)
     medias = ma.Nested(MediaSchema, many=True, dump_only=True)
     areas = ma.Nested(AreaSchema, many=True, dump_only=True)
     area_attachment = ma.Nested(AreaSchema, dump_only=True)
