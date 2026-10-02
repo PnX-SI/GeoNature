@@ -30,6 +30,8 @@ from pypnusershub.organisms_manager import (
 from pypnusershub.auth import user_manager
 
 from sqlalchemy import and_, select, func
+
+from pypnusershub.schemas import UserSensitiveSchema, UserSafeSchema
 from utils_flask_sqla.response import json_resp
 from werkzeug.exceptions import BadRequest, Forbidden, InternalServerError, NotFound
 from werkzeug.datastructures import MultiDict
@@ -396,6 +398,7 @@ def update_role():
         "pass_plus",
         "pn",
         "uuid_role",
+        "email",  # another route is specific for email
     ]
     for key, value in data.items():
         if key not in black_list_att_update:
