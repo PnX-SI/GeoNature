@@ -320,7 +320,7 @@ def delete_place(id_place):
 ##############################
 
 
-@routes.route("/send_mail/<int:id_user>", methods=["PUT"])
+@routes.route("/send_mail/<int:id_user>", methods=["POST"])
 @login_required
 def send_mail_to_user(id_user: int):
 

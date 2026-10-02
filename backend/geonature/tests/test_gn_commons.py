@@ -803,7 +803,7 @@ class TestSendMailToUser:
 
         # Test successful email sending
         payload = {"subject": "Test Subject", "message": "Test Message"}
-        resp = self.client.put(url, json=payload)
+        resp = self.client.post(url, json=payload)
         assert resp.status_code == 204
         assert fake_smtp.called
         args, kwargs = fake_smtp.call_args
@@ -817,7 +817,7 @@ class TestSendMailToUser:
             db.session.add(sender_no_email)
         set_logged_user(self.client, sender_no_email)
 
-        resp = self.client.put(url, json=payload)
+        resp = self.client.post(url, json=payload)
         assert resp.status_code == 400
         assert resp.json["description"] == "You must have an email configured"
 
@@ -830,10 +830,12 @@ class TestSendMailToUser:
             db.session.add(recipient_no_email)
 
         url_no_email = url_for("gn_commons.send_mail_to_user", id_user=recipient_no_email.id_role)
-        resp = self.client.put(url_no_email, json=payload)
+        resp = self.client.post(url_no_email, json=payload)
         assert resp.status_code == 400
         assert resp.json["description"] == "This user has no email"
 
         # Test with non-existent user
-        resp = self.client.put(url_for("gn_commons.send_mail_to_user", id_user=99999), json=payload)
+        resp = self.client.post(
+            url_for("gn_commons.send_mail_to_user", id_user=99999), json=payload
+        )
         assert resp.status_code == 404
