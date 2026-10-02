@@ -1,12 +1,12 @@
 import uuid
 
+from geonature.tests.fixtures import fake_smtp
 from pypnusershub.auth import user_manager
 from pypnusershub.db.models_register import TempUser
 import pytest
 from flask import url_for, current_app
 from sqlalchemy import select
 from pypnusershub.db.models import Application, CorRoleToken, Organisme
-from unittest.mock import MagicMock
 
 # Apparently: need to import both?
 from geonature.tests.utils import set_logged_user
@@ -29,18 +29,6 @@ def add_mail_to_user(users):
     with db.session.begin_nested():
         users["admin_user"].email = "Xp6dM@example.com"
         db.session.add(users["admin_user"])
-
-
-@pytest.fixture
-def fake_smtp(monkeypatch):
-    mock_send = MagicMock(return_value=True)
-
-    monkeypatch.setattr("geonature.utils.utilsmails.send_mail", mock_send)
-    monkeypatch.setattr(
-        "geonature.core.users.register_post_actions.send_mail", mock_send, raising=False
-    )
-
-    return mock_send
 
 
 @pytest.mark.usefixtures("client_class", "add_mail_to_user", "fake_smtp")

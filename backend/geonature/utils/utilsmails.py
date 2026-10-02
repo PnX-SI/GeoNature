@@ -7,13 +7,22 @@ from flask import current_app
 from flask_mail import Message
 
 from geonature.utils.env import MAIL
+from typing import Optional, Union
+
+from pypnusershub.db import User
 
 log = logging.getLogger()
 
 name_address_email_regex = re.compile(r"^([^<]+)<([^>]+)>$", re.IGNORECASE)
 
 
-def send_mail(recipients, subject, msg_html):
+def send_mail(
+    recipients: Union[str, list[str]],
+    subject: str,
+    msg_html: Optional[str] = None,
+    msg_body: Optional[str] = None,
+    reply_to: Union[str, list[str]] = None,
+):
     """Envoi d'un email à l'aide de Flask_mail.
 
     .. :quickref:  Fonction générique d'envoi d'email.
@@ -28,19 +37,27 @@ def send_mail(recipients, subject, msg_html):
     subject : str
         Sujet de l'email.
     msg_html : str
-        Contenu de l'eamil au format HTML.
-
+        Contenu de l'email au format HTML (Pour les mails formatés par l'application).
+    msg_body : str
+        Contenu de l'email au format texte (Pour les mails prenant en compte un texte choisi par l'utilisateur).
+    reply_to: str
+        Email à utiliser comme adresse de réponse.
     Returns
     -------
     void
         L'email est envoyé. Aucun retour.
     """
+    if not msg_body or msg_html:
+        raise ValueError("Either msg_body or msg_html must be supplied")
     with MAIL.connect() as conn:
         mail_sender = current_app.config.get("MAIL_DEFAULT_SENDER")
         if not mail_sender:
             mail_sender = current_app.config["MAIL_USERNAME"]
         msg = Message(subject, sender=mail_sender, recipients=clean_recipients(recipients))
         msg.html = msg_html
+        msg.body = msg_body
+        if reply_to:
+            msg.reply_to = reply_to
         conn.send(msg)
 
 
@@ -90,3 +107,23 @@ def split_name_address(email):
     if match:
         name_address = (match.group(1).strip(), match.group(2).strip())
     return name_address
+
+
+def send_mail_to_user(sender: User, recipient: User, subject: str, message: str, app_name: str):
+    """
+    Email an user formating subject and message so it is clear that it's coming from the user and not
+    the application.
+
+    """
+    subject = f"[{app_name}] [{sender.nom_complet}]" + subject
+    body = build_mail_body_from_user_message(message, sender, app_name)
+    send_mail(recipient.email, subject, msg_body=body, reply_to=sender.email)
+
+
+def build_mail_body_from_user_message(message: str, sender: User, app_name: str):
+    message = (
+        f"Message envoyé sur l'application {app_name} par l'utilisateur {sender.nom_complet} : \n"
+        + message
+    )
+    message += "\n"
+    return message
