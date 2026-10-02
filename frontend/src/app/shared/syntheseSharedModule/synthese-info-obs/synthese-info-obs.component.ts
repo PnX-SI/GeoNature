@@ -15,6 +15,8 @@ import { Location } from '@angular/common';
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
 import { HttpParams } from '@angular/common/http';
 import { SyntheseCriteriaService } from '@geonature/syntheseModule/services/criteria.service';
+import { SendMailFormComponent } from '@geonature/components/send-mail/send-mail-form-component';
+import { MatDialog } from '@angular/material/dialog';
 
 export interface ObservedTaxon extends Taxon {
   nom_cite?: string;
@@ -115,7 +117,8 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     private _router: Router,
     private _route: ActivatedRoute,
     private _location: Location,
-    public criteriaService: SyntheseCriteriaService
+    public criteriaService: SyntheseCriteriaService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -222,6 +225,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
           );
 
           // Process mail if possible
+          // TODO: email won't be accessible so we need to add a property to know if an observer has an email or not
           if (this.selectedObs.cor_observers) {
             this.email = this.selectedObs.cor_observers
               .map((el) => el.email)
@@ -257,8 +261,16 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     }
   }
 
-  sendMail() {
-    window.location.href = `${this.mailto}`;
+  openMailForm() {
+    this.dialog.open(SendMailFormComponent, {
+      width: '50vw',
+      maxWidth: '90vw',
+      data: {
+        selectedObs: this.selectedObs,
+        selectedObsTaxonDetail: this.selectedObsTaxonDetail,
+        observers: this.selectedObs?.cor_observers || [],
+      },
+    });
   }
 
   formatMailContent(email) {

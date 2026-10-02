@@ -109,10 +109,13 @@
           mat-mini-fab
           ngbTooltip="{{ 'Synthese.Actions.Mailto' | translate }}"
           placement="bottom"
-          (click)="sendMail()"
+          (click)="openMailForm()"
         >
           <mat-icon>mail</mat-icon>
         </button>
+        <pnx-send-mail-form
+          *ngIf="config.FRONTEND.DISPLAY_EMAIL_INFO_OBS && email"
+        ></pnx-send-mail-form>
         <button
           mat-mini-fab
           ngbTooltip="{{ 'Synthese.Actions.CopyPermalink' | translate }}"
@@ -169,7 +172,7 @@
       <span data-qa="synthese-info-obs-observateur">
         {{ selectedObs?.observers }}
       </span>
-      <br />
+      <br/>
       <span *ngIf="selectedObs?.date_min_fr != selectedObs?.date_max_fr; else elseBlock">
         <b>{{ 'Date' | translate }} :</b>
         <span>{{ selectedObs?.date_min_fr }} -> {{ selectedObs?.date_max_fr }}</span>
@@ -178,27 +181,27 @@
         <b>{{ 'Date' | translate }} :</b>
         <span data-qa="synthese-info-obs-date">{{ selectedObs?.date_min_fr }}</span>
       </ng-template>
-      <br />
+      <br/>
       <span *ngIf="selectedObs?.altitude_min || selectedObs?.altitude_max">
         <b>{{ 'Altitude' | translate }}</b>
         : {{ selectedObs?.altitude_min }} m - {{ selectedObs?.altitude_max }} m
-        <br />
+        <br/>
       </span>
       <span *ngIf="selectedObs?.depth_min || selectedObs?.depth_max">
         <b>{{ 'DepthMin' | translate }}</b>
         : {{ selectedObs?.depth_min }} m -
         <b>{{ 'DepthMax' | translate }} :</b>
         {{ selectedObs?.depth_max }} m
-        <br />
+        <br/>
       </span>
       <b>{{ 'Synthese.UidObs' | translate }} :</b>
       {{ selectedObs?.unique_id_sinp }}
-      <br />
+      <br/>
       <span *ngIf="selectedObs?.habitat">
         <b>{{ 'Synthese.Habitat' | translate }}</b>
         : {{ selectedObs?.habitat?.lb_hab_fr }} -
         {{ selectedObs?.habitat?.lb_code }}
-        <br />
+        <br/>
       </span>
     </span>
     <mat-toolbar class="tbar-bottom">
@@ -409,7 +412,7 @@
       </ng-container>
 
       <ng-container *ngSwitchCase="'taxonomy'">
-        <pnx-synthese-taxonomy [taxon]="selectedObsTaxonDetail" />
+        <pnx-synthese-taxonomy [taxon]="selectedObsTaxonDetail"/>
       </ng-container>
 
       <ng-container *ngSwitchCase="'media'">
@@ -451,18 +454,18 @@
       <ng-container *ngSwitchCase="'zonage'">
         <table class="font-xs table table-striped table-sm">
           <thead>
-            <tr>
-              <th class="table_date">Type de zonage</th>
-              <th class="table_comment">Zones</th>
-            </tr>
+          <tr>
+            <th class="table_date">Type de zonage</th>
+            <th class="table_comment">Zones</th>
+          </tr>
           </thead>
 
           <tbody>
-            <tr *ngFor="let area_type of formatedAreas">
-              <td>
-                {{ area_type.area_type }}
-              </td>
-              <td>
+          <tr *ngFor="let area_type of formatedAreas">
+            <td>
+              {{ area_type.area_type }}
+            </td>
+            <td>
                 <span
                   data-qa="synthese-obs-detail-area"
                   *ngFor="let area of area_type.areas; let index = index"
@@ -470,8 +473,8 @@
                   {{ area.area_name }}
                   <span *ngIf="index < area_type.areas.length - 1">,</span>
                 </span>
-              </td>
-            </tr>
+            </td>
+          </tr>
           </tbody>
         </table>
       </ng-container>
@@ -484,18 +487,18 @@
 
           <table class="font-xs table table-striped table-sm">
             <thead>
-              <tr>
-                <th class="table_date">Date de validation</th>
-                <th class="table_status">Statut</th>
-                <th class="table_comment">Validateur</th>
-                <th class="table_comment">Commentaire</th>
-              </tr>
+            <tr>
+              <th class="table_date">Date de validation</th>
+              <th class="table_status">Statut</th>
+              <th class="table_comment">Validateur</th>
+              <th class="table_comment">Commentaire</th>
+            </tr>
             </thead>
 
             <tbody>
-              <tr *ngFor="let row of validationHistory">
-                <td width="15%">{{ row.date }}</td>
-                <td width="20%">
+            <tr *ngFor="let row of validationHistory">
+              <td width="15%">{{ row.date }}</td>
+              <td width="20%">
                   <span
                     class="validationCircle"
                     [ngStyle]="{ background: validationColor[row.cd_nomenclature] }"
@@ -507,18 +510,18 @@
                       computer
                     </mat-icon>
                   </span>
-                  <span
-                    class="statusName"
-                    class="ml-4"
-                  >
+                <span
+                  class="statusName"
+                  class="ml-4"
+                >
                     {{ row.label_default }}
                   </span>
-                </td>
-                <td width="20%">
-                  <span>{{ row.validator }}</span>
-                </td>
-                <td>{{ row.comment }}</td>
-              </tr>
+              </td>
+              <td width="20%">
+                <span>{{ row.validator }}</span>
+              </td>
+              <td>{{ row.comment }}</td>
+            </tr>
             </tbody>
           </table>
 
@@ -606,8 +609,8 @@
           </div>
           <ng-template #noProfile>
             <span class="alert alert-info">Pas de profil pour ce taxon</span>
-            <br />
-            <br />
+            <br/>
+            <br/>
           </ng-template>
         </div>
       </ng-container>

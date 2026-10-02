@@ -173,7 +173,7 @@
   "Creator": "Creator",
   "Creators": "Creators",
   "Creators?": "Creator(s)",
-
+  "Recipients": "Recipients",
   "Dataset": "Dataset",
   "Datasets": "Datasets",
   "AcquisitionFramework": "Acquisition Framework",
@@ -723,5 +723,18 @@
   "Releve": {
     "InfoGeo": "Geographical information of the survey"
   },
-  "ColonCharSpaced": ": "
+  "ColonCharSpaced": ": ",
+  "Mail": {
+    "Messages": {
+      "EmailSent": "Email sent successfully",
+      "MultipleEmailsSent": "{{ count }} emails sent successfully",
+      "SendFailed": "Failed to send to: {{ names }}"
+    },
+    "Errors": {
+      "NoObserverSelected": "Sélectionnez au moins un observateur",
+      "SubjectRequired": "Sujet requis",
+      "ContentRequired": "Contenu requis",
+      "ContentToShort": "Contenu trop court"
+    }
+  }
 }
