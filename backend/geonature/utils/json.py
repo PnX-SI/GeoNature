@@ -26,7 +26,7 @@ def pagination_schema(schema):
     Notes
     -----
     Usage:
-        with pagination_schema(UserSchema):
+        with pagination_schema(UserSafeSchema):
             return jsonify(pagination)
     """
     g.pagination_schema = schema

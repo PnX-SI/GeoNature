@@ -30,6 +30,8 @@ from pypnusershub.organisms_manager import (
 from pypnusershub.auth import user_manager
 
 from sqlalchemy import and_, select, func
+
+from pypnusershub.schemas import UserSensitiveSchema, UserSafeSchema
 from utils_flask_sqla.response import json_resp
 from werkzeug.exceptions import BadRequest, Forbidden, InternalServerError, NotFound
 from werkzeug.datastructures import MultiDict
@@ -148,10 +150,9 @@ def get_role(id_role):
         A dictionary containing the role detail
     """
     user = DB.get_or_404(User, id_role)
-    fields = user_fields.copy()
-    if g.current_user == user:
-        fields.add("email")
-    return user.as_dict(fields=fields)
+    if g.current_user and g.current_user.id_role == user.id_role:
+        return UserSensitiveSchema().dump(user)
+    return UserSafeSchema().dump(user)
 
 
 @routes.route("/roles", methods=["GET"])
@@ -173,7 +174,8 @@ def get_roles():
             query = query.order_by(order_col)
         except AttributeError:
             raise BadRequest("the attribute to order on does not exist")
-    return [user.as_dict(fields=user_fields) for user in DB.session.scalars(query).all()]
+    user_schema = UserSafeSchema()
+    return [user_schema.dump(user) for user in DB.session.scalars(query).all()]
 
 
 @routes.route("/organisms", methods=["GET"])
@@ -453,6 +455,7 @@ def update_role():
         "pass_plus",
         "pn",
         "uuid_role",
+        "email",  # another route is specific for email
     ]
     for key, value in data.items():
         if key not in black_list_att_update:
