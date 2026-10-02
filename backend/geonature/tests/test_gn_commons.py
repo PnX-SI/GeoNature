@@ -21,6 +21,7 @@ from geonature.core.gn_permissions.models import PermObject
 from geonature.utils.env import db
 from geonature.utils.errors import GeoNatureError
 from geonature.core.gn_commons.schemas import CastableField
+from geonature.tests.fixtures import fake_smtp
 
 from .utils import set_logged_user
 
@@ -779,3 +780,60 @@ class TestTasks:
 
         # File should be removed
         assert not Path(medium.media_path).is_file()
+
+
+@pytest.mark.usefixtures("client_class")
+class TestSendMailToUser:
+    def test_send_mail_to_user(self, users, fake_smtp):
+        """
+        Test PUT /send_mail/<id_user> behavior.
+        """
+        sender = users["admin_user"]
+        recipient = users["user"]
+        set_logged_user(self.client, sender)
+
+        # Ensure both users have email configured
+        sender.email = "sender@example.com"
+        recipient.email = "recipient@example.com"
+        with db.session.begin_nested():
+            db.session.add(sender)
+            db.session.add(recipient)
+
+        url = url_for("gn_commons.send_mail_to_user", id_user=recipient.id_role)
+
+        # Test successful email sending
+        payload = {"subject": "Test Subject", "message": "Test Message"}
+        resp = self.client.put(url, json=payload)
+        assert resp.status_code == 204
+        assert fake_smtp.called
+        args, kwargs = fake_smtp.call_args
+        assert recipient.email in args[0]
+
+        # Test without email configuration for sender
+        fake_smtp.reset_mock()
+        sender_no_email = users["noright_user"]
+        sender_no_email.email = None
+        with db.session.begin_nested():
+            db.session.add(sender_no_email)
+        set_logged_user(self.client, sender_no_email)
+
+        resp = self.client.put(url, json=payload)
+        assert resp.status_code == 400
+        assert resp.json["description"] == "You must have an email configured"
+
+        # Test recipient without email
+        fake_smtp.reset_mock()
+        set_logged_user(self.client, sender)
+        recipient_no_email = users["associate_user"]
+        recipient_no_email.email = None
+        with db.session.begin_nested():
+            db.session.add(recipient_no_email)
+
+        url_no_email = url_for("gn_commons.send_mail_to_user", id_user=recipient_no_email.id_role)
+        resp = self.client.put(url_no_email, json=payload)
+        assert resp.status_code == 400
+        assert resp.json["description"] == "This user has no email"
+
+        # Test with non-existent user
+        resp = self.client.put(url_for("gn_commons.send_mail_to_user", id_user=99999), json=payload)
+        assert resp.status_code == 404
