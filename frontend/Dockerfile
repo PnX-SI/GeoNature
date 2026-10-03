@@ -100,8 +100,10 @@ RUN mkdir /docker-entrypoint.d/
 COPY ./frontend/50-set-api-endpoint.sh /docker-entrypoint.d/
 COPY ./frontend/docker-entrypoint.sh /docker-entrypoint.sh
 
+ENV GEONATURE_FRONTEND_PREFIX=/
+
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
 
-CMD [ "npm", "run", "start", "--", "--host", "0.0.0.0" ]
+CMD ["/bin/sh", "-c", "npm run start -- --host 0.0.0.0 --serve-path \"${GEONATURE_FRONTEND_PREFIX}\""]
 
 EXPOSE 4200
