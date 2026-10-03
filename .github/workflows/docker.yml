@@ -24,6 +24,7 @@ jobs:
         with:
           submodules: True
           ref: ${{ github.event.client_payload.ref || github.ref }}
+          fetch-depth: ${{ github.event_name == 'repository_dispatch' && '0' || '1' }} # could be removed with docker/metadata-action > 6.2
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
       - name: Login to GHCR
@@ -85,6 +86,7 @@ jobs:
         with:
           submodules: True
           ref: ${{ github.event.client_payload.ref || github.ref }}
+          fetch-depth: ${{ github.event_name == 'repository_dispatch' && '0' || '1' }} # could be removed with docker/metadata-action > 6.2
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
       - name: Login to GHCR
