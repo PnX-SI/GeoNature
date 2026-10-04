@@ -4,6 +4,6 @@
   "licence": "GPL",
   "private": true,
   "dependencies": {
-    "moment": "^2.29.4"
+    "moment": "^2.31.0"
   }
 }
