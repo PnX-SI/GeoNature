@@ -103,12 +103,14 @@ export class SendMailFormComponent implements OnInit {
 
     this.isLoading = true;
     const requests = selectedObservers.map((observer) =>
-      this.http.post(`api/gn_commons/send_mail/${observer.id_role}`, payload).pipe(
-        map((): SendResult => ({ observer, ok: true })),
-        catchError(() => {
-          return of<SendResult>({ observer, ok: false });
-        })
-      )
+      this.http
+        .post(`${this.config.API_ENDPOINT}/gn_commons/send_mail/${observer.id_role}`, payload)
+        .pipe(
+          map((): SendResult => ({ observer, ok: true })),
+          catchError(() => {
+            return of<SendResult>({ observer, ok: false });
+          })
+        )
     );
 
     forkJoin(requests)

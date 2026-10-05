@@ -47,7 +47,7 @@ def send_mail(
     void
         L'email est envoyé. Aucun retour.
     """
-    if not msg_body or msg_html:
+    if not (msg_body or msg_html):
         raise ValueError("Either msg_body or msg_html must be supplied")
     with MAIL.connect() as conn:
         mail_sender = current_app.config.get("MAIL_DEFAULT_SENDER")
