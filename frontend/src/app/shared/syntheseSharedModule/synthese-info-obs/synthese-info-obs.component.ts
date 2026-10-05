@@ -17,6 +17,7 @@ import { HttpParams } from '@angular/common/http';
 import { SyntheseCriteriaService } from '@geonature/syntheseModule/services/criteria.service';
 import { SendMailFormComponent } from '@geonature/components/send-mail/send-mail-form-component';
 import { MatDialog } from '@angular/material/dialog';
+import { BehaviorSubject } from 'rxjs';
 
 export interface ObservedTaxon extends Taxon {
   nom_cite?: string;
@@ -50,9 +51,11 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   public selectCdNomenclature;
   public formatedAreas = [];
   public isLoading = false;
-  public email;
-  public mailto: string;
+  public email = null;
+  public mailContent: string;
+  public mailSubject: string;
   public moduleInfos: any;
+  public displayMailForm$ = new BehaviorSubject<boolean>(false);
 
   public profile: any;
   public phenology: any[];
@@ -128,6 +131,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         this.moduleInfos = { id: module.id_module, code: module.module_code };
         this.activateAlert = this.config.SYNTHESE.ALERT_MODULES.includes(this.moduleInfos?.code);
         this.activatePin = this.config.SYNTHESE.PIN_MODULES.includes(this.moduleInfos?.code);
+        this.updateMailFormDisplay();
       }
     });
   }
@@ -227,14 +231,14 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
           // Process mail if possible
           // TODO: email won't be accessible so we need to add a property to know if an observer has an email or not
           if (this.selectedObs.cor_observers) {
-            this.email = this.selectedObs.cor_observers
-              .map((el) => el.email)
-              .filter((v) => v)
-              .join();
-            this.mailto = this.formatMailContent(this.email);
-          } else {
-            this.email = null;
-            this.mailto = null;
+            this.email =
+              this.selectedObs.cor_observers.map((el) => el.email).filter((v) => v).length > 0;
+            if (this.email) {
+              let mailData = this.formatMailData();
+              this.mailContent = mailData.body;
+              this.mailSubject = mailData.subject;
+            }
+            this.updateMailFormDisplay();
           }
 
           this._gnDataService.getProfile(taxInfo.cd_ref).subscribe((profile) => {
@@ -269,12 +273,18 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         selectedObs: this.selectedObs,
         selectedObsTaxonDetail: this.selectedObsTaxonDetail,
         observers: this.selectedObs?.cor_observers || [],
+        mailContent: this.mailContent,
+        mailSubject: this.mailSubject,
       },
     });
   }
 
-  formatMailContent(email) {
-    let mailto = String('mailto:' + email);
+  formatMailData() {
+    const mailData = {
+      subject: '',
+      body: '',
+    };
+
     if (this.mailCustomSubject || this.mailCustomBody) {
       // Mise en forme des données
       const d = { ...this.selectedObsTaxonDetail, ...this.selectedObs };
@@ -313,25 +323,25 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         });
       }
       d['medias'] = contentMedias;
-      // Construction du mail
+
       if (this.mailCustomSubject !== undefined) {
         try {
-          mailto += `?subject=${new Function('d', 'return ' + '`' + this.mailCustomSubject + '`')(
-            d
-          )}`;
-        } catch (error) {}
+          mailData.subject = new Function('d', 'return ' + '`' + this.mailCustomSubject + '`')(d);
+        } catch (error) {
+          mailData.subject = '';
+        }
       }
+
       if (this.mailCustomBody !== undefined) {
         try {
-          mailto += `&body=${new Function('d', 'return ' + '`' + this.mailCustomBody + '`')(d)}`;
-        } catch (error) {}
+          mailData.body = new Function('d', 'return ' + '`' + this.mailCustomBody + '`')(d);
+        } catch (error) {
+          mailData.body = '';
+        }
       }
-
-      mailto = encodeURI(mailto);
-      mailto = mailto.replace(/,/g, '%2c');
     }
 
-    return mailto;
+    return mailData;
   }
 
   loadValidationHistory(uuid) {
@@ -476,5 +486,12 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
    */
   setUrlForTab(tabPath: string) {
     this._location.replaceState(`/${this.useFrom}/occurrence/${this.idSynthese}/${tabPath}`);
+  }
+
+  private updateMailFormDisplay() {
+    const shouldDisplay =
+      this.config.SYNTHESE.ENABLE_USER_MAIL_FORM?.includes(this.moduleInfos?.code?.toUpperCase()) &&
+      !!this.email;
+    this.displayMailForm$.next(shouldDisplay);
   }
 }

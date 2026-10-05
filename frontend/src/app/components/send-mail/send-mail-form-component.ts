@@ -34,6 +34,8 @@ export class SendMailFormComponent implements OnInit {
   selectedObs: any;
   selectedObsTaxonDetail: any;
   observers: Observer[] = [];
+  mailSubject: string;
+  mailContent: string;
 
   public mailForm: FormGroup;
   public isLoading = false;
@@ -46,10 +48,18 @@ export class SendMailFormComponent implements OnInit {
     public dialogRef: MatDialogRef<SendMailFormComponent>,
     public translate: TranslateService,
     @Inject(MAT_DIALOG_DATA)
-    public data: { selectedObs: any; selectedObsTaxonDetail: any; observers?: Observer[] }
+    public data: {
+      selectedObs: any;
+      selectedObsTaxonDetail: any;
+      observers?: Observer[];
+      mailSubject: string;
+      mailContent: string;
+    }
   ) {
     this.selectedObs = data?.selectedObs;
     this.selectedObsTaxonDetail = data?.selectedObsTaxonDetail;
+    this.mailSubject = data?.mailSubject;
+    this.mailContent = data?.mailContent;
 
     this.observers = data?.observers || [];
 
@@ -66,8 +76,8 @@ export class SendMailFormComponent implements OnInit {
   ngOnInit() {
     if (this.selectedObs) {
       this.mailForm.patchValue({
-        subject: `Observation: ${this.selectedObsTaxonDetail.nom_valide}`,
-        message: `${this.getObservationUrl()}`,
+        subject: this.mailSubject || `Observation: ${this.selectedObsTaxonDetail.nom_valide}`,
+        message: this.mailContent || `${this.getObservationUrl()}`,
       });
     }
   }

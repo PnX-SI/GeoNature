@@ -390,6 +390,7 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     DISCUSSION_MAX_LENGTH = 1500
     ALERT_MODULES = ["SYNTHESE","VALIDATION"]
     PIN_MODULES = ["SYNTHESE","VALIDATION"]
+    ENABLE_USER_MAIL_FORM = ["SYNTHESE","VALIDATION"]
     # Configuration des filtres de listes rouges affichées dans la fenêtre avancée de la SYNTHESE
     # Voir la documentation Manuel Administrateur > Module SYNTHESE > 5. Configurer les filtres des statuts de protection et des listes rouges
     RED_LISTS_FILTERS = [

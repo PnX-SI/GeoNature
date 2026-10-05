@@ -195,7 +195,6 @@
     "DISPLAY_EMAIL_DISPLAY_INFO": ["NOM_VERN"],
     "ENABLE_PROFILES": true,
     "DISPLAY_FOOTER": true,
-    "DISPLAY_EMAIL_INFO_OBS": true,
     "DISPLAY_STAT_BLOC": true,
     "PROD_MOD": true,
     "DISPLAY_MAP_LAST_OBS": true
@@ -256,7 +255,7 @@
         }
       }
     ],
-    "CENTER": [46.52863469527167, 2.43896484375],
+    "CENTER": [46.52863469527167, 2.43896484375]
   },
   "ID_APPLICATION_GEONATURE": 1
 }

@@ -271,7 +271,6 @@ class GnFrontEndConf(Schema):
     ENABLE_PROFILES = fields.Boolean(load_default=True)
 
     # show email on synthese and validation info obs modal
-    DISPLAY_EMAIL_INFO_OBS = fields.Boolean(load_default=True)
     DISPLAY_EMAIL_DISPLAY_INFO = fields.List(fields.String(), load_default=["NOM_VERN"])
 
     DISPLAY_USER_ORGANISM = fields.Boolean(load_default=True)
@@ -545,6 +544,8 @@ class Synthese(Schema):
     # SYNTHESE - OBSERVER_SHEET
     ENABLE_OBSERVER_SHEETS = fields.Boolean(load_default=True)
     OBSERVER_SHEET = fields.Nested(ObserverSheet, load_default=ObserverSheet().load({}))
+    # --------------------------------------------------------------------
+    ENABLE_USER_MAIL_FORM = fields.List(fields.String(), load_default=["SYNTHESE", "VALIDATION"])
 
     @pre_load
     def warn_deprecated(self, data, **kwargs):

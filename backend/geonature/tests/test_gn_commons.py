@@ -1,5 +1,6 @@
 from pathlib import Path
 import tempfile
+from unittest.mock import patch
 
 import pytest
 import json
@@ -22,6 +23,7 @@ from geonature.utils.env import db
 from geonature.utils.errors import GeoNatureError
 from geonature.core.gn_commons.schemas import CastableField
 from geonature.tests.fixtures import fake_smtp
+from geonature.utils.config import config
 
 from .utils import set_logged_user
 
@@ -839,3 +841,7 @@ class TestSendMailToUser:
             url_for("gn_commons.send_mail_to_user", id_user=99999), json=payload
         )
         assert resp.status_code == 404
+        with patch.dict(config, {"SYNTHESE": {"ENABLE_USER_MAIL_FORM": []}}):
+            resp = self.client.post(url, json=payload)
+            assert resp.status_code == 400
+            assert resp.json["description"] == "Mail form must be enabled in at least one module"

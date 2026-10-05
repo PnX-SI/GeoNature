@@ -323,6 +323,8 @@ def delete_place(id_place):
 @routes.route("/send_mail/<int:id_user>", methods=["POST"])
 @login_required
 def send_mail_to_user(id_user: int):
+    if not config["SYNTHESE"]["ENABLE_USER_MAIL_FORM"]:
+        raise BadRequest("Mail form must be enabled in at least one module")
 
     data = request.get_json()
     recipient = db.get_or_404(User, id_user)
