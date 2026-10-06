@@ -6,6 +6,13 @@ on:
       - develop
   release:
     types: [published]
+  workflow_dispatch:
+    types: [build-docker]
+
+# several dispatches of the same commit at once should not queue up duplicate builds
+concurrency:
+  group: docker-${{ github.event.client_payload.ref || github.ref }}
+  cancel-in-progress: false
 
 jobs:
   build-backend:
@@ -13,13 +20,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
         with:
           submodules: True
+          ref: ${{ github.event.client_payload.ref || github.ref }}
+          fetch-depth: ${{ github.event_name == 'repository_dispatch' && '0' || '1' }} # could be removed with docker/metadata-action > 6.2
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v4
       - name: Login to GHCR
-        uses: docker/login-action@v2
+        uses: docker/login-action@v4
         if: github.event_name != 'pull_request'
         with:
           registry: ghcr.io
@@ -27,17 +36,19 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Generate metadata for wheels image
         id: meta-wheels
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v6
         with:
+          context: git
           images: ghcr.io/${{ github.repository_owner }}/geonature-backend
           flavor: |
             suffix=-wheels
           tags: |
-            type=ref,event=branch
-            type=ref,event=tag
+            type=ref,event=branch,enable=${{ github.event_name != 'repository_dispatch' }}
+            type=ref,event=tag,enable=${{ github.event_name != 'repository_dispatch' }}
+            type=sha
       - name: Build and export wheels image
         id: build-wheels
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: ./backend/Dockerfile
@@ -47,15 +58,17 @@ jobs:
           labels: ${{ steps.meta-wheels.outputs.labels }}
       - name: Generate metadata for prod image
         id: meta-prod
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v6
         with:
+          context: git
           images: ghcr.io/${{ github.repository_owner }}/geonature-backend
           tags: |
-            type=ref,event=branch
-            type=ref,event=tag
+            type=ref,event=branch,enable=${{ github.event_name != 'repository_dispatch' }}
+            type=ref,event=tag,enable=${{ github.event_name != 'repository_dispatch' }}
+            type=sha
       - name: Build and export prod image
         id: build-prod
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: ./backend/Dockerfile
@@ -69,13 +82,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
         with:
           submodules: True
+          ref: ${{ github.event.client_payload.ref || github.ref }}
+          fetch-depth: ${{ github.event_name == 'repository_dispatch' && '0' || '1' }} # could be removed with docker/metadata-action > 6.2
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v4
       - name: Login to GHCR
-        uses: docker/login-action@v2
+        uses: docker/login-action@v4
         if: github.event_name != 'pull_request'
         with:
           registry: ghcr.io
@@ -83,16 +98,18 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Generate metadata for source image
         id: meta-source
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v6
         with:
+          context: git
           images: ghcr.io/${{ github.repository_owner }}/geonature-frontend
           flavor: |
             suffix=-source
           tags: |
-            type=ref,event=branch
-            type=ref,event=tag
+            type=ref,event=branch,enable=${{ github.event_name != 'repository_dispatch' }}
+            type=ref,event=tag,enable=${{ github.event_name != 'repository_dispatch' }}
+            type=sha
       - name: Build and export source image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: ./frontend/Dockerfile
@@ -102,16 +119,18 @@ jobs:
           labels: ${{ steps.meta-source.outputs.labels }}
       - name: Generate metadata for nginx image
         id: meta-nginx
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v6
         with:
+          context: git
           images: ghcr.io/${{ github.repository_owner }}/geonature-frontend
           flavor: |
             suffix=-nginx
           tags: |
-            type=ref,event=branch
-            type=ref,event=tag
+            type=ref,event=branch,enable=${{ github.event_name != 'repository_dispatch' }}
+            type=ref,event=tag,enable=${{ github.event_name != 'repository_dispatch' }}
+            type=sha
       - name: Build and export nginx image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: ./frontend/Dockerfile
@@ -121,14 +140,16 @@ jobs:
           labels: ${{ steps.meta-nginx.outputs.labels }}
       - name: Generate metadata for prod image
         id: meta-prod
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v6
         with:
+          context: git
           images: ghcr.io/${{ github.repository_owner }}/geonature-frontend
           tags: |
-            type=ref,event=branch
-            type=ref,event=tag
+            type=ref,event=branch,enable=${{ github.event_name != 'repository_dispatch' }}
+            type=ref,event=tag,enable=${{ github.event_name != 'repository_dispatch' }}
+            type=sha
       - name: Build and export prod image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: ./frontend/Dockerfile
