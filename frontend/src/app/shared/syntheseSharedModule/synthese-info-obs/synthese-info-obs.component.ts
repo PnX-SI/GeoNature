@@ -51,7 +51,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   public selectCdNomenclature;
   public formatedAreas = [];
   public isLoading = false;
-  public email = null;
+  public observersWithMail = null;
   public mailContent: string;
   public mailSubject: string;
   public moduleInfos: any;
@@ -229,11 +229,9 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
           );
 
           // Process mail if possible
-          // TODO: email won't be accessible so we need to add a property to know if an observer has an email or not
           if (this.selectedObs.cor_observers) {
-            this.email =
-              this.selectedObs.cor_observers.map((el) => el.email).filter((v) => v).length > 0;
-            if (this.email) {
+            this.observersWithMail = this.selectedObs.cor_observers.filter((el) => el.has_mail);
+            if (this.observersWithMail.length > 0) {
               let mailData = this.formatMailData();
               this.mailContent = mailData.body;
               this.mailSubject = mailData.subject;
@@ -272,7 +270,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
       data: {
         selectedObs: this.selectedObs,
         selectedObsTaxonDetail: this.selectedObsTaxonDetail,
-        observers: this.selectedObs?.cor_observers || [],
+        observers: this.observersWithMail || [],
         mailContent: this.mailContent,
         mailSubject: this.mailSubject,
       },
@@ -491,7 +489,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   private updateMailFormDisplay() {
     const shouldDisplay =
       this.config.SYNTHESE.ENABLE_USER_MAIL_FORM?.includes(this.moduleInfos?.code?.toUpperCase()) &&
-      !!this.email;
+      this.observersWithMail.length > 0;
     this.displayMailForm$.next(shouldDisplay);
   }
 }
