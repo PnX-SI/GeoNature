@@ -1,0 +1,10 @@
+#!/bin/sh
+set -eu
+
+# Note: this file must be evaluated before 20-envsubst-on-templates.sh
+
+if [ -n "${NGINX_LOCATION:-}" ]; then
+    echo "Warning: NGINX_LOCATION is deprecated, use GEONATURE_FRONTEND_PREFIX instead"
+    export GEONATURE_FRONTEND_PREFIX="${NGINX_LOCATION}"
+    unset NGINX_LOCATION
+fi
