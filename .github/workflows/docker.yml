@@ -7,6 +7,7 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+  repository_dispatch:
     types: [build-docker]
 
 # several dispatches of the same commit at once should not queue up duplicate builds
