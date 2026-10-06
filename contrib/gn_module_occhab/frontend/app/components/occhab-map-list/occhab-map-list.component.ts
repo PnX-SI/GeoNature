@@ -166,7 +166,7 @@ export class OccHabMapListComponent implements OnInit {
     } else {
       for (let i = 0; i < row.observers.length; i++) {
         let obs = row.observers[i];
-        tooltip.push([obs.prenom_role, obs.nom_role].join(' '));
+        tooltip.push([obs.nom_complet].join(' '));
       }
     }
     return tooltip.sort();
