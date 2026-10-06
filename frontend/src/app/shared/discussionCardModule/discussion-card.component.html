@@ -67,11 +67,10 @@
         <mat-card-header class="header-card p-2">
           <mat-card-subtitle class="mb-0 p-0 subtitle-card">
             <strong
-              *ngIf="comment.user.nom_role && comment.user.prenom_role"
+              *ngIf="comment.user.nom_complet"
               [ngStyle]="{ color: 'black' }"
             >
-              {{ comment.user.nom_role }}
-              {{ comment.user.prenom_role }}
+              {{ comment.user.nom_complet }}
             </strong>
             {{ 'Synthese.Commented' | translate }}
             {{ formatDate(comment.creation_date) }}
@@ -141,9 +140,8 @@
           visibility_off
         </mat-icon>
         <span class="statusName">
-          <strong *ngIf="comment.user.nom_role && comment.user.prenom_role">
-            {{ comment.user.nom_role }}
-            {{ comment.user.prenom_role }}
+          <strong *ngIf="comment.user.nom_complet">
+            {{ comment.user.nom_complet }}
           </strong>
           a supprimé le commentaire du {{ formatDate(comment.creation_date) }}
         </span>

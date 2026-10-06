@@ -60,7 +60,7 @@
             </h5>
             <div *ngIf="station?.properties.observers?.length > 0; else elseBlock">
               <p *ngFor="let obs of station.properties.observers; let last = last">
-                {{ obs.nom_role }} {{ obs.prenom_role }}
+                {{ obs.nom_complet }}
                 <span *ngIf="!last">,</span>
               </p>
             </div>
