@@ -4,6 +4,10 @@
 
 ### 🚀 Nouveautés
 
+- [Synthese/Validation] Remplacement du bouton d'envoi de mail, remplacé par un formulaire de contact (#4451 par @christophe-ramet)
+  - Un paramètre `ENABLE_USER_MAIL_FORM` est maintenant disponible et permet d'activer ou de désactiver l'affichage du formulaire de contact indépendamment dans la synthèse et la validation
+  - Le paramètre `DISPLAY_EMAIL_INFO_OBS`, qui permettait notamment d'activer l'affichage du bouton d'envoi de mail, est quant à lui supprimé 
+
 ### 🐛 Corrections
 
 - Suppression de la section de configuration `ADDITIONAL_FIELDS` et des variables de configuration `IMPLEMENTED_MODULES` et `IMPLEMENTED_MODULES`, maintenant géré en base de donnée (la migration alambic gère la rétro-compatibilité)
