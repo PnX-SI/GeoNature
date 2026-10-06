@@ -33,5 +33,8 @@ fi
 # Grant admin group permissions on new installed modules
 geonature permissions supergrant --group --nom "Grp_admin" --yes
 
+echo "Génération du fichier d’autocomplétion de la commande GeoNature…"
+geonature generate-completion --output "${VENV_PATH}/bin/geonature_completion"
+
 echo "Désactivation du virtual env"
 deactivate

@@ -225,6 +225,9 @@ geonature upgrade-modules-db || exit 1
 # Mise à jour manuel de validation, la branche Alambic ayant été rajouté avec GN 2.13
 geonature db heads | grep "(validation)" > /dev/null && geonature db upgrade validation@head
 
+echo "Génération du fichier d’autocomplétion de la commande GeoNature…"
+geonature generate-completion --output "${VIRTUAL_ENV}/bin/geonature_completion"
+
 # On déplace les médias à la fin de la migration, pour ne pas se retrouver avec une nouvelle installation
 # GeoNature cassé mais les médias déjà déplacé de l’ancien GN au nouveau GN non fonctionnel.
 echo "Déplacement des anciens fichiers static vers les médias …"  # before GN 2.12

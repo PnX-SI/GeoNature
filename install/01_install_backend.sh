@@ -117,9 +117,8 @@ readonly BIN_VENV_DIR="${UV_PROJECT_ENVIRONMENT}/bin"
 readonly ACTIVATE_FILE="${BIN_VENV_DIR}/activate"
 readonly COMPLETION_FILE_NAME="geonature_completion"
 
-echo "Génération du fichier d’autocomplétion de la commande Geonature…"
-_GEONATURE_COMPLETE=bash_source geonature > "${BIN_VENV_DIR}/${COMPLETION_FILE_NAME}"
-
+# Le fichier d’autocomplétion est généré par 'geonature generate-completion' une fois la base
+# de données créée et les modules installés (voir 04_install_gn_modules.sh).
 echo "Modification du script 'activate' du virtual env pour sourcer le fichier d'autocomplétion de la commande GeoNature..."
 if ! grep -q "${COMPLETION_FILE_NAME}" "${ACTIVATE_FILE}" ; then
   cp "${ACTIVATE_FILE}" "${ACTIVATE_FILE}.save-$(date +'%F')"

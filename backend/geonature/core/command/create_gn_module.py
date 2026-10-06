@@ -10,6 +10,7 @@ import click
 import geonature.utils.config
 from click import ClickException
 from geonature.core.command.main import main
+from geonature.core.command.completion import regenerate_completion_file
 from geonature.utils.command import (
     build_frontend,
     create_frontend_module_config,
@@ -117,6 +118,8 @@ def install_gn_module(x_arg, module_path, module_code, build, upgrade_db):
             click.echo(
                 "Le module est déjà déclaré en base. " "Installation de la base de données ignorée."
             )
+
+    regenerate_completion_file()
 
 
 @main.command()
