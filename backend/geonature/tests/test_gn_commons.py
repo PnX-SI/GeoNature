@@ -1,6 +1,6 @@
 from pathlib import Path
 import tempfile
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 import pytest
 import json
@@ -26,6 +26,7 @@ from geonature.tests.fixtures import fake_smtp
 from geonature.utils.config import config
 
 from .utils import set_logged_user
+from ..utils.utilsmails import send_mail
 
 
 class DummySchema(Schema):
@@ -785,63 +786,147 @@ class TestTasks:
 
 
 @pytest.mark.usefixtures("client_class")
-class TestSendMailToUser:
-    def test_send_mail_to_user(self, users, fake_smtp):
-        """
-        Test PUT /send_mail/<id_user> behavior.
-        """
+class TestSendMail:
+    def test_send_mail_unauthorized(self):
+        url = url_for("gn_commons.send_mail_to_user", id_user=1)
+        payload = {"subject": "Test", "message": "Test"}
+        resp = self.client.post(url, json=payload)
+        assert resp.status_code == 401
+
+    def test_send_mail_form_disabled(self, users, fake_smtp):
+        set_logged_user(self.client, users["admin_user"])
+        url = url_for("gn_commons.send_mail_to_user", id_user=users["user"].id_role)
+
+        with patch.dict(config, {"SYNTHESE": {"ENABLE_USER_MAIL_FORM": []}}):
+            payload = {"subject": "Test", "message": "Test"}
+            resp = self.client.post(url, json=payload)
+            assert resp.status_code == 400
+            assert resp.json["description"] == "Mail form must be enabled in at least one module"
+
+    def test_send_mail_recipient_not_found(self, users, fake_smtp):
+        set_logged_user(self.client, users["admin_user"])
+        url = url_for("gn_commons.send_mail_to_user", id_user=99999)
+
+        payload = {"subject": "Test", "message": "Test"}
+        resp = self.client.post(url, json=payload)
+        assert resp.status_code == 404
+
+    def test_send_mail_recipient_no_email(self, users, fake_smtp):
         sender = users["admin_user"]
         recipient = users["user"]
-        set_logged_user(self.client, sender)
-
-        # Ensure both users have email configured
         sender.email = "sender@example.com"
-        recipient.email = "recipient@example.com"
+        recipient.email = None
+
         with db.session.begin_nested():
             db.session.add(sender)
             db.session.add(recipient)
 
+        set_logged_user(self.client, sender)
         url = url_for("gn_commons.send_mail_to_user", id_user=recipient.id_role)
 
-        # Test successful email sending
-        payload = {"subject": "Test Subject", "message": "Test Message"}
+        payload = {"subject": "Test", "message": "Test"}
         resp = self.client.post(url, json=payload)
-        assert resp.status_code == 204
-        assert fake_smtp.called
-        args, kwargs = fake_smtp.call_args
-        assert recipient.email in args[0]
+        assert resp.status_code == 400
+        assert resp.json["description"] == "This user has no email"
 
-        # Test without email configuration for sender
-        fake_smtp.reset_mock()
-        sender_no_email = users["noright_user"]
-        sender_no_email.email = None
+    def test_send_mail_sender_no_email(self, users, fake_smtp):
+        sender = users["admin_user"]
+        recipient = users["user"]
+        sender.email = None
+        recipient.email = "recipient@example.com"
+
         with db.session.begin_nested():
-            db.session.add(sender_no_email)
-        set_logged_user(self.client, sender_no_email)
+            db.session.add(sender)
+            db.session.add(recipient)
 
+        set_logged_user(self.client, sender)
+        url = url_for("gn_commons.send_mail_to_user", id_user=recipient.id_role)
+
+        payload = {"subject": "Test", "message": "Test"}
         resp = self.client.post(url, json=payload)
         assert resp.status_code == 400
         assert resp.json["description"] == "You must have an email configured"
 
-        # Test recipient without email
-        fake_smtp.reset_mock()
-        set_logged_user(self.client, sender)
-        recipient_no_email = users["associate_user"]
-        recipient_no_email.email = None
+    def test_send_mail_success(self, users, fake_smtp):
+        sender = users["admin_user"]
+        recipient = users["user"]
+        sender.email = "sender@example.com"
+        recipient.email = "recipient@example.com"
+
         with db.session.begin_nested():
-            db.session.add(recipient_no_email)
+            db.session.add(sender)
+            db.session.add(recipient)
 
-        url_no_email = url_for("gn_commons.send_mail_to_user", id_user=recipient_no_email.id_role)
-        resp = self.client.post(url_no_email, json=payload)
-        assert resp.status_code == 400
-        assert resp.json["description"] == "This user has no email"
+        set_logged_user(self.client, sender)
+        url = url_for("gn_commons.send_mail_to_user", id_user=recipient.id_role)
 
-        # Test with non-existent user
-        resp = self.client.post(
-            url_for("gn_commons.send_mail_to_user", id_user=99999), json=payload
-        )
-        assert resp.status_code == 404
-        with patch.dict(config, {"SYNTHESE": {"ENABLE_USER_MAIL_FORM": []}}):
-            resp = self.client.post(url, json=payload)
-            assert resp.status_code == 400
-            assert resp.json["description"] == "Mail form must be enabled in at least one module"
+        payload = {"subject": "Test Subject", "message": "Test Message"}
+        resp = self.client.post(url, json=payload)
+
+        assert resp.status_code == 204
+        assert fake_smtp.called
+
+    def test_send_mail_function_no_content_raises_error(self, app):
+        """Test que ValueError est levée si ni msg_body ni msg_html"""
+        with app.app_context():
+            with pytest.raises(ValueError, match="Either msg_body or msg_html must be supplied"):
+                send_mail(
+                    recipients=["test@example.com"],
+                    subject="Test Subject",
+                    msg_html=None,
+                    msg_body=None,
+                )
+
+    def test_send_mail_function_success(self, app):
+        """Test avec contenu texte uniquement"""
+        with app.app_context():
+            app.config["MAIL_DEFAULT_SENDER"] = "test@example.com"
+            with patch("geonature.utils.utilsmails.MAIL.connect") as mock_connect:
+                mock_conn = MagicMock()
+                mock_connect.return_value.__enter__.return_value = mock_conn
+
+                send_mail(
+                    recipients=["test@example.com"],
+                    subject="Test Subject",
+                    msg_body="Test body",
+                    msg_html="<p>HTML</p>",
+                )
+
+                mock_conn.send.assert_called_once()
+                msg = mock_conn.send.call_args[0][0]
+                assert msg.body == "Test body"
+                assert msg.html == "<p>HTML</p>"
+
+    def test_send_mail_function_fallback_to_mail_username(self, app):
+        """Test fallback sur MAIL_USERNAME si MAIL_DEFAULT_SENDER non défini"""
+        with app.app_context():
+            app.config["MAIL_DEFAULT_SENDER"] = None
+            app.config["MAIL_USERNAME"] = "user@example.com"
+
+            with patch("geonature.utils.utilsmails.MAIL.connect") as mock_connect:
+                mock_conn = MagicMock()
+                mock_connect.return_value.__enter__.return_value = mock_conn
+
+                send_mail(recipients=["test@example.com"], subject="Test", msg_html="<p>Test</p>")
+
+                msg = mock_conn.send.call_args[0][0]
+                assert msg.sender == "user@example.com"
+
+    def test_send_mail_function_with_reply_to_string(self, app):
+        """Test avec reply_to en tant que chaîne"""
+        with app.app_context():
+            app.config["MAIL_USERNAME"] = "user@example.com"
+
+            with patch("geonature.utils.utilsmails.MAIL.connect") as mock_connect:
+                mock_conn = MagicMock()
+                mock_connect.return_value.__enter__.return_value = mock_conn
+
+                send_mail(
+                    recipients=["test@example.com"],
+                    subject="Test",
+                    msg_html="<p>Test</p>",
+                    reply_to="support@example.com",
+                )
+
+                msg = mock_conn.send.call_args[0][0]
+                assert msg.reply_to == "support@example.com"

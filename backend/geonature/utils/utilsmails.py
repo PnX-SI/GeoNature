@@ -1,8 +1,6 @@
 # Fonctions génériques permettant l'envoie de mails
 import re
-import logging
 
-from smtplib import SMTPException
 from flask import current_app
 from flask_mail import Message
 
@@ -10,8 +8,6 @@ from geonature.utils.env import MAIL
 from typing import Optional, Union
 
 from pypnusershub.db import User
-
-log = logging.getLogger()
 
 name_address_email_regex = re.compile(r"^([^<]+)<([^>]+)>$", re.IGNORECASE)
 

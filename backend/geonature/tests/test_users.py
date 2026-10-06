@@ -537,7 +537,7 @@ class TestUsers:
         assert response.status_code == 200
         assert response.json["id_role"] == target.id_role
         assert response.json["nom_complet"] == target.nom_complet
-        assert set(response.json) <= {"id_role", "nom_complet", "organisme"}
+        assert set(response.json) <= {"has_mail", "id_role", "nom_complet", "organisme"}
         assert "email" not in response.json
 
     def test_get_safe_user_not_found(self, users):
