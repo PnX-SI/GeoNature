@@ -20,7 +20,7 @@ import { OcctaxConfigService } from '../../services/occtax-config.service';
 export class OcctaxFormTaxaListComponent implements OnInit {
   @ViewChild('tabOccurence') tabOccurence: ElementRef;
   typeSortingTaxalist: 'lexicographic' | 'record' = 'record';
-  sortOrder: 'asc' | 'desc' = 'asc';
+  sortOrder: 'asc' | 'desc' = 'desc';
 
   constructor(
     public ngbModal: NgbModal,
@@ -133,6 +133,8 @@ export class OcctaxFormTaxaListComponent implements OnInit {
       return;
     }
     this.typeSortingTaxalist = type;
+    // ordre de saisie : les plus récents en premier ; ordre alphabétique : A -> Z
+    this.sortOrder = type === 'record' ? 'desc' : 'asc';
     this.refreshSort();
   }
 
