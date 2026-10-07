@@ -324,13 +324,12 @@ class TAcquisitionFramework(db.Model):
 
     @classmethod
     def _filter_by_search(cls, search, *, query, ds_search):
-        """Full text search on the uuid, name, description, keywords, creator and actors.
-        Results are ordered by relevance."""
+        """Full text search on the name, description, keywords, creator and actors, plus the
+        beginning of the UUID. Results are ordered by relevance."""
         tsquery = fts_query(search)
         if tsquery is None:
             return query
         document = fts_document(
-            cls.unique_acquisition_framework_id,
             cls.acquisition_framework_name,
             cls.acquisition_framework_desc,
             cls.keywords,
@@ -349,6 +348,12 @@ class TAcquisitionFramework(db.Model):
                 )
             ),
         ]
+        # the beginning of the UUID, as typed: as words, its groups would match any prefix
+        matches.append(
+            func.lower(sa.cast(cls.unique_acquisition_framework_id, sa.String)).startswith(
+                search.lower(), autoescape=True
+            )
+        )
         # the datasets of the AF can match too
         if ds_search:
             matches.append(

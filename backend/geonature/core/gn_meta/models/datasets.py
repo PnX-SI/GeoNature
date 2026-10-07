@@ -295,8 +295,8 @@ class TDatasets(db.Model):
 
     @classmethod
     def _filter_by_search(cls, search, *, query, af_search):
-        """Full text search on the uuid, name, description, keywords, digitizer and actors.
-        Results are ordered by relevance."""
+        """Full text search on the name, description, keywords, digitizer and actors, plus the
+        beginning of the UUID. Results are ordered by relevance."""
         from .aframework import TAcquisitionFramework
 
         tsquery = fts_query(search)
@@ -307,7 +307,6 @@ class TDatasets(db.Model):
             cls.dataset_shortname,
             cls.dataset_desc,
             cls.keywords,
-            cls.unique_dataset_id,
         )
         matches = [
             document.op("@@")(tsquery),
@@ -321,6 +320,12 @@ class TDatasets(db.Model):
                 )
             ),
         ]
+        # the beginning of the UUID, as typed: as words, its groups would match any prefix
+        matches.append(
+            func.lower(sa.cast(cls.unique_dataset_id, sa.String)).startswith(
+                search.lower(), autoescape=True
+            )
+        )
         # the acquisition framework of the dataset can match too
         if af_search:
             matches.append(
