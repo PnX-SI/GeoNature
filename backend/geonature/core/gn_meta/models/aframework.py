@@ -9,6 +9,7 @@ from sqlalchemy.dialects.postgresql import JSONB, UUID as UUIDType
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy import func, select, exists
+from utils_flask_sqla.fulltext import fts_document, fts_query, ts_rank
 from utils_flask_sqla.models import qfilter
 from utils_flask_sqla.serializers import serializable
 
@@ -268,12 +269,6 @@ class TAcquisitionFramework(db.Model):
 
     @qfilter(query=True)
     def filter_by_params(cls, params={}, *, _ds_search=True, query=None):
-        # XXX frontend retro-compatibility
-        if params.get("selector") == "ds":
-            ds_params = params
-            params = {"datasets": ds_params}
-            if "search" in ds_params:
-                params["search"] = ds_params.pop("search")
         ds_params = params.get("datasets")
         if ds_params:
             ds_filter = TDatasets.filter_by_params(ds_params).whereclause
@@ -282,103 +277,83 @@ class TAcquisitionFramework(db.Model):
 
         params = MetadataFilterSchema().load(params)
 
-        uuid = params.get("uuid")
-        name = params.get("name")
-        date = params.get("date")
-        is_parent = params.get("is_parent")
-        opened = params.get("opened")
-        query = (
-            query.where(
-                TAcquisitionFramework.unique_acquisition_framework_id == uuid if uuid else True
+        where_clauses = []
+        if params.get("uuid"):
+            where_clauses.append(
+                TAcquisitionFramework.unique_acquisition_framework_id == params["uuid"]
             )
-            .where(
-                TAcquisitionFramework.acquisition_framework_name.ilike(f"%{name}%")
-                if name
-                else True
+        if params.get("name"):
+            where_clauses.append(
+                TAcquisitionFramework.acquisition_framework_name.ilike(f"%{params['name']}%")
             )
-            .where(TAcquisitionFramework.acquisition_framework_start_date == date if date else True)
-            .where(TAcquisitionFramework.is_parent == is_parent if is_parent is not None else True)
-            .where(TAcquisitionFramework.opened == opened if opened is not None else True)
-        )
+        if params.get("date"):
+            where_clauses.append(
+                TAcquisitionFramework.acquisition_framework_start_date == params["date"]
+            )
+        for column in ("is_parent", "opened"):
+            if params.get(column) is not None:
+                where_clauses.append(getattr(TAcquisitionFramework, column) == params[column])
 
         actors = []
-        person = params.get("person")
-        organism = params.get("organism")
-        if person:
+        if params.get("person"):
             actors.append(
                 TAcquisitionFramework.cor_af_actor.any(
-                    CorAcquisitionFrameworkActor.id_role == person
+                    CorAcquisitionFrameworkActor.id_role == params["person"]
                 )
             )
-
-        if organism:
+        if params.get("organism"):
             actors.append(
                 TAcquisitionFramework.cor_af_actor.any(
-                    CorAcquisitionFrameworkActor.id_organism == organism
+                    CorAcquisitionFrameworkActor.id_organism == params["organism"]
                 )
             )
         if actors:
-            query = query.where(sa.or_(*actors))
+            where_clauses.append(sa.or_(*actors))
 
-        areas = params.get("areas")
-        if areas:
-            query = TAcquisitionFramework.filter_by_areas(areas, query=query)
+        query = query.where(*where_clauses)
 
-        search = params.get("search")
-        if search:
-            search = search.strip()
-            # Where clauses to include other matching possibilities (id, uuid, date)
-            where_clauses = []
-            if search.isdigit():  # ID AF match
-                where_clauses.append(TAcquisitionFramework.id_acquisition_framework == int(search))
+        if params.get("areas"):
+            query = TAcquisitionFramework.filter_by_areas(params["areas"], query=query)
 
-            if len(search) >= MIN_LENGTH_UUID_OR_DATE_SEARCH_STRING:  # UUID and date match
-                where_clauses.append(
-                    sa.cast(TAcquisitionFramework.unique_acquisition_framework_id, sa.String).like(
-                        f"{search}%"
-                    )
-                )
-                try:
-                    date = datetime.datetime.strptime(search, "%d/%m/%Y").date()
-                    where_clauses.append(
-                        TAcquisitionFramework.acquisition_framework_start_date == date
-                    )
-                except ValueError:
-                    pass
-
-            # If name search includes dataset
-            if _ds_search:
-                where_clauses.append(
-                    TAcquisitionFramework.datasets.any(
-                        TDatasets.filter_by_params({"search": search}, _af_search=False).whereclause
-                    ),
-                )
-
-            # Acquisition Framework name matching
-            search_words_af_cte = select(
-                func.unnest(func.string_to_array(search, " ")).label("word")
-            ).cte("search_words_cte")
-            matched_words_af_cte = (
-                select(
-                    TAcquisitionFramework.id_acquisition_framework,
-                    func.count().label("match_count"),
-                )
-                .join(
-                    search_words_af_cte,
-                    sa.or_(
-                        TAcquisitionFramework.acquisition_framework_name.ilike(
-                            func.concat("%", search_words_af_cte.c.word, "%")
-                        ),
-                        *where_clauses,
-                    ),
-                )
-                .group_by(
-                    TAcquisitionFramework.id_acquisition_framework,
-                )
-            ).cte("matched_words_af_cte")
-            query = query.where(
-                matched_words_af_cte.c.id_acquisition_framework
-                == TAcquisitionFramework.id_acquisition_framework
-            ).order_by(matched_words_af_cte.c.match_count.desc())
+        if params.get("search"):
+            query = cls._filter_by_search(
+                params["search"].strip(), query=query, ds_search=_ds_search
+            )
 
         return query
+
+    @classmethod
+    def _filter_by_search(cls, search, *, query, ds_search):
+        """Full text search on the uuid, name, description, keywords, creator and actors.
+        Results are ordered by relevance."""
+        tsquery = fts_query(search)
+        if tsquery is None:
+            return query
+        document = fts_document(
+            cls.unique_acquisition_framework_id,
+            cls.acquisition_framework_name,
+            cls.acquisition_framework_desc,
+            cls.keywords,
+        )
+        matches = [
+            document.op("@@")(tsquery),
+            cls.creator.has(fts_document(User.nom_complet).op("@@")(tsquery)),
+            cls.cor_af_actor.any(
+                sa.or_(
+                    CorAcquisitionFrameworkActor.organism.has(
+                        fts_document(Organisme.nom_organisme).op("@@")(tsquery)
+                    ),
+                    CorAcquisitionFrameworkActor.role.has(
+                        fts_document(User.nom_complet).op("@@")(tsquery)
+                    ),
+                )
+            ),
+        ]
+        # the datasets of the AF can match too
+        if ds_search:
+            matches.append(
+                cls.datasets.any(
+                    TDatasets.filter_by_params({"search": search}, _af_search=False).whereclause
+                )
+            )
+        return query.where(sa.or_(*matches)).order_by(ts_rank(document, tsquery).desc())
