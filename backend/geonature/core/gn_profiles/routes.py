@@ -129,7 +129,7 @@ def get_observation_score():
     else:
         raise BadRequest("Missing date min or date max")
     # Récupération des altitudes
-    if data.get("altitude_min") and data.get("altitude_max"):
+    if data.get("altitude_min") is not None and data.get("altitude_max") is not None:
         altitude_min = data["altitude_min"]
         altitude_max = data["altitude_max"]
     else:

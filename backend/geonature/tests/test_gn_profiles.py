@@ -340,6 +340,23 @@ class TestGnProfiles:
         assert response.status_code == 400, response.json
         assert response.json["description"] == "Missing altitude_min or altitude_max"
 
+    def test_get_observation_score_zero_altitude(self, sample_synthese_records_for_profile):
+        """An altitude equal to 0 is a valid value (not a missing one)"""
+        data = {
+            "altitude_min": 0,
+            "altitude_max": 0,
+            "date_min": DATE_MIN,
+            "date_max": DATE_MAX,
+            "cd_ref": sample_synthese_records_for_profile.cd_nom,
+            "geom": {"coordinates": [6.12, 44.85], "type": "Point"},
+        }
+
+        response = self.client.post(url_for("gn_profiles.get_observation_score"), json=data)
+
+        assert response.status_code == 200, response.json
+        assert response.json["valid_altitude"] is False
+        assert "altitude" in {error["type"] for error in response.json["errors"]}
+
     def test_get_observation_score_not_observed_altitude(self, sample_synthese_records_for_profile):
         alt_min = 500
         alt_max = 600

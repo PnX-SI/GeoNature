@@ -9,7 +9,7 @@ import {
   skip,
 } from 'rxjs/operators';
 import { UntypedFormArray } from '@angular/forms';
-import { Observable, empty, Subscription } from 'rxjs';
+import { Observable, empty, of, Subscription } from 'rxjs';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 
 import { DataFormService } from '@geonature_common/form/data-form.service';
@@ -104,12 +104,18 @@ export class OcctaxProfilesComponent implements OnInit, OnDestroy {
         idNomenclaturesLifeStage.add(control.value);
       }
     });
+    // Sans altitude (ex : pas de MNT), le contrôle de profil n'est pas possible
+    const altitudeMin = releve.properties.altitude_min;
+    const altitudeMax = releve.properties.altitude_max;
+    if (altitudeMin == null || altitudeMax == null) {
+      return of({ errors: [] } as any);
+    }
     const postData = {
       cd_ref: cdRef,
       date_min: dateMin,
       date_max: dateMax,
-      altitude_min: releve.properties.altitude_min,
-      altitude_max: releve.properties.altitude_max,
+      altitude_min: altitudeMin,
+      altitude_max: altitudeMax,
       geom: releve.geometry,
       life_stages: Array.from(idNomenclaturesLifeStage),
     };
