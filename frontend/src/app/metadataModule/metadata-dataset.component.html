@@ -49,11 +49,11 @@
 <td [attr.data-qa]="'pnx-metadata-jdd-nb-obs-' + dataset.unique_dataset_id">
   <div>
     <div style="display: inline-block; padding-right: 1%">
-      {{ dataset?.dict_stats.total_nb_obs }}
+      {{ dataset?.dict_stats?.total_nb_obs }}
     </div>
     <mat-icon
-      *ngIf="dataset.dict_stats.total_nb_obs"
-      [matTooltip]="getObservationsCountsTooltip(dataset?.dict_stats.total_nb_obs)"
+      *ngIf="dataset?.dict_stats?.total_nb_obs"
+      [matTooltip]="getObservationsCountsTooltip(dataset?.dict_stats?.dict_nb_obs)"
       style="vertical-align: bottom"
     >
       analytics
@@ -109,11 +109,11 @@
   </ng-template>
 
   <ng-container
-    *ngIf="!dataset.cruved.D || (dataset?.dict_stats.total_nb_obs || 0) > 0; else elseblock"
+    *ngIf="!dataset.cruved.D || (dataset?.dict_stats?.total_nb_obs || 0) > 0; else elseblock"
   >
     <span
       [matTooltip]="
-        getDatasetDeleteButtonTooltip((dataset?.dict_stats.total_nb_obs || 0) > 0) | translate
+        getDatasetDeleteButtonTooltip((dataset?.dict_stats?.total_nb_obs || 0) > 0) | translate
       "
     >
       <button
