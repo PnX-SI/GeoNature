@@ -198,6 +198,9 @@ supergrant:
 	if [ "${SUPERGRANT_ISGROUP}" = true ]; then source $(VENV_PATH)/bin/activate && geonature permissions supergrant --group --nom ${SUPERGRANT_NOM_ROLE} --yes; fi
 	if [ "${SUPERGRANT_ISGROUP}" = false ]; then source $(VENV_PATH)/bin/activate && geonature permissions supergrant --nom ${SUPERGRANT_NOM_ROLE} --yes; fi
 
+completion:
+	source $(VENV_PATH)/bin/activate && geonature generate-completion
+
 
 ##############################
 ##### DOCKER #################
