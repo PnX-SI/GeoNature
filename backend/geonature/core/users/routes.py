@@ -1,14 +1,13 @@
-import json
 import logging
 from functools import wraps
 
+from flask_login import login_required
 import requests
 from flask import (
     Blueprint,
-    Response,
     current_app,
     g,
-    render_template,
+    jsonify,
     request,
 )
 from geonature.core.gn_meta.models import CorDatasetActor, TDatasets
@@ -25,13 +24,12 @@ from geonature.utils.env import DB, db
 from pypnusershub.db.models import Application, Organisme, User, UserList
 from pypnusershub.organisms_manager import (
     insert_or_update_organism,
-    delete_organism as delete_organism_db,
 )
+from pypnusershub.schemas import UserSafeSchema
 from pypnusershub.auth import user_manager
 
 from sqlalchemy import and_, select, func
 
-from pypnusershub.schemas import UserSensitiveSchema, UserSafeSchema
 from utils_flask_sqla.response import json_resp
 from werkzeug.exceptions import BadRequest, Forbidden, InternalServerError, NotFound
 from werkzeug.datastructures import MultiDict
@@ -48,9 +46,34 @@ organism_fields = {
 }
 
 
+@routes.route("/role/<int:id_role>", methods=["GET"])
+@login_required
+def get_safe_user(id_role):
+    """
+    Retrieve the public information of a user.
+
+    Only the data exposed by `UserSafeSchema` are returned (id, full name and
+    organism name): no email, groups or any other private field.
+
+    Parameters
+    ----------
+    id_role : int
+        The id_role of the user (utilisateurs.t_roles)
+
+    Returns
+    -------
+    dict
+        The user serialized with `UserSafeSchema`.
+    """
+    user = db.session.get(User, id_role)
+    if user is None or user.groupe:
+        raise NotFound("User not found")
+    return jsonify(UserSafeSchema().dump(user))
+
+
 @routes.route("/menu/<int:id_menu>", methods=["GET"])
 @routes.route("/menu/", methods=["GET"])
-@permissions.login_required
+@login_required
 @json_resp
 def get_roles_by_menu_id(id_menu=None):
     """
@@ -76,7 +99,7 @@ def get_roles_by_menu_id(id_menu=None):
 
 
 @routes.route("/menu_from_code/<string:code_liste>", methods=["GET"])
-@permissions.login_required
+@login_required
 @json_resp
 def get_roles_by_menu_code(code_liste):
     """
@@ -113,7 +136,7 @@ def get_roles_by_menu_code(code_liste):
 
 
 @routes.route("/listes", methods=["GET"])
-@permissions.login_required
+@login_required
 @json_resp
 def get_listes():
     query = select(UserList)
@@ -122,7 +145,7 @@ def get_listes():
 
 
 @routes.route("/organisms", methods=["GET"])
-@permissions.login_required
+@login_required
 @json_resp
 def get_organismes():
     """
@@ -157,7 +180,7 @@ def get_organismes():
 
 
 @routes.route("/organisms_dataset_actor", methods=["GET"])
-@permissions.login_required
+@login_required
 @json_resp
 def get_organismes_jdd():
     """
@@ -188,7 +211,7 @@ def get_organismes_jdd():
 
 
 @routes.route("/organism/<int:id_organisme>", methods=["GET"])
-@permissions.login_required
+@login_required
 @json_resp
 def get_organism(id_organisme):
     """

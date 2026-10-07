@@ -5,7 +5,7 @@ from pypnusershub.db.models_register import TempUser
 import pytest
 from flask import url_for, current_app
 from sqlalchemy import select
-from pypnusershub.db.models import Application, CorRoleToken, Organisme
+from pypnusershub.db.models import Application, CorRoleToken, Organisme, User
 from unittest.mock import MagicMock
 
 # Apparently: need to import both?
@@ -506,3 +506,43 @@ class TestUsers:
         resp = self.client.put(url, json=payload_mismatch)
         assert resp.status_code == 400
         assert "User id does not match user connected" in resp.json["description"]
+
+    def test_get_safe_user(self, users):
+        """
+        Test GET /role/<id_role> only exposes the public fields of a user
+        """
+        set_logged_user(self.client, users["user"])
+        target = users["admin_user"]
+
+        response = self.client.get(url_for("users.get_safe_user", id_role=target.id_role))
+
+        assert response.status_code == 200
+        assert response.json["id_role"] == target.id_role
+        assert response.json["nom_complet"] == target.nom_complet
+        assert set(response.json) <= {"id_role", "nom_complet", "organisme"}
+        assert "email" not in response.json
+
+    def test_get_safe_user_not_found(self, users):
+        set_logged_user(self.client, users["user"])
+
+        response = self.client.get(url_for("users.get_safe_user", id_role=99999999))
+
+        assert response.status_code == 404
+
+    def test_get_safe_user_group(self, users):
+        """
+        Groups must not be served by this route
+        """
+        set_logged_user(self.client, users["user"])
+        with db.session.begin_nested():
+            group = User(groupe=True, nom_role="SafeUserRouteGroup")
+            db.session.add(group)
+
+        response = self.client.get(url_for("users.get_safe_user", id_role=group.id_role))
+
+        assert response.status_code == 404
+
+    def test_get_safe_user_no_auth(self, users):
+        response = self.client.get(url_for("users.get_safe_user", id_role=users["user"].id_role))
+
+        assert response.status_code == 401
