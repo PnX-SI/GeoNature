@@ -542,7 +542,8 @@
       "ChangeValidStatus": "Change validation status",
       "RedirectToModule": "View in the data entry module",
       "PinObservation": "Pin the observation",
-      "UnpinObservation": "Unpin the observation"
+      "UnpinObservation": "Unpin the observation",
+      "DisplayObsDetail": "Display the detail of the observation {{id_synthese}}"
     },
     "Messages": {
       "Copied": "Copied to clipboard!",

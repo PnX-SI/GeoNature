@@ -56,10 +56,14 @@
         class="link-dark"
         [routerLink]="['occurrence', row['id_synthese'], 'details']"
       >
+        <!-- matTooltip="Afficher le détail de l'observation {{ row[mapListService.idName] }}" -->
         <i
           #iElement
-          matTooltip="{{ row[mapListService.idName] }}"
           class="fa fa-info-circle"
+          matTooltip="{{
+            'Synthese.Actions.DisplayObsDetail'
+              | translate: { id_synthese: row[mapListService.idName] }
+          }}"
           aria-hidden="true"
           data-qa="synthese-info-btn"
         ></i>

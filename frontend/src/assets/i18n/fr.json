@@ -541,7 +541,8 @@
       "ChangeValidStatus": "Modifier le statut de validation",
       "RedirectToModule": "Voir dans le module de saisie",
       "PinObservation": "Épingler l'observation",
-      "UnpinObservation": "Supprimer l'épingle sur l'observation"
+      "UnpinObservation": "Supprimer l'épingle sur l'observation",
+      "DisplayObsDetail": "Afficher le détail de l'observation {{id_synthese}}"
     },
     "Messages": {
       "Copied": "Copié dans le presse-papier !",
