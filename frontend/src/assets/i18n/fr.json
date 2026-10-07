@@ -307,23 +307,14 @@
     }
   },
   "MetaData": {
-    "Programs": "Programmes",
     "Catalog": "Catalogue des jeux de données",
-    "Errors": {
-      "JddError": "Erreur lors de la récupération des jeux de données",
-      "JddErrorMTD": "Erreur lors de la récupération des JDD via l'application MTD"
-    },
     "Messages": {
-      "NoJDD": "Aucun jeu de données n'a été trouvé, contactez votre administrateur",
-      "NoJDDMTD": "Aucun jeu de données n'a été trouvé, veuillez d'abord les saisir dans l'application MTD",
       "AF404": "Cadre d'acquisition inexistant",
       "DatasetAdded": "Jeu de donnée ajouté avec succès",
       "DatasetRemoved": "Jeu de donnée supprimé avec succès",
       "AFAdded": "Cadre d'acquisition ajouté avec succès",
       "AFDeleted": "Cadre d'acquisition supprimé avec succès",
       "NoStakeholder": "Aucun acteur renseigné",
-      "FiledAF": "Le cadre d'acquisition a déjà été déposé",
-      "EmptyAF": "Le cadre d'acquisition est vide",
       "NoMetadata": "Oups ! Il n'y a aucune métadonnée à afficher.",
       "UUIDFormPlaceHolder": "Si non renseigné, l'identifiant est généré lors de la création du {{ entity }}",
       "ImpossibleActionAFClosed": "Cadre d'acquisition fermé, action impossible",
@@ -343,7 +334,6 @@
       "DeleteDataset": "Supprimer le jeu de données",
       "ResetSearch": "Réinitialiser la recherche",
       "SeeAFSheet": "Voir la fiche du cadre d'acquisition",
-      "FillOwnUUID": "Saisie manuelle de l'UUID",
       "Open/Close": "Ouvrir/Fermer",
       "Activate/Deactivate": "Activer/Désactiver",
       "AddStakeholder": "Ajouter un autre acteur"
@@ -353,14 +343,22 @@
       "DatasetInactive": "Le jeu de données est inactif"
     },
     "UUIDField": "UUID du {{ entity }}",
-    "AdvancedSearch": "Recherche avancée",
+    "SearchFilters": "Filtres",
+    "SearchFiltersApplyTo": "Appliquer les filtres aux",
+    "SearchOnDatasets": "Jeux de données",
+    "SearchOnAF": "Cadres d'acquisition",
+    "SearchFilterName": "Nom",
+    "SearchFilterUuid": "UUID",
+    "SearchFilterPerson": "Acteur (personne)",
+    "SearchFilterAreas": "Zones géographiques",
+    "SearchApply": "Appliquer",
+    "SearchClear": "Effacer",
     "AFAndDatasetsList": "Liste des cadres d'acquisition et des jeux de données associés",
     "CreationDate": "Date de lancement",
     "Stakeholders": "Acteurs",
     "MainContact": "Contact principal",
     "OtherStakeholders": "Autre(s) acteur(s)",
     "DatasetName": "Nom du jeu de données",
-    "AFName": "Nom du cadre d'acquisition",
     "CountObservations": "Nombre d'observations",
     "StakeholderOrganization": "Acteur (organisme)",
     "DataSources": "Sources des données",
@@ -410,11 +408,7 @@
       "ID": "Identification",
 
       "GeographicalScope": "Périmètre géographique",
-      "UUIDReport": "Rapport d'UUID",
-      "SensitivityReport": "Rapport de sensibilité",
 
-      "IntegratedOn": "Intégré le",
-      "NumberOfData": "Nombre de données",
       "WidgetType": "Type de widget",
       "Quantitative": "Quantitatif",
       "Unit": "Unité",

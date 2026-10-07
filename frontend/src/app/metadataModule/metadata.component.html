@@ -8,22 +8,21 @@
     </div>
 
     <div class="card-body">
-      <div class="row ml-4 mb-4">
+      <div class="actions-bar">
         <button
           *ngIf="_cruvedStore.cruved?.METADATA?.cruved.C !== 0"
           [routerLink]="config.METADATA?.ROUTE_ADD_AF ?? '/metadata/af'"
-          class="uppercase mr-1"
+          class="uppercase add-button"
           mat-raised-button
           color="primary"
           data-qa="pnx-metadata-add-af"
         >
           {{ 'MetaData.Actions.AddAF' | translate }}
-          &nbsp;
         </button>
         <button
           *ngIf="_cruvedStore.cruved?.METADATA?.cruved.C !== 0"
           routerLink="/metadata/dataset"
-          class="uppercase"
+          class="uppercase add-button"
           mat-raised-button
           color="primary"
           data-qa="pnx-metadata-add-jdd"
@@ -32,38 +31,231 @@
         </button>
       </div>
 
-      <div class="row">
-        <div class="form-group col-sm-7">
+      <div class="search-bar">
+        <mat-form-field
+          appearance="outline"
+          subscriptSizing="dynamic"
+          class="search-field"
+        >
+          <mat-icon matPrefix>search</mat-icon>
           <input
-            class="form-control form-control-sm"
+            matInput
             type="text"
             placeholder="{{ 'Actions.Search' | translate }}"
             [formControl]="rapidSearchControl"
             data-qa="pnx-metadata-search"
           />
-        </div>
-        <div class="col-sm-3">
           <button
-            mat-raised-button
-            color="primary"
-            (click)="openSearchModal(searchModal)"
+            mat-icon-button
+            matSuffix
+            type="button"
+            *ngIf="rapidSearchControl.value"
+            [attr.aria-label]="'MetaData.SearchClear' | translate"
+            (click)="rapidSearchControl.reset('')"
           >
-            {{ 'MetaData.AdvancedSearch' | translate }}
+            <mat-icon>close</mat-icon>
           </button>
-          <button
-            mat-raised-button
-            color="accent"
-            class="ml-2"
-            matTooltip="{{ 'MetaData.Actions.ResetSearch' | translate }}"
-            (click)="refreshFilters()"
-            data-qa="pnx-metadata-refresh"
-          >
-            <mat-icon style="vertical-align: middle">refresh</mat-icon>
-          </button>
-        </div>
+        </mat-form-field>
+
+        <button
+          mat-stroked-button
+          color="primary"
+          type="button"
+          class="filters-toggle"
+          [attr.aria-expanded]="filtersOpen"
+          (click)="toggleFilters()"
+          data-qa="pnx-metadata-filters-toggle"
+        >
+          <mat-icon>tune</mat-icon>
+          {{ 'MetaData.SearchFilters' | translate }}
+        </button>
+        <button
+          mat-mini-fab
+          color="accent"
+          type="button"
+          [attr.aria-label]="'MetaData.Actions.ResetSearch' | translate"
+          matTooltip="{{ 'MetaData.Actions.ResetSearch' | translate }}"
+          (click)="refreshFilters()"
+          data-qa="pnx-metadata-refresh"
+        >
+          <mat-icon style="vertical-align: middle">refresh</mat-icon>
+        </button>
       </div>
 
-      <div>{{ 'MetaData.AFAndDatasetsList' | translate }}</div>
+      <section
+        *ngIf="filtersOpen"
+        class="filters-panel"
+        (keydown.enter)="applyFilters()"
+        data-qa="pnx-metadata-filters"
+      >
+        <button
+          mat-icon-button
+          type="button"
+          class="filters-close"
+          [attr.aria-label]="'Actions.Close' | translate"
+          (click)="toggleFilters()"
+          data-qa="pnx-metadata-filters-close"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+        <div class="filters-scope">
+          <span id="filters-scope-label">{{ 'MetaData.SearchFiltersApplyTo' | translate }}</span>
+          <mat-button-toggle-group
+            [formControl]="metadataService.form.get('selector')"
+            aria-labelledby="filters-scope-label"
+          >
+            <mat-button-toggle
+              value="ds"
+              data-qa="ds"
+            >
+              {{ 'MetaData.SearchOnDatasets' | translate }}
+            </mat-button-toggle>
+            <mat-button-toggle
+              value="af"
+              data-qa="af"
+            >
+              {{ 'MetaData.SearchOnAF' | translate }}
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+
+        <div class="filters-grid">
+          <mat-form-field
+            appearance="outline"
+            subscriptSizing="dynamic"
+          >
+            <mat-label>UUID</mat-label>
+            <input
+              matInput
+              type="text"
+              [formControl]="metadataService.form.get('uuid')"
+            />
+          </mat-form-field>
+
+          <mat-form-field
+            appearance="outline"
+            subscriptSizing="dynamic"
+          >
+            <mat-label>{{ 'Name' | translate }}</mat-label>
+            <input
+              matInput
+              type="text"
+              [formControl]="metadataService.form.get('name')"
+            />
+          </mat-form-field>
+
+          <mat-form-field
+            appearance="outline"
+            subscriptSizing="dynamic"
+          >
+            <mat-label>{{ 'MetaData.CreationDate' | translate }}</mat-label>
+            <input
+              matInput
+              [matDatepicker]="datePicker"
+              [formControl]="metadataService.form.get('date')"
+            />
+            <mat-datepicker-toggle
+              matIconSuffix
+              [for]="datePicker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #datePicker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field
+            appearance="outline"
+            subscriptSizing="dynamic"
+          >
+            <mat-label>{{ 'MetaData.StakeholderOrganization' | translate }}</mat-label>
+            <input
+              matInput
+              type="text"
+              [matAutocomplete]="organismAuto"
+              [formControl]="metadataService.form.get('organism')"
+            />
+            <mat-autocomplete
+              #organismAuto="matAutocomplete"
+              [displayWith]="displayOrganism"
+            >
+              <mat-option
+                *ngFor="let organism of filteredOrganisms | async"
+                [value]="organism"
+              >
+                {{ organism.nom_organisme }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <mat-form-field
+            appearance="outline"
+            subscriptSizing="dynamic"
+          >
+            <mat-label>{{ 'MetaData.SearchFilterPerson' | translate }}</mat-label>
+            <input
+              matInput
+              type="text"
+              [matAutocomplete]="personAuto"
+              [formControl]="metadataService.form.get('person')"
+            />
+            <mat-autocomplete
+              #personAuto="matAutocomplete"
+              [displayWith]="displayPerson"
+            >
+              <mat-option
+                *ngFor="let person of filteredPersons | async"
+                [value]="person"
+              >
+                {{ person.nom_complet }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+
+        <div
+          *ngIf="displayMetaAreaFilters() && metadataService.formBuilded"
+          class="filters-grid filters-areas"
+        >
+          <pnx-areas
+            *ngFor="let area of areaFilters"
+            [parentFormControl]="area.control"
+            [label]="area.label"
+            [typeCodes]="area.type_code_array"
+            [valueFieldName]="null"
+          ></pnx-areas>
+        </div>
+
+        <div class="filters-actions">
+          <button
+            mat-flat-button
+            color="primary"
+            type="button"
+            (click)="applyFilters()"
+            data-qa="pnx-metadata-filters-apply"
+          >
+            {{ 'MetaData.SearchApply' | translate }}
+          </button>
+        </div>
+      </section>
+
+      <mat-chip-set
+        *ngIf="metadataService.filterPills.length"
+        class="filter-pills"
+        [attr.aria-label]="'MetaData.SearchFilters' | translate"
+      >
+        <mat-chip
+          *ngFor="let pill of metadataService.filterPills"
+          (removed)="removeFilter(pill)"
+          [attr.data-qa]="'pnx-metadata-pill-' + pill.key"
+        >
+          {{ pill.label }}
+          <button
+            matChipRemove
+            [attr.aria-label]="'MetaData.SearchClear' | translate"
+          >
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip>
+      </mat-chip-set>
+
       <br />
 
       <ng-container
@@ -225,127 +417,6 @@
     </div>
   </div>
 </div>
-
-<ng-template
-  #searchModal
-  let-c="close"
-  let-d="dismiss"
->
-  <div class="modal-header">
-    <h5
-      class="modal-title"
-      id="exampleModalLabel"
-    >
-      {{ 'Actions.Search' | translate }}
-    </h5>
-  </div>
-  <div
-    class="modal-body"
-    style="align-items: flex-end"
-  >
-    <label>{{ 'Actions.Search' | translate }}{{ 'On' | translate | lowercase }} :</label>
-    <ng-select
-      [items]="meta_type"
-      [formControl]="metadataService.form.get('selector')"
-      bindLabel="label"
-      bindValue="value"
-      name="selecteur"
-      id="selector"
-      clearable=""
-      false
-    >
-      <ng-template
-        ng-option-tmp
-        let-item="item"
-        let-index="index"
-        let-search="searchTerm"
-      >
-        <div [attr.data-qa]="item.value">
-          <span class="pre-wrap">{{ item.label }}</span>
-        </div>
-      </ng-template>
-    </ng-select>
-    <label>UUID</label>
-    <input
-      [formControl]="metadataService.form.get('uuid')"
-      class="form-control form-control-sm"
-      type="text"
-    />
-    <label>{{ 'Name' | translate }}</label>
-
-    <input
-      [formControl]="metadataService.form.get('name')"
-      class="form-control form-control-sm"
-    />
-
-    <pnx-date
-      [parentFormControl]="metadataService.form.get('date')"
-      label="{{ 'MetaData.CreationDate' | translate }}"
-    ></pnx-date>
-    <label>{{ 'MetaData.StakeholderOrganization' | translate }}</label>
-
-    <ng-select
-      [items]="organisms"
-      [formControl]="metadataService.form.get('organism')"
-      bindLabel="nom_organisme"
-      bindValue="id_organisme"
-      [multiple]="false"
-      [searchable]="true"
-      [clearable]="true"
-    >
-      <ng-template
-        ng-option-tmp
-        let-item="item"
-        let-index="index"
-        let-search="searchTerm"
-      >
-        <div
-          [matTooltip]="item.nom_organisme"
-          matTooltipPosition="after"
-          [attr.data-qa]="item.id_organism"
-        >
-          <span class="pre-wrap">{{ item.nom_organisme }}</span>
-        </div>
-      </ng-template>
-    </ng-select>
-
-    <label>Acteur (personne)</label>
-
-    <pnx-observers
-      [parentFormControl]="metadataService.form.get('person')"
-      bindValue="id_role"
-    ></pnx-observers>
-
-    <div *ngIf="displayMetaAreaFilters() && metadataService.formBuilded">
-      <div *ngFor="let area of areaFilters; let i = index">
-        <pnx-areas
-          [parentFormControl]="area.control"
-          [label]="area.label"
-          [typeCodes]="area.type_code_array"
-          [valueFieldName]="null"
-        ></pnx-areas>
-      </div>
-    </div>
-
-    <div class="mt-2">
-      <button
-        mat-raised-button
-        class="button-success uppercase mr-2"
-        (click)="advancedSearch(); c()"
-      >
-        {{ 'Actions.Search' | translate }}
-      </button>
-      <button
-        mat-raised-button
-        color="warn"
-        class="uppercase"
-        (click)="c()"
-      >
-        {{ 'Actions.Close' | translate }}
-      </button>
-    </div>
-  </div>
-</ng-template>
 
 <ng-template
   #publishModal

@@ -308,23 +308,14 @@
     }
   },
   "MetaData": {
-    "Programs": "Programs",
     "Catalog": "Dataset catalog",
-    "Errors": {
-      "JddError": "Error retrieving datasets",
-      "JddErrorMTD": "Error retrieving JDD via the MTD application"
-    },
     "Messages": {
-      "NoJDD": "No dataset found, contact your administrator",
-      "NoJDDMTD": "No dataset found, please first enter them in the MTD application",
       "AF404": "Non-existent acquisition framework",
       "DatasetAdded": "Dataset added successfully",
       "DatasetRemoved": "Dataset removed successfully",
       "AFAdded": "Acquisition framework added successfully",
       "AFDeleted": "Acquisition framework deleted successfully",
       "NoStakeholder": "No stakeholder provided",
-      "FiledAF": "The acquisition framework has already been filed",
-      "EmptyAF": "The acquisition framework is empty",
       "NoMetadata": "Oops! There is no metadata to display.",
       "UUIDFormPlaceHolder": "If not specified, identifier will be generated when the JDD is created.",
       "ImpossibleActionAFClosed": "Acquisition framework is closed, action cannot be performed",
@@ -345,7 +336,6 @@
       "DeleteDataset": "Delete the dataset",
       "ResetSearch": "Reset search",
       "SeeAFSheet": "View the acquisition framework sheet",
-      "FillOwnUUID": "I indicate my own SINP UUID",
       "Open/Close": "Open/close",
       "Activate/Deactivate": "Activate/Deactivate",
       "AddStakeholder": "Add another stakeholder"
@@ -355,14 +345,22 @@
       "DatasetInactive": "The dataset is inactive"
     },
     "UUIDField": "UUID ID",
-    "AdvancedSearch": "Advanced search",
+    "SearchFilters": "Filters",
+    "SearchFiltersApplyTo": "Apply the filters to",
+    "SearchOnDatasets": "Datasets",
+    "SearchOnAF": "Acquisition frameworks",
+    "SearchFilterName": "Name",
+    "SearchFilterUuid": "UUID",
+    "SearchFilterPerson": "Actor (person)",
+    "SearchFilterAreas": "Geographic areas",
+    "SearchApply": "Apply",
+    "SearchClear": "Clear",
     "AFAndDatasetsList": "List of acquisition frameworks and associated datasets",
     "CreationDate": "Launch date",
     "Stakeholders": "Stakeholders",
     "MainContact": "Main contact",
     "OtherStakeholders": "Other stakeholder(s)",
     "DatasetName": "Dataset name",
-    "AFName": "Acquisition framework name",
     "CountObservations": "Number of observations",
     "StakeholderOrganization": "Stakeholder (organization)",
     "DataSources": "Data sources",
@@ -412,11 +410,7 @@
       "ID": "Identification",
 
       "GeographicalScope": "Geographical scope",
-      "UUIDReport": "UUID report",
-      "SensitivityReport": "Sensitivity report",
 
-      "IntegratedOn": "Integrated on",
-      "NumberOfData": "Number of data",
       "WidgetType": "Widget type",
       "Quantitative": "Quantitative",
       "Unit": "Unit",

@@ -10,7 +10,7 @@ import { omitBy } from 'lodash';
 
 import { DataFormService, ParamsDict } from '@geonature_common/form/data-form.service';
 import { CommonService } from '@geonature_common/service/common.service';
-import { MetadataService } from './services/metadata.service';
+import { MetadataService, MetadataFilterPill } from './services/metadata.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { CdkPortal } from '@angular/cdk/portal';
 
@@ -32,18 +32,17 @@ export class MetadataComponent implements OnInit {
 
   /* liste des organismes issues de l'API pour le select. */
   public organisms: any[] = [];
-  public meta_type: any[] = [
-    { label: 'Jeu de données', value: 'ds' },
-    { label: "Cadre d'acquisition", value: 'af' },
-  ];
+  /* liste des personnes issues de l'API pour l'autocomplete. */
+  public persons: any[] = [];
+  public filteredOrganisms: Observable<any[]>;
+  public filteredPersons: Observable<any[]>;
+  public filtersOpen: boolean = false;
 
   public areaFilters: Array<any>;
 
   get isLoading(): boolean {
     return this.metadataService.isLoading;
   }
-
-  searchTerms: any = {};
 
   acquisitionFrameworksLength: number = 0;
 
@@ -60,6 +59,11 @@ export class MetadataComponent implements OnInit {
 
   ngOnInit() {
     this._dfs.getOrganisms().subscribe((organisms) => (this.organisms = organisms));
+    this._dfs.getObservers().subscribe((persons) => (this.persons = persons));
+    this.filteredOrganisms = this.autocompleteOptions('organism', () => this.organisms, [
+      'nom_organisme',
+    ]);
+    this.filteredPersons = this.autocompleteOptions('person', () => this.persons, ['nom_complet']);
 
     //Combinaison des observables pour afficher les éléments filtrés en fonction de l'état du paginator
     this.acquisitionFrameworks = this.metadataService.acquisitionFrameworks.pipe(
@@ -69,26 +73,16 @@ export class MetadataComponent implements OnInit {
       })
     );
 
-    // rapid search event
-    //combinaison de la zone de recherche et du chargement des données
+    // quick search event: the applied filters are kept
     this.rapidSearchControl.valueChanges
       .pipe(
         startWith(''),
         debounceTime(500),
-        distinctUntilChanged(),
-        tap((term) => {
-          if (term !== null) {
-            if (term === '') {
-              this.metadataService.form.patchValue({ search: null });
-            } else {
-              this.metadataService.form.patchValue({ search: term });
-            }
-          }
-        }),
-        switchMap(() => {
+        switchMap((term) => {
+          this.metadataService.setQuickTerm(term);
           this.metadataService.changePage(0);
           this.paginator?.firstPage(); // required
-          return this.metadataService.search(true);
+          return this.metadataService.search();
         })
       )
       .subscribe(() => {
@@ -110,77 +104,119 @@ export class MetadataComponent implements OnInit {
     return option?.area_name;
   }
 
+  /**
+   * Options of an autocomplete field: the items of `getItems()` matching what is typed in the
+   * form control, regardless of case and accents. Once an option is selected, the control holds
+   * the item itself.
+   */
+  private autocompleteOptions(
+    controlName: string,
+    getItems: () => any[],
+    fields: string[]
+  ): Observable<any[]> {
+    const normalize = (text: string) => text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+    return this.metadataService.form.get(controlName).valueChanges.pipe(
+      startWith(''),
+      map((value) => {
+        const typed = typeof value === 'string' ? normalize(value) : '';
+        return getItems().filter((item) =>
+          fields.some((field) => normalize(item[field] ?? '').includes(typed))
+        );
+      })
+    );
+  }
+
+  displayOrganism = (organism: any): string => organism?.nom_organisme ?? '';
+
+  displayPerson = (person: any): string => person?.nom_complet ?? '';
+
+  toggleFilters() {
+    this.filtersOpen = !this.filtersOpen;
+  }
+
   refreshFilters() {
-    this.metadataService.resetForm();
-    this.rapidSearchControl.reset();
-    this.searchTerms = {};
+    this.rapidSearchControl.reset(null, { emitEvent: false });
+    this.metadataService.clearSearch();
+    this.runSearch();
+  }
+
+  /** Apply the filters of the form: the quick search stays applied. */
+  applyFilters() {
+    const { selector, uuid, name, date, organism, person } = this.metadataService.form.value;
+    const criteria: { [key: string]: any } = {};
+    const pills: MetadataFilterPill[] = [];
+    const addFilter = (key: string, label: string, apiValue: any, displayValue: string) => {
+      criteria[key] = apiValue;
+      pills.push({ key, label: `${this.translate.instant(label)} : ${displayValue}` });
+    };
+
+    if (uuid?.trim()) {
+      addFilter('uuid', 'MetaData.SearchFilterUuid', uuid.trim(), uuid.trim());
+    }
+    if (name?.trim()) {
+      addFilter('name', 'MetaData.SearchFilterName', name.trim(), name.trim());
+    }
+    // an invalid typed date is ignored
+    if (date && !isNaN(date.getTime())) {
+      addFilter(
+        'date',
+        'MetaData.CreationDate',
+        { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() },
+        date.toLocaleDateString(this.translate.currentLang)
+      );
+    }
+    // an autocomplete holds a string as long as no option is selected
+    if (organism?.id_organisme) {
+      addFilter(
+        'organism',
+        'MetaData.StakeholderOrganization',
+        organism.id_organisme,
+        organism.nom_organisme
+      );
+    }
+    if (person?.id_role) {
+      addFilter('person', 'MetaData.SearchFilterPerson', person.id_role, person.nom_complet);
+    }
+    const areas = this.selectedAreas();
+    if (areas.length) {
+      addFilter(
+        'areas',
+        'MetaData.SearchFilterAreas',
+        areas.map((area) => area.id_area),
+        areas.map((area) => area.area_name).join(', ')
+      );
+    }
+
+    this.metadataService.setFilters(selector, criteria, pills);
+    this.filtersOpen = false;
+    this.runSearch();
+  }
+
+  removeFilter(pill: MetadataFilterPill) {
+    this.metadataService.removeFilter(pill.key);
+    this.runSearch();
+  }
+
+  private selectedAreas(): any[] {
+    return Object.entries(this.metadataService.form.value)
+      .filter(([key]) => key.startsWith('area_'))
+      .flatMap(([_, areas]) => (areas as any[]) ?? []);
+  }
+
+  private runSearch() {
     this.paginator?.firstPage();
     this.metadataService.changePage(0);
     this.metadataService.search().subscribe();
-    this.metadataService.expandAccordions = false;
-  }
-
-  formatFormValue(formValue): any {
-    const formatedForm = {};
-    Object.keys(formValue).forEach((key) => {
-      if (key == 'date' && formValue['date']) {
-        formatedForm['date'] = this.dateParser.format(formValue['date']);
-      } else if (formValue[key]) {
-        formatedForm[key] = formValue[key];
-      }
-    });
-    return formatedForm;
-  }
-  advancedSearch() {
-    let formValues = Object.fromEntries(
-      Object.entries(this.metadataService.form.value).filter(([_, v]) => v != null)
-    );
-
-    let areas: any[] = [];
-    Object.keys(formValues)
-      .filter((key) => key.startsWith('area_') && formValues[key] != null)
-      .forEach((key) => {
-        const current_area: any[] = formValues[key] as any[];
-        areas = [...areas, ...current_area.map((area) => area.id_area)];
-        delete formValues[key];
-      });
-    // reformat areas value
-    this.searchTerms = {
-      ...formValues,
-      ...(areas.length > 0 && { areas: areas }),
-      ...(this.rapidSearchControl.value !== null && {
-        search: this.rapidSearchControl.value,
-      }),
-    };
-
-    this.searchTerms = this.formatFormValue(this.searchTerms);
-    this.metadataService.form.patchValue(this.searchTerms);
-    this.paginator?.firstPage();
-    this.metadataService.changePage(0);
-    this.metadataService.search().subscribe(() => {
-      return;
-    });
-  }
-
-  openSearchModal(searchModal) {
-    this.modal.open(searchModal);
-  }
-
-  closeSearchModal() {
-    this.modal.dismissAll();
   }
 
   onOpenExpansionPanel(af: any) {
     if (af.t_datasets === undefined) {
-      let params = {};
       const queryStrings: ParamsDict = { nb_observations_synthese: 1 };
-      if (this.searchTerms.selector === 'ds') {
-        params = this.searchTerms;
-      }
-      if (this.rapidSearchControl.value) {
-        params = { ...params, search: this.rapidSearchControl.value };
-      }
-      this.metadataService.addDatasetToAcquisitionFramework(af, params, queryStrings);
+      this.metadataService.addDatasetToAcquisitionFramework(
+        af,
+        this.metadataService.datasetSearchParams(),
+        queryStrings
+      );
     }
   }
   deleteAf(af_id) {
