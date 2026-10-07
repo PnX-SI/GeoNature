@@ -113,9 +113,10 @@ export class MetadataComponent implements OnInit {
   refreshFilters() {
     this.metadataService.resetForm();
     this.rapidSearchControl.reset();
+    this.searchTerms = {};
     this.paginator?.firstPage();
     this.metadataService.changePage(0);
-    this.metadataService.search();
+    this.metadataService.search().subscribe();
     this.metadataService.expandAccordions = false;
   }
 
