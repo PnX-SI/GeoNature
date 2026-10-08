@@ -68,6 +68,10 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
    */
   @Input() valueFieldName: string = 'id_area';
   /**
+   * Permet la sélection de plusieurs zones géographiques (par défaut : true).
+   */
+  @Input() multiSelect: boolean = true;
+  /**
    * Fonction de comparaison entre les élements sélectionnés présent dans
    * le `parentFormControl` et les éléments affichés dans la liste des options.
    * @param item
