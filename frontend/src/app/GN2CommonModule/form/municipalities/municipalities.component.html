@@ -1,7 +1,8 @@
 <pnx-areas
   [parentFormControl]="parentFormControl"
-  [label]="'Geo.Municipalities' | translate"
+  [label]="label || ('Geo.Municipalities' | translate)"
   [typeCodes]="['COM']"
   [disabled]="disabled"
   [valueFieldName]="valueFieldName"
+  [multiSelect]="multiSelect"
 ></pnx-areas>

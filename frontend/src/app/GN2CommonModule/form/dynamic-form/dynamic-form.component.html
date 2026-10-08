@@ -357,6 +357,7 @@
       [parentFormControl]="form.get(formDefComp.attribut_name)"
       [valueFieldName]="formDefComp.value_field_name"
       [typeCodes]="formDefComp.type_codes"
+      [multiSelect]="formDefComp.multi_select ?? true"
       [attr.data-qa]="'field-areas' + '-' + formDefComp['attribut_name']"
     ></pnx-areas>
 
@@ -365,6 +366,7 @@
       [label]="formDefComp['attribut_label']"
       [parentFormControl]="form.get(formDefComp['attribut_name'])"
       [valueFieldName]="formDefComp['value_field_name']"
+      [multiSelect]="formDefComp['multi_select'] ?? true"
       [attr.data-qa]="'field-municipalities' + '-' + formDefComp['attribut_name']"
     ></pnx-municipalities>
 
