@@ -87,7 +87,7 @@ export class MetadataFiltersComponent implements OnInit {
     this.config.METADATA?.METADATA_AREA_FILTERS.length;
 
   searchFormIsSubmitable() {
-    return !this.metadataService.form.invalid;
+    return !!this.metadataService.form.get('selector').value && !this.metadataService.form.invalid;
   }
 
   /** Apply the filters of the form: the quick search stays applied. */

@@ -1,6 +1,5 @@
 <section
   class="filters-panel"
-  (keydown.enter)="applyFilters()"
   data-qa="pnx-metadata-filters"
 >
   <button
@@ -34,138 +33,141 @@
     </mat-button-toggle-group>
   </div>
 
-  <div class="filters-grid">
-    <mat-form-field
-      appearance="outline"
-      subscriptSizing="dynamic"
-    >
-      <mat-label>UUID</mat-label>
-      <input
-        matInput
-        type="text"
-        [formControl]="metadataService.form.get('uuid')"
-      />
-      <mat-error *ngIf="metadataService.form.get('uuid').hasError('invalidUuid')">
-        {{ 'MetaData.InvalidUuid' | translate }}
-      </mat-error>
-    </mat-form-field>
-
-    <mat-form-field
-      appearance="outline"
-      subscriptSizing="dynamic"
-    >
-      <mat-label>{{ 'Name' | translate }}</mat-label>
-      <input
-        matInput
-        type="text"
-        [formControl]="metadataService.form.get('name')"
-      />
-    </mat-form-field>
-
-    <mat-form-field
-      appearance="outline"
-      subscriptSizing="dynamic"
-    >
-      <mat-label>{{ 'MetaData.CreationDate' | translate }}</mat-label>
-      <mat-date-range-input
-        [formGroup]="metadataService.form.get('date')"
-        [rangePicker]="datePicker"
+  <!-- the filters are displayed once the entity they apply to is chosen -->
+  <ng-container *ngIf="metadataService.form.get('selector').value">
+    <div class="filters-grid">
+      <mat-form-field
+        appearance="outline"
+        subscriptSizing="dynamic"
       >
+        <mat-label>UUID</mat-label>
         <input
-          matStartDate
-          formControlName="start"
-          [placeholder]="'MinDate' | translate"
-          data-qa="pnx-metadata-date-start"
+          matInput
+          type="text"
+          [formControl]="metadataService.form.get('uuid')"
         />
+        <mat-error *ngIf="metadataService.form.get('uuid').hasError('invalidUuid')">
+          {{ 'MetaData.InvalidUuid' | translate }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field
+        appearance="outline"
+        subscriptSizing="dynamic"
+      >
+        <mat-label>{{ 'Name' | translate }}</mat-label>
         <input
-          matEndDate
-          formControlName="end"
-          [placeholder]="'MaxDate' | translate"
-          data-qa="pnx-metadata-date-end"
+          matInput
+          type="text"
+          [formControl]="metadataService.form.get('name')"
         />
-      </mat-date-range-input>
-      <mat-datepicker-toggle
-        matIconSuffix
-        [for]="datePicker"
-      ></mat-datepicker-toggle>
-      <mat-date-range-picker #datePicker></mat-date-range-picker>
-      <mat-error *ngIf="metadataService.form.get('date.end').hasError('matEndDateInvalid')">
-        {{ 'Errors.DatesReversed' | translate }}
-      </mat-error>
-    </mat-form-field>
+      </mat-form-field>
 
-    <mat-form-field
-      appearance="outline"
-      subscriptSizing="dynamic"
-    >
-      <mat-label>{{ 'MetaData.StakeholderOrganization' | translate }}</mat-label>
-      <input
-        matInput
-        type="text"
-        [matAutocomplete]="organismAuto"
-        [formControl]="metadataService.form.get('organism')"
-      />
-      <mat-autocomplete
-        #organismAuto="matAutocomplete"
-        [displayWith]="displayOrganism"
+      <mat-form-field
+        appearance="outline"
+        subscriptSizing="dynamic"
       >
-        <mat-option
-          *ngFor="let organism of filteredOrganisms | async"
-          [value]="organism"
+        <mat-label>{{ 'MetaData.CreationDate' | translate }}</mat-label>
+        <mat-date-range-input
+          [formGroup]="metadataService.form.get('date')"
+          [rangePicker]="datePicker"
         >
-          {{ organism.nom_organisme }}
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
+          <input
+            matStartDate
+            formControlName="start"
+            [placeholder]="'MinDate' | translate"
+            data-qa="pnx-metadata-date-start"
+          />
+          <input
+            matEndDate
+            formControlName="end"
+            [placeholder]="'MaxDate' | translate"
+            data-qa="pnx-metadata-date-end"
+          />
+        </mat-date-range-input>
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="datePicker"
+        ></mat-datepicker-toggle>
+        <mat-date-range-picker #datePicker></mat-date-range-picker>
+        <mat-error *ngIf="metadataService.form.get('date.end').hasError('matEndDateInvalid')">
+          {{ 'Errors.DatesReversed' | translate }}
+        </mat-error>
+      </mat-form-field>
 
-    <mat-form-field
-      appearance="outline"
-      subscriptSizing="dynamic"
-    >
-      <mat-label>{{ 'MetaData.SearchFilterPerson' | translate }}</mat-label>
-      <input
-        matInput
-        type="text"
-        [matAutocomplete]="personAuto"
-        [formControl]="metadataService.form.get('person')"
-      />
-      <mat-autocomplete
-        #personAuto="matAutocomplete"
-        [displayWith]="displayPerson"
+      <mat-form-field
+        appearance="outline"
+        subscriptSizing="dynamic"
       >
-        <mat-option
-          *ngFor="let person of filteredPersons | async"
-          [value]="person"
+        <mat-label>{{ 'MetaData.StakeholderOrganization' | translate }}</mat-label>
+        <input
+          matInput
+          type="text"
+          [matAutocomplete]="organismAuto"
+          [formControl]="metadataService.form.get('organism')"
+        />
+        <mat-autocomplete
+          #organismAuto="matAutocomplete"
+          [displayWith]="displayOrganism"
         >
-          {{ person.nom_complet }}
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
-  </div>
+          <mat-option
+            *ngFor="let organism of filteredOrganisms | async"
+            [value]="organism"
+          >
+            {{ organism.nom_organisme }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
 
-  <div
-    *ngIf="displayMetaAreaFilters() && metadataService.formBuilded"
-    class="filters-grid filters-areas"
-  >
-    <pnx-areas
-      *ngFor="let area of areaFilters"
-      [parentFormControl]="area.control"
-      [label]="area.label"
-      [typeCodes]="area.type_code_array"
-      [valueFieldName]="null"
-    ></pnx-areas>
-  </div>
+      <mat-form-field
+        appearance="outline"
+        subscriptSizing="dynamic"
+      >
+        <mat-label>{{ 'MetaData.SearchFilterPerson' | translate }}</mat-label>
+        <input
+          matInput
+          type="text"
+          [matAutocomplete]="personAuto"
+          [formControl]="metadataService.form.get('person')"
+        />
+        <mat-autocomplete
+          #personAuto="matAutocomplete"
+          [displayWith]="displayPerson"
+        >
+          <mat-option
+            *ngFor="let person of filteredPersons | async"
+            [value]="person"
+          >
+            {{ person.nom_complet }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
 
-  <div class="filters-actions">
-    <button
-      mat-flat-button
-      color="primary"
-      type="button"
-      (click)="applyFilters()"
-      data-qa="pnx-metadata-filters-apply"
-      [disabled]="!searchFormIsSubmitable()"
+    <div
+      *ngIf="displayMetaAreaFilters() && metadataService.formBuilded"
+      class="filters-grid filters-areas"
     >
-      {{ 'MetaData.SearchApply' | translate }}
-    </button>
-  </div>
+      <pnx-areas
+        *ngFor="let area of areaFilters"
+        [parentFormControl]="area.control"
+        [label]="area.label"
+        [typeCodes]="area.type_code_array"
+        [valueFieldName]="null"
+      ></pnx-areas>
+    </div>
+
+    <div class="filters-actions">
+      <button
+        mat-flat-button
+        color="primary"
+        type="button"
+        (click)="applyFilters()"
+        data-qa="pnx-metadata-filters-apply"
+        [disabled]="!searchFormIsSubmitable()"
+      >
+        {{ 'MetaData.SearchApply' | translate }}
+      </button>
+    </div>
+  </ng-container>
 </section>

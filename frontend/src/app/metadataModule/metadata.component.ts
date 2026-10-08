@@ -132,6 +132,6 @@ export class MetadataComponent implements OnInit {
   }
 
   isAfFilters() {
-    return this.metadataService.form.controls['selector'].value !== 'ds';
+    return this.metadataService.activeSearch.selector !== 'ds';
   }
 }

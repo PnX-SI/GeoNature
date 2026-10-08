@@ -68,7 +68,8 @@ export class MetadataService {
     this.pageSize = new BehaviorSubject(this.config.METADATA.NB_AF_DISPLAYED);
 
     this.form = this._fb.group({
-      selector: 'ds',
+      // no entity chosen by default: the filters are displayed once one is
+      selector: null,
       uuid: [null, _formService.uuidValidator()],
       name: null,
       date: this._fb.group({ start: null, end: null }),
@@ -260,7 +261,6 @@ export class MetadataService {
 
   private resetForm() {
     this.form.reset();
-    this.form.patchValue({ selector: 'ds' });
     this.expandAccordions = false;
   }
 }
