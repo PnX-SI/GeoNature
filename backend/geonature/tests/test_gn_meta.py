@@ -1730,7 +1730,7 @@ class TestMetadataSearchFilters:
                 CorAcquisitionFrameworkActor(role=users["self_user"], nomenclature_actor_role=role)
             )
             datasets["belong_af_1"].cor_dataset_actor.append(
-                CorDatasetActor(role=users["stranger_user"], nomenclature_actor_role=role)
+                CorDatasetActor(role=users["noright_user"], nomenclature_actor_role=role)
             )
             db.session.flush()
 
@@ -1792,8 +1792,11 @@ class TestMetadataSearchFilters:
         person = users["self_user"].id_role
         assert self.search_afs(users, acquisition_frameworks, {"person": person}) == {"af_3"}
         # the actor of a dataset is not an actor of its AF
-        person = users["stranger_user"].id_role
+        person = users["noright_user"].id_role
         assert self.search_afs(users, acquisition_frameworks, {"person": person}) == set()
+        # the digitizer of an AF is one of its persons
+        person = users["stranger_user"].id_role
+        assert self.search_afs(users, acquisition_frameworks, {"person": person}) == {"stranger_af"}
 
     def test_af_organism(self, users, acquisition_frameworks):
         organism = users["user"].organisme.id_organisme
@@ -1827,12 +1830,15 @@ class TestMetadataSearchFilters:
         )
 
     def test_ds_person(self, users, acquisition_frameworks, actors_and_dates):
-        person = users["stranger_user"].id_role
+        person = users["noright_user"].id_role
         payload = {"datasets": {"person": person}}
         assert self.search_afs(users, acquisition_frameworks, payload) == {"af_1"}
         # the actor of an AF is not an actor of its datasets
         payload = {"datasets": {"person": users["self_user"].id_role}}
         assert self.search_afs(users, acquisition_frameworks, payload) == set()
+        # the digitizer of a dataset is one of its persons (belong_af_* are digitized by stranger_user)
+        payload = {"datasets": {"person": users["stranger_user"].id_role}}
+        assert self.search_afs(users, acquisition_frameworks, payload) == {"af_1", "af_2", "af_3"}
 
     def test_ds_organism(self, users, acquisition_frameworks, datasets):
         """own_dataset and its siblings have actors of the users' organism, belong_af_* have none"""
@@ -1842,7 +1848,7 @@ class TestMetadataSearchFilters:
         assert not found & {"af_1", "af_2", "af_3"}
 
     def test_ds_filters_are_combined(self, users, acquisition_frameworks, actors_and_dates):
-        person = users["stranger_user"].id_role
+        person = users["noright_user"].id_role
         criteria = {"name": "belong_af_1", "person": person}
         payload = {"datasets": criteria}
         assert self.search_afs(users, acquisition_frameworks, payload) == {"af_1"}
@@ -1911,7 +1917,10 @@ class TestMetadataSearchFilters:
         ds = datasets["belong_af_1"]
         assert search({"name": "belong_af_1"}) == {"belong_af_1"}
         assert search({"uuid": str(ds.unique_dataset_id)}) == {"belong_af_1"}
-        assert search({"person": users["stranger_user"].id_role}) == {"belong_af_1"}
+        assert search({"person": users["noright_user"].id_role}) == {"belong_af_1"}
+        # the digitizer of a dataset is one of its persons
+        found = search({"person": users["stranger_user"].id_role})
+        assert found == {"belong_af_1", "belong_af_2", "stranger_dataset"}
         organism = users["user"].organisme.id_organisme
         found = search({"organism": organism})
         assert "own_dataset" in found and not found & {"belong_af_1", "belong_af_2"}
