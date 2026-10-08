@@ -1,0 +1,49 @@
+@use 'sass:map';
+@use '@angular/material' as mat;
+
+.filters-panel {
+  position: relative;
+  max-width: 60rem;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background: #fafafa;
+}
+
+.filters-close {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+}
+
+.filters-scope {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+// the selected entity is highlighted like the primary action ("Apply")
+.filters-scope ::ng-deep .mat-button-toggle-checked {
+  background-color: map.get(mat.$deep-purple-palette, 500);
+  color: white;
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: 1rem;
+}
+
+.filters-areas {
+  margin-top: 1rem;
+}
+
+.filters-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}

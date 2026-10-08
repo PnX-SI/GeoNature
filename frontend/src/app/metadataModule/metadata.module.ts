@@ -14,6 +14,7 @@ import { DatasetCardComponent } from './datasets/dataset-card.component';
 import { AfFormComponent } from './af/af-form.component';
 import { ActorComponent } from './actors/actors.component';
 import { MetadataComponent } from './metadata.component';
+import { MetadataFiltersComponent } from './filters/metadata-filters.component';
 import { MetadataDatasetComponent } from './metadata-dataset.component';
 import { AfCardComponent } from './af/af-card.component';
 import { NgChartsModule } from 'ng2-charts';
@@ -72,6 +73,7 @@ export class MetadataPaginator extends MatPaginatorIntl {
   exports: [],
   declarations: [
     MetadataComponent,
+    MetadataFiltersComponent,
     MetadataDatasetComponent,
     DatasetFormComponent,
     DatasetCardComponent,
