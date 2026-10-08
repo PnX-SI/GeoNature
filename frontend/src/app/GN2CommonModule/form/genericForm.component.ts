@@ -14,8 +14,6 @@ import { UntypedFormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 
-export type FormAppearance = 'ng-select' | 'material' | 'bootstrap';
-
 @Component({
   selector: 'pnx-generic-form',
   template: '',
@@ -37,9 +35,6 @@ export class GenericFormComponent implements OnInit, OnChanges, AfterViewInit, O
    */
   @Input() searchBar: boolean = false;
   @Input() displayAll: boolean = false; // param to display the field 'all' in the list, default at false
-  /** Rendering of the field, for the components that support several ones. */
-  @Input() appearance: FormAppearance = 'ng-select';
-  @Input() placeHolder: string = null;
   @Output() onChange = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
   @Output() valueLoaded = new EventEmitter<any>();

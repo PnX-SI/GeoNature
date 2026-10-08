@@ -1,115 +1,33 @@
-<ng-container *ngIf="isMaterial; else ngSelectBlock">
-  <mat-form-field
-    appearance="outline"
-    subscriptSizing="dynamic"
-    class="pnx-select-material"
-    data-qa="gn-common-form-observers-material"
+<small>{{ label }}</small>
+<ng-select
+  [ngClass]="class"
+  [items]="observers | async"
+  bindLabel="nom_complet"
+  [bindValue]="bindValue"
+  [compareWith]="bindValue ? null : compareWith"
+  [multiple]="multiSelect"
+  [clearable]="clearable"
+  [placeholder]="placeHolder || label"
+  data-qa="gn-common-form-observers-select"
+  [virtualScroll]="true"
+  [formControl]="parentFormControl"
+>
+  <ng-template
+    ng-option-tmp
+    let-item="item"
+    let-index="index"
+    let-search="searchTerm"
   >
-    <mat-label>{{ label }}</mat-label>
-    <input
-      matInput
-      type="text"
-      [placeholder]="placeHolder || ''"
-      [formControl]="searchCtrl"
-      [matAutocomplete]="auto"
-      [matTooltip]="multiSelect && !inputFocused ? selectionLabels : ''"
-      (focus)="onInputFocus()"
-      (blur)="onInputBlur()"
-    />
-    <mat-spinner
-      *ngIf="loading"
-      matSuffix
-      diameter="18"
-    ></mat-spinner>
-    <mat-autocomplete
-      #auto="matAutocomplete"
-      [displayWith]="displayWith"
-      (optionSelected)="onOptionSelected($event.option.value)"
+    <div
+      matTooltip="{{ item.nom_complet }}"
+      matTooltipPosition="after"
     >
-      <ng-container *ngIf="multiSelect">
-        <mat-option
-          *ngFor="let item of selectedItems"
-          [value]="item"
-        >
-          <div
-            class="pnx-select-toggle"
-            (mousedown)="$event.preventDefault()"
-            (click)="toggleItem(item); $event.stopPropagation()"
-          >
-            <mat-icon>check_box</mat-icon>
-            {{ itemLabel(item) }}
-          </div>
-        </mat-option>
-      </ng-container>
-      <ng-container *ngFor="let item of selectOptions$ | async">
-        <mat-option
-          *ngIf="!multiSelect || !isSelected(item)"
-          [value]="item"
-          [attr.data-qa]="'gn-common-form-observers-select-' + item.nom_complet"
-        >
-          <div
-            *ngIf="multiSelect; else singleOption"
-            class="pnx-select-toggle"
-            (mousedown)="$event.preventDefault()"
-            (click)="toggleItem(item); $event.stopPropagation()"
-          >
-            <mat-icon>check_box_outline_blank</mat-icon>
-            {{ itemLabel(item) }}
-          </div>
-          <ng-template #singleOption>{{ itemLabel(item) }}</ng-template>
-        </mat-option>
-      </ng-container>
-    </mat-autocomplete>
-    <mat-hint
-      *ngIf="
-        isRemote &&
-        inputFocused &&
-        searchCtrl.value?.length > 0 &&
-        searchCtrl.value.length < minSearchLength
-      "
-    >
-      {{ 'RemoteSearch.TypeToSearch' | translate: { count: minSearchLength } }}
-    </mat-hint>
-  </mat-form-field>
-</ng-container>
-
-<ng-template #ngSelectBlock>
-  <small>{{ label }}</small>
-  <ng-select
-    [ngClass]="class"
-    [items]="(isRemote ? selectOptions$ : observers) | async"
-    bindLabel="nom_complet"
-    [bindValue]="bindValue"
-    [compareWith]="bindValue ? null : compareWith"
-    [multiple]="multiSelect"
-    [clearable]="clearable"
-    [placeholder]="placeHolder || label"
-    data-qa="gn-common-form-observers-select"
-    [virtualScroll]="true"
-    [typeahead]="isRemote ? search$ : null"
-    [loading]="loading"
-    [minTermLength]="isRemote ? minSearchLength : 0"
-    [typeToSearchText]="'RemoteSearch.TypeToSearch' | translate: { count: minSearchLength }"
-    [notFoundText]="'RemoteSearch.NoResults' | translate"
-    [formControl]="parentFormControl"
-  >
-    <ng-template
-      ng-option-tmp
-      let-item="item"
-      let-index="index"
-      let-search="searchTerm"
-    >
-      <div
-        matTooltip="{{ item.nom_complet }}"
-        matTooltipPosition="after"
+      <span
+        class="pre-wrap"
+        [attr.data-qa]="'gn-common-form-observers-select-' + item.nom_complet"
       >
-        <span
-          class="pre-wrap"
-          [attr.data-qa]="'gn-common-form-observers-select-' + item.nom_complet"
-        >
-          {{ item.nom_complet }}
-        </span>
-      </div>
-    </ng-template>
-  </ng-select>
-</ng-template>
+        {{ item.nom_complet }}
+      </span>
+    </div>
+  </ng-template>
+</ng-select>

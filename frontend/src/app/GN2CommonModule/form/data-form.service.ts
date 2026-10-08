@@ -134,29 +134,12 @@ export class DataFormService {
   //   );
   // }
 
-  /**
-   * @param idMenu id of the users list, all the users if null
-   * @param params optional GET parameters, ``nom_complet`` (beginning of the
-   *   complete name) and ``limit`` can be used to autocomplete
-   */
-  getObservers(idMenu: number | null = null, params: ParamsDict = {}) {
-    return this._http.get<any>(`${this.config.API_ENDPOINT}/users/menu/` + (idMenu ? idMenu : ''), {
-      params: this.toHttpParams(params),
-    });
+  getObservers(idMenu: number | null = null) {
+    return this._http.get<any>(`${this.config.API_ENDPOINT}/users/menu/` + (idMenu ? idMenu : ''));
   }
 
-  getObserversFromCode(codeList, params: ParamsDict = {}) {
-    return this._http.get<any>(`${this.config.API_ENDPOINT}/users/menu_from_code/${codeList}`, {
-      params: this.toHttpParams(params),
-    });
-  }
-
-  private toHttpParams(params: ParamsDict): HttpParams {
-    let queryString = new HttpParams();
-    for (const key in params) {
-      queryString = queryString.set(key, params[key]);
-    }
-    return queryString;
+  getObserversFromCode(codeList) {
+    return this._http.get<any>(`${this.config.API_ENDPOINT}/users/menu_from_code/${codeList}`);
   }
 
   autocompleteTaxon(api_endpoint: string, searh_name: string, params?: { [key: string]: string }) {

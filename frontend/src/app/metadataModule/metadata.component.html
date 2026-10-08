@@ -161,19 +161,53 @@
             <mat-datepicker #datePicker></mat-datepicker>
           </mat-form-field>
 
-          <pnx-organism
-            appearance="material"
-            [autocomplete]="true"
-            [parentFormControl]="metadataService.form.get('organism')"
-            [label]="'MetaData.StakeholderOrganization' | translate"
-          ></pnx-organism>
+          <mat-form-field
+            appearance="outline"
+            subscriptSizing="dynamic"
+          >
+            <mat-label>{{ 'MetaData.StakeholderOrganization' | translate }}</mat-label>
+            <input
+              matInput
+              type="text"
+              [matAutocomplete]="organismAuto"
+              [formControl]="metadataService.form.get('organism')"
+            />
+            <mat-autocomplete
+              #organismAuto="matAutocomplete"
+              [displayWith]="displayOrganism"
+            >
+              <mat-option
+                *ngFor="let organism of filteredOrganisms | async"
+                [value]="organism"
+              >
+                {{ organism.nom_organisme }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
 
-          <pnx-observers
-            appearance="material"
-            [autocomplete]="true"
-            [parentFormControl]="metadataService.form.get('person')"
-            [label]="'MetaData.SearchFilterPerson' | translate"
-          ></pnx-observers>
+          <mat-form-field
+            appearance="outline"
+            subscriptSizing="dynamic"
+          >
+            <mat-label>{{ 'MetaData.SearchFilterPerson' | translate }}</mat-label>
+            <input
+              matInput
+              type="text"
+              [matAutocomplete]="personAuto"
+              [formControl]="metadataService.form.get('person')"
+            />
+            <mat-autocomplete
+              #personAuto="matAutocomplete"
+              [displayWith]="displayPerson"
+            >
+              <mat-option
+                *ngFor="let person of filteredPersons | async"
+                [value]="person"
+              >
+                {{ person.nom_complet }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
         </div>
 
         <div
@@ -195,7 +229,6 @@
             color="primary"
             type="button"
             (click)="applyFilters()"
-            [disabled]="!searchFormIsSubmitable()"
             data-qa="pnx-metadata-filters-apply"
           >
             {{ 'MetaData.SearchApply' | translate }}
@@ -208,9 +241,6 @@
         class="filter-pills"
         [attr.aria-label]="'MetaData.SearchFilters' | translate"
       >
-        <mat-chip-option [selected]="true">
-          {{ (isAfFilters() ? 'AcquisitionFramework' : 'Dataset') | translate }}
-        </mat-chip-option>
         <mat-chip
           *ngFor="let pill of metadataService.filterPills"
           (removed)="removeFilter(pill)"

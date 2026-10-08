@@ -722,9 +722,5 @@
   "Releve": {
     "InfoGeo": "Geographical information of the survey"
   },
-  "ColonCharSpaced": ": ",
-  "RemoteSearch": {
-    "TypeToSearch": "Type at least {{count}} characters",
-    "NoResults": "No results"
-  }
+  "ColonCharSpaced": ": "
 }

@@ -76,7 +76,6 @@ import { MunicipalitiesComponent } from '@geonature_common/form/municipalities/m
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { NomenclatureComponent } from './form/nomenclature/nomenclature.component';
 import { ObserversComponent } from './form/observers/observers.component';
-import { OrganismComponent } from './form/organism/organism.component';
 import { ObserversTextComponent } from '@geonature_common/form/observers-text/observers-text.component';
 import { PeriodComponent } from '@geonature_common/form/date/period.component';
 import { PlacesComponent } from './map/places/places.component';
@@ -167,7 +166,6 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     AreasComponent,
     NomenclatureComponent,
     ObserversComponent,
-    OrganismComponent,
     BadgeComponent,
     IndicatorComponent,
     IndicatorsLayoutComponent,
@@ -210,7 +208,6 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     MunicipalitiesComponent,
     NomenclatureComponent,
     ObserversComponent,
-    OrganismComponent,
     ObserversTextComponent,
     PeriodComponent,
     PlacesComponent,
@@ -262,7 +259,6 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     DynamicFormComponent,
     NomenclatureComponent,
     ObserversComponent,
-    OrganismComponent,
     DateComponent,
     TaxonomyComponent,
     AreasIntersectedComponent,
@@ -323,7 +319,6 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     NgxDatatableModule,
     NomenclatureComponent,
     ObserversComponent,
-    OrganismComponent,
     ObserversTextComponent,
     PeriodComponent,
     AutoCompleteComponent,

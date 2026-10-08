@@ -5,7 +5,7 @@ import { CruvedStoreService } from '../GN2CommonModule/service/cruved-store.serv
 import { NgbDateParserFormatter, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, combineLatest } from 'rxjs';
-import { distinctUntilChanged, debounceTime, tap, switchMap, startWith } from 'rxjs/operators';
+import { map, distinctUntilChanged, debounceTime, tap, switchMap, startWith } from 'rxjs/operators';
 import { omitBy } from 'lodash';
 
 import { DataFormService, ParamsDict } from '@geonature_common/form/data-form.service';
@@ -30,6 +30,12 @@ export class MetadataComponent implements OnInit {
     return this.metadataService.expandAccordions;
   }
 
+  /* liste des organismes issues de l'API pour le select. */
+  public organisms: any[] = [];
+  /* liste des personnes issues de l'API pour l'autocomplete. */
+  public persons: any[] = [];
+  public filteredOrganisms: Observable<any[]>;
+  public filteredPersons: Observable<any[]>;
   public filtersOpen: boolean = false;
 
   public areaFilters: Array<any>;
@@ -52,6 +58,13 @@ export class MetadataComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this._dfs.getOrganisms().subscribe((organisms) => (this.organisms = organisms));
+    this._dfs.getObservers().subscribe((persons) => (this.persons = persons));
+    this.filteredOrganisms = this.autocompleteOptions('organism', () => this.organisms, [
+      'nom_organisme',
+    ]);
+    this.filteredPersons = this.autocompleteOptions('person', () => this.persons, ['nom_complet']);
+
     //Combinaison des observables pour afficher les éléments filtrés en fonction de l'état du paginator
     this.acquisitionFrameworks = this.metadataService.acquisitionFrameworks.pipe(
       distinctUntilChanged(),
@@ -90,6 +103,32 @@ export class MetadataComponent implements OnInit {
   getOptionText(option) {
     return option?.area_name;
   }
+
+  /**
+   * Options of an autocomplete field: the items of `getItems()` matching what is typed in the
+   * form control, regardless of case and accents. Once an option is selected, the control holds
+   * the item itself.
+   */
+  private autocompleteOptions(
+    controlName: string,
+    getItems: () => any[],
+    fields: string[]
+  ): Observable<any[]> {
+    const normalize = (text: string) => text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+    return this.metadataService.form.get(controlName).valueChanges.pipe(
+      startWith(''),
+      map((value) => {
+        const typed = typeof value === 'string' ? normalize(value) : '';
+        return getItems().filter((item) =>
+          fields.some((field) => normalize(item[field] ?? '').includes(typed))
+        );
+      })
+    );
+  }
+
+  displayOrganism = (organism: any): string => organism?.nom_organisme ?? '';
+
+  displayPerson = (person: any): string => person?.nom_complet ?? '';
 
   toggleFilters() {
     this.filtersOpen = !this.filtersOpen;
@@ -202,13 +241,5 @@ export class MetadataComponent implements OnInit {
 
   onAfMetadataDataRefresh() {
     this.metadataService.getMetadata();
-  }
-
-  isAfFilters() {
-    return this.metadataService.form.controls['selector'].value !== 'ds';
-  }
-
-  searchFormIsSubmitable() {
-    return !this.metadataService.form.invalid;
   }
 }
