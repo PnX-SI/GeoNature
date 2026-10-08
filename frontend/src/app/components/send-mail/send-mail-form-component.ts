@@ -36,6 +36,7 @@ export class SendMailFormComponent implements OnInit {
   observers: Observer[] = [];
   mailSubject: string;
   mailContent: string;
+  useFrom: 'synthese' | 'validation';
 
   public mailForm: FormGroup;
   public isLoading = false;
@@ -51,12 +52,14 @@ export class SendMailFormComponent implements OnInit {
     public data: {
       selectedObs: any;
       selectedObsTaxonDetail: any;
+      useFrom: 'synthese' | 'validation';
       observers?: Observer[];
       mailSubject: string;
       mailContent: string;
     }
   ) {
     this.selectedObs = data?.selectedObs;
+    this.useFrom = data?.useFrom;
     this.selectedObsTaxonDetail = data?.selectedObsTaxonDetail;
     this.mailSubject = data?.mailSubject;
     this.mailContent = data?.mailContent;
@@ -137,7 +140,7 @@ export class SendMailFormComponent implements OnInit {
 
   private getObservationUrl(): string {
     if (this.selectedObs?.id_synthese) {
-      return `${this.config.URL_APPLICATION}/#/synthese/occurrence/${this.selectedObs.id_synthese}`;
+      return `${this.config.URL_APPLICATION}/#/${this.useFrom}/occurrence/${this.selectedObs.id_synthese}`;
     }
     return '';
   }

@@ -270,6 +270,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
       data: {
         selectedObs: this.selectedObs,
         selectedObsTaxonDetail: this.selectedObsTaxonDetail,
+        useFrom: this.useFrom,
         observers: this.observersWithMail || [],
         mailContent: this.mailContent,
         mailSubject: this.mailSubject,
