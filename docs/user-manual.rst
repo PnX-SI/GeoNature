@@ -113,6 +113,8 @@ La recherche se fait en deux temps, et les deux se combinent :
 - **Recherche rapide** : tapez un texte dans la barre de recherche. La recherche est en texte intégral (insensible à la casse et aux accents, avec prise en compte des variantes d'un mot et du début des mots en cours de saisie) sur le nom, la description, les mots-clés, le créateur et les acteurs (personnes et organismes) des cadres d'acquisition et des jeux de données, ainsi que leur UUID.
 - **Filtres** : le bouton « Filtres » affiche sous la barre de recherche un formulaire pour affiner les résultats (UUID, nom, date de lancement, organisme, acteur, zones géographiques). L'option « Appliquer les filtres aux » indique s'ils portent sur les jeux de données ou sur les cadres d'acquisition. Une fois appliqués, les filtres s'affichent sous forme de pastilles sous la barre de recherche : cliquez sur la croix d'une pastille pour retirer le filtre. Le bouton de réinitialisation efface la recherche et tous les filtres.
 
+  La date de lancement se saisit sous forme de période (date de début et date de fin, bornes incluses) ; chacune des deux bornes est facultative pour rechercher « à partir du » ou « jusqu'au ». Elle porte sur la date de début du cadre d'acquisition, ou sur la date de création de la fiche du jeu de données.
+
 **Créer un cadre d'acquisition**
 
 Cette page permet également d'accéder au formulaire de création des Cadres d'acquisition via le bouton "Ajouter un Cadre d'acquisition". 

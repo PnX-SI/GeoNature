@@ -269,9 +269,14 @@ class TDatasets(db.Model):
         if name:
             query = query.where(cls.dataset_name.ilike(f"%{name}%"))
 
+        create_date = sa.cast(cls.meta_create_date, sa.DATE)
         date = params.get("date")
         if date:
-            query = query.where(sa.cast(cls.meta_create_date, sa.DATE) == date)
+            query = query.where(create_date == date)
+        if params.get("date_min"):
+            query = query.where(create_date >= params["date_min"])
+        if params.get("date_max"):
+            query = query.where(create_date <= params["date_max"])
 
         actors = []
         person = params.get("person")

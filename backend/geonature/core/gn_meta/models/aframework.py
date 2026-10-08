@@ -286,10 +286,13 @@ class TAcquisitionFramework(db.Model):
             where_clauses.append(
                 TAcquisitionFramework.acquisition_framework_name.ilike(f"%{params['name']}%")
             )
+        start_date = TAcquisitionFramework.acquisition_framework_start_date
         if params.get("date"):
-            where_clauses.append(
-                TAcquisitionFramework.acquisition_framework_start_date == params["date"]
-            )
+            where_clauses.append(start_date == params["date"])
+        if params.get("date_min"):
+            where_clauses.append(start_date >= params["date_min"])
+        if params.get("date_max"):
+            where_clauses.append(start_date <= params["date_max"])
         for column in ("is_parent", "opened"):
             if params.get(column) is not None:
                 where_clauses.append(getattr(TAcquisitionFramework, column) == params[column])

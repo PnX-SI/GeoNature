@@ -149,6 +149,7 @@ export class MetadataComponent implements OnInit {
       criteria[key] = apiValue;
       pills.push({ key, label: `${this.translate.instant(label)} : ${displayValue}` });
     };
+    const isValidDate = (value: any) => value instanceof Date && !isNaN(value.getTime());
 
     if (uuid?.trim()) {
       addFilter('uuid', 'MetaData.SearchFilterUuid', uuid.trim(), uuid.trim());
@@ -156,14 +157,33 @@ export class MetadataComponent implements OnInit {
     if (name?.trim()) {
       addFilter('name', 'MetaData.SearchFilterName', name.trim(), name.trim());
     }
-    // an invalid typed date is ignored
-    if (date && !isNaN(date.getTime())) {
-      addFilter(
-        'date',
-        'MetaData.CreationDate',
-        { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() },
-        date.toLocaleDateString(this.translate.currentLang)
-      );
+    // period: each bound is optional, an invalid typed date is ignored
+    const start = isValidDate(date?.start) ? date.start : null;
+    const end = isValidDate(date?.end) ? date.end : null;
+    if (start || end) {
+      const toApi = (day: Date) => ({
+        year: day.getFullYear(),
+        month: day.getMonth() + 1,
+        day: day.getDate(),
+      });
+      const toDisplay = (day: Date | null) =>
+        day ? day.toLocaleDateString(this.translate.currentLang) : '…';
+      const criteriaKeys = [];
+      if (start) {
+        criteria['date_min'] = toApi(start);
+        criteriaKeys.push('date_min');
+      }
+      if (end) {
+        criteria['date_max'] = toApi(end);
+        criteriaKeys.push('date_max');
+      }
+      pills.push({
+        key: 'date',
+        label: `${this.translate.instant('MetaData.CreationDate')} : ${toDisplay(
+          start
+        )} – ${toDisplay(end)}`,
+        criteriaKeys,
+      });
     }
     // an autocomplete holds a string as long as no option is selected
     if (organism?.id_organisme) {

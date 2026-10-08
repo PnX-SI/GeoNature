@@ -3,6 +3,7 @@ import { UntypedFormGroup, UntypedFormBuilder, UntypedFormControl } from '@angul
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { BehaviorSubject, of } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
+import { omitBy } from 'lodash';
 
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { DataFormService, ParamsDict } from '@geonature_common/form/data-form.service';
@@ -12,14 +13,17 @@ import { valueOrDefault } from 'chart.js/helpers';
 import { FormService } from '@geonature_common/form/form.service';
 
 // Filters applying to the datasets or to the AF itself, depending on the selector
-const ENTITY_CRITERIA = ['uuid', 'name', 'date', 'organism', 'person'];
+const ENTITY_CRITERIA = ['uuid', 'name', 'date_min', 'date_max', 'organism', 'person'];
 
 export type MetadataSelector = 'ds' | 'af';
 
 /** A filter of the advanced form, displayed as a pill once applied. */
 export interface MetadataFilterPill {
+  /** Name of the field of the advanced form. */
   key: string;
   label: string;
+  /** Criteria set by this filter, when they differ from `[key]`. */
+  criteriaKeys?: string[];
 }
 
 /**
@@ -67,7 +71,7 @@ export class MetadataService {
       selector: 'ds',
       uuid: [null, _formService.uuidValidator()],
       name: null,
-      date: null,
+      date: this._fb.group({ start: null, end: null }),
       organism: null,
       person: null,
       areas: [],
@@ -113,7 +117,11 @@ export class MetadataService {
 
   /** Stop applying one filter, and empty the matching field of the advanced form. */
   removeFilter(key: string) {
-    const { [key]: _removed, ...criteria } = this.activeSearch.criteria;
+    const pill = this.activeSearch.pills.find((pill) => pill.key === key);
+    const criteriaKeys = pill?.criteriaKeys ?? [key];
+    const criteria = omitBy(this.activeSearch.criteria, (_value, criterion) =>
+      criteriaKeys.includes(criterion)
+    );
     this.activeSearch = {
       ...this.activeSearch,
       criteria,

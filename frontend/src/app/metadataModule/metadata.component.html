@@ -152,16 +152,31 @@
             subscriptSizing="dynamic"
           >
             <mat-label>{{ 'MetaData.CreationDate' | translate }}</mat-label>
-            <input
-              matInput
-              [matDatepicker]="datePicker"
-              [formControl]="metadataService.form.get('date')"
-            />
+            <mat-date-range-input
+              [formGroup]="metadataService.form.get('date')"
+              [rangePicker]="datePicker"
+            >
+              <input
+                matStartDate
+                formControlName="start"
+                [placeholder]="'MinDate' | translate"
+                data-qa="pnx-metadata-date-start"
+              />
+              <input
+                matEndDate
+                formControlName="end"
+                [placeholder]="'MaxDate' | translate"
+                data-qa="pnx-metadata-date-end"
+              />
+            </mat-date-range-input>
             <mat-datepicker-toggle
               matIconSuffix
               [for]="datePicker"
             ></mat-datepicker-toggle>
-            <mat-datepicker #datePicker></mat-datepicker>
+            <mat-date-range-picker #datePicker></mat-date-range-picker>
+            <mat-error *ngIf="metadataService.form.get('date.end').hasError('matEndDateInvalid')">
+              {{ 'Errors.DatesReversed' | translate }}
+            </mat-error>
           </mat-form-field>
 
           <mat-form-field
