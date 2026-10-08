@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, EMPTY, of } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
@@ -9,6 +9,7 @@ import { DataFormService, ParamsDict } from '@geonature_common/form/data-form.se
 import { ConfigService } from '@geonature/services/config.service';
 import { PageEvent } from '@angular/material/paginator';
 import { valueOrDefault } from 'chart.js/helpers';
+import { FormService } from '@geonature_common/form/form.service';
 
 // Filters applying to the datasets or to the AF itself, depending on the selector
 const ENTITY_CRITERIA = ['uuid', 'name', 'date', 'organism', 'person'];
@@ -57,13 +58,14 @@ export class MetadataService {
   constructor(
     private _fb: UntypedFormBuilder,
     private dataFormService: DataFormService,
-    public config: ConfigService
+    public config: ConfigService,
+    private _formService: FormService
   ) {
     this.pageSize = new BehaviorSubject(this.config.METADATA.NB_AF_DISPLAYED);
 
     this.form = this._fb.group({
       selector: 'ds',
-      uuid: null,
+      uuid: [null, _formService.uuidValidator()],
       name: null,
       date: null,
       organism: null,
@@ -150,7 +152,8 @@ export class MetadataService {
         this.totalPages.next(response.total_pages);
         this.pageSize.next(response.per_page);
         this.changePage(0);
-      })
+      }),
+      catchError((err) => EMPTY)
     );
   }
 

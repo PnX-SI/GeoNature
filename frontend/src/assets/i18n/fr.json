@@ -726,5 +726,9 @@
   "Releve": {
     "InfoGeo": "Information géographique du relevé"
   },
-  "ColonCharSpaced": " : "
+  "ColonCharSpaced": " : ",
+  "RemoteSearch": {
+    "TypeToSearch": "Saisissez au moins {{count}} caractères",
+    "NoResults": "Aucun résultat"
+  }
 }
