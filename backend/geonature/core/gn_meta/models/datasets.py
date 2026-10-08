@@ -282,6 +282,7 @@ class TDatasets(db.Model):
         person = params.get("person")
         if person:
             actors.append(cls.cor_dataset_actor.any(CorDatasetActor.id_role == person))
+            actors.append(cls.id_digitizer == person)
         organism = params.get("organism")
         if organism:
             actors.append(cls.cor_dataset_actor.any(CorDatasetActor.id_organism == organism))

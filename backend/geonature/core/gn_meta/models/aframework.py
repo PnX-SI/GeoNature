@@ -304,6 +304,7 @@ class TAcquisitionFramework(db.Model):
                     CorAcquisitionFrameworkActor.id_role == params["person"]
                 )
             )
+            actors.append(TAcquisitionFramework.id_digitizer == params["person"])
         if params.get("organism"):
             actors.append(
                 TAcquisitionFramework.cor_af_actor.any(
