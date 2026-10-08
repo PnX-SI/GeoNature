@@ -65,6 +65,35 @@ class TestUsers:
         for org in organisms:
             assert org.uuid_organisme in resp_uuids
 
+    def test_get_organismes_name_autocomplete(self, users, organisms):
+        set_logged_user(self.client, users["admin_user"])
+        organism = organisms[0]
+        # contains, case and accent insensitive
+        term = organism.nom_organisme[1:4].upper()
+
+        response = self.client.get(url_for("users.get_organismes"), query_string={"name": term})
+
+        assert response.status_code == 200
+        names = [org["nom_organisme"] for org in response.json]
+        assert organism.nom_organisme in names
+        assert all(term.lower() in name.lower() for name in names)
+
+    def test_get_organismes_name_no_match_and_wildcards(self, users):
+        set_logged_user(self.client, users["admin_user"])
+
+        for term in ("zzzz-no-organism", "%", "_"):
+            response = self.client.get(url_for("users.get_organismes"), query_string={"name": term})
+            assert response.status_code == 200
+            assert all(term in org["nom_organisme"] for org in response.json)
+
+    def test_get_organismes_limit(self, users, organisms):
+        set_logged_user(self.client, users["admin_user"])
+
+        response = self.client.get(url_for("users.get_organismes"), query_string={"limit": 1})
+
+        assert response.status_code == 200
+        assert len(response.json) == 1
+
     @pytest.mark.skip()
     def test_get_organismes_no_right(self, users):
         set_logged_user(self.client, users["noright_user"])

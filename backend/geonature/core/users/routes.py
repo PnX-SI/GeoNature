@@ -1,4 +1,5 @@
 import logging
+import re
 from functools import wraps
 
 from flask_login import login_required
@@ -94,7 +95,10 @@ def get_roles_by_menu_id(id_menu=None):
     if nom_complet := request.args.get("nom_complet"):
         query = query.where(VUserslistForallMenu.nom_complet.ilike(f"{nom_complet}%"))
 
-    data = DB.session.scalars(query.order_by(VUserslistForallMenu.nom_complet.asc())).all()
+    query = query.order_by(VUserslistForallMenu.nom_complet.asc())
+    if limit := request.args.get("limit", type=int):
+        query = query.limit(limit)
+    data = DB.session.scalars(query).all()
     return [n.as_dict() for n in data]
 
 
@@ -131,7 +135,10 @@ def get_roles_by_menu_code(code_liste):
         query = query.where(
             VUserslistForallMenu.nom_complet.ilike("{}%".format(parameters.get("nom_complet")))
         )
-    data = DB.session.scalars(query.order_by(VUserslistForallMenu.nom_complet.asc())).all()
+    query = query.order_by(VUserslistForallMenu.nom_complet.asc())
+    if limit := request.args.get("limit", type=int):
+        query = query.limit(limit)
+    data = DB.session.scalars(query).all()
     return [n.as_dict() for n in data]
 
 
@@ -152,6 +159,18 @@ def get_organismes():
     Get all organisms
 
     .. :quickref: User;
+
+    Parameters
+    ----------
+    search : str, optional
+        Fuzzy match on the organism name (``word_similarity``), GET parameter.
+    name : str, optional
+        Case and accent insensitive "contains" match on the organism name,
+        meant for autocompletion, GET parameter.
+    orderby : str, optional
+        ``<column>[:asc|:desc]``, GET parameter.
+    limit : int, optional
+        Maximum number of organisms returned, GET parameter.
     """
     params = request.args.to_dict()
 
@@ -162,6 +181,12 @@ def get_organismes():
         search = params.pop("search")
         query = query.where(func.word_similarity(Organisme.nom_organisme, search) > 0.7)
         order_by_cols = [func.word_similarity(Organisme.nom_organisme, search).desc()]
+
+    if name := params.pop("name", None):
+        pattern = "%" + re.sub(r"([\\%_])", r"\\\1", name) + "%"
+        query = query.where(
+            func.unaccent(Organisme.nom_organisme).ilike(func.unaccent(pattern), escape="\\")
+        )
 
     if "orderby" in params:
         order_params = params["orderby"].split(":")
@@ -174,6 +199,8 @@ def get_organismes():
             raise BadRequest("the attribute to order on does not exist")
     if order_by_cols:
         query = query.order_by(*order_by_cols)
+    if limit := request.args.get("limit", type=int):
+        query = query.limit(limit)
     return [
         organism.as_dict(fields=organism_fields) for organism in DB.session.scalars(query).all()
     ]
