@@ -130,6 +130,9 @@
               type="text"
               [formControl]="metadataService.form.get('uuid')"
             />
+            <mat-error *ngIf="metadataService.form.get('uuid').hasError('invalidUuid')">
+              {{ 'MetaData.InvalidUuid' | translate }}
+            </mat-error>
           </mat-form-field>
 
           <mat-form-field
@@ -230,6 +233,7 @@
             type="button"
             (click)="applyFilters()"
             data-qa="pnx-metadata-filters-apply"
+            [disabled]="!searchFormIsSubmitable()"
           >
             {{ 'MetaData.SearchApply' | translate }}
           </button>
@@ -241,6 +245,9 @@
         class="filter-pills"
         [attr.aria-label]="'MetaData.SearchFilters' | translate"
       >
+        <mat-chip-option [selected]="true">
+          {{ (isAfFilters() ? 'AcquisitionFramework' : 'Dataset') | translate }}
+        </mat-chip-option>
         <mat-chip
           *ngFor="let pill of metadataService.filterPills"
           (removed)="removeFilter(pill)"

@@ -351,6 +351,7 @@
     "SearchOnAF": "Acquisition frameworks",
     "SearchFilterName": "Name",
     "SearchFilterUuid": "UUID",
+    "InvalidUuid": "The field must contain a valid UUID.",
     "SearchFilterPerson": "Actor (person)",
     "SearchFilterAreas": "Geographic areas",
     "SearchApply": "Apply",

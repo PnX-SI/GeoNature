@@ -349,6 +349,7 @@
     "SearchOnAF": "Cadres d'acquisition",
     "SearchFilterName": "Nom",
     "SearchFilterUuid": "UUID",
+    "InvalidUuid": "Le champ doit contenir un UUID valide.",
     "SearchFilterPerson": "Acteur (personne)",
     "SearchFilterAreas": "Zones géographiques",
     "SearchApply": "Appliquer",

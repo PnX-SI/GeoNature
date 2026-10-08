@@ -242,4 +242,12 @@ export class MetadataComponent implements OnInit {
   onAfMetadataDataRefresh() {
     this.metadataService.getMetadata();
   }
+
+  isAfFilters() {
+    return this.metadataService.form.controls['selector'].value !== 'ds';
+  }
+
+  searchFormIsSubmitable() {
+    return !this.metadataService.form.invalid;
+  }
 }
