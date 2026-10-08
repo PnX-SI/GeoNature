@@ -5,12 +5,12 @@ import { CruvedStoreService } from '../GN2CommonModule/service/cruved-store.serv
 import { NgbDateParserFormatter, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, combineLatest } from 'rxjs';
-import { map, distinctUntilChanged, debounceTime, tap, switchMap, startWith } from 'rxjs/operators';
+import { distinctUntilChanged, debounceTime, tap, switchMap, startWith } from 'rxjs/operators';
 import { omitBy } from 'lodash';
 
 import { DataFormService, ParamsDict } from '@geonature_common/form/data-form.service';
 import { CommonService } from '@geonature_common/service/common.service';
-import { MetadataService } from './services/metadata.service';
+import { MetadataService, MetadataFilterPill } from './services/metadata.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { CdkPortal } from '@angular/cdk/portal';
 
@@ -30,20 +30,11 @@ export class MetadataComponent implements OnInit {
     return this.metadataService.expandAccordions;
   }
 
-  /* liste des organismes issues de l'API pour le select. */
-  public organisms: any[] = [];
-  public meta_type: any[] = [
-    { label: 'Jeu de données', value: 'ds' },
-    { label: "Cadre d'acquisition", value: 'af' },
-  ];
-
-  public areaFilters: Array<any>;
+  public filtersOpen: boolean = false;
 
   get isLoading(): boolean {
     return this.metadataService.isLoading;
   }
-
-  searchTerms: any = {};
 
   acquisitionFrameworksLength: number = 0;
 
@@ -59,8 +50,6 @@ export class MetadataComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this._dfs.getOrganisms().subscribe((organisms) => (this.organisms = organisms));
-
     //Combinaison des observables pour afficher les éléments filtrés en fonction de l'état du paginator
     this.acquisitionFrameworks = this.metadataService.acquisitionFrameworks.pipe(
       distinctUntilChanged(),
@@ -69,118 +58,57 @@ export class MetadataComponent implements OnInit {
       })
     );
 
-    // rapid search event
-    //combinaison de la zone de recherche et du chargement des données
+    // quick search event: the applied filters are kept
     this.rapidSearchControl.valueChanges
       .pipe(
         startWith(''),
         debounceTime(500),
-        distinctUntilChanged(),
-        tap((term) => {
-          if (term !== null) {
-            if (term === '') {
-              this.metadataService.form.patchValue({ search: null });
-            } else {
-              this.metadataService.form.patchValue({ search: term });
-            }
-          }
-        }),
-        switchMap(() => {
+        switchMap((term) => {
+          this.metadataService.setQuickTerm(term);
           this.metadataService.changePage(0);
           this.paginator?.firstPage(); // required
-          return this.metadataService.search(true);
+          return this.metadataService.search();
         })
       )
       .subscribe(() => {
         return;
       });
-
-    // format areas filter
-    this.areaFilters = this.config.METADATA.METADATA_AREA_FILTERS.map((area) => {
-      if (typeof area['type_code'] === 'string') {
-        area['type_code_array'] = [area['type_code']];
-      } else {
-        area['type_code_array'] = area['type_code'];
-      }
-      return area;
-    });
   }
 
-  getOptionText(option) {
-    return option?.area_name;
+  toggleFilters() {
+    this.filtersOpen = !this.filtersOpen;
   }
 
   refreshFilters() {
-    this.metadataService.resetForm();
-    this.rapidSearchControl.reset();
-    this.searchTerms = {};
+    this.rapidSearchControl.reset(null, { emitEvent: false });
+    this.metadataService.clearSearch();
+    this.runSearch();
+  }
+
+  onFiltersApplied() {
+    this.filtersOpen = false;
+    this.runSearch();
+  }
+
+  removeFilter(pill: MetadataFilterPill) {
+    this.metadataService.removeFilter(pill.key);
+    this.runSearch();
+  }
+
+  private runSearch() {
     this.paginator?.firstPage();
     this.metadataService.changePage(0);
     this.metadataService.search().subscribe();
-    this.metadataService.expandAccordions = false;
-  }
-
-  formatFormValue(formValue): any {
-    const formatedForm = {};
-    Object.keys(formValue).forEach((key) => {
-      if (key == 'date' && formValue['date']) {
-        formatedForm['date'] = this.dateParser.format(formValue['date']);
-      } else if (formValue[key]) {
-        formatedForm[key] = formValue[key];
-      }
-    });
-    return formatedForm;
-  }
-  advancedSearch() {
-    let formValues = Object.fromEntries(
-      Object.entries(this.metadataService.form.value).filter(([_, v]) => v != null)
-    );
-
-    let areas: any[] = [];
-    Object.keys(formValues)
-      .filter((key) => key.startsWith('area_') && formValues[key] != null)
-      .forEach((key) => {
-        const current_area: any[] = formValues[key] as any[];
-        areas = [...areas, ...current_area.map((area) => area.id_area)];
-        delete formValues[key];
-      });
-    // reformat areas value
-    this.searchTerms = {
-      ...formValues,
-      ...(areas.length > 0 && { areas: areas }),
-      ...(this.rapidSearchControl.value !== null && {
-        search: this.rapidSearchControl.value,
-      }),
-    };
-
-    this.searchTerms = this.formatFormValue(this.searchTerms);
-    this.metadataService.form.patchValue(this.searchTerms);
-    this.paginator?.firstPage();
-    this.metadataService.changePage(0);
-    this.metadataService.search().subscribe(() => {
-      return;
-    });
-  }
-
-  openSearchModal(searchModal) {
-    this.modal.open(searchModal);
-  }
-
-  closeSearchModal() {
-    this.modal.dismissAll();
   }
 
   onOpenExpansionPanel(af: any) {
     if (af.t_datasets === undefined) {
-      let params = {};
       const queryStrings: ParamsDict = { nb_observations_synthese: 1 };
-      if (this.searchTerms.selector === 'ds') {
-        params = this.searchTerms;
-      }
-      if (this.rapidSearchControl.value) {
-        params = { ...params, search: this.rapidSearchControl.value };
-      }
-      this.metadataService.addDatasetToAcquisitionFramework(af, params, queryStrings);
+      this.metadataService.addDatasetToAcquisitionFramework(
+        af,
+        this.metadataService.datasetSearchParams(),
+        queryStrings
+      );
     }
   }
   deleteAf(af_id) {
@@ -199,11 +127,11 @@ export class MetadataComponent implements OnInit {
     this.metadataService.changePageEvent(event);
   }
 
-  displayMetaAreaFilters = () =>
-    this.config.METADATA?.METADATA_AREA_FILTERS &&
-    this.config.METADATA?.METADATA_AREA_FILTERS.length;
-
   onAfMetadataDataRefresh() {
     this.metadataService.getMetadata();
+  }
+
+  isAfFilters() {
+    return this.metadataService.activeSearch.selector !== 'ds';
   }
 }

@@ -6,12 +6,15 @@ import { HttpClientXsrfModule } from '@angular/common/http';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 
 import { DatasetFormComponent } from './datasets/dataset-form.component';
 import { DatasetCardComponent } from './datasets/dataset-card.component';
 import { AfFormComponent } from './af/af-form.component';
 import { ActorComponent } from './actors/actors.component';
 import { MetadataComponent } from './metadata.component';
+import { MetadataFiltersComponent } from './filters/metadata-filters.component';
 import { MetadataDatasetComponent } from './metadata-dataset.component';
 import { AfCardComponent } from './af/af-card.component';
 import { NgChartsModule } from 'ng2-charts';
@@ -64,10 +67,13 @@ export class MetadataPaginator extends MatPaginatorIntl {
     RouterModule.forChild(routes),
     MatCheckboxModule,
     MatButtonToggleModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
   ],
   exports: [],
   declarations: [
     MetadataComponent,
+    MetadataFiltersComponent,
     MetadataDatasetComponent,
     DatasetFormComponent,
     DatasetCardComponent,
@@ -80,6 +86,7 @@ export class MetadataPaginator extends MatPaginatorIntl {
     OrganismFormDialogComponent,
   ],
   providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },
     MetadataService,
     MetadataDataService,
     ActorFormService,

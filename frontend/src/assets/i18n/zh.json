@@ -23,9 +23,6 @@
   "Species": "种类",
   "LatestObservations": "最新观察",
   "Advanced": "高级",
-  "MetaData": {
-    "Programs": "程式"
-  },
   "Map": {
     "Actions": {
       "SearchLocation": "搜索位置",

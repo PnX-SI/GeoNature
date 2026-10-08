@@ -1,3 +1,4 @@
+import datetime
 import csv
 import uuid
 from io import StringIO
@@ -341,19 +342,93 @@ class TestGNMeta:
             assert af1.id_acquisition_framework in af_list
             assert af2.id_acquisition_framework not in af_list
 
-        def test_get_acquisition_frameworks_search_af_uuid(self, users, acquisition_frameworks):
+        def test_get_acquisition_frameworks_nested_datasets_criteria(
+            self, users, acquisition_frameworks, datasets
+        ):
+            """Criteria nested under `datasets` apply to the datasets, flat ones to the AF"""
             set_logged_user(self.client, users["admin_user"])
-
+            ds = datasets["belong_af_1"]
             af1 = acquisition_frameworks["af_1"]
+            get_af_url = url_for("gn_meta.get_acquisition_frameworks")
+
+            response = self.client.post(get_af_url, json={"datasets": {"name": ds.dataset_name}})
+            assert response.status_code == 200
+            af_list = [af["id_acquisition_framework"] for af in response.json["items"]]
+            assert af1.id_acquisition_framework in af_list
+
+            # same criteria applied flat target the AF name, which does not match
+            response = self.client.post(get_af_url, json={"name": ds.dataset_name})
+            assert response.status_code == 200
+            af_list = [af["id_acquisition_framework"] for af in response.json["items"]]
+            assert af1.id_acquisition_framework not in af_list
+
+        def test_get_acquisition_frameworks_fulltext_search(self, users, acquisition_frameworks):
+            """Search is accent/case insensitive and matches word prefixes"""
+            set_logged_user(self.client, users["admin_user"])
+            af1 = acquisition_frameworks["af_1"]
+            get_af_url = url_for("gn_meta.get_acquisition_frameworks")
+            word = af1.acquisition_framework_name.split()[0]
+            partial = word[: max(3, len(word) - 1)].upper()
+
+            response = self.client.post(get_af_url, json={"search": partial})
+            assert response.status_code == 200
+            af_list = [af["id_acquisition_framework"] for af in response.json["items"]]
+            assert af1.id_acquisition_framework in af_list
+
+        def test_get_acquisition_frameworks_search_with_criteria(
+            self, users, acquisition_frameworks, datasets
+        ):
+            """The quick search and the criteria are combined: results must match both"""
+            set_logged_user(self.client, users["admin_user"])
+            ds = datasets["belong_af_1"]
+            af1 = acquisition_frameworks["af_1"]
+            get_af_url = url_for("gn_meta.get_acquisition_frameworks")
 
             response = self.client.post(
-                url_for("gn_meta.get_acquisition_frameworks"),
-                json={"search": str(af1.unique_acquisition_framework_id)[:5]},
+                get_af_url,
+                json={
+                    "search": af1.acquisition_framework_name,
+                    "datasets": {"name": ds.dataset_name},
+                },
             )
+            assert response.status_code == 200
+            af_list = [af["id_acquisition_framework"] for af in response.json["items"]]
+            assert af1.id_acquisition_framework in af_list
 
-            assert {af["id_acquisition_framework"] for af in response.json["items"]} == {
-                af1.id_acquisition_framework
-            }
+            response = self.client.post(
+                get_af_url,
+                json={
+                    "search": af1.acquisition_framework_name,
+                    "datasets": {"name": "no dataset has this name"},
+                },
+            )
+            assert response.status_code == 200
+            assert response.json["items"] == []
+
+        def test_get_acquisition_frameworks_search_uuid_prefix(self, users, acquisition_frameworks):
+            set_logged_user(self.client, users["admin_user"])
+            af1 = acquisition_frameworks["af_1"]
+            uuid = str(af1.unique_acquisition_framework_id)
+            get_af_url = url_for("gn_meta.get_acquisition_frameworks")
+            for term in (uuid[:4], uuid[:13].upper()):
+                response = self.client.post(get_af_url, json={"search": term})
+                assert response.status_code == 200
+                af_list = [af["id_acquisition_framework"] for af in response.json["items"]]
+                assert af1.id_acquisition_framework in af_list
+
+        def test_get_acquisition_frameworks_search_creator(self, users, acquisition_frameworks):
+            set_logged_user(self.client, users["admin_user"])
+            af1 = acquisition_frameworks["af_1"]
+            creator = users["self_user"]
+            af1.creator = creator
+            db.session.flush()
+            get_af_url = url_for("gn_meta.get_acquisition_frameworks")
+            # accent/case insensitive, in any order
+            term = f"{creator.prenom_role or ''} {creator.nom_role}".lower()
+            response = self.client.post(get_af_url, json={"search": term})
+            assert response.status_code == 200
+            af_list = [af["id_acquisition_framework"] for af in response.json["items"]]
+            assert af1.id_acquisition_framework in af_list
 
         def test_acquisition_framework_pagination(self, users):
             """Test la pagination de la route acquisition_frameworks"""
@@ -408,23 +483,6 @@ class TestGNMeta:
             # Test page inexistante
             response = self.client.get(f"{acquisition_frameworks_url}?page=999")
             assert response.status_code == 404
-
-        def test_get_acquisition_frameworks_search_af_date(self, users, acquisition_frameworks):
-            set_logged_user(self.client, users["admin_user"])
-
-            af1 = acquisition_frameworks["af_1"]
-
-            response = self.client.post(
-                url_for("gn_meta.get_acquisition_frameworks"),
-                json={"search": af1.acquisition_framework_start_date.strftime("%d/%m/%Y")},
-            )
-            assert response.status_code == 200
-
-            expected = {af1.id_acquisition_framework}
-            assert expected.issubset(
-                {af["id_acquisition_framework"] for af in response.json["items"]}
-            )
-            # TODO check another AF with another start_date (and no DS at search date) is not returned
 
     def test_acquisition_frameworks_permissions(self, app, acquisition_frameworks, datasets, users):
         af = acquisition_frameworks["own_af"]
@@ -1116,32 +1174,6 @@ class TestGNMeta:
         assert expected_ds.issubset(filtered_ds)
         assert datasets["own_dataset"].id_dataset not in filtered_ds
 
-    def test_get_dataset_search_uuid(self, users, datasets):
-        ds = datasets["own_dataset"]
-        set_logged_user(self.client, users["admin_user"])
-        response = self.client.get(
-            url_for("gn_meta.get_datasets"),
-            json={"search": str(ds.unique_dataset_id)[:5]},
-        )
-
-        expected_ds = {ds.id_dataset}
-        filtered_ds = {dataset["id_dataset"] for dataset in response.json}
-        assert expected_ds == filtered_ds
-
-    def test_get_dataset_search_date(self, users, datasets):
-        ds = datasets["own_dataset"]
-        set_logged_user(self.client, users["admin_user"])
-
-        response = self.client.get(
-            url_for("gn_meta.get_datasets"),
-            json={"search": ds.meta_create_date.strftime("%d/%m/%Y")},
-        )
-
-        expected_ds = {ds.id_dataset}
-        filtered_ds = {dataset["id_dataset"] for dataset in response.json}
-        assert expected_ds.issubset(filtered_ds)
-        # FIXME: add a DS to fixture with an unmatching meta_create_date
-
     def test_get_dataset_search_af_matches(self, users, datasets, acquisition_frameworks):
         dataset = datasets["belong_af_1"]
         acquisition_framework = [
@@ -1664,3 +1696,249 @@ class TestRepository:
         assert not cruved_af_filter(
             acquisition_frameworks["associate_af"], users["stranger_user"], 1
         )
+
+
+@pytest.mark.usefixtures(
+    "client_class", "temporary_transaction", "users", "acquisition_frameworks", "datasets"
+)
+class TestMetadataSearchFilters:
+    """
+    Quick search (`search`) and filters (`name`, `uuid`, `date`, `person`, `organism`), flat when
+    they apply to the acquisition frameworks, nested under `datasets` when they apply to datasets.
+    """
+
+    AF_NAMES = ("af_1", "af_2", "af_3", "own_af", "stranger_af")
+    DS_NAMES = ("belong_af_1", "belong_af_2", "own_dataset", "stranger_dataset")
+
+    @pytest.fixture
+    def actors_and_dates(self, users, acquisition_frameworks, datasets):
+        from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
+
+        role = db.session.execute(
+            select(TNomenclatures)
+            .join(BibNomenclaturesTypes, TNomenclatures.id_type == BibNomenclaturesTypes.id_type)
+            .where(
+                TNomenclatures.mnemonique == "Contact principal",
+                BibNomenclaturesTypes.mnemonique == "ROLE_ACTEUR",
+            )
+        ).scalar_one()
+        with db.session.begin_nested():
+            acquisition_frameworks["af_2"].acquisition_framework_start_date = datetime.date(
+                2001, 2, 3
+            )
+            acquisition_frameworks["af_3"].cor_af_actor.append(
+                CorAcquisitionFrameworkActor(role=users["self_user"], nomenclature_actor_role=role)
+            )
+            datasets["belong_af_1"].cor_dataset_actor.append(
+                CorDatasetActor(role=users["noright_user"], nomenclature_actor_role=role)
+            )
+            db.session.flush()
+
+    def search_afs(self, users, acquisition_frameworks, payload):
+        """names of the tested AFs returned by the AF list route"""
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.post(url_for("gn_meta.get_acquisition_frameworks"), json=payload)
+        assert response.status_code == 200
+        ids = {af["id_acquisition_framework"] for af in response.json["items"]}
+        return {
+            name
+            for name in self.AF_NAMES
+            if acquisition_frameworks[name].id_acquisition_framework in ids
+        }
+
+    def search_datasets(self, users, datasets, payload):
+        """names of the tested datasets returned by the dataset list route"""
+        set_logged_user(self.client, users["admin_user"])
+        response = self.client.post(url_for("gn_meta.get_datasets"), json=payload)
+        assert response.status_code == 200
+        ids = {ds["id_dataset"] for ds in response.json}
+        return {name for name in self.DS_NAMES if datasets[name].id_dataset in ids}
+
+    # --- filters applying to the acquisition frameworks (flat)
+
+    def test_af_name(self, users, acquisition_frameworks):
+        search = lambda name: self.search_afs(users, acquisition_frameworks, {"name": name})
+        assert search("af_1") == {"af_1"}
+        assert search("AF_") >= {"af_1", "af_2", "af_3"}
+        assert search("no af has this name") == set()
+
+    def test_af_uuid(self, users, acquisition_frameworks):
+        uuid = str(acquisition_frameworks["af_2"].unique_acquisition_framework_id)
+        assert self.search_afs(users, acquisition_frameworks, {"uuid": uuid}) == {"af_2"}
+
+    def test_af_date(self, users, acquisition_frameworks, actors_and_dates):
+        date = {"year": 2001, "month": 2, "day": 3}
+        assert self.search_afs(users, acquisition_frameworks, {"date": date}) == {"af_2"}
+
+    def test_af_date_period(self, users, acquisition_frameworks, actors_and_dates):
+        search = lambda payload: self.search_afs(users, acquisition_frameworks, payload)
+        day = lambda month, day: {"year": 2001, "month": month, "day": day}
+        # bounds are inclusive
+        assert search({"date_min": day(1, 1), "date_max": day(2, 3)}) == {"af_2"}
+        assert search({"date_min": day(2, 3), "date_max": day(12, 31)}) == {"af_2"}
+        assert search({"date_min": day(2, 4), "date_max": day(12, 31)}) == set()
+        # a single bound is an open period
+        assert "af_2" in search({"date_min": day(2, 3)})
+        assert "af_2" not in search({"date_min": day(2, 4)})
+        assert search({"date_max": day(2, 3)}) == {"af_2"}
+
+    def test_af_date_period_invalid(self, users, acquisition_frameworks):
+        set_logged_user(self.client, users["admin_user"])
+        payload = {"date_min": {"year": 2001, "month": 13, "day": 1}}
+        response = self.client.post(url_for("gn_meta.get_acquisition_frameworks"), json=payload)
+        assert response.status_code == 400
+
+    def test_af_person(self, users, acquisition_frameworks, actors_and_dates):
+        person = users["self_user"].id_role
+        assert self.search_afs(users, acquisition_frameworks, {"person": person}) == {"af_3"}
+        # the actor of a dataset is not an actor of its AF
+        person = users["noright_user"].id_role
+        assert self.search_afs(users, acquisition_frameworks, {"person": person}) == set()
+        # the digitizer of an AF is one of its persons
+        person = users["stranger_user"].id_role
+        assert self.search_afs(users, acquisition_frameworks, {"person": person}) == {"stranger_af"}
+
+    def test_af_organism(self, users, acquisition_frameworks):
+        organism = users["user"].organisme.id_organisme
+        found = self.search_afs(users, acquisition_frameworks, {"organism": organism})
+        assert "own_af" in found
+        assert not found & {"af_1", "af_2", "af_3", "stranger_af"}
+
+    # --- filters applying to the datasets (nested)
+
+    def test_ds_name(self, users, acquisition_frameworks, datasets):
+        search = lambda name: self.search_afs(
+            users, acquisition_frameworks, {"datasets": {"name": name}}
+        )
+        assert search("belong_af_1") == {"af_1"}
+        assert search("no dataset has this name") == set()
+
+    def test_ds_uuid(self, users, acquisition_frameworks, datasets):
+        uuid = str(datasets["belong_af_2"].unique_dataset_id)
+        payload = {"datasets": {"uuid": uuid}}
+        assert self.search_afs(users, acquisition_frameworks, payload) == {"af_2"}
+
+    def test_ds_date(self, users, acquisition_frameworks, datasets):
+        """The creation date is set by the database, other datasets may share it"""
+        created = datasets["belong_af_1"].meta_create_date
+        date = {"year": created.year, "month": created.month, "day": created.day}
+        found = self.search_afs(users, acquisition_frameworks, {"datasets": {"date": date}})
+        assert "af_1" in found
+        other = {"year": created.year - 1, "month": created.month, "day": 1}
+        assert (
+            self.search_afs(users, acquisition_frameworks, {"datasets": {"date": other}}) == set()
+        )
+
+    def test_ds_person(self, users, acquisition_frameworks, actors_and_dates):
+        person = users["noright_user"].id_role
+        payload = {"datasets": {"person": person}}
+        assert self.search_afs(users, acquisition_frameworks, payload) == {"af_1"}
+        # the actor of an AF is not an actor of its datasets
+        payload = {"datasets": {"person": users["self_user"].id_role}}
+        assert self.search_afs(users, acquisition_frameworks, payload) == set()
+        # the digitizer of a dataset is one of its persons (belong_af_* are digitized by stranger_user)
+        payload = {"datasets": {"person": users["stranger_user"].id_role}}
+        assert self.search_afs(users, acquisition_frameworks, payload) == {"af_1", "af_2", "af_3"}
+
+    def test_ds_organism(self, users, acquisition_frameworks, datasets):
+        """own_dataset and its siblings have actors of the users' organism, belong_af_* have none"""
+        organism = users["user"].organisme.id_organisme
+        payload = {"datasets": {"organism": organism}}
+        found = self.search_afs(users, acquisition_frameworks, payload)
+        assert not found & {"af_1", "af_2", "af_3"}
+
+    def test_ds_filters_are_combined(self, users, acquisition_frameworks, actors_and_dates):
+        person = users["noright_user"].id_role
+        criteria = {"name": "belong_af_1", "person": person}
+        payload = {"datasets": criteria}
+        assert self.search_afs(users, acquisition_frameworks, payload) == {"af_1"}
+        criteria = {"name": "belong_af_2", "person": person}
+        assert self.search_afs(users, acquisition_frameworks, {"datasets": criteria}) == set()
+
+    # --- quick search
+
+    def test_quick_search_name(self, users, acquisition_frameworks):
+        search = lambda text: self.search_afs(users, acquisition_frameworks, {"search": text})
+        assert "af_1" in search("af_1")
+        # prefix of the last word, insensitive to the case
+        assert "own_af" in search("OWN_a")
+
+    def test_quick_search_dataset_name(self, users, acquisition_frameworks):
+        found = self.search_afs(users, acquisition_frameworks, {"search": "belong_af_2"})
+        assert "af_2" in found
+
+    def test_quick_search_creator_and_organism(self, users, acquisition_frameworks):
+        search = lambda text: self.search_afs(users, acquisition_frameworks, {"search": text})
+        assert "own_af" in search("bobby bob")
+        assert "own_af" in search(users["user"].organisme.nom_organisme)
+
+    def test_quick_search_uuid_with_dashes(self, users, acquisition_frameworks):
+        """Dashes must not split the UUID: here the second group is read as a negative number"""
+        af = acquisition_frameworks["af_1"]
+        af.unique_acquisition_framework_id = uuid.UUID("9409111b-4783-426f-9c57-1083718292a5")
+        db.session.flush()
+        for term in (
+            "9409",
+            "9409111B-4783",
+            "9409111b-4783-426f-9c57",
+            str(af.unique_acquisition_framework_id),
+        ):
+            found = self.search_afs(users, acquisition_frameworks, {"search": term})
+            assert "af_1" in found, term
+
+    def test_quick_search_name_with_dash(self, users, acquisition_frameworks):
+        """ "CA-2020" is read as the words "ca" and "-2020" without care"""
+        acquisition_frameworks["af_1"].acquisition_framework_name = "CA-2020 filtertest"
+        db.session.flush()
+        for term in ("CA", "CA-", "CA-2020", "ca-2020 filter", "2020"):
+            found = self.search_afs(users, acquisition_frameworks, {"search": term})
+            assert "af_1" in found, term
+
+    def test_quick_search_words_are_not_all_prefixes(self, users, acquisition_frameworks):
+        """Only the last word is a prefix: "ca-1" must not match "carto" and a UUID "1..." """
+        acquisition_frameworks["af_1"].acquisition_framework_name = "Carto habitats"
+        db.session.flush()
+        search = lambda text: self.search_afs(users, acquisition_frameworks, {"search": text})
+        assert "af_1" not in search("ca-1")
+        assert "af_1" in search("carto hab")
+
+    def test_quick_search_and_filters_are_combined(self, users, acquisition_frameworks):
+        payload = {"search": "af_", "datasets": {"name": "belong_af_1"}}
+        assert "af_1" in self.search_afs(users, acquisition_frameworks, payload)
+        payload = {"search": "af_2", "datasets": {"name": "belong_af_1"}}
+        assert self.search_afs(users, acquisition_frameworks, payload) == set()
+        payload = {"search": "af_1", "name": "af_2"}
+        assert self.search_afs(users, acquisition_frameworks, payload) == set()
+
+    # --- dataset route (list of the datasets of an AF)
+
+    def test_dataset_route(self, users, datasets, actors_and_dates):
+        search = lambda payload: self.search_datasets(users, datasets, payload)
+        ds = datasets["belong_af_1"]
+        assert search({"name": "belong_af_1"}) == {"belong_af_1"}
+        assert search({"uuid": str(ds.unique_dataset_id)}) == {"belong_af_1"}
+        assert search({"person": users["noright_user"].id_role}) == {"belong_af_1"}
+        # the digitizer of a dataset is one of its persons
+        found = search({"person": users["stranger_user"].id_role})
+        assert found == {"belong_af_1", "belong_af_2", "stranger_dataset"}
+        organism = users["user"].organisme.id_organisme
+        found = search({"organism": organism})
+        assert "own_dataset" in found and not found & {"belong_af_1", "belong_af_2"}
+        created = ds.meta_create_date
+        date = {"year": created.year, "month": created.month, "day": created.day}
+        assert "belong_af_1" in search({"date": date})
+        assert search({"date": {"year": created.year - 1, "month": 1, "day": 1}}) == set()
+        today = {"year": created.year, "month": created.month, "day": created.day}
+        assert "belong_af_1" in search({"date_min": today, "date_max": today})
+        assert search({"date_max": {"year": created.year - 1, "month": 1, "day": 1}}) == set()
+        assert "belong_af_1" in search({"search": "belong_af_1"})
+
+    def test_dataset_route_lists_the_datasets_of_an_af_matching_the_search(
+        self, users, acquisition_frameworks, datasets
+    ):
+        """expanding an AF found by its own name still lists its datasets"""
+        payload = {
+            "search": "af_2",
+            "id_acquisition_frameworks": [acquisition_frameworks["af_2"].id_acquisition_framework],
+        }
+        assert "belong_af_2" in self.search_datasets(users, datasets, payload)

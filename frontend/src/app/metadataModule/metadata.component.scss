@@ -127,3 +127,81 @@ mat-expansion-panel {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+$control-height: 40px;
+
+.actions-bar {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+// Material outline form fields are 56px high: make the search field as high as the buttons
+@mixin compact-form-field {
+  ::ng-deep .mat-mdc-text-field-wrapper {
+    height: $control-height;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  ::ng-deep .mat-mdc-form-field-infix {
+    min-height: $control-height;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  // center the icons vertically in the field
+  ::ng-deep .mat-mdc-form-field-icon-prefix,
+  ::ng-deep .mat-mdc-form-field-icon-suffix {
+    display: flex;
+    align-items: center;
+    align-self: center;
+    height: $control-height;
+  }
+
+  ::ng-deep .mat-mdc-form-field-icon-prefix > .mat-icon {
+    padding: 0 8px 0 12px;
+  }
+
+  ::ng-deep .mat-mdc-form-field-icon-suffix .mat-mdc-icon-button {
+    height: $control-height;
+    width: $control-height;
+    padding: 8px;
+  }
+
+  // keep the outline row at the same height
+  ::ng-deep .mat-mdc-form-field-flex {
+    height: $control-height;
+  }
+}
+
+.search-field {
+  flex: 1 1 auto;
+  max-width: 36rem;
+
+  @include compact-form-field;
+}
+
+.add-button,
+.filters-toggle {
+  height: $control-height;
+}
+
+.filter-pills {
+  margin-top: 0.75rem;
+  display: flex;
+  justify-content: center;
+
+  ::ng-deep .mdc-evolution-chip-set__chips {
+    justify-content: center;
+  }
+}

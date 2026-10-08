@@ -85,6 +85,14 @@ class TestApiUsersMenu:
         # (upper(a.nom_role::text) || ' '::text) || a.prenom_role::text AS nom_complet,
         assert users_[0]["nom_complet"].lower() == nom_complet.lower()
 
+    def test_menu_limit(self, users, user_tlist):
+        set_logged_user(self.client, users["user"])
+
+        resp = self.client.get(url_for("users.get_roles_by_menu_id", limit=1))
+
+        assert resp.status_code == 200
+        assert len(resp.json) == 1
+
     def test_menu_notexists(self, users, unavailable_menu_id):
         set_logged_user(self.client, users["user"])
         resp = self.client.get(url_for("users.get_roles_by_menu_id", id_menu=unavailable_menu_id))

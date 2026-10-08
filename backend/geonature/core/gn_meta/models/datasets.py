@@ -9,11 +9,12 @@ from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import JSONB, UUID as UUIDType
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.schema import FetchedValue
+from utils_flask_sqla.fulltext import fts_document, fts_query, ts_rank
 from utils_flask_sqla.models import qfilter
 import marshmallow as ma
 
 from pypnnomenclature.models import TNomenclatures
-from pypnusershub.db.models import User
+from pypnusershub.db.models import User, Organisme
 from utils_flask_sqla.serializers import serializable
 
 from geonature.utils.env import DB, db
@@ -268,14 +269,20 @@ class TDatasets(db.Model):
         if name:
             query = query.where(cls.dataset_name.ilike(f"%{name}%"))
 
+        create_date = sa.cast(cls.meta_create_date, sa.DATE)
         date = params.get("date")
         if date:
-            query = query.where(sa.cast(cls.meta_create_date, sa.DATE) == date)
+            query = query.where(create_date == date)
+        if params.get("date_min"):
+            query = query.where(create_date >= params["date_min"])
+        if params.get("date_max"):
+            query = query.where(create_date <= params["date_max"])
 
         actors = []
         person = params.get("person")
         if person:
             actors.append(cls.cor_dataset_actor.any(CorDatasetActor.id_role == person))
+            actors.append(cls.id_digitizer == person)
         organism = params.get("organism")
         if organism:
             actors.append(cls.cor_dataset_actor.any(CorDatasetActor.id_organism == organism))
@@ -288,54 +295,53 @@ class TDatasets(db.Model):
 
         search = params.get("search")
         if search:
-            search = search.strip()
-            # Where clauses to include other matching possibilities (id, uuid)
-            where_clauses = []
-            if search.isdigit():  # ID AF match
-                where_clauses.append(cls.id_dataset == int(search))
-
-            if len(search) >= MIN_LENGTH_UUID_OR_DATE_SEARCH_STRING:  # UUID match
-                where_clauses.append(sa.cast(cls.unique_dataset_id, sa.String).ilike(f"{search}%"))
-
-            # if name search include acquisition framework
-            if _af_search:
-                where_clauses.append(
-                    cls.acquisition_framework.has(
-                        TAcquisitionFramework.filter_by_params(
-                            {"search": search},
-                            _ds_search=False,
-                        ).whereclause
-                    ),
-                )
-
-            # Dataset name matching
-            search_words_dataset_cte = select(
-                func.unnest(func.string_to_array(search, " ")).label("word")
-            ).cte("search_words_dataset_cte")
-            matched_words_dataset_cte = (
-                select(
-                    cls.id_dataset,
-                    func.count().label("match_count"),
-                )
-                .join(
-                    search_words_dataset_cte,
-                    sa.or_(
-                        cls.dataset_name.ilike(
-                            func.concat("%", search_words_dataset_cte.c.word, "%")
-                        ),
-                        *where_clauses,
-                    ),
-                )
-                .group_by(
-                    cls.id_dataset,
-                )
-            ).cte("matched_words_dataset_cte")
-
-            query = query.where(cls.id_dataset == matched_words_dataset_cte.c.id_dataset).order_by(
-                matched_words_dataset_cte.c.match_count.desc()
-            )
+            query = cls._filter_by_search(search.strip(), query=query, af_search=_af_search)
 
         return query
+
+    @classmethod
+    def _filter_by_search(cls, search, *, query, af_search):
+        """Full text search on the name, description, keywords, digitizer and actors, plus the
+        beginning of the UUID. Results are ordered by relevance."""
+        from .aframework import TAcquisitionFramework
+
+        tsquery = fts_query(search)
+        if tsquery is None:
+            return query
+        document = fts_document(
+            cls.dataset_name,
+            cls.dataset_shortname,
+            cls.dataset_desc,
+            cls.keywords,
+        )
+        matches = [
+            document.op("@@")(tsquery),
+            cls.digitizer.has(fts_document(User.nom_complet).op("@@")(tsquery)),
+            cls.cor_dataset_actor.any(
+                sa.or_(
+                    CorDatasetActor.organism.has(
+                        fts_document(Organisme.nom_organisme).op("@@")(tsquery)
+                    ),
+                    CorDatasetActor.role.has(fts_document(User.nom_complet).op("@@")(tsquery)),
+                )
+            ),
+        ]
+        # the beginning of the UUID, as typed: as words, its groups would match any prefix
+        matches.append(
+            func.lower(sa.cast(cls.unique_dataset_id, sa.String)).startswith(
+                search.lower(), autoescape=True
+            )
+        )
+        # the acquisition framework of the dataset can match too
+        if af_search:
+            matches.append(
+                cls.acquisition_framework.has(
+                    TAcquisitionFramework.filter_by_params(
+                        {"search": search}, _ds_search=False
+                    ).whereclause
+                )
+            )
+        return query.where(sa.or_(*matches)).order_by(ts_rank(document, tsquery).desc())
 
     @qfilter(query=True)
     def filter_by_readable(cls, query, user=None):

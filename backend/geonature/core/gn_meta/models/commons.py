@@ -13,8 +13,6 @@ from utils_flask_sqla.serializers import serializable
 
 from geonature.utils.env import DB, db
 
-MIN_LENGTH_UUID_OR_DATE_SEARCH_STRING = 5
-
 
 class DateFilterSchema(ma.Schema):
     year = ma.fields.Integer()
@@ -29,6 +27,8 @@ class MetadataFilterSchema(ma.Schema):
     uuid = ma.fields.UUID(allow_none=True)
     name = ma.fields.String()
     date = ma.fields.Nested(DateFilterSchema)
+    date_min = ma.fields.Nested(DateFilterSchema)
+    date_max = ma.fields.Nested(DateFilterSchema)
     person = ma.fields.Integer()
     organism = ma.fields.Integer()
     areas = ma.fields.List(ma.fields.Integer())
@@ -38,14 +38,16 @@ class MetadataFilterSchema(ma.Schema):
 
     @ma.post_load(pass_collection=False)
     def convert_date(self, data, **kwargs):
-        if "date" in data:
-            date = data["date"]
+        for field_name in ("date", "date_min", "date_max"):
+            if field_name not in data:
+                continue
+            date = data[field_name]
             try:
-                data["date"] = datetime.date(
+                data[field_name] = datetime.date(
                     year=date["year"], month=date["month"], day=date["day"]
                 )
-            except TypeError as exc:
-                raise ma.ValidationError(*exc.args, field_name="date") from exc
+            except (KeyError, TypeError, ValueError) as exc:
+                raise ma.ValidationError(*exc.args, field_name=field_name) from exc
         return data
 
 

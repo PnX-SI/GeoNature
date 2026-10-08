@@ -525,9 +525,9 @@ def get_acquisition_frameworks():
     )
     if params:
         params_for_filter = params.copy()
-        params_for_filter.pop(
-            "datasets", None
-        )  # create a conflict with datasets param in filter by param
+        if not isinstance(params_for_filter.get("datasets"), dict):
+            # legacy flag (`datasets=1`) without effect, only a dict holds datasets criteria
+            params_for_filter.pop("datasets", None)
         params_for_filter.pop("per_page", None)
         params_for_filter.pop("page", None)
         af_list = TAcquisitionFramework.filter_by_params(params_for_filter, query=af_list)
@@ -551,45 +551,39 @@ def get_acquisition_frameworks():
             ),
         ),
     )
+    # creator and actors are always returned: they are already loaded for the permission checks
+    only.extend(
+        [
+            "creator",
+            "cor_af_actor",
+            "cor_af_actor.nomenclature_actor_role",
+            "cor_af_actor.organism",
+            "cor_af_actor.role",
+        ]
+    )
+    af_list = af_list.options(
+        joinedload(TAcquisitionFramework.creator),
+        joinedload(TAcquisitionFramework.cor_af_actor).options(
+            joinedload(CorAcquisitionFrameworkActor.nomenclature_actor_role),
+        ),
+    )
     if params.get("datasets", default=False, type=int):
         only.extend(
             [
                 "datasets.+cruved",
-            ]
-        )
-    if params.get("creator", default=False, type=int):
-        only.append("creator")
-        af_list = af_list.options(joinedload(TAcquisitionFramework.creator))
-    if params.get("actors", default=False, type=int):
-        only.extend(
-            [
-                "cor_af_actor",
-                "cor_af_actor.nomenclature_actor_role",
-                "cor_af_actor.organism",
-                "cor_af_actor.role",
+                "datasets.cor_dataset_actor",
+                "datasets.cor_dataset_actor.nomenclature_actor_role",
+                "datasets.cor_dataset_actor.organism",
+                "datasets.cor_dataset_actor.role",
             ]
         )
         af_list = af_list.options(
-            joinedload(TAcquisitionFramework.cor_af_actor).options(
-                joinedload(CorAcquisitionFrameworkActor.nomenclature_actor_role),
+            joinedload(TAcquisitionFramework.datasets).options(
+                joinedload(TDatasets.cor_dataset_actor).options(
+                    joinedload(CorDatasetActor.nomenclature_actor_role),
+                ),
             ),
         )
-        if params.get("datasets", default=False, type=int):
-            only.extend(
-                [
-                    "datasets.cor_dataset_actor",
-                    "datasets.cor_dataset_actor.nomenclature_actor_role",
-                    "datasets.cor_dataset_actor.organism",
-                    "datasets.cor_dataset_actor.role",
-                ]
-            )
-            af_list = af_list.options(
-                joinedload(TAcquisitionFramework.datasets).options(
-                    joinedload(TDatasets.cor_dataset_actor).options(
-                        joinedload(CorDatasetActor.nomenclature_actor_role),
-                    ),
-                ),
-            )
 
     af_schema = AcquisitionFrameworkSchema(only=only, many=True)
     if per_page == -1:
