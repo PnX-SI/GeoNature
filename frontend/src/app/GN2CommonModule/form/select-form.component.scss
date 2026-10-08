@@ -1,0 +1,21 @@
+// Styles shared by the components extending SelectFormComponent (ViewEncapsulation.None)
+
+// Material appearance: fill the width given by the parent
+pnx-observers,
+pnx-organism {
+  display: block;
+
+  .pnx-select-material {
+    width: 100%;
+  }
+}
+
+// Multiple selection: the clickable area covers the whole option (see SelectFormComponent.toggleItem)
+.pnx-select-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 -16px;
+  padding: 0 16px;
+  min-height: 48px;
+}

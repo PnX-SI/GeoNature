@@ -3,7 +3,7 @@
     appearance="outline"
     subscriptSizing="dynamic"
     class="pnx-select-material"
-    data-qa="gn-common-form-observers-material"
+    data-qa="gn-common-form-organism-material"
   >
     <mat-label>{{ label }}</mat-label>
     <input
@@ -45,7 +45,7 @@
         <mat-option
           *ngIf="!multiSelect || !isSelected(item)"
           [value]="item"
-          [attr.data-qa]="'gn-common-form-observers-select-' + item.nom_complet"
+          [attr.data-qa]="'gn-common-form-organism-select-' + item.nom_organisme"
         >
           <div
             *ngIf="multiSelect; else singleOption"
@@ -77,14 +77,14 @@
   <small>{{ label }}</small>
   <ng-select
     [ngClass]="class"
-    [items]="(isRemote ? selectOptions$ : observers) | async"
-    bindLabel="nom_complet"
+    [items]="(isRemote ? selectOptions$ : organisms) | async"
+    bindLabel="nom_organisme"
     [bindValue]="bindValue"
     [compareWith]="bindValue ? null : compareWith"
     [multiple]="multiSelect"
     [clearable]="clearable"
     [placeholder]="placeHolder || label"
-    data-qa="gn-common-form-observers-select"
+    data-qa="gn-common-form-organism-select"
     [virtualScroll]="true"
     [typeahead]="isRemote ? search$ : null"
     [loading]="loading"
@@ -92,24 +92,5 @@
     [typeToSearchText]="'RemoteSearch.TypeToSearch' | translate: { count: minSearchLength }"
     [notFoundText]="'RemoteSearch.NoResults' | translate"
     [formControl]="parentFormControl"
-  >
-    <ng-template
-      ng-option-tmp
-      let-item="item"
-      let-index="index"
-      let-search="searchTerm"
-    >
-      <div
-        matTooltip="{{ item.nom_complet }}"
-        matTooltipPosition="after"
-      >
-        <span
-          class="pre-wrap"
-          [attr.data-qa]="'gn-common-form-observers-select-' + item.nom_complet"
-        >
-          {{ item.nom_complet }}
-        </span>
-      </div>
-    </ng-template>
-  </ng-select>
+  ></ng-select>
 </ng-template>
