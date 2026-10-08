@@ -2,6 +2,7 @@ import datetime
 import json
 import tempfile
 import time
+from unittest.mock import MagicMock
 from warnings import warn
 
 import pytest
@@ -1175,3 +1176,15 @@ def add_synthese_read_permissions(synthese_module):
         return perm
 
     return _add_synthese_read_permissions
+
+
+@pytest.fixture
+def fake_smtp(monkeypatch):
+    mock_send = MagicMock(return_value=True)
+
+    monkeypatch.setattr("geonature.utils.utilsmails.send_mail", mock_send)
+    monkeypatch.setattr(
+        "geonature.core.users.register_post_actions.send_mail", mock_send, raising=False
+    )
+
+    return mock_send

@@ -1,0 +1,82 @@
+<h2 mat-dialog-title>Envoyer un email</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="mailForm">
+    <div class="mb-3">
+      <div class="d-flex align-items-center justify-content-between">
+        <strong>{{ 'Recipients' | translate }}</strong>
+      </div>
+
+      <div
+        formArrayName="observers"
+        class="d-flex flex-column"
+      >
+        <mat-checkbox
+          color="success"
+          *ngFor="let observer of observers; let i = index"
+          [formControlName]="i"
+        >
+          {{ observer.nom_complet }}
+        </mat-checkbox>
+      </div>
+
+      <mat-error *ngIf="observersArray.hasError('noObserver')">
+        {{ 'Mail.Errors.NoObserverSelected' | translate }}
+      </mat-error>
+    </div>
+
+    <mat-form-field
+      appearance="fill"
+      class="w-100"
+    >
+      <mat-label>Sujet</mat-label>
+      <input
+        matInput
+        formControlName="subject"
+      />
+      <mat-error *ngIf="mailForm.get('subject')?.hasError('required')">
+        {{ 'Mail.Errors.SubjectRequired' | translate }}
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="fill"
+      class="w-100 mt-3"
+    >
+      <mat-label>Contenu</mat-label>
+      <textarea
+        matInput
+        formControlName="message"
+        rows="5"
+      ></textarea>
+      <mat-error *ngIf="mailForm.get('message')?.hasError('required')">
+        {{ 'Mail.Errors.ContentRequired' | translate }}
+      </mat-error>
+      <mat-error *ngIf="mailForm.get('message')?.hasError('minlength')">
+        {{ 'Mail.Errors.ContentToShort' | translate }}
+      </mat-error>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button
+    mat-button
+    type="button"
+    (click)="onCancel()"
+  >
+    Annuler
+  </button>
+  <button
+    mat-raised-button
+    color="primary"
+    type="button"
+    [disabled]="mailForm.invalid || isLoading"
+    (click)="onSubmit()"
+  >
+    {{ 'Actions.Send' | translate }}
+    <ng-container *ngIf="getSelectedObservers().length > 1">
+      ({{ getSelectedObservers().length }})
+    </ng-container>
+  </button>
+</mat-dialog-actions>

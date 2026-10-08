@@ -290,7 +290,7 @@ class TestGNMeta:
             assert response.status_code == 200
 
             # Only minimal user information must be exposed
-            expected_keys = {"id_role", "nom_complet"}
+            expected_keys = {"has_mail", "id_role", "nom_complet"}
             assert set(response.json["creator"].keys()) == expected_keys
             roles = [actor["role"] for actor in response.json["cor_af_actor"] if actor.get("role")]
             assert roles
@@ -1072,7 +1072,7 @@ class TestGNMeta:
         assert response.status_code == 200
 
         # Only minimal user information must be exposed
-        expected_keys = {"id_role", "nom_complet"}
+        expected_keys = {"has_mail", "id_role", "nom_complet"}
         assert set(response.json["creator"].keys()) == expected_keys
         roles = [actor["role"] for actor in response.json["cor_dataset_actor"] if actor.get("role")]
         assert roles

@@ -43,7 +43,8 @@
     "PDFExport": "Exporter en PDF",
     "DownloadData": "Télécharger les données",
     "Copy": "Copier",
-    "Clear": "Effacer"
+    "Clear": "Effacer",
+    "Send": "Envoyer"
   },
   "Messages": {
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire"
@@ -172,6 +173,7 @@
   "Creator": "Créateur",
   "Creators": "Créateurs",
   "Creators?": "Créateur(s)",
+  "Recipients": "Destinataires",
 
   "Dataset": "Jeu de données",
   "Datasets": "Jeux de données",
@@ -727,5 +729,17 @@
   "Releve": {
     "InfoGeo": "Information géographique du relevé"
   },
-  "ColonCharSpaced": " : "
+  "Mail": {
+    "Messages": {
+      "EmailSent": "Email envoyé",
+      "MultipleEmailsSent": "{{ count }} emails envoyés",
+      "SendFailed": "Impossible d'envoyer l'email à: {{ names }}"
+    },
+    "Errors": {
+      "NoObserverSelected": "Sélectionnez au moins un observateur",
+      "SubjectRequired": "Sujet requis",
+      "ContentRequired": "Contenu requis",
+      "ContentToShort": "Contenu trop court"
+    }
+  }
 }

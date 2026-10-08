@@ -105,11 +105,11 @@
           <mat-icon>edit</mat-icon>
         </button>
         <button
-          *ngIf="config.FRONTEND.DISPLAY_EMAIL_INFO_OBS && email"
+          *ngIf="displayMailForm$ | async"
           mat-mini-fab
           ngbTooltip="{{ 'Synthese.Actions.Mailto' | translate }}"
           placement="bottom"
-          (click)="sendMail()"
+          (click)="openMailForm()"
         >
           <mat-icon>mail</mat-icon>
         </button>
