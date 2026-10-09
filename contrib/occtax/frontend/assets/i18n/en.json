@@ -31,6 +31,12 @@
       "GeoObjectNature": "Nature of the geographical object",
       "PlaceName": "Place name",
       "Precision": "Precision",
+      "VegetationStrata": "Vegetation strata",
+      "Stratum": "Stratum",
+      "Cover": "Cover (%)",
+      "HeightAvg": "Average height (m)",
+      "HeightMin": "Minimum height (m)",
+      "HeightMax": "Maximum height (m)",
       "Errors": {
         "AltitudeError": "The maximum altitude cannot be less than the minimum altitude",
         "DepthError": "The maximum depth cannot be less than the minimum depth",

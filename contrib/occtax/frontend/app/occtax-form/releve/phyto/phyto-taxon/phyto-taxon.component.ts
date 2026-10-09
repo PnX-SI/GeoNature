@@ -19,7 +19,7 @@ import { DataFormService } from "@geonature_common/form/data-form.service";
   templateUrl: "./phyto-taxon.component.html",
   styleUrls: ["./phyto-taxon.component.scss"],
 })
-export class PhytoTaxonComponent implements OnInit {
+export class PhytoTaxonComponent implements OnInit, OnDestroy {
   public occurrenceForm: UntypedFormGroup;
   public strateNomenclatures: any;
   public editedRow: number = -1;
@@ -32,13 +32,14 @@ export class PhytoTaxonComponent implements OnInit {
   public strateColumns: string[] = [];
   public displayedColumns: string[] = [];
 
+  // constructor: Angular 16 plutôt?
   constructor(
     public form: OcctaxFormService,
     private fb: FormBuilder,
     private dataFormS: DataFormService,
   ) {}
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.rows = this.fb.array([]);
 
     combineLatest([
@@ -75,5 +76,10 @@ export class PhytoTaxonComponent implements OnInit {
         },
         error: (err) => console.error("Erreur:", err),
       });
+  }
+
+  public ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

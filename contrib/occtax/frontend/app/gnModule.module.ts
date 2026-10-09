@@ -26,6 +26,7 @@ import { OcctaxProfilesComponent } from "./occtax-form/occurrence/profiles.compo
 import { OcctaxFormParamDialog } from "./occtax-form/form-param/form-param.dialog";
 import { PhytoStrateComponent } from "./occtax-form/releve/phyto/phyto-strate/phyto-strate.component";
 import { PhytoTaxonComponent } from "./occtax-form/releve/phyto/phyto-taxon/phyto-taxon.component";
+import { PhytoCountingComponent } from "./occtax-form/releve/phyto/phyto-counting/phyto-counting.component";
 
 // Service
 import { OcctaxDataService } from "./services/occtax-data.service";
@@ -119,6 +120,7 @@ export function createTranslateLoader(http: HttpClient, config: ConfigService) {
     OcctaxFormParamDialog,
     PhytoStrateComponent,
     PhytoTaxonComponent,
+    PhytoCountingComponent,
   ],
   providers: [
     OcctaxDataService,

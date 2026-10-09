@@ -4,6 +4,10 @@ Revision ID: edba8d03ec71
 Revises: d2c12d091e14
 Create Date: 2026-05-19 14:18:22.862896
 
+Comment: This is not longer useful in GN2.18 as theses steps can be
+executed with geonature occtax create-duplicated-module command.
+TODO: remove this migration in GN2.xx?
+
 """
 
 from alembic import op
