@@ -7,6 +7,8 @@
 }
 
 #app-toolbar {
+  // Keep the toolbar height in sync with the --gn-toolbar-height CSS variable
+  height: var(--gn-toolbar-height);
   display: flex !important;
   flex-wrap: nowrap !important;
   align-items: center;

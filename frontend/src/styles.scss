@@ -3,6 +3,15 @@
 
 :root {
   --green: green;
+  // Height of the GeoNature toolbar (#app-toolbar), matching Angular Material's
+  // single-row toolbar height (64px, 56px on small screens)
+  --gn-toolbar-height: 64px;
+  // Height available below the toolbar (same as CommonService.calcCardContentHeight())
+  --gn-content-height: calc(100vh - var(--gn-toolbar-height));
+
+  @media (max-width: 599px) {
+    --gn-toolbar-height: 56px;
+  }
 }
 
 html,

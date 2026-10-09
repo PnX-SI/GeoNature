@@ -181,6 +181,18 @@ Style et ergonomie
 
   - Utiliser le système de grille de Bootstrap pour assurer le responsive design sur l'application. On ne vise pas l'utilisation sur mobile, mais à minima sur ordinateur portable de petite taille.
 
+- Hauteur des pages pleine hauteur (carte + liste par exemple) :
+
+  - Utiliser la variable CSS ``--gn-content-height``, qui correspond à la hauteur disponible sous la barre d'outils de GeoNature (la hauteur de la barre d'outils est elle-même définie par ``--gn-toolbar-height``). Basée sur ``100vh``, elle suit automatiquement le redimensionnement de la fenêtre, ce qui évite de recalculer la hauteur en TypeScript (``CommonService.calcCardContentHeight()``) :
+
+    .. code-block:: css
+
+        #my-container {
+          height: calc(var(--gn-content-height) - 40px);
+        }
+
+  - La valeur peut aussi être passée au composant carte : ``<pnx-map height="calc(var(--gn-content-height) - 80px)">``.
+
 .. _mode-dev:
 
 Passer en mode développement
