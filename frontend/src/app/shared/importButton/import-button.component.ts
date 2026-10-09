@@ -10,14 +10,14 @@ import { CruvedStoreService } from '@geonature_common/service/cruved-store.servi
 export class ImportButtonComponent implements OnInit {
   public canImport: boolean = false;
   @Input() moduleCode: string = 'generic';
-  @Input() objectType: any = {};
+  @Input() objectType: string = 'ALL';
   @Input() properties: any = {};
 
   constructor(public _cruvedStore: CruvedStoreService) {}
 
   ngOnInit() {
     const userCruved =
-      this._cruvedStore.cruved[this.moduleCode].module_objects.MONITORINGS_SITES.cruved;
+      this._cruvedStore.cruved[this.moduleCode].module_objects[this.objectType].cruved;
 
     let cruvedImport: any = {};
     if (this._cruvedStore.cruved.IMPORT) {
