@@ -444,8 +444,17 @@ def releveHandler(request, *, releve, scope, module_code=None):
         releve.id_digitiser = g.current_user.id_role
 
     # Check if Phyto module is installed and called from "phyto" context
-    is_phyto_installed = "PHYTO" in current_app.config["ADDITIONAL_FIELDS"]["IMPLEMENTED_MODULES"]
+    # TODO: this method is not up to date. ADDITIONAL FIELDS does not exist in config file
+    # Must find a way to check installation and context with the new method
+    # But this doesn't seem breaking?
+    additionalFields = current_app.config.get("ADDITIONAL_FIELDS", {})
+    implementedModules = additionalFields.get("IMPLEMENTED_MODULES", [])
+    is_phyto_installed = "PHYTO" in implementedModules
+
+    # module_code is None...
     is_phyto_context = module_code and module_code.lower() == "phyto"
+
+    # Never reach
     if is_phyto_installed and is_phyto_context:
         new_strates = properties_dict.get("t_vegetation_stratum", [])
         existing_strates = getattr(releve, "t_vegetation_stratum", [])

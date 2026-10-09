@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy, Input, ViewChild } from "@angular/core";
+import { Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FormArray, FormBuilder, Validators } from "@angular/forms";
 import { MatTable } from "@angular/material/table";
 import { DataFormService } from "@geonature_common/form/data-form.service";
-import { Subscription } from "rxjs";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 interface IStrate {
   id_vegetation_stratum: number | null;
@@ -13,19 +14,23 @@ interface IStrate {
   max_height: number | null;
 }
 
+/**
+ * This component is a form to edit the 'strates' when in the phyto module. It is used in the first 'releve' form.
+ * TODO: Split the loadStrateTable method into smaller methods to improve readability and maintainability. 
+ *  Make it load the nomencalture only once
+ * FIX: Loosing focus on input when changing the value of a cell in the table
+ */
 @Component({
-  selector: "phyto-strate",
+  selector: "pnx-occtax-form-phyto-strate",
   templateUrl: "./phyto-strate.component.html",
   styleUrls: ["./phyto-strate.component.scss"],
 })
 export class PhytoStrateComponent implements OnInit, OnDestroy {
-  @ViewChild("strateTable", { static: true }) table: MatTable<any>;
-  @Input() parentFormControl: FormArray;
+  @ViewChild("strateTable", { static: true }) public table!: MatTable<any>;
+  @Input() public parentFormControl!: FormArray;
 
-  private valueChangesSub: Subscription;
-
-  stratesLabels: { [index: string]: string } = {};
-  displayedColumns: string[] = [
+  public stratesLabels: Record<string, string> = {};
+  public readonly displayedColumns: string[] = [
     "label_default",
     "percentage_cover_vegetation_stratum",
     "average_height",
@@ -33,30 +38,41 @@ export class PhytoStrateComponent implements OnInit, OnDestroy {
     "max_height",
   ];
 
+  private readonly destroy$ = new Subject<void>();
+
   constructor(
-    private fb: FormBuilder,
-    private dataFormS: DataFormService,
+    private readonly fb: FormBuilder,
+    private readonly dataFormS: DataFormService,
   ) {}
 
-  ngOnInit(): void {
-    this.loadStrateTable();
-    this.valueChangesSub = this.parentFormControl.valueChanges.subscribe(() => {
-      this.loadStrateTable();
-    });
-  }
-
-  ngOnDestroy(): void {
-    if (this.valueChangesSub) {
-      this.valueChangesSub.unsubscribe();
+  public ngOnInit(): void {
+    if (!this.parentFormControl) {
+      return;
     }
+
+    this.loadStrateTable();
+    this.parentFormControl.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.loadStrateTable());
   }
 
-  loadStrateTable() {
+  public ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private loadStrateTable(): void {
+    if (!this.parentFormControl) {
+      return;
+    }
+
     this.dataFormS
       .getNomenclature("STRATE_VEGETATION")
-      .subscribe((strateNomenclatures) => {
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((strateNomenclatures: any) => {
         const backendStrates = (this.parentFormControl.value ||
           []) as IStrate[];
+        this.stratesLabels = {};
 
         const strateFormGroups = strateNomenclatures.values.map(
           (strate: any) => {
@@ -66,7 +82,6 @@ export class PhytoStrateComponent implements OnInit, OnDestroy {
               (s) =>
                 s.id_nomenclature_vegetation_stratum === strate.id_nomenclature,
             ) || {
-              // If not found, create empty strate
               id_vegetation_stratum: null,
               id_nomenclature_vegetation_stratum: strate.id_nomenclature,
               percentage_cover_vegetation_stratum: null,
@@ -94,13 +109,12 @@ export class PhytoStrateComponent implements OnInit, OnDestroy {
           },
         );
 
-        // Put emitEvent to false to avoid infinite loop, as valueChanges subscription on parentFormControl
         this.parentFormControl.clear({ emitEvent: false });
         strateFormGroups.forEach((strate) =>
           this.parentFormControl.push(strate, { emitEvent: false }),
         );
 
-        this.table.renderRows();
+        this.table?.renderRows();
       });
   }
 }

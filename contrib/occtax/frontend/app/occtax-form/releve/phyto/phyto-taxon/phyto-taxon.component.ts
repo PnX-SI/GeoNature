@@ -10,8 +10,12 @@ import { takeUntil, filter } from "rxjs/operators";
 import { OcctaxFormService } from "../../../occtax-form.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 
+/*** Component used in "Relevé phytosocio" tab
+ * 08/10/2026: currently just a table header
+ */
+
 @Component({
-  selector: "phyto-taxon",
+  selector: "pnx-occtax-form-phyto-taxon",
   templateUrl: "./phyto-taxon.component.html",
   styleUrls: ["./phyto-taxon.component.scss"],
 })
