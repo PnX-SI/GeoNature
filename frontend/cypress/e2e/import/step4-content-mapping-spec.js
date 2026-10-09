@@ -33,7 +33,7 @@ import {
 //
 // ////////////////////////////////////////////////////////////////////////////
 
-const FIELD = 'id_nomenclature_behaviour';
+const FIELD = 'OCC_COMPORTEMENT';
 const MAPPING_TEST_NAME = uuidv4();
 const MAPPING_TEST_RENAME = uuidv4();
 const USER_ADMIN = USERS[0];
