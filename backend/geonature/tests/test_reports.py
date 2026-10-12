@@ -168,6 +168,11 @@ class TestReports:
         )
         assert response.status_code == 200
         assert len(response.json) == 1
+        # fields used by the discussion card (author, owner check, report type)
+        report = response.json[0]
+        assert report["id_role"] == users["admin_user"].id_role
+        assert report["user"]["nom_complet"]
+        assert report["report_type"]["type"] == "discussion"
 
         # TEST INVALID - TYPE DOES NOT EXISTS
         response = self.client.get(

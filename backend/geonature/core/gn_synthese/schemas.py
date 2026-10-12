@@ -28,6 +28,7 @@ class ReportTypeSchema(ma.SQLAlchemyAutoSchema):
 class ReportSchema(SmartRelationshipsMixin, ma.SQLAlchemyAutoSchema):
     class Meta:
         model = TReport
+        include_fk = True
 
     report_type = ma.Nested(ReportTypeSchema, dump_only=True)
     user = ma.Nested(UserSafeSchema, dump_only=True)

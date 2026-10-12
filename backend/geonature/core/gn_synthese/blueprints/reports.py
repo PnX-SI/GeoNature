@@ -343,7 +343,9 @@ def list_reports(permissions, id_synthese):
     # Determine the sorting
     query = sort_reports(query, orderby, sort)
 
-    return ReportSchema(many=True).dump(db.session.scalars(query).all())
+    return ReportSchema(many=True, only=["user", "report_type"]).dump(
+        db.session.scalars(query).all()
+    )
 
 
 @reports_blueprint.route("/<int:id_report>", methods=["DELETE"])
