@@ -1,7 +1,11 @@
+import sys
 from pathlib import Path
 
-# tomli plutôt que tomllib : les tables en ligne multilignes des configs sont du TOML 1.1
-import tomli
+# tomllib ne lit les tables en ligne multilignes de TOML 1.1 qu'à partir de Python 3.15
+if sys.version_info >= (3, 15):
+    import tomllib
+else:
+    import tomli as tomllib
 from marshmallow import EXCLUDE
 from marshmallow.exceptions import ValidationError
 
@@ -31,4 +35,4 @@ def load_toml(toml_file):
     if not Path(toml_file).is_file():
         raise GeoNatureError("Missing file {}".format(toml_file))
     with open(toml_file, "rb") as f:
-        return tomli.load(f)
+        return tomllib.load(f)
