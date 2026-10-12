@@ -18,6 +18,8 @@ import { OcctaxFormOccurrenceService } from "./occurrence/occurrence.service";
 import { OcctaxTaxaListService } from "./taxa-list/taxa-list.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
 import { OcctaxFormCountingsService } from "./counting/countings.service";
+import { PhytoCountingsService } from "./phyto/phyto-counting/countings.service";
+import { PhytoOccurrenceService } from "./phyto/phyto-occurrence/occurrence.service";
 import { OcctaxFormMapService } from "./map/occtax-map.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { filter } from "rxjs/operators";
@@ -35,6 +37,8 @@ import { OcctaxConfigService } from "../services/occtax-config.service";
     OcctaxTaxaListService,
     OcctaxFormCountingsService,
     OcctaxFormMapService,
+    PhytoCountingsService,
+    PhytoOccurrenceService,
   ],
 })
 export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -45,6 +49,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
   releveUrl: string = null;
   cardHeight: number;
   cardContentHeight: any;
+  public module: string;
 
   constructor(
     public dialog: MatDialog,
@@ -66,6 +71,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.moduleService.currentModule$.subscribe((module) => {
       this.currentModulePath = module.module_path.toLowerCase();
     });
+    this.module = this.moduleService.currentModule.module_code
 
     this.occtaxFormService.idTaxonList = this.occtaxConfig.moduleConf.id_taxon_list;
 

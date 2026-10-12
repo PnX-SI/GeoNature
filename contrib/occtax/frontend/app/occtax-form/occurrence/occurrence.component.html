@@ -1,4 +1,4 @@
-<h5>Ajout d'un taxon</h5>
+<h5>{{ 'Occtax.Taxon.AddTaxon' | translate }}</h5>
 <div
   class="row"
   style="height: 70px !important"
@@ -431,7 +431,7 @@
       data-qa="occurrence-add-btn"
       mat-raised-button
       class="button-success uppercase"
-      matTooltip="Enregistrer ce taxon"
+      matTooltip="{{ 'Occtax.Taxon.Actions.SaveThisTaxon' | translate }}"
       [disabled]="occtaxFormOccurrenceService.form.invalid"
       (click)="submitOccurrenceForm()"
     >
@@ -440,7 +440,7 @@
         diameter="25"
         strokeWidth="2"
       ></mat-spinner>
-      Enregistrer ce taxon
+      {{ 'Occtax.Taxon.Actions.SaveThisTaxon' | translate }}
       <mat-icon style="vertical-align: middle">save</mat-icon>
     </button>
   </ng-container>

@@ -19,6 +19,7 @@
         "Modified": "Relevé modifié"
       },
       "SavedTaxon": "Taxon(s) enregistré(s)",
+      "SavedTaxons": "Taxons enregistrés",
 
       "InfoGeo": "Informations géographiques du relevé",
       "Info": "Informations relevé",
@@ -55,6 +56,7 @@
     "Taxon": {
       "Actions": {
         "Save": "Enregistrer le taxon",
+        "SaveThisTaxon": "Enregistrer ce taxon",
         "Add": "Ajouter le taxon",
         "Cancel": "Annuler la saisie du taxon",
         "Validate": "Valider le taxon"
@@ -79,6 +81,7 @@
         "CountingRequiredError": "Veuillez renseigner un dénombrement"
       },
       "ObservedTaxon": "Taxon(s) observé(s)",
+      "AddTaxon": "Ajout d'un taxon",
       "Priority": "Prioritaire",
       "NomCite": "Taxon (nom cité)",
       "TaxonName": "Nom du taxon",
@@ -105,7 +108,8 @@
       "SortByRecord": "Ordre de saisie",
       "SortByName": "Ordre alphabétique",
       "SortAsc": "Ordre croissant",
-      "SortDesc": "Ordre décroissant"
+      "SortDesc": "Ordre décroissant",
+      "NoTaxon": "Aucun taxon pour ce relevé"
     },
     "Counting": {
       "Counting": "Dénombrement",
@@ -119,6 +123,7 @@
       "Phenology": "Phénologie",
       "CountingObject": "Objet du dénombrement",
       "CountingType": "Type de dénombrement",
+      "Abundance": "Abondance",
       "Numbers": "Effectif",
       "Total": "Total",
       "Errors": {

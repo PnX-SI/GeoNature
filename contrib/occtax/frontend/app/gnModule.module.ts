@@ -24,9 +24,10 @@ import { OcctaxFormTaxaListComponent } from "./occtax-form/taxa-list/taxa-list.c
 import { OcctaxFormCountingComponent } from "./occtax-form/counting/counting.component";
 import { OcctaxProfilesComponent } from "./occtax-form/occurrence/profiles.component";
 import { OcctaxFormParamDialog } from "./occtax-form/form-param/form-param.dialog";
-import { PhytoStrateComponent } from "./occtax-form/releve/phyto/phyto-strate/phyto-strate.component";
-import { PhytoTaxonComponent } from "./occtax-form/releve/phyto/phyto-taxon/phyto-taxon.component";
-import { PhytoCountingComponent } from "./occtax-form/releve/phyto/phyto-counting/phyto-counting.component";
+import { PhytoStrateComponent } from "./occtax-form/phyto/phyto-strate/phyto-strate.component";
+import { PhytoTaxonComponent } from "./occtax-form/phyto/phyto-taxa-list/phyto-taxon.component";
+import { PhytoCountingComponent } from "./occtax-form/phyto/phyto-counting/phyto-counting.component";
+import { PhytoOccurrenceComponent } from "./occtax-form/phyto/phyto-occurrence/phyto-occurrence.component";
 
 // Service
 import { OcctaxDataService } from "./services/occtax-data.service";
@@ -121,6 +122,7 @@ export function createTranslateLoader(http: HttpClient, config: ConfigService) {
     PhytoStrateComponent,
     PhytoTaxonComponent,
     PhytoCountingComponent,
+    PhytoOccurrenceComponent,
   ],
   providers: [
     OcctaxDataService,

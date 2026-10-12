@@ -59,6 +59,12 @@ class CorCountingOccurrence(DB.Model):
     id_nomenclature_type_count: Mapped[Optional[int]] = mapped_column(
         Integer, server_default=FetchedValue()
     )
+    id_nomenclature_vegetation_stratum: Mapped[Optional[int]] = mapped_column(
+        Integer, ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature")
+    )
+    id_nomenclature_phytosociological_abundance: Mapped[Optional[int]] = mapped_column(
+        Integer, ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature")
+    )
     count_min: Mapped[Optional[int]]
     count_max: Mapped[Optional[int]]
 

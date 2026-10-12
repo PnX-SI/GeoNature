@@ -17,6 +17,7 @@
         "Modified": "Survey modified"
       },
       "SavedTaxon": "Saved taxon(s)",
+      "SavedTaxons": "Recorded taxa",
 
       "InfoGeo": "Geographical information of the survey",
       "Info": "Survey information",
@@ -47,6 +48,7 @@
     "Taxon": {
       "Actions": {
         "Save": "Save the taxon",
+        "SaveThisTaxon": "Save this taxon",
         "Add": "Add the taxon",
         "Cancel": "Cancel the taxon entry",
         "Validate": "Validate the taxon"
@@ -71,6 +73,7 @@
         "CountingRequiredError": "Please provide a count"
       },
       "ObservedTaxon": "Observed taxon(s)",
+      "AddTaxon": "Add a taxon",
       "Priority": "Priority",
       "NomCite": "Taxon (cited name)",
       "TaxonName": "Taxon name",
@@ -95,7 +98,8 @@
       "SortByRecord": "Order added",
       "SortByName": "Alphabetical order",
       "SortAsc": "Ascending order",
-      "SortDesc": "Descending order"
+      "SortDesc": "Descending order",
+      "NoTaxon": "No taxa for this survey"
     },
     "Counting": {
       "Counting": "Count",
@@ -109,6 +113,7 @@
       "Phenology": "Phenology",
       "CountingObject": "Count object",
       "CountingType": "Count type",
+      "Abundance": "Abundance",
       "Numbers": "Count",
       "Total": "Total",
       "Errors": {
