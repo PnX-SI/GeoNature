@@ -199,12 +199,12 @@ class TRelevesOccurrence(DB.Model):
     geom_local: Mapped[Optional[Any]] = mapped_column(Geometry("GEOMETRY"))
     cd_hab: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey(Habref.cd_hab))
     precision: Mapped[Optional[int]]
-    code_releve = DB.Column(DB.String(50), nullable=True)
-    slope = DB.Column(DB.Numeric(4, 2))
-    area = DB.Column(DB.Numeric(20, 2))
-    id_nomenclature_exposure = DB.Column(DB.Integer)
-    id_nomenclature_location_type = DB.Column(
-        DB.Integer, ForeignKey("ref_geo.bib_areas_types.id_type")
+    code_releve: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    slope: Mapped[Optional[Numeric]] = mapped_column(Numeric(4, 2))
+    area: Mapped[Optional[Numeric]] = mapped_column(Numeric(20, 2))
+    id_nomenclature_exposure: Mapped[Optional[int]] = mapped_column(Integer)
+    id_nomenclature_location_type: Mapped[Optional[int]] = mapped_column(
+        Integer, ForeignKey("ref_geo.bib_areas_types.id_type")
     )
     id_area_attachement = DB.Column(DB.Integer, ForeignKey("ref_geo.l_areas.id_area"))
 

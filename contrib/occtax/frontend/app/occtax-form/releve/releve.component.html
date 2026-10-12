@@ -403,20 +403,12 @@
       *ngIf="module === 'PHYTO'"
       class="col-8"
     >
-      <phyto-vegetation-stratum
+      <pnx-occtax-form-phyto-strate
         [parentFormControl]="propertiesForm.get('t_vegetation_stratum')"
-      ></phyto-vegetation-stratum>
+      ></pnx-occtax-form-phyto-strate>
       </div>
     </div>
 
-  <div class="row">
-    <div
-      *ngIf="module === 'PHYTO'"
-      class="col-8"
-    >
-      <phyto-strate [parentFormControl]="propertiesForm.get('t_vegetation_stratum')"></phyto-strate>
-    </div>
-  </div>
 
 <!-- COMMENTAIRE -->
 <div *ngIf="occtaxConfig.moduleConf.form_fields.comment_releve">
