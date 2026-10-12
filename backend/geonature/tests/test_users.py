@@ -239,6 +239,19 @@ class TestUsers:
         assert resp.json["nom_role"] == "New Admin Name"
         assert resp.json["active"] == True
 
+    def test_get_current_user_remarques(self, users):
+        """
+        Test /auth/get_current_user returns remarques, displayed in the "Mon compte" page.
+        """
+        user = users["admin_user"]
+        with db.session.begin_nested():
+            user.remarques = "remarque de test"
+        set_logged_user(self.client, user)
+
+        response = self.client.get(url_for("auth.get_user_data"))
+        assert response.status_code == 200
+        assert response.json["user"]["remarques"] == "remarque de test"
+
     def test_password_new_cases(self, users):
         """
         Test PUT /password/new for missing token and with token.

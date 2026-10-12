@@ -74,3 +74,11 @@ class TestUsersLogin:
         monkeypatch.setitem(app.config, "PUBLIC_ACCESS_USERNAME", user.identifiant)
         response = self.client.post(url_for("auth.public_login"))
         assert response.status_code == 200
+
+    def test_public_user_unknown(self, app, monkeypatch):
+        """
+        A PUBLIC_ACCESS_USERNAME matching no user must not raise a server error
+        """
+        monkeypatch.setitem(app.config, "PUBLIC_ACCESS_USERNAME", "unknown-public-user")
+        response = self.client.post(url_for("auth.public_login"))
+        assert response.status_code == 403
