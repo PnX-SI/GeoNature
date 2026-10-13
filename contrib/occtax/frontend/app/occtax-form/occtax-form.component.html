@@ -10,7 +10,6 @@
           <mat-icon class="example-tab-icon">place</mat-icon>
           Relevé
         </a>
-        <!-- FIX: Is it clean enough? -->
         <ng-container *ngIf="module !== 'PHYTO'">
           <ng-container *ngIf="occtaxFormService.editionMode | async; else buttonBlock">
           <a (click)="navigate('taxons')" class="tablinks"

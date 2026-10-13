@@ -16,6 +16,11 @@ interface StratumColumn {
   label: string;
 }
 
+/**
+ * The edit button doesn't behave properly
+ * TODO: make it so you can edit all fields and get the same form as the creation form
+ */
+
 @Component({
   selector: "pnx-occtax-form-phyto-taxa-list",
   templateUrl: "./phyto-taxon.component.html",

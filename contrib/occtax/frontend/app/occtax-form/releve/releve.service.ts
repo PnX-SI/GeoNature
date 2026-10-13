@@ -535,6 +535,7 @@ export class OcctaxFormReleveService {
             this.releveForm.markAsPristine();
             this.router.navigate([`${modulePath}/form`, data.id, "taxons"]);
             // FIX: if in phyto mode should redirect to phyto tab not taxons tab
+            // TODO: if I am in phyto context, redirect to phyto tab, else redirect to taxons tab
             this.occtaxFormService.currentTab = "taxons";
           },
           (err) => {
