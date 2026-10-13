@@ -86,6 +86,8 @@ class CountingSchema(MA.SQLAlchemyAutoSchema):
     medias = MA.Nested(MediaSchema, many=True)
     id_individual = MA.auto_field()
     individual = MA.Nested(TIndividualsSchema, dump_only=True)
+    id_nomenclature_vegetation_stratum = MA.auto_field()
+    id_nomenclature_phytosociological_abundance = MA.auto_field()
 
     @pre_load
     def make_counting(self, data, **kwargs):

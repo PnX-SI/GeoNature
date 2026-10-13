@@ -37,6 +37,8 @@ const heightOrderValidator: ValidatorFn = (
 /**
  * This component is a form to edit the 'strates' when in the phyto module. 
  * It is used in the first 'releve' form.
+ * BUG: when coming from phyto tab the list in in alphabetical order
+ *      on refresh/first load, the already known inputs are at the end of the list
  */
 @Component({
   selector: "pnx-occtax-form-phyto-strate",
@@ -97,7 +99,6 @@ export class PhytoStrateComponent implements OnInit, OnDestroy {
                 min_height: null,
                 max_height: null,
               };
-
               return this.fb.group({
                 id_vegetation_stratum: [currentStrate.id_vegetation_stratum],
                 id_nomenclature_vegetation_stratum: [

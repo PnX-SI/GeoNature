@@ -22,7 +22,7 @@
   <div *ngIf="occtaxConfig.moduleConf.form_fields.display_nom_valide" class="col-sm-6">
     <small>TAXREF - Nom valide</small>
     <span data-qa="occurrence-nom-valide" class="form-control form-control-sm form-nom-complet"
-      [innerHTML]="taxonForm.value?.nom_valide"></span>
+      [innerHTML]="taxonForm.value?.nom_valide" disabled readonly></span>
   </div>
 </div>
 <!-- OBSERVATION TECHNIQUE & BIOLOGICAL CONDITION -->
@@ -261,11 +261,11 @@
 
 <div class="row" style="height: 70px">
   <div class="col">
-    <ng-container *ngIf="!(occtaxFormOccurrenceService.occurrence | async); else modifButton">
+    <ng-container *ngIf="!(phytoOccurrenceService.occurrence | async); else modifButton">
       <button id="add-occ" data-qa="occurrence-add-btn" mat-raised-button class="button-success uppercase"
         matTooltip="{{ 'Occtax.Taxon.Actions.SaveThisTaxon' | translate }}"
-        [disabled]="occtaxFormOccurrenceService.form.invalid" (click)="submitOccurrenceForm()">
-        <mat-spinner *ngIf="occtaxFormOccurrenceService.saveWaiting" diameter="25" strokeWidth="2"></mat-spinner>
+        [disabled]="phytoOccurrenceService.form.invalid" (click)="submitOccurrenceForm()">
+        <mat-spinner *ngIf="phytoOccurrenceService.saveWaiting" diameter="25" strokeWidth="2"></mat-spinner>
         {{ 'Occtax.Taxon.Actions.SaveThisTaxon' | translate }}
         <mat-icon style="vertical-align: middle">save</mat-icon>
       </button>
@@ -276,9 +276,9 @@
         Annuler
       </button>
       <button id="add-occ" class="button-success uppercase" mat-raised-button
-        matTooltip="Modifier et enregistrer ce taxon" [disabled]="occtaxFormOccurrenceService.form.invalid"
+        matTooltip="Modifier et enregistrer ce taxon" [disabled]="phytoOccurrenceService.form.invalid"
         (click)="submitOccurrenceForm()">
-        <mat-spinner *ngIf="occtaxFormOccurrenceService.saveWaiting" diameter="25" strokeWidth="2"></mat-spinner>
+        <mat-spinner *ngIf="phytoOccurrenceService.saveWaiting" diameter="25" strokeWidth="2"></mat-spinner>
         Modifier ce taxon
         <mat-icon style="vertical-align: middle">save</mat-icon>
       </button>

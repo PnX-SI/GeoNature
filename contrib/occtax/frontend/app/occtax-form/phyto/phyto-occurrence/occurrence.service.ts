@@ -75,7 +75,7 @@ export class PhytoOccurrenceService {
       non_digital_proof: null,
       comment: null,
       additional_fields: this.fb.group({}),
-      cor_counting_occtax: this.fb.array([]), //req?
+      cor_counting_occtax: this.fb.array([], Validators.required),
     });
   }
 
@@ -371,9 +371,7 @@ export class PhytoOccurrenceService {
   }
 }
 
-export const proofRequiredValidator: ValidatorFn = (
-  control: UntypedFormGroup
-): ValidationErrors | null => {
+export const proofRequiredValidator: ValidatorFn = (control: UntypedFormGroup): ValidationErrors | null => {
   const digital_proof = control.get('digital_proof');
   const non_digital_proof = control.get('non_digital_proof');
 

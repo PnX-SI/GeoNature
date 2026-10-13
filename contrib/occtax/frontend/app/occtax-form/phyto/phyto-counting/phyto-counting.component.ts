@@ -11,7 +11,7 @@ import { combineLatest, Subject, Subscription } from "rxjs";
 import { filter, takeUntil } from "rxjs/operators";
 
 import { OcctaxFormService } from "../../occtax-form.service";
-import { OcctaxFormOccurrenceService } from "../../occurrence/occurrence.service";
+import { PhytoOccurrenceService } from "../phyto-occurrence/occurrence.service";
 import { PhytoCountingService } from "./counting.service";
 import { ConfigService } from "@geonature/services/config.service";
 import { ModuleService } from "@geonature/services/module.service";
@@ -22,6 +22,10 @@ import { ValidationErrorsId } from "@geonature/services/validators";
 import { ViewChild } from "@angular/core";
 import { MediasComponent } from "@geonature_common/form/media/medias.component";
 
+/**
+ * TODO: replace the counting accordion with one entry for each stratum with minimal fields (let the required fields by default)
+ * TODO: disable the counting forms if there is no taxon selected
+ */
 @Component({
   selector: "pnx-occtax-form-phyto-counting",
   templateUrl: "./phyto-counting.component.html",
@@ -53,7 +57,7 @@ export class PhytoCountingComponent implements OnInit, OnDestroy {
 
   constructor(
     public occtaxFormService: OcctaxFormService,
-    public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
+    public phytoOccurrenceService: PhytoOccurrenceService,
     private occtaxFormCountingService: PhytoCountingService,
     public config: ConfigService,
     public moduleService: ModuleService,
@@ -72,7 +76,7 @@ export class PhytoCountingComponent implements OnInit, OnDestroy {
         filter((idNomenclatureLifeStage) => idNomenclatureLifeStage !== null),
       )
       .subscribe((idNomenclatureLifeStage) => {
-        this.occtaxFormOccurrenceService.lifeStage.next(
+        this.phytoOccurrenceService.lifeStage.next(
           idNomenclatureLifeStage,
         );
       });
@@ -104,13 +108,13 @@ export class PhytoCountingComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     //delete elem from form.get('cor_counting_occtax')
     const idx = (
-      this.occtaxFormOccurrenceService.form.get(
+      this.phytoOccurrenceService.form.get(
         "cor_counting_occtax",
       ) as UntypedFormArray
     ).controls.findIndex((elem) => elem === this.form);
     if (idx !== -1) {
       (
-        this.occtaxFormOccurrenceService.form.get(
+        this.phytoOccurrenceService.form.get(
           "cor_counting_occtax",
         ) as UntypedFormArray
       ).removeAt(idx);
@@ -118,13 +122,13 @@ export class PhytoCountingComponent implements OnInit, OnDestroy {
   }
 
   get taxref() {
-    const taxref = this.occtaxFormOccurrenceService.taxref.getValue();
+    const taxref = this.phytoOccurrenceService.taxref.getValue();
     return taxref;
   }
 
   defaultsMedia() {
     const occtaxData = this.occtaxFormService.occtaxData.getValue();
-    const taxref = this.occtaxFormOccurrenceService.taxref.getValue();
+    const taxref = this.phytoOccurrenceService.taxref.getValue();
 
     if (!(occtaxData && taxref)) {
       return {

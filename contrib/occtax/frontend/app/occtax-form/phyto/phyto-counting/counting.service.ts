@@ -5,11 +5,11 @@ import { map, filter, tap, switchMap, pairwise } from 'rxjs/operators';
 import _ from 'lodash';
 
 import { OcctaxFormService } from '../../occtax-form.service';
-import { OcctaxFormOccurrenceService } from '../../occurrence/occurrence.service';
 import { OcctaxFormParamService } from '../../form-param/form-param.service';
 import { MediaService } from '@geonature_common/service/media.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { PhytoCountingsService } from './countings.service';
+import { PhytoOccurrenceService } from '../phyto-occurrence/occurrence.service';
 import { minBelowMaxValidator } from '@geonature/services/validators';
 @Injectable()
 export class PhytoCountingService {
@@ -23,8 +23,8 @@ export class PhytoCountingService {
     public dataFormService: DataFormService,
     private fb: UntypedFormBuilder,
     private occtaxFormService: OcctaxFormService,
-    private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
-    private occtaxFormCountingsService: PhytoCountingsService,
+    private phytoOccurrenceService: PhytoOccurrenceService,
+    private phytoCountingsService: PhytoCountingsService,
     private occtaxParamS: OcctaxFormParamService,
     private mediaService: MediaService
   ) {
@@ -56,7 +56,7 @@ export class PhytoCountingService {
         validators: [minBelowMaxValidator('count_min', 'count_max')],
       }
     );
-    this.occtaxFormOccurrenceService.addCountingForm(this.form);
+    this.phytoOccurrenceService.addCountingForm(this.form);
   }
 
   private setObservables() {
@@ -67,7 +67,7 @@ export class PhytoCountingService {
       this.counting.pipe(
         switchMap((counting) => (!_.isEmpty(counting) ? of(counting) : this.defaultValues))
       ),
-      this.occtaxFormCountingsService.additionalFields.asObservable()
+      this.phytoCountingsService.additionalFields.asObservable()
     )
       .pipe(
         tap(([counting, additional_fields]) => {
@@ -132,6 +132,10 @@ export class PhytoCountingService {
             id_nomenclature_valid_status:
               this.occtaxParamS.get('counting.id_nomenclature_valid_status') ||
               DATA['STATUT_VALID'],
+            // id_nomenclature_vegetation_stratum: 
+            //   this.occtaxParamS.get('counting.id_nomenclature_vegetation_stratum') || DATA['STRATE_VEGETATION'],
+            // id_nomenclature_phytosociological_abundance:
+            //   this.occtaxParamS.get('counting.id_nomenclature_phytosociological_abundance') || DATA['BRAUNBARK'],
             additional_fields: {},
           };
         })

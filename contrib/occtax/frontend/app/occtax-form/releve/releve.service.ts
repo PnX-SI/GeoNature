@@ -514,6 +514,17 @@ export class OcctaxFormReleveService {
       : [this.occtaxFormService.currentUser];
   }
 
+  /**
+   * 
+   * @param moduleService 
+   * @returns a string of the type "releve" | "phyto-taxons" | "taxons", as defined by currentTab type
+   */
+  private getNextTaxonTab(moduleService: ModuleService): "phyto-taxons" | "taxons" {
+  return moduleService.currentModule.module_code === "PHYTO"
+    ? "phyto-taxons"
+    : "taxons";
+}
+
   submitReleve() {
     const modulePath = this.moduleService.currentModule.module_path;
     this.waiting = true;
@@ -533,10 +544,9 @@ export class OcctaxFormReleveService {
             );
             this.occtaxFormService.replaceReleveData(data);
             this.releveForm.markAsPristine();
-            this.router.navigate([`${modulePath}/form`, data.id, "taxons"]);
-            // FIX: if in phyto mode should redirect to phyto tab not taxons tab
-            // TODO: if I am in phyto context, redirect to phyto tab, else redirect to taxons tab
-            this.occtaxFormService.currentTab = "taxons";
+            const nextModule = this.getNextTaxonTab(this.moduleService);
+            this.router.navigate([`${modulePath}/form`, data.id, nextModule]);
+            this.occtaxFormService.currentTab = nextModule;
           },
           (err) => {
             this.waiting = false;

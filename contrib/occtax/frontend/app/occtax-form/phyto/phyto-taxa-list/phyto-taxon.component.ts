@@ -17,9 +17,8 @@ interface StratumColumn {
 }
 
 /**
- * The edit button doesn't behave properly
- * TODO: make it so you can edit all fields and get the same form as the creation form
- */
+ * TODO: in the cells it should show abundance from nomenclature not count
+*/
 
 @Component({
   selector: "pnx-occtax-form-phyto-taxa-list",

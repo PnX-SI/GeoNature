@@ -1,8 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { animate, state, style, transition, trigger } from '@angular/animations';
-import { UntypedFormControl, UntypedFormGroup, FormArray, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { map, filter, tap } from 'rxjs/operators';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { Subscription, Subject } from 'rxjs';
+import { map, filter, tap, takeUntil } from 'rxjs/operators';
 import { OcctaxFormService } from '../../occtax-form.service';
 import { PhytoOccurrenceService } from './occurrence.service';
 import { PhytoCountingsService } from '../phyto-counting/countings.service';
@@ -32,16 +31,18 @@ export class PhytoOccurrenceComponent implements OnInit, OnDestroy {
   @ViewChildren(PhytoCountingComponent)
   phytoCountingComponents: QueryList<PhytoCountingComponent>;
   get taxref(): any {
-    return this.occtaxFormOccurrenceService.taxref.getValue();
+    return this.phytoOccurrenceService.taxref.getValue();
   }
   get additionalFieldsForm(): any[] {
-    return this.occtaxFormOccurrenceService.additionalFieldsForm;
+    return this.phytoOccurrenceService.additionalFieldsForm;
   }
+
+  private destroy$ = new Subject<void>();
 
   constructor(
     public fs: OcctaxFormService,
     private occtaxFormCountingsService: PhytoCountingsService,
-    public occtaxFormOccurrenceService: PhytoOccurrenceService,
+    public phytoOccurrenceService: PhytoOccurrenceService,
     private _coreFormService: FormService,
     private _occtaxTaxaListService: OcctaxTaxaListService,
     public dialog: MatDialog,
@@ -50,44 +51,22 @@ export class PhytoOccurrenceComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.occurrenceForm = this.occtaxFormOccurrenceService.form;
-    
-    // combineLatest([
-    //   this.form.occtaxData.pipe(
-    //     filter((data: any) => !!data?.releve?.properties),
-    //   ),
-    //   this.dataFormService.getNomenclature("STRATE_VEGETATION"),
-    // ])
-    //   .pipe(takeUntil(this.destroy$))
-    //   .subscribe({
-    //     next: ([data, nomenclature]: [any, any, any]) => {
-    //       const properties = data.releve.properties;
-    //       this.occurrenceInEdit = occurrence;
-    //       this.setStrataColumns(
-    //         properties.t_vegetation_stratum || [],
-    //         nomenclature.values || [],
-    //       );
-    //     },
-    //     error: (error) => {
-    //       console.error("Error loading phyto taxon list:", error);
-    //     },
-    //   });
-
-    //gestion de l'affichage des preuves d'existence selon si Preuve = 'Oui' ou non.
-    this._subscriptions.push(
+    this.occurrenceForm = this.phytoOccurrenceService.form;
+    //gestion de l'affichage des preuves d'existence selon si Preuve = 'Oui' ou non.   
       this.occurrenceForm
         .get('id_nomenclature_exist_proof')
         .valueChanges.pipe(
           map((id_nomenclature: number): boolean => {
-            let cd_nomenclature = this.occtaxFormOccurrenceService.getCdNomenclatureById(
+            let cd_nomenclature = this.phytoOccurrenceService.getCdNomenclatureById(
               id_nomenclature,
-              this.occtaxFormOccurrenceService.existProof_DATA
+              this.phytoOccurrenceService.existProof_DATA
             );
             return cd_nomenclature == '1';
           })
         )
+        .pipe(takeUntil(this.destroy$))
         .subscribe((display: boolean) => (this.displayProofFromElements = display))
-    );
+
     this.advancedSectionState = this.occtaxConfig.moduleConf.EXPANDED_TAXON_ADVANCED_DETAILS
       ? AdvancedSectionState.EXPANDED
       : AdvancedSectionState.COLLAPSED;
@@ -99,15 +78,21 @@ export class PhytoOccurrenceComponent implements OnInit, OnDestroy {
     const taxonInput = document.getElementById('taxonInput');
     taxonInput.focus();
 
-    this.occtaxFormOccurrenceService.occurrence.subscribe(() => taxonInput.focus());
+    this.phytoOccurrenceService.occurrence.subscribe(() => taxonInput.focus());
 
     //Pour gérer l'affichage de l'erreur required quand le focus est présent dans l'input
     taxonInput.addEventListener('focus', (event) => (this.taxonFormFocus = true));
     taxonInput.addEventListener('blur', (event) => (this.taxonFormFocus = false));
   }
 
+  ngOnDestroy() {
+    this.resetOccurrenceForm();
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   setExistProofData(data) {
-    this.occtaxFormOccurrenceService.existProof_DATA = data;
+    this.phytoOccurrenceService.existProof_DATA = data;
   }
 
   initTaxrefSearch() {
@@ -121,12 +106,12 @@ export class PhytoOccurrenceComponent implements OnInit, OnDestroy {
     this._subscriptions.push(
       this.taxonForm.valueChanges
         .pipe(
-          tap(() => this.occtaxFormOccurrenceService.taxref.next(null)),
+          tap(() => this.phytoOccurrenceService.taxref.next(null)),
           filter((taxon) => taxon !== null && taxon.cd_nom !== undefined),
-          tap((taxon) => this.occtaxFormOccurrenceService.taxref.next(taxon)),
+          tap((taxon) => this.phytoOccurrenceService.taxref.next(taxon)),
           map((taxon) => {
             // mark the occform as dirty
-            this.occtaxFormOccurrenceService.form.markAsDirty();
+            this.phytoOccurrenceService.form.markAsDirty();
             let nom_cite = null;
             let cd_nom = null;
             if (typeof taxon === 'string') {
@@ -142,7 +127,7 @@ export class PhytoOccurrenceComponent implements OnInit, OnDestroy {
           })
         )
         .subscribe((values: any) => {
-          const currentOccForm = this.occtaxFormOccurrenceService.occurrence.getValue();
+          const currentOccForm = this.phytoOccurrenceService.occurrence.getValue();
           // Si édition d'une occurrence, on ne vérifie pas si déjà dans la liste
           if (currentOccForm && currentOccForm.id_releve_occtax) {
             this.occurrenceForm.get('nom_cite').setValue(values.nom_cite);
@@ -182,7 +167,7 @@ export class PhytoOccurrenceComponent implements OnInit, OnDestroy {
 
     // set taxon form value from occurrence data observable
     this._subscriptions.push(
-      this.occtaxFormOccurrenceService.occurrence
+      this.phytoOccurrenceService.occurrence
         .pipe(
           tap(() => this.taxonForm.setValue(null)),
           filter((occurrence) => occurrence),
@@ -203,9 +188,9 @@ export class PhytoOccurrenceComponent implements OnInit, OnDestroy {
   submitOccurrenceForm() {
     // the occurence is added to the DB but the counting is not
     // TODO: investigate
-    document.getElementById('taxonInput').focus();
-    if (this.occtaxFormOccurrenceService.form.valid) {
-      this.occtaxFormOccurrenceService.submitOccurrence();
+    document.getElementById('taxonInput')?.focus();
+    if (this.phytoOccurrenceService.form.valid) {
+      this.phytoOccurrenceService.submitOccurrence();
       this.phytoCountingComponents.forEach((component) =>
         component.validateMediasDeletions(),
       );
@@ -213,15 +198,10 @@ export class PhytoOccurrenceComponent implements OnInit, OnDestroy {
   }
 
   resetOccurrenceForm() {
-    this.occtaxFormOccurrenceService.reset();
+    this.phytoOccurrenceService.reset();
   }
 
-  ngOnDestroy() {
-    this.resetOccurrenceForm();
-    this._subscriptions.forEach((s) => {
-      s.unsubscribe();
-    });
-  }
+
 
   addCounting() {
     this.occtaxFormCountingsService.countings.push({});
