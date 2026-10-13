@@ -1,20 +1,26 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, QueryList, ViewChildren } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { Subscription, Subject } from 'rxjs';
+import { combineLatest, Subscription, Subject } from 'rxjs';
 import { map, filter, tap, takeUntil } from 'rxjs/operators';
 import { OcctaxFormService } from '../../occtax-form.service';
 import { PhytoOccurrenceService } from './occurrence.service';
 import { PhytoCountingsService } from '../phyto-counting/countings.service';
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
 import { FormService } from '@geonature_common/form/form.service';
+import { DataFormService } from '@geonature_common/form/data-form.service';
 import { OcctaxTaxaListService } from '../../taxa-list/taxa-list.service'; // TODO: change this to reference phyto-taxa-list
 import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/confirmation.dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfigService } from '@geonature/services/config.service';
 import { OcctaxConfigService } from '../../../services/occtax-config.service';
-import { QueryList, ViewChildren } from '@angular/core';
 import { PhytoCountingComponent } from '../phyto-counting/phyto-counting.component';
 import { AdvancedSectionState } from '@geonature_common/form/advanced-section/advanced-section.component';
+
+interface StratumCountingRow {
+  id: number;
+  label: string;
+  counting: any;
+}
 
 @Component({
   selector: 'pnx-occtax-form-phyto-occurrence',
@@ -28,6 +34,8 @@ export class PhytoOccurrenceComponent implements OnInit, OnDestroy {
   public advancedSectionState: AdvancedSectionState = AdvancedSectionState.COLLAPSED;
   private _subscriptions: Subscription[] = [];
   public displayProofFromElements: boolean = false;
+  public strataRows: StratumCountingRow[] = [];
+  public readonly countingColumns = ['stratum', 'counting'];
   @ViewChildren(PhytoCountingComponent)
   phytoCountingComponents: QueryList<PhytoCountingComponent>;
   get taxref(): any {
@@ -45,6 +53,7 @@ export class PhytoOccurrenceComponent implements OnInit, OnDestroy {
     public phytoOccurrenceService: PhytoOccurrenceService,
     private _coreFormService: FormService,
     private _occtaxTaxaListService: OcctaxTaxaListService,
+    private readonly dataFormService: DataFormService,
     public dialog: MatDialog,
     public config: ConfigService,
     public occtaxConfig: OcctaxConfigService
@@ -71,6 +80,27 @@ export class PhytoOccurrenceComponent implements OnInit, OnDestroy {
       ? AdvancedSectionState.EXPANDED
       : AdvancedSectionState.COLLAPSED;
     this.initTaxrefSearch();
+
+    combineLatest([
+      this.fs.occtaxData.pipe(
+        filter((data: any) => !!data?.releve?.properties),
+      ),
+      this.phytoOccurrenceService.occurrence,
+      this.dataFormService.getNomenclature('STRATE_VEGETATION'),
+    ])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: ([data, _occurrence, nomenclature]: [any, any, any]) => {
+          this.setStrataRows(
+            data.releve.properties.t_vegetation_stratum || [],
+            nomenclature.values || [],
+          );
+        },
+        error: (error) => {
+          console.error('Error loading vegetation strata for countings:', error);
+        },
+      });
+
   }
 
   ngAfterViewInit() {
@@ -185,6 +215,33 @@ export class PhytoOccurrenceComponent implements OnInit, OnDestroy {
     return this.occtaxFormCountingsService.countings || [];
   }
 
+  private setStrataRows(strata: any[], nomenclatures: any[]): void {
+    this.strataRows = strata
+      .filter(
+        (stratum) =>
+          stratum.percentage_cover_vegetation_stratum != null ||
+          stratum.average_height != null ||
+          stratum.min_height != null ||
+          stratum.max_height != null,
+      )
+      .map((stratum) => {
+        const id = stratum.id_nomenclature_vegetation_stratum;
+        const nomenclature = nomenclatures.find(
+          (item: any) => item.id_nomenclature === id,
+        );
+        const counting = this.countings.find(
+          (item) => item.id_nomenclature_vegetation_stratum === id,
+        );
+
+        return {
+          id,
+          label: nomenclature?.label_default || '',
+          counting: counting || {},
+        };
+      })
+      .filter((row) => row.label !== '');
+  }
+
   submitOccurrenceForm() {
     // the occurence is added to the DB but the counting is not
     // TODO: investigate
@@ -199,16 +256,6 @@ export class PhytoOccurrenceComponent implements OnInit, OnDestroy {
 
   resetOccurrenceForm() {
     this.phytoOccurrenceService.reset();
-  }
-
-
-
-  addCounting() {
-    this.occtaxFormCountingsService.countings.push({});
-  }
-
-  removeCounting(index) {
-    this.occtaxFormCountingsService.countings.splice(index, 1);
   }
 
   /** A la selection d'un taxon, focus sur le bouton ajouter */

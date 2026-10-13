@@ -16,10 +16,6 @@ interface StratumColumn {
   label: string;
 }
 
-/**
- * TODO: in the cells it should show abundance from nomenclature not count
-*/
-
 @Component({
   selector: "pnx-occtax-form-phyto-taxa-list",
   templateUrl: "./phyto-taxon.component.html",
@@ -30,11 +26,12 @@ export class PhytoTaxonComponent implements OnInit, OnDestroy {
   public sortOrder: "asc" | "desc" = "desc";
   public readonly baseColumns: string[] = ["nom_valide"];
   public strataColumns: StratumColumn[] = [];
-  public displayedColumns: string[] = [...this.baseColumns, "actions"];
+  public displayedColumns: string[] = [...this.baseColumns, "comment", "actions"];
 
   private readonly destroy$ = new Subject<void>();
   private occurrences: any[] = [];
   private occurrenceInEdit: any = null;
+  private abundanceNomenclatures: any[] = [];
 
   constructor(
     private readonly form: OcctaxFormService,
@@ -53,16 +50,23 @@ export class PhytoTaxonComponent implements OnInit, OnDestroy {
       ),
       this.occtaxFormOccurrenceService.occurrence,
       this.dataFormService.getNomenclature("STRATE_VEGETATION"),
+      this.dataFormService.getNomenclature("BRAUNBARK"),
     ])
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: ([data, occurrence, nomenclature]: [any, any, any]) => {
+        next: ([data, occurrence, strataNomenclature, abundanceNomenclature]: [
+          any,
+          any,
+          any,
+          any,
+        ]) => {
           const properties = data.releve.properties;
           this.occurrences = properties.t_occurrences_occtax || [];
           this.occurrenceInEdit = occurrence;
+          this.abundanceNomenclatures = abundanceNomenclature.values || [];
           this.setStrataColumns(
             properties.t_vegetation_stratum || [],
-            nomenclature.values || [],
+            strataNomenclature.values || [],
           );
           this.refreshOccurrences();
         },
@@ -134,24 +138,31 @@ export class PhytoTaxonComponent implements OnInit, OnDestroy {
     this.refreshOccurrences();
   }
 
-  // TODO: it is not working
-  public getStratumCounts(occurrence: any, stratumId: number): string {
+  public getStratumAbundance(occurrence, stratumId: number): string {
+    // TODO: manage empty cor counting as an error
     const countings = (occurrence.cor_counting_occtax || []).filter(
-      (counting: any) =>
+      (counting) =>
         counting.id_nomenclature_vegetation_stratum === stratumId,
     );
 
     return countings
-      .map((counting: any) => {
-        const min = counting.count_min;
-        const max = counting.count_max;
-        if (min == null) {
-          return max == null ? "" : String(max);
-        }
-        return max == null || min === max ? String(min) : `${min}–${max}`;
+      .map((counting) => {
+        const id =
+          counting.id_nomenclature_phytosociological_abundance;
+        const nomenclature = this.abundanceNomenclatures.find(
+          (item) => item.id_nomenclature === id,
+        );
+        return (
+          nomenclature?.[`label_${this.translate.currentLang}`] ||
+          nomenclature?.label_default
+          );
       })
-      .filter((count: string) => count !== "")
+      .filter((label: string) => label !== "")
       .join(", ");
+  }
+
+  public getOccurenceComment(occurrence): string {
+    return this.removeHtmlFromString(occurrence.comment);
   }
 
   // TODO: Move this to the occurence service
@@ -181,6 +192,7 @@ export class PhytoTaxonComponent implements OnInit, OnDestroy {
     this.displayedColumns = [
       ...this.baseColumns,
       ...this.strataColumns.map((column) => column.key),
+      "comment",
       "actions",
     ];
   }

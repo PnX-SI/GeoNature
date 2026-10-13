@@ -5,17 +5,18 @@ import {
   OnDestroy,
   Output,
   EventEmitter,
+  OnChanges,
+  SimpleChanges,
 } from "@angular/core";
 import { UntypedFormGroup, UntypedFormArray } from "@angular/forms";
-import { combineLatest, Subject, Subscription } from "rxjs";
-import { filter, takeUntil } from "rxjs/operators";
+import { Subscription } from "rxjs";
+import { filter } from "rxjs/operators";
 
 import { OcctaxFormService } from "../../occtax-form.service";
 import { PhytoOccurrenceService } from "../phyto-occurrence/occurrence.service";
 import { PhytoCountingService } from "./counting.service";
 import { ConfigService } from "@geonature/services/config.service";
 import { ModuleService } from "@geonature/services/module.service";
-import { DataFormService } from "@geonature_common/form/data-form.service";
 import { OcctaxConfigService } from "../../../services/occtax-config.service";
 
 import { ValidationErrorsId } from "@geonature/services/validators";
@@ -23,7 +24,6 @@ import { ViewChild } from "@angular/core";
 import { MediasComponent } from "@geonature_common/form/media/medias.component";
 
 /**
- * TODO: replace the counting accordion with one entry for each stratum with minimal fields (let the required fields by default)
  * TODO: disable the counting forms if there is no taxon selected
  */
 @Component({
@@ -32,7 +32,7 @@ import { MediasComponent } from "@geonature_common/form/media/medias.component";
   styleUrls: ["./phyto-counting.component.scss"],
   providers: [PhytoCountingService],
 })
-export class PhytoCountingComponent implements OnInit, OnDestroy {
+export class PhytoCountingComponent implements OnInit, OnChanges, OnDestroy {
 
   public data: any;
   @ViewChild(MediasComponent) mediasComp: MediasComponent;
@@ -40,6 +40,7 @@ export class PhytoCountingComponent implements OnInit, OnDestroy {
   set counting(value: any) {
     this.occtaxFormCountingService.counting.next(value);
   }
+  @Input() stratumId: number;
   public sub: Subscription;
   @Output() lifeStageChange = new EventEmitter();
 
@@ -51,18 +52,13 @@ export class PhytoCountingComponent implements OnInit, OnDestroy {
   public nbIndiv: number = 0;
   public cdNomenclatureObjDen: string = "";
 
-  public strataNomenclatureCodes: string[] | null = null;
-
-  private readonly destroy$ = new Subject<void>();
-
   constructor(
     public occtaxFormService: OcctaxFormService,
     public phytoOccurrenceService: PhytoOccurrenceService,
     private occtaxFormCountingService: PhytoCountingService,
     public config: ConfigService,
     public moduleService: ModuleService,
-    public occtaxConfig: OcctaxConfigService,
-    private readonly dataFormService: DataFormService,
+    public occtaxConfig: OcctaxConfigService
   ) { }
 
   // Expose enum to html
@@ -70,6 +66,7 @@ export class PhytoCountingComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.form = this.occtaxFormCountingService.form;
+    this.setStratum();
     this.sub = this.form
       .get("id_nomenclature_life_stage")
       .valueChanges.pipe(
@@ -80,32 +77,27 @@ export class PhytoCountingComponent implements OnInit, OnDestroy {
           idNomenclatureLifeStage,
         );
       });
+  }
 
-    combineLatest([
-      this.occtaxFormService.occtaxData.pipe(
-        filter((data: any) => !!data?.releve?.properties),
-      ),
-      this.dataFormService.getNomenclature("STRATE_VEGETATION"),
-    ])
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: ([data, nomenclature]: [any, any]) => {
-          const properties = data.releve.properties;
-          this.setStrataColumns(
-            properties.t_vegetation_stratum || [],
-            nomenclature.values || [],
-          );
-        },
-        error: (error) => {
-          console.error("Error loading phyto taxon list:", error);
-        },
-      });
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.stratumId && this.form) {
+      this.setStratum();
+    }
+  }
+
+  private setStratum(): void {
+    if (this.stratumId != null) {
+      this.form
+        .get("id_nomenclature_vegetation_stratum")
+        .setValue(this.stratumId, { emitEvent: false });
+    }
   }
   validateMediasDeletions() {
     this.mediasComp?.validateDeletions();
   }
 
   ngOnDestroy() {
+    this.sub?.unsubscribe();
     //delete elem from form.get('cor_counting_occtax')
     const idx = (
       this.phytoOccurrenceService.form.get(
@@ -166,33 +158,5 @@ export class PhytoCountingComponent implements OnInit, OnDestroy {
 
   setCdNomenclatureObjDen(cdNomenclature: string) {
     this.cdNomenclatureObjDen = cdNomenclature;
-  }
-
-  private setStrataColumns(strata: any[], nomenclatures: any[]): void {
-
-    const stratumIds = new Set(strata
-      .filter(
-        (stratum) =>
-          stratum.percentage_cover_vegetation_stratum != null ||
-          stratum.average_height != null ||
-          stratum.min_height != null ||
-          stratum.max_height != null,
-      )
-      .map((stratum) => {
-        const nomenclature = nomenclatures.find(
-          (item: any) =>
-            item.id_nomenclature ===
-            stratum.id_nomenclature_vegetation_stratum,
-        );
-        return {
-          id: stratum.id_nomenclature_vegetation_stratum,
-          key: `stratum_${stratum.id_nomenclature_vegetation_stratum}`,
-          label: nomenclature?.label_default || "",
-        };
-      })
-      .filter((column) => column.label !== "").map((column) => column.id));
-    this.strataNomenclatureCodes = nomenclatures
-      .filter((item: any) => stratumIds.has(item.id_nomenclature))
-      .map((item: any) => item.cd_nomenclature);
   }
 }

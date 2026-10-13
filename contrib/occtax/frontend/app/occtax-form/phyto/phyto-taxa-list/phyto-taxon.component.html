@@ -88,7 +88,14 @@
       >
         <th mat-header-cell *matHeaderCellDef>{{ column.label }}</th>
         <td mat-cell *matCellDef="let occurrence">
-          {{ getStratumCounts(occurrence, column.id) }}
+          {{ getStratumAbundance(occurrence, column.id) }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="comment">
+        <th mat-header-cell *matHeaderCellDef>Comment</th>
+        <td mat-cell *matCellDef="let occurrence;">
+          {{getOccurenceComment(occurrence)}}
         </td>
       </ng-container>
 
