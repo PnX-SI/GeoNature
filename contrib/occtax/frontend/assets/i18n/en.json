@@ -49,9 +49,14 @@
       "Actions": {
         "Save": "Save the taxon",
         "SaveThisTaxon": "Save this taxon",
+        "CancelModifications":"Cancel the modifications for this taxon",
+        "EditAndSave":"Edit and save this taxon",
+        "Edit":"Edit this taxon",
         "Add": "Add the taxon",
-        "Cancel": "Cancel the taxon entry",
-        "Validate": "Validate the taxon"
+        "Cancel": "Cancel",
+        "Validate": "Validate the taxon",
+        "Delete" : "Delete the taxon"
+
       },
       "Messages": {
         "DeleteDone": "Taxon deleted",
@@ -75,7 +80,8 @@
       "ObservedTaxon": "Observed taxon(s)",
       "AddTaxon": "Add a taxon",
       "Priority": "Priority",
-      "NomCite": "Taxon (cited name)",
+      "QuotedName": "Taxon (quoted name)",
+      "ValidName": "Valid name",
       "TaxonName": "Taxon name",
       "ObsTech": "Observation technique",
       "BiologicalCondition": "Biological condition",
@@ -99,7 +105,13 @@
       "SortByName": "Alphabetical order",
       "SortAsc": "Ascending order",
       "SortDesc": "Descending order",
-      "NoTaxon": "No taxa for this survey"
+      "NoTaxon": "No taxa for this survey",
+      "SortType":"Sort type",
+      "SaveInProgress":"Save in progress",
+      "SaveError":"An error occurs during the saving process",
+      "ClickToContinue":"Error : click here to continue editing this taxon",
+      "Comment": "Comment",
+      "Actions" : "Actions"
     },
     "Counting": {
       "Counting": "Count",

@@ -10,7 +10,7 @@
       <mat-button-toggle-group
         class="sort-type-group"
         name="sortType"
-        aria-label="Type de tri"
+        aria-label="{{ 'Occtax.TaxaList.SortType' | translate }}"
         [value]="typeSortingTaxalist"
         (change)="setSortType($event.value)"
       >
@@ -49,8 +49,8 @@
         [ngClass]="occurrenceInProgress.state"
         [matTooltip]="
           occurrenceInProgress.state === 'in_progress'
-            ? 'Enregistrement en cours'
-            : 'Une erreur est survenue lors de l’enregistrement'
+            ? ('Occtax.TaxaList.SaveInProgress' | translate)
+            : ('Occtax.TaxaList.SaveError' | translate)
         "
         matTooltipPosition="left"
         (click)="inProgressErrorToForm(occurrenceInProgress)"
@@ -65,7 +65,7 @@
         </mat-icon>
         <span [innerHTML]="taxonTitle(occurrenceInProgress.data)"></span>
         <div *ngIf="occurrenceInProgress.state === 'error'" class="error-hint">
-          Erreur : cliquez pour reprendre ce taxon
+          {{ 'Occtax.TaxaList.ClickToContinue' | translate }}
         </div>
       </div>
     </ng-container>
@@ -76,7 +76,7 @@
       class="mat-elevation-z2 compact-table"
     >
       <ng-container matColumnDef="nom_valide">
-        <th mat-header-cell *matHeaderCellDef>Nom valide</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'Occtax.Taxon.ValidName' | translate }}</th>
         <td mat-cell *matCellDef="let occurrence">
           {{ occurrence.taxref?.nom_valide || "" }}
         </td>
@@ -93,20 +93,20 @@
       </ng-container>
 
       <ng-container matColumnDef="comment">
-        <th mat-header-cell *matHeaderCellDef>Comment</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'Occtax.TaxaList.Comment' | translate }}</th>
         <td mat-cell *matCellDef="let occurrence;">
           {{getOccurenceComment(occurrence)}}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'Occtax.TaxaList.Actions' | translate }}</th>
         <td mat-cell *matCellDef="let occurrence; let i = index">
           <button
             mat-icon-button
             class="btn-edit"
             type="button"
-            matTooltip="Editer le taxon"
+            matTooltip="{{ 'Occtax.Taxon.Actions.Edit' | translate }}"
             (click)="editOccurrence(occurrence)"
           >
             <mat-icon>edit</mat-icon>
@@ -118,7 +118,7 @@
             mat-icon-button
             class="btn-clear"
             type="button"
-            matTooltip="Supprimer le taxon"
+            matTooltip="{{ 'Occtax.Taxon.Actions.Delete' | translate }}"
             (click)="deleteOccurrence(occurrence)"
           >
             <mat-icon>clear</mat-icon>

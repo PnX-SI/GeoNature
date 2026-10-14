@@ -81,6 +81,7 @@ export class PhytoTaxonComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  //TODO: edit occurence should open a modal to allow advanced
   public editOccurrence(occurrence: any): void {
     this.occtaxFormOccurrenceService.occurrence.next(occurrence);
   }

@@ -3,7 +3,7 @@
 <!-- QUOTED NAME & VALID NAME -->
 <div class="row" style="height: 70px !important">
   <div class="col-sm-6">
-    <pnx-taxonomy label="{{ 'Occtax.Taxon.NomCite' | translate }}" [parentFormControl]="taxonForm"
+    <pnx-taxonomy label="{{ 'Occtax.Taxon.QuotedName' | translate }}" [parentFormControl]="taxonForm"
       [idList]="fs.idTaxonList" [charNumber]="3" [listLength]="occtaxConfig.moduleConf.taxon_result_number"
       [displayAdvancedFilters]="false" displayedLabel="search_name" (onChange)="selectAddOcc($event)"></pnx-taxonomy>
     <small *ngIf="
@@ -20,7 +20,7 @@
     </small>
   </div>
   <div *ngIf="occtaxConfig.moduleConf.form_fields.display_nom_valide" class="col-sm-6">
-    <small>TAXREF - Nom valide</small>
+    <small>TAXREF - {{ 'Occtax.Taxon.ValidName' | translate }}</small>
     <span data-qa="occurrence-nom-valide" class="form-control form-control-sm form-nom-complet"
       [innerHTML]="taxonForm.value?.nom_valide" disabled readonly></span>
   </div>
@@ -81,14 +81,14 @@
     </ng-container>
     <ng-template #modifButton>
       <button class="uppercase" style="margin-right: 20px" color="warn" mat-raised-button
-        matTooltip="Annuler les modifications sur ce taxon" (click)="resetOccurrenceForm()">
-        Annuler
+        matTooltip="{{ 'Occtax.Taxon.Actions.CancelModifications' | translate }}" (click)="resetOccurrenceForm()">
+        {{ 'Occtax.Taxon.Actions.Cancel' | translate }}
       </button>
       <button id="add-occ" class="button-success uppercase" mat-raised-button
-        matTooltip="Modifier et enregistrer ce taxon" [disabled]="phytoOccurrenceService.form.invalid"
+        matTooltip="{{ 'Occtax.Taxon.Actions.EditandSave' | translate }}" [disabled]="phytoOccurrenceService.form.invalid"
         (click)="submitOccurrenceForm()">
         <mat-spinner *ngIf="phytoOccurrenceService.saveWaiting" diameter="25" strokeWidth="2"></mat-spinner>
-        Modifier ce taxon
+        {{ 'Occtax.Taxon.Actions.Edit' | translate }}
         <mat-icon style="vertical-align: middle">save</mat-icon>
       </button>
     </ng-template>

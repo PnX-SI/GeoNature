@@ -57,9 +57,13 @@
       "Actions": {
         "Save": "Enregistrer le taxon",
         "SaveThisTaxon": "Enregistrer ce taxon",
+        "CancelModifications":"Annuler les modifications sur ce taxon",
+        "EditAndSave":"Modifier et enregistrer ce taxon",
+        "Edit":"Modifier ce taxon",
         "Add": "Ajouter le taxon",
-        "Cancel": "Annuler la saisie du taxon",
-        "Validate": "Valider le taxon"
+        "Cancel": "Annuler",
+        "Validate": "Valider le taxon",
+        "Delete" : "Supprimer le taxon"
       },
       "Messages": {
         "DeleteDone": "Taxon supprimé",
@@ -83,7 +87,8 @@
       "ObservedTaxon": "Taxon(s) observé(s)",
       "AddTaxon": "Ajout d'un taxon",
       "Priority": "Prioritaire",
-      "NomCite": "Taxon (nom cité)",
+      "QuotedName": "Taxon (nom cité)",
+      "ValidName": "Nom valide",
       "TaxonName": "Nom du taxon",
       "ObsTech": "Technique d'observation",
       "BiologicalCondition": "Etat biologique",
@@ -109,7 +114,13 @@
       "SortByName": "Ordre alphabétique",
       "SortAsc": "Ordre croissant",
       "SortDesc": "Ordre décroissant",
-      "NoTaxon": "Aucun taxon pour ce relevé"
+      "NoTaxon": "Aucun taxon pour ce relevé",
+      "SortType":"Type de tri",
+      "SaveInProgress":"Enregistrement en cours",
+      "SaveError":"Une erreur est survenue lors de l’enregistrement",
+      "ClickToContinue":"Erreur : cliquez pour reprendre ce taxon",
+      "Comment": "Commentaire",
+      "Actions" : "Actions"
     },
     "Counting": {
       "Counting": "Dénombrement",
