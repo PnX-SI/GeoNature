@@ -274,6 +274,127 @@
 </div>
 
 <ng-template
+  #searchModal
+  let-c="close"
+  let-d="dismiss"
+>
+  <div class="modal-header">
+    <h5
+      class="modal-title"
+      id="exampleModalLabel"
+    >
+      {{ 'Actions.Search' | translate }}
+    </h5>
+  </div>
+  <div
+    class="modal-body"
+    style="align-items: flex-end"
+  >
+    <label>{{ 'Actions.Search' | translate }}{{ 'On' | translate | lowercase }} :</label>
+    <ng-select
+      [items]="meta_type"
+      [formControl]="metadataService.form.get('selector')"
+      bindLabel="label"
+      bindValue="value"
+      name="selecteur"
+      id="selector"
+      clearable=""
+      false
+    >
+      <ng-template
+        ng-option-tmp
+        let-item="item"
+        let-index="index"
+        let-search="searchTerm"
+      >
+        <div [attr.data-qa]="item.value">
+          <span class="pre-wrap">{{ item.label }}</span>
+        </div>
+      </ng-template>
+    </ng-select>
+    <label>UUID</label>
+    <input
+      [formControl]="metadataService.form.get('uuid')"
+      class="form-control form-control-sm"
+      type="text"
+    />
+    <label>{{ 'Name' | translate }}</label>
+
+    <input
+      [formControl]="metadataService.form.get('name')"
+      class="form-control form-control-sm"
+    />
+
+    <pnx-date
+      [parentFormControl]="metadataService.form.get('date')"
+      label="{{ 'MetaData.CreationDate' | translate }}"
+    ></pnx-date>
+    <label>{{ 'MetaData.StakeholderOrganization' | translate }}</label>
+
+    <ng-select
+      [items]="organisms"
+      [formControl]="metadataService.form.get('organism')"
+      bindLabel="nom_organisme"
+      bindValue="id_organisme"
+      [multiple]="false"
+      [searchable]="true"
+      [clearable]="true"
+    >
+      <ng-template
+        ng-option-tmp
+        let-item="item"
+        let-index="index"
+        let-search="searchTerm"
+      >
+        <div
+          [matTooltip]="item.nom_organisme"
+          matTooltipPosition="after"
+          [attr.data-qa]="item.id_organism"
+        >
+          <span class="pre-wrap">{{ item.nom_organisme }}</span>
+        </div>
+      </ng-template>
+    </ng-select>
+
+    <label>Acteur (personne)</label>
+
+    <pnx-observers
+      [parentFormControl]="metadataService.form.get('person')"
+      bindValue="id_role"
+    ></pnx-observers>
+
+    <div *ngIf="displayMetaAreaFilters() && metadataService.formBuilded">
+      <div *ngFor="let area of areaFilters; let i = index">
+        <pnx-areas
+          [parentFormControl]="area.control"
+          [label]="area.label"
+          [typeCodes]="area.type_code_array"
+          [valueFieldName]="null"
+        ></pnx-areas>
+      </div>
+    </div>
+
+    <div class="mt-2">
+      <button
+        mat-raised-button
+        class="button-success uppercase mr-2"
+        (click)="advancedSearch(); c()"
+      >
+        {{ 'Actions.Search' | translate }}
+      </button>
+      <button
+        mat-raised-button
+        color="warn"
+        class="uppercase"
+        (click)="c()"
+      >
+        {{ 'Actions.Close' | translate }}
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template
   #publishModal
   let-c="close"
   let-d="dismiss"
