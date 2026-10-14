@@ -38,7 +38,7 @@ wtforms-sqlalchemy
 xmltodict
 pypnusershub>=3.2.2,<4
 pypnnomenclature>=1.6.7,<2
-pypn_habref_api>=0.4.2,<1
+pypn_habref_api>=1.0.0
 utils-flask-sqlalchemy-geo>=0.4.0,<1
 utils-flask-sqlalchemy>=0.5.0,<1
 taxhub>=2.3.0
