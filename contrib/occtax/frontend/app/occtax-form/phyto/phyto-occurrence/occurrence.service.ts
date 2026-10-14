@@ -292,7 +292,7 @@ export class PhytoOccurrenceService {
     if (this.occurrence.getValue() && this.occurrence.getValue().id_occurrence_occtax) {
       //update
       api = this.occtaxDataService
-        .updateOccurrence(this.occurrence.getValue().id_occurrence_occtax, this.form.value)
+        .updateOccurrence(this.occurrence.getValue().id_occurrence_occtax, formValue)
         .pipe(
           retry(3),
           tap((occurrence) => {

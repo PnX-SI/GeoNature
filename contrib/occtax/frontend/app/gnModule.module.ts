@@ -27,7 +27,9 @@ import { OcctaxFormParamDialog } from "./occtax-form/form-param/form-param.dialo
 import { PhytoStrateComponent } from "./occtax-form/phyto/phyto-strate/phyto-strate.component";
 import { PhytoTaxonComponent } from "./occtax-form/phyto/phyto-taxa-list/phyto-taxon.component";
 import { PhytoCountingComponent } from "./occtax-form/phyto/phyto-counting/phyto-counting.component";
+import { PhytoAdvancedCountingComponent } from "./occtax-form/phyto/phyto-advanced-counting/phyto-advanced-counting.component";
 import { PhytoOccurrenceComponent } from "./occtax-form/phyto/phyto-occurrence/phyto-occurrence.component";
+import { PhytoModalComponent } from "./occtax-form/phyto/phyto-modal/phyto-modal.component";
 
 // Service
 import { OcctaxDataService } from "./services/occtax-data.service";
@@ -67,7 +69,7 @@ const routes: Routes = [
       },
       {
         path: ":id/phyto-taxons",
-        component: OcctaxFormOccurrenceComponent,
+        component: PhytoOccurrenceComponent,
       },
     ],
   },
@@ -122,7 +124,9 @@ export function createTranslateLoader(http: HttpClient, config: ConfigService) {
     PhytoStrateComponent,
     PhytoTaxonComponent,
     PhytoCountingComponent,
+    PhytoAdvancedCountingComponent,
     PhytoOccurrenceComponent,
+    PhytoModalComponent
   ],
   providers: [
     OcctaxDataService,

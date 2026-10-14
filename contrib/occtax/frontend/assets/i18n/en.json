@@ -52,6 +52,7 @@
         "CancelModifications":"Cancel the modifications for this taxon",
         "EditAndSave":"Edit and save this taxon",
         "Edit":"Edit this taxon",
+        "EditInModal":"Edit this taxon in a dialog",
         "Add": "Add the taxon",
         "Cancel": "Cancel",
         "Validate": "Validate the taxon",

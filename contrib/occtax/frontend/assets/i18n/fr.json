@@ -60,6 +60,7 @@
         "CancelModifications":"Annuler les modifications sur ce taxon",
         "EditAndSave":"Modifier et enregistrer ce taxon",
         "Edit":"Modifier ce taxon",
+        "EditInModal":"Modifier ce taxon dans une fenêtre",
         "Add": "Ajouter le taxon",
         "Cancel": "Annuler",
         "Validate": "Valider le taxon",

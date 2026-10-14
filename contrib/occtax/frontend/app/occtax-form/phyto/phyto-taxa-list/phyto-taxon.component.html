@@ -1,19 +1,13 @@
 <div id="taxalist-container">
-  <ng-container
-    *ngIf="
+  <ng-container *ngIf="
       (occtaxTaxaListService.occurrences$ | async)?.length ||
         occtaxTaxaListService.rec_occurrences_in_progress.length;
       else zeroOccurrenceBlk
-    "
-  >
+    ">
     <div class="sort-toolbar">
-      <mat-button-toggle-group
-        class="sort-type-group"
-        name="sortType"
-        aria-label="{{ 'Occtax.TaxaList.SortType' | translate }}"
-        [value]="typeSortingTaxalist"
-        (change)="setSortType($event.value)"
-      >
+      <mat-button-toggle-group class="sort-type-group" name="sortType"
+        aria-label="{{ 'Occtax.TaxaList.SortType' | translate }}" [value]="typeSortingTaxalist"
+        (change)="setSortType($event.value)">
         <mat-button-toggle value="record">
           {{ "Occtax.TaxaList.SortByRecord" | translate }}
         </mat-button-toggle>
@@ -22,44 +16,26 @@
         </mat-button-toggle>
       </mat-button-toggle-group>
 
-      <button
-        mat-icon-button
-        type="button"
-        class="sort-order-btn"
-        [matTooltip]="
+      <button mat-icon-button type="button" class="sort-order-btn" [matTooltip]="
           (sortOrder === 'asc'
             ? 'Occtax.TaxaList.SortAsc'
             : 'Occtax.TaxaList.SortDesc') | translate
-        "
-        (click)="toggleSortOrder()"
-      >
+        " (click)="toggleSortOrder()">
         <mat-icon>{{
           sortOrder === "asc" ? "arrow_upward" : "arrow_downward"
-        }}</mat-icon>
+          }}</mat-icon>
       </button>
     </div>
 
-    <ng-container
-      *ngFor="
+    <ng-container *ngFor="
         let occurrenceInProgress of occtaxTaxaListService.rec_occurrences_in_progress
-      "
-    >
-      <div
-        class="in-progress-panel"
-        [ngClass]="occurrenceInProgress.state"
-        [matTooltip]="
+      ">
+      <div class="in-progress-panel" [ngClass]="occurrenceInProgress.state" [matTooltip]="
           occurrenceInProgress.state === 'in_progress'
             ? ('Occtax.TaxaList.SaveInProgress' | translate)
             : ('Occtax.TaxaList.SaveError' | translate)
-        "
-        matTooltipPosition="left"
-        (click)="inProgressErrorToForm(occurrenceInProgress)"
-      >
-        <mat-spinner
-          *ngIf="occurrenceInProgress.state === 'in_progress'"
-          diameter="20"
-          strokeWidth="2"
-        ></mat-spinner>
+        " matTooltipPosition="left" (click)="inProgressErrorToForm(occurrenceInProgress)">
+        <mat-spinner *ngIf="occurrenceInProgress.state === 'in_progress'" diameter="20" strokeWidth="2"></mat-spinner>
         <mat-icon *ngIf="occurrenceInProgress.state === 'error'">
           warning
         </mat-icon>
@@ -70,11 +46,7 @@
       </div>
     </ng-container>
 
-    <table
-      mat-table
-      [dataSource]="occtaxTaxaListService.occurrences$ | async"
-      class="mat-elevation-z2 compact-table"
-    >
+    <table mat-table [dataSource]="occtaxTaxaListService.occurrences$ | async" class="mat-elevation-z2 compact-table">
       <ng-container matColumnDef="nom_valide">
         <th mat-header-cell *matHeaderCellDef>{{ 'Occtax.Taxon.ValidName' | translate }}</th>
         <td mat-cell *matCellDef="let occurrence">
@@ -82,10 +54,7 @@
         </td>
       </ng-container>
 
-      <ng-container
-        *ngFor="let column of strataColumns"
-        [matColumnDef]="column.key"
-      >
+      <ng-container *ngFor="let column of strataColumns" [matColumnDef]="column.key">
         <th mat-header-cell *matHeaderCellDef>{{ column.label }}</th>
         <td mat-cell *matCellDef="let occurrence">
           {{ getStratumAbundance(occurrence, column.id) }}
@@ -102,25 +71,18 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>{{ 'Occtax.TaxaList.Actions' | translate }}</th>
         <td mat-cell *matCellDef="let occurrence; let i = index">
-          <button
-            mat-icon-button
-            class="btn-edit"
-            type="button"
-            matTooltip="{{ 'Occtax.Taxon.Actions.Edit' | translate }}"
-            (click)="editOccurrence(occurrence)"
-          >
+          <!-- <button mat-icon-button class="btn-edit" type="button"
+            matTooltip="{{ 'Occtax.Taxon.Actions.Edit' | translate }}" (click)="editOccurrence(occurrence)">
+            <mat-icon>edit</mat-icon>
+          </button> -->
+          <button mat-icon-button class="btn-edit" type="button"
+            matTooltip="{{ 'Occtax.Taxon.Actions.EditInModal' | translate }}" (click)="openOccurrenceModal(occurrence)">
             <mat-icon>edit</mat-icon>
           </button>
-          <button
-            *ngIf="
+          <button *ngIf="
               (occtaxTaxaListService.occurrences$ | async)?.length !== 1 || i !== 0
-            "
-            mat-icon-button
-            class="btn-clear"
-            type="button"
-            matTooltip="{{ 'Occtax.Taxon.Actions.Delete' | translate }}"
-            (click)="deleteOccurrence(occurrence)"
-          >
+            " mat-icon-button class="btn-clear" type="button"
+            matTooltip="{{ 'Occtax.Taxon.Actions.Delete' | translate }}" (click)="deleteOccurrence(occurrence)">
             <mat-icon>clear</mat-icon>
           </button>
         </td>

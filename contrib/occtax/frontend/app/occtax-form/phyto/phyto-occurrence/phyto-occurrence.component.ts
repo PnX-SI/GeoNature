@@ -243,8 +243,6 @@ export class PhytoOccurrenceComponent implements OnInit, OnDestroy {
   }
 
   submitOccurrenceForm() {
-    // the occurence is added to the DB but the counting is not
-    // TODO: investigate
     document.getElementById('taxonInput')?.focus();
     if (this.phytoOccurrenceService.form.valid) {
       this.phytoOccurrenceService.submitOccurrence();

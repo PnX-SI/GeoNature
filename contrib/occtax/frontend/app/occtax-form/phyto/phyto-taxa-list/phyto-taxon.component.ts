@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewContainerRef } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { combineLatest, Subject } from "rxjs";
@@ -8,6 +8,7 @@ import { DataFormService } from "@geonature_common/form/data-form.service";
 import { OcctaxConfigService } from "../../../services/occtax-config.service";
 import { OcctaxFormService } from "../../occtax-form.service";
 import { PhytoOccurrenceService } from "../phyto-occurrence/occurrence.service"; // is it useful? can I use normal occurence service?
+import { PhytoModalComponent } from "../phyto-modal/phyto-modal.component";
 import { OcctaxTaxaListService } from "../../taxa-list/taxa-list.service";
 
 interface StratumColumn {
@@ -39,9 +40,10 @@ export class PhytoTaxonComponent implements OnInit, OnDestroy {
     public readonly occtaxTaxaListService: OcctaxTaxaListService,
     public readonly occtaxFormOccurrenceService: PhytoOccurrenceService,
     private readonly dialog: MatDialog,
+    private readonly viewContainerRef: ViewContainerRef,
     private readonly translate: TranslateService,
     public readonly occtaxConfig: OcctaxConfigService,
-  ) {}
+  ) { }
 
   public ngOnInit(): void {
     combineLatest([
@@ -81,12 +83,25 @@ export class PhytoTaxonComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  //TODO: edit occurence should open a modal to allow advanced
   public editOccurrence(occurrence: any): void {
     this.occtaxFormOccurrenceService.occurrence.next(occurrence);
   }
 
-  // TODO: is the dialog box how it is done otherwise?
+  public openOccurrenceModal(occurrence: any): void {
+
+    let dialogRef = this.dialog.open(PhytoModalComponent, {
+      // height: '400px',
+      // width: '600px',
+      data: { occurrence },
+      viewContainerRef: this.viewContainerRef,
+      hasBackdrop: true, // default
+      disableClose: true, // ensure exiting is only possible via close or save buttons
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+    });
+  }
+
   public deleteOccurrence(occurrence: any): void {
     const message = `${this.translate.instant("Actions.Delete")} ${this.taxonTitle(occurrence)} ?`;
     const dialogRef = this.dialog.open(ConfirmationDialog, {
@@ -102,7 +117,6 @@ export class PhytoTaxonComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Not used?
   public get occIDInEdit(): number | null {
     return this.occurrenceInEdit?.id_occurrence_occtax || null;
   }
@@ -156,7 +170,7 @@ export class PhytoTaxonComponent implements OnInit, OnDestroy {
         return (
           nomenclature?.[`label_${this.translate.currentLang}`] ||
           nomenclature?.label_default
-          );
+        );
       })
       .filter((label: string) => label !== "")
       .join(", ");
@@ -202,7 +216,7 @@ export class PhytoTaxonComponent implements OnInit, OnDestroy {
     let occurrences = this.occurrences.filter((occurrence) =>
       this.occurrenceInEdit
         ? occurrence.id_occurrence_occtax !==
-          this.occurrenceInEdit.id_occurrence_occtax
+        this.occurrenceInEdit.id_occurrence_occtax
         : true,
     );
 
