@@ -21,7 +21,9 @@ import { PhytoCountingService } from "./counting.service";
 import { PhytoOccurrenceService } from "../phyto-occurrence/occurrence.service";
 
 /**
- * TODO: disable the counting forms if there is no taxon selected
+ * TODO: 
+ *  *disable the counting forms if there is no taxon selected
+ *  *change input style from dropdown to cursor?
  */
 @Component({
   selector: "pnx-occtax-form-phyto-counting",

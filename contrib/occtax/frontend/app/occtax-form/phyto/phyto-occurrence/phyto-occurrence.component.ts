@@ -22,6 +22,10 @@ interface StratumCountingRow {
   counting: any;
 }
 
+/**
+ * TODO: 
+ *  *Factorise api calls, mainly nomenclatures calls
+ */
 @Component({
   selector: 'pnx-occtax-form-phyto-occurrence',
   templateUrl: './phyto-occurrence.component.html',

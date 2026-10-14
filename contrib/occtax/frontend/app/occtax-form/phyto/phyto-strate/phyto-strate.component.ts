@@ -37,8 +37,10 @@ const heightOrderValidator: ValidatorFn = (
 /**
  * This component is a form to edit the 'strates' when in the phyto module. 
  * It is used in the first 'releve' form.
- * BUG: when coming from phyto tab the list in in alphabetical order
+ * 
+ * TODO: when coming from phyto tab the list in in alphabetical order
  *      on refresh/first load, the already known inputs are at the end of the list
+ *      Sometimes empty: for example on app reload when on phyto tab and returning to the releve tab
  */
 @Component({
   selector: "pnx-occtax-form-phyto-strate",

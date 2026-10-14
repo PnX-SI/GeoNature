@@ -4,6 +4,9 @@ import { catchError, map, filter, switchMap } from 'rxjs/operators';
 
 import { OcctaxFormService } from '../../occtax-form.service';
 
+/**
+ * TODO: move services in a phyto-service folder
+ */
 @Injectable()
 export class PhytoCountingsService {
   public countings: any[];

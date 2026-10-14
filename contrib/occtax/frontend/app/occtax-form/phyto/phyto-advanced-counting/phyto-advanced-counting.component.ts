@@ -14,6 +14,11 @@ import { ValidationErrorsId } from '@geonature/services/validators';
 import { ViewChild } from '@angular/core';
 import { MediasComponent } from '@geonature_common/form/media/medias.component';
 
+/**
+ * TODO:
+ *  *ensure stratum order
+ *  *always show all strata or add a plus button to add a counting but resrict strata choices
+ */
 @Component({
   selector: 'pnx-occtax-form-phyto-advanced-counting',
   templateUrl: './phyto-advanced-counting.component.html',

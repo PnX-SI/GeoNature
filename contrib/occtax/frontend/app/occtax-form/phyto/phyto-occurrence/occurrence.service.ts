@@ -20,6 +20,9 @@ import { OcctaxTaxaListService } from '../../taxa-list/taxa-list.service'; // TO
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { OcctaxConfigService } from '../../../services/occtax-config.service';
 
+/**
+ * TODO: move services in a phyto-service folder
+ */
 @Injectable()
 export class PhytoOccurrenceService {
   public form: UntypedFormGroup;

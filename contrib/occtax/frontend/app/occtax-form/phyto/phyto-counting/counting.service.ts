@@ -11,6 +11,10 @@ import { DataFormService } from '@geonature_common/form/data-form.service';
 import { PhytoCountingsService } from './countings.service';
 import { PhytoOccurrenceService } from '../phyto-occurrence/occurrence.service';
 import { minBelowMaxValidator } from '@geonature/services/validators';
+
+/**
+ * TODO: move services in a phyto-service folder
+ */
 @Injectable()
 export class PhytoCountingService {
   counting: Subject<any[]> = new Subject();
