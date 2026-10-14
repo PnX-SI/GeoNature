@@ -59,6 +59,10 @@ COOKIE_EXPIRATION = 7200
 # Activer (=true) ou pas (=false) le renouvellement automatique du cookie
 COOKIE_AUTORENEW = true
 
+# Header dans lequel GeoNature lit son propre token, au lieu d'Authorization
+# (utile derrière une passerelle qui monopolise ce header)
+AUTH_TOKEN_HEADER = "Authorization"
+
 # Capturer toutes les exceptions (=true) ou pas (=false)
 TRAP_ALL_EXCEPTIONS = false
 
@@ -734,6 +738,26 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
 		ISSUER = "https://accounts.google.com/"
 		CLIENT_ID = "ID" # API key
 		CLIENT_SECRET = "SECRET" # API Secret
+
+    # Échange en un appel un token déjà obtenu côté client (ex. SDK mobile natif)
+    # contre un token GeoNature, sans redirection
+    [[AUTHENTICATION.PROVIDERS]]
+        module = "pypnusershub.auth.providers.openid_token_exchange_provider.OpenIDTokenExchangeProvider"
+        id_provider = "openid_token_exchange"
+        JWKS_URL = "https://login.microsoftonline.com/<tenant>/discovery/v2.0/keys"
+        TRUSTED_ISSUERS = [
+            { ISSUER = "https://login.microsoftonline.com/<tenant>/v2.0", AUDIENCES = ["<application-id>"] },
+        ]
+        JWKS_TIMEOUT = 10
+        JWKS_DEBOUNCE = 10
+        JWKS_MAX_AGE = 3600
+        TOKEN_HEADER_NAME = "Authorization"
+        ALGORITHMS = ["RS256"]
+        IDENTIFIER_CLAIMS = ["preferred_username"]
+        RECONCILIATE_ATTR = "email"
+        ALLOWED_CLIENTS = ["<calling-client-id>"]
+        REQUIRED_CLAIMS = ["scp"]
+        UNKNOWN_USER_STATUS_CODE = 401
 
 [IMPORT]
     # Encodage des fichiers importés autorisées
