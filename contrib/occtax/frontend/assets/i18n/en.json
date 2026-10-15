@@ -39,6 +39,9 @@
       "HeightMin": "Minimum height (m)",
       "HeightMax": "Maximum height (m)",
       "Errors": {
+        "CoverRangeError": "Cover must be between 0 and 100%.",
+        "HeightNonNegativeError": "Height must be greater than or equal to 0 m.",
+        "HeightOrderError": "Heights must be ordered from minimum to average to maximum.",
         "AltitudeError": "The maximum altitude cannot be less than the minimum altitude",
         "DepthError": "The maximum depth cannot be less than the minimum depth",
         "HourMaxError": "The start time cannot be later than the end time",

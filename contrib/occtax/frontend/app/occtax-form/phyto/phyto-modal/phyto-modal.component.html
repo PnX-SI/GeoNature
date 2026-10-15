@@ -9,9 +9,9 @@
       <pnx-taxonomy
         label="{{ 'Occtax.Taxon.NomCite' | translate }}"
         [parentFormControl]="taxonForm"
-        [idList]="fs.idTaxonList"
+        [idList]="occtaxFormService.idTaxonList"
         [charNumber]="3"
-        [listLength]="occtaxConfig.moduleConf.taxon_result_number"
+        [listLength]="occtaxConfigService.moduleConf.taxon_result_number"
         [displayAdvancedFilters]="false"
         displayedLabel="search_name"
         (onChange)="selectAddOcc($event)"
@@ -40,7 +40,7 @@
       </small>
     </div>
     <div
-      *ngIf="occtaxConfig.moduleConf.form_fields.display_nom_valide"
+      *ngIf="occtaxConfigService.moduleConf.form_fields.display_nom_valide"
       class="col-sm-6"
     >
       <small>TAXREF - Nom valide</small>
@@ -56,7 +56,7 @@
 
   <div class="row">
     <div
-      *ngIf="occtaxConfig.moduleConf.form_fields.determiner"
+      *ngIf="occtaxConfigService.moduleConf.form_fields.determiner"
       class="col-lg-4 col-sm-6"
     >
       <small>{{ 'Occtax.Taxon.Determiner' | translate }}</small>
@@ -80,7 +80,7 @@
     </div>
 
     <div
-      *ngIf="occtaxConfig.moduleConf.form_fields.determination_method"
+      *ngIf="occtaxConfigService.moduleConf.form_fields.determination_method"
       class="col-lg-8 col-sm-6"
     >
       <pnx-nomenclature
@@ -106,7 +106,7 @@
 
   <div class="row">
     <div
-      *ngIf="occtaxConfig.moduleConf.form_fields.observation_status"
+      *ngIf="occtaxConfigService.moduleConf.form_fields.observation_status"
       class="col-lg-4 col-sm-6"
     >
       <pnx-nomenclature
@@ -127,7 +127,7 @@
     </div>
 
     <div
-      *ngIf="occtaxConfig.moduleConf.form_fields.naturalness"
+      *ngIf="occtaxConfigService.moduleConf.form_fields.naturalness"
       class="col-lg-4 col-sm-6"
     >
       <pnx-nomenclature
@@ -141,7 +141,7 @@
     </div>
 
     <div
-      *ngIf="occtaxConfig.moduleConf.form_fields.bio_status"
+      *ngIf="occtaxConfigService.moduleConf.form_fields.bio_status"
       class="col-lg-4 col-sm-6"
     >
       <pnx-nomenclature
@@ -155,7 +155,7 @@
     </div>
 
     <div
-      *ngIf="occtaxConfig.moduleConf.form_fields.behaviour"
+      *ngIf="occtaxConfigService.moduleConf.form_fields.behaviour"
       class="col-lg-4 col-sm-6"
     >
       <pnx-nomenclature
@@ -168,7 +168,7 @@
       ></pnx-nomenclature>
     </div>
     <div
-      *ngIf="occtaxConfig.moduleConf.form_fields.source_status"
+      *ngIf="occtaxConfigService.moduleConf.form_fields.source_status"
       class="col-lg-4 col-sm-6"
     >
       <pnx-nomenclature
@@ -179,7 +179,7 @@
     </div>
 
     <div
-      *ngIf="occtaxConfig.moduleConf.form_fields.blurring"
+      *ngIf="occtaxConfigService.moduleConf.form_fields.blurring"
       class="col-lg-4 col-sm-6"
     >
       <pnx-nomenclature
@@ -192,7 +192,7 @@
 
   <div class="row">
     <div
-      *ngIf="occtaxConfig.moduleConf.form_fields.exist_proof"
+      *ngIf="occtaxConfigService.moduleConf.form_fields.exist_proof"
       class="col-lg-4 col-sm-6"
       style="margin-bottom: 1rem"
     >
@@ -208,7 +208,7 @@
     </div>
 
     <div
-      *ngIf="occtaxConfig.moduleConf.form_fields.digital_proof"
+      *ngIf="occtaxConfigService.moduleConf.form_fields.digital_proof"
       class="col-lg-4 col-sm-6"
       [ngClass]="{
         'd-none':
@@ -237,7 +237,7 @@
       </small>
     </div>
     <div
-      *ngIf="occtaxConfig.moduleConf.form_fields.non_digital_proof"
+      *ngIf="occtaxConfigService.moduleConf.form_fields.non_digital_proof"
       class="col-lg-4 col-sm-6"
       [ngClass]="{
         'd-none':
@@ -280,7 +280,7 @@
     {{ 'Occtax.Taxon.Errors.ExistproofError' | translate }}
   </div>
 
-  <div *ngIf="occtaxConfig.moduleConf.form_fields.comment_occ">
+  <div *ngIf="occtaxConfigService.moduleConf.form_fields.comment_occ">
     <textarea
       placeholder="{{ 'Comment' | translate }}"
       class="form-control"
@@ -355,7 +355,7 @@
     </div>
   </mat-accordion>
 
-  <pnx-occtax-profiles *ngIf="config.FRONTEND['ENABLE_PROFILES']"></pnx-occtax-profiles>
+  <pnx-occtax-profiles *ngIf="configService.FRONTEND['ENABLE_PROFILES']"></pnx-occtax-profiles>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">

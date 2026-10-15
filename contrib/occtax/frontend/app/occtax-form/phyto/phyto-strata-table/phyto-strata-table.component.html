@@ -1,0 +1,229 @@
+<!-- TODO
+ * the file uses some bootstrap classes: should find material angular ways
+  * classes form-control-sm: replace with <mat-form-field appearance="outline" >
+  * class table-striped
+  -->
+<small>{{ 'Occtax.Releve.VegetationStrata' | translate }}</small>
+<table
+  mat-table
+  [dataSource]="parentFormControl.controls"
+  class="mat-elevation-z4 table-striped"
+  #strataTable
+>
+  <caption class="sr-only">{{ 'Occtax.Releve.VegetationStrata' | translate }}</caption>
+
+  <!-- Nom de la strate -->
+  <ng-container matColumnDef="label_default">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      scope="col"
+    >
+      {{ 'Occtax.Releve.Stratum' | translate }}
+    </th>
+    <td
+      mat-cell
+      *matCellDef="let row"
+      scope="row"
+    >
+      {{ strataLabels[row.get('id_nomenclature_vegetation_stratum').value] }}
+    </td>
+  </ng-container>
+
+  <!-- Recouvrement (%) -->
+  <ng-container matColumnDef="percentage_cover_vegetation_stratum">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      scope="col"
+    >
+      {{ 'Occtax.Releve.Cover' | translate }}
+    </th>
+    <td
+      mat-cell
+      *matCellDef="let row"
+      [formGroup]="row"
+    >
+      <input
+        matInput
+        type="number"
+        class="form-control form-control-sm"
+        min="0"
+        max="100"
+        [attr.aria-label]="
+          (strataLabels[row.get('id_nomenclature_vegetation_stratum').value] || '') +
+          ' - ' +
+          ('Occtax.Releve.Cover' | translate)
+        "
+        [attr.aria-invalid]="row.get('percentage_cover_vegetation_stratum').invalid"
+        [attr.aria-describedby]="
+          row.get('percentage_cover_vegetation_stratum').invalid
+            ? 'stratum-cover-error-' + row.get('id_nomenclature_vegetation_stratum').value
+            : null
+        "
+        formControlName="percentage_cover_vegetation_stratum"
+      />
+      <small
+        *ngIf="row.get('percentage_cover_vegetation_stratum').invalid"
+        class="text-danger"
+        [id]="'stratum-cover-error-' + row.get('id_nomenclature_vegetation_stratum').value"
+      >
+        {{ 'Occtax.Releve.Errors.CoverRangeError' | translate }}
+      </small>
+    </td>
+  </ng-container>
+
+  <!-- Hauteur moy. (m) -->
+  <ng-container matColumnDef="average_height">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      scope="col"
+    >
+      {{ 'Occtax.Releve.HeightAvg' | translate }}
+    </th>
+    <td
+      mat-cell
+      *matCellDef="let row"
+      [formGroup]="row"
+    >
+      <input
+        matInput
+        type="number"
+        class="form-control form-control-sm"
+        min="0"
+        [attr.aria-label]="
+          (strataLabels[row.get('id_nomenclature_vegetation_stratum').value] || '') +
+          ' - ' +
+          ('Occtax.Releve.HeightAvg' | translate)
+        "
+        [attr.aria-invalid]="
+          row.get('average_height').invalid || row.hasError('invalidHeightOrder')
+        "
+        [attr.aria-describedby]="
+          (row.get('average_height').invalid
+            ? 'stratum-average-height-error-' + row.get('id_nomenclature_vegetation_stratum').value
+            : '') +
+          (row.hasError('invalidHeightOrder')
+            ? ' stratum-height-order-error-' + row.get('id_nomenclature_vegetation_stratum').value
+            : '')
+        "
+        formControlName="average_height"
+      />
+      <small
+        *ngIf="row.get('average_height').invalid"
+        class="text-danger"
+        [id]="'stratum-average-height-error-' + row.get('id_nomenclature_vegetation_stratum').value"
+      >
+        {{ 'Occtax.Releve.Errors.HeightNonNegativeError' | translate }}
+      </small>
+    </td>
+  </ng-container>
+
+  <!-- Hauteur inf. (m) -->
+  <ng-container matColumnDef="min_height">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      scope="col"
+    >
+      {{ 'Occtax.Releve.HeightMin' | translate }}
+    </th>
+    <td
+      mat-cell
+      *matCellDef="let row"
+      [formGroup]="row"
+    >
+      <input
+        matInput
+        type="number"
+        class="form-control form-control-sm"
+        min="0"
+        [attr.aria-label]="
+          (strataLabels[row.get('id_nomenclature_vegetation_stratum').value] || '') +
+          ' - ' +
+          ('Occtax.Releve.HeightMin' | translate)
+        "
+        [attr.aria-invalid]="row.get('min_height').invalid || row.hasError('invalidHeightOrder')"
+        [attr.aria-describedby]="
+          (row.get('min_height').invalid
+            ? 'stratum-min-height-error-' + row.get('id_nomenclature_vegetation_stratum').value
+            : '') +
+          (row.hasError('invalidHeightOrder')
+            ? ' stratum-height-order-error-' + row.get('id_nomenclature_vegetation_stratum').value
+            : '')
+        "
+        formControlName="min_height"
+      />
+      <small
+        *ngIf="row.get('min_height').invalid"
+        class="text-danger"
+        [id]="'stratum-min-height-error-' + row.get('id_nomenclature_vegetation_stratum').value"
+      >
+        {{ 'Occtax.Releve.Errors.HeightNonNegativeError' | translate }}
+      </small>
+    </td>
+  </ng-container>
+
+  <!-- Hauteur sup. (m) -->
+  <ng-container matColumnDef="max_height">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      scope="col"
+    >
+      {{ 'Occtax.Releve.HeightMax' | translate }}
+    </th>
+    <td
+      mat-cell
+      *matCellDef="let row"
+      [formGroup]="row"
+    >
+      <input
+        matInput
+        type="number"
+        class="form-control form-control-sm"
+        min="0"
+        [attr.aria-label]="
+          (strataLabels[row.get('id_nomenclature_vegetation_stratum').value] || '') +
+          ' - ' +
+          ('Occtax.Releve.HeightMax' | translate)
+        "
+        [attr.aria-invalid]="row.get('max_height').invalid || row.hasError('invalidHeightOrder')"
+        [attr.aria-describedby]="
+          (row.get('max_height').invalid
+            ? 'stratum-max-height-error-' + row.get('id_nomenclature_vegetation_stratum').value
+            : '') +
+          (row.hasError('invalidHeightOrder')
+            ? ' stratum-height-order-error-' + row.get('id_nomenclature_vegetation_stratum').value
+            : '')
+        "
+        formControlName="max_height"
+      />
+      <small
+        *ngIf="row.get('max_height').invalid"
+        class="text-danger"
+        [id]="'stratum-max-height-error-' + row.get('id_nomenclature_vegetation_stratum').value"
+      >
+        {{ 'Occtax.Releve.Errors.HeightNonNegativeError' | translate }}
+      </small>
+      <small
+        *ngIf="row.hasError('invalidHeightOrder')"
+        class="text-danger"
+        [id]="'stratum-height-order-error-' + row.get('id_nomenclature_vegetation_stratum').value"
+      >
+        {{ 'Occtax.Releve.Errors.HeightOrderError' | translate }}
+      </small>
+    </td>
+  </ng-container>
+
+  <tr
+    mat-header-row
+    *matHeaderRowDef="displayedColumns"
+  ></tr>
+  <tr
+    mat-row
+    *matRowDef="let row; columns: displayedColumns"
+    [formGroup]="row"
+  ></tr>
+</table>

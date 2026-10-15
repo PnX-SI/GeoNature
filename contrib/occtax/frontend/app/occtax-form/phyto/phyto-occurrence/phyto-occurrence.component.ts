@@ -16,32 +16,56 @@ import { OcctaxConfigService } from '../../../services/occtax-config.service';
 import { PhytoCountingComponent } from '../phyto-counting/phyto-counting.component';
 import { AdvancedSectionState } from '@geonature_common/form/advanced-section/advanced-section.component';
 
-interface StratumCountingRow {
+// As defined in pr_occtax.t_vegetation_stratum
+export interface VegetationStratum {
+  id_vegetation_stratum: number | null; // primary key
+  id_releve_occtax?: number;
+  id_nomenclature_vegetation_stratum?: number | null;
+  min_height?: number | null;
+  max_height?: number | null;
+  average_height?: number | null;
+  percentage_cover_vegetation_stratum?: number | null;
+}
+
+// This is the type of all data from t_nomenclatures table
+// TODO: should use the same type for all nomenclature data
+export interface Nomenclature {
+  id_nomenclature: number;
+  label_default: string;
+}
+
+export interface StratumRow {
   id: number;
   label: string;
   counting: any;
 }
 
 /**
- * TODO: 
- *  *Factorise api calls, mainly nomenclatures calls
+ * TODO: move proof management in modal component
+ * move additional fields management not in use here in modal component
  */
 @Component({
-  selector: 'pnx-occtax-form-phyto-occurrence',
+  selector: 'pnx-phyto-occurrence',
   templateUrl: './phyto-occurrence.component.html',
-  styleUrls: ['./phyto-occurrence.component.scss'],
+  styleUrls: ['./phyto-occurrence.component.scss', '../../occurrence/occurrence.component.scss'],
 })
 export class PhytoOccurrenceComponent implements OnInit, OnDestroy {
   public occurrenceForm: UntypedFormGroup;
+
   public taxonForm: UntypedFormControl; //control permettant de rechercher un taxon TAXREF
   public taxonFormFocus: boolean = false; //pour mieux gérer l'affichage de l'erreur required
+
   public advancedSectionState: AdvancedSectionState = AdvancedSectionState.COLLAPSED;
   private _subscriptions: Subscription[] = [];
   public displayProofFromElements: boolean = false;
-  public strataRows: StratumCountingRow[] = [];
-  public readonly countingColumns = ['stratum', 'counting'];
+
+  public strataRows: StratumRow[] = [];  // Used as dataSource for the mat table
+  displayedColumns = ['stratum', 'abundance'];
+
   @ViewChildren(PhytoCountingComponent)
+
   phytoCountingComponents: QueryList<PhytoCountingComponent>;
+
   get taxref(): any {
     return this.phytoOccurrenceService.taxref.getValue();
   }
@@ -52,55 +76,56 @@ export class PhytoOccurrenceComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   constructor(
-    public fs: OcctaxFormService,
-    private occtaxFormCountingsService: PhytoCountingsService,
+    public occtaxFormService: OcctaxFormService,
+    private phytoCountingsService: PhytoCountingsService,
     public phytoOccurrenceService: PhytoOccurrenceService,
-    private _coreFormService: FormService,
-    private _occtaxTaxaListService: OcctaxTaxaListService,
+    private formService: FormService,
+    private occtaxTaxaListService: OcctaxTaxaListService,
     private readonly dataFormService: DataFormService,
     public dialog: MatDialog,
-    public config: ConfigService,
-    public occtaxConfig: OcctaxConfigService
-  ) {}
+    public configService: ConfigService,
+    public occtaxConfigService: OcctaxConfigService
+  ) { }
 
   ngOnInit() {
     this.occurrenceForm = this.phytoOccurrenceService.form;
+    
     //gestion de l'affichage des preuves d'existence selon si Preuve = 'Oui' ou non.   
-      this.occurrenceForm
-        .get('id_nomenclature_exist_proof')
-        .valueChanges.pipe(
-          map((id_nomenclature: number): boolean => {
-            let cd_nomenclature = this.phytoOccurrenceService.getCdNomenclatureById(
-              id_nomenclature,
-              this.phytoOccurrenceService.existProof_DATA
-            );
-            return cd_nomenclature == '1';
-          })
-        )
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((display: boolean) => (this.displayProofFromElements = display))
+    this.occurrenceForm
+      .get('id_nomenclature_exist_proof')
+      .valueChanges.pipe(
+        map((id_nomenclature: number): boolean => {
+          let cd_nomenclature = this.phytoOccurrenceService.getCdNomenclatureById(
+            id_nomenclature,
+            this.phytoOccurrenceService.existProof_DATA
+          );
+          return cd_nomenclature == '1';
+        })
+      )
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((display: boolean) => (this.displayProofFromElements = display))
 
-    this.advancedSectionState = this.occtaxConfig.moduleConf.EXPANDED_TAXON_ADVANCED_DETAILS
+    this.advancedSectionState = this.occtaxConfigService.moduleConf.EXPANDED_TAXON_ADVANCED_DETAILS
       ? AdvancedSectionState.EXPANDED
       : AdvancedSectionState.COLLAPSED;
+
     this.initTaxrefSearch();
 
     combineLatest([
-      this.fs.occtaxData.pipe(
+      this.occtaxFormService.occtaxData.pipe(
         filter((data: any) => !!data?.releve?.properties),
       ),
-      this.phytoOccurrenceService.occurrence,
       this.dataFormService.getNomenclature('STRATE_VEGETATION'),
     ])
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: ([data, _occurrence, nomenclature]: [any, any, any]) => {
+        next: ([data, nomenclature]: [any, { values: Nomenclature[] }]) => {
           this.setStrataRows(
-            data.releve.properties.t_vegetation_stratum || [],
+            data.releve.properties.t_vegetation_stratum as VegetationStratum[] || [], // should check if it is empty before typing it 
             nomenclature.values || [],
           );
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error loading vegetation strata for countings:', error);
         },
       });
@@ -132,7 +157,7 @@ export class PhytoOccurrenceComponent implements OnInit, OnDestroy {
   initTaxrefSearch() {
     this.taxonForm = new UntypedFormControl(null, [
       Validators.required,
-      this._coreFormService.taxonValidator,
+      this.formService.taxonValidator,
     ]);
 
     //attribut le cd_nom au formulaire si un taxon est selectionné
@@ -168,7 +193,7 @@ export class PhytoOccurrenceComponent implements OnInit, OnDestroy {
             this.occurrenceForm.get('cd_nom').setValue(values.cd_nom);
           } else {
             // check si taxon pas déjà dans la liste
-            const currentTaxaList = this._occtaxTaxaListService.occurrences$.getValue();
+            const currentTaxaList = this.occtaxTaxaListService.occurrences$.getValue();
             const alreadyExistingTax = currentTaxaList.find(
               (tax) => tax.cd_nom === this.taxonForm.value.cd_nom
             );
@@ -216,29 +241,32 @@ export class PhytoOccurrenceComponent implements OnInit, OnDestroy {
   }
 
   get countings() {
-    return this.occtaxFormCountingsService.countings || [];
+    return this.phytoCountingsService.countings || [];
   }
 
-  private setStrataRows(strata: any[], nomenclatures: any[]): void {
+  private setStrataRows(strata: VegetationStratum[], nomenclatures: Nomenclature[]): void {
     this.strataRows = strata
       .filter(
-        (stratum) =>
-          stratum.percentage_cover_vegetation_stratum != null ||
-          stratum.average_height != null ||
-          stratum.min_height != null ||
-          stratum.max_height != null,
+        (stratum): stratum is VegetationStratum & {
+          id_nomenclature_vegetation_stratum: number;
+        } =>
+          stratum.id_nomenclature_vegetation_stratum != null &&
+          (stratum.percentage_cover_vegetation_stratum != null ||
+            stratum.average_height != null ||
+            stratum.min_height != null ||
+            stratum.max_height != null),
       )
       .map((stratum) => {
-        const id = stratum.id_nomenclature_vegetation_stratum;
+        const idNomenclatureVegetationStratum = stratum.id_nomenclature_vegetation_stratum;
         const nomenclature = nomenclatures.find(
-          (item: any) => item.id_nomenclature === id,
+          (item: any) => item.id_nomenclature === idNomenclatureVegetationStratum,
         );
         const counting = this.countings.find(
-          (item) => item.id_nomenclature_vegetation_stratum === id,
+          (item) => item.id_nomenclature_vegetation_stratum === idNomenclatureVegetationStratum,
         );
 
         return {
-          id,
+          id: idNomenclatureVegetationStratum,
           label: nomenclature?.label_default || '',
           counting: counting || {},
         };

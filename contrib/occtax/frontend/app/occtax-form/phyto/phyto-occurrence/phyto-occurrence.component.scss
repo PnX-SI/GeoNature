@@ -1,59 +1,17 @@
-::ng-deep .mat-progress-spinner circle,
-.mat-spinner circle {
-  stroke: #fff !important;
-}
-
-.occtax-form-content {
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
-}
-
-button .mat-progress-spinner,
-button .mat-spinner {
-  display: inline-block;
-  margin-right: 10px;
-  vertical-align: middle;
-}
-
-// to make additional fields multiselect with long list
-// visible
-.mat-expansion-panel {
-  overflow: auto;
-  border: 1px solid #cfcfcf;
-  margin-right: 50px !important;
-  box-shadow: none;
-}
-
-.form-nom-complet {
-  background-color: #eee;
-}
-
-.blc-expansion-panel {
-  position: relative;
-}
-
-.btn-add-counting {
-  position: absolute;
-  bottom: 3px;
-  right: 3px;
-}
-
-.btn-clear {
-  color: #d40303;
-}
-
-pnx-dynamic-form-releve {
+table {
   width: 100%;
 }
 
-pnx-dynamic-form-releve {
-  width: 100%;
-}
-
-.bloc-button {
-  position: fixed;
-  bottom: 20px;
-  left: 0;
-  width: 50%;
-  text-align: center;
+.mat-column-stratum {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 20% !important;
+  width: 20% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
 }

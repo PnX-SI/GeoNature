@@ -25,30 +25,31 @@ export class PhytoModalComponent extends PhytoOccurrenceComponent {
   public stratesLabels: Record<number, string> = {};
   // @ViewChildren(PhytoAdvancedCountingComponent)
   // private phytoAdvancedCountingComponents: QueryList<PhytoAdvancedCountingComponent>;
+  
 
   constructor(
     @Inject(MAT_DIALOG_DATA) data: { occurrence: any },
     public dialogRef: MatDialogRef<PhytoModalComponent>,
-    fs: OcctaxFormService,
+    occtaxFormService: OcctaxFormService,
     phytoCountingsService: PhytoCountingsService,
     phytoOccurrenceService: PhytoOccurrenceService,
-    coreFormService: FormService,
+    formService: FormService,
     occtaxTaxaListService: OcctaxTaxaListService,
     dataFormService: DataFormService,
     dialog: MatDialog,
-    config: ConfigService,
-    occtaxConfig: OcctaxConfigService
+    configService: ConfigService,
+    occtaxConfigService: OcctaxConfigService
   ) {
     super(
-      fs,
+      occtaxFormService,
       phytoCountingsService,
       phytoOccurrenceService,
-      coreFormService,
+      formService,
       occtaxTaxaListService,
       dataFormService,
       dialog,
-      config,
-      occtaxConfig
+      configService,
+      occtaxConfigService
     );
     this.data = data;
     this.phytoOccurrenceService.occurrence.next(data.occurrence);

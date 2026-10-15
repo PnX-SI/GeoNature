@@ -47,6 +47,9 @@
       "HeightMin": "Hauteur inf. (m)",
       "HeightMax": "Hauteur sup. (m)",
       "Errors": {
+        "CoverRangeError": "Le recouvrement doit être compris entre 0 et 100 %.",
+        "HeightNonNegativeError": "La hauteur doit être supérieure ou égale à 0 m.",
+        "HeightOrderError": "Les hauteurs doivent respecter l'ordre : minimale, moyenne, puis maximale.",
         "AltitudeError": "L'altitude max ne peut être inférieure à l'altitude min",
         "DepthError": "La profondeur max ne peut être inférieure à la profondeur min",
         "HourMaxError": "L'heure de début ne peut pas être supérieure à l'heure de fin",
