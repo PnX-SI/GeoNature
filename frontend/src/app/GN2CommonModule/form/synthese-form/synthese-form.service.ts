@@ -75,7 +75,7 @@ export class SyntheseFormService {
       id_import: null,
       id_acquisition_framework: null,
       id_nomenclature_valid_status: null,
-      modif_since_validation: [false, null],
+      modif_since_validation: null,
       score: null,
       valid_distribution: null,
       valid_altitude: null,
