@@ -78,6 +78,7 @@
       type="number"
       min="{{ formDefComp['min'] }}"
       max="{{ formDefComp['max'] }}"
+      [attr.step]="formDefComp['step']"
       [attr.data-qa]="'field-number' + '-' + formDefComp['attribut_name']"
     />
 

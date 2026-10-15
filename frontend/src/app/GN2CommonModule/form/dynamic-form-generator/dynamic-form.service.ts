@@ -102,6 +102,10 @@ export class DynamicFormService {
         if (cond_max) {
           validators.push(Validators.max(formDef.max));
         }
+
+        if (typeof formDef.step === 'number' && formDef.step > 0) {
+          validators.push(this.stepValidator(formDef.step, formDef.min));
+        }
       }
 
       // Constraint pattern for the "text"
@@ -158,6 +162,24 @@ export class DynamicFormService {
       const file = control.value;
       const valid = !(file && file.size) || file.size / 1000 > sizeMax;
       return !valid ? { file: true } : null;
+    };
+  }
+
+  stepValidator(step: number, min?: number): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: boolean } | null => {
+      const value = Number(control.value);
+      if (
+        control.value === null ||
+        control.value === undefined ||
+        control.value === '' ||
+        Number.isNaN(value)
+      ) {
+        return null;
+      }
+      const base = typeof min === 'number' ? min : 0;
+      const remainder = Math.abs((value - base) % step);
+      const valid = remainder < 1e-9 || step - remainder < 1e-9;
+      return valid ? null : { step: true };
     };
   }
 
