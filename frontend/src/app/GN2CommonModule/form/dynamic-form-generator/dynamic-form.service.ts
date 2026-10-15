@@ -123,6 +123,8 @@ export class DynamicFormService {
 
     if (formDef.disabled) {
       control.disable();
+    } else {
+      control.enable();
     }
 
     control.updateValueAndValidity();
