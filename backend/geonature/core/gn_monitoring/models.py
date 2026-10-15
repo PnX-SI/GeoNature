@@ -174,8 +174,12 @@ class TBaseVisits(DB.Model):
 
     visit_date_min: Mapped[Optional[datetime]] = mapped_column(DateTime)
     visit_date_max: Mapped[Optional[datetime]] = mapped_column(DateTime)
-    id_nomenclature_tech_collect_campanule: Mapped[Optional[int]]
-    id_nomenclature_grp_typ: Mapped[Optional[int]]
+    id_nomenclature_tech_collect_campanule: Mapped[Optional[int]] = mapped_column(
+        Integer, ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature")
+    )
+    id_nomenclature_grp_typ: Mapped[Optional[int]] = mapped_column(
+        Integer, ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature")
+    )
     comments: Mapped[Optional[str]] = mapped_column(Unicode)
     uuid_base_visit: Mapped[Optional[Any]] = mapped_column(
         UUID(as_uuid=True), default=select(func.uuid_generate_v4())
