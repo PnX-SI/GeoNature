@@ -1,14 +1,14 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { Observable, Subscription, Subject, combineLatest, of } from 'rxjs';
-import { map, filter, tap, switchMap, pairwise } from 'rxjs/operators';
+import { Observable, Subject, combineLatest, of } from 'rxjs';
+import { map, filter, tap, switchMap, pairwise, takeUntil } from 'rxjs/operators';
 import _ from 'lodash';
 
 import { OcctaxFormService } from '../../occtax-form.service';
 import { OcctaxFormParamService } from '../../form-param/form-param.service';
 import { MediaService } from '@geonature_common/service/media.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { PhytoCountingsService } from './countings.service';
+import { PhytoCountingsService } from '../phyto-abundance/countings.service';
 import { PhytoOccurrenceService } from '../phyto-occurrence/occurrence.service';
 import { minBelowMaxValidator } from '@geonature/services/validators';
 
@@ -16,12 +16,13 @@ import { minBelowMaxValidator } from '@geonature/services/validators';
  * TODO: move services in a phyto-service folder
  */
 @Injectable()
-export class PhytoCountingService {
+export class PhytoCountingService implements OnDestroy {
   counting: Subject<any[]> = new Subject();
-  synchroCountSub: Subscription;
   additionalFieldsForm: any[] = [];
   public form: UntypedFormGroup;
   public data: any;
+
+  private readonly destroy$ = new Subject<void>();
 
   constructor(
     public dataFormService: DataFormService,
@@ -69,7 +70,14 @@ export class PhytoCountingService {
      */
     combineLatest(
       this.counting.pipe(
-        switchMap((counting) => (!_.isEmpty(counting) ? of(counting) : this.defaultValues))
+        switchMap((counting) =>
+          this.defaultValues.pipe(
+            map((defaults) => ({
+              ...defaults,
+              ...counting
+            }))
+          )
+        )
       ),
       this.phytoCountingsService.additionalFields.asObservable()
     )
@@ -82,9 +90,10 @@ export class PhytoCountingService {
               if (field.type_widget == 'date') {
                 //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
                 if (typeof counting.additional_fields[field.attribut_name] !== 'object') {
-                  counting.additional_fields[field.attribut_name] = this.occtaxFormService.formatDate(
-                    counting.additional_fields[field.attribut_name]
-                  );
+                  counting.additional_fields[field.attribut_name] =
+                    this.occtaxFormService.formatDate(
+                      counting.additional_fields[field.attribut_name]
+                    );
                 }
               }
 
@@ -101,7 +110,8 @@ export class PhytoCountingService {
           this.additionalFieldsForm = additional_fields;
         }),
         //map for return occurrence data only
-        map(([counting, additional_fields]): any => counting)
+        map(([counting, additional_fields]): any => counting),
+        takeUntil(this.destroy$)
       )
       .subscribe((counting) => this.form.patchValue(counting));
 
@@ -112,9 +122,15 @@ export class PhytoCountingService {
         filter(([count_min_prev, count_min_new]) => {
           return count_min_prev == this.form.value.count_max;
         }),
-        map(([count_min_prev, count_min_new]) => count_min_new)
+        map(([count_min_prev, count_min_new]) => count_min_new),
+        takeUntil(this.destroy$)
       )
       .subscribe((count_min) => this.form.get('count_max').setValue(count_min));
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private get defaultValues(): Observable<any> {
@@ -136,7 +152,7 @@ export class PhytoCountingService {
             id_nomenclature_valid_status:
               this.occtaxParamS.get('counting.id_nomenclature_valid_status') ||
               DATA['STATUT_VALID'],
-            // id_nomenclature_vegetation_stratum: 
+            // id_nomenclature_vegetation_stratum:
             //   this.occtaxParamS.get('counting.id_nomenclature_vegetation_stratum') || DATA['STRATE_VEGETATION'],
             // id_nomenclature_phytosociological_abundance:
             //   this.occtaxParamS.get('counting.id_nomenclature_phytosociological_abundance') || DATA['BRAUNBARK'],

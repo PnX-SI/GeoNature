@@ -1,0 +1,260 @@
+<div id="taxalist-container">
+  <ng-container
+    *ngIf="
+      (occtaxTaxaListService.occurrences$ | async)?.length ||
+        occtaxTaxaListService.rec_occurrences_in_progress.length;
+      else zeroOccurrenceBlk
+    "
+  >
+    <div class="sort-toolbar">
+      <mat-button-toggle-group
+        class="sort-type-group"
+        name="sortType"
+        aria-label="{{ 'Occtax.TaxaList.SortType' | translate }}"
+        [value]="typeSortingTaxalist"
+        (change)="setSortType($event.value)"
+      >
+        <mat-button-toggle value="record">
+          {{ 'Occtax.TaxaList.SortByRecord' | translate }}
+        </mat-button-toggle>
+        <mat-button-toggle value="lexicographic">
+          {{ 'Occtax.TaxaList.SortByName' | translate }}
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+
+      <button
+        mat-icon-button
+        type="button"
+        class="sort-order-btn"
+        [matTooltip]="
+          (sortOrder === 'asc' ? 'Occtax.TaxaList.SortAsc' : 'Occtax.TaxaList.SortDesc') | translate
+        "
+        [attr.aria-label]="
+          (sortOrder === 'asc' ? 'Occtax.TaxaList.SortAsc' : 'Occtax.TaxaList.SortDesc') | translate
+        "
+        (click)="toggleSortOrder()"
+      >
+        <mat-icon aria-hidden="true">
+          {{ sortOrder === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+        </mat-icon>
+      </button>
+    </div>
+
+    <ng-container
+      *ngFor="let occurrenceInProgress of occtaxTaxaListService.rec_occurrences_in_progress"
+    >
+      <div
+        class="in-progress-panel"
+        [ngClass]="occurrenceInProgress.state"
+        [attr.role]="occurrenceInProgress.state === 'error' ? 'button' : 'status'"
+        [attr.tabindex]="occurrenceInProgress.state === 'error' ? 0 : null"
+        [attr.aria-label]="
+          (occurrenceInProgress.state === 'error'
+            ? ('Occtax.TaxaList.ClickToContinue' | translate)
+            : ('Occtax.TaxaList.SaveInProgress' | translate)) +
+          ': ' +
+          taxonTitle(occurrenceInProgress.data)
+        "
+        [matTooltip]="
+          occurrenceInProgress.state === 'in_progress'
+            ? ('Occtax.TaxaList.SaveInProgress' | translate)
+            : ('Occtax.TaxaList.SaveError' | translate)
+        "
+        matTooltipPosition="left"
+        (click)="inProgressErrorToForm(occurrenceInProgress)"
+        (keydown.enter)="inProgressErrorToForm(occurrenceInProgress)"
+        (keydown.space)="inProgressErrorToForm(occurrenceInProgress); $event.preventDefault()"
+      >
+        <mat-spinner
+          *ngIf="occurrenceInProgress.state === 'in_progress'"
+          diameter="20"
+          strokeWidth="2"
+          aria-hidden="true"
+        ></mat-spinner>
+        <mat-icon
+          *ngIf="occurrenceInProgress.state === 'error'"
+          aria-hidden="true"
+        >
+          warning
+        </mat-icon>
+        <span [innerHTML]="taxonTitle(occurrenceInProgress.data)"></span>
+        <div
+          *ngIf="occurrenceInProgress.state === 'error'"
+          class="error-hint"
+        >
+          {{ 'Occtax.TaxaList.ClickToContinue' | translate }}
+        </div>
+      </div>
+    </ng-container>
+
+    <table
+      mat-table
+      [dataSource]="occtaxTaxaListService.occurrences$ | async"
+      class="table-striped"
+    >
+      <caption class="sr-only">{{ 'Occtax.Taxon.ObservedTaxon' | translate }}</caption>
+      <!-- Valid name -->
+      <ng-container matColumnDef="nom_valide">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          scope="col"
+        >
+          {{ 'Occtax.Taxon.ValidName' | translate }}
+        </th>
+        <td
+          mat-cell
+          *matCellDef="let occurrence"
+        >
+          {{ occurrence.taxref?.nom_valide || '' }}
+        </td>
+      </ng-container>
+
+      <!-- Strata columns -->
+      <ng-container
+        *ngFor="let column of strataColumns"
+        [matColumnDef]="column.key"
+      >
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          scope="col"
+        >
+          {{ column.label }}
+        </th>
+        <td
+          mat-cell
+          *matCellDef="let occurrence"
+        >
+          {{ getStratumAbundance(occurrence, column.id) }}
+        </td>
+      </ng-container>
+
+      <!-- Comment -->
+      <!-- TODO: break comment so it takes only one line -->
+      <ng-container matColumnDef="comment">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          scope="col"
+        >
+          {{ 'Occtax.TaxaList.Comment' | translate }}
+        </th>
+        <td
+          mat-cell
+          *matCellDef="let occurrence"
+        >
+          {{ getOccurrenceComment(occurrence) }}
+        </td>
+      </ng-container>
+
+      <!-- Actions -->
+      <ng-container matColumnDef="actions">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          scope="col"
+          class="mat-header-cell-actions"
+        >
+          {{ 'Occtax.TaxaList.Actions' | translate }}
+        </th>
+        <td
+          mat-cell
+          *matCellDef="let occurrence; let i = index"
+        >
+          <button
+            mat-icon-button
+            color="primary"
+            type="button"
+            matTooltip="{{ 'Occtax.Taxon.Actions.EditInModal' | translate }}"
+            [attr.aria-label]="
+              ('Occtax.Taxon.Actions.EditInModal' | translate) +
+              ': ' +
+              (occurrence.taxref?.nom_valide || taxonTitle(occurrence))
+            "
+            (click)="openOccurrenceModal(occurrence)"
+          >
+            <mat-icon aria-hidden="true">edit</mat-icon>
+          </button>
+          <button
+            *ngIf="(occtaxTaxaListService.occurrences$ | async)?.length !== 1 || i !== 0"
+            mat-icon-button
+            color="warn"
+            type="button"
+            matTooltip="{{ 'Occtax.Taxon.Actions.Delete' | translate }}"
+            [attr.aria-label]="
+              ('Occtax.Taxon.Actions.Delete' | translate) +
+              ': ' +
+              (occurrence.taxref?.nom_valide || taxonTitle(occurrence))
+            "
+            (click)="deleteOccurrence(occurrence)"
+          >
+            <mat-icon aria-hidden="true">clear</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="validName-emptyCell">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          aria-hidden="true"
+        ></th>
+      </ng-container>
+      <ng-container matColumnDef="strata">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          class="mat-header-cell-strata"
+          scope="colgroup"
+          [attr.colspan]="strataColumns.length || 1"
+        >
+          {{ 'Occtax.Releve.VegetationStrata' | translate }}
+        </th>
+      </ng-container>
+      <ng-container matColumnDef="comment-emptyCell">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          aria-hidden="true"
+        ></th>
+      </ng-container>
+      <ng-container matColumnDef="actions-emptyCell">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          aria-hidden="true"
+        ></th>
+      </ng-container>
+
+      <tr
+        mat-header-row
+        *matHeaderRowDef="[
+          'validName-emptyCell',
+          'strata',
+          'comment-emptyCell',
+          'actions-emptyCell'
+        ]"
+      ></tr>
+      <tr
+        mat-header-row
+        *matHeaderRowDef="displayedColumns"
+      ></tr>
+
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+      ></tr>
+    </table>
+  </ng-container>
+
+  <ng-template #zeroOccurrenceBlk>
+    <div
+      id="zero-taxon-container"
+      role="status"
+      aria-live="polite"
+    >
+      {{ 'Occtax.TaxaList.NoTaxon' | translate }}
+    </div>
+  </ng-template>
+</div>

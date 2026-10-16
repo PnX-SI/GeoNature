@@ -25,11 +25,11 @@ import { OcctaxFormCountingComponent } from "./occtax-form/counting/counting.com
 import { OcctaxProfilesComponent } from "./occtax-form/occurrence/profiles.component";
 import { OcctaxFormParamDialog } from "./occtax-form/form-param/form-param.dialog";
 import { PhytoStrataTableComponent } from "./occtax-form/phyto/phyto-strata-table/phyto-strata-table.component";
-import { PhytoTaxonComponent } from "./occtax-form/phyto/phyto-taxa-list/phyto-taxon.component";
-import { PhytoCountingComponent } from "./occtax-form/phyto/phyto-counting/phyto-counting.component";
+import { PhytoTaxaTableComponent } from "./occtax-form/phyto/phyto-taxa-table/phyto-taxa-table.component";
+import { PhytoAbundanceComponent } from "./occtax-form/phyto/phyto-abundance/phyto-abundance.component";
 import { PhytoAdvancedCountingComponent } from "./occtax-form/phyto/phyto-advanced-counting/phyto-advanced-counting.component";
 import { PhytoOccurrenceComponent } from "./occtax-form/phyto/phyto-occurrence/phyto-occurrence.component";
-import { PhytoModalComponent } from "./occtax-form/phyto/phyto-modal/phyto-modal.component";
+import { PhytoOccurrenceModalComponent } from "./occtax-form/phyto/phyto-occurrence-modal/phyto-occurrence-modal.component";
 
 // Service
 import { OcctaxDataService } from "./services/occtax-data.service";
@@ -122,11 +122,11 @@ export function createTranslateLoader(http: HttpClient, config: ConfigService) {
     OcctaxProfilesComponent,
     OcctaxFormParamDialog,
     PhytoStrataTableComponent,
-    PhytoTaxonComponent,
-    PhytoCountingComponent,
+    PhytoTaxaTableComponent,
+    PhytoAbundanceComponent,
     PhytoAdvancedCountingComponent,
     PhytoOccurrenceComponent,
-    PhytoModalComponent
+    PhytoOccurrenceModalComponent
   ],
   providers: [
     OcctaxDataService,

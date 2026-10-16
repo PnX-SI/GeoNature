@@ -13,9 +13,9 @@ import { OcctaxFormService } from '../../occtax-form.service';
 import { combineLatest, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-// As defined in pr_occtax.t_vegetation_stratum
+// Mirrors pr_occtax.t_vegetation_stratum.
 export interface VegetationStratum {
-  id_vegetation_stratum: number | null; // primary key
+  id_vegetation_stratum: number | null;
   id_releve_occtax?: number;
   id_nomenclature_vegetation_stratum?: number | null;
   min_height?: number | null;
@@ -24,8 +24,6 @@ export interface VegetationStratum {
   percentage_cover_vegetation_stratum?: number | null;
 }
 
-// This is the type of all data from t_nomenclatures table
-// TODO: should use the same type for all nomenclature data
 export interface Nomenclature {
   id_nomenclature: number;
   label_default: string;
@@ -48,12 +46,11 @@ const heightOrderValidator: ValidatorFn = (group: AbstractControl): ValidationEr
 };
 
 /**
- * This component is a form to edit strata when in PHYTO context
- * It is used in the first 'releve' form.
+ * Edits vegetation-stratum cover and height values on a phyto survey.
  *
- * TODO: when coming from phyto tab the list in in alphabetical order
- *      on refresh/first load, the already known inputs are at the end of the list
- *      Sometimes empty: for example on app reload when on phyto tab and returning to the releve tab
+ * Rows follow the vegetation-stratum nomenclature order. When editing a survey,
+ * saved stratum values are restored if the form array has not been populated;
+ * existing form values take precedence to preserve in-progress edits.
  */
 @Component({
   selector: 'pnx-phyto-strata-table',
@@ -68,12 +65,10 @@ export class PhytoStrataTableComponent implements OnInit, OnDestroy {
     'min_height',
     'max_height',
   ];
-  /**it used for dataSource = parentFormControl.controls*/
   @Input() public parentFormControl!: FormArray;
 
   @ViewChild('strataTable', { static: true }) public table!: MatTable<any>;
 
-  // {id_nomenclature_vegetation_stratum, label_default}
   strataLabels: Record<string, string> = {};
 
   private readonly destroy$ = new Subject<void>();
@@ -93,7 +88,6 @@ export class PhytoStrataTableComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  // TODO: should always be sorted in nomenclature order
   private loadStrataTable(): void {
     combineLatest([
       this.dataFormService.getNomenclature('STRATE_VEGETATION'),
@@ -110,6 +104,7 @@ export class PhytoStrataTableComponent implements OnInit, OnDestroy {
           const existingStrata = (this.parentFormControl.value || []) as VegetationStratum[];
           const savedStrata: VegetationStratum[] =
             occtaxData?.releve?.properties?.t_vegetation_stratum || [];
+          // Prefer form values to retain edits; use saved data when patchValue left the array empty.
           const strataToRestore = existingStrata.length > 0 ? existingStrata : savedStrata;
           const strataFormGroups = strataNomenclatures.values.map(
             (strateNomenclature: Nomenclature) => {

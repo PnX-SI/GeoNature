@@ -2,6 +2,10 @@ table {
   width: 100%;
 }
 
+th {
+  font-weight: bold;
+}
+
 .mat-column-stratum {
   word-wrap: break-word !important;
   white-space: unset !important;

@@ -13,7 +13,7 @@ import { map, filter, switchMap, tap, pairwise, retry, catchError } from 'rxjs/o
 import * as cloneDeep from 'lodash/cloneDeep';
 import { CommonService } from '@geonature_common/service/common.service';
 import { OcctaxFormService } from '../../occtax-form.service';
-import { PhytoCountingsService } from '../phyto-counting/countings.service';
+import { PhytoCountingsService } from '../phyto-abundance/countings.service';
 import { OcctaxDataService } from '../../../services/occtax-data.service';
 import { OcctaxFormParamService } from '../../form-param/form-param.service';
 import { OcctaxTaxaListService } from '../../taxa-list/taxa-list.service'; // TODO: change this to phyto-taxa-list

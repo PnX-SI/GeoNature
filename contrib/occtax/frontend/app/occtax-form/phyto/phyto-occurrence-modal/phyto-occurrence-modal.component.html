@@ -1,20 +1,21 @@
-<!-- BUG: dropdowns are behind modal -->
-<h2 mat-dialog-title>{{ data.occurrence.nom_cite }}</h2>
+<h2 mat-dialog-title>{{ 'Occtax.Taxon.EditTaxon' | translate}}</h2>
 <mat-dialog-content class="mat-typography">
-  <div
-    class="row"
-    style="height: 70px !important"
-  >
+
+  <!-- FORM FIELDS -->
+
+  <div class="row">
     <div class="col-sm-6">
       <pnx-taxonomy
-        label="{{ 'Occtax.Taxon.NomCite' | translate }}"
+        label="{{ 'Occtax.Taxon.QuotedName' | translate }}"
         [parentFormControl]="taxonForm"
         [idList]="occtaxFormService.idTaxonList"
         [charNumber]="3"
         [listLength]="occtaxConfigService.moduleConf.taxon_result_number"
         [displayAdvancedFilters]="false"
         displayedLabel="search_name"
-        (onChange)="selectAddOcc($event)"
+        (focusin)="taxonFormFocus = true"
+        (focusout)="taxonFormFocus = false"
+        (onChange)="selectAddOcc()"
       ></pnx-taxonomy>
       <small
         *ngIf="
@@ -24,6 +25,7 @@
         "
         class="error"
         style="color: red"
+        role="alert"
       >
         {{ 'Occtax.Taxon.Errors.NomCiteRequiredError' | translate }}
       </small>
@@ -35,6 +37,7 @@
         "
         class="error"
         style="color: red"
+        role="alert"
       >
         {{ 'Occtax.Taxon.Errors.CdNomRequiredError' | translate }}
       </small>
@@ -43,9 +46,8 @@
       *ngIf="occtaxConfigService.moduleConf.form_fields.display_nom_valide"
       class="col-sm-6"
     >
-      <small>TAXREF - Nom valide</small>
+      <small>TAXREF - {{ 'Occtax.Taxon.ValidName' | translate }}</small>
       <span
-        data-qa="occurrence-nom-valide"
         class="form-control form-control-sm form-nom-complet"
         [innerHTML]="taxonForm.value?.nom_valide"
         disabled
@@ -61,9 +63,17 @@
     >
       <small>{{ 'Occtax.Taxon.Determiner' | translate }}</small>
       <input
+        id="phyto-determiner"
+        aria-label="{{ 'Occtax.Taxon.Determiner' | translate }}"
         class="form-control form-control-sm"
         [formControl]="occurrenceForm.get('determiner')"
-        data-qa="pnx-occtax-taxon-form-determinator"
+        [attr.aria-invalid]="occurrenceForm.get('determiner').invalid"
+        [attr.aria-describedby]="
+          occurrenceForm.get('determiner').hasError('required') &&
+          occurrenceForm.get('determiner').touched
+            ? 'phyto-determiner-error'
+            : null
+        "
         type="text"
       />
       <small
@@ -71,9 +81,10 @@
           occurrenceForm.get('determiner').hasError('required') &&
           occurrenceForm.get('determiner').touched
         "
-        data-qa="pnx-occtax-taxon-form-determinator-error"
         class="error"
         style="color: red"
+        id="phyto-determiner-error"
+        role="alert"
       >
         {{ 'Occtax.Taxon.Errors.DeterminerRequiredError' | translate }}
       </small>
@@ -98,6 +109,7 @@
         "
         class="error"
         style="color: red"
+        role="alert"
       >
         {{ 'Occtax.Taxon.Errors.DeterminationMethodRequiredError' | translate }}
       </small>
@@ -116,13 +128,14 @@
       ></pnx-nomenclature>
       <small
         *ngIf="
-          occurrenceForm.get('id_nomenclature_bio_condition').hasError('required') &&
-          occurrenceForm.get('id_nomenclature_bio_condition').touched
+          occurrenceForm.get('id_nomenclature_observation_status').hasError('required') &&
+          occurrenceForm.get('id_nomenclature_observation_status').touched
         "
         class="error"
         style="color: red"
+        role="alert"
       >
-        {{ 'Occtax.Taxon.Errors.BiologicalConditionRequiredError' | translate }}
+        {{ 'Occtax.Taxon.Errors.ObservationStatusRequiredError' | translate }}
       </small>
     </div>
 
@@ -167,6 +180,7 @@
         [group3Inpn]="taxref?.group3_inpn"
       ></pnx-nomenclature>
     </div>
+
     <div
       *ngIf="occtaxConfigService.moduleConf.form_fields.source_status"
       class="col-lg-4 col-sm-6"
@@ -218,6 +232,8 @@
       <div class="form-group">
         <small>{{ 'Occtax.Taxon.DigitalProof' | translate }}</small>
         <input
+          aria-label="{{ 'Occtax.Taxon.DigitalProof' | translate }}"
+          id="phyto-digital-proof"
           [ngClass]="{
             'is-invalid':
               occurrenceForm.get('digital_proof').invalid ||
@@ -225,6 +241,19 @@
           }"
           class="form-control form-control-sm"
           [formControl]="occurrenceForm.get('digital_proof')"
+          [attr.aria-invalid]="
+            occurrenceForm.get('digital_proof').invalid ||
+            occurrenceForm.hasError('proofRequired')
+          "
+          [attr.aria-describedby]="
+            (occurrenceForm.get('digital_proof').hasError('pattern')
+              ? 'phyto-digital-proof-pattern-error '
+              : '') +
+            (occurrenceForm.hasError('proofRequired') ? 'phyto-proof-required-error ' : '') +
+            (occurrenceForm.get('digital_proof').hasError('proofNotNull')
+              ? 'phyto-proof-not-required-error'
+              : '')
+          "
           type="text"
         />
       </div>
@@ -232,10 +261,13 @@
         *ngIf="occurrenceForm.get('digital_proof').hasError('pattern')"
         class="error"
         style="color: red"
+        id="phyto-digital-proof-pattern-error"
+        role="alert"
       >
         {{ 'Occtax.Taxon.Errors.ExistProofValidation' | translate }}
       </small>
     </div>
+
     <div
       *ngIf="occtaxConfigService.moduleConf.form_fields.non_digital_proof"
       class="col-lg-4 col-sm-6"
@@ -246,8 +278,12 @@
       }"
     >
       <div class="form-group">
-        <small>{{ 'Occtax.Taxon.NonDigitalProof' | translate }}</small>
+        <small>
+          {{ 'Occtax.Taxon.NonDigitalProof' | translate }}
+        </small>
         <input
+          aria-label="{{ 'Occtax.Taxon.NonDigitalProof' | translate }}"
+          id="phyto-non-digital-proof"
           [ngClass]="{
             'is-invalid':
               occurrenceForm.get('non_digital_proof').invalid ||
@@ -255,6 +291,16 @@
           }"
           class="form-control form-control-sm"
           [formControl]="occurrenceForm.get('non_digital_proof')"
+          [attr.aria-invalid]="
+            occurrenceForm.get('non_digital_proof').invalid ||
+            occurrenceForm.hasError('proofRequired')
+          "
+          [attr.aria-describedby]="
+            (occurrenceForm.hasError('proofRequired') ? 'phyto-proof-required-error ' : '') +
+            (occurrenceForm.get('non_digital_proof').hasError('proofNotNull')
+              ? 'phyto-proof-not-required-error'
+              : '')
+          "
           type="text"
         />
       </div>
@@ -265,6 +311,8 @@
     *ngIf="occurrenceForm.hasError('proofRequired')"
     class="error"
     style="color: red; margin-top: -0.8rem; margin-bottom: 0.5rem; font-size: 80%; font-weight: 400"
+    id="phyto-proof-required-error"
+    role="alert"
   >
     {{ 'Occtax.Taxon.Errors.NoExistProofError' | translate }}
   </div>
@@ -276,17 +324,20 @@
     "
     class="error"
     style="color: red; margin-top: -0.8rem; margin-bottom: 0.5rem; font-size: 80%; font-weight: 400"
+    id="phyto-proof-not-required-error"
+    role="alert"
   >
     {{ 'Occtax.Taxon.Errors.ExistproofError' | translate }}
   </div>
 
   <div *ngIf="occtaxConfigService.moduleConf.form_fields.comment_occ">
     <textarea
+      aria-label="{{ 'Comment' | translate }}"
       placeholder="{{ 'Comment' | translate }}"
       class="form-control"
       [formControl]="occurrenceForm.get('comment')"
       rows="2"
-      id="commentaire"
+      id="comment"
     ></textarea>
   </div>
 
@@ -296,63 +347,40 @@
     [formsDefinition]="additionalFieldsForm"
   ></pnx-dynamic-form-generator>
 
-  <h5 style="margin-top: 15px">
-    <span
-      [matBadge]="countings.length"
-      matBadgeOverlap="false"
-    >
+  <!-- ABUNDANCES ACCORDION -->
+  <h3 style="margin-top: 15px">
       {{
-        (countings.length > 1 ? 'Occtax.Counting.Countings' : 'Occtax.Counting.Counting')
+        (countings.length > 1 ? 'Occtax.Counting.Abundances' : 'Occtax.Counting.Abundance')
           | translate
       }}
-      & Abundances
-    </span>
-  </h5>
+  </h3>
 
   <div
     *ngIf="occurrenceForm.get('cor_counting_occtax').hasError('required')"
     class="error"
     style="color: red"
+    role="alert"
   >
     {{ 'Occtax.Taxon.Errors.CountingRequiredError' | translate }}
   </div>
 
-  <mat-accordion
-    [multi]="true"
-    data-qa="pnx-occtax-taxon-form-count"
-  >
-    <div
-      *ngFor="let counting of countings; index as i"
-      class="blc-expansion-panel"
-      [attr.data-qa]="'pnx-occtax-taxon-form-count-' + i"
+  <mat-accordion [multi]="true">
+    <mat-expansion-panel 
+      *ngFor="let counting of countings; index as i" 
       displayMouseOver
-      selector=".btn-clear"
-    >
-      <mat-expansion-panel>
-        <mat-expansion-panel-header class="right-aligned-header">
-          <mat-panel-title>
-            Dénombrement
-            {{
-              stratesLabels[counting.id_nomenclature_vegetation_stratum] ||
-                counting.id_nomenclature_vegetation_stratum
-            }}
-          </mat-panel-title>
-          <mat-panel-description
-            *ngIf="countings.length > 1"
-            class="btn-clear d-none"
-            (click)="removeCounting(i)"
-            matTooltip="Supprimer ce denombrement"
-          >
-            <mat-icon>clear</mat-icon>
-          </mat-panel-description>
-        </mat-expansion-panel-header>
+      selector=".btn-clear">
+      <mat-expansion-panel-header class="right-aligned-header">
+        <mat-panel-title>
+          {{
+          stratesLabels[counting.id_nomenclature_vegetation_stratum] ||
+          counting.id_nomenclature_vegetation_stratum
+          }}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
 
-        <pnx-occtax-form-phyto-advanced-counting
-          [value]="counting"
-          data-qa="pnx-nomenclature-obj-denombrement"
-        ></pnx-occtax-form-phyto-advanced-counting>
-      </mat-expansion-panel>
-    </div>
+      <pnx-occtax-form-phyto-advanced-counting [value]="counting">
+      </pnx-occtax-form-phyto-advanced-counting>
+    </mat-expansion-panel>
   </mat-accordion>
 
   <pnx-occtax-profiles *ngIf="configService.FRONTEND['ENABLE_PROFILES']"></pnx-occtax-profiles>
@@ -361,21 +389,22 @@
 <mat-dialog-actions align="end">
   <button
     class="uppercase"
-    style="margin-right: 20px"
     color="warn"
     mat-raised-button
-    matTooltip="Annuler les modifications sur ce taxon"
+    matTooltip="{{ 'Occtax.Taxon.Actions.CancelModifications' | translate }}"
     (click)="resetOccurrenceForm()"
     mat-dialog-close
   >
-    Annuler
+    {{ 'Occtax.Taxon.Actions.Cancel' | translate }}
   </button>
   <button
     id="add-occ"
-    class="button-success uppercase"
+    #saveOccurrenceButton
     mat-raised-button
-    matTooltip="Modifier et enregistrer ce taxon"
+    color="primary"
+    matTooltip="{{ 'Occtax.Taxon.Actions.EditAndSave' | translate }}"
     [disabled]="phytoOccurrenceService.form.invalid"
+    [attr.aria-busy]="phytoOccurrenceService.saveWaiting"
     (click)="submitOccurrenceForm()"
     mat-dialog-close
     type="submit"
@@ -384,8 +413,12 @@
       *ngIf="phytoOccurrenceService.saveWaiting"
       diameter="25"
       strokeWidth="2"
+      aria-hidden="true"
     ></mat-spinner>
-    Modifier ce taxon
-    <mat-icon style="vertical-align: middle">save</mat-icon>
+    <span *ngIf="phytoOccurrenceService.saveWaiting" class="sr-only" role="status">
+      {{ 'Occtax.TaxaList.SaveInProgress' | translate }}
+    </span>
+    {{ 'Occtax.Taxon.Actions.Edit' | translate }}
+    <mat-icon style="vertical-align: middle" aria-hidden="true">save</mat-icon>
   </button>
 </mat-dialog-actions>

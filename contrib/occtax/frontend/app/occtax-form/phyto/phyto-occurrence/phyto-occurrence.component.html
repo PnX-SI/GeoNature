@@ -14,7 +14,7 @@
       [listLength]="occtaxConfigService.moduleConf.taxon_result_number"
       [displayAdvancedFilters]="false"
       displayedLabel="search_name"
-      (onChange)="selectAddOcc($event)"
+      (onChange)="selectAddOcc()"
     ></pnx-taxonomy>
     <span
       id="phyto-quoted-name-label"
@@ -51,10 +51,9 @@
     *ngIf="occtaxConfigService.moduleConf.form_fields.display_nom_valide"
     class="col-sm-6"
   >
-    <label for="phyto-valid-name">TAXREF - {{ 'Occtax.Taxon.ValidName' | translate }}</label>
+    <small for="phyto-valid-name">TAXREF - {{ 'Occtax.Taxon.ValidName' | translate }}</small>
     <output
       id="phyto-valid-name"
-      data-qa="occurrence-nom-valide"
       class="form-control form-control-sm form-nom-complet"
       [innerHTML]="taxonForm.value?.nom_valide"
     ></output>
@@ -125,10 +124,10 @@
         mat-cell
         *matCellDef="let row"
       >
-        <pnx-occtax-form-phyto-counting
+        <pnx-phyto-abundance
           [value]="row.abundance"
           [stratumId]="row.id"
-        ></pnx-occtax-form-phyto-counting>
+        ></pnx-phyto-abundance>
       </td>
     </ng-container>
 
@@ -147,7 +146,7 @@
 <div style="margin-top: 15px">
   <button
     id="add-occ"
-    data-qa="occurrence-add-btn"
+    #saveOccurrenceButton
     mat-raised-button
     color="primary"
     matTooltip="{{ 'Occtax.Taxon.Actions.SaveThisTaxon' | translate }}"

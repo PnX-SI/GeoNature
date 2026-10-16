@@ -1,0 +1,61 @@
+// Angular Material 15 icon buttons are 48px wide;
+$icon-button-size: 48px;
+$table-cell-horizontal-padding: 16px;
+$inside-border-size: 1px;
+$actions-column-width: calc($inside-border-size + (2 * $icon-button-size) + (2 * $table-cell-horizontal-padding));
+$comment-max-characters: 18ch;
+$comment-column-width: calc((2 * $inside-border-size) + (2 * $table-cell-horizontal-padding) + $comment-max-characters);
+
+table {
+  width: 100%;
+  max-width: 100%;
+}
+
+th {
+  font-weight: bold;
+}
+
+.mat-header-cell-strata {
+  justify-content: center;
+  text-align: center;
+  border-right: $inside-border-size solid #cfcfcf;
+  border-left: $inside-border-size solid #cfcfcf;
+}
+
+.mat-column-nom_valide {
+  border-right: 1px solid #cfcfcf;
+  overflow: hidden;
+  text-wrap: nowrap;
+  overflow-wrap: break-word;
+  inline-size: $comment-max-characters;
+  max-width: $comment-column-width;
+}
+
+.mat-column-comment {
+  overflow: hidden;
+  text-wrap: nowrap;
+  overflow-wrap: break-word;
+  inline-size: $comment-max-characters;
+  max-width: $comment-column-width;
+  border-left: $inside-border-size solid #cfcfcf;
+}
+
+.mat-column-actions {
+  align-items: center;
+  justify-content: space-between;
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 $actions-column-width !important;
+  width: $actions-column-width !important;
+  min-width: $actions-column-width !important;
+  overflow-wrap: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  border-left: $inside-border-size solid #cfcfcf;
+}
+
+.mat-header-cell-actions {
+  text-align: center;
+}

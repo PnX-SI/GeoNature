@@ -67,7 +67,8 @@
         "CreateDone": "Taxon added to the survey",
         "UpdateDone": "Taxon updated",
         "NoTaxonFound": "No taxon found for this search",
-        "CurrentlyEditing": "Please save the taxon being edited before editing a new one"
+        "CurrentlyEditing": "Please save the taxon being edited before editing a new one",
+        "DuplicateTaxonConfirmation": "This taxon is already in the list of recorded taxa.<br/><small>Consider adding multiple counts to the same taxon.</small><br/>Do you want to continue?"
       },
       "Errors": {
         "ExistProofValidation": "This field must start with 'http://', 'https://', or 'ftp://'",
@@ -79,10 +80,12 @@
         "DeterminationMethodRequiredError": "Please indicate the determination method",
         "TechObsRequiredError": "Please indicate the observation technique",
         "BiologicalConditionRequiredError": "Please indicate the biological condition",
-        "CountingRequiredError": "Please provide a count"
+        "CountingRequiredError": "Please provide a count",
+        "ObservationStatusRequiredError": "Please provide an observation status"
       },
       "ObservedTaxon": "Observed taxon(s)",
       "AddTaxon": "Add a taxon",
+      "EditTaxon": "Advanced taxon edition",
       "Priority": "Priority",
       "QuotedName": "Taxon (quoted name)",
       "ValidName": "Valid name",
@@ -130,6 +133,7 @@
       "CountingObject": "Count object",
       "CountingType": "Count type",
       "Abundance": "Abundance",
+      "Abundances": "Abundances",
       "Numbers": "Count",
       "Total": "Total",
       "Errors": {
@@ -137,6 +141,9 @@
         "LifeStageRequiredError": "Please indicate the life stage",
         "SexRequiredError": "Please indicate the sex",
         "CountingObjectRequiredError": "Please indicate the count object"
+      },
+      "Actions": {
+        "DeleteCounting": "Delete this counting" 
       }
     }
   }

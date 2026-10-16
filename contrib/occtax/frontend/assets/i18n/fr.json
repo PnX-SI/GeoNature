@@ -74,7 +74,8 @@
         "CreateDone": "Taxon ajouté au relevé",
         "UpdateDone": "Taxon mis à jour",
         "NoTaxonFound": "Aucun taxon trouvé pour cette recherche",
-        "CurrentlyEditing": "Veuillez enregistrer le taxon en cours d'édition avant d'en éditer un nouveau"
+        "CurrentlyEditing": "Veuillez enregistrer le taxon en cours d'édition avant d'en éditer un nouveau",
+        "DuplicateTaxonConfirmation": "Le taxon saisi est déjà dans la liste des taxons enregistrés.<br/><small>Privilégiez l'ajout de plusieurs dénombrements sur le même taxon.</small><br/>Voulez-vous continuer ?"
       },
       "Errors": {
         "ExistProofValidation": "Ce champs doit débuter par 'http://', 'https://', ou 'ftp://'",
@@ -86,10 +87,12 @@
         "DeterminationMethodRequiredError": "Veuillez indiquer la méthode de détermination",
         "TechObsRequiredError": "Veuillez indiquer la technique d'observation",
         "BiologicalConditionRequiredError": "Veuillez indiquer l'état biologique",
-        "CountingRequiredError": "Veuillez renseigner un dénombrement"
+        "CountingRequiredError": "Veuillez renseigner un dénombrement",
+        "ObservationStatusRequiredError": "Veuillez renseigner un statut d'observation"
       },
       "ObservedTaxon": "Taxon(s) observé(s)",
       "AddTaxon": "Ajout d'un taxon",
+      "EditTaxon": "Edition avancée du taxon",
       "Priority": "Prioritaire",
       "QuotedName": "Taxon (nom cité)",
       "ValidName": "Nom valide",
@@ -139,6 +142,7 @@
       "CountingObject": "Objet du dénombrement",
       "CountingType": "Type de dénombrement",
       "Abundance": "Abondance",
+      "Abundances": "Abondances",
       "Numbers": "Effectif",
       "Total": "Total",
       "Errors": {
@@ -146,6 +150,9 @@
         "LifeStageRequiredError": "Veuillez indiquer le stade de vie",
         "SexRequiredError": "Veuillez indiquer le sexe",
         "CountingObjectRequiredError": "Veuillez indiquer l'objet du dénombrement"
+      },
+      "Actions": {
+        "DeleteCounting": "Supprimer ce dénombrement" 
       }
     }
   }
