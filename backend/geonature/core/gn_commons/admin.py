@@ -38,6 +38,8 @@ class BibFieldAdmin(CruvedProtectedMixin, ModelView):
     object_code = "ADDITIONAL_FIELDS"
 
     form_base_class = TAdditionalFieldsForm
+    create_template = "admin/additional_fields_create.html"
+    edit_template = "admin/additional_fields_edit.html"
     form_columns = (
         "field_name",
         "field_label",
@@ -50,6 +52,7 @@ class BibFieldAdmin(CruvedProtectedMixin, ModelView):
         "quantitative",
         "unity",
         "field_values",
+        "multiselect",
         "default_value",
         "field_order",
         "exportable",
@@ -77,6 +80,7 @@ class BibFieldAdmin(CruvedProtectedMixin, ModelView):
         "quantitative": {"label": "Quantitatif"},
         "unity": {"label": "Unité"},
         "field_values": {"label": "Valeurs"},
+        "multiselect": {"label": "Choix multiple"},
         "default_value": {"label": "Valeur par défaut"},
         "field_order": {"label": "Ordre"},
         "additional_attributes": {"label": "Attribut additionnels"},
@@ -99,6 +103,7 @@ class BibFieldAdmin(CruvedProtectedMixin, ModelView):
         "field_name": "Nom du champ en base de donnée",
         "field_values": """Obligatoire si widget = select/multiselect/checkbox,radio (Format JSON : tableau de 'value/label'. Utilisez des doubles quotes pour les valeurs et les clés). 
             Exemple [{"label": "trois", "value": 3}, {"label": "quatre", "value": 4}]""",
+        "multiselect": "Permet de sélectionner plusieurs valeurs (widgets nomenclature et datalist)",
         "default_value": "La valeur par défaut doit être une des valeurs du champs 'Valeurs' ci-dessus. Pour les valeurs textuelles, il n'est pas nécessaire de remettre la valeur entre guillement",
         "id_list": "Identifiant en BDD de la liste (pour Type widget = taxonomy/observers)",
         "field_order": "Numéro d'ordonnancement du champs (si plusieurs champs pour le même module/objet/JDD)",

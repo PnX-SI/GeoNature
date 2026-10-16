@@ -28,8 +28,17 @@ def _add_label_nomenclature_data_dict(value, module_code, object_code):
     for key, val in (value or {}).items():
         duplicate_key_dict[key] = val
         if key in nomenclature_fields_name:
-            if nomenclature := db.session.get(TNomenclatures, val):
-                duplicate_key_dict[f"_label_{key}"] = nomenclature.label_default
+            if isinstance(val, list):
+                labels = [
+                    nomenclature.label_default
+                    for id_nomenclature in val
+                    if (nomenclature := db.session.get(TNomenclatures, id_nomenclature))
+                ]
+                if labels:
+                    duplicate_key_dict[f"_label_{key}"] = ", ".join(labels)
+            elif val is not None:
+                if nomenclature := db.session.get(TNomenclatures, val):
+                    duplicate_key_dict[f"_label_{key}"] = nomenclature.label_default
     return duplicate_key_dict
 
 

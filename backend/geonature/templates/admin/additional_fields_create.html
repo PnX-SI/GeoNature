@@ -1,0 +1,6 @@
+{% extends 'admin/model/create.html' %}
+
+{% block tail %}
+  {{ super() }}
+  {% include 'admin/additional_fields_scripts.html' %}
+{% endblock %}

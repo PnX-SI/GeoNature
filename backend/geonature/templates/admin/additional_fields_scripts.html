@@ -1,0 +1,16 @@
+<script>
+  $(function () {
+    // Widgets dont le caractère multiple est configurable
+    const MULTIPLE_WIDGETS = ['nomenclature', 'datalist'];
+    const $widget = $('#type_widget');
+    const $group = $('#multiselect').closest('.form-group');
+
+    function toggleMultiselect() {
+      const name = $widget.find('option:selected').text().trim().toLowerCase();
+      $group.toggle(MULTIPLE_WIDGETS.includes(name));
+    }
+
+    $widget.on('change', toggleMultiselect);
+    toggleMultiselect();
+  });
+</script>
