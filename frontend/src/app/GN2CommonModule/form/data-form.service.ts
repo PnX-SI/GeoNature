@@ -647,7 +647,7 @@ export class DataFormService {
               unity: data.unity,
               code_nomenclature_type: data.code_nomenclature_type,
               type_widget: data.type_widget.widget_name,
-              multi_select: null,
+              multiple: data.multiselect,
               values: data.field_values,
               value: data.default_value,
               id_list: data.id_list,
