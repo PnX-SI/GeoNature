@@ -14,6 +14,7 @@ import { Area } from '../../interfaces';
 import { AreasSource } from './areas.source';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 import { mergeDefaultItems } from './areas.utils';
+import { DesignStyle } from '../items-select/items-select.component';
 
 /**
  * Ce composant permet de sélectionner une ou plusieurs zones géographiques.
@@ -53,6 +54,8 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
    * `type_code` indiqués dans cet attribut.
    */
   @Input() typeCodes: Array<string> = []; // Areas type_code
+  /** Design of the select, see ``pnx-items-select`` */
+  @Input() designStyle: DesignStyle = 'material';
   /**
    * Do not get the geom from the getArea call, for performances
    */

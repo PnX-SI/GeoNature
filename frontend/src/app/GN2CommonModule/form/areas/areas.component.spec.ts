@@ -9,6 +9,7 @@ const area = (id_area: number) => ({ id_area, area_name: `Area ${id_area}` });
 
 @Component({ selector: 'pnx-areas-select', template: '' })
 class SelectStub {
+  @Input() designStyle;
   @Input() items;
   @Input() parentFormControl;
   @Input() label;

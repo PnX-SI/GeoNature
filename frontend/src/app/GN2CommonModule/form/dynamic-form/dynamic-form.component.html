@@ -2,17 +2,7 @@
   <div
     *ngIf="
       (formDefComp['type_widget'] == 'checkbox' && formDefComp['values'].length > 1) ||
-      [
-        'text',
-        'textarea',
-        'radio',
-        'select',
-        'time',
-        'number',
-        'file',
-        'medias',
-        'bool_radio'
-      ].includes(formDefComp['type_widget'])
+      ['radio', 'file', 'medias', 'bool_radio'].includes(formDefComp['type_widget'])
     "
   >
     <small [attr.for]="formDefComp['attribut_name']">
@@ -44,83 +34,216 @@
     </a>
   </div>
   <div [ngSwitch]="formDefComp['type_widget']">
-    <input
+    <mat-form-field
       *ngSwitchCase="'text'"
-      class="form-control form-control-sm"
-      [formControl]="form.get(formDefComp['attribut_name'])"
-      id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
-      type="text"
-      [attr.data-qa]="'field-text' + '-' + formDefComp['attribut_name']"
-    />
-    <div
-      *ngIf="
-        formDefComp['type_widget'] == 'text' &&
-        form.get(formDefComp['attribut_name']).errors?.pattern
-      "
+      class="w-100"
+      appearance="outline"
     >
-      <small class="text-danger">{{ formDefComp['pattern_message'] }}</small>
-    </div>
-
-    <input
+      <mat-label>{{ formDefComp['attribut_label'] }}</mat-label>
+      <input
+        matInput
+        [formControl]="form.get(formDefComp['attribut_name'])"
+        id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
+        type="text"
+        [attr.data-qa]="'field-text' + '-' + formDefComp['attribut_name']"
+      />
+      <mat-error *ngIf="form.get(formDefComp['attribut_name']).errors?.pattern">
+        {{ formDefComp['pattern_message'] }}
+      </mat-error>
+      <mat-icon
+        *ngIf="formDefComp['definition'] && !formDefComp['link_definition']"
+        matSuffix
+        class="small-icon"
+        [matTooltip]="formDefComp['definition']"
+        matTooltipClass="form-tooltip"
+      >
+        help
+      </mat-icon>
+      <a
+        *ngIf="formDefComp['link_definition'] && formDefComp['definition']"
+        matSuffix
+        target="_blank"
+        class="link-media"
+        [href]="formDefComp.link_definition"
+      >
+        <mat-icon
+          [matTooltip]="formDefComp['definition']"
+          matTooltipClass="form-tooltip"
+        >
+          info
+        </mat-icon>
+      </a>
+    </mat-form-field>
+    <mat-form-field
       *ngSwitchCase="'time'"
-      class="form-control form-control-sm"
-      [formControl]="form.get(formDefComp['attribut_name'])"
-      id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
-      type="time"
-      [attr.data-qa]="'field-time' + '-' + formDefComp['attribut_name']"
-    />
-
-    <input
+      class="w-100"
+      appearance="outline"
+    >
+      <mat-label>{{ formDefComp['attribut_label'] }}</mat-label>
+      <input
+        matInput
+        [formControl]="form.get(formDefComp['attribut_name'])"
+        id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
+        type="time"
+        [attr.data-qa]="'field-time' + '-' + formDefComp['attribut_name']"
+      />
+      <mat-icon
+        *ngIf="formDefComp['definition'] && !formDefComp['link_definition']"
+        matSuffix
+        class="small-icon"
+        [matTooltip]="formDefComp['definition']"
+        matTooltipClass="form-tooltip"
+      >
+        help
+      </mat-icon>
+      <a
+        *ngIf="formDefComp['link_definition'] && formDefComp['definition']"
+        matSuffix
+        target="_blank"
+        class="link-media"
+        [href]="formDefComp.link_definition"
+      >
+        <mat-icon
+          [matTooltip]="formDefComp['definition']"
+          matTooltipClass="form-tooltip"
+        >
+          info
+        </mat-icon>
+      </a>
+    </mat-form-field>
+    <mat-form-field
       *ngSwitchCase="'number'"
-      class="form-control form-control-sm"
-      [formControl]="form.get(formDefComp['attribut_name'])"
-      id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
-      type="number"
-      min="{{ formDefComp['min'] }}"
-      max="{{ formDefComp['max'] }}"
-      [attr.data-qa]="'field-number' + '-' + formDefComp['attribut_name']"
-    />
-
-    <textarea
+      class="w-100"
+      appearance="outline"
+    >
+      <mat-label>{{ formDefComp['attribut_label'] }}</mat-label>
+      <input
+        matInput
+        [formControl]="form.get(formDefComp['attribut_name'])"
+        id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
+        type="number"
+        min="{{ formDefComp['min'] }}"
+        max="{{ formDefComp['max'] }}"
+        [attr.data-qa]="'field-number' + '-' + formDefComp['attribut_name']"
+      />
+      <mat-icon
+        *ngIf="formDefComp['definition'] && !formDefComp['link_definition']"
+        matSuffix
+        class="small-icon"
+        [matTooltip]="formDefComp['definition']"
+        matTooltipClass="form-tooltip"
+      >
+        help
+      </mat-icon>
+      <a
+        *ngIf="formDefComp['link_definition'] && formDefComp['definition']"
+        matSuffix
+        target="_blank"
+        class="link-media"
+        [href]="formDefComp.link_definition"
+      >
+        <mat-icon
+          [matTooltip]="formDefComp['definition']"
+          matTooltipClass="form-tooltip"
+        >
+          info
+        </mat-icon>
+      </a>
+    </mat-form-field>
+    <mat-form-field
       *ngSwitchCase="'textarea'"
-      class="form-control form-control-sm"
-      [formControl]="form.get(formDefComp['attribut_name'])"
-      id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
-      type="textarea"
-      rows="{{ formDefComp['rows'] }}"
-      [attr.data-qa]="'field-textarea' + '-' + formDefComp['attribut_name']"
-    ></textarea>
-
-    <span *ngSwitchCase="'select'">
-      <select
+      class="w-100"
+      appearance="outline"
+    >
+      <mat-label>{{ formDefComp['attribut_label'] }}</mat-label>
+      <textarea
+        matInput
+        [formControl]="form.get(formDefComp['attribut_name'])"
+        id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
+        rows="{{ formDefComp['rows'] }}"
+        [attr.data-qa]="'field-textarea' + '-' + formDefComp['attribut_name']"
+      ></textarea>
+      <mat-icon
+        *ngIf="formDefComp['definition'] && !formDefComp['link_definition']"
+        matSuffix
+        class="small-icon"
+        [matTooltip]="formDefComp['definition']"
+        matTooltipClass="form-tooltip"
+      >
+        help
+      </mat-icon>
+      <a
+        *ngIf="formDefComp['link_definition'] && formDefComp['definition']"
+        matSuffix
+        target="_blank"
+        class="link-media"
+        [href]="formDefComp.link_definition"
+      >
+        <mat-icon
+          [matTooltip]="formDefComp['definition']"
+          matTooltipClass="form-tooltip"
+        >
+          info
+        </mat-icon>
+      </a>
+    </mat-form-field>
+    <mat-form-field
+      *ngSwitchCase="'select'"
+      class="w-100"
+      appearance="outline"
+    >
+      <mat-label>{{ formDefComp['attribut_label'] }}</mat-label>
+      <mat-select
         *ngIf="isValInSelectList; else selectElseBlock"
-        class="form-control form-control-sm"
         id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
         [formControl]="form.get(formDefComp['attribut_name'])"
         [attr.data-qa]="'field-select-' + '-' + formDefComp['attribut_name']"
       >
-        <option
-          [ngValue]="null"
+        <mat-option
+          [value]="null"
           *ngIf="!formDefComp['noNullOption']"
         >
           -
-        </option>
-        <option
+        </mat-option>
+        <mat-option
           *ngFor="let item of formDefComp['values']"
-          [ngValue]="item.value"
+          [value]="item.value"
         >
           {{ item.label }}
-        </option>
-      </select>
-
+        </mat-option>
+      </mat-select>
       <ng-template #selectElseBlock>
         <input
+          matInput
           type="text"
           disabled
           [value]="form.get(formDefComp['attribut_name'])?.value"
         />
       </ng-template>
-    </span>
+      <mat-icon
+        *ngIf="formDefComp['definition'] && !formDefComp['link_definition']"
+        matSuffix
+        class="small-icon"
+        [matTooltip]="formDefComp['definition']"
+        matTooltipClass="form-tooltip"
+      >
+        help
+      </mat-icon>
+      <a
+        *ngIf="formDefComp['link_definition'] && formDefComp['definition']"
+        matSuffix
+        target="_blank"
+        class="link-media"
+        [href]="formDefComp.link_definition"
+      >
+        <mat-icon
+          [matTooltip]="formDefComp['definition']"
+          matTooltipClass="form-tooltip"
+        >
+          info
+        </mat-icon>
+      </a>
+    </mat-form-field>
 
     <div
       *ngSwitchCase="'file'"
@@ -146,46 +269,42 @@
 
     <div *ngSwitchCase="'checkbox'">
       <div
-        class="custom-control custom-checkbox"
         *ngIf="formDefComp['values'].length == 1; else elseBlock"
         [ngClass]="{ 'ng-invalid': form.get(formDefComp['attribut_name']).invalid }"
       >
-        <input
-          type="checkbox"
+        <mat-checkbox
           id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
-          class="custom-control-input"
           [name]="formDefComp['attribut_name']"
-          [value]="formDefComp['values'][0].value"
-          (change)="onCheckChange($event, form.get(formDefComp['attribut_name']))"
-        />
-        <label
-          class="custom-control-label"
-          for="{{ formDefComp['attribut_name'] }}_{{ rand }}"
+          [checked]="
+            isCheckBoxChecked(
+              form.get(formDefComp['attribut_name']),
+              formDefComp['values'][0].value
+            )
+          "
+          (change)="
+            onCheckChange(
+              $event,
+              form.get(formDefComp['attribut_name']),
+              formDefComp['values'][0].value
+            )
+          "
         >
           <span [innerHTML]="formDefComp['attribut_label']"></span>
-        </label>
+        </mat-checkbox>
       </div>
       <ng-template #elseBlock>
         <div
           *ngFor="let item of formDefComp['values']; let index = index"
-          class="custom-control custom-checkbox"
           [ngClass]="{ 'ng-invalid': form.get(formDefComp['attribut_name']).invalid }"
         >
-          <input
-            class="custom-control-input"
-            type="checkbox"
+          <mat-checkbox
             id="{{ item.label }}_{{ rand }}"
             [name]="formDefComp['attribut_name']"
-            [value]="item.value"
             (change)="onCheckChange($event, form.get(formDefComp['attribut_name']), item.value)"
             [checked]="isCheckBoxChecked(form.get(formDefComp['attribut_name']), item.value)"
-          />
-          <label
-            for="{{ item.label }}_{{ rand }}"
-            class="custom-control-label"
           >
             <span [innerHTML]="item.label"></span>
-          </label>
+          </mat-checkbox>
         </div>
         <span
           class="text-danger"
@@ -197,15 +316,13 @@
     </div>
 
     <ng-container *ngSwitchCase="'bool_checkbox'">
-      <input
-        class="bool-checkbox"
-        type="checkbox"
-        [value]="formDefComp['value']"
+      <mat-checkbox
         id="{{ formDefComp['attribut_name'] }}"
         [name]="formDefComp['attribut_name']"
         [formControl]="form.get(formDefComp['attribut_name'])"
-      />
-      <span>{{ formDefComp['attribut_label'] }}</span>
+      >
+        {{ formDefComp['attribut_label'] }}
+      </mat-checkbox>
       <mat-icon
         *ngIf="formDefComp['definition']"
         [matTooltip]="formDefComp['definition']"
@@ -219,57 +336,48 @@
 
     <div *ngSwitchCase="'radio'">
       <div
-        class="radio-group-container"
+        class="radio-group-container d-flex align-items-center"
         [ngClass]="{ 'border-red': form.get(formDefComp['attribut_name']).invalid }"
       >
-        <div
-          *ngFor="let item of formDefComp['values']"
-          class="custom-control custom-radio"
-          [ngClass]="{ 'ng-invalid': form.get(formDefComp['attribut_name']).invalid }"
+        <mat-radio-group
+          class="d-flex flex-column"
+          [formControl]="form.get(formDefComp['attribut_name'])"
+          [attr.data-qa]="'field-radio' + formDefComp['attribut_name'] + '_' + rand"
         >
-          <input
-            type="radio"
+          <mat-radio-button
+            *ngFor="let item of formDefComp['values']"
             id="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ item.value }}"
-            (click)="onRadioChange(item.value, form.get(formDefComp['attribut_name']))"
-            class="custom-control-input"
-            name="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ item.value }}"
             [value]="item.value"
-            [formControl]="form.get(formDefComp['attribut_name'])"
-            [attr.data-qa]="'field-radio' + formDefComp['attribut_name'] + '_' + rand"
-          />
-          <label
-            class="custom-control-label"
-            for="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ item.value }}"
           >
             <span [innerHTML]="item.label"></span>
-          </label>
-        </div>
+          </mat-radio-button>
+        </mat-radio-group>
+        <button
+          *ngIf="form.get(formDefComp['attribut_name']).value !== null"
+          mat-icon-button
+          type="button"
+          aria-label="Clear"
+          (click)="form.get(formDefComp['attribut_name']).setValue(null)"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
       </div>
     </div>
 
     <!-- deprecated -->
     <div *ngSwitchCase="'bool_radio'">
-      <div
-        class="custom-control custom-radio"
-        *ngFor="let val of formDefComp['values']; index as i"
-        [ngClass]="{ 'ng-invalid': form.get(formDefComp['attribut_name']).invalid }"
+      <mat-radio-group
+        class="d-flex flex-column"
+        [formControl]="form.get(formDefComp['attribut_name'])"
       >
-        <input
-          type="radio"
+        <mat-radio-button
+          *ngFor="let val of formDefComp['values']; index as i"
           id="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ i }}"
-          class="custom-control-input"
-          (click)="onRadioChange(i == 0, form.get(formDefComp['attribut_name']))"
-          name="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ i }}"
           [value]="i == 0"
-          [formControl]="form.get(formDefComp['attribut_name'])"
-        />
-        <label
-          class="custom-control-label"
-          for="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ i }}"
         >
           <span [innerHTML]="val"></span>
-        </label>
-      </div>
+        </mat-radio-button>
+      </mat-radio-group>
     </div>
 
     <div

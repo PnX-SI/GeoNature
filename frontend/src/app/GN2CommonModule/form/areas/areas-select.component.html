@@ -1,93 +1,158 @@
-<small>{{ label }}</small>
-<ng-select
-  [ngClass]="class"
-  [items]="items"
-  bindLabel="area_name"
-  [bindValue]="valueFieldName"
-  [compareWith]="compareWith"
-  [hideSelected]="true"
-  [placeholder]="label"
-  [multiple]="multiSelect"
-  [clearable]="clearable"
-  [virtualScroll]="true"
-  [typeahead]="typeahead$"
-  [loading]="loading"
-  [formControl]="parentFormControl"
-  clearAllText="Supprimer toutes les zones géographiques"
-  addTagText="Ajouter une zone géographique"
-  (change)="selectionChange.emit($event)"
->
-  <ng-template ng-typetosearch-tmp>
-    <div class="ng-option disabled Option">
-      <span class="bg-info text-light p-2 rounded Option__hint">
-        <mat-icon>help_outline</mat-icon>
-        <span>Commencer à saisir une zone</span>
-      </span>
-    </div>
-  </ng-template>
-
-  <ng-template
-    ng-notfound-tmp
-    let-searchTerm="searchTerm"
+<ng-container *ngIf="designStyle === 'bootstrap'; else materialBlock">
+  <small>{{ label }}</small>
+  <ng-select
+    [ngClass]="class"
+    [items]="items"
+    bindLabel="area_name"
+    [bindValue]="valueFieldName"
+    [compareWith]="compareWith"
+    [hideSelected]="true"
+    [placeholder]="label"
+    [multiple]="multiSelect"
+    [clearable]="clearable"
+    [virtualScroll]="true"
+    [typeahead]="typeahead$"
+    [loading]="loading"
+    [formControl]="parentFormControl"
+    clearAllText="Supprimer toutes les zones géographiques"
+    addTagText="Ajouter une zone géographique"
+    (change)="selectionChange.emit($event)"
   >
-    <div class="ng-option disabled Option">
-      <span
-        class="bg-warning p-2 rounded Option__hint"
-        matTooltip="Aucune correspondance pour «&nbsp;{{ searchTerm }}&nbsp;»"
+    <ng-template ng-typetosearch-tmp>
+      <div class="ng-option disabled Option">
+        <span class="bg-info text-light p-2 rounded Option__hint">
+          <mat-icon>help_outline</mat-icon>
+          <span>Commencer à saisir une zone</span>
+        </span>
+      </div>
+    </ng-template>
+
+    <ng-template
+      ng-notfound-tmp
+      let-searchTerm="searchTerm"
+    >
+      <div class="ng-option disabled Option">
+        <span
+          class="bg-warning p-2 rounded Option__hint"
+          matTooltip="Aucune correspondance pour «&nbsp;{{ searchTerm }}&nbsp;»"
+          matTooltipPosition="after"
+        >
+          <mat-icon>warning_amber</mat-icon>
+          <span>Aucune correspondance pour «&nbsp;{{ searchTerm }}&nbsp;»</span>
+        </span>
+      </div>
+    </ng-template>
+
+    <ng-template
+      ng-loadingtext-tmp
+      let-searchTerm="searchTerm"
+    >
+      <div
+        class="ng-option disabled Option"
+        matTooltip="Chargements des zones pour «&nbsp;{{ searchTerm }}&nbsp;»"
         matTooltipPosition="after"
       >
-        <mat-icon>warning_amber</mat-icon>
-        <span>Aucune correspondance pour «&nbsp;{{ searchTerm }}&nbsp;»</span>
+        <span class="bg-info p-2 rounded Option__hint">
+          <mat-icon>autorenew</mat-icon>
+          <span>Chargements pour «&nbsp;{{ searchTerm }}&nbsp;»</span>
+        </span>
+      </div>
+    </ng-template>
+
+    <ng-template
+      ng-option-tmp
+      let-item="item"
+    >
+      <div
+        matTooltip="{{ item.area_name }}"
+        matTooltipPosition="after"
+      >
+        <span class="pre-wrap">{{ item.area_name }}</span>
+      </div>
+    </ng-template>
+
+    <ng-template
+      ng-label-tmp
+      let-item="item"
+      let-clear="clear"
+    >
+      <span
+        class="ng-value-label pl-2"
+        [style.background-color]="item.kolor"
+      >
+        {{ item.area_name }}
       </span>
-    </div>
-  </ng-template>
-
-  <ng-template
-    ng-loadingtext-tmp
-    let-searchTerm="searchTerm"
-  >
-    <div
-      class="ng-option disabled Option"
-      matTooltip="Chargements des zones pour «&nbsp;{{ searchTerm }}&nbsp;»"
-      matTooltipPosition="after"
-    >
-      <span class="bg-info p-2 rounded Option__hint">
-        <mat-icon>autorenew</mat-icon>
-        <span>Chargements pour «&nbsp;{{ searchTerm }}&nbsp;»</span>
+      <span
+        *ngIf="item.disabled !== true"
+        class="ng-value-icon left"
+        (click)="clear(item)"
+        aria-hidden="true"
+      >
+        ×
       </span>
-    </div>
-  </ng-template>
+    </ng-template>
+  </ng-select>
+</ng-container>
 
-  <ng-template
-    ng-option-tmp
-    let-item="item"
+<ng-template #materialBlock>
+  <mat-form-field
+    class="w-100 mt-2"
+    appearance="outline"
   >
-    <div
-      matTooltip="{{ item.area_name }}"
-      matTooltipPosition="after"
+    <mat-label>{{ label }}</mat-label>
+    <mat-select
+      [formControl]="parentFormControl"
+      [multiple]="multiSelect"
+      [compareWith]="compare"
+      (openedChange)="openedChanged($event)"
+      (selectionChange)="selectionChanged($event.value)"
     >
-      <span class="pre-wrap">{{ item.area_name }}</span>
-    </div>
-  </ng-template>
-
-  <ng-template
-    ng-label-tmp
-    let-item="item"
-    let-clear="clear"
-  >
-    <span
-      class="ng-value-label pl-2"
-      [style.background-color]="item.kolor"
+      <div class="px-2 pb-1">
+        <input
+          type="text"
+          class="form-control form-control-sm"
+          placeholder="Commencer à saisir une zone"
+          data-qa="areas-select-search"
+          [ngModel]="term"
+          (ngModelChange)="termChanged($event)"
+          (keydown)="$event.stopPropagation()"
+        />
+      </div>
+      <mat-option
+        *ngFor="let area of options"
+        [value]="valueOf(area)"
+        [attr.data-qa]="area.area_name"
+        [matTooltip]="area.area_name"
+        matTooltipPosition="after"
+      >
+        {{ area.area_name }}
+      </mat-option>
+      <mat-option
+        *ngIf="options.length === 0"
+        disabled
+      >
+        {{
+          term.length < 2
+            ? 'Commencer à saisir une zone'
+            : 'Aucune correspondance pour « ' + term + ' »'
+        }}
+      </mat-option>
+    </mat-select>
+    <mat-spinner
+      *ngIf="loading"
+      matSuffix
+      diameter="18"
+    ></mat-spinner>
+    <button
+      *ngIf="clearable && hasValue"
+      matSuffix
+      mat-icon-button
+      type="button"
+      aria-label="Clear"
+      data-qa="areas-select-clear"
+      (click)="clear($event)"
     >
-      {{ item.area_name }}
-    </span>
-    <span
-      *ngIf="item.disabled !== true"
-      class="ng-value-icon left"
-      (click)="clear(item)"
-      aria-hidden="true"
-    >
-      ×
-    </span>
-  </ng-template>
-</ng-select>
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+</ng-template>

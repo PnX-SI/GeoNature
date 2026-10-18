@@ -24,6 +24,7 @@ describe('AreasSelectComponent', () => {
     component = fixture.componentInstance;
     control = new UntypedFormControl(null);
     component.parentFormControl = control;
+    fixture.componentRef.setInput('designStyle', 'bootstrap');
     fixture.componentRef.setInput('items', items);
     fixture.componentRef.setInput('label', 'Zones');
   });

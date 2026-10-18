@@ -21,6 +21,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconRegistry } from '@angular/material/icon';
@@ -149,6 +150,7 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     MatListModule,
     MatMenuModule,
     MatPaginatorModule,
+    MatRadioModule,
     MatProgressBarModule,
     MatProgressSpinnerModule,
     MatSelectModule,
@@ -322,6 +324,7 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     MatListModule,
     MatMenuModule,
     MatPaginatorModule,
+    MatRadioModule,
     NgSelectModule,
     MatProgressBarModule,
     MatProgressSpinnerModule,

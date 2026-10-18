@@ -4,15 +4,7 @@
   color: darkgrey;
 }
 
-.bool-checkbox {
-  margin-bottom: 10px;
-  margin-right: 10px;
-}
-
-.custom-checkbox {
-  padding-left: 2em;
-}
-.custom-checkbox.ng-invalid {
+div.ng-invalid {
   border-left: 5px solid #ff0000 !important;
 }
 

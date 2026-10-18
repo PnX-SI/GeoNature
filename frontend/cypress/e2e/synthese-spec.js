@@ -81,10 +81,9 @@ describe('Tests gn_synthese', () => {
     //objectifs : pouvoir ajouter un nouveau filtre, (assert que nouveau filtre est bon)
     // pouvoir sélectionner une valeur dans ce nouveau champ
     // pouvoir afficher les observations comportant la valeur du champ sélectionné. ici le sexe (femelle) qu'on selectionne à partir du cd_nomenclature (2)
-    cy.get('pnx-dynamic-form-generator > :nth-child(1) > .input-group > .form-control').select(
-      'Sexe'
-    );
-    cy.get('pnx-dynamic-form-generator mat-select').click();
+    cy.get('[data-qa="dynamic-form-generator-select"]').click();
+    cy.get('mat-option').contains('Sexe').click();
+    cy.get('pnx-dynamic-form-generator pnx-dynamic-form mat-select').click();
     // get element from its cd_nomenclature (2)
     cy.get('[data-qa="2"]').click();
     cy.get('[data-qa="synthese-search-btn"]').click();

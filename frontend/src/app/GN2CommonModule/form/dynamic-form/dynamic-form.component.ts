@@ -108,7 +108,7 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
   onCheckChange(event, formControl: UntypedFormControl, value) {
     let currentFormValue = Object.assign([], formControl.value);
     // Selected
-    if (event.target.checked) {
+    if (event.checked ?? event.target?.checked) {
       // Add a new control in the arrayForm
       currentFormValue.push(value);
       // Patch value to declench validators
