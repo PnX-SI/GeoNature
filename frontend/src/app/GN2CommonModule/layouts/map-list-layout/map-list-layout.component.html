@@ -1,0 +1,68 @@
+<div class="gn-map-list-actions"><ng-content select="[actions]" /></div>
+<div
+  #container
+  class="gn-map-list-layout"
+  [class.filter-collapsed]="filterCollapsed"
+  [class.filter-top]="filterPosition === 'top'"
+  [style.--filter-w.px]="filterWidth"
+  [style.--map-w.px]="mapWidth"
+  [class.map-resized]="mapWidth !== null"
+>
+  <aside
+    #filterEl
+    class="gn-map-list-filter"
+    id="gn-map-list-filter"
+  >
+    <ng-content select="[filter]" />
+  </aside>
+
+  <div
+    *ngIf="filterPosition === 'side'"
+    class="gn-map-list-handle"
+    [class.disabled]="filterCollapsed"
+    (pointerdown)="!filterCollapsed && startResize($event, 'filter')"
+    (pointermove)="onResize($event)"
+    (pointerup)="endResize($event)"
+    (pointercancel)="endResize($event)"
+  >
+    <button
+      *ngIf="showToggle"
+      mat-icon-button
+      type="button"
+      class="gn-map-list-toggle"
+      aria-controls="gn-map-list-filter"
+      [attr.aria-expanded]="!filterCollapsed"
+      (pointerdown)="$event.stopPropagation()"
+      (click)="toggleFilter()"
+    >
+      <i
+        class="fa"
+        [ngClass]="filterCollapsed ? 'fa-caret-right' : 'fa-caret-left'"
+      ></i>
+    </button>
+  </div>
+
+  <section
+    #mapEl
+    class="gn-map-list-map"
+    [style.flex-grow]="mapWidth === null ? mapRatio : null"
+  >
+    <ng-content select="[map]" />
+  </section>
+
+  <div
+    class="gn-map-list-handle"
+    (pointerdown)="startResize($event, 'map')"
+    (pointermove)="onResize($event)"
+    (pointerup)="endResize($event)"
+    (pointercancel)="endResize($event)"
+  ></div>
+
+  <section
+    #listEl
+    class="gn-map-list-list"
+    [style.flex-grow]="mapWidth === null ? listRatio : null"
+  >
+    <ng-content select="[list]" />
+  </section>
+</div>

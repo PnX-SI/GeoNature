@@ -10,49 +10,26 @@
   </div>
 </div>
 
-<div
-  class="wrapper"
+<gn-map-list-layout
   data-qa="pnx-synthese"
+  [(filterCollapsed)]="isSearchBarReduced"
+  [mapRatio]="7"
+  [listRatio]="5"
 >
-  <nav
-    id="sidebar"
-    #navBar
-    [(ngbCollapse)]="isSearchBarReduced"
-  >
-    <pnx-synthese-search (searchClicked)="onSearchEvent()"></pnx-synthese-search>
-  </nav>
-
-  <div class="row row-sm page-content">
-    <button
-      mat-icon-button
-      id="sidebarCollapse"
-      class="btn-toogle-sidenav box-shadow"
-      type="button"
-      (click)="isSearchBarReduced = !isSearchBarReduced"
-      [attr.aria-expanded]="!isSearchBarReduced"
-    >
-      <i
-        [hidden]="isSearchBarReduced"
-        class="fa fa-caret-left"
-      ></i>
-      <i
-        [hidden]="!isSearchBarReduced"
-        class="fa fa-caret-right"
-      ></i>
-    </button>
-    <div class="col-sm-12 col-md-7 padding-sm">
-      <pnx-synthese-carte
-        (onAreasToggle)="fetchOrRenderData($event)"
-        [inputSyntheseData]="mapListService.geojsonData"
-      ></pnx-synthese-carte>
-    </div>
-    <div class="col-sm-12 col-md-5 padding-sm">
-      <pnx-synthese-list
-        [inputSyntheseData]="mapListService.tableData"
-        [searchBarHidden]="isSearchBarReduced"
-        data-qa="pnx-synthese-list"
-      ></pnx-synthese-list>
-    </div>
-  </div>
-</div>
+  <pnx-synthese-search
+    filter
+    (searchClicked)="onSearchEvent()"
+  ></pnx-synthese-search>
+  <pnx-synthese-carte
+    map
+    (onAreasToggle)="fetchOrRenderData($event)"
+    [inputSyntheseData]="mapListService.geojsonData"
+  ></pnx-synthese-carte>
+  <pnx-synthese-list
+    list
+    [inputSyntheseData]="mapListService.tableData"
+    [searchBarHidden]="isSearchBarReduced"
+    data-qa="pnx-synthese-list"
+  ></pnx-synthese-list>
+</gn-map-list-layout>
 <router-outlet></router-outlet>

@@ -3,55 +3,36 @@
   *ngIf="dataLoading"
 ></div>
 
-<div class="float-btns">
-  <ng-container *ngIf="userCruved?.C != '0'">
-    <a
-      id="add-btn"
-      mat-raised-button
-      color="primary"
-      class="button-success hard-shadow btn-action uppercase"
-      [routerLink]="['add']"
-      matTooltip="Ajouter une nouvelle station d'habitat"
-    >
-      {{ 'Actions.Add' | translate }}
-      <mat-icon>add_circle_outline</mat-icon>
-    </a>
-  </ng-container>
-
-  <button
-    (click)="isCollapseFilter = !isCollapseFilter"
-    [attr.aria-expanded]="!isCollapseFilter"
-    class="hard-shadow btn-action uppercase"
-    mat-raised-button
-    color="primary"
-    matTooltip="Rechercher des habitats"
-    [matBadgeHidden]="mapListFormService.nbOfFilter() == 0"
-    [matBadge]="mapListFormService.nbOfFilter()"
-    matBadgeColor="warn"
-  >
-    {{ 'Actions.Filter' | translate }}
-    <i
-      class="fa fa-sliders"
-      aria-hidden="true"
-    ></i>
-  </button>
-</div>
-
-<div
-  class="row row-sm map-list-container"
+<gn-map-list-layout
   data-qa="pnx-occhab-map-list"
+  [(filterCollapsed)]="isCollapseFilter"
 >
-  <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
-    <pnx-map-list
-      height="88vh"
-      idName="id_station"
-    ></pnx-map-list>
-  </div>
+  <a
+    actions
+    *ngIf="userCruved?.C != '0'"
+    id="add-btn"
+    mat-flat-button
+    color="primary"
+    class="button-success"
+    [routerLink]="['add']"
+    matTooltip="Ajouter une nouvelle station d'habitat"
+  >
+    <mat-icon>add_circle_outline</mat-icon>
+    {{ 'Actions.Add' | translate }}
+  </a>
 
-  <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
-    <div [(ngbCollapse)]="isCollapseFilter">
-      <pnx-occhab-map-list-filter (onSearch)="searchData($event)"></pnx-occhab-map-list-filter>
-    </div>
+  <pnx-occhab-map-list-filter
+    filter
+    (onSearch)="searchData($event)"
+  ></pnx-occhab-map-list-filter>
+
+  <pnx-map-list
+    map
+    height="88vh"
+    idName="id_station"
+  ></pnx-map-list>
+
+  <div list>
     <div class="container">
       <div class="row">
         <div class="col">
@@ -273,7 +254,7 @@
       </div>
     </div>
   </div>
-</div>
+</gn-map-list-layout>
 
 <ng-template
   #deleteModal

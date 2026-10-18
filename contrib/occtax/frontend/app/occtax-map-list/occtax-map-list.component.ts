@@ -43,7 +43,7 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
   public formsSelected = [];
   public cardContentHeight: number;
 
-  public isCollapseAvance = true;
+  public isCollapseAvance = false;
 
   advandedFilterOpen = false;
   @ViewChild(NgbModal)

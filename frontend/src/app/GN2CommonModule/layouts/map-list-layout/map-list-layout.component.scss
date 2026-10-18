@@ -1,0 +1,166 @@
+// Shared look of the filter / map / list pages: three panes with the same border, radius and
+// shadow, separated by gutters that hold the resize handles.
+:host {
+  --gn-pane-border: #dfe3e8;
+  --gn-pane-radius: 6px;
+  --gn-gutter: 8px;
+  display: block;
+  width: 100%;
+  padding: var(--gn-gutter);
+}
+
+.gn-map-list-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: var(--gn-gutter);
+
+  &:empty {
+    display: none;
+  }
+}
+
+.gn-map-list-layout,
+.gn-map-list-filter,
+.gn-map-list-map,
+.gn-map-list-list {
+  // offsetWidth (measured when a drag starts) includes the padding, so must the applied width
+  box-sizing: border-box;
+}
+
+.gn-map-list-layout {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+}
+
+.gn-map-list-filter,
+.gn-map-list-map,
+.gn-map-list-list {
+  min-width: 0;
+  overflow: hidden;
+  background-color: #fff;
+  border: 1px solid var(--gn-pane-border);
+  border-radius: var(--gn-pane-radius);
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.06);
+}
+
+.gn-map-list-filter {
+  flex: 0 0 auto;
+  width: var(--filter-w, 250px);
+  overflow-y: auto;
+}
+
+.filter-collapsed .gn-map-list-filter {
+  display: none;
+}
+
+.gn-map-list-map,
+.gn-map-list-list {
+  flex-basis: 0;
+}
+
+.gn-map-list-list {
+  overflow: auto;
+}
+
+// once resized by the user, the map has a fixed width and the list takes the rest
+.map-resized {
+  .gn-map-list-map {
+    flex: 0 0 var(--map-w);
+  }
+  .gn-map-list-list {
+    flex: 1 1 0;
+  }
+}
+
+// draggable gutter between two panes, with a grip shown on hover
+.gn-map-list-handle {
+  position: relative;
+  flex: 0 0 var(--gn-gutter);
+  cursor: col-resize;
+  touch-action: none;
+  user-select: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 4px;
+    height: 36px;
+    border-radius: 2px;
+    background-color: #b8c0cc;
+    opacity: 0;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.15s;
+  }
+  &:hover::after,
+  &:active::after {
+    opacity: 1;
+  }
+  &.disabled {
+    cursor: default;
+    &::after {
+      display: none;
+    }
+  }
+}
+
+// a compact tab on the edge of the filter pane
+.gn-map-list-toggle {
+  position: absolute;
+  z-index: 1000;
+  top: 50%;
+  left: 0;
+  width: 24px;
+  height: 40px;
+  padding: 0;
+  line-height: 40px;
+  background-color: #fff;
+  border: 1px solid var(--gn-pane-border);
+  border-radius: 0 var(--gn-pane-radius) var(--gn-pane-radius) 0;
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.15);
+  cursor: pointer;
+}
+
+@media (min-width: 1200px) {
+  .gn-map-list-filter {
+    width: var(--filter-w, 300px);
+  }
+}
+
+@media (min-width: 1500px) {
+  .gn-map-list-filter {
+    width: var(--filter-w, 350px);
+  }
+}
+
+// filter panel above the map and the list
+.filter-top {
+  flex-wrap: wrap;
+  row-gap: var(--gn-gutter);
+  .gn-map-list-filter {
+    flex-basis: 100%;
+    width: 100%;
+  }
+}
+
+// stack the columns on small screens
+@media (max-width: 991px) {
+  .gn-map-list-layout {
+    flex-direction: column;
+    row-gap: var(--gn-gutter);
+  }
+  .gn-map-list-layout .gn-map-list-filter {
+    width: 100%;
+  }
+  .gn-map-list-handle {
+    display: none;
+  }
+  .gn-map-list-layout .gn-map-list-map,
+  .gn-map-list-layout .gn-map-list-list {
+    flex: 0 0 auto;
+  }
+}

@@ -28,7 +28,7 @@ export class OccHabMapListComponent implements OnInit {
 
   public destinationImportCode: string;
 
-  public isCollapseFilter = true;
+  public isCollapseFilter = false;
 
   public userCruved: any;
   public canImport: boolean = false;

@@ -1,5 +1,10 @@
 .form {
   background-color: white;
-  padding-bottom: 5px;
+  padding: 15px 0;
   margin-bottom: 5px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
 }

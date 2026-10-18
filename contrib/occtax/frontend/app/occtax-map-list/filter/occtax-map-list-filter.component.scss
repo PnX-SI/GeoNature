@@ -1,20 +1,22 @@
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
 #search-btn {
   height: 35px;
   font-size: 15px;
-  margin-top: 20px;
-  margin-left: 3px;
 }
 
 #filter {
   padding: 15px;
-  padding-top: 50px;
   background-color: white;
 }
 
-.actions {
+.actions button[mat-icon-button] {
   height: 35px;
-  margin-left: 5px;
-  margin-top: 21px;
   padding: 8px;
 }
 

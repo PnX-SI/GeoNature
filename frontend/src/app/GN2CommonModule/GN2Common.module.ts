@@ -113,6 +113,7 @@ import { UUIDComponent } from '@geonature_common/form/uuid/uuid.component';
 // Layouts
 import { IndicatorsLayoutComponent } from './layouts/indicators-layout/indicators-layout.component';
 import { LoadableLayoutComponent } from './layouts/loadable-layout/loadable-layout.component';
+import { MapListLayoutComponent } from './layouts/map-list-layout/map-list-layout.component';
 import { PageLayoutComponent } from './layouts/page-layout/page-layout.component';
 import { SheetLayoutComponent } from './layouts/sheet-layout/sheet-layout.component';
 import { TabsLayoutComponent } from './layouts/tabs-layout/tabs-layout.component';
@@ -193,6 +194,7 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     IndicatorComponent,
     IndicatorsLayoutComponent,
     LoadableLayoutComponent,
+    MapListLayoutComponent,
     PageLayoutComponent,
     BreadcrumbsComponent,
     DateComponent,
@@ -292,6 +294,7 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     IndicatorComponent,
     IndicatorsLayoutComponent,
     LoadableLayoutComponent,
+    MapListLayoutComponent,
     PageLayoutComponent,
     BreadcrumbsComponent,
     DynamicFormComponent,

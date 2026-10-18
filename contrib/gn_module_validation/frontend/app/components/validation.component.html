@@ -3,58 +3,27 @@
   *ngIf="!_ds.dataLoaded"
 ></div>
 
-<div class="wrapper">
-  <nav
-    [(ngbCollapse)]="isCollapseValidationNavBar"
-    #navBar
-    id="sidebar"
-  >
-    <!-- <pnx-validation-search (searchClicked)="loadAndStoreData($event)"></pnx-validation-search> -->
-    <pnx-synthese-search
-      (resetFilter)="goHome()"
-      [displayValidation]="true"
-      (searchClicked)="loadAndStoreData($event)"
-    ></pnx-synthese-search>
-  </nav>
-
-  <!-- Page Content  -->
-  <div class="row row-sm page-content">
-    <div class="col-sm-12 col-md-9 padding-sm middle">
-      <button
-        mat-icon-button
-        #buttonToggle
-        (click)="searchBarHidden = !searchBarHidden"
-        (click)="isCollapseValidationNavBar = !isCollapseValidationNavBar"
-        [attr.aria-expanded]="!isCollapseValidationNavBar"
-        aria-controls="sidebar"
-        type="button"
-        id="sidebarCollapse"
-        class="btn-toogle-sidenav box-shadow"
-      >
-        <i
-          class="fa"
-          [ngClass]="searchBarHidden ? 'fa-caret-left' : 'fa-caret-right'"
-        ></i>
-      </button>
-      <pnx-validation-synthese-list
-        (displayAll)="goHome()"
-        [idSynthese]="idSynthese"
-        [inputSyntheseData]="_mapListService.tableData"
-        [validationStatus]="validationStatus"
-        [selectedTab]="selectedTab"
-      ></pnx-validation-synthese-list>
-
-      <!-- select only observations with awaiting validation status
-          <div id="awaitingObs" [formGroup]="awaitingForm">
-          <input (change)="onAwaitingClick()" id="awaiting_checkbox" value="awaiting" formControlName="awaiting" type="checkbox" checked/>
-          <label for="awaiting_checkbox"> Observations en attente de validation </label>
-          </div>
-          -->
-    </div>
-    <div class="col-sm-12 col-md-3 padding-sm last">
-      <pnx-validation-synthese-carte
-        [inputSyntheseData]="_mapListService.geojsonData"
-      ></pnx-validation-synthese-carte>
-    </div>
-  </div>
-</div>
+<gn-map-list-layout
+  [(filterCollapsed)]="isCollapseValidationNavBar"
+  [mapRatio]="1"
+  [listRatio]="3"
+>
+  <pnx-synthese-search
+    filter
+    [displayValidation]="true"
+    (resetFilter)="goHome()"
+    (searchClicked)="loadAndStoreData($event)"
+  ></pnx-synthese-search>
+  <pnx-validation-synthese-carte
+    map
+    [inputSyntheseData]="_mapListService.geojsonData"
+  ></pnx-validation-synthese-carte>
+  <pnx-validation-synthese-list
+    list
+    [idSynthese]="idSynthese"
+    [inputSyntheseData]="_mapListService.tableData"
+    [validationStatus]="validationStatus"
+    [selectedTab]="selectedTab"
+    (displayAll)="goHome()"
+  ></pnx-validation-synthese-list>
+</gn-map-list-layout>
