@@ -109,6 +109,15 @@ describe('NomenclatureComponent (connected)', () => {
     expect(component.definitionLang).toBe('definition_en');
   });
 
+  it('compares whole nomenclature items by id', () => {
+    fixture.detectChanges();
+    expect(
+      select().compareWith({ id_nomenclature: 1 }, { id_nomenclature: 1, label_fr: 'x' })
+    ).toBe(true);
+    expect(select().compareWith({ id_nomenclature: 1 }, { id_nomenclature: 2 })).toBe(false);
+    expect(select().compareWith({ id_nomenclature: 1 }, null)).toBe(false);
+  });
+
   it('reloads the items when the regne changes', () => {
     fixture.detectChanges();
     source.load.mockClear();

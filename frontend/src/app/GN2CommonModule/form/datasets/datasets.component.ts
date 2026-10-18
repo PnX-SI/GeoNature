@@ -61,6 +61,13 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
   /** Design of the select, see ``pnx-items-select`` */
   @Input() designStyle: DesignStyle = 'material';
 
+  /**
+   * Match the datasets with the value of the control when whole datasets are written in the control
+   * (``bindAllItem``): the stored datasets are not the loaded ones, so they are compared by id.
+   */
+  compareWith = (dataset: Dataset, selected: Dataset): boolean =>
+    dataset?.id_dataset === selected?.id_dataset;
+
   constructor(
     private _source: DatasetsSource,
     private _iterableDiffers: IterableDiffers,

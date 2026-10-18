@@ -68,6 +68,14 @@ describe('DatasetsComponent (connected)', () => {
     expect(source.load).toHaveBeenCalledWith({ module_code: 'OCCTAX', create: 'OCCHAB' });
   });
 
+  it('compares whole datasets by id', () => {
+    fixture.detectChanges();
+    expect(select().compareWith({ id_dataset: 1 }, { id_dataset: 1, dataset_name: 'x' })).toBe(
+      true
+    );
+    expect(select().compareWith({ id_dataset: 1 }, { id_dataset: 2 })).toBe(false);
+  });
+
   it('gives the whole dataset to the control with bindAllItem', () => {
     component.bindAllItem = true;
     fixture.detectChanges();

@@ -93,6 +93,13 @@ export class NomenclatureComponent
     super();
   }
 
+  /**
+   * Match the items with the value of the control when whole items are written in the control
+   * (``bindAllItem``): the stored items are not the loaded ones, so they are compared by id.
+   */
+  compareWith = (item: Nomenclature, selected: Nomenclature): boolean =>
+    item?.id_nomenclature === selected?.id_nomenclature;
+
   ngOnInit() {
     super.ngOnInit();
     this.keyValue = this.bindAllItem ? null : this.keyValue || 'id_nomenclature'; // patch pour les cas ou this.keyValue == undefined
