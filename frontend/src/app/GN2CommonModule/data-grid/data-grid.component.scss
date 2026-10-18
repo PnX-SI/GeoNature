@@ -1,0 +1,18 @@
+.pnx-data-grid {
+  width: 100%;
+
+  &__grid {
+    width: 100%;
+    --ag-font-size: 14px;
+  }
+}
+
+// the cells of a template can have several lines
+:host ::ng-deep .ag-cell {
+  display: flex;
+  align-items: center;
+}
+
+:host ::ng-deep .ag-cell-wrap-text {
+  line-height: 1.4;
+}

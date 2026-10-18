@@ -83,6 +83,10 @@ import { ModalDownloadComponent } from '@geonature_common/others/modal-download/
 import { MultiSelectComponent } from './form/multiselect/multiselect.component';
 import { MunicipalitiesComponent } from '@geonature_common/form/municipalities/municipalities.component';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { AgGridModule } from 'ag-grid-angular';
+import { DataGridComponent } from './data-grid/data-grid.component';
+import { TemplateCellRendererComponent } from './data-grid/template-cell-renderer.component';
+import { TemplateHeaderComponent } from './data-grid/template-header.component';
 import { NomenclatureComponent } from './form/nomenclature/nomenclature.component';
 import { ObserversComponent } from './form/observers/observers.component';
 import { ObserversTextComponent } from '@geonature_common/form/observers-text/observers-text.component';
@@ -162,8 +166,10 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     MatTooltipModule,
     NgbModule,
     NgxDatatableModule,
+    AgGridModule,
     ReactiveFormsModule,
     NgxDatatableModule,
+    AgGridModule,
     NgSelectModule,
     RouterModule,
     TranslateModule,
@@ -191,6 +197,9 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     DatalistComponent,
     DatasetsComponent,
     ItemsSelectComponent,
+    DataGridComponent,
+    TemplateCellRendererComponent,
+    TemplateHeaderComponent,
     AreasSelectComponent,
     TaxaSelectComponent,
     DatalistSelectComponent,
@@ -285,6 +294,7 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     DatalistComponent,
     DatasetsComponent,
     ItemsSelectComponent,
+    DataGridComponent,
     AreasSelectComponent,
     TaxaSelectComponent,
     DatalistSelectComponent,
@@ -344,6 +354,7 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     MunicipalitiesComponent,
     NgbModule,
     NgxDatatableModule,
+    AgGridModule,
     NomenclatureComponent,
     ObserversComponent,
     ObserversTextComponent,

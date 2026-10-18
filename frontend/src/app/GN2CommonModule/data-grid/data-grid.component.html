@@ -1,0 +1,28 @@
+<div
+  class="pnx-data-grid"
+  [attr.data-qa]="dataQa"
+>
+  <ag-grid-angular
+    class="ag-theme-material pnx-data-grid__grid"
+    [style.height]="gridHeight"
+    [rowData]="rows"
+    [getRowId]="rowId ? getRowId : undefined"
+    [columnDefs]="colDefs"
+    [gridOptions]="gridOptions"
+    [rowHeight]="fixedRowHeight"
+    [headerHeight]="headerHeight"
+    [domLayout]="domLayout"
+    [rowSelection]="selectionMode === 'none' ? undefined : rowSelection"
+    [rowMultiSelectWithClick]="selectionMode === 'multiple'"
+    [overlayNoRowsTemplate]="emptyMessage"
+  ></ag-grid-angular>
+  <mat-paginator
+    *ngIf="page"
+    [length]="page.totalItems"
+    [pageIndex]="page.pageNumber"
+    [pageSize]="page.perPage"
+    [pageSizeOptions]="pageSizeOptions"
+    [showFirstLastButtons]="true"
+    (page)="onPage($event)"
+  ></mat-paginator>
+</div>
