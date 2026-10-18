@@ -108,6 +108,7 @@ export const DEFAULT_WIDGETS: WidgetRegistry = {
     inputs: ({ def, control }) => ({
       label: def['attribut_label'],
       parentFormControl: control,
+      designStyle: def['designStyle'],
       codeNomenclatureType: def['code_nomenclature_type'],
       multiSelect: def['multi_select'],
       keyValue: def['key_value'],
@@ -136,6 +137,7 @@ export const DEFAULT_WIDGETS: WidgetRegistry = {
       label: rawDef.attribut_label,
       parentFormControl: form.get(rawDef.attribut_name),
       multiSelect: rawDef['multi_select'],
+      designStyle: rawDef['designStyle'],
       moduleCode: rawDef['module_code'],
       creatableInModule: rawDef['creatable_in_module'],
       bindValue: rawDef['bind_value'] ?? 'id_dataset',
@@ -147,6 +149,7 @@ export const DEFAULT_WIDGETS: WidgetRegistry = {
     inputs: ({ def, control }) => ({
       label: def['attribut_label'],
       parentFormControl: control,
+      designStyle: def['designStyle'],
       idMenu: def['id_menu'],
       idList: def['id_list'],
       codeList: def['code_list'],

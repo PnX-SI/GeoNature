@@ -12,11 +12,10 @@ Cypress.Commands.add('configureImportFieldMapping', (datasetName) => {
       cy.wrap(v).should('exist').click();
     });
 
-  cy.get('[data-qa="import-fieldmapping-theme-constant-unique_dataset_id"] ng-select')
+  cy.get('[data-qa="import-fieldmapping-theme-constant-unique_dataset_id"] mat-select')
     .should('exist')
     .click()
-    .get('ng-dropdown-panel')
-    .get('.ng-option')
+    .get('mat-option')
     .contains(datasetName)
     .then((dataset) => {
       cy.wrap(dataset).should('exist').click();

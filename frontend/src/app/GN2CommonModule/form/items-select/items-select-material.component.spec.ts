@@ -90,6 +90,19 @@ describe('ItemsSelectComponent (material design)', () => {
     create();
   });
 
+  it('is the default design', () => {
+    const defaultFixture = TestBed.createComponent(ItemsSelectComponent);
+    defaultFixture.componentInstance.parentFormControl = new UntypedFormControl(null);
+    defaultFixture.detectChanges();
+    expect(defaultFixture.nativeElement.querySelector('mat-select')).not.toBeNull();
+    expect(defaultFixture.nativeElement.querySelector('ng-select')).toBeNull();
+  });
+
+  it('is also used for an undefined design', () => {
+    create({ designStyle: undefined });
+    expect(fixture.nativeElement.querySelector('mat-select')).not.toBeNull();
+  });
+
   it('renders a material select, not an ng-select', () => {
     expect(fixture.nativeElement.querySelector('mat-select')).not.toBeNull();
     expect(fixture.nativeElement.querySelector('ng-select')).toBeNull();

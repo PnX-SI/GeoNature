@@ -10,6 +10,7 @@ import { DatasetsSource } from './datasets.source';
 @Component({ selector: 'pnx-items-select', template: '' })
 class ItemsSelectStub {
   @Input() items;
+  @Input() designStyle;
   @Input() parentFormControl;
   @Input() label;
   @Input() class;
@@ -95,5 +96,20 @@ describe('DatasetsComponent (connected)', () => {
       idAcquisitionFramework: { currentValue: 3, previousValue: undefined, firstChange: false },
     } as any);
     expect(source.load).toHaveBeenCalledWith({ id_acquisition_framework: 3, active: true });
+  });
+
+  it('uses the material design by default', () => {
+    fixture.detectChanges();
+    expect(
+      (fixture.debugElement.children[0].componentInstance as ItemsSelectStub).designStyle
+    ).toBe('material');
+  });
+
+  it('can use the bootstrap design', () => {
+    component.designStyle = 'bootstrap';
+    fixture.detectChanges();
+    expect(
+      (fixture.debugElement.children[0].componentInstance as ItemsSelectStub).designStyle
+    ).toBe('bootstrap');
   });
 });

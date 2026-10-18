@@ -7,8 +7,8 @@ import { selectSingleItem } from './items-select.utils';
  * control it writes to. It is the display part of the components fetching items from the API
  * (``pnx-datasets``, ``pnx-nomenclature``, ``pnx-observers``, ``pnx-acquisition-frameworks``).
  *
- * Two designs are available (``designStyle``): ``bootstrap`` (``ng-select``, the default) and ``material``
- * (``mat-form-field`` with ``mat-select``, with a search box, a clear button and a loading spinner).
+ * Two designs are available (``designStyle``): ``material`` (the default: ``mat-form-field`` with ``mat-select``,
+ * with a search box, a clear button and a loading spinner) and ``bootstrap`` (``ng-select``).
  * ``appendTo`` and ``clearAllText`` only apply to the ``bootstrap`` design.
  *
  * By default an option displays the ``bindLabel`` attribute of the item, with a tooltip.
@@ -23,12 +23,15 @@ import { selectSingleItem } from './items-select.utils';
  *   label="Datasets">
  * </pnx-items-select>
  */
+export type DesignStyle = 'bootstrap' | 'material';
+
 @Component({
   selector: 'pnx-items-select',
   templateUrl: './items-select.component.html',
 })
 export class ItemsSelectComponent implements OnChanges {
-  @Input() designStyle: 'bootstrap' | 'material' = 'bootstrap';
+  /** Design of the select: ``material`` by default, only ``bootstrap`` gives the ``ng-select`` one */
+  @Input() designStyle: DesignStyle = 'material';
   @Input() items: Array<any> = [];
   @Input() parentFormControl: UntypedFormControl;
   @Input() label: string;

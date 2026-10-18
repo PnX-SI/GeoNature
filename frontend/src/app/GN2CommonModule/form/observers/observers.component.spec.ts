@@ -9,6 +9,7 @@ import { ObserversSource } from './observers.source';
 @Component({ selector: 'pnx-items-select', template: '' })
 class ItemsSelectStub {
   @Input() items;
+  @Input() designStyle;
   @Input() parentFormControl;
   @Input() label;
   @Input() class;
@@ -82,5 +83,16 @@ describe('ObserversComponent (connected)', () => {
     fixture.detectChanges();
     expect(source.load).not.toHaveBeenCalled();
     expect(select().items).toEqual([{ id_role: 5, nom_complet: 'B' }]);
+  });
+
+  it('uses the material design by default', () => {
+    fixture.detectChanges();
+    expect(select().designStyle).toBe('material');
+  });
+
+  it('can use the bootstrap design', () => {
+    component.designStyle = 'bootstrap';
+    fixture.detectChanges();
+    expect(select().designStyle).toBe('bootstrap');
   });
 });

@@ -8,6 +8,7 @@ import { ItemsSelectComponent } from './items-select.component';
 @Component({
   template: `
     <pnx-items-select
+      designStyle="bootstrap"
       [items]="items"
       [parentFormControl]="control"
       bindLabel="name"
@@ -50,6 +51,7 @@ describe('ItemsSelectComponent', () => {
     fixture = TestBed.createComponent(ItemsSelectComponent);
     control = new UntypedFormControl(null);
     fixture.componentInstance.parentFormControl = control;
+    fixture.componentRef.setInput('designStyle', 'bootstrap');
     fixture.componentRef.setInput('items', items);
     fixture.componentRef.setInput('bindLabel', 'name');
     fixture.componentRef.setInput('label', 'My items');
@@ -140,6 +142,7 @@ describe('ItemsSelectComponent', () => {
   it('displays the options with a tooltip and the data-qa of the item by default', async () => {
     const host = TestBed.createComponent(ItemsSelectComponent);
     host.componentInstance.parentFormControl = new UntypedFormControl(null);
+    host.componentRef.setInput('designStyle', 'bootstrap');
     host.componentRef.setInput('items', items);
     host.componentRef.setInput('bindLabel', 'name');
     host.detectChanges();

@@ -1,3 +1,4 @@
+import { DesignStyle } from '../items-select/items-select.component';
 import {
   Component,
   OnInit,
@@ -75,6 +76,8 @@ export class NomenclatureComponent
    * Valeur possible: n'importequel attribut de l'objet ``nomenclature`` renvoyé par l'API
    */
   @Input() keyValue = 'id_nomenclature';
+  /** Design of the select, see ``pnx-items-select`` */
+  @Input() designStyle: DesignStyle = 'material';
 
   @Input() bindAllItem: false;
 

@@ -1,4 +1,4 @@
-<ng-container *ngIf="designStyle !== 'material'; else materialBlock">
+<ng-container *ngIf="designStyle === 'bootstrap'; else materialBlock">
   <small>{{ label }}</small>
   <ng-select
     [ngClass]="class"

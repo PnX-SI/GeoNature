@@ -9,6 +9,7 @@ import { AcquisitionFrameworksSource } from './acquisition-frameworks.source';
 @Component({ selector: 'pnx-items-select', template: '' })
 class ItemsSelectStub {
   @Input() items;
+  @Input() designStyle;
   @Input() parentFormControl;
   @Input() label;
   @Input() class;
@@ -49,5 +50,16 @@ describe('AcquisitionFrameworksComponent (connected)', () => {
     expect(select().loading).toBe(false);
     expect(select().bindLabel).toBe('acquisition_framework_name');
     expect(select().bindValue).toBe('id_acquisition_framework');
+  });
+
+  it('uses the material design by default', () => {
+    fixture.detectChanges();
+    expect(select().designStyle).toBe('material');
+  });
+
+  it('can use the bootstrap design', () => {
+    fixture.componentInstance.designStyle = 'bootstrap';
+    fixture.detectChanges();
+    expect(select().designStyle).toBe('bootstrap');
   });
 });

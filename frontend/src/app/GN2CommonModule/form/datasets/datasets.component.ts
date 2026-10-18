@@ -1,3 +1,4 @@
+import { DesignStyle } from '../items-select/items-select.component';
 import {
   Component,
   OnInit,
@@ -57,6 +58,8 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
    */
   @Input() creatableInModule: string;
   @Input() bindValue: string = 'id_dataset';
+  /** Design of the select, see ``pnx-items-select`` */
+  @Input() designStyle: DesignStyle = 'material';
 
   constructor(
     private _source: DatasetsSource,

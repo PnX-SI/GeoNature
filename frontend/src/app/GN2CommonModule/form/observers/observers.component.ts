@@ -1,3 +1,4 @@
+import { DesignStyle } from '../items-select/items-select.component';
 import { OnInit, Component, Input, ViewEncapsulation, SimpleChanges } from '@angular/core';
 import { Observer } from '../../interfaces';
 import { ObserversSource } from './observers.source';
@@ -37,6 +38,8 @@ export class ObserversComponent extends GenericFormComponent implements OnInit {
   };
   @Input() observers: Observable<Array<Observer>>;
   @Input() placeHolder: string = null;
+  /** Design of the select, see ``pnx-items-select`` */
+  @Input() designStyle: DesignStyle = 'material';
 
   constructor(private _source: ObserversSource) {
     super();

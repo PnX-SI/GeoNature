@@ -61,6 +61,15 @@ describe('DEFAULT_WIDGETS', () => {
     expect(entry.dataQa(ctx(def))).toBe('field-nomenclature-field');
   });
 
+  it('lets a field choose the design of its select', () => {
+    const def = { type_widget: 'nomenclature', attribut_name: 'field', designStyle: 'bootstrap' };
+    expect(DEFAULT_WIDGETS['nomenclature'].inputs(ctx(def))['designStyle']).toBe('bootstrap');
+    expect(
+      DEFAULT_WIDGETS['dataset'].inputs(ctx({ ...def, designStyle: undefined }, def))['designStyle']
+    ).toBe('bootstrap');
+    expect(DEFAULT_WIDGETS['observers'].inputs(ctx(def))['designStyle']).toBe('bootstrap');
+  });
+
   it('maps a dataset definition from the raw definition, with id_dataset as default bindValue', () => {
     const rawDef = {
       type_widget: 'dataset',

@@ -17,6 +17,7 @@ class TranslateStubPipe implements PipeTransform {
 @Component({ selector: 'pnx-items-select', template: '' })
 class ItemsSelectStub {
   @Input() items;
+  @Input() designStyle;
   @Input() parentFormControl;
   @Input() label;
   @Input() class;
@@ -114,5 +115,16 @@ describe('NomenclatureComponent (connected)', () => {
     component.regne = 'Plantae';
     component.ngOnChanges({ regne: { currentValue: 'Plantae', firstChange: false } } as any);
     expect(source.load).toHaveBeenCalledWith(expect.objectContaining({ regne: 'Plantae' }));
+  });
+
+  it('uses the material design by default', () => {
+    fixture.detectChanges();
+    expect(select().designStyle).toBe('material');
+  });
+
+  it('can use the bootstrap design', () => {
+    component.designStyle = 'bootstrap';
+    fixture.detectChanges();
+    expect(select().designStyle).toBe('bootstrap');
   });
 });

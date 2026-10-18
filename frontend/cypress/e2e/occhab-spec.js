@@ -35,7 +35,7 @@ describe('Testing occhab', () => {
     cy.get('[data-qa="gn-common-form-observers-select-AGENT test"]').click();
     cy.get('#validateButton').should('be.disabled');
 
-    cy.get('[data-qa="pnx-occhab-form-dataset"] > ng-select').click();
+    cy.get('[data-qa="pnx-occhab-form-dataset"] mat-select').click();
     cy.get('[data-qa="Carto d\'habitat X"]').click();
     cy.get('#validateButton').should('be.disabled');
 

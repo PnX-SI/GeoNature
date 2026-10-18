@@ -1,3 +1,4 @@
+import { DesignStyle } from '../items-select/items-select.component';
 import { Component, OnInit, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -22,6 +23,8 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
 export class AcquisitionFrameworksComponent extends GenericFormComponent implements OnInit {
   @Input() acquisitionFrameworks: Observable<Array<AcquisitionFramework>>;
   protected isLoading: Boolean = true;
+  /** Design of the select, see ``pnx-items-select`` */
+  @Input() designStyle: DesignStyle = 'material';
 
   constructor(private _source: AcquisitionFrameworksSource) {
     super();
