@@ -11,7 +11,8 @@ import {MapService} from '@geonature_common/map/map.service';
 import {OcctaxDataService} from '../services/occtax-data.service';
 import {CommonService} from '@geonature_common/service/common.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {DatatableComponent} from '@swimlane/ngx-datatable';
+import { DataGridComponent } from '@geonature_common/data-grid/data-grid.component';
+import { GridPageEvent, GridSort } from '@geonature_common/data-grid/data-grid.types';
 import {TaxonomyComponent} from '@geonature_common/form/taxonomy/taxonomy.component';
 import {UntypedFormGroup} from '@angular/forms';
 import {
@@ -51,8 +52,8 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
   public taxonomyComponent: TaxonomyComponent;
   @ViewChild('dynamicForm')
   public dynamicForm: GenericFormGeneratorComponent;
-  @ViewChild('table')
-  table: DatatableComponent;
+  @ViewChild('grid')
+  grid: DataGridComponent;
 
   constructor(
     public mapListService: MapListService,
@@ -152,7 +153,7 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onChangePage(event) {
+  onChangePage(event: GridPageEvent) {
     this.mapListService.setTablePage(event, this.apiEndPoint);
   }
 
@@ -230,13 +231,15 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
     return i === this.mapListService.displayColumns.length ? false : true;
   }
 
-  toggleExpandRow(row) {
-    this.table.rowDetail.toggleExpandRow(row);
-  }
-
-  onColumnSort(event) {
-    this.mapListService.setHttpParam('orderby', event.column.prop);
-    this.mapListService.setHttpParam('order', event.newValue);
+  onColumnSort(sorts: GridSort[]) {
+    const [sort] = sorts;
+    if (sort) {
+      this.mapListService.setHttpParam('orderby', sort.prop);
+      this.mapListService.setHttpParam('order', sort.dir);
+    } else {
+      this.mapListService.deleteHttpParam('orderby');
+      this.mapListService.deleteHttpParam('order');
+    }
     this.mapListService.deleteHttpParam('offset');
     this.mapListService.refreshData(this.apiEndPoint, 'set');
   }

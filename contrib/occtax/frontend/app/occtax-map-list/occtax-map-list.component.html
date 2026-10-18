@@ -59,102 +59,89 @@
       >
         <!-- LIST -->
         <!--Table-->
-        <ngx-datatable
-          #table
-          class="material striped margin-top-xs table-size expandable"
-          [columnMode]="'force'"
-          [columns]="mapListService.displayColumns"
-          [count]="mapListService.page.totalElements"
-          [draggable]="false"
-          [externalPaging]="true"
-          [externalSorting]="true"
-          [footerHeight]="40"
-          [headerHeight]="35"
-          [limit]="occtaxMapListS.rowPerPage"
-          [loadingIndicator]="mapListService.isLoading"
-          [messages]="occtaxConfig.moduleConf.list_messages"
-          [offset]="mapListService.page.pageNumber"
-          [rowClass]="mapListService.getRowClass"
-          [rowHeight]="40"
+        <pnx-data-grid
+          #grid
           [rows]="mapListService.tableData"
-          [scrollbarH]="false"
+          [loading]="mapListService.isLoading"
+          [detailHeight]="210"
+          [emptyMessage]="occtaxConfig.moduleConf.list_messages?.emptyMessage"
+          [page]="{
+            pageNumber: mapListService.page.pageNumber,
+            perPage: occtaxMapListS.rowPerPage,
+            totalItems: mapListService.page.totalElements
+          }"
+          [pageSizeOptions]="[occtaxMapListS.rowPerPage]"
+          [externalSorting]="true"
+          selectionMode="single"
           [selected]="mapListService.selectedRow"
-          [selectionType]="'single'"
-          (page)="onChangePage($event)"
-          (select)="mapListService.onRowSelect($event)"
-          (sort)="onColumnSort($event)"
+          [rowClass]="mapListService.getRowClass"
+          (pageChange)="onChangePage($event)"
+          (sortChange)="onColumnSort($event)"
+          (selectionChange)="mapListService.onRowSelect({ selected: $event })"
         >
           <!-- Row Detail Template -->
-          <ngx-datatable-row-detail
-            #myDetailRow
-            rowHeight="100"
+          <ng-template
+            pnxDataDetail
+            let-row="row"
           >
-            <ng-template
-              ngx-datatable-row-detail-template
-              let-row="row"
-              let-expanded="expanded"
-            >
+            <div>
+              <strong>ID relevé :</strong>
+              {{ row.id_releve_occtax }}
+            </div>
+            <ng-container *ngIf="row.comment !== null && row?.comment.trim() !== ''">
               <div>
-                <strong>ID relevé :</strong>
-                {{ row.id_releve_occtax }}
+                <strong>Commentaire :</strong>
+                {{ row.comment }}
               </div>
-              <ng-container *ngIf="row.comment !== null && row?.comment.trim() !== ''">
-                <div>
-                  <strong>Commentaire :</strong>
-                  {{ row.comment }}
-                </div>
-              </ng-container>
-              <div>
-                <strong>Altitude :</strong>
-                {{
-                  row.altitude_min == row.altitude_max
-                    ? row.altitude_min
-                    : row.altitude_min + ' - ' + row.altitude_max
-                }}
+            </ng-container>
+            <div>
+              <strong>Altitude :</strong>
+              {{
+                row.altitude_min == row.altitude_max
+                  ? row.altitude_min
+                  : row.altitude_min + ' - ' + row.altitude_max
+              }}
+            </div>
+            <div>
+              <strong>Saisi par :</strong>
+              {{ row?.digitiser?.nom_complet || '-' }}
+            </div>
+            <div *ngIf="row.place_name != null && row.place_name != ''">
+              <strong>{{ 'Occtax.Releve.PlaceName' | translate }} :</strong>
+              {{ row.place_name }}
+            </div>
+            <div><strong>Observé par:</strong></div>
+            <div style="margin-left: 20px">
+              <div *ngFor="let obs of displayObservateursTooltip(row)">
+                {{ obs }}
               </div>
-              <div>
-                <strong>Saisi par :</strong>
-                {{ row?.digitiser?.nom_complet || '-' }}
+            </div>
+            <div><strong>Taxon(s):</strong></div>
+            <div style="margin-left: 20px">
+              <div *ngIf="row.t_occurrences_occtax && row.t_occurrences_occtax.length == 0">
+                Aucun taxon
               </div>
-              <div *ngIf="row.place_name != null && row.place_name != ''">
-                <strong>{{ 'Occtax.Releve.PlaceName' | translate }} :</strong>
-                {{ row.place_name }}
-              </div>
-              <div><strong>Observé par:</strong></div>
-              <div style="margin-left: 20px">
-                <div *ngFor="let obs of displayObservateursTooltip(row)">
-                  {{ obs }}
-                </div>
-              </div>
-              <div><strong>Taxon(s):</strong></div>
-              <div style="margin-left: 20px">
-                <div *ngIf="row.t_occurrences_occtax && row.t_occurrences_occtax.length == 0">
-                  Aucun taxon
-                </div>
-                <div *ngFor="let taxon of displayTaxonsTooltip(row)">
-                  {{ taxon.taxName }}
-                  <br />
-                  <div class="OcctaxMapList__medias">
-                    <pnx-media-item
-                      *ngFor="let media of taxon.medias"
-                      [inputMedia]="media"
-                      [diaporamaMedia]="taxon.medias"
-                      display="icon"
-                    ></pnx-media-item>
-                  </div>
+              <div *ngFor="let taxon of displayTaxonsTooltip(row)">
+                {{ taxon.taxName }}
+                <br />
+                <div class="OcctaxMapList__medias">
+                  <pnx-media-item
+                    *ngFor="let media of taxon.medias"
+                    [inputMedia]="media"
+                    [diaporamaMedia]="taxon.medias"
+                    display="icon"
+                  ></pnx-media-item>
                 </div>
               </div>
-            </ng-template>
-          </ngx-datatable-row-detail>
+            </div>
+          </ng-template>
 
-          <ngx-datatable-column
-            [width]="10"
-            [resizeable]="false"
+          <pnx-data-column
+            [width]="56"
+            [resizable]="false"
             [sortable]="false"
-            [draggable]="false"
-            [canAutoResize]="false"
           >
-            <ng-template ngx-datatable-header-template>
+            <ng-template pnxDataHeader>
               <i
                 id="dropdownMenuButton"
                 class="fa fa-cog clickable"
@@ -167,26 +154,28 @@
               ></i>
             </ng-template>
             <ng-template
-              ngx-datatable-cell-template
+              pnxDataCell
               let-row="row"
               let-expanded="expanded"
+              let-toggleDetail="toggleDetail"
             >
-              <a
-                href="javascript:void(0)"
+              <button
+                mat-icon-button
+                type="button"
                 matTooltip="Ouvrir/fermer le détail"
-                [class.datatable-icon-right]="!expanded"
-                [class.datatable-icon-down]="expanded"
-                (click)="toggleExpandRow(row)"
-              ></a>
+                (click)="toggleDetail()"
+              >
+                <mat-icon>{{ expanded ? 'expand_more' : 'chevron_right' }}</mat-icon>
+              </button>
             </ng-template>
-          </ngx-datatable-column>
+          </pnx-data-column>
 
           <!-- ACTION COLUMNS -->
 
-          <ngx-datatable-column maxWidth="10">
+          <pnx-data-column [width]="56">
             <ng-template
               let-row="row"
-              ngx-datatable-cell-template
+              pnxDataCell
             >
               <button
                 class="btn btn-row"
@@ -202,11 +191,11 @@
                 ></i>
               </button>
             </ng-template>
-          </ngx-datatable-column>
-          <ngx-datatable-column maxWidth="10">
+          </pnx-data-column>
+          <pnx-data-column [width]="56">
             <ng-template
               let-row="row"
-              ngx-datatable-cell-template
+              pnxDataCell
             >
               <button
                 class="btn btn-row"
@@ -221,13 +210,13 @@
                 ></i>
               </button>
             </ng-template>
-          </ngx-datatable-column>
+          </pnx-data-column>
 
-          <ngx-datatable-column maxWidth="10">
+          <pnx-data-column [width]="56">
             <ng-template
               let-row="row"
               let-rowIndex="rowIndex"
-              ngx-datatable-cell-template
+              pnxDataCell
             >
               <button
                 class="btn btn-row"
@@ -243,12 +232,12 @@
                 ></i>
               </button>
             </ng-template>
-          </ngx-datatable-column>
+          </pnx-data-column>
 
           <!-- DATA COLOMNS -->
           <ng-container *ngFor="let col of mapListService['displayColumns']; let index = index">
-            <ngx-datatable-column
-              [maxWidth]="col['max_width']"
+            <pnx-data-column
+              [width]="col['max_width']"
               [prop]="col['prop']"
               [name]="col['name']"
               [sortable]="true"
@@ -256,7 +245,7 @@
               <!-- date -->
               <!-- Pour afficher la date, si période mise en forme en Du ... au ... -->
               <ng-template
-                ngx-datatable-cell-template
+                pnxDataCell
                 let-row="row"
               >
                 <div [ngSwitch]="mapListService['displayColumns'][index]['prop']">
@@ -316,9 +305,9 @@
                   </span>
                 </div>
               </ng-template>
-            </ngx-datatable-column>
+            </pnx-data-column>
           </ng-container>
-        </ngx-datatable>
+        </pnx-data-grid>
         <button
           *ngIf="userCruved?.E != '0'"
           id="download-btn"
