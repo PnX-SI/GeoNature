@@ -56,7 +56,8 @@ export class DumbSelectComponent extends GenericFormComponent {
   /** Label de la valeure Null */
   @Input() nullValueLabel: string;
 
-  compareFn(c1: any, c2: any): boolean {
-    return c1 && c2 ? c1[this.comparedKey] === c2[this.comparedKey] : c1 === c2;
-  }
+  // an arrow function: binding a new function on each change detection would make mat-select
+  // reinitialise its selection (in a microtask) endlessly
+  compareFn = (c1: any, c2: any): boolean =>
+    c1 && c2 ? c1[this.comparedKey] === c2[this.comparedKey] : c1 === c2;
 }

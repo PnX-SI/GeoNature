@@ -6,7 +6,7 @@
   <mat-select
     [disableControl]="disabled"
     [formControl]="parentFormControl"
-    [compareWith]="compareFn.bind(this)"
+    [compareWith]="compareFn"
   >
     <mat-option
       *ngIf="displayNullValue"

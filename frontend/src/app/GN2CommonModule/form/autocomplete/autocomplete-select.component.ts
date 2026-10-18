@@ -74,8 +74,12 @@ export class AutoCompleteSelectComponent implements OnInit, OnDestroy {
   }
 
   /** Text displayed in the input for the value of the control (``material`` design) */
-  displayWith = (value: any): string =>
-    this.formatter ? this.formatter(value) : value != null ? String(value) : '';
+  displayWith = (value: any): string => {
+    if (value === null || value === undefined) {
+      return '';
+    }
+    return this.formatter ? this.formatter(value) : String(value);
+  };
 
   get showLoading(): boolean {
     return this.isLoading && this.parentFormControl.value?.length >= 3;

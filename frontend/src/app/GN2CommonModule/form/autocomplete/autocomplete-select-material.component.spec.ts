@@ -110,6 +110,14 @@ describe('AutoCompleteSelectComponent (material design)', () => {
     expect(component.displayWith({ name: 'Alpha' })).toBe('Alpha');
     component.formatter = undefined;
     expect(component.displayWith('text')).toBe('text');
+  });
+
+  it('does not give an empty value to the formatter', () => {
+    const formatter = jest.fn((item) => item.name);
+    component.formatter = formatter;
+    expect(component.displayWith(null)).toBe('');
+    expect(component.displayWith(undefined)).toBe('');
+    expect(formatter).not.toHaveBeenCalled();
     expect(component.displayWith(null)).toBe('');
   });
 });
