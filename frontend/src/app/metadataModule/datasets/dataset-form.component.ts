@@ -27,6 +27,10 @@ export class DatasetFormComponent implements OnInit {
   //observable pour la liste déroulantes HTML des AF
   public acquisitionFrameworks: Observable<any>;
   public taxaBibList: number;
+
+  /** The modules of the dataset are not the loaded ones: they are compared by id */
+  compareModules = (module: { id_module: number }, selected: { id_module: number }): boolean =>
+    module?.id_module === selected?.id_module;
   public uuidEditionEnabled: boolean = true;
   public entityLabel: string;
   public isAcquisitionFrameworkOpened: boolean = true;

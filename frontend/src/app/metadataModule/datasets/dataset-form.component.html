@@ -20,117 +20,115 @@
         </div>
         <div class="card-body">
           <div>
-            <small>{{ 'AcquisitionFramework' | translate }}</small>
             <ng-container *ngIf="acquisitionFrameworks | async as frameworks">
-              <div
-                *ngIf="!frameworks"
-                class="d-flex justify-content-center"
-              >
-                <mat-spinner diameter="20"></mat-spinner>
-              </div>
-
-              <ng-select
-                *ngIf="frameworks"
-                [formControl]="form.get('id_acquisition_framework')"
+              <pnx-items-select
                 [items]="frameworks"
+                [parentFormControl]="form.get('id_acquisition_framework')"
+                label="{{ 'AcquisitionFramework' | translate }}"
                 bindLabel="acquisition_framework_name"
                 bindValue="id_acquisition_framework"
-                data-qa="pnx-dataset-form-select-cadre-acq"
-              >
-                <ng-template
-                  ng-option-tmp
-                  let-item="item"
-                  let-index="index"
-                  let-search="searchTerm"
-                >
-                  <span
-                    class="pre-wrap"
-                    [attr.data-qa]="'pnx-metadata-jdd-' + item.acquisition_framework_name"
-                  >
-                    {{ item.acquisition_framework_name }}
-                  </span>
-                </ng-template>
-              </ng-select>
+                dataQa="pnx-dataset-form-select-cadre-acq"
+                [optionTemplate]="acquisitionFrameworkOption"
+              ></pnx-items-select>
             </ng-container>
+            <ng-template
+              #acquisitionFrameworkOption
+              let-item
+            >
+              <span
+                class="pre-wrap"
+                [attr.data-qa]="'pnx-metadata-jdd-' + item.acquisition_framework_name"
+              >
+                {{ item.acquisition_framework_name }}
+              </span>
+            </ng-template>
           </div>
 
           <div>
-            <small>{{ 'MetaData.DatasetName' | translate }}</small>
-            <input
-              class="form-control form-control-sm"
-              type="text"
-              [formControl]="form.get('dataset_name')"
-              data-qa="pnx-dataset-form-input-jdd-name"
-            />
-            <small
-              *ngIf="form.get('dataset_name').errors?.maxlength"
-              class="error"
-              style="color: red"
+            <mat-form-field
+              class="w-100"
+              appearance="outline"
             >
-              {{ 'MetaData.DatasetForm.Messages.SizeNameJDD' | translate }}
-            </small>
+              <mat-label>{{ 'MetaData.DatasetName' | translate }}</mat-label>
+              <input
+                matInput
+                type="text"
+                [formControl]="form.get('dataset_name')"
+                data-qa="pnx-dataset-form-input-jdd-name"
+              />
+              <mat-error *ngIf="form.get('dataset_name').errors?.maxlength">
+                {{ 'MetaData.DatasetForm.Messages.SizeNameJDD' | translate }}
+              </mat-error>
+            </mat-form-field>
           </div>
 
           <div class="row">
             <div class="col-md-8">
-              <small>{{ 'MetaData.DatasetForm.ShortNameJDD' | translate }}</small>
-              <input
-                class="form-control form-control-sm"
-                type="text"
-                [formControl]="form.get('dataset_shortname')"
-                data-qa="pnx-dataset-form-input-jdd-shortname"
-              />
-              <small
-                *ngIf="form.get('dataset_shortname').errors?.maxlength"
-                class="error"
-                style="color: red"
+              <mat-form-field
+                class="w-100"
+                appearance="outline"
               >
-                {{ 'MetaData.DatasetForm.Messages.SizeShortNameJDD' | translate }}
-              </small>
+                <mat-label>{{ 'MetaData.DatasetForm.ShortNameJDD' | translate }}</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  [formControl]="form.get('dataset_shortname')"
+                  data-qa="pnx-dataset-form-input-jdd-shortname"
+                />
+                <mat-error *ngIf="form.get('dataset_shortname').errors?.maxlength">
+                  {{ 'MetaData.DatasetForm.Messages.SizeShortNameJDD' | translate }}
+                </mat-error>
+              </mat-form-field>
             </div>
           </div>
 
           <div>
-            <small>{{ 'Description' | translate }}</small>
-            <textarea
-              class="form-control form-control-sm"
-              type="text"
-              [formControl]="form.get('dataset_desc')"
-              data-qa="pnx-dataset-form-input-jdd-description"
-            ></textarea>
+            <mat-form-field
+              class="w-100"
+              appearance="outline"
+            >
+              <mat-label>{{ 'Description' | translate }}</mat-label>
+              <textarea
+                matInput
+                rows="3"
+                [formControl]="form.get('dataset_desc')"
+                data-qa="pnx-dataset-form-input-jdd-description"
+              ></textarea>
+            </mat-form-field>
           </div>
 
           <div>
-            <small>{{ 'Keywords' | translate }}</small>
-            <input
-              class="form-control form-control-sm"
-              type="text"
-              [formControl]="form.get('keywords')"
-            />
+            <mat-form-field
+              class="w-100"
+              appearance="outline"
+            >
+              <mat-label>{{ 'Keywords' | translate }}</mat-label>
+              <input
+                matInput
+                type="text"
+                [formControl]="form.get('keywords')"
+              />
+            </mat-form-field>
           </div>
 
           <div>
             <small>{{ 'MetaData.DatasetForm.Field' | translate }}</small>
             <div>
-              <div class="checkbox">
-                <input
+              <div>
+                <mat-checkbox
                   [formControl]="form.get('terrestrial_domain')"
-                  type="checkbox"
                   id="terrestrial_domain"
-                />
-                <label for="terrestrial_domain">
+                >
                   {{ 'MetaData.DatasetForm.LandField' | translate }}
-                </label>
+                </mat-checkbox>
               </div>
-              <div class="checkbox">
-                <input
+              <div>
+                <mat-checkbox
                   [formControl]="form.get('marine_domain')"
-                  type="checkbox"
                   id="marine_domain"
-                />
-                <label for="marine_domain">
+                >
                   {{ 'MetaData.DatasetForm.MarineField' | translate }}
-                </label>
+                </mat-checkbox>
               </div>
             </div>
           </div>
@@ -226,13 +224,11 @@
           </h5>
 
           <div>
-            <div class="checkbox">
-              <input
+            <div>
+              <mat-checkbox
                 [formControl]="form.get('active')"
-                type="checkbox"
                 id="active"
-              />
-              <label for="active">
+              >
                 {{ 'Active' | translate }}
                 <mat-icon
                   aria-hidden="false"
@@ -241,42 +237,46 @@
                 >
                   info
                 </mat-icon>
-              </label>
+              </mat-checkbox>
             </div>
-            <div class="checkbox">
-              <input
+            <div>
+              <mat-checkbox
                 [formControl]="form.get('validable')"
-                type="checkbox"
                 id="validable"
-              />
-              <label for="validable">{{ 'Validable' | translate }}</label>
+              >
+                {{ 'Validable' | translate }}
+              </mat-checkbox>
             </div>
           </div>
 
-          <pnx-multiselect
-            [values]="moduleService.modules"
+          <pnx-items-select
+            [items]="moduleService.modules"
             [parentFormControl]="form.get('modules')"
-            keyLabel="module_label"
-            [keyValue]="null"
+            [multiSelect]="true"
+            bindLabel="module_label"
+            [compareWith]="compareModules"
             label="{{ 'MetaData.DatasetCard.AssociatedGNModules' | translate }}"
-            [bindAllItem]="true"
-          ></pnx-multiselect>
-          <small>{{ 'MetaData.DatasetForm.FacultativeTaxaList' | translate }}</small>
-          <select
-            class="form-control form-control-sm"
-            [formControl]="form.get('id_taxa_list')"
+          ></pnx-items-select>
+          <mat-form-field
+            class="w-100"
+            appearance="outline"
           >
-            <option [ngValue]="null">
-              {{ 'MetaData.DatasetForm.Actions.SelectTaxaList' | translate }}
-            </option>
-            <option [ngValue]="-1">{{ 'MetaData.DatasetForm.Messages.NoList' | translate }}</option>
-            <option
-              *ngFor="let list of taxaBibList"
-              [ngValue]="list.id_liste"
-            >
-              {{ list.nom_liste }}
-            </option>
-          </select>
+            <mat-label>{{ 'MetaData.DatasetForm.FacultativeTaxaList' | translate }}</mat-label>
+            <mat-select [formControl]="form.get('id_taxa_list')">
+              <mat-option [value]="null">
+                {{ 'MetaData.DatasetForm.Actions.SelectTaxaList' | translate }}
+              </mat-option>
+              <mat-option [value]="-1">
+                {{ 'MetaData.DatasetForm.Messages.NoList' | translate }}
+              </mat-option>
+              <mat-option
+                *ngFor="let list of taxaBibList"
+                [value]="list.id_liste"
+              >
+                {{ list.nom_liste }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
 
           <pnx-dynamic-form-generator
             [autoGenerated]="true"

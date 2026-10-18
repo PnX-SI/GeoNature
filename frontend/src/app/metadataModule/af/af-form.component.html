@@ -18,64 +18,77 @@
           <h3>{{ 'AcquisitionFramework' | translate }}</h3>
 
           <div>
-            <small>{{ 'Name' | translate }}</small>
-            <input
-              class="form-control form-control-sm"
-              type="text"
-              data-qa="pnx-metadata-af-form-name"
-              [formControl]="form.get('acquisition_framework_name')"
-            />
+            <mat-form-field
+              class="w-100"
+              appearance="outline"
+            >
+              <mat-label>{{ 'Name' | translate }}</mat-label>
+              <input
+                matInput
+                type="text"
+                data-qa="pnx-metadata-af-form-name"
+                [formControl]="form.get('acquisition_framework_name')"
+              />
+            </mat-form-field>
           </div>
 
           <div>
-            <small>{{ 'Description' | translate }}</small>
-            <textarea
-              class="form-control form-control-sm"
-              type="text"
-              [formControl]="form.get('acquisition_framework_desc')"
-              data-qa="pnx-metadata-af-form-description"
-            ></textarea>
+            <mat-form-field
+              class="w-100"
+              appearance="outline"
+            >
+              <mat-label>{{ 'Description' | translate }}</mat-label>
+              <textarea
+                matInput
+                rows="3"
+                [formControl]="form.get('acquisition_framework_desc')"
+                data-qa="pnx-metadata-af-form-description"
+              ></textarea>
+            </mat-form-field>
           </div>
 
           <div>
-            <small>
-              {{ 'Keywords' | translate }}
+            <mat-form-field
+              class="w-100"
+              appearance="outline"
+            >
+              <mat-label>{{ 'Keywords' | translate }}</mat-label>
+              <input
+                matInput
+                type="text"
+                [formControl]="form.get('keywords')"
+              />
               <mat-icon
+                matSuffix
                 matTooltip="{{ 'MetaData.AcquisitionFrameworkForm.KeywordsTooltip' | translate }}"
               >
                 info
               </mat-icon>
-            </small>
-            <input
-              class="form-control form-control-sm"
-              type="text"
-              [formControl]="form.get('keywords')"
-            />
+            </mat-form-field>
           </div>
 
-          <br />
-          <div>
-            <input
-              [formControl]="form.get('is_parent')"
-              type="checkbox"
-            />
-            <small>{{ 'MetaData.AcquisitionFrameworkForm.IsParentCheckbox' | translate }}</small>
+          <div class="mb-2">
+            <mat-checkbox [formControl]="form.get('is_parent')">
+              {{ 'MetaData.AcquisitionFrameworkForm.IsParentCheckbox' | translate }}
+            </mat-checkbox>
           </div>
 
           <div>
-            <small>{{ 'MetaData.AcquisitionFrameworkForm.ParentAF' | translate }}</small>
-            <select
-              class="form-control form-control-sm"
-              [formControl]="form.get('acquisition_framework_parent_id')"
+            <mat-form-field
+              class="w-100"
+              appearance="outline"
             >
-              <option [ngValue]="null"></option>
-              <option
-                *ngFor="let ac of acquisitionFrameworkParents | async"
-                [ngValue]="ac.id_acquisition_framework"
-              >
-                {{ ac.acquisition_framework_name }}
-              </option>
-            </select>
+              <mat-label>{{ 'MetaData.AcquisitionFrameworkForm.ParentAF' | translate }}</mat-label>
+              <mat-select [formControl]="form.get('acquisition_framework_parent_id')">
+                <mat-option [value]="null"></mat-option>
+                <mat-option
+                  *ngFor="let ac of acquisitionFrameworkParents | async"
+                  [value]="ac.id_acquisition_framework"
+                >
+                  {{ ac.acquisition_framework_name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
           </div>
 
           <pnx-nomenclature
@@ -95,14 +108,19 @@
           ></pnx-nomenclature>
 
           <div>
-            <small>
-              {{ 'MetaData.AcquisitionFrameworkForm.TerritorialPrecision' | translate }}
-            </small>
-            <textarea
-              class="form-control form-control-sm"
-              type="text"
-              [formControl]="form.get('territory_desc')"
-            ></textarea>
+            <mat-form-field
+              class="w-100"
+              appearance="outline"
+            >
+              <mat-label>
+                {{ 'MetaData.AcquisitionFrameworkForm.TerritorialPrecision' | translate }}
+              </mat-label>
+              <textarea
+                matInput
+                rows="3"
+                [formControl]="form.get('territory_desc')"
+              ></textarea>
+            </mat-form-field>
           </div>
 
           <pnx-nomenclature
@@ -130,30 +148,41 @@
           ></pnx-nomenclature>
 
           <div>
-            <small>
-              {{ 'MetaData.AcquisitionFrameworkForm.EcologicOrGeologicTarget' | translate }}
+            <mat-form-field
+              class="w-100"
+              appearance="outline"
+            >
+              <mat-label>
+                {{ 'MetaData.AcquisitionFrameworkForm.EcologicOrGeologicTarget' | translate }}
+              </mat-label>
+              <input
+                matInput
+                type="text"
+                [formControl]="form.get('ecologic_or_geologic_target')"
+              />
               <mat-icon
+                matSuffix
                 matTooltip="{{
                   'MetaData.AcquisitionFrameworkForm.EcologicOrGeologicTargetTooltip' | translate
                 }}"
               >
                 info
               </mat-icon>
-            </small>
-            <input
-              class="form-control form-control-sm"
-              type="text"
-              [formControl]="form.get('ecologic_or_geologic_target')"
-            />
+            </mat-form-field>
           </div>
 
           <div>
-            <small>{{ 'MetaData.TargetDescription' | translate }}</small>
-            <textarea
-              class="form-control form-control-sm"
-              type="text"
-              [formControl]="form.get('target_description')"
-            ></textarea>
+            <mat-form-field
+              class="w-100"
+              appearance="outline"
+            >
+              <mat-label>{{ 'MetaData.TargetDescription' | translate }}</mat-label>
+              <textarea
+                matInput
+                rows="3"
+                [formControl]="form.get('target_description')"
+              ></textarea>
+            </mat-form-field>
           </div>
           <pnx-date
             label="{{ 'MinDate' | translate }}"
