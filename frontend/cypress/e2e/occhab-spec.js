@@ -45,15 +45,17 @@ describe('Testing occhab', () => {
     cy.get('#add-hab-btn').click();
     cy.get('#taxonInput').type('dune');
     var selected_element = '';
-    cy.get('#ngb-typeahead-3-0').then(($el) => {
-      selected_element = $el.text().trim();
-      cy.get('#ngb-typeahead-3-0').click();
+    cy.get('mat-option')
+      .first()
+      .then(($el) => {
+        selected_element = $el.text().trim();
+        cy.get('mat-option').first().click();
 
-      cy.get('[data-qa="pnx-occhab-form-technique-collect"] > div > select').select('1: Object');
-      cy.get('[data-qa="pnx-occhab-form-valid-button"]').click();
+        cy.get('[data-qa="pnx-occhab-form-technique-collect"] > div > select').select('1: Object');
+        cy.get('[data-qa="pnx-occhab-form-valid-button"]').click();
 
-      cy.get('#validateButton').click();
-    });
+        cy.get('#validateButton').click();
+      });
 
     const listHabit = await promisify(
       cy.get(

@@ -8,6 +8,7 @@ import { ConfigService } from '@geonature/services/config.service';
 
 @Component({ selector: 'pnx-taxonomy-select', template: '' })
 class SelectStub {
+  @Input() designStyle;
   @Input() parentFormControl;
   @Input() label;
   @Input() searchFn;
@@ -101,5 +102,16 @@ describe('TaxonomyComponent (connected)', () => {
     component.parentFormControl.setValue('can');
     component.refreshAllInput();
     expect(component.parentFormControl.value).toBeNull();
+  });
+
+  it('uses the material design by default', () => {
+    fixture.detectChanges();
+    expect(fixture.debugElement.children[0].componentInstance.designStyle).toBe('material');
+  });
+
+  it('can use the bootstrap design', () => {
+    component.designStyle = 'bootstrap';
+    fixture.detectChanges();
+    expect(fixture.debugElement.children[0].componentInstance.designStyle).toBe('bootstrap');
   });
 });

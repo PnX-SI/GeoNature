@@ -1,85 +1,181 @@
-<div [(ngbCollapse)]="isCollapseTaxonomy">
-  <div class="well well-sm well-margin">
-    <div class="row">
-      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-        <small class="font-sm">Règne:</small>
-        <select
-          [formControl]="regneControl"
-          class="form-control form-control-sm"
-        >
-          <option
-            *ngFor="let regne of regnes"
-            [value]="regne"
-          >
-            {{ regne }}
-          </option>
-        </select>
-      </div>
-      <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-        <div *ngIf="regneControl.value !== null">
-          <small class="font-sm">Groupe:</small>
+<ng-container *ngIf="designStyle === 'bootstrap'; else materialBlock">
+  <div [(ngbCollapse)]="isCollapseTaxonomy">
+    <div class="well well-sm well-margin">
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+          <small class="font-sm">Règne:</small>
           <select
-            [formControl]="groupControl"
+            [formControl]="regneControl"
             class="form-control form-control-sm"
-            id="sel1"
-            placeholder="Taxonomiques"
           >
             <option
-              class="clickable"
-              *ngFor="let group2 of regnesAndGroup[regneControl.value]"
-              [value]="group2"
+              *ngFor="let regne of regnes"
+              [value]="regne"
             >
-              {{ group2 }}
+              {{ regne }}
             </option>
           </select>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+          <div *ngIf="regneControl.value !== null">
+            <small class="font-sm">Groupe:</small>
+            <select
+              [formControl]="groupControl"
+              class="form-control form-control-sm"
+              id="sel1"
+              placeholder="Taxonomiques"
+            >
+              <option
+                class="clickable"
+                *ngFor="let group2 of regnesAndGroup[regneControl.value]"
+                [value]="group2"
+              >
+                {{ group2 }}
+              </option>
+            </select>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-<small>{{ label }}</small>
-<div class="input-group">
-  <input
-    data-qa="taxonomy-form-input"
-    type="text"
-    class="form-control form-control-sm"
-    [ngClass]="{ loading: isLoading && parentFormControl.value?.length >= 3 }"
-    id="taxonInput"
-    [formControl]="parentFormControl"
-    [placement]="'bottom-left'"
-    [ngbTypeahead]="searchTaxon"
-    [inputFormatter]="formatter"
-    [resultTemplate]="rt"
-    (selectItem)="taxonSelected($event)"
-  />
-  <div
-    class="input-group-append"
-    *ngIf="displayAdvancedFilters"
-  >
-    <button
-      (click)="isCollapseTaxonomy = !isCollapseTaxonomy"
-      [attr.aria-expanded]="!isCollapseTaxonomy"
-      class="btn btn-sm btn-outline-shadow"
-      matTooltip="Filtrer les taxons proposés à l'autocompletion  par règne et groupe INPN"
+  <small>{{ label }}</small>
+  <div class="input-group">
+    <input
+      data-qa="taxonomy-form-input"
+      type="text"
+      class="form-control form-control-sm"
+      [ngClass]="{ loading: isLoading && parentFormControl.value?.length >= 3 }"
+      id="taxonInput"
+      [formControl]="parentFormControl"
+      [placement]="'bottom-left'"
+      [ngbTypeahead]="searchTaxon"
+      [inputFormatter]="formatter"
+      [resultTemplate]="rt"
+      (selectItem)="taxonSelected($event)"
+    />
+    <div
+      class="input-group-append"
+      *ngIf="displayAdvancedFilters"
     >
-      <i
-        class="fa fa-filter"
-        aria-hidden="true"
-      ></i>
-    </button>
-  </div>
+      <button
+        (click)="isCollapseTaxonomy = !isCollapseTaxonomy"
+        [attr.aria-expanded]="!isCollapseTaxonomy"
+        class="btn btn-sm btn-outline-shadow"
+        matTooltip="Filtrer les taxons proposés à l'autocompletion  par règne et groupe INPN"
+      >
+        <i
+          class="fa fa-filter"
+          aria-hidden="true"
+        ></i>
+      </button>
+    </div>
 
-  <ng-template
-    #rt
-    let-r="result"
-    let-t="term"
+    <ng-template
+      #rt
+      let-r="result"
+      let-t="term"
+    >
+      <span [innerHTML]="r.search_name"></span>
+    </ng-template>
+  </div>
+  <small
+    *ngIf="!isLoading && noResult && parentFormControl.value?.length >= 3"
+    style="color: red"
   >
-    <span [innerHTML]="r.search_name"></span>
-  </ng-template>
-</div>
-<small
-  *ngIf="!isLoading && noResult && parentFormControl.value?.length >= 3"
-  style="color: red"
->
-  {{ 'TaxonSearch.Messages.NoTaxonFound' | translate }}
-</small>
+    {{ 'TaxonSearch.Messages.NoTaxonFound' | translate }}
+  </small>
+</ng-container>
+
+<ng-template #materialBlock>
+  <div [(ngbCollapse)]="isCollapseTaxonomy">
+    <div class="well well-sm well-margin">
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <mat-form-field
+            class="w-100"
+            appearance="outline"
+          >
+            <mat-label>Règne</mat-label>
+            <mat-select [formControl]="regneControl">
+              <mat-option [value]="null">—</mat-option>
+              <mat-option
+                *ngFor="let regne of regnes"
+                [value]="regne"
+              >
+                {{ regne }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-12 col-md-6">
+          <mat-form-field
+            *ngIf="regneControl.value !== null"
+            class="w-100"
+            appearance="outline"
+          >
+            <mat-label>Groupe</mat-label>
+            <mat-select [formControl]="groupControl">
+              <mat-option
+                *ngFor="let group2 of regnesAndGroup?.[regneControl.value]"
+                [value]="group2"
+              >
+                {{ group2 }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </div>
+  <mat-form-field
+    style="display: inline-block; width: 100%"
+    class="mt-2"
+    appearance="outline"
+  >
+    <mat-label>{{ label }}</mat-label>
+    <input
+      matInput
+      type="text"
+      id="taxonInput"
+      data-qa="taxonomy-form-input"
+      [formControl]="parentFormControl"
+      [matAutocomplete]="auto"
+    />
+    <mat-spinner
+      *ngIf="showLoading"
+      matSuffix
+      diameter="18"
+    ></mat-spinner>
+    <button
+      *ngIf="displayAdvancedFilters"
+      matSuffix
+      mat-icon-button
+      type="button"
+      [attr.aria-expanded]="!isCollapseTaxonomy"
+      matTooltip="Filtrer les taxons proposés à l'autocompletion  par règne et groupe INPN"
+      (click)="isCollapseTaxonomy = !isCollapseTaxonomy"
+    >
+      <mat-icon>filter_list</mat-icon>
+    </button>
+    <mat-hint
+      *ngIf="!isLoading && noResult && parentFormControl.value?.length >= 3"
+      class="text-danger"
+    >
+      {{ 'TaxonSearch.Messages.NoTaxonFound' | translate }}
+    </mat-hint>
+    <mat-autocomplete
+      #auto="matAutocomplete"
+      [displayWith]="formatter"
+      (optionSelected)="optionSelected($event.option.value)"
+    >
+      <ng-container *ngIf="results$ | async as results">
+        <mat-option
+          *ngFor="let result of results"
+          [value]="result"
+        >
+          <span [innerHTML]="result.search_name"></span>
+        </mat-option>
+      </ng-container>
+    </mat-autocomplete>
+  </mat-form-field>
+</ng-template>

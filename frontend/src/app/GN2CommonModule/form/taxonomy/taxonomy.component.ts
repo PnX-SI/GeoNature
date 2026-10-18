@@ -1,3 +1,4 @@
+import { DesignStyle } from '../items-select/items-select.component';
 import {
   Component,
   EventEmitter,
@@ -71,6 +72,8 @@ export class TaxonomyComponent implements OnInit, OnChanges {
   /**
    * Reactive form
    */
+  /** Design of the field, see ``pnx-taxonomy-select`` */
+  @Input() designStyle: DesignStyle = 'material';
   @Input() parentFormControl: UntypedFormControl;
   @Input() label: string;
   // api endpoint for the automplete ressource

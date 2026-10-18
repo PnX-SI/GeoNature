@@ -20,6 +20,7 @@ import {
   takeUntil,
   tap,
 } from 'rxjs/operators';
+import { DesignStyle } from '../items-select/items-select.component';
 import { Taxon } from './taxonomy.component';
 
 /** Filters of the taxon search */
@@ -34,6 +35,9 @@ export type TaxonSearchFn = (term: string, filters: TaxonSearchFilters) => Obser
 /**
  * Presentational typeahead to search a taxon: it only knows the function to search taxa and the
  * regnes and groups to filter with. Use ``pnx-taxonomy`` to search taxa through the TaxHub API.
+ *
+ * Two designs are available (``designStyle``): ``material`` (the default, ``mat-autocomplete``)
+ * and ``bootstrap`` (``ngbTypeahead``).
  */
 @Component({
   selector: 'pnx-taxonomy-select',
@@ -42,6 +46,7 @@ export type TaxonSearchFn = (term: string, filters: TaxonSearchFilters) => Obser
   encapsulation: ViewEncapsulation.None,
 })
 export class TaxonomySelectComponent implements OnInit, OnDestroy {
+  @Input() designStyle: DesignStyle = 'material';
   @Input() parentFormControl: UntypedFormControl;
   @Input() label: string;
   /** Search the taxa matching a term (and the regne and group filters) */
@@ -58,6 +63,8 @@ export class TaxonomySelectComponent implements OnInit, OnDestroy {
 
   regneControl = new UntypedFormControl(null);
   groupControl = new UntypedFormControl(null);
+  /** Taxa matching the text typed by the user (``material`` design) */
+  results$: Observable<Array<Taxon>>;
   noResult: boolean;
   isLoading = false;
   public isCollapseTaxonomy = true;
@@ -68,6 +75,11 @@ export class TaxonomySelectComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.results$ = this.searchTaxon(
+      this.parentFormControl.valueChanges.pipe(
+        filter((value): value is string => typeof value === 'string')
+      )
+    );
     // Use "!= null" instead of "!== null" to also match undefined values.
     this.parentFormControl.valueChanges
       .pipe(
@@ -78,7 +90,7 @@ export class TaxonomySelectComponent implements OnInit, OnDestroy {
 
     // put group to null if regne = null
     this.regneControl.valueChanges.pipe(takeUntil(this._destroy$)).subscribe((value) => {
-      if (value === '') {
+      if (value === '' || value === null) {
         this.groupControl.patchValue(null);
       }
     });
@@ -87,6 +99,15 @@ export class TaxonomySelectComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this._destroy$.next();
     this._destroy$.complete();
+  }
+
+  get showLoading(): boolean {
+    return this.isLoading && this.parentFormControl.value?.length >= 3;
+  }
+
+  /** The taxon picked in the list (``material`` design), as the event of the typeahead */
+  optionSelected(item: Taxon) {
+    this.taxonSelected({ item, preventDefault: () => {} } as NgbTypeaheadSelectItemEvent);
   }
 
   taxonSelected(e: NgbTypeaheadSelectItemEvent) {

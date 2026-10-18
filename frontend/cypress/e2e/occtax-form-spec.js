@@ -8,7 +8,7 @@ function filterMapList(testFunction) {
   cy.intercept(Cypress.env('apiEndpoint') + 'occtax/OCCTAX/releves?**', testFunction);
   cy.get('[data-qa="pnx-occtax-filter"]').click();
   cy.get('[data-qa="taxonomy-form-input"]').clear().type(taxaSearch);
-  cy.get('ngb-typeahead-window:visible').find('button.dropdown-item').as('results');
+  cy.get('mat-option:visible').as('results');
   cy.get('@results').first().click();
   cy.get('[data-qa="pnx-occtax-filter-date-min"] [data-qa="input-date"]')
     .click()

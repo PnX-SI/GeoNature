@@ -8,6 +8,7 @@ import { AutoCompleteComponent } from './autocomplete.component';
 @Component({ selector: 'pnx-autocomplete-select', template: '' })
 class SelectStub {
   @Input() searchFn;
+  @Input() designStyle;
   @Input() parentFormControl;
   @Input() label;
   @Input() charNumber;
@@ -69,5 +70,16 @@ describe('AutoCompleteComponent (connected)', () => {
     select().onDelete.emit();
     expect(changed).toHaveBeenCalledWith({ item: 1 });
     expect(deleted).toHaveBeenCalled();
+  });
+
+  it('uses the material design by default', () => {
+    fixture.detectChanges();
+    expect(fixture.debugElement.children[0].componentInstance.designStyle).toBe('material');
+  });
+
+  it('can use the bootstrap design', () => {
+    component.designStyle = 'bootstrap';
+    fixture.detectChanges();
+    expect(fixture.debugElement.children[0].componentInstance.designStyle).toBe('bootstrap');
   });
 });

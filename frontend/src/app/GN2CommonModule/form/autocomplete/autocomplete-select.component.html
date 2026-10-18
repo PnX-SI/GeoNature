@@ -1,29 +1,86 @@
-<small>{{ label }}</small>
-<div class="input-group">
-  <input
-    type="text"
-    class="form-control form-control-sm"
-    [ngClass]="{ loading: isLoading && parentFormControl.value?.length >= 3 }"
-    id="taxonInput"
-    [formControl]="parentFormControl"
-    [disableControl]="false"
-    [ngbTypeahead]="search"
-    [inputFormatter]="formatter"
-    [resultTemplate]="resultTemplate || rt"
-    (selectItem)="itemSelected($event)"
-    [placeholder]="placeholder"
-  />
-  <ng-template
-    #rt
-    let-r="result"
-    let-t="term"
+<ng-container *ngIf="designStyle === 'bootstrap'; else materialBlock">
+  <small>{{ label }}</small>
+  <div class="input-group">
+    <input
+      type="text"
+      class="form-control form-control-sm"
+      [ngClass]="{ loading: isLoading && parentFormControl.value?.length >= 3 }"
+      id="taxonInput"
+      [formControl]="parentFormControl"
+      [disableControl]="false"
+      [ngbTypeahead]="search"
+      [inputFormatter]="formatter"
+      [resultTemplate]="resultTemplate || rt"
+      (selectItem)="itemSelected($event)"
+      [placeholder]="placeholder"
+    />
+    <ng-template
+      #rt
+      let-r="result"
+      let-t="term"
+    >
+      <span [innerHTML]="r[keyValue]"></span>
+    </ng-template>
+  </div>
+  <small
+    *ngIf="!isLoading && noResult && parentFormControl.value?.length >= 3"
+    style="color: red"
   >
-    <span [innerHTML]="r[keyValue]"></span>
-  </ng-template>
-</div>
-<small
-  *ngIf="!isLoading && noResult && parentFormControl.value?.length >= 3"
-  style="color: red"
+    Aucun élement trouvé
+  </small>
+</ng-container>
+
+<ng-template #materialBlock>
+  <mat-form-field
+    style="display: inline-block; width: 100%"
+    class="mt-2"
+    appearance="outline"
+  >
+    <mat-label>{{ label }}</mat-label>
+    <input
+      matInput
+      type="text"
+      id="taxonInput"
+      [formControl]="parentFormControl"
+      [matAutocomplete]="auto"
+      [placeholder]="placeholder"
+    />
+    <mat-spinner
+      *ngIf="showLoading"
+      matSuffix
+      diameter="18"
+    ></mat-spinner>
+    <mat-hint
+      *ngIf="!isLoading && noResult && parentFormControl.value?.length >= 3"
+      class="text-danger"
+    >
+      Aucun élement trouvé
+    </mat-hint>
+    <mat-autocomplete
+      #auto="matAutocomplete"
+      [displayWith]="displayWith"
+      (optionSelected)="optionSelected($event.option.value)"
+    >
+      <ng-container *ngIf="results$ | async as results">
+        <mat-option
+          *ngFor="let result of results"
+          [value]="result"
+        >
+          <ng-container
+            *ngTemplateOutlet="
+              resultTemplate || defaultResult;
+              context: { result: result, term: parentFormControl.value }
+            "
+          ></ng-container>
+        </mat-option>
+      </ng-container>
+    </mat-autocomplete>
+  </mat-form-field>
+</ng-template>
+
+<ng-template
+  #defaultResult
+  let-r="result"
 >
-  Aucun élement trouvé
-</small>
+  <span [innerHTML]="r[keyValue]"></span>
+</ng-template>

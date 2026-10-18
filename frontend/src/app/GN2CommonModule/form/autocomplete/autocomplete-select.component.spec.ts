@@ -25,6 +25,7 @@ describe('AutoCompleteSelectComponent', () => {
     fixture = TestBed.createComponent(AutoCompleteSelectComponent);
     component = fixture.componentInstance;
     component.parentFormControl = new UntypedFormControl(null);
+    component.designStyle = 'bootstrap';
     searchFn = jest.fn().mockReturnValue(of([{ name: 'a' }]));
     component.searchFn = searchFn;
     fixture.detectChanges();

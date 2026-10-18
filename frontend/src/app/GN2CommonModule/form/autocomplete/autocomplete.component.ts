@@ -1,3 +1,4 @@
+import { DesignStyle } from '../items-select/items-select.component';
 import { Component, Input, EventEmitter, Output } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -16,6 +17,8 @@ import { buildAutocompleteRequest } from './autocomplete.utils';
 export class AutoCompleteComponent {
   /** URL de l'API à appeler */
   @Input() apiEndPoint: string;
+  /** Design of the field, see ``pnx-autocomplete-select`` */
+  @Input() designStyle: DesignStyle = 'material';
   @Input() parentFormControl: UntypedFormControl;
   @Input() label: string;
   @Input() charNumber = 2;

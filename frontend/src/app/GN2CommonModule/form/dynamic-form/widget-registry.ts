@@ -124,6 +124,7 @@ export const DEFAULT_WIDGETS: WidgetRegistry = {
     inputs: ({ def, control }) => ({
       label: def['attribut_label'],
       parentFormControl: control,
+      designStyle: def['designStyle'],
       idList: def['id_list'],
       charNumber: 3,
       listLength: 20,

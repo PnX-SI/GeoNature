@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
+import { DesignStyle } from '../items-select/items-select.component';
 import { Observable, of, Subject } from 'rxjs';
 import {
   catchError,
@@ -16,12 +17,16 @@ import {
 /**
  * Presentational typeahead: it only knows the function searching items for a term.
  * Use ``pnx-autocomplete`` to search items through an API.
+ *
+ * Two designs are available (``designStyle``): ``material`` (the default, ``mat-autocomplete``)
+ * and ``bootstrap`` (``ngbTypeahead``).
  */
 @Component({
   selector: 'pnx-autocomplete-select',
   templateUrl: 'autocomplete-select.component.html',
 })
 export class AutoCompleteSelectComponent implements OnInit, OnDestroy {
+  @Input() designStyle: DesignStyle = 'material';
   /** Search the items matching a term. Must return an array */
   @Input() searchFn: (term: string) => Observable<Array<any>> = () => of([]);
   @Input() parentFormControl: UntypedFormControl;
@@ -43,11 +48,18 @@ export class AutoCompleteSelectComponent implements OnInit, OnDestroy {
   @Output() onChange = new EventEmitter<NgbTypeaheadSelectItemEvent>();
   @Output() onDelete = new EventEmitter<any>();
 
+  /** Items matching the text typed by the user (``material`` design) */
+  results$: Observable<Array<any>>;
   public isLoading: boolean;
   public noResult: boolean;
   private _destroy$ = new Subject<void>();
 
   ngOnInit() {
+    this.results$ = this.search(
+      this.parentFormControl.valueChanges.pipe(
+        filter((value): value is string => typeof value === 'string')
+      )
+    );
     this.parentFormControl.valueChanges
       .pipe(
         filter((value) => value !== null && value.length === 0),
@@ -59,6 +71,19 @@ export class AutoCompleteSelectComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this._destroy$.next();
     this._destroy$.complete();
+  }
+
+  /** Text displayed in the input for the value of the control (``material`` design) */
+  displayWith = (value: any): string =>
+    this.formatter ? this.formatter(value) : value != null ? String(value) : '';
+
+  get showLoading(): boolean {
+    return this.isLoading && this.parentFormControl.value?.length >= 3;
+  }
+
+  /** The item picked in the list (``material`` design), as the event of the typeahead */
+  optionSelected(item: any) {
+    this.itemSelected({ item, preventDefault: () => {} } as NgbTypeaheadSelectItemEvent);
   }
 
   itemSelected(e: NgbTypeaheadSelectItemEvent) {

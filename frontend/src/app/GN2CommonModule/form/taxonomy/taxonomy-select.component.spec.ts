@@ -32,6 +32,7 @@ describe('TaxonomySelectComponent', () => {
     fixture = TestBed.createComponent(TaxonomySelectComponent);
     component = fixture.componentInstance;
     component.parentFormControl = new UntypedFormControl(null);
+    component.designStyle = 'bootstrap';
     searchFn = jest.fn().mockReturnValue(of([{ cd_nom: 1 }]));
     component.searchFn = searchFn;
     component.charNumber = 3;
