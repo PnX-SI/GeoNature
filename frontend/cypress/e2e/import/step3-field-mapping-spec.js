@@ -168,7 +168,7 @@ describe('Import - Field mapping step', () => {
     it('Should access jdd only filtered based on permissions  ', () => {
       cy.get(SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_DATASET)
         .click()
-        .get('.ng-option')
+        .get('mat-option')
         .should('have.length', 2)
         .should('contain', USER_ADMIN.dataset)
         .should('contain', USER_AGENT.dataset);

@@ -18,7 +18,8 @@ function handleFieldValidation(dataQa, expectedValue, isNgSelect) {
     cy.get(dataQa)
       .should('exist')
       .within(() => {
-        cy.get('.ng-value-label').should('have.text', expectedValue);
+        // value of a material select
+        cy.get('.mat-mdc-select-value-text').should('contain.text', expectedValue);
       });
   } else {
     cy.get(dataQa).should('have.value', expectedValue);

@@ -110,27 +110,21 @@ describe('Testing metadata', () => {
     cy.get('[data-qa="pnx-metadata-af-form-description"]').type(newCadreAcq.description);
     cy.get("[data-qa='pnx-metadata-save-af']").should('be.disabled');
 
-    cy.get(
-      "[data-qa='pnx-metadata-af-form-territory'] > ng-select > div > div > div.ng-input"
-    ).click();
+    cy.get("[data-qa='pnx-metadata-af-form-territory'] mat-select").click();
     cy.get('[data-qa="METROP"]').click();
+    cy.get('body').type('{esc}');
     cy.get("[data-qa='pnx-metadata-save-af']").should('be.disabled');
 
-    cy.get(
-      "[data-qa='pnx-metadata-af-form-territory-level'] > ng-select > div > div > div.ng-input"
-    ).click();
+    cy.get("[data-qa='pnx-metadata-af-form-territory-level'] mat-select").click();
     cy.get('[data-qa="3"]').click();
     cy.get("[data-qa='pnx-metadata-save-af']").should('be.disabled');
 
-    cy.get(
-      "[data-qa='pnx-metadata-af-form-objectif'] > ng-select > div > div > div.ng-input"
-    ).click();
+    cy.get("[data-qa='pnx-metadata-af-form-objectif'] mat-select").click();
     cy.get('[data-qa="10"]').click();
+    cy.get('body').type('{esc}');
     cy.get("[data-qa='pnx-metadata-save-af']").should('be.disabled');
 
-    cy.get(
-      "[data-qa='pnx-metadata-af-form-financing-type'] > ng-select > div > div > div.ng-input"
-    ).click();
+    cy.get("[data-qa='pnx-metadata-af-form-financing-type'] mat-select").click();
     cy.get('[data-qa="4"]').click();
     cy.get("[data-qa='pnx-metadata-save-af']").should('be.disabled');
 
@@ -179,39 +173,33 @@ describe('Testing metadata', () => {
     cy.get('[data-qa="pnx-dataset-form-input-jdd-description"]').type(newJdd.description);
     cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
 
-    cy.get("[data-qa='pnx-dataset-form-datatype'] > ng-select > div > div > div.ng-input").click();
+    cy.get("[data-qa='pnx-dataset-form-datatype'] mat-select").click();
     cy.get('[data-qa="5"]').click();
     cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
 
-    cy.get(
-      '[data-qa="pnx-dataset-form-status-source"] > ng-select > div > div > div.ng-input'
-    ).click();
+    cy.get('[data-qa="pnx-dataset-form-status-source"] mat-select').click();
     cy.get('[data-qa="Co"]').click();
     cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
 
-    cy.get('[data-qa="pnx-dataset-form-objectif"] > ng-select > div > div > div.ng-input').click();
+    cy.get('[data-qa="pnx-dataset-form-objectif"] mat-select').click();
     cy.get('[data-qa="7.2"]').click();
+    cy.get('body').type('{esc}');
     cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
 
-    cy.get(
-      '[data-qa="pnx-dataset-form-territories"] > ng-select > div > div > div.ng-input'
-    ).click();
+    cy.get('[data-qa="pnx-dataset-form-territories"] mat-select').click();
     cy.get('[data-qa="CLI"]').click();
+    cy.get('body').type('{esc}');
     cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
 
-    cy.get(
-      '[data-qa="pnx-dataset-form-collecting-method"] > ng-select > div > div > div.ng-input'
-    ).click();
+    cy.get('[data-qa="pnx-dataset-form-collecting-method"] mat-select').click();
     cy.get('[data-qa="12"]').click();
     cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
 
-    cy.get(
-      '[data-qa="pnx-dataset-form-data-origin"] > ng-select > div > div > div.ng-input'
-    ).click();
+    cy.get('[data-qa="pnx-dataset-form-data-origin"] mat-select').click();
     cy.get('[data-qa="NSP"]').click();
     cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled');
 
-    cy.get('[data-qa="pnx-dataset-form-resource-type"] > ng-select > div').click();
+    cy.get('[data-qa="pnx-dataset-form-resource-type"] mat-select').click();
     cy.get('[data-qa="1"]').click();
 
     cy.get("[data-qa='field-text-test_champs_additionnel']")

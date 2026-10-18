@@ -84,9 +84,7 @@ describe('Tests gn_synthese', () => {
     cy.get('pnx-dynamic-form-generator > :nth-child(1) > .input-group > .form-control').select(
       'Sexe'
     );
-    cy.get(
-      '.ng-star-inserted > .auto > .ng-select-container > .ng-value-container > .ng-input > input'
-    ).click();
+    cy.get('pnx-dynamic-form-generator mat-select').click();
     // get element from its cd_nomenclature (2)
     cy.get('[data-qa="2"]').click();
     cy.get('[data-qa="synthese-search-btn"]').click();
@@ -100,14 +98,14 @@ describe('Tests gn_synthese', () => {
     // ce test permet de faire une suite d'actions basées sur la sélection des CA et des JDD
     // vérifie que la sélection d'un cadre d'acquisition filtre bien les jeux de données
     // objectifs : pouvoir sélectionnner un jeu de données dans la liste déroulante,
-    cy.get('[data-qa="synthese-form-ca"] ng-select').click();
+    cy.get('[data-qa="synthese-form-ca"] mat-select').click();
     // Intercept request to datasets which must have a parameter to "id_acquisition_framework"
     cy.intercept(Cypress.env('apiEndpoint') + 'meta/datasets?**', (req) => {
       if (req.body.hasOwnProperty('id_acquisition_frameworks')) {
         // select CA 1 and check JDD-1 is in list
-        cy.get('[data-qa="synthese-form-ca"] ng-select').click();
+        cy.get('[data-qa="synthese-form-ca"] mat-select').click();
         cy.get('[data-qa="CA-1"]').click();
-        cy.get('[data-qa="synthese-form-dataset"] ng-select').click();
+        cy.get('[data-qa="synthese-form-dataset"] mat-select').click();
         cy.get('[data-qa="JDD-1"]').click();
         cy.get('[data-qa="synthese-search-btn"]')
           .click()

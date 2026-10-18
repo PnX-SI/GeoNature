@@ -75,18 +75,18 @@ export const SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_NOM_CITE =
 export const SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_DATE_MIN =
   '[data-qa=import-fieldmapping-theme-constant-date_min] input';
 export const SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_NOMENCLATURE_GEO_OBJECT_NATURE =
-  '[data-qa=import-fieldmapping-theme-constant-id_nomenclature_geo_object_nature] ng-select';
+  '[data-qa=import-fieldmapping-theme-constant-id_nomenclature_geo_object_nature] mat-select';
 
 export const SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_STATION_NAME =
   '[data-qa=import-fieldmapping-theme-constant-station_name] textarea';
 export const SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_NOMENCLATURE_DETERMINATION_TYPE =
-  '[data-qa=import-fieldmapping-theme-constant-id_nomenclature_determination_type] ng-select';
+  '[data-qa=import-fieldmapping-theme-constant-id_nomenclature_determination_type] mat-select';
 
 export const SELECTOR_IMPORT_FIELDMAPPING_SWITCH_DATASET =
   '[data-qa=import-fieldmapping-theme-switch-unique_dataset_id]';
 
 export const SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_DATASET =
-  '[data-qa=field-dataset-unique_dataset_id] ng-select';
+  '[data-qa=field-dataset-unique_dataset_id] mat-select';
 
 export const SELECTOR_IMPORT_FIELDMAPPING_VALIDATE =
   '[data-qa=import-new-fieldmapping-model-validate]';
