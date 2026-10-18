@@ -3,7 +3,8 @@
   "compilerOptions": {
     "outDir": "../out-tsc/spec",
     "module": "commonjs",
-    "target": "ES2022",
+    // zone.js cannot patch native async/await, which the CDK test harnesses rely on
+    "target": "ES2016",
     "baseUrl": "..",
     "esModuleInterop": true,
     "isolatedModules": true,
