@@ -135,25 +135,35 @@
             *ngIf="occtaxConfig.moduleConf.form_fields.precision"
             class="col-4"
           >
-            <small>Précision du pointage (m)</small>
-            <input
-              type="number"
-              class="form-control form-control-sm"
-              placeholder="Précision du pointage"
-              [formControl]="releveParamForm.get('precision')"
-            />
+            <mat-form-field
+              class="w-100"
+              appearance="outline"
+            >
+              <mat-label>Précision du pointage (m)</mat-label>
+              <input
+                matInput
+                type="number"
+                placeholder="Précision du pointage"
+                [formControl]="releveParamForm.get('precision')"
+              />
+            </mat-form-field>
           </div>
 
           <div
             *ngIf="occtaxConfig.moduleConf.form_fields.place_name"
             class="col-4"
           >
-            <small>{{ 'Occtax.Releve.PlaceName' | translate }}</small>
-            <input
-              class="form-control form-control-sm"
-              type="text"
-              [formControl]="releveParamForm.get('place_name')"
-            />
+            <mat-form-field
+              class="w-100"
+              appearance="outline"
+            >
+              <mat-label>{{ 'Occtax.Releve.PlaceName' | translate }}</mat-label>
+              <input
+                matInput
+                type="text"
+                [formControl]="releveParamForm.get('place_name')"
+              />
+            </mat-form-field>
           </div>
         </div>
 
@@ -203,14 +213,19 @@
               *ngIf="occtaxConfig.moduleConf.form_fields.hour_min"
               class="form-group"
             >
-              <small>{{'HourMin' | translate }}</small>
-              <input
-                [ngClass]="{'is-invalid' : releveParamForm.get('hour_min').invalid || releveParamForm.hasError('invalidHour')}"
-                [formControl]="releveParamForm.get('hour_min')"
-                class="form-control form-control-sm"
-                type="text"
-                placeholder="{{'HourFormat' | translate }}"
-              />
+              <mat-form-field
+                class="w-100"
+                appearance="outline"
+              >
+                <mat-label>{{'HourMin' | translate }}</mat-label>
+                <input
+                  matInput
+                  [formControl]="releveParamForm.get('hour_min')"
+                  type="text"
+                  placeholder="{{'HourFormat' | translate }}"
+                  [errorStateMatcher]="hourMatcher"
+                />
+              </mat-form-field>
             </div>
           </div>
           <div class="col-6">
@@ -218,14 +233,19 @@
               *ngIf="occtaxConfig.moduleConf.form_fields.hour_max"
               class="form-group"
             >
-              <small>{{'HourMax' | translate }}</small>
-              <input
-                [ngClass]="{'is-invalid' : releveParamForm.get('hour_max').invalid || releveParamForm.hasError('invalidHour')}"
-                [formControl]="releveParamForm.get('hour_max')"
-                class="form-control form-control-sm"
-                type="text"
-                placeholder="{{'HourFormat' | translate }}"
-              />
+              <mat-form-field
+                class="w-100"
+                appearance="outline"
+              >
+                <mat-label>{{'HourMax' | translate }}</mat-label>
+                <input
+                  matInput
+                  [formControl]="releveParamForm.get('hour_max')"
+                  type="text"
+                  placeholder="{{'HourFormat' | translate }}"
+                  [errorStateMatcher]="hourMatcher"
+                />
+              </mat-form-field>
             </div>
           </div>
         </div>
@@ -235,12 +255,17 @@
             *ngIf="occtaxConfig.moduleConf.form_fields.altitude_min"
             class="col-6"
           >
-            <small>{{ 'MinAltitude' | translate }}</small>
-            <input
-              class="form-control form-control-sm"
-              type="number"
-              [formControl]="releveParamForm.get('altitude_min')"
-            />
+            <mat-form-field
+              class="w-100"
+              appearance="outline"
+            >
+              <mat-label>{{ 'MinAltitude' | translate }}</mat-label>
+              <input
+                matInput
+                type="number"
+                [formControl]="releveParamForm.get('altitude_min')"
+              />
+            </mat-form-field>
           </div>
 
           <!-- ALTITUDE MAX -->
@@ -248,12 +273,17 @@
             *ngIf="occtaxConfig.moduleConf.form_fields.altitude_max"
             class="col-6"
           >
-            <small>{{ 'MaxAltitude' | translate }}</small>
-            <input
-              class="form-control form-control-sm"
-              type="number"
-              [formControl]="releveParamForm.get('altitude_max')"
-            />
+            <mat-form-field
+              class="w-100"
+              appearance="outline"
+            >
+              <mat-label>{{ 'MaxAltitude' | translate }}</mat-label>
+              <input
+                matInput
+                type="number"
+                [formControl]="releveParamForm.get('altitude_max')"
+              />
+            </mat-form-field>
           </div>
         </div>
 
@@ -262,24 +292,34 @@
             *ngIf="occtaxConfig.moduleConf.form_fields.depth_min"
             class="col-6"
           >
-            <small>{{ 'MinDepth' | translate }}</small>
-            <input
-              class="form-control form-control-sm"
-              type="number"
-              [formControl]="releveParamForm.get('depth_min')"
-            />
+            <mat-form-field
+              class="w-100"
+              appearance="outline"
+            >
+              <mat-label>{{ 'MinDepth' | translate }}</mat-label>
+              <input
+                matInput
+                type="number"
+                [formControl]="releveParamForm.get('depth_min')"
+              />
+            </mat-form-field>
           </div>
 
           <div
             *ngIf="occtaxConfig.moduleConf.form_fields.depth_min"
             class="col-6"
           >
-            <small>{{ 'MaxDepth' | translate }}</small>
-            <input
-              class="form-control form-control-sm"
-              type="number"
-              [formControl]="releveParamForm.get('depth_max')"
-            />
+            <mat-form-field
+              class="w-100"
+              appearance="outline"
+            >
+              <mat-label>{{ 'MaxDepth' | translate }}</mat-label>
+              <input
+                matInput
+                type="number"
+                [formControl]="releveParamForm.get('depth_max')"
+              />
+            </mat-form-field>
           </div>
         </div>
 
@@ -299,12 +339,17 @@
             *ngIf="occtaxConfig.moduleConf.form_fields.grp_method"
             class="col-4"
           >
-            <small>{{'Occtax.Releve.GroupMethod' | translate}}</small>
-            <input
-              type="text"
-              class="form-control form-control-sm"
-              [formControl]="releveParamForm.get('grp_method')"
-            />
+            <mat-form-field
+              class="w-100"
+              appearance="outline"
+            >
+              <mat-label>{{'Occtax.Releve.GroupMethod' | translate}}</mat-label>
+              <input
+                matInput
+                type="text"
+                [formControl]="releveParamForm.get('grp_method')"
+              />
+            </mat-form-field>
           </div>
 
           <div
@@ -327,11 +372,16 @@
         ></pnx-nomenclature>
 
         <div *ngIf="occtaxConfig.moduleConf.form_fields.comment_releve">
-          <small>{{ 'Comment' | translate }}</small>
-          <textarea
-            class="form-control"
-            [formControl]="releveParamForm.get('comment')"
-          ></textarea>
+          <mat-form-field
+            class="w-100"
+            appearance="outline"
+          >
+            <mat-label>{{ 'Comment' | translate }}</mat-label>
+            <textarea
+              matInput
+              [formControl]="releveParamForm.get('comment')"
+            ></textarea>
+          </mat-form-field>
         </div>
       </mat-tab>
 
@@ -355,12 +405,17 @@
             *ngIf="occtaxConfig.moduleConf.form_fields.determiner"
             class="col-sm-6"
           >
-            <small>{{ 'Occtax.Taxon.Determiner' | translate }}</small>
-            <input
-              class="form-control form-control-sm"
-              [formControl]="occurrenceParamForm.get('determiner')"
-              type="text"
-            />
+            <mat-form-field
+              class="w-100"
+              appearance="outline"
+            >
+              <mat-label>{{ 'Occtax.Taxon.Determiner' | translate }}</mat-label>
+              <input
+                matInput
+                [formControl]="occurrenceParamForm.get('determiner')"
+                type="text"
+              />
+            </mat-form-field>
           </div>
 
           <div
@@ -483,12 +538,17 @@
             class="col-lg-4 col-sm-6"
           >
             <div class="form-group">
-              <small>{{ 'Occtax.Taxon.DigitalProof' | translate }}</small>
-              <input
-                class="form-control form-control-sm"
-                [formControl]="occurrenceParamForm.get('digital_proof')"
-                type="text"
-              />
+              <mat-form-field
+                class="w-100"
+                appearance="outline"
+              >
+                <mat-label>{{ 'Occtax.Taxon.DigitalProof' | translate }}</mat-label>
+                <input
+                  matInput
+                  [formControl]="occurrenceParamForm.get('digital_proof')"
+                  type="text"
+                />
+              </mat-form-field>
             </div>
           </div>
           <div
@@ -496,24 +556,33 @@
             class="col-lg-4 col-sm-6"
           >
             <div class="form-group">
-              <small>{{ 'Occtax.Taxon.NonDigitalProof' | translate }}</small>
-              <input
-                class="form-control form-control-sm"
-                [formControl]="occurrenceParamForm.get('non_digital_proof')"
-                type="text"
-              />
+              <mat-form-field
+                class="w-100"
+                appearance="outline"
+              >
+                <mat-label>{{ 'Occtax.Taxon.NonDigitalProof' | translate }}</mat-label>
+                <input
+                  matInput
+                  [formControl]="occurrenceParamForm.get('non_digital_proof')"
+                  type="text"
+                />
+              </mat-form-field>
             </div>
           </div>
         </div>
 
         <div *ngIf="occtaxConfig.moduleConf.form_fields.comment_occ">
-          <textarea
-            placeholder="{{ 'Comment' | translate }}"
-            class="form-control"
-            [formControl]="occurrenceParamForm.get('comment')"
-            rows="2"
-            id="commentaire"
-          ></textarea>
+          <mat-form-field
+            class="w-100"
+            appearance="outline"
+          >
+            <mat-label>{{ 'Comment' | translate }}</mat-label>
+            <textarea
+              matInput
+              [formControl]="occurrenceParamForm.get('comment')"
+              rows="2"
+            ></textarea>
+          </mat-form-field>
         </div>
       </mat-tab>
 
@@ -548,26 +617,36 @@
             *ngIf="occtaxConfig.moduleConf.form_fields.count_min"
             class="col-sm-6"
           >
-            <small>{{ 'Occtax.Counting.NumberMin' | translate }}</small>
-            <input
-              class="form-control form-control-sm"
-              type="number"
-              min="0"
-              [formControl]="countingParamForm.get('count_min')"
-            />
+            <mat-form-field
+              class="w-100"
+              appearance="outline"
+            >
+              <mat-label>{{ 'Occtax.Counting.NumberMin' | translate }}</mat-label>
+              <input
+                matInput
+                type="number"
+                min="0"
+                [formControl]="countingParamForm.get('count_min')"
+              />
+            </mat-form-field>
           </div>
 
           <div
             *ngIf="occtaxConfig.moduleConf.form_fields.count_max"
             class="col-sm-6"
           >
-            <small>{{ 'Occtax.Counting.NumberMax' | translate }}</small>
-            <input
-              class="form-control form-control-sm"
-              type="number"
-              min="0"
-              [formControl]="countingParamForm.get('count_max')"
-            />
+            <mat-form-field
+              class="w-100"
+              appearance="outline"
+            >
+              <mat-label>{{ 'Occtax.Counting.NumberMax' | translate }}</mat-label>
+              <input
+                matInput
+                type="number"
+                min="0"
+                [formControl]="countingParamForm.get('count_max')"
+              />
+            </mat-form-field>
           </div>
 
           <div

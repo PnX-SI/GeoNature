@@ -7,7 +7,7 @@ import {
   ElementRef,
   OnDestroy,
 } from '@angular/core';
-import { UntypedFormControl } from '@angular/forms';
+import { AbstractControl, UntypedFormControl } from '@angular/forms';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
 import { NgbDateFRParserFormatter } from './ngb-date-custom-parser-formatter';
@@ -34,7 +34,6 @@ export interface DateStruc {
     '(document:click)': 'onClick($event)',
   },
   templateUrl: 'date.component.html',
-  styleUrls: ['./date.component.scss'],
   providers: [{ provide: NgbDateParserFormatter, useClass: NgbDateFRParserFormatter }],
 })
 export class DateComponent implements OnInit, OnDestroy {
@@ -48,6 +47,11 @@ export class DateComponent implements OnInit, OnDestroy {
   })();
 
   public elementRef: ElementRef;
+  /** Shows the field in error when ``isInvalid`` is set (a validity decided by the parent form) */
+  public errorMatcher = {
+    isErrorState: (control: AbstractControl | null) =>
+      !!this.isInvalid || !!(control?.invalid && control.touched),
+  };
   @Input() label: string;
   @Input() isInvalid: string;
   @Input() disabled: boolean;

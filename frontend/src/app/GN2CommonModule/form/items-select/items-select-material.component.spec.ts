@@ -150,6 +150,35 @@ describe('ItemsSelectComponent (material design)', () => {
     expect(control.value).toEqual([1, 3]);
   });
 
+  describe('item events in multiselect mode', () => {
+    it('emits the item added to the selection', async () => {
+      create({ multiSelect: true });
+      const added = jest.fn();
+      component.itemAdded.subscribe(added);
+      const s = await select();
+      await s.clickOptions({ text: 'Bravo' });
+      expect(added).toHaveBeenCalledWith(items[1]);
+    });
+
+    it('emits the item removed from the selection', async () => {
+      create({ multiSelect: true });
+      control.setValue([1, 2]);
+      const removed = jest.fn();
+      component.itemRemoved.subscribe(removed);
+      const s = await select();
+      await s.open();
+      await (await s.getOptions({ text: 'Alpha' }))[0].click();
+      expect(removed).toHaveBeenCalledWith({ value: items[0] });
+    });
+
+    it('emits nothing in single mode', async () => {
+      const added = jest.fn();
+      component.itemAdded.subscribe(added);
+      await (await select()).clickOptions({ text: 'Bravo' });
+      expect(added).not.toHaveBeenCalled();
+    });
+  });
+
   describe('search', () => {
     it('filters the items on their label, ignoring case', async () => {
       await (await select()).open();

@@ -7,6 +7,7 @@ import { OcctaxFormMapService } from '../map/occtax-map.service';
 import { OcctaxFormReleveService } from '../releve/releve.service';
 import { OcctaxFormOccurrenceService } from '../occurrence/occurrence.service';
 import { OcctaxFormParamService } from './form-param.service';
+import { GroupErrorStateMatcher } from '@geonature_common/form/group-error-state.matcher';
 import { OcctaxConfigService } from '../../services/occtax-config.service';
 
 @Component({
@@ -34,6 +35,7 @@ export class OcctaxFormParamDialog implements OnInit, OnDestroy {
   @ViewChild('modalContent') modalContent;
   public paramsForm: UntypedFormGroup;
   public selectedIndex: number = null;
+  public hourMatcher = new GroupErrorStateMatcher('invalidHour');
   public state: string = 'collapsed';
 
   public displayProofFromElements: boolean = false;

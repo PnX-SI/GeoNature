@@ -1,4 +1,12 @@
-import { Component, Input, OnChanges, SimpleChanges, TemplateRef } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+  TemplateRef,
+} from '@angular/core';
 import { UntypedFormControl, Validators } from '@angular/forms';
 import { selectSingleItem } from './items-select.utils';
 
@@ -63,8 +71,16 @@ export class ItemsSelectComponent implements OnChanges {
    */
   @Input() autoSelectKey: string;
 
+  /** Emits the item that has just been added to a multiple selection */
+  @Output() itemAdded = new EventEmitter<any>();
+  /** Emits ``{ value: item }`` when an item has just been removed from a multiple selection */
+  @Output() itemRemoved = new EventEmitter<{ value: any }>();
+
   /** Term typed in the search box (``material`` design) */
   search = '';
+
+  /** Selection before the last change (``material`` design), to find out what has been added or removed */
+  private previousSelection: Array<any> = [];
 
   get required(): boolean {
     return !!this.parentFormControl?.hasValidator(Validators.required);
@@ -103,6 +119,30 @@ export class ItemsSelectComponent implements OnChanges {
   /** Comparison of the ``material`` design between an option and the control value */
   compare = (option: any, selected: any): boolean =>
     this.compareWith && !this.bindValue ? this.compareWith(option, selected) : option === selected;
+
+  openedChanged(opened: boolean) {
+    if (opened) {
+      const value = this.parentFormControl?.value;
+      this.previousSelection = Array.isArray(value) ? [...value] : [];
+    } else {
+      this.searchChanged('');
+    }
+  }
+
+  /** Emits the items added to and removed from a multiple selection (``material`` design) */
+  selectionChanged(selection: any) {
+    if (!this.multiSelect || !Array.isArray(selection)) {
+      return;
+    }
+    const itemOf = (value: any) => this.items?.find((i) => this.compare(this.valueOf(i), value));
+    selection
+      .filter((v) => !this.previousSelection.some((p) => this.compare(v, p)))
+      .forEach((v) => this.itemAdded.emit(itemOf(v)));
+    this.previousSelection
+      .filter((p) => !selection.some((v) => this.compare(v, p)))
+      .forEach((p) => this.itemRemoved.emit({ value: itemOf(p) }));
+    this.previousSelection = [...selection];
+  }
 
   searchChanged(term: string) {
     this.search = term;

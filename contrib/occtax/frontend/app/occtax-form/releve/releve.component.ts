@@ -13,6 +13,7 @@ import { OcctaxDataService } from '../../services/occtax-data.service';
 import { OcctaxConfigService } from '../../services/occtax-config.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { FormService as GlobalFormService } from '@geonature_common/form/form.service';
+import { GroupErrorStateMatcher } from '@geonature_common/form/group-error-state.matcher';
 
 @Component({
   selector: 'pnx-occtax-form-releve',
@@ -27,6 +28,10 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   public userDatasets: Array<any>;
   public releveForm: UntypedFormGroup;
   public routeSub: Subscription;
+  public dateMatcher = new GroupErrorStateMatcher('invalidDate');
+  public hourMatcher = new GroupErrorStateMatcher('invalidHour');
+  public altitudeMatcher = new GroupErrorStateMatcher('invalidAlt');
+  public depthMatcher = new GroupErrorStateMatcher('invalidDepth');
   private _subscriptions: Subscription[] = [];
 
   get additionalFieldsForm(): any[] {

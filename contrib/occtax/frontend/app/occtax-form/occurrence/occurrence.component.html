@@ -110,13 +110,18 @@
       *ngIf="occtaxConfig.moduleConf.form_fields.determiner"
       class="col-lg-4 col-sm-6"
     >
-      <small>{{ 'Occtax.Taxon.Determiner' | translate }}</small>
-      <input
-        class="form-control form-control-sm"
-        [formControl]="occurrenceForm.get('determiner')"
-        data-qa="pnx-occtax-taxon-form-determinator"
-        type="text"
-      />
+      <mat-form-field
+        class="w-100"
+        appearance="outline"
+      >
+        <mat-label>{{ 'Occtax.Taxon.Determiner' | translate }}</mat-label>
+        <input
+          matInput
+          [formControl]="occurrenceForm.get('determiner')"
+          data-qa="pnx-occtax-taxon-form-determinator"
+          type="text"
+        />
+      </mat-form-field>
       <small
         *ngIf="
           occurrenceForm.get('determiner').hasError('required') &&
@@ -269,17 +274,18 @@
       }"
     >
       <div class="form-group">
-        <small>{{ 'Occtax.Taxon.DigitalProof' | translate }}</small>
-        <input
-          [ngClass]="{
-            'is-invalid':
-              occurrenceForm.get('digital_proof').invalid ||
-              occurrenceForm.hasError('proofRequired')
-          }"
-          class="form-control form-control-sm"
-          [formControl]="occurrenceForm.get('digital_proof')"
-          type="text"
-        />
+        <mat-form-field
+          class="w-100"
+          appearance="outline"
+        >
+          <mat-label>{{ 'Occtax.Taxon.DigitalProof' | translate }}</mat-label>
+          <input
+            matInput
+            [formControl]="occurrenceForm.get('digital_proof')"
+            type="text"
+            [errorStateMatcher]="proofMatcher"
+          />
+        </mat-form-field>
       </div>
       <small
         *ngIf="occurrenceForm.get('digital_proof').hasError('pattern')"
@@ -299,17 +305,18 @@
       }"
     >
       <div class="form-group">
-        <small>{{ 'Occtax.Taxon.NonDigitalProof' | translate }}</small>
-        <input
-          [ngClass]="{
-            'is-invalid':
-              occurrenceForm.get('non_digital_proof').invalid ||
-              occurrenceForm.hasError('proofRequired')
-          }"
-          class="form-control form-control-sm"
-          [formControl]="occurrenceForm.get('non_digital_proof')"
-          type="text"
-        />
+        <mat-form-field
+          class="w-100"
+          appearance="outline"
+        >
+          <mat-label>{{ 'Occtax.Taxon.NonDigitalProof' | translate }}</mat-label>
+          <input
+            matInput
+            [formControl]="occurrenceForm.get('non_digital_proof')"
+            type="text"
+            [errorStateMatcher]="proofMatcher"
+          />
+        </mat-form-field>
       </div>
     </div>
   </div>
@@ -333,13 +340,18 @@
   </div>
 
   <div *ngIf="occtaxConfig.moduleConf.form_fields.comment_occ">
-    <textarea
-      placeholder="{{ 'Comment' | translate }}"
-      class="form-control"
-      [formControl]="occurrenceForm.get('comment')"
-      rows="2"
-      id="commentaire"
-    ></textarea>
+    <mat-form-field
+      class="w-100"
+      appearance="outline"
+    >
+      <mat-label>{{ 'Comment' | translate }}</mat-label>
+      <textarea
+        matInput
+        [formControl]="occurrenceForm.get('comment')"
+        rows="2"
+        id="commentaire"
+      ></textarea>
+    </mat-form-field>
   </div>
 </gn-advanced-section>
 <pnx-dynamic-form-generator

@@ -1,23 +1,25 @@
-<small>{{ label }}</small>
-<div class="input-group">
-  <select
-    class="form-control form-control-sm"
+<mat-form-field
+  class="w-100"
+  appearance="outline"
+>
+  <mat-label>{{ label }}</mat-label>
+  <mat-select
     [disableControl]="disabled"
     [formControl]="parentFormControl"
     [compareWith]="compareFn.bind(this)"
   >
-    <option
+    <mat-option
       *ngIf="displayNullValue"
-      [ngValue]="null"
+      [value]="null"
     >
       {{ nullValueLabel }}
-    </option>
-    <option
+    </mat-option>
+    <mat-option
       *ngFor="let item of items"
-      [ngValue]="item"
+      [value]="item"
       [title]="item[titleKey]"
     >
       {{ item[displayedKey] }}
-    </option>
-  </select>
-</div>
+    </mat-option>
+  </mat-select>
+</mat-form-field>

@@ -15,6 +15,7 @@ import { ConfigService } from '@geonature/services/config.service';
 import { OcctaxConfigService } from '../../services/occtax-config.service';
 import { ViewChild } from '@angular/core';
 import { OcctaxFormCountingComponent } from '../counting/counting.component';
+import { GroupErrorStateMatcher } from '@geonature_common/form/group-error-state.matcher';
 import { AdvancedSectionState } from '@geonature_common/form/advanced-section/advanced-section.component';
 
 @Component({
@@ -29,6 +30,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   public advancedSectionState: AdvancedSectionState = AdvancedSectionState.COLLAPSED;
   private _subscriptions: Subscription[] = [];
   public displayProofFromElements: boolean = false;
+  public proofMatcher = new GroupErrorStateMatcher('proofRequired');
   @ViewChild(OcctaxFormCountingComponent) countingComp: OcctaxFormCountingComponent;
   get taxref(): any {
     return this.occtaxFormOccurrenceService.taxref.getValue();
@@ -181,7 +183,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     document.getElementById('taxonInput').focus();
     if (this.occtaxFormOccurrenceService.form.valid) {
       this.occtaxFormOccurrenceService.submitOccurrence();
-      this.countingComp.validateMediasDeletions()
+      this.countingComp.validateMediasDeletions();
     }
   }
 

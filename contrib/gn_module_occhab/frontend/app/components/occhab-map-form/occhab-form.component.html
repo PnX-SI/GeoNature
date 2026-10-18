@@ -199,23 +199,35 @@
                 class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm"
                 *ngIf="config.OCCHAB.formConfig['altitude_min']"
               >
-                <small for="">{{ 'MinAltitude' | translate }}</small>
-                <input
-                  type="number"
-                  class="form-control form-control-sm"
-                  [formControl]="occHabForm.stationForm.get('altitude_min')"
-                />
+                <mat-form-field
+                  class="w-100"
+                  appearance="outline"
+                >
+                  <mat-label>{{ 'MinAltitude' | translate }}</mat-label>
+                  <input
+                    matInput
+                    type="number"
+                    [formControl]="occHabForm.stationForm.get('altitude_min')"
+                    [errorStateMatcher]="altitudeMatcher"
+                  />
+                </mat-form-field>
               </div>
               <div
                 class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm"
                 *ngIf="config.OCCHAB.formConfig['altitude_max']"
               >
-                <small for="">{{ 'MaxAltitude' | translate }}</small>
-                <input
-                  type="number"
-                  class="form-control form-control-sm"
-                  [formControl]="occHabForm.stationForm.get('altitude_max')"
-                />
+                <mat-form-field
+                  class="w-100"
+                  appearance="outline"
+                >
+                  <mat-label>{{ 'MaxAltitude' | translate }}</mat-label>
+                  <input
+                    matInput
+                    type="number"
+                    [formControl]="occHabForm.stationForm.get('altitude_max')"
+                    [errorStateMatcher]="altitudeMatcher"
+                  />
+                </mat-form-field>
               </div>
               <button
                 (click)="isCollapseDepth = !isCollapseDepth"
@@ -262,23 +274,33 @@
                 class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm"
                 *ngIf="config.OCCHAB.formConfig['depth_min']"
               >
-                <small for="">{{ 'MinDepth' | translate }}</small>
-                <input
-                  type="number"
-                  class="form-control form-control-sm"
-                  [formControl]="occHabForm.stationForm.get('depth_min')"
-                />
+                <mat-form-field
+                  class="w-100"
+                  appearance="outline"
+                >
+                  <mat-label>{{ 'MinDepth' | translate }}</mat-label>
+                  <input
+                    matInput
+                    type="number"
+                    [formControl]="occHabForm.stationForm.get('depth_min')"
+                  />
+                </mat-form-field>
               </div>
               <div
                 class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm"
                 *ngIf="config.OCCHAB.formConfig['depth_max']"
               >
-                <small for="">{{ 'MaxDepth' | translate }}</small>
-                <input
-                  type="number"
-                  class="form-control form-control-sm"
-                  [formControl]="occHabForm.stationForm.get('depth_max')"
-                />
+                <mat-form-field
+                  class="w-100"
+                  appearance="outline"
+                >
+                  <mat-label>{{ 'MaxDepth' | translate }}</mat-label>
+                  <input
+                    matInput
+                    type="number"
+                    [formControl]="occHabForm.stationForm.get('depth_max')"
+                  />
+                </mat-form-field>
               </div>
             </div>
           </div>
@@ -298,12 +320,17 @@
               class="col padding-sm"
               *ngIf="config.OCCHAB.formConfig['area']"
             >
-              <small>Surface (en m²)</small>
-              <input
-                class="form-control form-control-sm"
-                [formControl]="occHabForm.stationForm.get('area')"
-                type="number"
-              />
+              <mat-form-field
+                class="w-100"
+                appearance="outline"
+              >
+                <mat-label>Surface (en m²)</mat-label>
+                <input
+                  matInput
+                  [formControl]="occHabForm.stationForm.get('area')"
+                  type="number"
+                />
+              </mat-form-field>
             </div>
 
             <div class="col padding-sm">
@@ -355,12 +382,16 @@
             *ngIf="config.OCCHAB.formConfig['comment']"
           >
             <div class="form-group col-6 padding-sm">
-              <textarea
-                class="form-control form-control-sm"
-                type="textarea"
-                placeholder="Commentaire"
-                [formControl]="occHabForm.stationForm.get('comment')"
-              ></textarea>
+              <mat-form-field
+                class="w-100"
+                appearance="outline"
+              >
+                <mat-label>Commentaire</mat-label>
+                <textarea
+                  matInput
+                  [formControl]="occHabForm.stationForm.get('comment')"
+                ></textarea>
+              </mat-form-field>
             </div>
           </div>
         </div>
@@ -426,19 +457,21 @@
               class="form-row"
             >
               <div class="col-6 padding-sm">
-                <small>Sélectionner une typologie d'habitat</small>
-                <select
-                  [formControl]="occHabForm.typoHabControl"
-                  class="form-control form-control-sm"
+                <mat-form-field
+                  class="w-100"
+                  appearance="outline"
                 >
-                  <option [ngValue]="null">Toutes</option>
-                  <option
-                    *ngFor="let typo of storeService.typoHabitat"
-                    [ngValue]="typo.cd_typo"
-                  >
-                    {{ typo.lb_nom_typo }}
-                  </option>
-                </select>
+                  <mat-label>Sélectionner une typologie d'habitat</mat-label>
+                  <mat-select [formControl]="occHabForm.typoHabControl">
+                    <mat-option [value]="null">Toutes</mat-option>
+                    <mat-option
+                      *ngFor="let typo of storeService.typoHabitat"
+                      [value]="typo.cd_typo"
+                    >
+                      {{ typo.lb_nom_typo }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
               </div>
             </div>
 
@@ -506,17 +539,21 @@
                 class="col"
                 *ngIf="config.OCCHAB.formConfig['determiner']"
               >
-                <small>Déterminateur</small>
-                <input
-                  type="text"
-                  name="determinter"
-                  class="form-control form-control-sm"
-                  [formControl]="
-                    occHabForm.stationForm
-                      .get('habitats')
-                      .controls[occHabForm.currentEditingHabForm].get('determiner')
-                  "
-                />
+                <mat-form-field
+                  class="w-100"
+                  appearance="outline"
+                >
+                  <mat-label>Déterminateur</mat-label>
+                  <input
+                    matInput
+                    type="text"
+                    [formControl]="
+                      occHabForm.stationForm
+                        .get('habitats')
+                        .controls[occHabForm.currentEditingHabForm].get('determiner')
+                    "
+                  />
+                </mat-form-field>
               </div>
               <div
                 class="col"
@@ -557,23 +594,23 @@
             ></pnx-dumb-select>
 
             <div class="form-group">
-              <input
+              <mat-form-field
                 *ngIf="config.OCCHAB.formConfig['technical_precision']"
-                type="text"
-                class="form-control form-control-sm"
-                placeholder="Précision sur la technique de collecte"
-                [ngClass]="{
-                  'ng-invalid':
-                    occHabForm.stationForm.get('habitats').controls[
-                      occHabForm.currentEditingHabForm
-                    ].errors?.invalidTechnicalValues
-                }"
-                [formControl]="
-                  occHabForm.stationForm
-                    .get('habitats')
-                    .controls[occHabForm.currentEditingHabForm].get('technical_precision')
-                "
-              />
+                class="w-100"
+                appearance="outline"
+              >
+                <mat-label>Précision sur la technique de collecte</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  [errorStateMatcher]="technicalPrecisionMatcher"
+                  [formControl]="
+                    occHabForm.stationForm
+                      .get('habitats')
+                      .controls[occHabForm.currentEditingHabForm].get('technical_precision')
+                  "
+                />
+              </mat-form-field>
             </div>
 
             <small
@@ -591,17 +628,21 @@
               class="form-group"
               *ngIf="config.OCCHAB.formConfig['recovery_percentage']"
             >
-              <small>Pourcentage de recouvrement</small>
-              <input
-                type="number"
-                name="recovery"
-                class="form-control form-control-sm"
-                [formControl]="
-                  occHabForm.stationForm
-                    .get('habitats')
-                    .controls[occHabForm.currentEditingHabForm].get('recovery_percentage')
-                "
-              />
+              <mat-form-field
+                class="w-100"
+                appearance="outline"
+              >
+                <mat-label>Pourcentage de recouvrement</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  [formControl]="
+                    occHabForm.stationForm
+                      .get('habitats')
+                      .controls[occHabForm.currentEditingHabForm].get('recovery_percentage')
+                  "
+                />
+              </mat-form-field>
             </div>
 
             <pnx-dumb-select

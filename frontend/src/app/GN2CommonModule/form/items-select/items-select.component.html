@@ -16,6 +16,8 @@
     [clearAllText]="clearAllText"
     [attr.data-qa]="dataQa"
     [attr.qa-test]="qaTest"
+    (add)="itemAdded.emit($event)"
+    (remove)="itemRemoved.emit($event)"
   >
     <ng-template
       ng-option-tmp
@@ -58,7 +60,8 @@
       [required]="required"
       [attr.data-qa]="dataQa"
       [attr.qa-test]="qaTest"
-      (openedChange)="!$event && searchChanged('')"
+      (openedChange)="openedChanged($event)"
+      (selectionChange)="selectionChanged($event.value)"
     >
       <div
         *ngIf="searchable"

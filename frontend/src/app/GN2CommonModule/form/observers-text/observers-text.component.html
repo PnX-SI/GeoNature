@@ -1,11 +1,13 @@
-<small>{{ 'Observers' | translate }}</small>
-<div class="input-group">
+<mat-form-field
+  class="w-100"
+  appearance="outline"
+>
+  <mat-label>{{ 'Observers' | translate }}</mat-label>
   <input
-    [ngClass]="{ 'is-invalid': parentFormControl.invalid }"
-    class="form-control form-control-sm"
+    matInput
     type="text"
+    data-qa="observers-text-input"
     [formControl]="parentFormControl"
-    placeholder=""
     [disableControl]="disabled"
   />
-</div>
+</mat-form-field>

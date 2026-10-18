@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
+import { DesignStyle } from '../items-select/items-select.component';
 
 /**
  * Ce composant permet d'afficher un input de type multiselect à partir
@@ -28,6 +29,8 @@ export class MultiSelectComponent implements OnInit {
   public searchControl = new UntypedFormControl();
   public formControlValue = [];
 
+  /** Design of the select, see ``pnx-items-select`` */
+  @Input() designStyle: DesignStyle = 'material';
   @Input() parentFormControl: UntypedFormControl;
   /** Valeurs à afficher dans la liste déroulante. Doit être un tableau
    * de dictionnaire.
@@ -77,7 +80,14 @@ export class MultiSelectComponent implements OnInit {
   @Input() isHtml: boolean = false;
   @Output() onChange = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
-  constructor() {}
+
+  /** Whole items are compared by label, as ``ng-select`` did */
+  compareWith = (item: any, selected: any): boolean =>
+    item === selected ||
+    (!!item &&
+      !!selected &&
+      item[this.keyLabel] !== undefined &&
+      item[this.keyLabel] === selected[this.keyLabel]);
 
   ngOnInit() {
     this.keyValue = this.bindAllItem ? null : this.keyValue;

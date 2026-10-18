@@ -95,16 +95,17 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
     this.formService.searchForm.controls.taxon_rank.reset();
   }
 
-  onStatusCheckboxChanged(event) {
-    if (event.target.checked == true) {
-      this.formService.selectedStatus.push(event.target.value);
-    } else if (event.target.checked == false) {
+  onStatusCheckboxChanged(status, checked: boolean) {
+    const statusType = status.status_types[0];
+    if (checked) {
+      this.formService.selectedStatus.push(statusType);
+    } else {
       this.formService.selectedStatus.splice(
-        this.formService.selectedStatus.indexOf(event.target.value),
+        this.formService.selectedStatus.indexOf(statusType),
         1
       );
       // Reset input checkbox Reactive From to not send "False"
-      this.formService.searchForm.controls[event.target.id].reset();
+      this.formService.searchForm.controls[status.control_name].reset();
     }
   }
 

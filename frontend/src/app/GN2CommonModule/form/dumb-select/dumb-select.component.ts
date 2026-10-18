@@ -33,7 +33,7 @@ export class DumbSelectComponent extends GenericFormComponent {
    * Mnémonique du type de nomenclature qui doit être affiché dans la liste déroulante.
    *  Table``ref_nomenclatures.bib_nomenclatures_types`` (obligatoire)
    */
-  @Input() items: string;
+  @Input() items: Array<any>;
   /**
    * Clé de l'item utilisé pour comparer les items et afficher la valeur courante
    * Obligatoire

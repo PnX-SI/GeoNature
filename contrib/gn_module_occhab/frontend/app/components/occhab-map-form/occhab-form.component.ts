@@ -10,6 +10,7 @@ import { filter } from 'rxjs/operators';
 import { ConfigService } from '@geonature/services/config.service';
 import { StationFeature } from '../../models';
 import { FormService } from '@geonature_common/form/form.service';
+import { GroupErrorStateMatcher } from '@geonature_common/form/group-error-state.matcher';
 
 @Component({
   selector: 'pnx-occhab-form',
@@ -35,6 +36,12 @@ export class OccHabFormComponent implements OnInit, OnDestroy {
   public currentEditingStation: StationFeature;
   // boolean tocheck if the station has at least one hab (control the validity of the form)
   public atLeastOneHab = false;
+
+  public altitudeMatcher = new GroupErrorStateMatcher('invalidAlt');
+  // the error is on the form group of the habitat, not on the technical precision control
+  public technicalPrecisionMatcher = {
+    isErrorState: (control) => !!control?.parent?.errors?.invalidTechnicalValues,
+  };
 
   public isCollapseDepth = true;
   public isCollaspeTypo = true;

@@ -135,23 +135,13 @@
         *ngIf="status.show && status.status_types.length == 1"
         class="form-group"
       >
-        <div class="custom-control custom-checkbox">
-          <input
-            type="checkbox"
-            [id]="status.control_name"
-            class="custom-control-input"
-            [formControl]="status.control"
-            [value]="status.status_types[0]"
-            [checked]="formService.selectedStatus.includes(status.status_types[0])"
-            (change)="onStatusCheckboxChanged($event)"
-          />
-          <label
-            [for]="status.control_name"
-            class="custom-control-label"
-          >
-            <small>{{ status.display_name }}</small>
-          </label>
-        </div>
+        <mat-checkbox
+          [id]="status.control_name"
+          [formControl]="status.control"
+          (change)="onStatusCheckboxChanged(status, $event.checked)"
+        >
+          <small>{{ status.display_name }}</small>
+        </mat-checkbox>
       </div>
     </div>
 

@@ -347,13 +347,13 @@
               *ngFor="let col of mapListService.availableColumns"
             >
               <a>
-                <input
-                  type="checkbox"
+                <mat-checkbox
                   [id]="col.name"
-                  (click)="toggle(col)"
+                  (change)="toggle(col)"
                   [checked]="isChecked(col)"
-                />
-                <label [attr.for]="col.name">{{ col.name | readablePropertie }}</label>
+                >
+                  {{ col.name | readablePropertie }}
+                </mat-checkbox>
               </a>
             </li>
           </div>

@@ -1,11 +1,16 @@
 <div class="row row-sm form">
   <div class="col-2">
-    <small>ID Import</small>
-    <input
-      class="form-control form-control-sm"
-      [formControl]="mapListFormService.searchForm.get('id_import')"
-      placeHolder="Id de l'import"
-    />
+    <mat-form-field
+      class="w-100"
+      appearance="outline"
+    >
+      <mat-label>ID Import</mat-label>
+      <input
+        matInput
+        [formControl]="mapListFormService.searchForm.get('id_import')"
+        placeholder="Id de l'import"
+      />
+    </mat-form-field>
   </div>
   <div class="col-2">
     <pnx-datasets

@@ -185,24 +185,14 @@
     <h4>{{ 'DisplayColumns' | translate }}</h4>
   </div>
   <div class="modal-body">
-    <div
-      class="form-check"
-      *ngFor="let col of availableColumns"
-    >
-      <input
-        class="form-check-input"
-        type="checkbox"
+    <div *ngFor="let col of availableColumns">
+      <mat-checkbox
         [id]="col.name"
-        (click)="toggleColumnNames(col)"
+        (change)="toggleColumnNames(col)"
         [checked]="col.checked"
-      />
-
-      <label
-        [attr.for]="col.name"
-        class="form-check-label"
       >
         {{ col.name | readablePropertie }}
-      </label>
+      </mat-checkbox>
     </div>
   </div>
 </ng-template>

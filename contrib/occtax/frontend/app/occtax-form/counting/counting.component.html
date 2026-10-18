@@ -61,27 +61,37 @@
         *ngIf="occtaxConfig.moduleConf.form_fields.count_min"
         class="col-6"
       >
-        <small>{{ 'Occtax.Counting.NumberMin' | translate }}</small>
-        <input
-          data-qa="counting-count-min"
-          class="form-control form-control-sm"
-          type="number"
-          min="0"
-          [formControl]="form.get('count_min')"
-        />
+        <mat-form-field
+          class="w-100"
+          appearance="outline"
+        >
+          <mat-label>{{ 'Occtax.Counting.NumberMin' | translate }}</mat-label>
+          <input
+            matInput
+            data-qa="counting-count-min"
+            type="number"
+            min="0"
+            [formControl]="form.get('count_min')"
+          />
+        </mat-form-field>
       </div>
       <div
         *ngIf="occtaxConfig.moduleConf.form_fields.count_max"
         class="col-6"
       >
-        <small>{{ 'Occtax.Counting.NumberMax' | translate }}</small>
-        <input
-          data-qa="counting-count-max"
-          class="form-control form-control-sm"
-          type="number"
-          min="0"
-          [formControl]="form.get('count_max')"
-        />
+        <mat-form-field
+          class="w-100"
+          appearance="outline"
+        >
+          <mat-label>{{ 'Occtax.Counting.NumberMax' | translate }}</mat-label>
+          <input
+            matInput
+            data-qa="counting-count-max"
+            type="number"
+            min="0"
+            [formControl]="form.get('count_max')"
+          />
+        </mat-form-field>
       </div>
     </div>
     <small

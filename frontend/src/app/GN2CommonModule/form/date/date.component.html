@@ -1,14 +1,15 @@
-<small>{{ label }}</small>
-<div
-  class="input-group"
-  [ngClass]="{ 'is-invalid': isInvalid }"
+<mat-form-field
+  class="w-100"
+  appearance="outline"
 >
+  <mat-label>{{ label }}</mat-label>
   <input
-    class="form-control form-control-sm"
+    matInput
     ngbDatepicker
     data-qa="input-date"
     #d1="ngbDatepicker"
     [formControl]="parentFormControl"
+    [errorStateMatcher]="errorMatcher"
     [disableControl]="disabled"
     [maxDate]="maxDate"
     [minDate]="minDate"
@@ -16,16 +17,13 @@
     (dateSelect)="onSelectOrKeyIn.emit($event)"
     (keyup)="onSelectOrKeyIn.emit(parentFormControl.value)"
   />
-  <div class="input-group-append">
-    <button
-      class="btn btn-sm btn-outline-shadow"
-      (click)="d1.toggle(); openDatepicker(d1)"
-      type="button"
-    >
-      <i
-        class="fa fa-calendar"
-        aria-hidden="true"
-      ></i>
-    </button>
-  </div>
-</div>
+  <button
+    matSuffix
+    mat-icon-button
+    type="button"
+    aria-label="Calendar"
+    (click)="d1.toggle(); openDatepicker(d1)"
+  >
+    <mat-icon>calendar_today</mat-icon>
+  </button>
+</mat-form-field>
