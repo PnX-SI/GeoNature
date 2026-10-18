@@ -191,9 +191,10 @@
             <br />
             <br />
             <button
+              mat-stroked-button
+              color="primary"
               (click)="openModal(modalCoresp)"
               type="button"
-              class="btn btn-outline-primary"
             >
               Correspondances avec d'autres typologie d'habitats
             </button>
@@ -211,12 +212,12 @@
     <div class="modal-header">
       <h3>Infos</h3>
       <button
+        mat-icon-button
         type="button"
-        class="close"
         aria-label="Close"
         (click)="c()"
       >
-        <span aria-hidden="true">&times;</span>
+        <mat-icon>close</mat-icon>
       </button>
     </div>
     <div class="modal-body">
@@ -233,12 +234,12 @@
     <div class="modal-header">
       <h3>Correspondances</h3>
       <button
+        mat-icon-button
         type="button"
-        class="close"
         aria-label="Close"
         (click)="c()"
       >
-        <span aria-hidden="true">&times;</span>
+        <mat-icon>close</mat-icon>
       </button>
     </div>
     <div class="modal-body">

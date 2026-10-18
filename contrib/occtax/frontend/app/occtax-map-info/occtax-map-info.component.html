@@ -473,12 +473,13 @@
   <div class="modal-header">
     <h4 class="modal-title pull-left">Suppression</h4>
     <button
+      mat-icon-button
       type="button"
-      class="close pull-right"
+      class="pull-right"
       aria-label="Close"
       (click)="c()"
     >
-      <span aria-hidden="true">&times;</span>
+      <mat-icon>close</mat-icon>
     </button>
   </div>
   <div class="modal-body">
@@ -488,16 +489,17 @@
       dénombrement(s).
     </p>
     <button
+      mat-stroked-button
       type="button"
-      class="btn btn-secondary"
       (click)="c()"
     >
       Annuler
     </button>
 
     <button
+      mat-raised-button
+      color="warn"
       type="button"
-      class="btn btn-danger"
       data-qa="pnx-occtax-delete"
       (click)="deleteReleve(modalDelete); c()"
     >

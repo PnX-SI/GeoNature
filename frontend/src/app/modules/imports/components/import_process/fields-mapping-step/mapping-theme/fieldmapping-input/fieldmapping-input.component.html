@@ -48,7 +48,8 @@
       (valueEdit)="constantValueEdited($event)"
     />
     <button
-      class="btn btn-light InputFieldContainer__button"
+      mat-stroked-button
+      class="InputFieldContainer__button"
       (click)="switchInputType()"
       [matTooltip]="getTooltip()"
       [ngClass]="{

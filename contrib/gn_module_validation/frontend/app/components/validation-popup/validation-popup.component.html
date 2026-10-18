@@ -29,12 +29,12 @@
         {{ 'Validation.Actions.ChangeStatus' | translate }}
       </h4>
       <button
+        mat-icon-button
         type="button"
-        class="close"
         aria-label="Close"
         (click)="closeModal()"
       >
-        <span aria-hidden="true">&times;</span>
+        <mat-icon>close</mat-icon>
       </button>
     </div>
 
@@ -116,6 +116,7 @@
       id="choicePopup"
     >
       <button
+        mat-raised-button
         id="saveButton"
         (click)="onSubmit(statusForm.value)"
         data-toggle="modal"
@@ -123,7 +124,7 @@
         value="Enregistrer"
         type="button"
         [disabled]="!this.statusForm.valid"
-        class="btn btn-sm btn-success box-shadow"
+        class="box-shadow button-success"
         data-dismiss="modal"
         #required
       >

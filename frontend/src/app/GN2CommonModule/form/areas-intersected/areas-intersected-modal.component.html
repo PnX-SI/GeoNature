@@ -6,12 +6,12 @@
   <div class="modal-header">
     <h5 class="modal-title">{{ 'Releve.InfoGeo' | translate }}</h5>
     <button
+      mat-icon-button
       type="button"
-      class="close"
       aria-label="Close"
       (click)="d('Cross click')"
     >
-      <span aria-hidden="true">&times;</span>
+      <mat-icon>close</mat-icon>
     </button>
   </div>
   <div class="modal-body">
@@ -23,8 +23,9 @@
 </ng-template>
 
 <button
+  mat-icon-button
   id="info-geo-button"
-  class="btn btn-sm btn-outline-shadow clickable"
+  class="clickable"
   (click)="openIntesectionModal(content)"
   matTooltip="{{ 'Releve.InfoGeo' | translate }} "
 >

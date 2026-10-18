@@ -1,17 +1,19 @@
 <button
+  mat-stroked-button
   *ngIf="showDefinitions"
   type="button"
   id="showDef"
-  class="btn btn-sm btn-light box-shadow"
+  class="box-shadow"
   (click)="getDefinitions()"
 >
   Masquer les définitions des statuts
 </button>
 <button
+  mat-stroked-button
   *ngIf="!showDefinitions"
   type="button"
   id="hideDef"
-  class="btn btn-sm btn-light box-shadow"
+  class="box-shadow"
   (click)="getDefinitions()"
 >
   Afficher les définitions des statuts

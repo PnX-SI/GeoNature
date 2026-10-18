@@ -15,8 +15,8 @@
   </h5>
 
   <button
+    mat-icon-button
     type="button"
-    class="close"
     aria-label="Close"
     (click)="activeModal.dismiss('Cross click')"
     [ngStyle]="{
@@ -24,7 +24,7 @@
     }"
     data-qa="synthese-info-obs-close-btn"
   >
-    <span aria-hidden="true">&times;</span>
+    <mat-icon>close</mat-icon>
   </button>
 </div>
 
@@ -204,7 +204,7 @@
     <mat-toolbar class="tbar-bottom">
       <a
         color="primary"
-        class="btn btn-xs align-self-start mr-2 link-infos"
+        class="align-self-start mr-2 link-infos"
         *ngIf="selectedObsTaxonDetail && config.SYNTHESE.ENABLE_TAXON_SHEETS"
         [routerLink]="['/synthese/taxon', selectedObsTaxonDetail?.cd_ref]"
         target="_blank"
@@ -214,7 +214,7 @@
         <mat-icon aria-hidden="true">description</mat-icon>
       </a>
       <a
-        class="btn align-self-start mr-2 link-infos"
+        class="align-self-start mr-2 link-infos"
         href="https://inpn.mnhn.fr/espece/cd_nom/{{ selectedObsTaxonDetail?.cd_nom }}"
         target="_blank"
         mat-stroked-button

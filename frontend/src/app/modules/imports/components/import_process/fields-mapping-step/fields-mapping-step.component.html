@@ -122,13 +122,13 @@
         {{ 'Import.FieldMapping.Actions.SaveMapping' | translate }}
       </h4>
       <button
+        mat-icon-button
         type="button"
-        class="close"
         aria-label="Close"
         (click)="modal.dismiss('Cross click')"
         data-qa="import-fieldmapping-saving-modal-close"
       >
-        <span aria-hidden="true">&times;</span>
+        <mat-icon>close</mat-icon>
       </button>
     </div>
     <div class="modal-body">

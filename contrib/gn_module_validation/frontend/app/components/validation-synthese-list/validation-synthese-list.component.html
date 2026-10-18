@@ -49,14 +49,16 @@
       pnxDataCell
     >
       <button
+        mat-icon-button
         #ValidationModalInfoObs
         id="details"
         type="button"
         (click)="openInfoModal(row)"
-        class="btn btn-info fa fa-info-circle"
         title="details"
         [disabled]="row.unique_id_sinp == null"
-      ></button>
+      >
+        <mat-icon>info</mat-icon>
+      </button>
       <i
         *ngIf="alertActivate && findReportInfo(row, 'alert')"
         class="fa fa-flag"

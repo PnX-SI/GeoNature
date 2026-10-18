@@ -228,12 +228,12 @@
       Import des données en cours...
     </h4>
     <button
+      mat-icon-button
       type="button"
-      class="close"
       aria-label="Close"
       (click)="modal.dismiss('Cross click')"
     >
-      <span aria-hidden="true">&times;</span>
+      <mat-icon>close</mat-icon>
     </button>
   </div>
   <div class="modal-body">
@@ -242,8 +242,9 @@
   </div>
   <div class="modal-footer">
     <button
+      mat-raised-button
+      color="accent"
       type="button"
-      class="btn btn-warning"
       (click)="onRedirect(); modal.close()"
     >
       OK

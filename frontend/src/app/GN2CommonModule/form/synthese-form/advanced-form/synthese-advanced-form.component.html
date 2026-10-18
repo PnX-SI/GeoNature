@@ -1,12 +1,13 @@
 <div class="modal-header">
   <h4 class="modal-title pull-left">Filtres taxonomiques avancés</h4>
   <button
+    mat-icon-button
     type="button"
-    class="close pull-right"
+    class="pull-right"
     aria-label="Close"
     (click)="onCloseModal()"
   >
-    <span aria-hidden="true">&times;</span>
+    <mat-icon>close</mat-icon>
   </button>
 </div>
 
@@ -52,10 +53,11 @@
       class="form-group"
     >
       <button
+        mat-stroked-button
+        color="primary"
         (click)="isCollapseTree = !isCollapseTree"
         [attr.aria-expanded]="!isCollapseTree"
         id="btn-tree"
-        class="btn btn-sm btn-outline-primary"
       >
         Arbre taxonomique
         <i
@@ -103,9 +105,10 @@
           </div>
         </div>
         <button
+          mat-stroked-button
+          color="warn"
           type="button"
           id="button-refresh"
-          class="btn btn-sm btn-outline-danger"
           (click)="resetTree()"
         >
           <small>Réinitialiser la sélection</small>
@@ -230,8 +233,9 @@
   </div>
 
   <button
+    mat-raised-button
     type="button"
-    class="btn btn-success"
+    class="button-success"
     (click)="onCloseModal()"
   >
     Valider et fermer

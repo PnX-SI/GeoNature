@@ -82,6 +82,8 @@ import { MediasTestComponent } from '@geonature_common/form/media/medias-test.co
 import { ModalDownloadComponent } from '@geonature_common/others/modal-download/modal-download.component';
 import { MultiSelectComponent } from './form/multiselect/multiselect.component';
 import { MunicipalitiesComponent } from '@geonature_common/form/municipalities/municipalities.component';
+// ngx-datatable is not used by GeoNature anymore (see pnx-data-grid), it is kept for the external modules
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { AgGridModule } from 'ag-grid-angular';
 import { DataGridComponent } from './data-grid/data-grid.component';
 import {
@@ -172,8 +174,8 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     MatTooltipModule,
     NgbModule,
     AgGridModule,
+    NgxDatatableModule,
     ReactiveFormsModule,
-    AgGridModule,
     NgSelectModule,
     RouterModule,
     TranslateModule,
@@ -367,6 +369,7 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     MunicipalitiesComponent,
     NgbModule,
     AgGridModule,
+    NgxDatatableModule,
     NomenclatureComponent,
     ObserversComponent,
     ObserversTextComponent,

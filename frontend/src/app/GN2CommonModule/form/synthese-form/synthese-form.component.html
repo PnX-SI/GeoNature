@@ -25,10 +25,11 @@
       </mat-checkbox>
     </div>
     <button
+      mat-icon-button
       (click)="isCollapseScore = !isCollapseScore"
       [attr.aria-expanded]="!isCollapseScore"
       *ngIf="config.FRONTEND['ENABLE_PROFILES']"
-      class="btn btn-sm btn-outline-shadow profile float-right"
+      class="profile float-right"
       matTooltip="{{ 'Synthese.Form.FilterTaxaProfile' | translate }}"
       matTooltipClass="validation-tooltip"
     >
@@ -142,8 +143,9 @@
     </div>
 
     <button
+      mat-stroked-button
       (click)="openModal()"
-      class="btn btn-xs btn-outline-secondary advanced mt-2"
+      class="advanced mt-2"
     >
       {{ 'Advanced' | translate }}
     </button>
@@ -235,9 +237,10 @@
     </div>
 
     <button
+      mat-icon-button
       (click)="isCollapsePeriod = !isCollapsePeriod"
       [attr.aria-expanded]="!isCollapsePeriod"
-      class="btn btn-sm btn-outline-shadow period"
+      class="period"
       matTooltip="Ajouter une période"
     >
       <i

@@ -6,12 +6,12 @@
     Téléchargement
   </h5>
   <button
+    mat-icon-button
     type="button"
-    class="close"
     aria-label="Close"
     (click)="activeModal.close()"
   >
-    <span aria-hidden="true">&times;</span>
+    <mat-icon>close</mat-icon>
   </button>
 </div>
 <div class="modal-body">
@@ -73,7 +73,7 @@
 
   <!-- <h5 class="underlined second-color"> Télécharger les métadonnées</h5>
   <div>
-    <button [disabled]="_dataService.isDownloading" class="btn btn-success" (click)="downloadStatusOrMetadata('synthese/export_metadata', 'synthese_metadata')">
+    <button mat-raised-button [disabled]="_dataService.isDownloading" class="button-success" (click)="downloadStatusOrMetadata('synthese/export_metadata', 'synthese_metadata')">
        Métadonnées <i class="fa fa-list-alt" aria-hidden="true"></i>
 
     </button>

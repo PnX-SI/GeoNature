@@ -36,7 +36,7 @@
             <button
               id="renameMapping"
               *ngIf="cruvedStore?.cruved?.IMPORT.module_objects.MAPPING.cruved.U != '0'"
-              class="btn-sm col-4"
+              class="col-4"
               mat-raised-button
               color="primary"
               (click)="showRenameMappingForm()"
@@ -48,7 +48,7 @@
             <button
               id="deleteMapping"
               *ngIf="cruvedStore?.cruved?.IMPORT.module_objects.MAPPING.cruved.D != '0'"
-              class="btn-sm col-4"
+              class="col-4"
               mat-raised-button
               color="warn"
               (click)="openDeleteModal()"
@@ -263,7 +263,7 @@
       <!-- endfor -->
       <div class="d-flex flex-row justify-content-between">
         <button
-          class="btn btn-secondary box-shadow d-flex justify-content-center align-content-between"
+          class="box-shadow d-flex justify-content-center align-content-between"
           (click)="onPreviousStep()"
           mat-raised-button
           color="primary"
@@ -273,7 +273,7 @@
           {{ 'Previous' | translate }}
         </button>
         <button
-          class="btn btn-success box-shadow d-flex justify-content-center align-content-between"
+          class="box-shadow d-flex justify-content-center align-content-between"
           [disabled]="!isNextStepAvailable()"
           (click)="checkBeforeNextStep()"
           mat-raised-button
@@ -315,13 +315,13 @@
       Enregistrement du modèle
     </h4>
     <button
+      mat-icon-button
       type="button"
-      class="close"
       aria-label="Close"
       (click)="modal.dismiss('Cross click')"
       data-qa="import-contentmapping-saving-modal-close"
     >
-      <span aria-hidden="true">&times;</span>
+      <mat-icon>close</mat-icon>
     </button>
   </div>
   <div class="modal-body">
@@ -415,12 +415,12 @@
       {{ 'Import.ContentMapping.Messages.ControlInProgress' | translate }}
     </h4>
     <button
+      mat-icon-button
       type="button"
-      class="close"
       aria-label="Close"
       (click)="modal.dismiss('Cross click')"
     >
-      <span aria-hidden="true">&times;</span>
+      <mat-icon>close</mat-icon>
     </button>
   </div>
   <div class="modal-body">
@@ -428,8 +428,9 @@
   </div>
   <div class="modal-footer">
     <button
+      mat-raised-button
+      color="accent"
       type="button"
-      class="btn btn-warning"
       (click)="onRedirect(); modal.close()"
     >
       OK

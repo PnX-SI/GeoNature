@@ -57,7 +57,7 @@
 
 <div class="d-flex flex-row justify-content-between">
   <button
-    class="btn btn-secondary box-shadow d-flex justify-content-center align-content-between"
+    class="box-shadow d-flex justify-content-center align-content-between"
     (click)="onPreviousStep()"
     mat-raised-button
     color="primary"
@@ -67,7 +67,7 @@
     {{ 'Previous' | translate }}
   </button>
   <button
-    class="btn btn-success box-shadow d-flex justify-content-center align-content-between"
+    class="box-shadow d-flex justify-content-center align-content-between"
     [disabled]="!isNextStepAvailable()"
     (click)="onNextStep()"
     mat-raised-button

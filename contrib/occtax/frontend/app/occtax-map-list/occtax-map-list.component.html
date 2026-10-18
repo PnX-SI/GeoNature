@@ -15,7 +15,7 @@
           {{ 'Occtax.Releve.Actions.Add' | translate }}
           <mat-icon>add_circle_outline</mat-icon>
         </a>
-        <!-- <a [routerLink]="['form']" class="btn btn-success btn-action hard-shadow uppercase">
+        <!-- <a mat-raised-button [routerLink]="['form']" class="btn-action hard-shadow uppercase button-success">
           {{ 'Occtax.Releve.Actions.Add' | translate }} <i class="fa fa-plus-circle" aria-hidden="true"> </i>
         </a> -->
       </ng-container>
@@ -178,7 +178,8 @@
               pnxDataCell
             >
               <button
-                class="btn btn-row"
+                mat-icon-button
+                class="btn-row"
                 [routerLink]="['form/releve', row.id_releve_occtax]"
                 [disabled]="!isActionAllowed(row, 'U')"
                 [matTooltip]="getTooltip(row, 'U')"
@@ -198,7 +199,8 @@
               pnxDataCell
             >
               <button
-                class="btn btn-row"
+                mat-icon-button
+                class="btn-row"
                 [matTooltip]="row.id_station"
                 [routerLink]="['info', row.id_releve_occtax]"
                 [disabled]="!row.rights.R"
@@ -219,7 +221,8 @@
               pnxDataCell
             >
               <button
-                class="btn btn-row"
+                mat-icon-button
+                class="btn-row"
                 [disabled]="!isActionAllowed(row, 'D')"
                 [matTooltip]="getTooltip(row, 'D')"
                 (click)="openDeleteModal($event, modalConfirm, iElement, row)"

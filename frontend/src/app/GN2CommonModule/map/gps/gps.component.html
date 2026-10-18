@@ -6,12 +6,12 @@
   <div class="modal-header">
     <h4 class="modal-title">Coordonnées GPS</h4>
     <button
+      mat-icon-button
       type="button"
-      class="close"
       aria-label="Close"
       (click)="d()"
     >
-      <span aria-hidden="true">&times;</span>
+      <mat-icon>close</mat-icon>
     </button>
   </div>
   <div class="modal-body">
@@ -48,8 +48,9 @@
   </div>
   <div class="modal-footer">
     <button
+      mat-raised-button
       type="button"
-      class="btn btn-success"
+      class="button-success"
       (click)="d()"
       (click)="setMarkerFromGps(x, y)"
     >

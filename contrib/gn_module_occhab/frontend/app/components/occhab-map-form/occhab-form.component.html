@@ -35,28 +35,24 @@
                   <td>{{ hab?.nom_cite }}</td>
                   <td>{{ hab?.id_nomenclature_abundance?.label_default }}</td>
                   <td>
-                    <span
-                      matTooltip="Editer cet habitat"
+                    <button
+                      mat-icon-button
+                      color="primary"
                       type="button"
-                      class="btn btn-primary btn-sm"
+                      matTooltip="Editer cet habitat"
                       (click)="editHab(i)"
                     >
-                      <i
-                        class="fa fa-pencil-square-o"
-                        aria-hidden="true"
-                      ></i>
-                    </span>
-                    <span
-                      matTooltip="Supprimer cet habitat de la station"
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button
+                      mat-icon-button
+                      color="warn"
                       type="button"
-                      class="btn btn-danger btn-sm"
+                      matTooltip="Supprimer cet habitat de la station"
                       (click)="occHabForm.deleteHab(i)"
                     >
-                      <i
-                        class="fa fa-times"
-                        aria-hidden="true"
-                      ></i>
-                    </span>
+                      <mat-icon>close</mat-icon>
+                    </button>
                   </td>
                 </tr>
               </ng-container>
@@ -230,13 +226,14 @@
                 </mat-form-field>
               </div>
               <button
+                mat-icon-button
                 (click)="isCollapseDepth = !isCollapseDepth"
                 [attr.aria-expanded]="!isCollapseDepth"
                 *ngIf="
                   !showDepth &&
                   (config.OCCHAB.formConfig['depth_min'] || config.OCCHAB.formConfig['depth_max'])
                 "
-                class="btn btn-sm btn-outline-shadow depth-button"
+                class="depth-button"
               >
                 <i
                   class="fa fa-plus"
@@ -244,11 +241,12 @@
                 ></i>
               </button>
               <button
+                mat-icon-button
                 (click)="isCollapseDepth = !isCollapseDepth"
                 [attr.aria-expanded]="!isCollapseDepth"
                 *ngIf="showDepth"
                 (click)="toggleDepth()"
-                class="btn btn-sm btn-outline-shadow depth-button"
+                class="depth-button"
               >
                 <i
                   class="fa fa-minus"
@@ -422,10 +420,11 @@
             ></i>
             Habitat
             <button
+              mat-stroked-button
               *ngIf="!showHabForm"
               type="button"
               id="add-hab-btn"
-              class="btn btn-sm float-right"
+              class="float-right"
               (click)="addNewHab()"
             >
               <i
@@ -436,9 +435,11 @@
               Ajouter un habitat à la station
             </button>
             <button
+              mat-raised-button
+              color="warn"
               *ngIf="showHabForm"
               type="button"
-              class="btn btn-sm btn-danger float-right add-hab-btn"
+              class="float-right add-hab-btn"
               (click)="cancelHab()"
             >
               <i
@@ -501,9 +502,9 @@
                   id="addon"
                 >
                   <button
+                    mat-icon-button
                     (click)="isCollaspeTypo = !isCollaspeTypo"
                     [attr.aria-expanded]="!isCollaspeTypo"
-                    class="btn btn-sm btn-outline-shadow"
                     aria-expanded="false"
                     matTooltip="Filtrer les habitat proposés à l'autocompletion  par typologie"
                   >

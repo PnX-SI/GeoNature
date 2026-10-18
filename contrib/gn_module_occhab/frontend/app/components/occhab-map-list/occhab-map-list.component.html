@@ -135,7 +135,8 @@
                 pnxDataCell
               >
                 <button
-                  class="btn btn-row"
+                  mat-icon-button
+                  class="btn-row"
                   [matTooltip]="row.id_station"
                   [routerLink]="['info', row.id_station]"
                 >
@@ -156,7 +157,8 @@
                 pnxDataCell
               >
                 <button
-                  class="btn btn-row"
+                  mat-icon-button
+                  class="btn-row"
                   [routerLink]="['edit', row.id_station]"
                   [disabled]="!isActionAllowed(row, 'U')"
                   [matTooltip]="getTooltip(row, 'U')"
@@ -179,7 +181,8 @@
                 pnxDataCell
               >
                 <button
-                  class="btn btn-row"
+                  mat-icon-button
+                  class="btn-row"
                   (click)="openDeleteModal(row, deleteModal)"
                   [disabled]="!isActionAllowed(row, 'D')"
                   [matTooltip]="getTooltip(row, 'D')"

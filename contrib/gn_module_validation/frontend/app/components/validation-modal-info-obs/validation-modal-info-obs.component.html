@@ -5,15 +5,15 @@
   </h5>
 
   <button
+    mat-icon-button
     type="button"
-    class="close"
     aria-label="Close"
     (click)="closeModal()"
     [ngStyle]="{
       outlineWidth: '0px'
     }"
   >
-    <span aria-hidden="true">&times;</span>
+    <mat-icon>close</mat-icon>
   </button>
 </div>
 <div
@@ -68,7 +68,7 @@
     <button
       id="cancelStatusBtn"
       mat-stroked-button
-      class="btn btn-sm mt-2 mr-2 link-infos"
+      class="mt-2 mr-2 link-infos"
       type="submit"
       data-dismiss="modal"
       (click)="cancel()"
@@ -83,7 +83,7 @@
       value="Enregistrer"
       type="button"
       [disabled]="!this.statusForm.valid"
-      class="btn btn-sm mt-2 mr-2 link-infos"
+      class="mt-2 mr-2 link-infos"
       data-dismiss="modal"
       #required
     >
@@ -125,15 +125,15 @@
 >
   <div id="navigButtons">
     <button
+      mat-stroked-button
       [disabled]="!isPrevButtonValid"
-      class="btn btn-sm"
       (click)="changeObsIndex(-1)"
     >
       <i class="material-icons">navigate_before</i>
     </button>
     <button
+      mat-stroked-button
       [disabled]="!isNextButtonValid"
-      class="btn btn-sm"
       (click)="changeObsIndex(1)"
     >
       <i class="material-icons">navigate_next</i>

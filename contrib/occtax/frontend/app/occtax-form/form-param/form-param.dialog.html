@@ -10,12 +10,12 @@
       Paramétrage de la valeur par défaut des champs du formulaire
     </h4>
     <button
+      mat-icon-button
       type="button"
-      class="close"
       aria-label="Close"
       (click)="modal.dismiss('Cross click')"
     >
-      <span aria-hidden="true">&times;</span>
+      <mat-icon>close</mat-icon>
     </button>
   </div>
   <div class="modal-body">
@@ -96,7 +96,8 @@
       >
         <div style="display: inline-block; margin-top: 10px">
           <button
-            class="btn btn-primary"
+            mat-raised-button
+            color="primary"
             (click)="geometryFormMapper()"
           >
             Copier la localisation du relevé en cours
@@ -677,8 +678,8 @@
 
   <div class="modal-footer">
     <button
+      mat-stroked-button
       type="button"
-      class="btn btn-outline-dark"
       (click)="modal.close()"
     >
       Fermer

@@ -4,12 +4,13 @@
 >
   <h4 class="modal-title pull-left">{{ modalData.title }}</h4>
   <button
+    mat-icon-button
     type="button"
-    class="close pull-right"
+    class="pull-right"
     aria-label="Close"
     (click)="c()"
   >
-    <span aria-hidden="true">&times;</span>
+    <mat-icon>close</mat-icon>
   </button>
 </div>
 <div class="modal-body">
