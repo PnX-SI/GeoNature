@@ -1,5 +1,6 @@
 import {
   Component,
+  Inject,
   OnInit,
   OnChanges,
   Input,
@@ -13,6 +14,7 @@ import { DynamicFormService } from '../dynamic-form-generator/dynamic-form.servi
 import { distinctUntilChanged } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { ConfigService } from '@geonature/services/config.service';
+import { FormDef, WIDGET_REGISTRY, WidgetEntry, WidgetRegistry } from './widget-registry';
 
 @Component({
   selector: 'pnx-dynamic-form',
@@ -20,7 +22,7 @@ import { ConfigService } from '@geonature/services/config.service';
   styleUrls: ['./dynamic-form.component.scss'],
 })
 export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() formDef: any;
+  @Input() formDef: FormDef;
   @Input() form: UntypedFormGroup;
 
   @Input() update;
@@ -30,12 +32,15 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
   public rand = Math.ceil(Math.random() * 1e10);
 
   public formDefComp: any = {};
+  /** Registry entry rendering the widget of the field, ``undefined`` for native widgets */
+  public widgetEntry?: WidgetEntry;
   public isValInSelectList: boolean = true;
   private _sub: Subscription;
 
   constructor(
     private _dynformService: DynamicFormService,
-    public config: ConfigService
+    public config: ConfigService,
+    @Inject(WIDGET_REGISTRY) private _widgets: WidgetRegistry
   ) {}
 
   ngOnInit() {
@@ -66,6 +71,8 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
         this.form.value
       );
     }
+
+    this.widgetEntry = this._widgets[this.formDefComp.type_widget];
 
     // traitement de values pour le type radio, select et multiselect
     // si on a une liste de valeur

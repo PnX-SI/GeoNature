@@ -50,6 +50,7 @@ import { ItemsSelectComponent } from './form/items-select/items-select.component
 import { AreasSelectComponent } from './form/areas/areas-select.component';
 import { TaxaSelectComponent } from './form/taxa/taxa-select.component';
 import { DatalistSelectComponent } from './form/datalist/datalist-select.component';
+import { FormWidgetDirective } from './form/dynamic-form/form-widget.directive';
 import { TaxonomySelectComponent } from './form/taxonomy/taxonomy-select.component';
 import { AutoCompleteSelectComponent } from './form/autocomplete/autocomplete-select.component';
 import { DateComponent } from './form/date/date.component';
@@ -189,6 +190,7 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     AreasSelectComponent,
     TaxaSelectComponent,
     DatalistSelectComponent,
+    FormWidgetDirective,
     TaxonomySelectComponent,
     AutoCompleteSelectComponent,
     DateComponent,
@@ -282,6 +284,7 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     AreasSelectComponent,
     TaxaSelectComponent,
     DatalistSelectComponent,
+    FormWidgetDirective,
     TaxonomySelectComponent,
     AutoCompleteSelectComponent,
     DateComponent,

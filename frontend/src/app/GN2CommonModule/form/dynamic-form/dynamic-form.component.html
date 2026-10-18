@@ -279,141 +279,17 @@
       [innerHTML]="formDefComp['html'] | safeHTML"
     ></div>
 
-    <div>
-      <pnx-medias
-        *ngSwitchCase="'medias'"
-        [schemaDotTable]="formDefComp['schema_dot_table']"
-        [parentFormControl]="form.get(formDefComp['attribut_name'])"
-        [sizeMax]="config.MEDIAS.MEDIAS_SIZE_MAX"
-        [default]="formDefComp['default'] || {}"
-        [details]="formDefComp['details']"
-        [hideDetailsFields]="formDefComp['hide_details_fields']"
-      ></pnx-medias>
-    </div>
-
-    <pnx-nomenclature
-      *ngSwitchCase="'nomenclature'"
-      [label]="formDefComp['attribut_label']"
-      [parentFormControl]="form.get(formDefComp['attribut_name'])"
-      [codeNomenclatureType]="formDefComp['code_nomenclature_type']"
-      [multiSelect]="formDefComp['multi_select']"
-      [keyValue]="formDefComp['key_value']"
-      [cdNomenclatures]="formDefComp['cd_nomenclatures']"
-      [regne]="formDefComp['regne']"
-      [group2Inpn]="formDefComp['group2Inpn']"
-      [bindAllItem]="formDefComp['bind_all_item']"
-      [attr.data-qa]="'field-nomenclature' + '-' + formDefComp['attribut_name']"
-    ></pnx-nomenclature>
-
-    <pnx-taxonomy
-      *ngSwitchCase="'taxonomy'"
-      [label]="formDefComp['attribut_label']"
-      [parentFormControl]="form.get(formDefComp['attribut_name'])"
-      [idList]="formDefComp['id_list']"
-      [charNumber]="3"
-      [listLength]="20"
-      [attr.data-qa]="'field-taxonomy' + '-' + formDefComp['attribut_name']"
-    ></pnx-taxonomy>
-    <!-- FIX ME -> bindValue def -->
-    <pnx-datasets
-      *ngSwitchCase="'dataset'"
-      [label]="formDef.attribut_label"
-      [parentFormControl]="form.get(formDef.attribut_name)"
-      [multiSelect]="formDef.multi_select"
-      [moduleCode]="formDef.module_code"
-      [creatableInModule]="formDef.creatable_in_module"
-      [attr.data-qa]="'field-dataset' + '-' + formDefComp['attribut_name']"
-      [bindValue]="formDef.bind_value ?? 'id_dataset'"
-    ></pnx-datasets>
-
-    <pnx-observers
-      *ngSwitchCase="'observers'"
-      [label]="formDefComp['attribut_label']"
-      [parentFormControl]="form.get(formDefComp['attribut_name'])"
-      [idMenu]="formDefComp['id_menu']"
-      [idList]="formDefComp['id_list']"
-      [codeList]="formDefComp['code_list']"
-      [multiSelect]="formDefComp['multi_select']"
-      [attr.data-qa]="'field-observers' + '-' + formDefComp['attribut_name']"
-    ></pnx-observers>
-
-    <pnx-observers-text
-      *ngSwitchCase="'observers-text'"
-      [label]="formDefComp['attribut_label']"
-      [parentFormControl]="form.get(formDefComp['attribut_name'])"
-      [attr.data-qa]="'field-observers-txt' + '-' + formDefComp['attribut_name']"
-    ></pnx-observers-text>
-
-    <pnx-date
-      *ngSwitchCase="'date'"
-      [label]="formDefComp['attribut_label']"
-      [parentFormControl]="form.get(formDefComp['attribut_name'])"
-      [attr.data-qa]="'field-date' + '-' + formDefComp['attribut_name']"
-    ></pnx-date>
-
-    <pnx-areas
-      *ngSwitchCase="'areas'"
-      [label]="formDefComp.attribut_label"
-      [parentFormControl]="form.get(formDefComp.attribut_name)"
-      [valueFieldName]="formDefComp.value_field_name"
-      [typeCodes]="formDefComp.type_codes"
-      [multiSelect]="formDefComp.multi_select"
-      [attr.data-qa]="'field-areas' + '-' + formDefComp['attribut_name']"
-    ></pnx-areas>
-
-    <pnx-municipalities
-      *ngSwitchCase="'municipalities'"
-      [label]="formDefComp['attribut_label']"
-      [parentFormControl]="form.get(formDefComp['attribut_name'])"
-      [valueFieldName]="formDefComp['value_field_name']"
-      [multiSelect]="formDefComp['multi_select']"
-      [attr.data-qa]="'field-municipalities' + '-' + formDefComp['attribut_name']"
-    ></pnx-municipalities>
-
-    <pnx-multiselect
-      *ngSwitchCase="'multiselect'"
-      [values]="formDefComp['values']"
-      [parentFormControl]="form.get(formDefComp['attribut_name'])"
-      keyLabel="label"
-      keyValue="value"
-      [label]="formDefComp['attribut_label']"
-      [searchBar]="false"
-      [disabled]="form.get(formDefComp['attribut_name'])?.disabled"
-      [attr.data-qa]="'field-multiselect' + '-' + formDefComp['attribut_name']"
-    ></pnx-multiselect>
-    <pnx-datalist
-      *ngSwitchCase="'datalist'"
-      [designStyle]="formDefComp['designStyle']"
-      [parentFormControl]="form.get(formDefComp['attribut_name'])"
-      [application]="formDefComp['application']"
-      [values]="formDefComp['values']"
-      [api]="formDefComp['api']"
-      [keyValue]="formDefComp['keyValue'] || 'value'"
-      [keyLabel]="formDefComp['keyLabel'] || 'label'"
-      [keyTitle]="formDefComp['keyTitle']"
-      [multiple]="formDefComp['multiple']"
-      [dataPath]="formDefComp['data_path']"
-      [label]="formDefComp['attribut_label']"
-      [required]="formDefComp['required']"
-      [params]="formDefComp['params']"
-      [data]="formDefComp['data']"
-      [definition]="formDefComp['definition']"
-      [filters]="formDefComp['filters']"
-      [default]="formDefComp['default']"
-      [nullDefault]="formDefComp['nullDefault']"
-      [orderBy]="formDefComp['orderBy']"
-      [attr.data-qa]="
-        'field-datalist' + '-' + formDefComp['attribut_label'] + '-' + formDefComp['attribut_name']
-      "
-    ></pnx-datalist>
-    <pnx-individuals
-      *ngSwitchCase="'individuals'"
-      [parentFormControl]="form.get(formDefComp['attribut_name'])"
-      [label]="formDefComp['attribut_label']"
-      [moduleCode]="formDefComp['module_code']"
-      [idList]="formDefComp['id_list']"
-      [cdNom]="formDefComp['cd_nom']"
-    ></pnx-individuals>
+    <!-- widgets of the registry (medias, nomenclature, datasets, ...) -->
+    <ng-container *ngSwitchDefault>
+      <ng-container *ngIf="widgetEntry as entry">
+        <ng-container
+          [pnxFormWidget]="entry"
+          [widgetDef]="formDefComp"
+          [widgetRawDef]="formDef"
+          [widgetForm]="form"
+        ></ng-container>
+      </ng-container>
+    </ng-container>
     <small class="form-text text-muted">{{ formDefComp['help'] }}</small>
   </div>
 </div>
