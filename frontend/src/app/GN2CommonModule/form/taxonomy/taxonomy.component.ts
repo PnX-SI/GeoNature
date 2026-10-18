@@ -5,14 +5,14 @@ import {
   OnChanges,
   OnInit,
   Output,
-  ViewEncapsulation,
+  ViewChild,
 } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
-import { Observable, of } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
 import { DataFormService } from '../data-form.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { TaxonomySelectComponent, TaxonSearchFilters } from './taxonomy-select.component';
+import { taxonSearchEndPoint } from './taxonomy.utils';
 
 export interface TaxonParent {
   cd_ref: number;
@@ -49,7 +49,7 @@ export interface Taxon {
 }
 
 /**
- * Ce composant permet de créer un "input" de type "typeahead" pour rechercher des taxons à partir d'une liste définit dans schéma taxonomie. Table ``taxonomie.bib_listes`` et ``taxonomie.cor_nom_listes``.
+ * Ce composant (connecté à l'API TaxHub, la partie affichage est dans ``pnx-taxonomy-select``) permet de créer un "input" de type "typeahead" pour rechercher des taxons à partir d'une liste définit dans schéma taxonomie. Table ``taxonomie.bib_listes`` et ``taxonomie.cor_nom_listes``.
  *
  *  @example
  * <pnx-taxonomy #taxon
@@ -66,8 +66,6 @@ export interface Taxon {
 @Component({
   selector: 'pnx-taxonomy',
   templateUrl: './taxonomy.component.html',
-  styleUrls: ['./taxonomy.component.scss'],
-  encapsulation: ViewEncapsulation.None,
 })
 export class TaxonomyComponent implements OnInit, OnChanges {
   /**
@@ -87,17 +85,10 @@ export class TaxonomyComponent implements OnInit, OnChanges {
   @Input() displayedLabel = 'nom_valide';
   /** Afficher ou non les filtres par regne et groupe INPN qui controle l'autocomplétion */
   @Input() displayAdvancedFilters = false;
-  searchString: any;
-  filteredTaxons: any;
-  regnes = new Array();
-  regneControl = new UntypedFormControl(null);
-  groupControl = new UntypedFormControl(null);
   regnesAndGroup: any;
-  noResult: boolean;
-  isLoading = false;
   @Output() onChange = new EventEmitter<NgbTypeaheadSelectItemEvent>(); // renvoie l'evenement, le taxon est récupérable grâce à e.item
   @Output() onDelete = new EventEmitter<Taxon>();
-  public isCollapseTaxonomy = true;
+  @ViewChild(TaxonomySelectComponent) private _select?: TaxonomySelectComponent;
 
   constructor(
     private _dfService: DataFormService,
@@ -108,28 +99,12 @@ export class TaxonomyComponent implements OnInit, OnChanges {
     if (!this.apiEndPoint) {
       this.setApiEndPoint(this.idList);
     }
-    // Use "!= null" instead of "!== null" to also match undefined values.
-    this.parentFormControl.valueChanges
-      .pipe(filter((value) => value != null && value.length === 0))
-      .subscribe((value) => {
-        this.onDelete.emit();
-      });
     if (this.displayAdvancedFilters) {
       // get regne and group2
       this._dfService.getRegneAndGroup2Inpn().subscribe((data) => {
         this.regnesAndGroup = data;
-        for (const regne in data) {
-          this.regnes.push(regne);
-        }
       });
     }
-
-    // put group to null if regne = null
-    this.regneControl.valueChanges.subscribe((value) => {
-      if (value === '') {
-        this.groupControl.patchValue(null);
-      }
-    });
   }
 
   ngOnChanges(changes) {
@@ -139,54 +114,23 @@ export class TaxonomyComponent implements OnInit, OnChanges {
   }
 
   setApiEndPoint(idList) {
-    if (idList) {
-      this.apiEndPoint = `${this._dfService.getTaxhubAPI()}/taxref/allnamebylist/${idList}`;
-    } else {
-      this.apiEndPoint = `${this._dfService.getTaxhubAPI()}/taxref/allnamebylist`;
-    }
+    this.apiEndPoint = taxonSearchEndPoint(this._dfService.getTaxhubAPI(), idList);
   }
 
-  taxonSelected(e: NgbTypeaheadSelectItemEvent) {
-    this.onChange.emit(e);
-  }
+  /** Search the taxa matching a term in the TaxHub API */
+  searchFn = (term: string, filters: TaxonSearchFilters) =>
+    this._dfService.autocompleteTaxon(this.apiEndPoint, term, {
+      regne: filters.regne,
+      group2_inpn: filters.group2_inpn,
+      limit: this.listLength.toString(),
+    });
 
-  formatter = (taxon: any) => {
-    //Remove HTML tags
-    return taxon?.[this.displayedLabel]?.replace(/<[^>]*>/g, '') ?? '';
-  };
-
-  searchTaxon = (text$: Observable<string>) =>
-    text$.pipe(
-      distinctUntilChanged(),
-      debounceTime(400),
-      tap(() => (this.isLoading = true)),
-      switchMap((search_name_) => {
-        const search_name = search_name_.toString();
-        if (search_name.length >= this.charNumber) {
-          return this._dfService
-            .autocompleteTaxon(this.apiEndPoint, search_name, {
-              regne: this.regneControl.value,
-              group2_inpn: this.groupControl.value,
-              limit: this.listLength.toString(),
-            })
-            .catch(() => {
-              return of([]);
-            });
-        } else {
-          this.isLoading = false;
-          return [[]];
-        }
-      }),
-      map((response) => {
-        this.noResult = response.length === 0;
-        this.isLoading = false;
-        return response;
-      })
-    );
-
+  /** Reset the search input and the regne and group filters */
   refreshAllInput() {
-    this.parentFormControl.reset();
-    this.regneControl.reset();
-    this.groupControl.reset();
+    if (this._select) {
+      this._select.refreshAllInput();
+    } else {
+      this.parentFormControl.reset();
+    }
   }
 }

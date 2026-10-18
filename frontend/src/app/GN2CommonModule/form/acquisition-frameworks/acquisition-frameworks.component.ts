@@ -1,7 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { DataFormService } from '@geonature_common/form/data-form.service';
+import { AcquisitionFramework } from '../../interfaces';
+import { AcquisitionFrameworksSource } from './acquisition-frameworks.source';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 
 /**
@@ -19,10 +20,10 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
   templateUrl: './acquisition-frameworks.component.html',
 })
 export class AcquisitionFrameworksComponent extends GenericFormComponent implements OnInit {
-  @Input() acquisitionFrameworks: Observable<Array<any>>;
+  @Input() acquisitionFrameworks: Observable<Array<AcquisitionFramework>>;
   protected isLoading: Boolean = true;
 
-  constructor(private _dfs: DataFormService) {
+  constructor(private _source: AcquisitionFrameworksSource) {
     super();
   }
 
@@ -32,13 +33,7 @@ export class AcquisitionFrameworksComponent extends GenericFormComponent impleme
   }
 
   getAcquisitionFrameworks() {
-    this.acquisitionFrameworks = this._dfs.getAcquisitionFrameworksList({}, {}, 1, -1).pipe(
-      map((data) => {
-        const c = new Intl.Collator();
-        return data.items.sort((a, b) =>
-          c.compare(a.acquisition_framework_name, b.acquisition_framework_name)
-        );
-      }),
+    this.acquisitionFrameworks = this._source.load().pipe(
       map((sortedData) => {
         this.isLoading = false;
         return sortedData;

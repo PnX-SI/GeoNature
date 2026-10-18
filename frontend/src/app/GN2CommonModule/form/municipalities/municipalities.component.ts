@@ -1,15 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { DataFormService } from '../data-form.service';
+import { Component, Input } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
-import { CommonService } from '@geonature_common/service/common.service';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'pnx-municipalities',
   templateUrl: './municipalities.component.html',
   styleUrls: ['./municipalities.component.scss'],
 })
-export class MunicipalitiesComponent implements OnInit {
+export class MunicipalitiesComponent {
   @Input() parentFormControl: UntypedFormControl;
   @Input() label: string;
   /**
@@ -27,10 +24,4 @@ export class MunicipalitiesComponent implements OnInit {
   /**
    * @deprecated Do not use this input
    */ @Input() debounceTime: number;
-  constructor(
-    private _dfs: DataFormService,
-    private _commonService: CommonService
-  ) {}
-
-  ngOnInit() {}
 }

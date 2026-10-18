@@ -1,0 +1,42 @@
+<small>{{ label }}</small>
+<ng-select
+  [ngClass]="class"
+  [items]="items"
+  [bindLabel]="bindLabel"
+  [bindValue]="bindValue"
+  [compareWith]="compareWith"
+  [placeholder]="placeholder ?? label"
+  [multiple]="multiSelect"
+  [clearable]="clearable"
+  [loading]="loading"
+  [virtualScroll]="true"
+  [formControl]="parentFormControl"
+  [appendTo]="appendTo"
+  [clearAllText]="clearAllText"
+  [attr.data-qa]="dataQa"
+  [attr.qa-test]="qaTest"
+>
+  <ng-template
+    ng-option-tmp
+    let-item="item"
+    let-index="index"
+    let-search="searchTerm"
+  >
+    <ng-container
+      *ngTemplateOutlet="optionTemplate || defaultOption; context: { $implicit: item }"
+    ></ng-container>
+  </ng-template>
+</ng-select>
+
+<ng-template
+  #defaultOption
+  let-item
+>
+  <div
+    matTooltip="{{ item[bindLabel] }}"
+    matTooltipPosition="after"
+    [attr.data-qa]="item[bindLabel]"
+  >
+    <span class="pre-wrap">{{ item[bindLabel] }}</span>
+  </div>
+</ng-template>

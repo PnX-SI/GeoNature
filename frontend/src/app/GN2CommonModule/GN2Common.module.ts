@@ -46,6 +46,12 @@ import { BadgeComponent } from '@geonature_common/others/badge/badge.component';
 import { BreadcrumbsComponent } from '@geonature_common/others/breadcrumbs/breadcrumbs.component';
 import { DatalistComponent } from '@geonature_common/form/datalist/datalist.component';
 import { DatasetsComponent } from './form/datasets/datasets.component';
+import { ItemsSelectComponent } from './form/items-select/items-select.component';
+import { AreasSelectComponent } from './form/areas/areas-select.component';
+import { TaxaSelectComponent } from './form/taxa/taxa-select.component';
+import { DatalistSelectComponent } from './form/datalist/datalist-select.component';
+import { TaxonomySelectComponent } from './form/taxonomy/taxonomy-select.component';
+import { AutoCompleteSelectComponent } from './form/autocomplete/autocomplete-select.component';
 import { DateComponent } from './form/date/date.component';
 import { DumbSelectComponent } from '@geonature_common/form/dumb-select/dumb-select.component';
 import { DynamicFormComponent } from './form/dynamic-form/dynamic-form.component';
@@ -179,6 +185,12 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     ConfirmationDialog,
     DatalistComponent,
     DatasetsComponent,
+    ItemsSelectComponent,
+    AreasSelectComponent,
+    TaxaSelectComponent,
+    DatalistSelectComponent,
+    TaxonomySelectComponent,
+    AutoCompleteSelectComponent,
     DateComponent,
     DisableControlDirective,
     DisplayMouseOverDirective,
@@ -266,6 +278,12 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     ConfirmationDialog,
     DatalistComponent,
     DatasetsComponent,
+    ItemsSelectComponent,
+    AreasSelectComponent,
+    TaxaSelectComponent,
+    DatalistSelectComponent,
+    TaxonomySelectComponent,
+    AutoCompleteSelectComponent,
     DateComponent,
     DisableControlDirective,
     DisplayMouseOverDirective,

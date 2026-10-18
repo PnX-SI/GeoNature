@@ -7,14 +7,14 @@ import {
   IterableDiffers,
   IterableDiffer,
 } from '@angular/core';
-import { DataFormService } from '../data-form.service';
+import { Dataset } from '../../interfaces';
+import { DatasetsSource } from './datasets.source';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
-import { CommonService } from '../../service/common.service';
 import { ConfigService } from '@geonature/services/config.service';
-import { AbstractControl, Validators } from '@angular/forms';
+import { buildDatasetsParams } from './datasets.utils';
 
 /**
- *  Ce composant permet de créer un "input" de type "select" ou "multiselect" affichant l'ensemble des jeux de données sur lesquels l'utilisateur connecté a des droits (table ``gn_meta.t_datasets`` et ``gn_meta.cor_dataset_actor``)
+ *  Ce composant (connecté à l'API, la partie affichage est dans ``pnx-items-select``) permet de créer un "input" de type "select" ou "multiselect" affichant l'ensemble des jeux de données sur lesquels l'utilisateur connecté a des droits (table ``gn_meta.t_datasets`` et ``gn_meta.cor_dataset_actor``)
  *
  * @example
  * <pnx-datasets
@@ -30,7 +30,7 @@ import { AbstractControl, Validators } from '@angular/forms';
 })
 export class DatasetsComponent extends GenericFormComponent implements OnInit, OnChanges, DoCheck {
   public iterableDiffer: IterableDiffer<any>;
-  datasets: Array<Object>;
+  datasets: Array<Dataset>;
   /**
    * Permet de filtrer les JDD en fonction d'un tableau d'ID cadre d'acqusition. A connecter avec le formControl du composant ``pnx-acquisition-framework``.
    * Utiliser cet Input lorsque le composant ``pnx-acquisition-framework`` est en mode multiselect.
@@ -59,8 +59,7 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
   @Input() bindValue: string = 'id_dataset';
 
   constructor(
-    private _dfs: DataFormService,
-    private _commonService: CommonService,
+    private _source: DatasetsSource,
     private _iterableDiffers: IterableDiffers,
     public config: ConfigService
   ) {
@@ -75,30 +74,9 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
   }
 
   getDatasets(params?) {
-    const filter_param = params || {};
-    if (this.displayOnlyActive) {
-      filter_param['active'] = true;
-    }
-    if (this.moduleCode) {
-      filter_param['module_code'] = this.moduleCode;
-    }
-    if (this.creatableInModule) {
-      filter_param['create'] = this.creatableInModule;
-    }
-    this._dfs.getDatasets((params = filter_param)).subscribe((datasets) => {
+    this._source.load(buildDatasetsParams(this, params)).subscribe((datasets) => {
       this.datasets = datasets;
       this.valueLoaded.emit({ value: datasets });
-      if (
-        datasets.length == 1 &&
-        this.parentFormControl.hasValidator(Validators.required) &&
-        [null, []].includes(this.parentFormControl.value)
-      ) {
-        let value: number[] | number = datasets[0].id_dataset;
-        if (this.multiSelect) {
-          value = [datasets[0].id_dataset];
-        }
-        this.parentFormControl.patchValue(value);
-      }
     });
   }
 

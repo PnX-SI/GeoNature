@@ -1,29 +1,26 @@
-<small>{{ label }}</small>
-<ng-select
-  [ngClass]="class"
+<pnx-items-select
   [items]="labels"
-  [multiple]="multiSelect"
+  [parentFormControl]="parentFormControl"
+  [label]="label"
+  [class]="class"
+  [multiSelect]="multiSelect"
   [bindLabel]="labelLang"
   [bindValue]="keyValue"
-  [placeholder]="label"
-  [virtualScroll]="true"
-  [formControl]="parentFormControl"
-  [attr.qa-test]="label"
+  [qaTest]="label"
   appendTo="body"
   [clearAllText]="'Actions.Clear' | translate"
+  [optionTemplate]="option"
+></pnx-items-select>
+
+<ng-template
+  #option
+  let-item
 >
-  <ng-template
-    ng-option-tmp
-    let-item="item"
-    let-index="index"
-    let-search="searchTerm"
+  <div
+    matTooltip="{{ item[definitionLang] }}"
+    matTooltipPosition="after"
+    [attr.data-qa]="item['cd_nomenclature']"
   >
-    <div
-      matTooltip="{{ item[definitionLang] }}"
-      matTooltipPosition="after"
-      [attr.data-qa]="item['cd_nomenclature']"
-    >
-      <span class="pre-wrap">{{ item[labelLang] }}</span>
-    </div>
-  </ng-template>
-</ng-select>
+    <span class="pre-wrap">{{ item[labelLang] }}</span>
+  </div>
+</ng-template>

@@ -1,0 +1,162 @@
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { UntypedFormControl } from '@angular/forms';
+
+/**
+ * Presentational select over a list of values (material or bootstrap style): it only knows the
+ * values it receives and the form control it writes to. Use ``pnx-datalist`` to have the values
+ * fetched from an API.
+ */
+@Component({
+  selector: 'pnx-datalist-select',
+  templateUrl: './datalist-select.component.html',
+})
+export class DatalistSelectComponent implements OnChanges {
+  @Input() parentFormControl: UntypedFormControl;
+  @Input() label: string;
+  @Input() designStyle: 'bootstrap' | 'material' = 'material';
+  @Input() values: Array<any>; // list of choices
+  @Input() keyLabel = 'label'; // field name for label
+  @Input() keyValue = 'value'; // field name for value
+  @Input() keyTitle; // field name for description (title in select option)
+
+  @Input() multiple: boolean;
+  @Input() required: boolean;
+  @Input() definition: boolean; // help
+
+  @Input() filters = {};
+  @Input() orderBy: 'asc' | 'desc';
+
+  @Input() default;
+  @Input() nullDefault;
+
+  search = '';
+  filteredValues;
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.values && this.values) {
+      this.initValues(this.values);
+    }
+  }
+
+  onToppingRemoved(val) {
+    const value = this.parentFormControl.value;
+    this.parentFormControl.patchValue(value.filter((v) => v !== val));
+  }
+
+  searchChanged(event) {
+    this.search = event;
+    this.filteredValues = this.getFilteredValues();
+  }
+
+  getFilteredValues() {
+    let values = this.values || [];
+    // if(this.nullDefault){
+    //   values.push()
+    // }
+    if (this.nullDefault && !this.required) {
+      let obj = {};
+      obj[this.keyValue] = null;
+      obj[this.keyLabel] = '-- Aucun --';
+      values.unshift(obj);
+    }
+    values = values
+      // filter search
+      .filter(
+        (v) =>
+          !this.search || this.displayLabel(v).toLowerCase().includes(this.search.toLowerCase())
+      )
+      // remove doublons (keyValue)
+      .filter(
+        (item, pos, self) => self.findIndex((i) => i[this.keyValue] === item[this.keyValue]) === pos
+      );
+
+    for (const key of Object.keys(this.filters || [])) {
+      const filter_ = this.filters[key];
+      if (filter_.length) {
+        values = filter_.map((f) => values.find((v) => v[key] === f)).filter((v) => !!v);
+      }
+    }
+    if (this.orderBy) {
+      values = values.sort((value1, value2) =>
+        this.orderBy === 'desc'
+          ? value2[this.keyLabel].localeCompare(value1[this.keyLabel])
+          : value1[this.keyLabel].localeCompare(value2[this.keyLabel])
+      );
+    }
+
+    return values;
+  }
+
+  selectedValues() {
+    return this.parentFormControl.value
+      ? this.multiple
+        ? this.parentFormControl.value
+        : [this.parentFormControl.value]
+      : [];
+  }
+
+  displayLabel(value) {
+    let label = '';
+    for (const key of this.keyLabel.split(',')) {
+      label = label || value[key.trim()];
+    }
+    return label;
+  }
+
+  displayLabelFromValue(value) {
+    if (!value) {
+      return '';
+    }
+    const label = '';
+    const item = (this.values || []).find((v) => v[this.keyValue] === value);
+    if (item) {
+      return this.displayLabel(item);
+    }
+    return undefined;
+  }
+
+  initValues(data) {
+    this.values = data ? data.map((v) => (typeof v !== 'object' ? { label: v, value: v } : v)) : [];
+    this.filteredValues = this.getFilteredValues();
+    // si requis
+    // et un seul choix
+    // et pas de valeur déjà choisie
+    // alors on assigne ce choix d'office
+
+    if (
+      this.required &&
+      this.filteredValues.length === 1 &&
+      !(this.parentFormControl.value && this.parentFormControl.value.length)
+    ) {
+      const val = this.nullDefault ? null : this.values[0][this.keyValue];
+      this.parentFormControl.patchValue(this.multiple && !this.nullDefault ? [val] : val);
+    }
+
+    // valeur par défaut (depuis input value)
+    if (
+      (!this.parentFormControl.value ||
+        (Array.isArray(this.parentFormControl.value) &&
+          this.parentFormControl.value.length == 0)) &&
+      this.default
+    ) {
+      const value = this.multiple ? this.default : [this.default];
+      // check if the default value is in the provided values
+      const valuesID = this.values.map((el) => el[this.keyValue]);
+      const defaultValuesID = value.map((el) => el[this.keyValue]);
+      const defaultValueIsInValues = valuesID.some((el) => defaultValuesID.includes(el));
+
+      // patch value only if default value is in values
+      if (defaultValueIsInValues) {
+        const res = value.map((val) =>
+          typeof val === 'object'
+            ? (this.filteredValues.find((v) =>
+                Object.keys(val).every((key) => v[key] === val[key])
+              ) || {})[this.keyValue]
+            : val
+        );
+        this.parentFormControl.patchValue(this.multiple ? res : res[0]);
+      }
+    }
+    this.parentFormControl.markAsTouched();
+  }
+}

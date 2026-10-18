@@ -1,0 +1,93 @@
+<small>{{ label }}</small>
+<ng-select
+  [ngClass]="class"
+  [items]="items"
+  bindLabel="area_name"
+  [bindValue]="valueFieldName"
+  [compareWith]="compareWith"
+  [hideSelected]="true"
+  [placeholder]="label"
+  [multiple]="multiSelect"
+  [clearable]="clearable"
+  [virtualScroll]="true"
+  [typeahead]="typeahead$"
+  [loading]="loading"
+  [formControl]="parentFormControl"
+  clearAllText="Supprimer toutes les zones géographiques"
+  addTagText="Ajouter une zone géographique"
+  (change)="selectionChange.emit($event)"
+>
+  <ng-template ng-typetosearch-tmp>
+    <div class="ng-option disabled Option">
+      <span class="bg-info text-light p-2 rounded Option__hint">
+        <mat-icon>help_outline</mat-icon>
+        <span>Commencer à saisir une zone</span>
+      </span>
+    </div>
+  </ng-template>
+
+  <ng-template
+    ng-notfound-tmp
+    let-searchTerm="searchTerm"
+  >
+    <div class="ng-option disabled Option">
+      <span
+        class="bg-warning p-2 rounded Option__hint"
+        matTooltip="Aucune correspondance pour «&nbsp;{{ searchTerm }}&nbsp;»"
+        matTooltipPosition="after"
+      >
+        <mat-icon>warning_amber</mat-icon>
+        <span>Aucune correspondance pour «&nbsp;{{ searchTerm }}&nbsp;»</span>
+      </span>
+    </div>
+  </ng-template>
+
+  <ng-template
+    ng-loadingtext-tmp
+    let-searchTerm="searchTerm"
+  >
+    <div
+      class="ng-option disabled Option"
+      matTooltip="Chargements des zones pour «&nbsp;{{ searchTerm }}&nbsp;»"
+      matTooltipPosition="after"
+    >
+      <span class="bg-info p-2 rounded Option__hint">
+        <mat-icon>autorenew</mat-icon>
+        <span>Chargements pour «&nbsp;{{ searchTerm }}&nbsp;»</span>
+      </span>
+    </div>
+  </ng-template>
+
+  <ng-template
+    ng-option-tmp
+    let-item="item"
+  >
+    <div
+      matTooltip="{{ item.area_name }}"
+      matTooltipPosition="after"
+    >
+      <span class="pre-wrap">{{ item.area_name }}</span>
+    </div>
+  </ng-template>
+
+  <ng-template
+    ng-label-tmp
+    let-item="item"
+    let-clear="clear"
+  >
+    <span
+      class="ng-value-label pl-2"
+      [style.background-color]="item.kolor"
+    >
+      {{ item.area_name }}
+    </span>
+    <span
+      *ngIf="item.disabled !== true"
+      class="ng-value-icon left"
+      (click)="clear(item)"
+      aria-hidden="true"
+    >
+      ×
+    </span>
+  </ng-template>
+</ng-select>

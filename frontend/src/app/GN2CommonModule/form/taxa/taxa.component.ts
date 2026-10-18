@@ -3,7 +3,8 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Observable, of, Subject, concat } from 'rxjs';
 import { distinctUntilChanged, debounceTime, switchMap, tap, catchError } from 'rxjs/operators';
 
-import { DataFormService } from '@geonature_common/form/data-form.service';
+import { HigherTaxon } from '../../interfaces';
+import { TaxaSource } from './taxa.source';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 
 /**
@@ -36,7 +37,7 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
   templateUrl: 'taxa.component.html',
 })
 export class TaxaComponent extends GenericFormComponent implements OnInit {
-  taxa: Observable<any>;
+  taxa: Observable<Array<HigherTaxon>>;
   taxaInput$ = new Subject<string>();
   loading = false;
 
@@ -72,7 +73,7 @@ export class TaxaComponent extends GenericFormComponent implements OnInit {
    * En mise à jour, ces objets doivent correspondres aux id présents dans
    * `parentFormControl`.
    */
-  @Input() defaultItems: Array<any> = [];
+  @Input() defaultItems: Array<HigherTaxon> = [];
   /**
    * Permet découter les changements sur la sélection de ng-select.
    * Retourne un tableau d'objets. Les objets correspondent aux items
@@ -81,7 +82,7 @@ export class TaxaComponent extends GenericFormComponent implements OnInit {
    */
   @Output() onSelectionChange = new EventEmitter<any>();
 
-  constructor(private dataService: DataFormService) {
+  constructor(private _source: TaxaSource) {
     super();
   }
 
@@ -102,7 +103,7 @@ export class TaxaComponent extends GenericFormComponent implements OnInit {
         tap(() => (this.loading = true)),
         switchMap((term) => {
           return term && term.length >= 2
-            ? this.dataService.getHigherTaxa(this.rank, term).pipe(
+            ? this._source.load({ rank: this.rank, term }).pipe(
                 catchError(() => of([])), // empty list on error
                 tap(() => (this.loading = false))
               )

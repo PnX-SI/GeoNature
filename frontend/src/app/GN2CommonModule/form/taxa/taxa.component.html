@@ -1,84 +1,11 @@
-<small>{{ label }}</small>
-<ng-select
-  [ngClass]="class"
+<pnx-taxa-select
   [items]="taxa | async"
-  bindLabel="displayName"
-  [bindValue]="valueFieldName"
-  [compareWith]="compareWith"
-  [hideSelected]="true"
-  [placeholder]="label"
-  [multiple]="true"
-  [clearable]="true"
-  [virtualScroll]="true"
-  [typeahead]="taxaInput$"
+  [parentFormControl]="parentFormControl"
+  [label]="label"
+  [class]="class"
   [loading]="loading"
-  [formControl]="parentFormControl"
-  clearAllText="Supprimer tous les noms"
-  addTagText="Ajouter un nom"
-  (change)="onSelectionChange.emit($event)"
->
-  <ng-template ng-typetosearch-tmp>
-    <div class="ng-option disabled">
-      <span class="bg-info text-light p-2 rounded">
-        <mat-icon inline>help_outline</mat-icon>
-        Commencer à saisir un nom ...
-      </span>
-    </div>
-  </ng-template>
-
-  <ng-template
-    ng-notfound-tmp
-    let-searchTerm="searchTerm"
-  >
-    <div class="ng-option disabled">
-      <span class="bg-warning p-2 rounded">
-        <mat-icon inline>warning_amber</mat-icon>
-        Aucune correspondance pour «&nbsp;{{ searchTerm }}&nbsp;»
-      </span>
-    </div>
-  </ng-template>
-
-  <ng-template
-    ng-loadingtext-tmp
-    let-searchTerm="searchTerm"
-  >
-    <div class="ng-option disabled">
-      <span class="bg-info p-2 rounded">
-        <mat-icon inline>autorenew</mat-icon>
-        Chargements pour «&nbsp;{{ searchTerm }}&nbsp;»
-      </span>
-    </div>
-  </ng-template>
-
-  <ng-template
-    ng-label-tmp
-    let-item="item"
-    let-clear="clear"
-  >
-    <div class="ng-value-wrapper default">
-      <span
-        class="ng-value-label"
-        [style.background-color]="item.kolor"
-        [innerHtml]="item.displayName | safeHTML"
-      ></span>
-      <span
-        *ngIf="item.disabled !== true"
-        class="ng-value-icon left"
-        (click)="clear(item)"
-        aria-hidden="true"
-      >
-        ×
-      </span>
-    </div>
-  </ng-template>
-
-  <ng-template
-    ng-option-tmp
-    let-item="item"
-  >
-    <span
-      class="pre-wrap"
-      [innerHtml]="item.displayName | safeHTML"
-    ></span>
-  </ng-template>
-</ng-select>
+  [valueFieldName]="valueFieldName"
+  [compareWith]="compareWith"
+  (search)="taxaInput$.next($event)"
+  (selectionChange)="onSelectionChange.emit($event)"
+></pnx-taxa-select>

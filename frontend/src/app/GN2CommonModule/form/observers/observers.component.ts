@@ -1,5 +1,6 @@
 import { OnInit, Component, Input, ViewEncapsulation, SimpleChanges } from '@angular/core';
-import { DataFormService } from '../data-form.service';
+import { Observer } from '../../interfaces';
+import { ObserversSource } from './observers.source';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
@@ -34,10 +35,10 @@ export class ObserversComponent extends GenericFormComponent implements OnInit {
   @Input() compareWith = (c1, c2) => {
     return c1.id_role === c2.id_role;
   };
-  @Input() observers: Observable<Array<any>>;
+  @Input() observers: Observable<Array<Observer>>;
   @Input() placeHolder: string = null;
 
-  constructor(private _dfService: DataFormService) {
+  constructor(private _source: ObserversSource) {
     super();
   }
 
@@ -54,11 +55,10 @@ export class ObserversComponent extends GenericFormComponent implements OnInit {
     }
 
     if (!this.observers) {
-      // si idMenu
-      if (this.idMenu) {
-        this.observers = this._dfService.getObservers(this.idMenu);
-      } else if (this.codeList) {
-        this.observers = this._dfService.getObserversFromCode(this.codeList).pipe(
+      this.observers = this._source.load({ idMenu: this.idMenu, codeList: this.codeList });
+      if (!this.idMenu && this.codeList) {
+        // the value of the control has to be set again once the list of the code is loaded
+        this.observers = this.observers.pipe(
           map((data) => {
             if (this.parentFormControl.value) {
               this.parentFormControl.setValue(this.parentFormControl.value);
@@ -66,8 +66,6 @@ export class ObserversComponent extends GenericFormComponent implements OnInit {
             return data;
           })
         );
-      } else {
-        this.observers = this._dfService.getObservers();
       }
     }
   }

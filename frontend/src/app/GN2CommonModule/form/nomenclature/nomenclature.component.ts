@@ -9,13 +9,15 @@ import {
   Output,
   EventEmitter,
 } from '@angular/core';
-import { DataFormService } from '../data-form.service';
+import { Nomenclature } from '../../interfaces';
+import { NomenclatureSource } from './nomenclature.source';
 import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
+import { findCdNomenclature, langKey } from './nomenclature.utils';
 
 /**
- * Ce composant permet de créer un "input" de type "select" ou "multiselect" à partir d'une liste d'items définie dans le référentiel de nomenclatures
+ * Ce composant (connecté à l'API, la partie affichage est dans ``pnx-items-select``) permet de créer un "input" de type "select" ou "multiselect" à partir d'une liste d'items définie dans le référentiel de nomenclatures
  * (thésaurus) de GeoNature (table ``ref_nomenclature.t_nomenclature``).
  *
  * En mode "multiselect" (Input ``multiSelect=true``), une barre de recherche permet de filtrée les nomenclatures sur leur label.
@@ -43,14 +45,14 @@ export class NomenclatureComponent
   extends GenericFormComponent
   implements OnInit, OnChanges, OnDestroy
 {
-  public labels: Array<any>;
+  public labels: Array<Nomenclature>;
   public labelLang: string;
   public definitionLang: string;
   public subscription: Subscription;
   public valueSubscription: Subscription;
   public currentCdNomenclature = 'null';
   public currentIdNomenclature: number;
-  public savedLabels;
+  public savedLabels: Array<Nomenclature>;
   /**
    * Mnémonique du type de nomenclature qui doit être affiché dans la liste déroulante.
    *  Table``ref_nomenclatures.bib_nomenclatures_types`` (obligatoire)
@@ -82,7 +84,7 @@ export class NomenclatureComponent
   @Output() $currentCdNomenclature = new EventEmitter<string>();
 
   constructor(
-    private _dfService: DataFormService,
+    private _source: NomenclatureSource,
     private _translate: TranslateService
   ) {
     super();
@@ -91,14 +93,14 @@ export class NomenclatureComponent
   ngOnInit() {
     super.ngOnInit();
     this.keyValue = this.bindAllItem ? null : this.keyValue || 'id_nomenclature'; // patch pour les cas ou this.keyValue == undefined
-    this.labelLang = 'label_' + this._translate.currentLang;
-    this.definitionLang = 'definition_' + this._translate.currentLang;
+    this.labelLang = langKey('label', this._translate.currentLang);
+    this.definitionLang = langKey('definition', this._translate.currentLang);
     // load the data
     this.initLabels();
     // subscrib to the language change
     this.subscription = this._translate.onLangChange.subscribe((event: LangChangeEvent) => {
-      this.labelLang = 'label_' + this._translate.currentLang;
-      this.definitionLang = 'definition_' + this._translate.currentLang;
+      this.labelLang = langKey('label', this._translate.currentLang);
+      this.definitionLang = langKey('definition', this._translate.currentLang);
     });
 
     // set cdNomenclature
@@ -110,25 +112,14 @@ export class NomenclatureComponent
   private emitCurrentCdNomenclature(id: number) {
     this.currentIdNomenclature = id;
     if (this.labels) {
-      const label = this.labels.find((label) => label.id_nomenclature === id);
-      if (label) {
-        this.currentCdNomenclature = label.cd_nomenclature;
-      } else {
-        this.currentCdNomenclature = null;
-      }
+      this.currentCdNomenclature = findCdNomenclature(this.labels, id);
       this.$currentCdNomenclature.emit(this.currentCdNomenclature);
     }
   }
 
   getCdNomenclature() {
-    let cdNomenclature;
     if (this.labels) {
-      this.labels.forEach((label) => {
-        if (this.currentIdNomenclature === label.id_nomenclature) {
-          cdNomenclature = label.cd_nomenclature;
-        }
-      });
-      return cdNomenclature;
+      return findCdNomenclature(this.labels, this.currentIdNomenclature) ?? undefined;
     }
   }
 
@@ -152,18 +143,17 @@ export class NomenclatureComponent
   }
 
   initLabels() {
-    const filters = { orderby: 'label_default', cd_nomenclature: this.cdNomenclatures };
-    this._dfService
-      .getNomenclature(
-        this.codeNomenclatureType,
-        this.regne,
-        this.group2Inpn,
-        this.group3Inpn,
-        filters
-      )
-      .subscribe((data) => {
-        this.labels = data.values;
-        this.savedLabels = data.values;
+    this._source
+      .load({
+        codeNomenclatureType: this.codeNomenclatureType,
+        regne: this.regne,
+        group2Inpn: this.group2Inpn,
+        group3Inpn: this.group3Inpn,
+        cdNomenclatures: this.cdNomenclatures,
+      })
+      .subscribe((values) => {
+        this.labels = values;
+        this.savedLabels = values;
         this.labelsLoaded.emit(this.labels);
         this.emitCurrentCdNomenclature(this.parentFormControl.value);
       });

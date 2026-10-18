@@ -1,33 +1,31 @@
-<small>{{ label }}</small>
-<ng-select
-  [ngClass]="class"
+<pnx-items-select
   [items]="observers | async"
+  [parentFormControl]="parentFormControl"
+  [label]="label"
+  [class]="class"
+  [multiSelect]="multiSelect"
+  [clearable]="clearable"
   bindLabel="nom_complet"
   [bindValue]="bindValue"
   [compareWith]="bindValue ? null : compareWith"
-  [multiple]="multiSelect"
-  [clearable]="clearable"
   [placeholder]="placeHolder || label"
-  data-qa="gn-common-form-observers-select"
-  [virtualScroll]="true"
-  [formControl]="parentFormControl"
+  dataQa="gn-common-form-observers-select"
+  [optionTemplate]="option"
+></pnx-items-select>
+
+<ng-template
+  #option
+  let-item
 >
-  <ng-template
-    ng-option-tmp
-    let-item="item"
-    let-index="index"
-    let-search="searchTerm"
+  <div
+    matTooltip="{{ item.nom_complet }}"
+    matTooltipPosition="after"
   >
-    <div
-      matTooltip="{{ item.nom_complet }}"
-      matTooltipPosition="after"
+    <span
+      class="pre-wrap"
+      [attr.data-qa]="'gn-common-form-observers-select-' + item.nom_complet"
     >
-      <span
-        class="pre-wrap"
-        [attr.data-qa]="'gn-common-form-observers-select-' + item.nom_complet"
-      >
-        {{ item.nom_complet }}
-      </span>
-    </div>
-  </ng-template>
-</ng-select>
+      {{ item.nom_complet }}
+    </span>
+  </div>
+</ng-template>

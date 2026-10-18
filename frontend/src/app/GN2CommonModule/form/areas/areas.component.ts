@@ -10,8 +10,10 @@ import {
   map,
 } from 'rxjs/operators';
 
-import { DataFormService } from '../data-form.service';
+import { Area } from '../../interfaces';
+import { AreasSource } from './areas.source';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
+import { mergeDefaultItems } from './areas.utils';
 
 /**
  * Ce composant permet de sélectionner une ou plusieurs zones géographiques.
@@ -42,7 +44,6 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
 @Component({
   selector: 'pnx-areas',
   templateUrl: 'areas.component.html',
-  styleUrls: ['areas.component.scss'],
 })
 export class AreasComponent extends GenericFormComponent implements OnInit {
   /**
@@ -84,7 +85,7 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
    * En mise à jour, ces objets doivent correspondres aux id présents dans
    * `parentFormControl`.
    */
-  @Input() defaultItems: Array<any> = [];
+  @Input() defaultItems: Array<Area> = [];
   /**
    * Permet découter les changements sur la sélection de ng-select.
    * Retourne un tableau d'objets. Les objets correspondent aux items
@@ -93,11 +94,11 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
    */
   @Output() onSelectionChange = new EventEmitter<any>();
   areas_input$ = new Subject<string>();
-  areas: Observable<any>;
+  areas: Observable<Array<Area>>;
   loading = false;
   params = {};
 
-  constructor(private dataService: DataFormService) {
+  constructor(private _source: AreasSource) {
     super();
   }
 
@@ -113,26 +114,12 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
   /**
    * Merge initial 100 areas + default values (for update)
    */
-  initialAreas(): Observable<any> {
+  initialAreas(): Observable<Array<Area>> {
     return zip(
-      this.dataService.getAreas(this.params).pipe(map((data) => this.formatAreas(data))), // Default items
+      this._source.load(this.params), // Default items
       of(this.defaultItems) // Default items in update mode
     ).pipe(
-      map((areasArrays) => {
-        // Remove dubplicates items
-        const items = areasArrays[0];
-        const defaultItems = areasArrays[1];
-        if (defaultItems && defaultItems.length > 0) {
-          const filteredItems = items.filter((area) => {
-            return !defaultItems.some(
-              (defaultArea) => defaultArea[this.valueFieldName] === area[this.valueFieldName]
-            );
-          });
-          return filteredItems.concat(defaultItems);
-        } else {
-          return items;
-        }
-      })
+      map(([items, defaultItems]) => mergeDefaultItems(items, defaultItems, this.valueFieldName))
     );
   }
 
@@ -146,8 +133,7 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
         switchMap((term) => {
           this.params['area_name'] = term;
           return term && term.length >= 2
-            ? this.dataService.getAreas(this.params).pipe(
-                map((data) => this.formatAreas(data)),
+            ? this._source.load(this.params).pipe(
                 catchError(() => of([])), // Empty list on error
                 tap(() => (this.loading = false))
               )
@@ -156,20 +142,5 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
         tap(() => (this.loading = false))
       )
     );
-  }
-
-  /**
-   * Ajouter entre parenthèse le numéro du département si le premier objet
-   * contient un champ `id_type` correspondant au type commune (=COM).
-   * @param data Liste d'objets contenant des infos sur des zones géographiques.
-   */
-  private formatAreas(data: Partial<{ id_type: number; area_code: string }>[]) {
-    if (data.length > 0 && data[0]['area_type']['type_code'] === 'COM') {
-      return data.map((element) => {
-        element['area_name'] = `${element['area_name']} (${element.area_code.substring(0, 2)}) `;
-        return element;
-      });
-    }
-    return data;
   }
 }
