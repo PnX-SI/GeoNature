@@ -39,7 +39,8 @@ describe('Testing occhab', () => {
     cy.get('[data-qa="Carto d\'habitat X"]').click();
     cy.get('#validateButton').should('be.disabled');
 
-    cy.get('[data-qa="pnx-occhab-form-geographic"] > div > select').select('1: Object');
+    cy.get('[data-qa="pnx-occhab-form-geographic"] mat-select').click();
+    cy.get('mat-option').eq(1).click();
     cy.get('#validateButton').should('be.disabled');
 
     cy.get('#add-hab-btn').click();
@@ -51,7 +52,8 @@ describe('Testing occhab', () => {
         selected_element = $el.text().trim();
         cy.get('mat-option').first().click();
 
-        cy.get('[data-qa="pnx-occhab-form-technique-collect"] > div > select').select('1: Object');
+        cy.get('[data-qa="pnx-occhab-form-technique-collect"] mat-select').click();
+        cy.get('mat-option').eq(1).click();
         cy.get('[data-qa="pnx-occhab-form-valid-button"]').click();
 
         cy.get('#validateButton').click();

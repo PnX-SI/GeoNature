@@ -63,8 +63,8 @@ describe('Tests gn_synthese', () => {
   it('Should search by observer', function () {
     //objectifs : pouvoir entrer un nom d'observateur (ici Admin);
     // cliquer sur rechercher et vérifier que les observations retournées ont bien pour observateur des personnes contenant 'Admin'
-    cy.get(':nth-child(4) > .ng-star-inserted > .input-group > .form-control').clear();
-    cy.get(':nth-child(4) > .ng-star-inserted > .input-group > .form-control').type('Admin');
+    cy.get('pnx-observers-text [data-qa="observers-text-input"]').clear();
+    cy.get('pnx-observers-text [data-qa="observers-text-input"]').type('Admin');
     cy.get('[data-qa="synthese-search-btn"]').click();
     cy.wait(500);
     // get datatable cells containing the observater info
