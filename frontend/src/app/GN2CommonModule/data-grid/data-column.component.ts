@@ -1,6 +1,6 @@
 import { Component, ContentChild, Directive, Input, OnChanges, TemplateRef } from '@angular/core';
 import { Subject } from 'rxjs';
-import { CellContext, GridColumn } from './data-grid.types';
+import { CellContext, DetailContext, GridColumn } from './data-grid.types';
 
 /** Marks the template of the cells of a ``pnx-data-column`` (``let-row="row"``, ``let-value="value"``) */
 @Directive({ selector: 'ng-template[pnxDataCell]' })
@@ -12,6 +12,15 @@ export class DataCellDirective {
 @Directive({ selector: 'ng-template[pnxDataHeader]' })
 export class DataHeaderDirective {
   constructor(public template: TemplateRef<{ $implicit: GridColumn }>) {}
+}
+
+/**
+ * Marks the template of the detail of a row, a direct child of ``pnx-data-grid``. The detail is
+ * displayed under the row when the template of a cell calls ``toggleDetail()``.
+ */
+@Directive({ selector: 'ng-template[pnxDataDetail]' })
+export class DataDetailDirective {
+  constructor(public template: TemplateRef<DetailContext>) {}
 }
 
 /**

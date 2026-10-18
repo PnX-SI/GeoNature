@@ -4,6 +4,7 @@
   &__grid {
     width: 100%;
     --ag-font-size: 14px;
+    --ag-cell-horizontal-padding: 8px;
   }
 }
 
@@ -15,4 +16,46 @@
 
 :host ::ng-deep .ag-cell-wrap-text {
   line-height: 1.4;
+}
+
+.pnx-data-grid__detail {
+  width: 100%;
+  height: 100%;
+  padding: 8px 16px 8px 48px;
+  overflow: auto;
+  line-height: 1.4;
+  background-color: #fafafa;
+}
+
+// the content of a cell is cut with an ellipsis instead of overflowing on the next column
+:host ::ng-deep .ag-cell {
+  min-width: 0;
+  overflow: hidden;
+}
+
+:host ::ng-deep .ag-cell > * {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+:host ::ng-deep pnx-grid-template-cell {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// the cells of rows of automatic height wrap their content
+:host ::ng-deep .ag-cell-wrap-text pnx-grid-template-cell {
+  white-space: normal;
+  overflow: visible;
+}
+
+.pnx-data-grid__detail,
+:host ::ng-deep .pnx-data-grid__detail {
+  font-size: 13px;
 }

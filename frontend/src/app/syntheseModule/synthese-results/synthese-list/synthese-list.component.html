@@ -1,28 +1,19 @@
 <!--Table-->
-<ngx-datatable
-  (window:resize)="onResize($event)"
+<pnx-data-grid
   #table
-  class="material striped margin-top-xs table-size expandable"
   [rows]="mapListService.tableData"
-  [columns]="defaultColumns"
-  [columnMode]="'force'"
-  [headerHeight]="50"
-  [footerHeight]="50"
+  [height]="gridHeight"
+  selectionMode="single"
   [selected]="mapListService.selectedRow"
-  [selectionType]="'single'"
-  [count]="mapListService.tableData.length"
-  [limit]="rowNumber"
   [rowClass]="getRowClass"
-  [reorderable]="true"
-  sortType="multi"
-  (sort)="onSort($event)"
-  (select)="mapListService.onRowSelect($event)"
+  (sortChange)="onSort($event)"
+  (selectionChange)="mapListService.onRowSelect({ selected: $event })"
 >
-  <ngx-datatable-column
-    [maxWidth]="5"
+  <pnx-data-column
+    [width]="56"
     [sortable]="false"
   >
-    <ng-template ngx-datatable-header-template>
+    <ng-template pnxDataHeader>
       <i
         id="dropdownMenuButton"
         class="fa fa-cog clickable"
@@ -37,7 +28,7 @@
 
     <ng-template
       let-row="row"
-      ngx-datatable-cell-template
+      pnxDataCell
     >
       <ng-container
         *ngIf="
@@ -69,15 +60,15 @@
         ></i>
       </a>
     </ng-template>
-  </ngx-datatable-column>
+  </pnx-data-column>
 
-  <ngx-datatable-column
-    [maxWidth]="5"
+  <pnx-data-column
+    [width]="56"
     [sortable]="false"
   >
     <ng-template
       let-row="row"
-      ngx-datatable-cell-template
+      pnxDataCell
     >
       <a
         *ngIf="row.url_source"
@@ -91,12 +82,12 @@
         ></i>
       </a>
     </ng-template>
-  </ngx-datatable-column>
+  </pnx-data-column>
 
   <!-- cellClass is use for test, the "data-qa" attr do not work because the html is generated -->
-  <ngx-datatable-column
+  <pnx-data-column
     *ngFor="let col of defaultColumns"
-    [maxWidth]="col.max_width"
+    [width]="col.max_width"
     [name]="col.name"
     [prop]="col.prop"
     [sortable]="true"
@@ -104,7 +95,7 @@
   >
     <ng-template
       let-row="row"
-      ngx-datatable-cell-template
+      pnxDataCell
     >
       <span
         [title]="row[col.prop]"
@@ -143,8 +134,8 @@
       </span>
       <ng-template #cellDefault>{{ row[col.prop] }}</ng-template>
     </ng-template>
-  </ngx-datatable-column>
-</ngx-datatable>
+  </pnx-data-column>
+</pnx-data-grid>
 
 <div class="actions-btns mt-3">
   <div class="col-auto">

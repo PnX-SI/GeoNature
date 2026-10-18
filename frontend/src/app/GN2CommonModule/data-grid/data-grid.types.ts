@@ -9,6 +9,16 @@ export interface CellContext {
   rowIndex: number;
   /** Same as ``rowIndex`` */
   index: number;
+  /** The detail of the row is displayed */
+  expanded: boolean;
+  /** Displays or hides the detail of the row */
+  toggleDetail: () => void;
+}
+
+/** Context of the template of the detail of a row */
+export interface DetailContext {
+  $implicit: any;
+  row: any;
 }
 
 /** Column of a ``pnx-data-grid`` */

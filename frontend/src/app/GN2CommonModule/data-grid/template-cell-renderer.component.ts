@@ -20,12 +20,16 @@ export class TemplateCellRendererComponent implements ICellRendererAngularComp {
   }
 
   refresh(params: ICellRendererParams): boolean {
+    const grid = params.context?.grid;
+    const rowIndex = grid ? grid.indexOf(params.data) : params.node?.rowIndex;
     this.context = {
       $implicit: params.data,
       row: params.data,
       value: params.value,
-      rowIndex: params.node?.rowIndex,
-      index: params.node?.rowIndex,
+      rowIndex,
+      index: rowIndex,
+      expanded: !!grid?.isExpanded(params.data),
+      toggleDetail: () => grid?.toggleDetail(params.data),
     };
     return true;
   }

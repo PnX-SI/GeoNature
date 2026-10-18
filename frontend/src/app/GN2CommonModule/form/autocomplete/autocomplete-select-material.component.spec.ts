@@ -83,7 +83,7 @@ describe('AutoCompleteSelectComponent (material design)', () => {
     expect(await optionTexts()).toEqual(['ALPHA', 'BRAVO']);
   });
 
-  it('emits the picked item as a typeahead event, then empties the input', async () => {
+  it('emits the picked item as a typeahead event and keeps it in the control', async () => {
     const picked = jest.fn();
     component.onChange.subscribe(picked);
     const auto = await autocomplete();
@@ -92,6 +92,15 @@ describe('AutoCompleteSelectComponent (material design)', () => {
     expect(picked).toHaveBeenCalledTimes(1);
     expect(picked.mock.calls[0][0].item).toEqual(results[1]);
     expect(typeof picked.mock.calls[0][0].preventDefault).toBe('function');
+    // callers (occhab, occtax) read the habitat from the control
+    expect(control.value).toEqual(results[1]);
+  });
+
+  it('empties the control when the listener prevents the default', async () => {
+    component.onChange.subscribe((event) => event.preventDefault());
+    const auto = await autocomplete();
+    await auto.enterText('alp');
+    await auto.selectOption({ text: 'Bravo' });
     expect(control.value).toBeNull();
     expect(await auto.getValue()).toBe('');
   });

@@ -85,9 +85,20 @@ export class AutoCompleteSelectComponent implements OnInit, OnDestroy {
     return this.isLoading && this.parentFormControl.value?.length >= 3;
   }
 
-  /** The item picked in the list (``material`` design), as the event of the typeahead */
+  /**
+   * The item picked in the list (``material`` design), as the event of the typeahead. As with the
+   * typeahead, the control keeps the item (the autocomplete has just written it) unless the
+   * listener prevents the default: callers read the item from the control.
+   */
   optionSelected(item: any) {
-    this.itemSelected({ item, preventDefault: () => {} } as NgbTypeaheadSelectItemEvent);
+    let prevented = false;
+    this.onChange.emit({
+      item,
+      preventDefault: () => (prevented = true),
+    } as NgbTypeaheadSelectItemEvent);
+    if (prevented) {
+      this.parentFormControl.reset();
+    }
   }
 
   itemSelected(e: NgbTypeaheadSelectItemEvent) {

@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { OcchabStoreService } from '../../services/store.service';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { OccHabDataService } from '../../services/data.service';
-import { DatatableComponent } from '@swimlane/ngx-datatable';
+import { DataGridComponent } from '@geonature_common/data-grid/data-grid.component';
 import { OccHabModalDownloadComponent } from './modal-download.component';
 import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '@geonature_common/service/common.service';
@@ -12,7 +12,7 @@ import { OccHabMapListService } from '../../services/occhab-map-list.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 import { TranslateService } from '@ngx-translate/core';
-import {ActionService} from '@geonature/services/action.service';
+import { ActionService } from '@geonature/services/action.service';
 
 @Component({
   selector: 'pnx-occhab-map-list',
@@ -21,7 +21,7 @@ import {ActionService} from '@geonature/services/action.service';
   providers: [NgbActiveModal],
 })
 export class OccHabMapListComponent implements OnInit {
-  @ViewChild('dataTable') dataTable: DatatableComponent;
+  @ViewChild('grid') grid: DataGridComponent;
   public rowNumber: number;
   public dataLoading = true;
   public deleteOne: any;
@@ -44,8 +44,7 @@ export class OccHabMapListComponent implements OnInit {
     private _moduleService: ModuleService,
     public cruvedStore: CruvedStoreService,
     private translate: TranslateService,
-    private actionService: ActionService,
-
+    private actionService: ActionService
   ) {}
 
   ngOnInit() {
@@ -72,10 +71,7 @@ export class OccHabMapListComponent implements OnInit {
 
     this.rowNumber = this.calculeteRowNumber(h);
     // observable on mapListService.currentIndexRow to find the current page
-    this.mapListService.currentIndexRow$.subscribe((indexRow) => {
-      const currentPage = Math.trunc(indexRow / this.rowNumber);
-      this.dataTable.offset = currentPage;
-    });
+    // the grid scrolls to the row selected on the map, with the selection
   }
 
   /** Calculate the number of row with the client screen height */
@@ -138,8 +134,9 @@ export class OccHabMapListComponent implements OnInit {
     ref.componentInstance.tooManyObs = tooManyObs;
   }
 
-  toggleExpandRow(row) {
-    this.dataTable.rowDetail.toggleExpandRow(row);
+  /** Height of the grid: its header and the rows that fit the screen */
+  get gridHeight(): string {
+    return `${this.rowNumber * 40 + 50}px`;
   }
 
   displayHabTooltip(row): string[] {
@@ -226,6 +223,10 @@ export class OccHabMapListComponent implements OnInit {
   }
 
   isActionAllowed(row: any, action: 'U' | 'D'): boolean {
-    return this.actionService.isActionAllowed(row.cruved, row.dataset.acquisition_framework?.opened, action);
+    return this.actionService.isActionAllowed(
+      row.cruved,
+      row.dataset.acquisition_framework?.opened,
+      action
+    );
   }
 }

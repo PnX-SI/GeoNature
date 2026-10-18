@@ -88,9 +88,11 @@ import { DataGridComponent } from './data-grid/data-grid.component';
 import {
   DataCellDirective,
   DataColumnComponent,
+  DataDetailDirective,
   DataHeaderDirective,
 } from './data-grid/data-column.component';
 import { TemplateCellRendererComponent } from './data-grid/template-cell-renderer.component';
+import { TemplateDetailRendererComponent } from './data-grid/template-detail-renderer.component';
 import { TemplateHeaderComponent } from './data-grid/template-header.component';
 import { NomenclatureComponent } from './form/nomenclature/nomenclature.component';
 import { ObserversComponent } from './form/observers/observers.component';
@@ -206,7 +208,9 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     DataColumnComponent,
     DataCellDirective,
     DataHeaderDirective,
+    DataDetailDirective,
     TemplateCellRendererComponent,
+    TemplateDetailRendererComponent,
     TemplateHeaderComponent,
     AreasSelectComponent,
     TaxaSelectComponent,
@@ -306,6 +310,7 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     DataColumnComponent,
     DataCellDirective,
     DataHeaderDirective,
+    DataDetailDirective,
     AreasSelectComponent,
     TaxaSelectComponent,
     DatalistSelectComponent,

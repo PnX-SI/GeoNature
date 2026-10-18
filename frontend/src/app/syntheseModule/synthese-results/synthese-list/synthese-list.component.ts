@@ -4,7 +4,6 @@ import {
   Input,
   ViewChild,
   HostListener,
-  AfterContentChecked,
   OnChanges,
   ChangeDetectorRef,
 } from '@angular/core';
@@ -17,9 +16,8 @@ import { CommonService } from '@geonature_common/service/common.service';
 import { HttpParams } from '@angular/common/http/';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SyntheseModalDownloadComponent } from './modal-download/modal-download.component';
-// import { DatatableComponent } from '@swimlane/ngx-datatable';
-import { DatatableComponent } from '@swimlane/ngx-datatable';
-import { ColumnMode } from '@swimlane/ngx-datatable';
+import { DataGridComponent } from '@geonature_common/data-grid/data-grid.component';
+import { GridSort } from '@geonature_common/data-grid/data-grid.types';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 import { ConfigService } from '@geonature/services/config.service';
@@ -35,7 +33,7 @@ import { getTaxonSheetRoute } from '@geonature/syntheseModule/taxon-sheet/taxon-
   templateUrl: 'synthese-list.component.html',
   styleUrls: ['synthese-list.component.scss'],
 })
-export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChecked {
+export class SyntheseListComponent implements OnInit, OnChanges {
   public SYNTHESE_CONFIG = null;
   public selectedObs: any;
   public selectedObsTaxonDetail: any;
@@ -44,14 +42,12 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
   public queyrStringDownload: HttpParams;
   public inpnMapUrl: string;
   public downloadMessage: string;
-  public ColumnMode: ColumnMode;
   public availableColumns: Array<any> = [];
   public defaultColumns: Array<any> = [];
   //input to resize datatable on searchbar toggle
   @Input() searchBarHidden: boolean;
   @Input() inputSyntheseData: GeoJSON;
-  @ViewChild('table', { static: true }) table: DatatableComponent;
-  private _latestWidth: number;
+  @ViewChild('table', { static: true }) table: DataGridComponent;
   public destinationImportCode: string;
 
   public userCruved: any;
@@ -116,27 +112,11 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
       });
       this.mapListService.tableData = [...this.mapListService.tableData];
       this.mapListService.selectedRow = observations;
-      const page = Math.trunc(
-        this.mapListService.tableData.findIndex((e) => {
-          return e.id_synthese === ids[0];
-        }) / this.rowNumber
-      );
-      this.table.offset = page;
     });
   }
 
-  ngAfterContentChecked() {
-    if (this.table && this.table.element.clientWidth !== this._latestWidth) {
-      this._latestWidth = this.table.element.clientWidth;
-      if (this.searchBarHidden) {
-        this.table.recalculate();
-        this.ref.markForCheck();
-      }
-    }
-  }
-
   private resetSorting() {
-    this.table.sorts = [];
+    this.table.clearSort();
   }
 
   private setHeightListPanel() {
@@ -160,11 +140,11 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
 
   /**
    * Restore previous selected rows when sort state return to 'undefined'.
-   * With ngx-datable sortType must be 'multi' to use 3 states : asc, desc and undefined !
-   * @param event sort event infos.
+   * The sort of a column goes through 3 states : asc, desc and none.
+   * @param sorts the sorts of the columns.
    */
-  onSort(event) {
-    if (event.newValue === undefined) {
+  onSort(sorts: GridSort[]) {
+    if (sorts.length === 0) {
       let selectedObsIds = this.mapListService.selectedRow.map((obs) => obs.id_synthese);
       this.mapListService.mapSelected.next(selectedObsIds);
     }
@@ -200,6 +180,11 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     return 'row-sm clickable';
   }
 
+  /** Height of the grid: its header and the rows that fit the screen */
+  get gridHeight(): string {
+    return `${this.rowNumber * 37 + 50}px`;
+  }
+
   getDate(date) {
     function pad(s) {
       return s < 10 ? '0' + s : s;
@@ -215,8 +200,8 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
 
   ngOnChanges(changes) {
     if (changes.inputSyntheseData && changes.inputSyntheseData.currentValue) {
-      // reset page 0 when new data appear
-      this.table.offset = 0;
+      // go back to the first row when new data appear
+      this.table.scrollToTop();
     }
   }
 

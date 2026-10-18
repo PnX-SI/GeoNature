@@ -5,7 +5,8 @@
   <ag-grid-angular
     class="ag-theme-material pnx-data-grid__grid"
     [style.height]="gridHeight"
-    [rowData]="rows"
+    [rowData]="displayedRows"
+    [context]="gridContext"
     [getRowId]="rowId ? getRowId : undefined"
     [columnDefs]="colDefs"
     [gridOptions]="gridOptions"

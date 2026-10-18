@@ -55,95 +55,84 @@
     <div class="container">
       <div class="row">
         <div class="col">
-          <ngx-datatable
-            (window:resize)="onResize($event)"
-            #dataTable
-            class="material striped margin-top-xs table-size expandable"
+          <pnx-data-grid
+            #grid
+            dataQa="pnx-occhab-map-list-datatable"
             [rows]="mapListService.tableData"
-            [rowHeight]="40"
+            [height]="gridHeight"
+            [detailHeight]="190"
+            selectionMode="single"
             [selected]="mapListService.selectedRow"
-            [selectionType]="'single'"
             [rowClass]="mapListService.getRowClass"
-            [count]="mapListService.tableData.length"
-            [limit]="rowNumber"
-            [footerHeight]="50"
-            [headerHeight]="50"
-            (select)="mapListService.onRowSelect($event)"
-            data-qa="pnx-occhab-map-list-datatable"
+            (selectionChange)="mapListService.onRowSelect({ selected: $event })"
           >
-            <ngx-datatable-row-detail
-              #myDetailRow
-              rowHeight="100"
+            <ng-template
+              pnxDataDetail
+              let-row="row"
             >
-              <ng-template
-                ngx-datatable-row-detail-template
-                let-row="row"
-                let-expanded="expanded"
-              >
+              <div>
+                <strong>ID station :</strong>
+                {{ row.id_station }}
+              </div>
+              <ng-container *ngIf="row.comment !== null && row?.comment.trim() !== ''">
                 <div>
-                  <strong>ID station :</strong>
-                  {{ row.id_station }}
+                  <strong>Commentaire :</strong>
+                  {{ row.comment }}
                 </div>
-                <ng-container *ngIf="row.comment !== null && row?.comment.trim() !== ''">
-                  <div>
-                    <strong>Commentaire :</strong>
-                    {{ row.comment }}
-                  </div>
-                </ng-container>
-                <div>
-                  <strong>Altitude :</strong>
-                  {{
-                    row.altitude_min == row.altitude_max
-                      ? row.altitude_min
-                      : row.altitude_min + ' - ' + row.altitude_max
-                  }}
+              </ng-container>
+              <div>
+                <strong>Altitude :</strong>
+                {{
+                  row.altitude_min == row.altitude_max
+                    ? row.altitude_min
+                    : row.altitude_min + ' - ' + row.altitude_max
+                }}
+              </div>
+              <div><strong>Observé par:</strong></div>
+              <div style="margin-left: 20px">
+                <div *ngFor="let obs of displayObservateursTooltip(row)">
+                  {{ obs }}
                 </div>
-                <div><strong>Observé par:</strong></div>
-                <div style="margin-left: 20px">
-                  <div *ngFor="let obs of displayObservateursTooltip(row)">
-                    {{ obs }}
-                  </div>
+              </div>
+              <div><strong>Habitats(s):</strong></div>
+              <div style="margin-left: 20px">
+                <div *ngFor="let hab of displayHabTooltip(row)">
+                  {{ hab }}
                 </div>
-                <div><strong>Habitats(s):</strong></div>
-                <div style="margin-left: 20px">
-                  <div *ngFor="let hab of displayHabTooltip(row)">
-                    {{ hab }}
-                  </div>
-                </div>
-                <div><strong>UUID de la station:</strong></div>
-                <div style="margin-left: 20px">
-                  {{ row.unique_id_sinp_station }}
-                </div>
-              </ng-template>
-            </ngx-datatable-row-detail>
-            <ngx-datatable-column
-              [width]="10"
-              [resizeable]="false"
+              </div>
+              <div><strong>UUID de la station:</strong></div>
+              <div style="margin-left: 20px">
+                {{ row.unique_id_sinp_station }}
+              </div>
+            </ng-template>
+            <pnx-data-column
+              [width]="56"
+              [resizable]="false"
               [sortable]="false"
-              [draggable]="false"
-              [canAutoResize]="false"
             >
               <ng-template
-                ngx-datatable-cell-template
+                pnxDataCell
                 let-row="row"
                 let-expanded="expanded"
+                let-toggleDetail="toggleDetail"
               >
-                <a
-                  href="javascript:void(0)"
+                <button
+                  mat-icon-button
+                  type="button"
                   matTooltip="Ouvrir/fermer le détail"
-                  [class.datatable-icon-right]="!expanded"
-                  [class.datatable-icon-down]="expanded"
-                  (click)="toggleExpandRow(row)"
-                ></a>
+                  (click)="toggleDetail()"
+                >
+                  <mat-icon>{{ expanded ? 'expand_more' : 'chevron_right' }}</mat-icon>
+                </button>
               </ng-template>
-            </ngx-datatable-column>
-            <ngx-datatable-column
-              maxWidth="10"
+            </pnx-data-column>
+            <pnx-data-column
+              [width]="56"
               [sortable]="false"
             >
               <ng-template
                 let-row="row"
-                ngx-datatable-cell-template
+                pnxDataCell
               >
                 <button
                   class="btn btn-row"
@@ -156,15 +145,15 @@
                   ></i>
                 </button>
               </ng-template>
-            </ngx-datatable-column>
+            </pnx-data-column>
 
-            <ngx-datatable-column
-              maxWidth="10"
+            <pnx-data-column
+              [width]="56"
               [sortable]="false"
             >
               <ng-template
                 let-row="row"
-                ngx-datatable-cell-template
+                pnxDataCell
               >
                 <button
                   class="btn btn-row"
@@ -179,15 +168,15 @@
                   ></i>
                 </button>
               </ng-template>
-            </ngx-datatable-column>
+            </pnx-data-column>
 
-            <ngx-datatable-column
-              maxWidth="10"
+            <pnx-data-column
+              [width]="56"
               [sortable]="false"
             >
               <ng-template
                 let-row="row"
-                ngx-datatable-cell-template
+                pnxDataCell
               >
                 <button
                   class="btn btn-row"
@@ -202,11 +191,14 @@
                   ></i>
                 </button>
               </ng-template>
-            </ngx-datatable-column>
+            </pnx-data-column>
 
-            <ngx-datatable-column name="Habitat">
+            <pnx-data-column
+              name="Habitat"
+              [flex]="2"
+            >
               <ng-template
-                ngx-datatable-cell-template
+                pnxDataCell
                 let-row="row"
               >
                 <span
@@ -219,31 +211,33 @@
                   </span>
                 </span>
               </ng-template>
-            </ngx-datatable-column>
+            </pnx-data-column>
 
-            <ngx-datatable-column name="Date min">
+            <pnx-data-column
+              name="Date min"
+              [width]="110"
+            >
               <ng-template
-                ngx-datatable-cell-template
+                pnxDataCell
                 let-row="row"
-                maxWidth="50"
               >
                 <span matTooltip="{{ row.date_min | date: 'dd-MM-yyyy' }}">
                   {{ row.date_min | date: 'dd-MM-yyyy' }}
                 </span>
               </ng-template>
-            </ngx-datatable-column>
+            </pnx-data-column>
 
-            <ngx-datatable-column name="Jeu de données">
+            <pnx-data-column name="Jeu de données">
               <ng-template
-                ngx-datatable-cell-template
+                pnxDataCell
                 let-row="row"
               >
                 <span matTooltip="{{ row.dataset.dataset_name }}">
                   {{ row.dataset.dataset_name }}
                 </span>
               </ng-template>
-            </ngx-datatable-column>
-          </ngx-datatable>
+            </pnx-data-column>
+          </pnx-data-grid>
         </div>
       </div>
       <div class="row mt-3 justify-content-end">
