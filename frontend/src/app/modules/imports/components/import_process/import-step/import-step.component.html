@@ -107,20 +107,12 @@
           *ngFor="let entityPreview of this.previewData.entities"
           label="{{ entityPreview.entity.label }}"
         >
-          <ngx-datatable
+          <pnx-data-grid
             *ngIf="tableReady && entityPreview.valid_data.length > 0"
-            #table
-            class="material striped"
             [rows]="entityPreview.valid_data"
             [columns]="entityPreview.columns"
-            [columnMode]="'force'"
-            [headerHeight]="35"
-            [scrollbarH]="true"
-            [footerHeight]="40"
-            [rowHeight]="40"
-            [limit]="15"
-            [selectionType]="single"
-          ></ngx-datatable>
+            height="640px"
+          ></pnx-data-grid>
           <ng-container *ngIf="entityPreview.valid_data.length === 0">
             <div
               class="alert alert-info mt-3"

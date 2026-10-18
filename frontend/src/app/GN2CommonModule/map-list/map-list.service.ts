@@ -100,7 +100,7 @@ export class MapListService {
   }
 
   onRowSelect(row) {
-    // row can be an object from ngx-datatable or an integer
+    // row can be the selection of the table (``{ selected: [...] }``) or an integer
     if (row instanceof Object && row.selected.length > 0) {
       this.tableSelected.next(row.selected[0][this.idName]);
     } else {

@@ -82,7 +82,6 @@ import { MediasTestComponent } from '@geonature_common/form/media/medias-test.co
 import { ModalDownloadComponent } from '@geonature_common/others/modal-download/modal-download.component';
 import { MultiSelectComponent } from './form/multiselect/multiselect.component';
 import { MunicipalitiesComponent } from '@geonature_common/form/municipalities/municipalities.component';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { AgGridModule } from 'ag-grid-angular';
 import { DataGridComponent } from './data-grid/data-grid.component';
 import {
@@ -172,10 +171,8 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     MatToolbarModule,
     MatTooltipModule,
     NgbModule,
-    NgxDatatableModule,
     AgGridModule,
     ReactiveFormsModule,
-    NgxDatatableModule,
     AgGridModule,
     NgSelectModule,
     RouterModule,
@@ -369,7 +366,6 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     MultiSelectComponent,
     MunicipalitiesComponent,
     NgbModule,
-    NgxDatatableModule,
     AgGridModule,
     NomenclatureComponent,
     ObserversComponent,

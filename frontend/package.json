@@ -35,7 +35,6 @@
     "@ngx-translate/core": "^12.0.0",
     "@ngx-translate/http-loader": "^4.0.0",
     "@popperjs/core": "^2.11.8",
-    "@swimlane/ngx-datatable": "^20.1.0",
     "@tmcw/togeojson": "^5.8.1",
     "@types/geojson": "^7946.0.14",
     "@types/leaflet": "^1.9.14",
