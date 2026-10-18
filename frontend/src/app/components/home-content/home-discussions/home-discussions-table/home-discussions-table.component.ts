@@ -1,3 +1,4 @@
+import { GridSort } from '@geonature_common/data-grid/data-grid.types';
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
@@ -76,11 +77,9 @@ export class HomeDiscussionsTableComponent implements OnInit, OnDestroy {
     this._fetchDiscussions();
   }
 
-  onColumnSort(event: any) {
-    this.sort = {
-      sortBy: event.column.prop,
-      sortOrder: event.newValue,
-    };
+  onColumnSort(sorts: GridSort[]) {
+    const [sort] = sorts;
+    this.sort = sort ? { sortBy: sort.prop, sortOrder: sort.dir } : { ...this.sort };
     this.pagination.currentPage = 1;
     this._fetchDiscussions();
   }

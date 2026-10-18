@@ -1,30 +1,21 @@
-<ngx-datatable
-  #table
-  class="material striped margin-top-xs table-size expandable"
+<pnx-data-grid
   [rows]="validations"
-  columnMode="force"
-  [draggable]="false"
-  headerHeight="50"
-  footerHeight="50"
-  rowHeight="100"
-  [externalPaging]="true"
-  [limit]="pagination.perPage"
-  [count]="pagination.totalItems"
-  (page)="onChangePage($event)"
+  rowHeight="auto"
+  [pagination]="pagination"
+  [pageSizeOptions]="[pagination.perPage]"
   [externalSorting]="true"
-  (sort)="onColumnSort($event)"
   [sorts]="[{ prop: DEFAULT_SORTING.sortBy, dir: DEFAULT_SORTING.sortOrder }]"
+  (pageChange)="onChangePage($event)"
+  (sortChange)="onColumnSort($event)"
 >
-  <ngx-datatable-column
-    [maxWidth]="5"
-    [resizeable]="false"
+  <pnx-data-column
+    [width]="60"
+    [resizable]="false"
     [sortable]="false"
-    [draggable]="false"
-    [canAutoResize]="false"
   >
     <ng-template
       let-row="row"
-      ngx-datatable-cell-template
+      pnxDataCell
     >
       <button
         class="btn btn-outline-shadow btn-no-padding btn-ghost"
@@ -40,47 +31,44 @@
         ></i>
       </button>
     </ng-template>
-  </ngx-datatable-column>
-  <ngx-datatable-column
-    width="150"
+  </pnx-data-column>
+  <pnx-data-column
+    [width]="150"
     name="Date"
     [sortable]="true"
-    [resizeable]="true"
-    [canAutoResize]="true"
+    [resizable]="true"
     [prop]="PROP_VALIDATION_DATE"
   >
     <ng-template
-      ngx-datatable-cell-template
+      pnxDataCell
       let-row="row"
     >
       {{ renderDate(row[PROP_VALIDATION_DATE]) }}
     </ng-template>
-  </ngx-datatable-column>
-  <ngx-datatable-column
-    width="150"
+  </pnx-data-column>
+  <pnx-data-column
+    [width]="150"
     [prop]="PROP_VALIDATOR"
     name="Validateur"
     [sortable]="true"
-    [resizeable]="true"
-    [canAutoResize]="true"
+    [resizable]="true"
   >
     <ng-template
-      ngx-datatable-cell-template
+      pnxDataCell
       let-row="row"
     >
       {{ row[PROP_VALIDATOR] }}
     </ng-template>
-  </ngx-datatable-column>
-  <ngx-datatable-column
+  </pnx-data-column>
+  <pnx-data-column
     [prop]="PROP_VALIDATION_STATUS"
-    width="300"
+    [width]="300"
     name="Statut de validation"
     [sortable]="false"
-    [resizeable]="true"
-    [canAutoResize]="true"
+    [resizable]="true"
   >
     <ng-template
-      ngx-datatable-cell-template
+      pnxDataCell
       let-row="row"
     >
       <div class="BadgeContainer">
@@ -91,18 +79,16 @@
         <div class="BadgeContainer__spacer"></div>
       </div>
     </ng-template>
-  </ngx-datatable-column>
-  <ngx-datatable-column
+  </pnx-data-column>
+  <pnx-data-column
     [prop]="PROP_VALIDATION_MESSAGE"
-    width="500"
-    height="100"
+    [width]="500"
     name="Message de validation"
     [sortable]="true"
-    [resizeable]="true"
-    [canAutoResize]="true"
+    [resizable]="true"
   >
     <ng-template
-      ngx-datatable-cell-template
+      pnxDataCell
       let-row="row"
     >
       <div class="TextContentContainer">
@@ -111,20 +97,20 @@
         </div>
       </div>
     </ng-template>
-  </ngx-datatable-column>
+  </pnx-data-column>
 
-  <ngx-datatable-column
-    width="500"
+  <pnx-data-column
+    [width]="500"
     [prop]="PROP_OBSERVATION"
     name="Observation"
     [sortable]="false"
-    [resizeable]="true"
+    [resizable]="true"
   >
     <ng-template
-      ngx-datatable-cell-template
+      pnxDataCell
       let-row="row"
     >
       <span [innerHTML]="row.observation"></span>
     </ng-template>
-  </ngx-datatable-column>
-</ngx-datatable>
+  </pnx-data-column>
+</pnx-data-grid>

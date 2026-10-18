@@ -1,5 +1,5 @@
 import { ColDef } from 'ag-grid-community';
-import { GridColumn, GridSort } from './data-grid.types';
+import { GridColumn, GridPage, GridSort } from './data-grid.types';
 import { TemplateCellRendererComponent } from './template-cell-renderer.component';
 import { TemplateHeaderComponent } from './template-header.component';
 
@@ -58,4 +58,17 @@ export function toSorts(
     .filter((column) => !!column.sort)
     .sort((a, b) => (a.sortIndex ?? 0) - (b.sortIndex ?? 0))
     .map((column) => ({ prop: column.colId, dir: column.sort }));
+}
+
+/** Page of a ``pnx-data-grid`` for a pagination counting its pages from 1 */
+export function toGridPage(pagination: {
+  currentPage: number;
+  perPage: number;
+  totalItems: number;
+}): GridPage {
+  return {
+    pageNumber: Math.max((pagination.currentPage ?? 1) - 1, 0),
+    perPage: pagination.perPage,
+    totalItems: pagination.totalItems,
+  };
 }

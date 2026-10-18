@@ -20,7 +20,13 @@ export class TemplateCellRendererComponent implements ICellRendererAngularComp {
   }
 
   refresh(params: ICellRendererParams): boolean {
-    this.context = { $implicit: params.data, row: params.data, value: params.value };
+    this.context = {
+      $implicit: params.data,
+      row: params.data,
+      value: params.value,
+      rowIndex: params.node?.rowIndex,
+      index: params.node?.rowIndex,
+    };
     return true;
   }
 }

@@ -1,4 +1,4 @@
-import { toColDefs, toSorts } from './data-grid.utils';
+import { toColDefs, toGridPage, toSorts } from './data-grid.utils';
 
 describe('data grid utils', () => {
   const options = { externalSorting: false, sorts: [], autoHeight: false };
@@ -87,5 +87,20 @@ describe('data grid utils', () => {
     it('is empty without sorted column', () => {
       expect(toSorts([{ colId: 'a' }])).toEqual([]);
     });
+  });
+});
+
+describe('toGridPage', () => {
+  it('counts the pages from 0', () => {
+    expect(toGridPage({ currentPage: 3, perPage: 10, totalItems: 42 })).toEqual({
+      pageNumber: 2,
+      perPage: 10,
+      totalItems: 42,
+    });
+  });
+
+  it('never gives a negative page', () => {
+    expect(toGridPage({ currentPage: 0, perPage: 10, totalItems: 0 }).pageNumber).toBe(0);
+    expect(toGridPage({ currentPage: undefined, perPage: 10, totalItems: 0 }).pageNumber).toBe(0);
   });
 });

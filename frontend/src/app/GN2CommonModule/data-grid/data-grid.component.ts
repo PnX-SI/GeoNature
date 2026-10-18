@@ -1,12 +1,20 @@
 import {
+  AfterContentInit,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
+  ContentChildren,
   EventEmitter,
   Input,
   OnChanges,
+  OnDestroy,
   Output,
+  QueryList,
   SimpleChanges,
 } from '@angular/core';
+import { merge, Subject } from 'rxjs';
+import { startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { DataColumnComponent } from './data-column.component';
 import {
   ColDef,
   GetRowIdParams,
@@ -20,7 +28,7 @@ import {
 } from 'ag-grid-community';
 import { PageEvent } from '@angular/material/paginator';
 import { GridColumn, GridPage, GridPageEvent, GridSort, SelectionMode } from './data-grid.types';
-import { toColDefs, toSorts } from './data-grid.utils';
+import { toColDefs, toGridPage, toSorts } from './data-grid.utils';
 
 /**
  * Table of rows (AG Grid). It only knows the rows, the columns and the state (page, sorts,
@@ -44,9 +52,11 @@ import { toColDefs, toSorts } from './data-grid.utils';
   styleUrls: ['./data-grid.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DataGridComponent implements OnChanges {
+export class DataGridComponent implements OnChanges, AfterContentInit, OnDestroy {
   @Input() rows: any[] = [];
+  /** Columns, when they are not declared with ``pnx-data-column`` */
   @Input() columns: GridColumn[] = [];
+  @ContentChildren(DataColumnComponent) columnComponents: QueryList<DataColumnComponent>;
   @Input() loading = false;
   /** Height of the rows. ``auto`` lets the cells wrap their content */
   @Input() rowHeight: number | 'auto' = 40;
@@ -57,6 +67,8 @@ export class DataGridComponent implements OnChanges {
   @Input() emptyMessage = 'Aucune donnée';
   /** Pagination managed by the caller. Without it, the rows are not paginated */
   @Input() page: GridPage;
+  /** Same as ``page`` for a pagination counting its pages from 1 (``currentPage``) */
+  @Input() pagination: { currentPage: number; perPage: number; totalItems: number };
   @Input() pageSizeOptions: number[] = [10, 25, 50, 100];
   /** Sorts displayed in the headers */
   @Input() sorts: GridSort[] = [];
@@ -79,6 +91,9 @@ export class DataGridComponent implements OnChanges {
   @Output() rowClick = new EventEmitter<{ row: any; event: MouseEvent }>();
 
   colDefs: ColDef[] = [];
+  /** The page displayed by the paginator */
+  pageModel: GridPage;
+  private destroy$ = new Subject<void>();
   private api: GridApi;
 
   gridOptions: GridOptions = {
@@ -134,13 +149,49 @@ export class DataGridComponent implements OnChanges {
     return this.autoHeight ? undefined : (this.rowHeight as number);
   }
 
+  constructor(private cdr: ChangeDetectorRef) {}
+
+  ngAfterContentInit() {
+    this.columnComponents.changes
+      .pipe(
+        startWith(null),
+        switchMap(() => merge(...this.columnComponents.map((c) => c.changed))),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => this.refreshColumns());
+    this.columnComponents.changes
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.refreshColumns());
+    this.refreshColumns();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  /** Columns declared in the content, or the ones given as input */
+  get allColumns(): GridColumn[] {
+    return this.columnComponents?.length
+      ? this.columnComponents.map((c) => c.column)
+      : this.columns;
+  }
+
+  private refreshColumns() {
+    this.colDefs = toColDefs(this.allColumns, {
+      externalSorting: this.externalSorting,
+      sorts: this.sorts ?? [],
+      autoHeight: this.autoHeight,
+    });
+    this.cdr.markForCheck();
+  }
+
   ngOnChanges(changes: SimpleChanges) {
+    if (changes.page || changes.pagination) {
+      this.pageModel = this.page ?? (this.pagination ? toGridPage(this.pagination) : undefined);
+    }
     if (changes.columns || changes.sorts || changes.externalSorting || changes.rowHeight) {
-      this.colDefs = toColDefs(this.columns, {
-        externalSorting: this.externalSorting,
-        sorts: this.sorts ?? [],
-        autoHeight: this.autoHeight,
-      });
+      this.refreshColumns();
     }
     if (changes.selected || changes.rows) {
       // the rows are set by the grid after the changes, wait for them

@@ -17,10 +17,10 @@
     [overlayNoRowsTemplate]="emptyMessage"
   ></ag-grid-angular>
   <mat-paginator
-    *ngIf="page"
-    [length]="page.totalItems"
-    [pageIndex]="page.pageNumber"
-    [pageSize]="page.perPage"
+    *ngIf="pageModel"
+    [length]="pageModel.totalItems"
+    [pageIndex]="pageModel.pageNumber"
+    [pageSize]="pageModel.perPage"
     [pageSizeOptions]="pageSizeOptions"
     [showFirstLastButtons]="true"
     (page)="onPage($event)"

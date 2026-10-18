@@ -413,25 +413,14 @@
           <h3>{{ 'MetaData.DataSources' | translate }}</h3>
         </div>
         <div id="data-sources">
-          <ngx-datatable
-            #table
-            class="material striped"
-            [rows]="dataset.sources"
-            [count]="dataset.sources.length"
-            [columnMode]="'force'"
-            [headerHeight]="35"
-            [footerHeight]="30"
-            [rowHeight]="40"
-            [offset]="1"
-            [sorts]="[{ prop: 'meta_create_date', dir: 'desc' }]"
-          >
-            <ngx-datatable-column
+          <pnx-data-grid [rows]="dataset.sources">
+            <pnx-data-column
               name="{{ 'Name' | translate }}"
               [sortable]="false"
             >
               <ng-template
                 let-row="row"
-                ngx-datatable-cell-template
+                pnxDataCell
               >
                 <a
                   (click)="_router.navigate([row.module_url])"
@@ -443,19 +432,19 @@
                 </a>
                 <ng-template #elseBlock>{{ row.name_source }}</ng-template>
               </ng-template>
-            </ngx-datatable-column>
-            <ngx-datatable-column
+            </pnx-data-column>
+            <pnx-data-column
               name="{{ 'Description' | translate }}"
               [sortable]="false"
             >
               <ng-template
                 let-row="row"
-                ngx-datatable-cell-template
+                pnxDataCell
               >
                 {{ row.desc_source }}
               </ng-template>
-            </ngx-datatable-column>
-          </ngx-datatable>
+            </pnx-data-column>
+          </pnx-data-grid>
         </div>
       </div>
       <!-- Fin liste des sources -->
@@ -532,11 +521,11 @@
           <div class="row">
             <div
               class="col-auto"
-              width="60"
+              [width]="60"
             >
               <img
                 src="./assets/images/Taxon_icon_vert.svg"
-                width="64"
+                [width]="64"
               />
             </div>
             <div class="col">

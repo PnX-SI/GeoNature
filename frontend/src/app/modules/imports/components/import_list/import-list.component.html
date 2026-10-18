@@ -36,52 +36,44 @@
             />
           </div>
         </div>
-        <ngx-datatable
-          #table
-          class="Datatable material striped"
+        <pnx-data-grid
+          dataQa="import-list-table"
           [rows]="filteredHistory"
-          columnMode="force"
-          [headerHeight]="35"
-          [footerHeight]="30"
-          [rowHeight]="40"
-          [externalPaging]="true"
-          [count]="total"
-          [offset]="offset"
-          [limit]="limit"
-          (page)="setPage($event)"
-          (sort)="onSort($event)"
-          [scrollbarH]="true"
-          data-qa="import-list-table"
+          [page]="{ pageNumber: offset, perPage: limit, totalItems: total }"
+          [pageSizeOptions]="[limit]"
+          [externalSorting]="true"
+          [sorts]="sort ? [{ prop: sort, dir: dir }] : []"
+          (pageChange)="setPage($event)"
+          (sortChange)="onSort($event)"
         >
-          <ngx-datatable-column
+          <pnx-data-column
             name="Id Import"
             prop="id_import"
             [sortable]="true"
             [width]="70"
-            [canAutoResize]="false"
             [resizable]="false"
-            [frozenLeft]="true"
+            pinned="left"
           >
             <ng-template
               let-row="row"
-              ngx-datatable-cell-template
+              pnxDataCell
               let-rowIndex="rowIndex"
             >
               <div [attr.data-qa]="'import-list-table-row-' + rowIndex + '-id-import'">
                 {{ row.id_import }}
               </div>
             </ng-template>
-          </ngx-datatable-column>
-          <ngx-datatable-column
+          </pnx-data-column>
+          <pnx-data-column
             *ngFor="let col of config.IMPORT.LIST_COLUMNS_FRONTEND"
             name="{{ col.name }}"
             [prop]="col.prop"
             [sortable]="col.filter"
-            [maxWidth]="col.maxWidth"
+            [width]="col.maxWidth"
           >
             <ng-template
               let-row="row"
-              ngx-datatable-cell-template
+              pnxDataCell
               let-rowIndex="rowIndex"
             >
               <div
@@ -121,15 +113,15 @@
                 </ng-container>
               </div>
             </ng-template>
-          </ngx-datatable-column>
-          <ngx-datatable-column
+          </pnx-data-column>
+          <pnx-data-column
             name="Destination"
             [sortable]="true"
             prop="destination.code"
           >
             <ng-template
               let-row="row"
-              ngx-datatable-cell-template
+              pnxDataCell
             >
               <p
                 *ngIf="row.destination"
@@ -138,15 +130,15 @@
                 {{ row.destination.label }}
               </p>
             </ng-template>
-          </ngx-datatable-column>
-          <ngx-datatable-column
+          </pnx-data-column>
+          <pnx-data-column
             name="Fin import"
             [sortable]="true"
             prop="date_end_import"
           >
             <ng-template
               let-row="row"
-              ngx-datatable-cell-template
+              pnxDataCell
             >
               <p *ngIf="row.date_end_import">{{ row.date_end_import | date: 'dd-MM-yyyy' }}</p>
               <p
@@ -168,15 +160,14 @@
                 vérifications en cours
               </p>
             </ng-template>
-          </ngx-datatable-column>
-          <ngx-datatable-column
+          </pnx-data-column>
+          <pnx-data-column
             [sortable]="false"
-            [draggable]="false"
-            [maxWidth]="50"
+            [width]="50"
           >
-            <ng-template ngx-datatable-header-template>Stats</ng-template>
+            <ng-template pnxDataHeader>Stats</ng-template>
             <ng-template
-              ngx-datatable-cell-template
+              pnxDataCell
               let-row="row"
               let-index="rowIndex"
               let-expanded="expanded"
@@ -194,19 +185,18 @@
                 ></i>
               </mat-button-toggle>
             </ng-template>
-          </ngx-datatable-column>
-          <ngx-datatable-column
+          </pnx-data-column>
+          <pnx-data-column
             name="Actions"
             [sortable]="false"
-            [frozenRight]="true"
+            pinned="right"
             [width]="155"
             [resizable]="false"
-            [canAutoResize]="false"
           >
             <ng-template
               let-row="row"
               let-index="rowIndex"
-              ngx-datatable-cell-template
+              pnxDataCell
             >
               <button
                 mat-icon-button
@@ -259,8 +249,8 @@
                 <mat-icon>delete</mat-icon>
               </button>
             </ng-template>
-          </ngx-datatable-column>
-        </ngx-datatable>
+          </pnx-data-column>
+        </pnx-data-grid>
       </div>
       <ng-template #emptyBlock>Vous n'avez effectué aucun import</ng-template>
 

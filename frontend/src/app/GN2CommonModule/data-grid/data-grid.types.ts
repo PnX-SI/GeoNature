@@ -5,6 +5,10 @@ export interface CellContext {
   $implicit: any;
   row: any;
   value: any;
+  /** Index of the row in the page displayed */
+  rowIndex: number;
+  /** Same as ``rowIndex`` */
+  index: number;
 }
 
 /** Column of a ``pnx-data-grid`` */

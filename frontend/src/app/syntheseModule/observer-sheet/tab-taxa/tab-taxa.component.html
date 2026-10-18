@@ -34,30 +34,24 @@
     {{ value | titlecase }}
   </ng-template>
 
-  <ngx-datatable
-    #table
-    class="Taxa__table material striped"
+  <pnx-data-grid
+    class="Taxa__table"
     [rows]="items"
-    columnMode="force"
-    [draggable]="false"
-    (page)="onChangePage($event)"
-    footerHeight="auto"
-    headerHeight="auto"
-    [externalPaging]="true"
-    [count]="pagination.totalItems"
-    [limit]="pagination.perPage"
     [rowHeight]="44"
+    [loading]="isLoading"
+    [pagination]="pagination"
+    [pageSizeOptions]="[pagination.perPage]"
     [externalSorting]="true"
-    (sort)="onSort($event)"
     [sorts]="[{ prop: sort.sortBy, dir: sort.sortOrder }]"
-    [loadingIndicator]="isLoading"
+    (pageChange)="onChangePage($event)"
+    (sortChange)="onSort($event)"
   >
-    <ngx-datatable-column
+    <pnx-data-column
       name="Taxon"
       [prop]="PROP_NOM"
     >
       <ng-template
-        ngx-datatable-cell-template
+        pnxDataCell
         let-row="row"
       >
         <ng-template
@@ -67,58 +61,58 @@
           "
         ></ng-template>
       </ng-template>
-    </ngx-datatable-column>
-    <ngx-datatable-column
+    </pnx-data-column>
+    <pnx-data-column
       name="Plus ancienne"
       [prop]="PROP_DATE_MIN"
     >
       <ng-template
-        ngx-datatable-cell-template
+        pnxDataCell
         let-row="row"
       >
         <ng-template
           *ngTemplateOutlet="cellDateTemplate; context: { date: row[PROP_DATE_MIN] }"
         ></ng-template>
       </ng-template>
-    </ngx-datatable-column>
-    <ngx-datatable-column
+    </pnx-data-column>
+    <pnx-data-column
       name="Plus récente"
       [prop]="PROP_DATE_MAX"
     >
       <ng-template
-        ngx-datatable-cell-template
+        pnxDataCell
         let-row="row"
       >
         <ng-template
           *ngTemplateOutlet="cellDateTemplate; context: { date: row[PROP_DATE_MAX] }"
         ></ng-template>
       </ng-template>
-    </ngx-datatable-column>
-    <ngx-datatable-column
+    </pnx-data-column>
+    <pnx-data-column
       name="Nombre d'observation(s)"
       [prop]="PROP_OBSERVATION_COUNT"
     >
       <ng-template
-        ngx-datatable-cell-template
+        pnxDataCell
         let-row="row"
       >
         <ng-template
           *ngTemplateOutlet="cellNumberTemplate; context: { value: row[PROP_OBSERVATION_COUNT] }"
         ></ng-template>
       </ng-template>
-    </ngx-datatable-column>
-    <ngx-datatable-column
+    </pnx-data-column>
+    <pnx-data-column
       name="Nombre de dataset(s)"
       [prop]="PROP_DATASET_COUNT"
     >
       <ng-template
-        ngx-datatable-cell-template
+        pnxDataCell
         let-row="row"
       >
         <ng-template
           *ngTemplateOutlet="cellNumberTemplate; context: { value: row[PROP_DATASET_COUNT] }"
         ></ng-template>
       </ng-template>
-    </ngx-datatable-column>
-  </ngx-datatable>
+    </pnx-data-column>
+  </pnx-data-grid>
 </div>

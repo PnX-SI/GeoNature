@@ -85,6 +85,11 @@ import { MunicipalitiesComponent } from '@geonature_common/form/municipalities/m
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { AgGridModule } from 'ag-grid-angular';
 import { DataGridComponent } from './data-grid/data-grid.component';
+import {
+  DataCellDirective,
+  DataColumnComponent,
+  DataHeaderDirective,
+} from './data-grid/data-column.component';
 import { TemplateCellRendererComponent } from './data-grid/template-cell-renderer.component';
 import { TemplateHeaderComponent } from './data-grid/template-header.component';
 import { NomenclatureComponent } from './form/nomenclature/nomenclature.component';
@@ -198,6 +203,9 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     DatasetsComponent,
     ItemsSelectComponent,
     DataGridComponent,
+    DataColumnComponent,
+    DataCellDirective,
+    DataHeaderDirective,
     TemplateCellRendererComponent,
     TemplateHeaderComponent,
     AreasSelectComponent,
@@ -295,6 +303,9 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     DatasetsComponent,
     ItemsSelectComponent,
     DataGridComponent,
+    DataColumnComponent,
+    DataCellDirective,
+    DataHeaderDirective,
     AreasSelectComponent,
     TaxaSelectComponent,
     DatalistSelectComponent,

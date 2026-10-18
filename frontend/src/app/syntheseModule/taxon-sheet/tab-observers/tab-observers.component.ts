@@ -1,3 +1,4 @@
+import { GridSort } from '@geonature_common/data-grid/data-grid.types';
 import { Component, OnInit } from '@angular/core';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { CommonModule } from '@angular/common';
@@ -61,11 +62,9 @@ export class TabObserversComponent extends Loadable implements OnInit {
     this.fetchObservers();
   }
 
-  onSort(event) {
-    this.sort = {
-      sortBy: event.column.prop,
-      sortOrder: event.newValue,
-    };
+  onSort(sorts: GridSort[]) {
+    const [sort] = sorts;
+    this.sort = sort ? { sortBy: sort.prop, sortOrder: sort.dir } : this.DEFAULT_SORT;
     this.fetchObservers();
   }
 

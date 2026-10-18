@@ -1,3 +1,4 @@
+import { GridPageEvent, GridSort } from '@geonature_common/data-grid/data-grid.types';
 // @ts-ignore
 
 import { Component, OnInit, TemplateRef } from '@angular/core';
@@ -32,7 +33,7 @@ export class ImportListComponent implements OnInit {
   public limit: number;
 
   public sort: string;
-  public dir: string;
+  public dir: 'asc' | 'desc';
   public runningImport: Array<number> = [];
   public inErrorImport: Array<number> = [];
   public checkingImport: Array<number> = [];
@@ -234,15 +235,15 @@ export class ImportListComponent implements OnInit {
     }
   }
 
-  onSort(e) {
-    let sort = e.sorts[0];
-    let params = { page: 1, search: this.searchString, sort: sort.prop, sort_dir: sort.dir };
-    this.sort = sort.prop;
-    this.dir = sort.dir;
+  onSort(sorts: GridSort[]) {
+    const [sort] = sorts;
+    const params = { page: 1, search: this.searchString, sort: sort?.prop, sort_dir: sort?.dir };
+    this.sort = sort?.prop;
+    this.dir = sort?.dir;
     this.onImportList(params);
   }
 
-  setPage(e) {
+  setPage(e: GridPageEvent) {
     let params = { page: e.offset + 1, search: this.searchString };
     if (this.sort) {
       params['sort'] = this.sort;

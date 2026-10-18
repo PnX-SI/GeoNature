@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
+import { GridPageEvent, GridSort } from '@geonature_common/data-grid/data-grid.types';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import {
@@ -68,16 +69,14 @@ export class HomeValidationsComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  onChangePage(event: any) {
+  onChangePage(event: GridPageEvent) {
     this.pagination.currentPage = event.offset + 1;
     this._fetchValidations();
   }
 
-  onColumnSort(event: any) {
-    this.sort = {
-      sortOrder: event.newValue,
-      sortBy: event.column.prop,
-    };
+  onColumnSort(sorts: GridSort[]) {
+    const [sort] = sorts;
+    this.sort = sort ? { sortOrder: sort.dir, sortBy: sort.prop } : { ...this.DEFAULT_SORTING };
     this.pagination.currentPage = 1;
     this._fetchValidations();
   }
