@@ -21,12 +21,6 @@
 }
 
 #details {
-  width: 20px;
-  height: 20px;
-  font-size: 14px;
-  padding: 0;
-  background-color: transparent;
-  border-color: transparent;
   color: #212121;
 }
 
@@ -51,8 +45,11 @@
 // }
 
 .statusContent {
-  position: absolute;
+  position: relative;
   display: block;
+  width: 20px;
+  height: 20px;
+  overflow: visible;
 }
 
 .statusName {

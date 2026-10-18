@@ -5,6 +5,11 @@
     width: 100%;
     --ag-font-size: 14px;
     --ag-cell-horizontal-padding: 8px;
+    // the colors of the Angular Material theme of the application (deeppurple)
+    --ag-material-primary-color: #673ab7;
+    --ag-material-accent-color: #673ab7;
+    --ag-selected-row-background-color: rgba(103, 58, 183, 0.12);
+    --ag-checkbox-checked-color: #673ab7;
   }
 }
 
@@ -40,6 +45,14 @@
   text-overflow: ellipsis;
 }
 
+// ... except for the cells showing something over the next cells (a tooltip-like label)
+:host ::ng-deep .ag-cell:has(.statusContent),
+:host ::ng-deep .ag-cell:has(.statusContent) > *,
+:host ::ng-deep .ag-cell:has(.modified_data),
+:host ::ng-deep .ag-cell:has(.modified_data) > * {
+  overflow: visible;
+}
+
 :host ::ng-deep pnx-grid-template-cell {
   display: block;
   min-width: 0;
@@ -58,4 +71,11 @@
 .pnx-data-grid__detail,
 :host ::ng-deep .pnx-data-grid__detail {
   font-size: 13px;
+}
+
+// icon buttons fit in the rows of the table
+:host ::ng-deep .ag-cell .mat-mdc-icon-button.mdc-icon-button {
+  width: 36px;
+  height: 36px;
+  padding: 6px;
 }

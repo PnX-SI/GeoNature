@@ -258,3 +258,12 @@ button:active {
     height: auto !important;
   }
 }
+
+// a compact tab on the edge of the search panel: the size of a Material icon button is 48px
+.btn-toogle-sidenav.mat-mdc-icon-button {
+  width: 24px !important;
+  height: 40px !important;
+  padding: 0 !important;
+  line-height: 40px;
+  background-color: white;
+}
