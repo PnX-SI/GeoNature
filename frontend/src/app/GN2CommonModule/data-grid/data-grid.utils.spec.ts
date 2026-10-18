@@ -104,3 +104,37 @@ describe('toGridPage', () => {
     expect(toGridPage({ currentPage: undefined, perPage: 10, totalItems: 0 }).pageNumber).toBe(0);
   });
 });
+
+describe('toColDefs checkbox, value getter and comparator', () => {
+  const options = { externalSorting: false, sorts: [], autoHeight: false };
+
+  it('gives checkboxes to select the rows of a column', () => {
+    const [col] = toColDefs([{ prop: 'a', checkbox: true, sortable: true }], options);
+    expect(col.checkboxSelection).toBe(true);
+    expect(col.headerCheckboxSelection).toBe(true);
+    expect(col.sortable).toBe(false);
+  });
+
+  it('gets the value of a row with the value getter', () => {
+    const [col] = toColDefs([{ prop: 'a', valueGetter: (row) => row.x + 1 }], options);
+    expect((col.valueGetter as any)({ data: { x: 1 } })).toBe(2);
+    expect((col.valueGetter as any)({ data: undefined })).toBeUndefined();
+  });
+
+  it('sorts with the comparator unless the sort is external', () => {
+    const comparator = (a, b) => a - b;
+    const [col] = toColDefs([{ prop: 'a', comparator }], options);
+    expect(col.comparator(3, 1, null, null, false)).toBe(2);
+    const [external] = toColDefs([{ prop: 'a', comparator }], {
+      ...options,
+      externalSorting: true,
+    });
+    expect(external.comparator(3, 1, null, null, false)).toBe(0);
+  });
+
+  it('limits the width of a column', () => {
+    const [col] = toColDefs([{ prop: 'a', minWidth: 10, maxWidth: 100 }], options);
+    expect(col.minWidth).toBe(10);
+    expect(col.maxWidth).toBe(100);
+  });
+});

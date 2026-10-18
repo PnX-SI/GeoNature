@@ -21,6 +21,7 @@ export function toColDefs(columns: GridColumn[], options: ColumnOptions): ColDef
       headerName: column.name ?? column.prop,
       width: column.width,
       minWidth: column.minWidth,
+      maxWidth: column.maxWidth,
       flex: column.width ? undefined : (column.flex ?? 1),
       sortable: column.sortable ?? false,
       resizable: column.resizable ?? true,
@@ -32,8 +33,18 @@ export function toColDefs(columns: GridColumn[], options: ColumnOptions): ColDef
       wrapText: options.autoHeight,
       autoHeight: options.autoHeight,
     };
+    if (column.valueGetter) {
+      colDef.valueGetter = ({ data }) => (data ? column.valueGetter(data) : undefined);
+    }
     if (options.externalSorting) {
       colDef.comparator = () => 0;
+    } else if (column.comparator) {
+      colDef.comparator = (a, b) => column.comparator(a, b);
+    }
+    if (column.checkbox) {
+      colDef.checkboxSelection = true;
+      colDef.headerCheckboxSelection = true;
+      colDef.sortable = false;
     }
     if (column.valueFormatter) {
       colDef.valueFormatter = ({ value, data }) => column.valueFormatter(value, data);

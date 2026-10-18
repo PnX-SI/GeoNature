@@ -1,55 +1,31 @@
-<ngx-datatable
-  (window:resize)="onResize($event)"
+<pnx-data-grid
   #table
-  class="material striped margin-top-xs table-size expandable"
   [rows]="mapListService.tableData"
-  [columns]="config.VALIDATION.COLUMN_LIST"
-  [columnMode]="'force'"
-  [headerHeight]="50"
-  [footerHeight]="35"
-  [messages]="messages"
+  [height]="gridHeight"
+  [emptyMessage]="messages?.emptyMessage"
+  selectionMode="multiple"
   [selected]="mapListService.selectedRow"
-  [selectionType]="'multiClick'"
-  [count]="mapListService.tableData.length"
-  [limit]="rowNumber"
   [rowClass]="getRowClass"
-  (select)="mapListService.onRowSelect($event)"
-  (activate)="onActivate($event)"
-  rowHeight="40"
+  (selectionChange)="onSelectionChange($event)"
 >
   <!-- <ngx-datatable-row-detail rowHeight="100">
   </ngx-datatable-row-detail> -->
 
-  <ngx-datatable-column
-    [checkboxable]="true"
-    [maxWidth]="10"
-  >
-    <ng-template ngx-datatable-header-template>
-      <label class="datatable-checkbox">
-        <input
-          type="checkbox"
-          (click)="toggleSelection($event)"
-          matTooltip="Sélectionner/déselectionner tout"
-        />
-      </label>
-    </ng-template>
-  </ngx-datatable-column>
+  <pnx-data-column
+    [checkbox]="true"
+    [width]="48"
+  ></pnx-data-column>
 
-  <ngx-datatable-column
-    maxWidth="5"
+  <pnx-data-column
+    prop="warning"
+    [width]="48"
+    [sortable]="true"
+    [valueGetter]="warningValue"
     [comparator]="compareWarning"
-    prop=""
   >
-    <ng-template
-      let-column="column"
-      ngx-datatable-header-template
-    >
-      <span></span>
-    </ng-template>
-
     <ng-template
       let-row="row"
-      ngx-datatable-cell-template
+      pnxDataCell
     >
       <div class="modified_data">
         <span
@@ -66,14 +42,14 @@
         </span>
       </div>
     </ng-template>
-  </ngx-datatable-column>
-  <ngx-datatable-column
-    maxWidth="60"
+  </pnx-data-column>
+  <pnx-data-column
+    [width]="80"
     [sortable]="false"
   >
     <ng-template
       let-row="row"
-      ngx-datatable-cell-template
+      pnxDataCell
     >
       <button
         #ValidationModalInfoObs
@@ -99,16 +75,16 @@
         (click)="openInfoModal(row)"
       ></i>
     </ng-template>
-  </ngx-datatable-column>
+  </pnx-data-column>
 
-  <ngx-datatable-column
-    maxWidth="60"
+  <pnx-data-column
+    [width]="150"
     prop="nomenclature_valid_status.cd_nomenclature"
     name="Status"
   >
     <ng-template
       let-row="row"
-      ngx-datatable-cell-template
+      pnxDataCell
     >
       <div class="statusContent">
         <span
@@ -137,79 +113,82 @@
         </div>
       </div>
     </ng-template>
-  </ngx-datatable-column>
+  </pnx-data-column>
 
-  <ngx-datatable-column
+  <pnx-data-column
     *ngFor="let col of config.VALIDATION.COLUMN_LIST"
-    name="{{ col.column_label }}"
-    prop="{{ col.column_name }}"
-    maxWidth="{{ col.max_width || 10000 }}"
-    minWidth="{{ col.min_width || 10 }}"
+    [name]="col.column_label"
+    [prop]="col.column_name"
+    [maxWidth]="col.max_width || 10000"
+    [minWidth]="col.min_width || 10"
   >
     <ng-template
-      *ngIf="
-        [
-          'date_min',
-          'date_max',
-          'meta_validation_date',
-          'meta_create_date',
-          'meta_update_date',
-          'last_validation.validation_date'
-        ].includes(col.column_name)
-      "
       let-row="row"
-      ngx-datatable-cell-template
+      let-value="value"
+      pnxDataCell
     >
-      {{ row[col.column_name] | date: 'dd-MM-yyyy' }}
-    </ng-template>
-    <ng-template
-      *ngIf="col.column_name == 'nomenclature_valid_status.label_default'"
-      let-row="row"
-      ngx-datatable-cell-template
-    >
-      <div class="statusContent">
-        <span
-          class="validationCircle"
-          [ngStyle]="{
-            background:
-              config.VALIDATION.STATUS_INFO[row.nomenclature_valid_status?.cd_nomenclature]?.color
-          }"
+      <ng-container
+        *ngIf="
+          [
+            'date_min',
+            'date_max',
+            'meta_validation_date',
+            'meta_create_date',
+            'meta_update_date',
+            'last_validation.validation_date'
+          ].includes(col.column_name);
+          else statusOrValue
+        "
+      >
+        {{ value | date: 'dd-MM-yyyy' }}
+      </ng-container>
+      <ng-template #statusOrValue>
+        <ng-container
+          *ngIf="col.column_name == 'nomenclature_valid_status.label_default'; else plainValue"
         >
-          <i
-            *ngIf="row.last_validation?.validation_auto"
-            class="material-icons"
-          >
-            computer
-          </i>
-        </span>
-        <div
-          [ngStyle]="{
-            background:
-              config.VALIDATION.STATUS_INFO[row.nomenclature_valid_status?.cd_nomenclature]?.color
-          }"
-          class="statusName"
-        >
-          <span>{{ row?.nomenclature_valid_status?.mnemonique }}</span>
-          <span *ngIf="row.last_validation?.validation_auto">(automatique)</span>
-        </div>
-      </div>
+          <div class="statusContent">
+            <span
+              class="validationCircle"
+              [ngStyle]="{
+                background:
+                  config.VALIDATION.STATUS_INFO[row.nomenclature_valid_status?.cd_nomenclature]
+                    ?.color
+              }"
+            >
+              <i
+                *ngIf="row.last_validation?.validation_auto"
+                class="material-icons"
+              >
+                computer
+              </i>
+            </span>
+            <div
+              [ngStyle]="{
+                background:
+                  config.VALIDATION.STATUS_INFO[row.nomenclature_valid_status?.cd_nomenclature]
+                    ?.color
+              }"
+              class="statusName"
+            >
+              <span>{{ row?.nomenclature_valid_status?.mnemonique }}</span>
+              <span *ngIf="row.last_validation?.validation_auto">(automatique)</span>
+            </div>
+          </div>
+        </ng-container>
+        <ng-template #plainValue>{{ value }}</ng-template>
+      </ng-template>
     </ng-template>
-  </ngx-datatable-column>
+  </pnx-data-column>
 
-  <ngx-datatable-column
+  <pnx-data-column
     *ngIf="config.FRONTEND['ENABLE_PROFILES']"
-    minWidth="10"
-    [maxWidth]="100"
+    name="Score"
+    [minWidth]="10"
+    [width]="100"
   >
     <ng-template
-      let-column="column"
-      ngx-datatable-header-template
-    >
-      <span>Score</span>
-    </ng-template>
-    <ng-template
       let-row="row"
-      ngx-datatable-cell-template
+      pnxDataCell
     >
       <div
         *ngIf="row.profile && row.profile.score"
@@ -296,37 +275,11 @@
         </table>
       </ng-template>
     </ng-template>
-  </ngx-datatable-column>
-
-  <ngx-datatable-footer>
-    <ng-template
-      ngx-datatable-footer-template
-      let-rowCount="rowCount"
-      let-pageSize="pageSize"
-      let-selectedCount="selectedCount"
-      ,
-      let-curPage="curPage"
-      ,
-      let-offset="offset"
-    >
-      {{ selectedCount }} selected / {{ rowCount }} total
-      <datatable-pager
-        [pagerLeftArrowIcon]="'datatable-icon-left'"
-        [pagerRightArrowIcon]="'datatable-icon-right'"
-        [pagerPreviousIcon]="'datatable-icon-prev'"
-        [pagerNextIcon]="'datatable-icon-skip'"
-        [page]="curPage"
-        [size]="pageSize"
-        [count]="rowCount"
-        [hidden]="!(rowCount / pageSize > 0)"
-        (change)="handlePageChange($event)"
-        (change)="table.onFooterPage($event)"
-      >
-        >
-      </datatable-pager>
-    </ng-template>
-  </ngx-datatable-footer>
-</ngx-datatable>
+  </pnx-data-column>
+</pnx-data-grid>
+<div class="selection-count">
+  {{ mapListService.selectedRow.length }} selected / {{ mapListService.tableData.length }} total
+</div>
 
 <pnx-validation-popup
   [selectedPages]="selectedPages"

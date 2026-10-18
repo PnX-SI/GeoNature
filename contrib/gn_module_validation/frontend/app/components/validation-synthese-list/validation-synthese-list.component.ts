@@ -7,7 +7,6 @@ import {
   Output,
   ViewChild,
   HostListener,
-  AfterContentChecked,
   OnChanges,
   ChangeDetectorRef,
   EventEmitter,
@@ -16,7 +15,7 @@ import {HttpParams} from '@angular/common/http';
 import { MapService } from '@geonature_common/map/map.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DomSanitizer } from '@angular/platform-browser';
-import { DatatableComponent } from '@swimlane/ngx-datatable';
+import { DataGridComponent } from '@geonature_common/data-grid/data-grid.component';
 import { ValidationModalInfoObsComponent } from '../validation-modal-info-obs/validation-modal-info-obs.component';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
@@ -29,7 +28,7 @@ import { Location } from '@angular/common';
   templateUrl: 'validation-synthese-list.component.html',
   styleUrls: ['validation-synthese-list.component.scss'],
 })
-export class ValidationSyntheseListComponent implements OnInit, OnChanges, AfterContentChecked {
+export class ValidationSyntheseListComponent implements OnInit, OnChanges {
   public oneSyntheseObs: any;
   selectedObs: Array<number> = []; // list of id_synthese values for selected rows
   selectedIndex: Array<number> = [];
@@ -37,7 +36,6 @@ export class ValidationSyntheseListComponent implements OnInit, OnChanges, After
   coordinates_list = []; // list of coordinates for selected rows
   marker: MediaTrackSupportedConstraints;
   public rowNumber: number;
-  private _latestWidth: number;
   public id_same_coordinates = []; // list of observation ids having same geographic coordinates
   public modif_text = 'Attention données modifiées depuis la dernière validation';
   public npage;
@@ -45,7 +43,7 @@ export class ValidationSyntheseListComponent implements OnInit, OnChanges, After
   @Input() inputSyntheseData: Array<any>;
   @Input() validationStatus: Array<any>;
   @Input() selectedTab: string;
-  @ViewChild('table') table: DatatableComponent;
+  @ViewChild('table') table: DataGridComponent;
   @Output() pageChange: EventEmitter<number>;
   @Output() displayAll = new EventEmitter<any>();
   @Input() idSynthese: any;
@@ -106,8 +104,6 @@ export class ValidationSyntheseListComponent implements OnInit, OnChanges, After
           break;
         }
       }
-      const page = Math.trunc(i / this.rowNumber);
-      this.table.offset = page;
     });
   }
 
@@ -122,17 +118,6 @@ export class ValidationSyntheseListComponent implements OnInit, OnChanges, After
       this.setOriginStyleToAll();
       this.setSelectedSyleToSelectedRows();
     });
-  }
-
-  ngAfterContentChecked() {
-    if (this.table && this.table.element.clientWidth !== this._latestWidth) {
-      this._latestWidth = this.table.element.clientWidth;
-      this.table.recalculate();
-    }
-  }
-
-  handlePageChange(event): void {
-    this.npage = event.page;
   }
 
   setOriginStyleToAll() {
@@ -165,20 +150,15 @@ export class ValidationSyntheseListComponent implements OnInit, OnChanges, After
       this.setOriginStyleToAll();
     }
   }
-  toggleSelection(element) {
-    if (element.target.checked) {
-      this.selectAll();
-    } else {
-      this.deselectAll();
-    }
-  }
-  onActivate(event) {
-    if (event.type == 'checkbox' || event.type == 'click') {
-      this.setSelectedObs();
-      this.viewFitList(this.selectedObs);
-      if (this.mapListService.selectedRow.length === 0) {
-        this.setOriginStyleToAll();
-      }
+
+  /** The rows selected by the user, with the checkboxes or by clicking them */
+  onSelectionChange(rows: any[]) {
+    this.mapListService.selectedRow = rows;
+    this.mapListService.onRowSelect({ selected: rows });
+    this.setSelectedObs();
+    this.viewFitList(this.selectedObs);
+    if (rows.length === 0) {
+      this.setOriginStyleToAll();
     }
   }
 
@@ -210,7 +190,7 @@ export class ValidationSyntheseListComponent implements OnInit, OnChanges, After
 
     // find page from an ngxindex
     for (let ind of this.selectedIndex) {
-      let PageIndex = (ind + 1) / this.table._limit;
+      let PageIndex = (ind + 1) / this.rowNumber;
       this.selectedPages.push(Math.ceil(PageIndex));
     }
   }
@@ -235,12 +215,19 @@ export class ValidationSyntheseListComponent implements OnInit, OnChanges, After
     return 'row-sm clickable';
   }
 
+  /** Height of the grid: its header and the rows that fit the screen */
+  get gridHeight(): string {
+    return `${this.rowNumber * 40 + 50}px`;
+  }
+
+  /** The observation has been modified since its last validation */
+  warningValue = (row): boolean =>
+    !!row.last_validation && row.meta_update_date > row.last_validation.validation_date;
+
   ngOnChanges(changes) {
     if (changes.inputSyntheseData && changes.inputSyntheseData.currentValue) {
-      // reset page 0 when new data appear
-      if (this.table) {
-        this.table.offset = 0;
-      }
+      // go back to the first row when new data appear
+      this.table?.scrollToTop();
       this.openInfoModal(
         this.inputSyntheseData.filter((i) => i.id_synthese == this?.idSynthese)[0]
       );
@@ -332,9 +319,7 @@ export class ValidationSyntheseListComponent implements OnInit, OnChanges, After
    * compare warning value for sorting
    *
    */
-  compareWarning(a, b) {
-    let aWarningValue = a.last_validation && a.meta_update_date > a.last_validation.validation_date;
-    let bWarningValue = b.last_validation && b.meta_update_date > b.last_validation.validation_date;
+  compareWarning(aWarningValue: boolean, bWarningValue: boolean): number {
     if (aWarningValue && !bWarningValue) return 1;
     if (!aWarningValue && bWarningValue) return -1;
     return 0;

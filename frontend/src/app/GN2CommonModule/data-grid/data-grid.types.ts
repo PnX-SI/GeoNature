@@ -29,6 +29,7 @@ export interface GridColumn {
   name?: string;
   width?: number;
   minWidth?: number;
+  maxWidth?: number;
   /** Share of the remaining width the column takes, when it has no ``width`` */
   flex?: number;
   sortable?: boolean;
@@ -40,6 +41,12 @@ export interface GridColumn {
   /** Template of the header, ``{ $implicit: column }`` */
   headerTemplate?: TemplateRef<{ $implicit: GridColumn }>;
   cellClass?: string | string[];
+  /** The cells have a checkbox selecting the row, and the header one selecting all the rows */
+  checkbox?: boolean;
+  /** Value of the cells, when it is not the ``prop`` attribute of the row (used to sort) */
+  valueGetter?: (row: any) => any;
+  /** Compares two values of the column, for a sort done by the grid */
+  comparator?: (a: any, b: any) => number;
   /** Format the value of the cells (the template, when given, replaces it) */
   valueFormatter?: (value: any, row: any) => string;
 }

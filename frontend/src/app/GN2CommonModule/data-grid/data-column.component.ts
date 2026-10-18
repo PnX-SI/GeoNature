@@ -43,12 +43,16 @@ export class DataColumnComponent implements OnChanges {
   @Input() name: string;
   @Input() width: number;
   @Input() minWidth: number;
+  @Input() maxWidth: number;
   @Input() flex: number;
   @Input() sortable: boolean;
   @Input() resizable: boolean;
   @Input() pinned: 'left' | 'right';
   @Input() hidden: boolean;
   @Input() cellClass: string | string[];
+  @Input() checkbox: boolean;
+  @Input() valueGetter: (row: any) => any;
+  @Input() comparator: (a: any, b: any) => number;
   @Input() valueFormatter: (value: any, row: any) => string;
 
   @ContentChild(DataCellDirective) cell: DataCellDirective;
@@ -67,6 +71,10 @@ export class DataColumnComponent implements OnChanges {
       name: this.name,
       width: this.width,
       minWidth: this.minWidth,
+      maxWidth: this.maxWidth,
+      checkbox: this.checkbox,
+      valueGetter: this.valueGetter,
+      comparator: this.comparator,
       flex: this.flex,
       sortable: this.sortable,
       resizable: this.resizable,
