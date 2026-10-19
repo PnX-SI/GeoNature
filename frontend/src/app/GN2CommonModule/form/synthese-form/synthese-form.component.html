@@ -361,7 +361,7 @@
 <div class="search-btn">
   <button
     id="refresh-btn"
-    mat-raised-button
+    mat-stroked-button
     color="warn"
     (click)="refreshFilters()"
     matTooltip="{{ 'Filters.Actions.Refresh' | translate }}"
@@ -374,8 +374,8 @@
   </button>
   <button
     data-qa="synthese-search-btn"
-    class="button-success uppercase"
-    mat-raised-button
+    mat-flat-button
+    color="primary"
     (click)="onSubmitForm()"
   >
     {{ 'Actions.Search' | translate }}
