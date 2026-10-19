@@ -229,9 +229,8 @@
           <button
             *ngIf="canImport"
             id="upload-btn"
-            mat-raised-button
+            mat-stroked-button
             color="primary"
-            class="btn-action uppercase"
             [routerLink]="['/import', destinationImportCode, 'process', 'upload']"
           >
             {{ 'Actions.Upload' | translate }}
@@ -242,9 +241,8 @@
           <button
             *ngIf="userCruved?.E != '0'"
             id="download-btn"
-            mat-raised-button
+            mat-stroked-button
             color="primary"
-            class="btn-action uppercase"
             (click)="openModal()"
           >
             {{ 'Actions.Download' | translate }}

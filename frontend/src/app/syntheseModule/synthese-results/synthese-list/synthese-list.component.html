@@ -142,9 +142,8 @@
     <button
       *ngIf="canImport"
       id="upload-btn"
-      mat-raised-button
+      mat-stroked-button
       color="primary"
-      class="btn-action uppercase"
       [routerLink]="['/import', destinationImportCode, 'process', 'upload']"
     >
       {{ 'Actions.Upload' | translate }}
@@ -154,9 +153,8 @@
   <div class="col-auto">
     <button
       type="button"
-      class="uppercase"
       id="download-btn"
-      mat-raised-button
+      mat-stroked-button
       color="primary"
       (click)="openDownloadModal()"
       [disabled]="_cruvedStore.cruved?.SYNTHESE?.cruved?.E === 0"
