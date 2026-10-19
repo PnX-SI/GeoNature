@@ -722,6 +722,7 @@ class TestMobileApps:
             assert response.status_code == 200
             assert type(response.json) == list
             assert app_code in [a["app_code"] for a in response.json]
+            assert all("providers" in a for a in response.json)
 
             response = self.client.get(
                 url_for("gn_commons.get_t_mobile_apps"), data=dict(app_code=app_code)
