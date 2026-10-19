@@ -5,6 +5,10 @@
 }
 
 // the search actions stay visible at the bottom of the filter pane
+.actions > * {
+  flex: 0 0 auto;
+}
+
 .actions {
   position: sticky;
   bottom: 0;

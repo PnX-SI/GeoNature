@@ -22,9 +22,16 @@
   background-color: white;
 }
 
+// the buttons keep their size instead of shrinking in the row (which clipped the search icon)
+.actions > * {
+  flex: 0 0 auto;
+}
+
+// round icon buttons: Material's default is 48px wide, which made them oval at 35px high
 .actions button[mat-icon-button] {
-  height: 35px;
-  padding: 8px;
+  width: 36px;
+  height: 36px;
+  padding: 6px;
 }
 
 #refresh-filter {

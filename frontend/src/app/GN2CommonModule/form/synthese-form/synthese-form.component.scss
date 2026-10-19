@@ -89,6 +89,10 @@ legend {
 }
 
 // the search actions stay visible at the bottom of the filter pane
+.search-btn > * {
+  flex: 0 0 auto;
+}
+
 .search-btn {
   position: sticky;
   bottom: 0;
