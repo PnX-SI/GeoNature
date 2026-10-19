@@ -236,7 +236,7 @@ def get_t_mobile_apps():
     for app in data:
         app_dict = app.as_dict(exclude=["relative_path_apk"])
         app_dict["settings"] = {}
-        app_dict["providers"] = list_providers(mobile_support=True)
+        app_dict["providers"] = list_providers()
 
         #  if local
         if app.relative_path_apk:
