@@ -4,48 +4,43 @@
 
 ### ▶️ En bref
 
-- **Maintenance** : Mise à jour de SQLAlchemy en version 2.0. Fin du support de Debian 11 et de la version Python 3.9.x.
+- **Maintenance** : Fin du support de Debian 11 et de la version Python 3.9.x.  
+  Mise à jour de SQLAlchemy en version 2.0.  
   Si vous utilisez des modules externes spécifiques, vérifiez qu'ils disposent d'une version compatible avec SQLAlchemy 2.0. C'est le cas pour les modules Dashboard, Monitoring et Export que vous devez donc mettre à jour en même temps que GeoNature.
 - **Interface** : Refonte de la page de connexion et menu supérieur adapté aux écrans mobiles.
-- **Métadonnées** : Ajout des champs additionnels dans les jeux de données. Ajout de la possibilité de saisir plusieurs objectifs dans les jeux de données.
-- **Synthèse** : Ajout de la possibilité de changer l'affichage des observations en fonctions de critères (e.g. présence/absence, validation, stade de vie, période, etc.) Rendez-vous sur la [documentation](https://docs.geonature.fr/admin-manual.html#configurer-d-autres-criteres-d-affichage-sur-la-carte) pour plus de détails.
+- **Métadonnées** : Ajout des champs additionnels dans les jeux de données. Ajout de la possibilité d'associer plusieurs objectifs à un jeu de données.
+- **Synthèse** : Ajout de la possibilité de changer l'affichage des observations en fonctions de critères (e.g. présence/absence, validation, stade de vie, période, etc.). Rendez-vous sur la [documentation](https://docs.geonature.fr/admin-manual.html#configurer-d-autres-criteres-d-affichage-sur-la-carte) pour plus de détails.
 - **Occtax** : Ajout de la possibilité d'associer un individu à une observation. Possibilité de définir une configuration spécifique par module Occtax dupliqué et nouvelle commande pour dupliquer le module Occtax.
 - **Occhab** : Ajout des commandes pour mettre à jour HabRef en version 7.
 
 ### 🚀 Nouveautés
 
 - [Général] Mise à jour de SQLAlchemy en version 2.0 (#4130 par @jacquesfize)
-- [Authentification] Refonte de la page de connexion et du formulaire d'inscription : composants Angular Material, affichage adapté aux mobiles (#4385, #4408 par @jacquesfize)
+- [Authentification] Refonte de la page de connexion et du formulaire d'inscription : composants Angular Material, affichage adapté aux mobiles, ajout d'un lien de contact (#4385, #4408 par @jacquesfize)
 - [Authentification] Vérification de la validité de l'identifiant lors de sa modification dans l'espace utilisateur (#3891 par @christophe-ramet)
 - [Accueil] Le menu supérieur de GeoNature est maintenant responsive et s'adapte aux écrans mobiles (#4166 par @jacquesfize)
 - [Synthèse] Amélioration des performances des filtres sur les statuts (#4356 par @IdrissaD)
-- [Synthèse] Mise en évidence sur la carte et dans la liste des résultats d'un critère sélectionné, y compris dans les fiches taxon et observateur (#3258 par @jpm-cbna)
-- [Synthèse] Ajout de `id_digitizer` comme synonyme de `id_digitiser` dans le modèle `Synthese` (#4196 par @bouttier)
-- [Synthese/Validation] Remplacement du bouton d'envoi de mail, remplacé par un formulaire de contact (#4451 par @christophe-ramet)
-  - Un paramètre `ENABLE_USER_MAIL_FORM` est maintenant disponible et permet d'activer ou de désactiver l'affichage du formulaire de contact indépendamment dans la synthèse et la validation
-  - Le paramètre `DISPLAY_EMAIL_INFO_OBS`, qui permettait notamment d'activer l'affichage du bouton d'envoi de mail, est quant à lui supprimé
-- [Individus] Ajout des individus dans les modules Synthèse et Occtax (@CynthiaBorotPNV, @amandine-sahl, @TheoLechemia, @Pierre-Narcisi, @ClaireLagaye, @jacquesfize)
-  - [Synthèse] Ajout du champ `id_individual` dans la Synthèse et d'un filtre sur les individus (#4281 par @jacquesfize)
-  - [Occtax] Possibilité d'associer un individu à un dénombrement, désactivable avec le paramètre `individual` de la section `form_fields` de la configuration d'Occtax et avec les nouvelles permissions associées (#4281 par @jacquesfize, @TheoLechemia, @amandine-sahl)
-- [Occtax] Possibilité de définir une configuration spécifique pour chaque module Occtax dupliqué (#2641 par @TheoLechemia)
+- [Synthèse] Mise en évidence sur la carte et dans la liste des résultats d'un critère sélectionné (e.g. présence/absence, validation, stade de vie, période, etc.), y compris dans les fiches taxon et observateur (#3258 par @jpm-cbna)
+- [Synthese/Validation] Remplacement du bouton d'envoi d'email par un formulaire de contact (#4451 par @christophe-ramet)
+  - Un paramètre `ENABLE_USER_MAIL_FORM` est maintenant disponible et permet d'activer ou de désactiver l'affichage du formulaire de contact indépendamment dans les modules Synthèse et Validation
+  - Le paramètre `DISPLAY_EMAIL_INFO_OBS`, qui permettait notamment d'activer l'affichage du bouton d'envoi d'email, est quant à lui supprimé
+- [Individus] Ajout des individus dans les modules Synthèse et Occtax (#3837 par @CynthiaBorotPNV, @amandine-sahl, @TheoLechemia, @Pierre-Narcisi, @ClaireLagaye, @jacquesfize)
+  - [Synthèse] Ajout du champ `id_individual` dans la Synthèse et d'un filtre sur les individus (#4281)
+  - [Occtax] Possibilité d'associer un individu à un dénombrement, désactivable avec le paramètre `individual` de la section `form_fields` de la configuration d'Occtax et avec les nouvelles permissions associées (#4281)
+- [Occtax] Possibilité de définir une configuration spécifique pour chaque module Occtax dupliqué (#2641 par @TheoLechemia, @20cents et @edelclaux)
 - [Occtax] Ajout de la commande `geonature occtax create-duplicated-module` pour dupliquer le module Occtax (#4306 par @TheoLechemia)
-- [Occtax] Possibilité de trier la liste des taxons saisis par ordre alphabétique ou par ordre de saisie (#c par @VincentCauchois)
-- [Métadonnées] Ajout de la mécanique de champs additionnels dans les formulaires de jeux de données (#4215 par @VincentCauchois)
+- [Occtax] Possibilité de trier la liste des taxons saisis par ordre alphabétique ou par ordre de saisie (#682 par @VincentCauchois)
+- [Métadonnées] Ajout de la mécanique de champs additionnels dans les formulaires de jeux de données (#2745 par @VincentCauchois)
 - [Métadonnées] Possibilité de renseigner plusieurs objectifs pour un jeu de données (#4102 par @VincentCauchois)
 - [Métadonnées] Les données d'Occhab sont prises en compte dans les statistiques et les fiches des métadonnées (#3923 par @VincentCauchois)
 - [Métadonnées] Suppression de la limite de 150 caractères du nom des jeux de données (#3646 par @jacquesfize)
 - [Métadonnées] Traduction du formulaire des cadres d'acquisition (#4417 par @jacquesfize)
 - [Import] Affichage des jeux de données dans la liste des imports, dans la fiche d'un import et dans le rapport d'import (#4146 par @christophe-ramet)
 - [Habref] Ajout de commandes de mise à jour du référentiel Habref en version 7 (#2215 par @Pierre-Narcisi)
-- [Nomenclatures] Le libellé des nomenclatures des champs additionnels est désormais stocké en plus de leur identifiant (clé suffixée par `_label`). Les données historiques d'Occtax (web et mobile) sont migrées (#4297 par @TheoLechemia)
-- [Frontend] Amélioration et correction du composant `pnx-taxa` permettant de sélectionner plusieurs taxons (#4203 par @jpm-cbna)
-- [Frontend] Ajout d'une propriété `placeholder` au composant `pnx-observers` (#4174 par @CynthiaBorotPNV)
-- [Docker] Prise en charge des variables d'environnement suffixées par `_FILE` dans l'entrypoint du backend, permettant l'usage des secrets Docker (#4386 par @bouttier)
-- [Docker] Ajout de l'exécution de `supergrant` dans l'entrypoint (si `GEONATURE_SUPERGRANT_ARGS` est défini) et création du fichier `/tmp/ready` pour le healthcheck de l'installation de la base de données (#4391 par @bouttier)
+- [Nomenclatures] Le libellé champs additionnels de type nomenclature est désormais stocké en plus de leur identifiant (clé suffixée par `_label`). Les données historiques d'Occtax (web et mobile) sont migrées (#4297 par @TheoLechemia)
 - [Performances] Import différé de `weasyprint` et `bokeh` pour accélérer le lancement de la commande `geonature` (#4396 par @bouttier)
 - [Admin des permissions] Ajout de tests pour l'interface de gestions des permissions (#4326 par @jacquesfize)
 - [Métadonnées] Possibilité de configurer plusieurs types de zonage pour un même libellé dans `METADATA_AREA_FILTERS` (#4294 par @christophe-ramet)
-- [Installation] Utilisation de `uv` pour installer l'environnement Python du backend, remplacement des fichiers `setup.py` par des fichiers `pyproject.toml` et réduction des fichiers de requirements à un seul fichier `requirements.in` (#4320 par @jacquesfize)
 - [Installation] Le préfixe d'URL `/geonature` n'est plus codé en dur dans l'installation. Il est possible de le modifier dans `url_application_prefix_path` du fichier `settings.ini` (#3951 par @andriacap)
 - [Installation] Le backend de GeoNature peut être lancé sans fichier de configuration si tous les paramètres requis sont fournis par des variables d'environnement (#4407 par @bouttier)
 
@@ -83,14 +78,20 @@
 
 ### 💻 Développement
 
-- [Développement] Amélioration du hook pre-commit `prettier` (écriture directe et limitation aux fichiers modifiés) (#4351 par @christophe-ramet) et passage à `black` 26 (#4308 par @christophe-ramet)
-- [Développement] Suppression des tests de performance `pytest-benchmark`, remplacés par Locust (https://github.com/PnX-SI/geonature_benchmark) (#4319 par @jacquesfize)
-- [Développement] Suppression du dossier `data/scripts/import_mtd` (#4309 par @christophe-ramet) et du dossier `backend/geonature/tests/data` (par @VincentCauchois)
-- [Développement] Correction des tests lorsque la configuration contient un préfixe d'URL (#4412 par @bouttier)
+- Amélioration du hook pre-commit `prettier` (écriture directe et limitation aux fichiers modifiés) (#4351 par @christophe-ramet) et passage à `black` 26 (#4308 par @christophe-ramet)
+- Suppression des tests de performance `pytest-benchmark`, remplacés par Locust (https://github.com/PnX-SI/geonature_benchmark) (#4319 par @jacquesfize)
+- Suppression du dossier `data/scripts/import_mtd` (#4309 par @christophe-ramet) et du dossier `backend/geonature/tests/data` (par @VincentCauchois)
+- Correction des tests lorsque la configuration contient un préfixe d'URL (#4412 par @bouttier)
+- [Synthèse] Ajout de `id_digitizer` comme synonyme de `id_digitiser` dans le modèle `Synthese` (#4196 par @bouttier)
 - [Docker] Ajout de cibles au `Makefile` pour construire les images Docker (#4371 par @bouttier)
 - [Docker] Ajout d'une étape de développement dans le Dockerfile frontend et corrections diverses (par @bouttier)
 - [Docker] Correction de la construction des sous-modules et régénération forcée de l'URL de l'API (#4161, #4151 par @bouttier)
+- [Docker] Prise en charge des variables d'environnement suffixées par `_FILE` dans l'entrypoint du backend, permettant l'usage des secrets Docker (#4386 par @bouttier)
+- [Docker] Ajout de l'exécution de `supergrant` dans l'entrypoint (si `GEONATURE_SUPERGRANT_ARGS` est défini) et création du fichier `/tmp/ready` pour le healthcheck de l'installation de la base de données (#4391 par @bouttier)
 - [Frontend] Passage de Node.js 20 à Node.js 24 (#4374 par @bouttier)
+- [Frontend] Amélioration et correction du composant `pnx-taxa` permettant de sélectionner plusieurs taxons (#4203 par @jpm-cbna)
+- [Frontend] Ajout d'une propriété `placeholder` au composant `pnx-observers` (#4174 par @CynthiaBorotPNV)
+- [Installation] Utilisation de `uv` pour installer l'environnement Python du backend, remplacement des fichiers `setup.py` par des fichiers `pyproject.toml` et réduction des fichiers de requirements à un seul fichier `requirements.in` (#4320 par @jacquesfize)
 - [CI/CD] Suppression de Debian 11 de la CI et correction de l'envoi de la couverture de code vers Codecov (#4185 par @amandine-sahl)
 - [Documentation] Correction de la syntaxe RST dans la section "Arborescence" de la documentation développeur (#4304 par @raphj) et correction de la compilation de la documentation (#4340 par @jacquesfize)
 
@@ -98,11 +99,29 @@
 
 - Debian 11 n'est plus supporté. Vérifiez la version de votre serveur pour passer en Debian 12 ou 13.
 - SQLAlchemy mis à jour en version 2.0. Si vous utilisez des modules externes spécifiques, vérifiez qu'ils disposent d'une version compatible avec SQLAlchemy 2.0. C'est le cas pour les modules Dashboard, Monitoring et Export que vous devez donc mettre à jour en même temps que GeoNature.
-- Les paramètres de configuration `IMPLEMENTED_MODULES` et `IMPLEMENTED_OBJECTS` de la section `ADDITIONAL_FIELDS` sont supprimés. Les modules et objets pouvant avoir des champs additionnels sont désormais gérés en base de données avec les champs `support_additional_fields` des tables `gn_commons.t_modules` et `gn_permissions.t_objects` (la migration Alembic gère la rétro-compatibilité) (#4306)
-- La valeur par défaut du paramètre `HELP_CONTACT_URL` passe à `#`. Renseignez-le avec l'URL de contact de votre structure (ou videz-le) (#4405)
+- Les paramètres de configuration globaux de GeoNature `IMPLEMENTED_MODULES` et `IMPLEMENTED_OBJECTS` de la section `ADDITIONAL_FIELDS` sont supprimés. Les modules et objets pouvant avoir des champs additionnels sont désormais gérés en base de données avec les champs `support_additional_fields` des tables `gn_commons.t_modules` et `gn_permissions.t_objects` (la migration Alembic gère automatiquement la rétro-compatibilité) (#4306)
+- La valeur par défaut du paramètre `HELP_CONTACT_URL` passe à `#`. Renseignez-le avec l'URL ou l'email de contact de votre structure (ou videz-le) (#4405)
 - Le fichier `logo_sidebar.jpg` devient `logo_sidebar.png`. Si vous aviez surcouché le logo de l'application, renommez (et convertissez) votre fichier `custom/images/logo_sidebar.jpg` en `custom/images/logo_sidebar.png` (#4405)
-- La valeur par défaut du paramètre `AUTO_VALIDATION_CRONTAB` du module Validation passe de `* 1 * * *` à `0 * * * *`. Vérifiez votre configuration si vous l'aviez surcouchée.
+- La valeur par défaut du paramètre `AUTO_VALIDATION_CRONTAB` du module Validation passe de `* 1 * * *` à `0 * * * *`. Vérifiez votre configuration si vous l'aviez surcouchée (#4355)
 - La fonction `gn_commons.is_in_period` est supprimée (#4315)
+
+## 2.17.5 (2026-08-04)
+
+### 🐛 Corrections
+
+- [Installation] Correction des fichiers `requirements.txt` et `requirements-dev.txt` pour la version python=3.10 (par @jacquesfize)
+
+## 2.17.4 (2026-07-08)
+
+### 🐛 Corrections
+
+- [Docker] Le `setup.py` s'appuie sur le requirement.txt (#4237 par @jacquesfize)
+
+## 2.17.3 (2026-07-01)
+
+### 🐛 Corrections
+
+- [Docker] L'image Docker backend s'appuie maintenant sur les fichiers de requirements compilés (#4219 par @christophe-ramet)
 
 ## 2.17.2 (2026-06-09)
 
