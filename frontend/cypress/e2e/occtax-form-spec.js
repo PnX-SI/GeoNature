@@ -289,7 +289,8 @@ describe('Testing adding an observation in OccTax', { testIsolation: false }, ()
   // FIXME we should wait for the end of the research!
   it('Should delete the taxa', () => {
     filterMapList((req) => {
-      cy.get('[data-qa="pnx-occtax-delete-taxa"]').first().click();
+      cy.get('[data-qa="pnx-occtax-row-menu"]').first().click();
+      cy.get('[data-qa="pnx-occtax-delete-taxa"]').click();
       // cy.wait(2000)
       cy.get('[data-qa="pnx-occtax-delete"]').click();
     });

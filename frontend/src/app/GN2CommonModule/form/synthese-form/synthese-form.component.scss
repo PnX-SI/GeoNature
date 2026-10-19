@@ -102,8 +102,6 @@ legend {
 }
 
 .search-wrapper {
-  max-height: calc(100vh - 220px);
-  overflow: auto;
   border: 0;
   // Unset position to show content dropdown-menu hover all panels
   position: unset;

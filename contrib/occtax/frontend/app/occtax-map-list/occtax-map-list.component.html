@@ -18,20 +18,14 @@
   </a>
   <pnx-occtax-map-list-filter filter></pnx-occtax-map-list-filter>
 
-  <div
-    map
-    [ngStyle]="{ 'height.px': cardContentHeight }"
-  >
+  <div map>
     <!-- MAP -->
     <pnx-map-list
       [idName]="mapListService.idName"
-      [height]="cardContentHeight + 'px'"
+      height="100%"
     ></pnx-map-list>
   </div>
-  <div
-    list
-    [ngStyle]="{ 'min-height.px': cardContentHeight }"
-  >
+  <div list>
     <!-- LIST -->
     <!--Table-->
     <pnx-data-grid
@@ -198,16 +192,14 @@
           <button
             mat-icon-button
             class="btn-row"
-            [disabled]="!isActionAllowed(row, 'D')"
-            [matTooltip]="getTooltip(row, 'D')"
-            (click)="openDeleteModal($event, modalConfirm, iElement, row)"
-            data-qa="pnx-occtax-delete-taxa"
+            type="button"
+            [matMenuTriggerFor]="rowMenu"
+            [matMenuTriggerData]="{ row: row }"
+            [matTooltip]="'Actions.More' | translate"
+            (click)="$event.stopPropagation()"
+            data-qa="pnx-occtax-row-menu"
           >
-            <i
-              class="fa fa-trash-o"
-              [ngClass]="{ disabled: !isActionAllowed(row, 'D') }"
-              aria-hidden="true"
-            ></i>
+            <mat-icon>more_vert</mat-icon>
           </button>
         </ng-template>
       </pnx-data-column>
@@ -286,17 +278,38 @@
         </pnx-data-column>
       </ng-container>
     </pnx-data-grid>
-    <button
-      *ngIf="userCruved?.E != '0'"
-      id="download-btn"
-      mat-stroked-button
-      color="primary"
-      (click)="openModalDownload($event, modalDownload)"
-    >
-      {{ 'Actions.Download' | translate }}
+    <mat-menu #rowMenu="matMenu">
+      <ng-template
+        matMenuContent
+        let-row="row"
+      >
+        <button
+          mat-menu-item
+          type="button"
+          [disabled]="!isActionAllowed(row, 'D')"
+          [matTooltip]="getTooltip(row, 'D')"
+          (click)="openDeleteModal($event, modalConfirm, iElement, row)"
+          data-qa="pnx-occtax-delete-taxa"
+        >
+          <mat-icon>delete_outline</mat-icon>
+          {{ 'Actions.Delete' | translate }}
+        </button>
+      </ng-template>
+    </mat-menu>
 
-      <mat-icon>file_download</mat-icon>
-    </button>
+    <div class="gn-list-actions">
+      <button
+        *ngIf="userCruved?.E != '0'"
+        id="download-btn"
+        mat-stroked-button
+        color="primary"
+        (click)="openModalDownload($event, modalDownload)"
+      >
+        {{ 'Actions.Download' | translate }}
+
+        <mat-icon>file_download</mat-icon>
+      </button>
+    </div>
 
     <!-- MODAL COLUMNS -->
     <ng-template

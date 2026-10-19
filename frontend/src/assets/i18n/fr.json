@@ -27,6 +27,7 @@
   },
   "Actions": {
     "Singular": "Action",
+    "More": "Plus d'actions",
     "Plural": "Actions",
     "Add": "Ajouter",
     "Edit": "Éditer",

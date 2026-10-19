@@ -28,7 +28,7 @@
 
   <pnx-map-list
     map
-    height="88vh"
+    height="100%"
     idName="id_station"
   ></pnx-map-list>
 
@@ -164,15 +164,13 @@
                 <button
                   mat-icon-button
                   class="btn-row"
-                  (click)="openDeleteModal(row, deleteModal)"
-                  [disabled]="!isActionAllowed(row, 'D')"
-                  [matTooltip]="getTooltip(row, 'D')"
+                  type="button"
+                  [matMenuTriggerFor]="rowMenu"
+                  [matMenuTriggerData]="{ row: row }"
+                  [matTooltip]="'Actions.More' | translate"
+                  (click)="$event.stopPropagation()"
                 >
-                  <i
-                    class="fa fa-trash-o"
-                    [ngClass]="{ disabled: !isActionAllowed(row, 'D') }"
-                    aria-hidden="true"
-                  ></i>
+                  <mat-icon>more_vert</mat-icon>
                 </button>
               </ng-template>
             </pnx-data-column>
@@ -222,9 +220,26 @@
               </ng-template>
             </pnx-data-column>
           </pnx-data-grid>
+          <mat-menu #rowMenu="matMenu">
+            <ng-template
+              matMenuContent
+              let-row="row"
+            >
+              <button
+                mat-menu-item
+                type="button"
+                [disabled]="!isActionAllowed(row, 'D')"
+                [matTooltip]="getTooltip(row, 'D')"
+                (click)="openDeleteModal(row, deleteModal)"
+              >
+                <mat-icon>delete_outline</mat-icon>
+                {{ 'Actions.Delete' | translate }}
+              </button>
+            </ng-template>
+          </mat-menu>
         </div>
       </div>
-      <div class="row mt-3 justify-content-end">
+      <div class="gn-list-actions">
         <div class="col-auto">
           <button
             *ngIf="canImport"

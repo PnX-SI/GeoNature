@@ -1,12 +1,18 @@
+@use '@angular/material' as mat;
+
 // Shared look of the filter / map / list pages: three panes with the same border, radius and
 // shadow, separated by gutters that hold the resize handles.
 :host {
   --gn-pane-border: #dfe3e8;
   --gn-pane-radius: 6px;
   --gn-gutter: 8px;
-  display: block;
+  // the layout fills the page below the toolbar: the panes scroll, not the page
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  height: var(--gn-content-height);
   padding: var(--gn-gutter);
+  box-sizing: border-box;
 }
 
 .gn-map-list-actions {
@@ -32,7 +38,37 @@
   position: relative;
   display: flex;
   align-items: stretch;
+  flex: 1 1 0;
+  min-height: 0;
   width: 100%;
+}
+
+// export and import actions, pinned at the bottom of the list pane
+:host ::ng-deep .gn-map-list-list .gn-list-actions {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 10px 12px;
+  background-color: #fff;
+  border-top: 1px solid var(--gn-pane-border);
+}
+
+// whatever the map component, it fills its pane (the modules used to hard-code a height)
+:host ::ng-deep .gn-map-list-map {
+  > * {
+    display: block;
+    height: 100% !important;
+  }
+  .map-card {
+    min-height: 0;
+    margin: 0;
+  }
+  .map-container,
+  .map-container > div:last-child {
+    height: 100% !important;
+  }
 }
 
 .gn-map-list-filter,
@@ -44,6 +80,21 @@
   border: 1px solid var(--gn-pane-border);
   border-radius: var(--gn-pane-radius);
   box-shadow: 0 1px 2px rgba(16, 24, 40, 0.06);
+}
+
+// Dense form fields in the filter pane: the default outline field is 56px high plus a 22px row
+// reserved for hints and errors, which the filters never show.
+:host ::ng-deep .gn-map-list-filter {
+  @include mat.form-field-density(-3);
+
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+
+  // the hint row is gone: keep a gap between two fields
+  .mat-mdc-form-field {
+    margin-bottom: 12px;
+  }
 }
 
 .gn-map-list-filter {
@@ -149,9 +200,15 @@
 
 // stack the columns on small screens
 @media (max-width: 991px) {
+  :host {
+    height: auto;
+  }
   .gn-map-list-layout {
     flex-direction: column;
     row-gap: var(--gn-gutter);
+  }
+  .gn-map-list-layout .gn-map-list-map {
+    height: 60vh;
   }
   .gn-map-list-layout .gn-map-list-filter {
     width: 100%;
