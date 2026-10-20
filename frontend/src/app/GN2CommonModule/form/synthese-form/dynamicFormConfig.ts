@@ -65,7 +65,7 @@ export const DYNAMIC_FORM_DEF = [
     attribut_name: 'id_nomenclature_grp_typ',
     code_nomenclature_type: 'TYP_GRP',
     required: false,
-    multi_select: true,
+    multiple: true,
   },
   {
     type_widget: 'nomenclature',
@@ -73,7 +73,7 @@ export const DYNAMIC_FORM_DEF = [
     attribut_name: 'id_nomenclature_observation_status',
     code_nomenclature_type: 'STATUT_OBS',
     required: false,
-    multi_select: true,
+    multiple: true,
   },
   {
     type_widget: 'nomenclature',
@@ -81,7 +81,7 @@ export const DYNAMIC_FORM_DEF = [
     attribut_name: 'id_nomenclature_obs_technique',
     code_nomenclature_type: 'METH_OBS',
     required: false,
-    multi_select: true,
+    multiple: true,
   },
   {
     type_widget: 'nomenclature',
@@ -89,7 +89,7 @@ export const DYNAMIC_FORM_DEF = [
     attribut_name: 'id_nomenclature_bio_condition',
     code_nomenclature_type: 'ETA_BIO',
     required: false,
-    multi_select: true,
+    multiple: true,
   },
   {
     type_widget: 'nomenclature',
@@ -97,7 +97,7 @@ export const DYNAMIC_FORM_DEF = [
     attribut_name: 'id_nomenclature_bio_status',
     code_nomenclature_type: 'STATUT_BIO',
     required: false,
-    multi_select: true,
+    multiple: true,
   },
   {
     type_widget: 'nomenclature',
@@ -105,7 +105,7 @@ export const DYNAMIC_FORM_DEF = [
     attribut_name: 'id_nomenclature_biogeo_status',
     code_nomenclature_type: 'STAT_BIOGEO',
     required: false,
-    multi_select: true,
+    multiple: true,
   },
   {
     type_widget: 'nomenclature',
@@ -113,7 +113,7 @@ export const DYNAMIC_FORM_DEF = [
     attribut_name: 'id_nomenclature_naturalness',
     code_nomenclature_type: 'NATURALITE',
     required: false,
-    multi_select: true,
+    multiple: true,
   },
   {
     type_widget: 'nomenclature',
@@ -121,7 +121,7 @@ export const DYNAMIC_FORM_DEF = [
     attribut_name: 'id_nomenclature_determination_method',
     code_nomenclature_type: 'METH_DETERMIN',
     required: false,
-    multi_select: true,
+    multiple: true,
   },
   {
     type_widget: 'nomenclature',
@@ -129,7 +129,7 @@ export const DYNAMIC_FORM_DEF = [
     attribut_name: 'id_nomenclature_exist_proof',
     code_nomenclature_type: 'PREUVE_EXIST',
     required: false,
-    multi_select: true,
+    multiple: true,
   },
   {
     type_widget: 'nomenclature',
@@ -137,7 +137,7 @@ export const DYNAMIC_FORM_DEF = [
     attribut_name: 'id_nomenclature_diffusion_level',
     code_nomenclature_type: 'NIV_PRECIS',
     required: false,
-    multi_select: true,
+    multiple: true,
   },
   {
     type_widget: 'nomenclature',
@@ -145,7 +145,7 @@ export const DYNAMIC_FORM_DEF = [
     attribut_name: 'id_nomenclature_source_status',
     code_nomenclature_type: 'STATUT_SOURCE',
     required: false,
-    multi_select: true,
+    multiple: true,
   },
   {
     type_widget: 'nomenclature',
@@ -153,7 +153,7 @@ export const DYNAMIC_FORM_DEF = [
     attribut_name: 'id_nomenclature_blurring',
     code_nomenclature_type: 'DEE_FLOU',
     required: false,
-    multi_select: true,
+    multiple: true,
   },
   // counting
   {
@@ -162,7 +162,7 @@ export const DYNAMIC_FORM_DEF = [
     attribut_name: 'id_nomenclature_life_stage',
     code_nomenclature_type: 'STADE_VIE',
     required: false,
-    multi_select: true,
+    multiple: true,
   },
   {
     type_widget: 'nomenclature',
@@ -170,7 +170,7 @@ export const DYNAMIC_FORM_DEF = [
     attribut_name: 'id_nomenclature_sex',
     code_nomenclature_type: 'SEXE',
     required: false,
-    multi_select: true,
+    multiple: true,
   },
   {
     type_widget: 'nomenclature',
@@ -178,7 +178,7 @@ export const DYNAMIC_FORM_DEF = [
     attribut_name: 'id_nomenclature_obj_count',
     code_nomenclature_type: 'OBJ_DENBR',
     required: false,
-    multi_select: true,
+    multiple: true,
   },
   {
     type_widget: 'nomenclature',
@@ -186,7 +186,7 @@ export const DYNAMIC_FORM_DEF = [
     attribut_name: 'id_nomenclature_type_count',
     code_nomenclature_type: 'TYP_DENBR',
     required: false,
-    multi_select: true,
+    multiple: true,
   },
   {
     type_widget: 'nomenclature',
@@ -194,7 +194,7 @@ export const DYNAMIC_FORM_DEF = [
     attribut_name: 'id_nomenclature_valid_status',
     code_nomenclature_type: 'STATUT_VALID',
     required: false,
-    multi_select: true,
+    multiple: true,
   },
   {
     type_widget: 'nomenclature',
@@ -202,7 +202,7 @@ export const DYNAMIC_FORM_DEF = [
     attribut_name: 'id_nomenclature_geo_object_nature',
     code_nomenclature_type: 'NAT_OBJ_GEO',
     required: false,
-    multi_select: true,
+    multiple: true,
   },
   {
     type_widget: 'nomenclature',
@@ -210,7 +210,7 @@ export const DYNAMIC_FORM_DEF = [
     attribut_name: 'id_nomenclature_sensitivity',
     code_nomenclature_type: 'SENSIBILITE',
     required: false,
-    multi_select: true,
+    multiple: true,
   },
   {
     type_widget: 'nomenclature',
@@ -218,7 +218,7 @@ export const DYNAMIC_FORM_DEF = [
     attribut_name: 'id_nomenclature_info_geo_type',
     code_nomenclature_type: 'TYP_INF_GEO',
     required: false,
-    multi_select: true,
+    multiple: true,
   },
   {
     type_widget: 'text',
@@ -244,7 +244,7 @@ export const DYNAMIC_FORM_DEF = [
     attribut_name: 'id_digitiser',
     idComponent: '1',
     required: false,
-    multi_select: true,
+    multiple: true,
   },
   {
     type_widget: 'text',
