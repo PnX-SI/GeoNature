@@ -1122,10 +1122,10 @@ Authentification et autorisations
 Se connecter avec un fournisseur d'identité externe
 """"""""""""""""""""""""""""""""""""""""""""""""""""
 
-Grâce au sous-module d'authentification (https://github.com/PnX-SI/UsersHub-authentification-module/blob/master/README.md#usershub-authentification-module-), GeoNature permet déléguer la gestion de l'authentification à des systemes externes.
+Grâce au sous-module d'authentification (https://github.com/PnX-SI/UsersHub-authentification-module/blob/master/README.md#usershub-authentification-module-), GeoNature permet de déléguer la gestion de l'authentification à des systèmes externes.
 
-- la route `auth/providers` affiche la liste des fournisseurs d'identité disponible
-- la route `auth/login/<id_provider>` permet de se logguer à un fournisseur d'identité (sans paramètre `<id_provider>` c'est le système d'authentification interne à GeoNature qui est utilisé). Si c'est un fournisseur "externe", l'utilisateur est redirigé vers la page de login du fournisseur, puis automatiquement renvoyé (si succès) vers la route `auth/authorize` qui assure la réconciliation avec la base GeoNature en le "login interne" (enregistrement du cookie de session et délivrement du jeton JWT).
+- la route ``auth/providers`` affiche la liste des fournisseurs d'identité disponibles
+- la route ``auth/login/<id_provider>`` permet de se loguer à un fournisseur d'identité (sans paramètre ``<id_provider>`` c'est le système d'authentification interne à GeoNature qui est utilisé). Si c'est un fournisseur "externe", l'utilisateur est redirigé vers la page de login du fournisseur, puis automatiquement renvoyé (si succès) vers la route ``auth/authorize`` qui assure la réconciliation avec la base de données GeoNature avec le "login interne" (enregistrement du cookie de session et émission du jeton JWT).
 
 Accéder à l’utilisateur courant
 """""""""""""""""""""""""""""""
