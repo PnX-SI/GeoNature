@@ -59,6 +59,10 @@ COOKIE_EXPIRATION = 7200
 # Activer (=true) ou pas (=false) le renouvellement automatique du cookie
 COOKIE_AUTORENEW = true
 
+# Header dans lequel GeoNature lit son propre token, au lieu d'Authorization
+# (utile derrière une passerelle qui monopolise ce header)
+AUTH_TOKEN_HEADER = "Authorization"
+
 # Capturer toutes les exceptions (=true) ou pas (=false)
 TRAP_ALL_EXCEPTIONS = false
 
