@@ -29,7 +29,7 @@ GeoNature utilise :
 
 - l'API de TaxHub (recherche taxon, règne et groupe d'un taxon...), intégrée à GeoNature depuis sa version 2.15
 - l'API du sous-module Nomenclatures (typologies et listes déroulantes)
-- l'API du sous-module d'authentification de UsersHub (login/logout, récupération du CRUVED d'un utilisateur)
+- l'API du sous-module d'authentification de UsersHub (login/logout, gestion des fournisseurs d'identité externe, récupération du CRUVED d'un utilisateur). Voir la doc : https://github.com/PnX-SI/UsersHub-authentification-module/blob/master/README.md#utilisation-de-lapi
 - l'API de GeoNature (get, post, update des données des différents modules, métadonnées, intersections géographiques, exports...)
 
 .. image :: _static/api_services.png
@@ -1131,6 +1131,14 @@ La :ref:`configuration des modules <module-config>` est accessible à la clé ``
 
 Authentification et autorisations
 *********************************
+
+Se connecter avec un fournisseur d'identité externe
+""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Grâce au sous-module d'authentification (https://github.com/PnX-SI/UsersHub-authentification-module/blob/master/README.md#usershub-authentification-module-), GeoNature permet de déléguer la gestion de l'authentification à des systèmes externes.
+
+- la route ``auth/providers`` affiche la liste des fournisseurs d'identité disponibles
+- la route ``auth/login/<id_provider>`` permet de se loguer à un fournisseur d'identité (sans paramètre ``<id_provider>`` c'est le système d'authentification interne à GeoNature qui est utilisé). Si c'est un fournisseur "externe", l'utilisateur est redirigé vers la page de login du fournisseur, puis automatiquement renvoyé (si succès) vers la route ``auth/authorize`` qui assure la réconciliation avec la base de données GeoNature avec le "login interne" (enregistrement du cookie de session et émission du jeton JWT).
 
 Accéder à l’utilisateur courant
 """""""""""""""""""""""""""""""
