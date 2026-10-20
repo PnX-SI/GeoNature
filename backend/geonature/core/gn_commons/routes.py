@@ -29,6 +29,7 @@ from geonature.core.gn_permissions.tools import (
 )
 from geonature.core.gn_commons.schemas import TAdditionalFieldsSchema
 import geonature.core.gn_commons.tasks  # noqa: F401
+from pypnusershub.routes import list_providers
 
 from shapely.geometry import shape
 from geoalchemy2.shape import from_shape
@@ -235,6 +236,7 @@ def get_t_mobile_apps():
     for app in data:
         app_dict = app.as_dict(exclude=["relative_path_apk"])
         app_dict["settings"] = {}
+        app_dict["providers"] = list_providers()
 
         #  if local
         if app.relative_path_apk:
