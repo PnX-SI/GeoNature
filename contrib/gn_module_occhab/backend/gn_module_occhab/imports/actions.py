@@ -425,7 +425,9 @@ class OcchabImportActions(ImportActions):
         entity_station, _ = get_occhab_entities()
 
         fields, selected_fields, _ = get_mapping_data(imprt, entity_station)
-        init_rows_validity(imprt)
+        # The dataset does not identify a station: a habitat row may repeat it while
+        # referencing an existing station.
+        init_rows_validity(imprt, dataset_name_field="unique_dataset_id")
         task.update_state(state="PROGRESS", meta={"progress": 0.05})
         check_orphan_rows(imprt)
         task.update_state(state="PROGRESS", meta={"progress": 0.1})

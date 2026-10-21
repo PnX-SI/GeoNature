@@ -29,6 +29,9 @@ def dataframe_check(check_function):
     @wraps(check_function)
     def wrapper(imprt, entity, df, *args, **kwargs):
         updated_cols = set()
+        if df.empty:
+            # No row for this entity: nothing to check nor to update
+            return updated_cols
         params = []
         if pass_import:
             params.append(imprt)

@@ -1,0 +1,3 @@
+Objectif du test;id_station_source;unique_id_sinp_station;unique_dataset_id;date_min;date_max;observers;WKT;id_nomenclature_geographic_object;unique_id_sinp_habitat;nom_cite;cd_hab
+Fichier sans station : habitat uniquement dans une station existante en base;;@EXISTING_STATION_UUID@;;;;;;;1c5f9e3b-6a7d-4c8b-9d2e-4f5a6b7c8d9e;prairie;24
+Fichier sans station : second habitat dans la même station existante;;@EXISTING_STATION_UUID@;;;;;;;2d6a0f4c-7b8e-4d9c-8e3f-5a6b7c8d9e0f;pelouse;24
