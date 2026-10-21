@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/setup-python@v4
         with:
-          python-version: 3.11
+          python-version: "3.12"
       - uses: actions/checkout@master
         with:
           fetch-depth: 0
@@ -36,7 +36,7 @@ jobs:
         with:
           requirements_path: docs/requirements.txt
           pyproject_extras: ""
-          python_version: 3.11
+          python_version: "3.12"
           publish: false
 
       - name: Push changes
