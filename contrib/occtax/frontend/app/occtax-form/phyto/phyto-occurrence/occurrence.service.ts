@@ -280,6 +280,12 @@ export class PhytoOccurrenceService {
 
     formValue = this.occurrenceFormValue();
 
+    if(formValue.cor_counting_occtax) {
+      formValue.cor_counting_occtax = formValue.cor_counting_occtax.filter((counting)=>{
+        return counting.id_nomenclature_phytosociological_abundance !== null
+      })
+    }
+
     let id_releve = this.occtaxFormService.id_releve_occtax.getValue();
     let TEMP_ID_OCCURRENCE = this.uuidv4();
 

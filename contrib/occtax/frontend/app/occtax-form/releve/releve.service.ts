@@ -484,7 +484,6 @@ export class OcctaxFormReleveService {
 
   releveFormValue() {
     let value = JSON.parse(JSON.stringify(this.releveForm.value));
-
     value.properties.date_min = this.dateParser.format(
       value.properties.date_min,
     );
@@ -495,6 +494,41 @@ export class OcctaxFormReleveService {
       value.properties.observers = value.properties.observers.map(
         (observer) => observer.id_role,
       );
+    }
+    if (value.properties.t_vegetation_stratum) {
+      value.properties.t_vegetation_stratum = value.properties.t_vegetation_stratum
+        .filter(stratum => {
+          if (
+            stratum.average_height == null &&
+            stratum.max_height == null &&
+            stratum.min_height == null &&
+            stratum.percentage_cover_vegetation_stratum == null
+          ) { return false; }
+          else {
+            return true;
+          }
+        }).map(stratum => {
+          if (
+            stratum.average_height == null &&
+            stratum.max_height != null &&
+            stratum.min_height != null
+          ) {
+            stratum.average_height = (stratum.max_height + stratum.min_height) / 2
+          } else if (
+            stratum.average_height == null &&
+            stratum.max_height == null &&
+            stratum.min_height != null
+          ) {
+            stratum.average_height = stratum.min_height
+          } else if (
+            stratum.average_height == null &&
+            stratum.max_height != null &&
+            stratum.min_height == null
+          ) {
+            stratum.average_height = stratum.max_height
+          }
+          return stratum;
+        });
     }
     /* Champs additionnels - formatter les dates et les nomenclatures */
     this.additionalFieldsForm.forEach((fieldForm: any) => {

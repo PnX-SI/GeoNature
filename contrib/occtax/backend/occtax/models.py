@@ -2,6 +2,7 @@ from typing import Any, Optional
 
 from geoalchemy2 import Geometry
 from sqlalchemy import Column, DateTime, FetchedValue, ForeignKey, Integer, Unicode, not_
+from sqlalchemy import Column, DateTime, FetchedValue, ForeignKey, Integer, Unicode, String, Numeric, not_
 from sqlalchemy.sql import select, func, and_
 from sqlalchemy.orm import relationship, backref, Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import UUID, JSONB
@@ -301,7 +302,7 @@ class TVegetationStratum(DB.Model):
     min_height = DB.Column(DB.Numeric(5, 2))
     max_height = DB.Column(DB.Numeric(5, 2))
     average_height = DB.Column(DB.Numeric(5, 2))
-    percentage_cover_vegetation_stratum = DB.Column(DB.Integer)
+    percentage_cover_vegetation_stratum = DB.Column(DB.Numeric(5,2)) #it's int4 in DB
 
     releve = relationship("TRelevesOccurrence", back_populates="t_vegetation_stratum")
 

@@ -30,7 +30,7 @@ from .models import (
     TOccurrencesOccurrence,
     CorCountingOccurrence,
     DefaultNomenclaturesValue,
-    TVegetationStratum,  ## import de la table TVegetationStratum dans le releveHandler ?
+    TVegetationStratum,
 )
 from .repositories import (
     ReleveRepository,

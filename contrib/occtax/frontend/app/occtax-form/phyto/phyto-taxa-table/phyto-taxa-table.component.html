@@ -6,7 +6,7 @@
       else zeroOccurrenceBlk
     "
   >
-    <div class="sort-toolbar">
+    <!-- <div class="sort-toolbar">
       <mat-button-toggle-group
         class="sort-type-group"
         name="sortType"
@@ -38,7 +38,7 @@
           {{ sortOrder === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
         </mat-icon>
       </button>
-    </div>
+    </div> -->
 
     <ng-container
       *ngFor="let occurrenceInProgress of occtaxTaxaListService.rec_occurrences_in_progress"
@@ -105,6 +105,9 @@
         <td
           mat-cell
           *matCellDef="let occurrence"
+          matTooltip="{{ occurrence.taxref?.nom_valide || '' }}"
+          aria-label="{{ occurrence.taxref?.nom_valide || '' }}"
+          class="withTooltip"
         >
           {{ occurrence.taxref?.nom_valide || '' }}
         </td>
@@ -119,19 +122,22 @@
           mat-header-cell
           *matHeaderCellDef
           scope="col"
+          matTooltip="{{ column.label }}"
+          aria-label="{{ column.label }}"
+          class="mat-column-abundance withTooltip"
         >
-          {{ column.label }}
+          {{ column.mnemonique }}
         </th>
         <td
           mat-cell
           *matCellDef="let occurrence"
+          class="mat-column-abundance"
         >
           {{ getStratumAbundance(occurrence, column.id) }}
         </td>
       </ng-container>
 
       <!-- Comment -->
-      <!-- TODO: break comment so it takes only one line -->
       <ng-container matColumnDef="comment">
         <th
           mat-header-cell
@@ -143,9 +149,12 @@
         <td
           mat-cell
           *matCellDef="let occurrence"
+          matTooltip="{{ getOccurrenceComment(occurrence) }}"
+          aria-label="{{ getOccurrenceComment(occurrence) }}"
+          class="withTooltip"
         >
           {{ getOccurrenceComment(occurrence) }}
-        </td>
+      </td>
       </ng-container>
 
       <!-- Actions -->

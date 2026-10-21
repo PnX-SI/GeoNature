@@ -59,3 +59,12 @@ th {
 .mat-header-cell-actions {
   text-align: center;
 }
+
+.withTooltip {
+  text-decoration: underline dotted;
+}
+
+.mat-column-abundance {
+  text-align: center;
+  border-left: $inside-border-size solid #cfcfcf;
+}

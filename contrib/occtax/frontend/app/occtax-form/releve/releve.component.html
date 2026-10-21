@@ -10,7 +10,7 @@
 <div class="row">
   <!-- PRECISION -->
   <div
-    *ngIf="occtaxConfig.moduleConf.form_fields.precision"
+    *ngIf="occtaxConfig.moduleConf.form_fields.precision || module === 'PHYTO'"
     class="col-8"
   >
     <small>{{ 'Occtax.Releve.Precision' | translate }}</small>
@@ -26,7 +26,7 @@
 <div class="row">
   <!-- CODE RELEVE -->
   <div
-    *ngIf="config.OCCTAX.form_fields.code_releve"
+    *ngIf="config.OCCTAX.form_fields.code_releve || module === 'PHYTO'"
     class="col-xl-4 col-md-6 col-sm-8 col-11"
   >
     <small>{{ 'Occtax.Releve.CodeReleve' | translate }}</small>
@@ -42,7 +42,7 @@
 <div class="row">
   <!-- PLACE NAME -->
   <div class="col-8">
-    <div *ngIf="occtaxConfig.moduleConf.form_fields.place_name">
+    <div *ngIf="occtaxConfig.moduleConf.form_fields.place_name && module !== 'PHYTO'">
       <small>{{ 'Occtax.Releve.PlaceName' | translate }}</small>
       <input
         class="form-control form-control-sm"
@@ -56,7 +56,7 @@
   <div class="col-xl-8 col-lg-10">
     <!-- OBSERVATEURS -->
     <pnx-observers
-      *ngIf="!occtaxConfig.moduleConf.observers_txt; else elseBlock"
+      *ngIf="!occtaxConfig.moduleConf.observers_txt || module === 'PHYTO'; else elseBlock"
       data-qa="pnx-occtax-releve-form-observers"
       [parentFormControl]="propertiesForm.get('observers')"
       [multiSelect]="true"
@@ -110,7 +110,7 @@
   <div class="col-xl-4 col-md-6 col-sm-8 col-11">
     <!-- DATE MIN -->
     <pnx-date
-      *ngIf="occtaxConfig.moduleConf.form_fields.date_min"
+      *ngIf="occtaxConfig.moduleConf.form_fields.date_min || module === 'PHYTO'"
       [isInvalid]="propertiesForm.hasError('invalidDate') || propertiesForm.get('date_min').invalid"
       data-qa="pnx-occtax-releve-form-datemin"
       label="{{ 'MinDate' | translate }}"
@@ -125,7 +125,7 @@
   >
     <!-- DATE MAX -->
     <pnx-date
-      *ngIf="occtaxConfig.moduleConf.form_fields.date_max"
+      *ngIf="occtaxConfig.moduleConf.form_fields.date_max || module === 'PHYTO'"
       data-qa="pnx-occtax-releve-form-datemax"
       [isInvalid]="propertiesForm.hasError('invalidDate') || propertiesForm.get('date_max').invalid"
       label="{{ 'MaxDate' | translate }} "
@@ -162,7 +162,7 @@
   <div class="col-md-4 col-sm-5 col-6">
     <!-- HOUR MIN -->
     <div
-      *ngIf="occtaxConfig.moduleConf.form_fields.hour_min"
+      *ngIf="occtaxConfig.moduleConf.form_fields.hour_min || module === 'PHYTO'"
       class="form-group"
     >
       <small>{{ 'HourMin' | translate }}</small>
@@ -186,7 +186,7 @@
   >
     <!-- HOUR MAX -->
     <div
-      *ngIf="occtaxConfig.moduleConf.form_fields.hour_max"
+      *ngIf="occtaxConfig.moduleConf.form_fields.hour_max || module === 'PHYTO'"
       class="form-group"
     >
       <small>{{ 'HourMax' | translate }}</small>
@@ -215,7 +215,7 @@
 <div class="row">
   <!-- ALTITUDE MIN -->
   <div
-    *ngIf="occtaxConfig.moduleConf.form_fields.altitude_min"
+    *ngIf="occtaxConfig.moduleConf.form_fields.altitude_min || module === 'PHYTO'"
     class="col-4"
   >
     <small>{{ 'MinAltitude' | translate }}</small>
@@ -229,7 +229,7 @@
 
   <!-- ALTITUDE MAX -->
   <div
-    *ngIf="occtaxConfig.moduleConf.form_fields.altitude_max"
+    *ngIf="occtaxConfig.moduleConf.form_fields.altitude_max || module === 'PHYTO'"
     class="col-4"
   >
     <small>{{ 'MaxAltitude' | translate }}</small>
@@ -261,7 +261,7 @@
 
 <div class="row">
   <div class="col-xl-4 col-md-6 col-sm-8 col-10">
-    <div *ngIf="occtaxConfig.moduleConf.form_fields.depth_min">
+    <div *ngIf="occtaxConfig.moduleConf.form_fields.depth_min && module !== 'PHYTO'">
       <small>{{ 'MinDepth' | translate }}</small>
       <input
         class="form-control form-control-sm"
@@ -272,7 +272,7 @@
     </div>
   </div>
   <div class="col-xl-4 col-md-6 col-sm-8 col-10">
-    <div *ngIf="occtaxConfig.moduleConf.form_fields.depth_min">
+    <div *ngIf="occtaxConfig.moduleConf.form_fields.depth_min && module !== 'PHYTO'">
       <small>{{ 'MaxDepth' | translate }}</small>
       <input
         class="form-control form-control-sm"
@@ -294,7 +294,7 @@
   <div class="row">
     <!-- AREA -->
     <div
-      *ngIf="config.OCCTAX.form_fields.area"
+      *ngIf="config.OCCTAX.form_fields.area || module === 'PHYTO'"
       class="col-xl-4 col-md-6 col-sm-8 col-10"
     >
       <small>{{ 'Occtax.Releve.Area' | translate }}</small>
@@ -310,7 +310,7 @@
   <div class="row">
     <!-- SLOPE -->
     <div
-      *ngIf="config.OCCTAX.form_fields.slope"
+      *ngIf="config.OCCTAX.form_fields.slope || module === 'PHYTO'"
       class="col-xl-4 col-md-6 col-sm-8 col-10"
     >
       <small>{{ 'Occtax.Releve.Slope' | translate }}</small>
@@ -324,7 +324,7 @@
 
     <!-- EXPOSITION -->
     <div
-      *ngIf="config.OCCTAX.form_fields.exposition"
+      *ngIf="config.OCCTAX.form_fields.exposition || module === 'PHYTO'"
       class="col-xl-4 col-md-6 col-sm-8 col-10"
     >
       <pnx-nomenclature
@@ -339,14 +339,14 @@
   <div class="col-xl-4 col-md-5">
     <!-- TYPE REGROUPEMENT -->
     <pnx-nomenclature
-      *ngIf="occtaxConfig.moduleConf.form_fields.group_type"
+      *ngIf="occtaxConfig.moduleConf.form_fields.group_type && module !== 'PHYTO'"
       label="{{ 'Occtax.Releve.GroupType' | translate }}"
       [parentFormControl]="propertiesForm.get('id_nomenclature_grp_typ')"
       codeNomenclatureType="TYP_GRP"
     ></pnx-nomenclature>
   </div>
   <div
-    *ngIf="occtaxConfig.moduleConf.form_fields.grp_method"
+    *ngIf="occtaxConfig.moduleConf.form_fields.grp_method && module !== 'PHYTO'"
     class="col-xl-4 col-md-5"
   >
     <small>{{ 'Occtax.Releve.GroupMethod' | translate }}</small>
@@ -370,7 +370,7 @@
   <!-- TECHNIQUE OBSERVATION -->
   <div class="col-6">
     <pnx-nomenclature
-      *ngIf="occtaxConfig.moduleConf.form_fields.tech_collect"
+      *ngIf="occtaxConfig.moduleConf.form_fields.tech_collect  && module !== 'PHYTO'"
       label="{{ 'Occtax.Releve.TechCollectCampanule' | translate }}"
       [parentFormControl]="propertiesForm.get('id_nomenclature_tech_collect_campanule')"
       codeNomenclatureType="TECHNIQUE_OBS"
@@ -381,7 +381,7 @@
   <div class="row">
     <div class="col-6">
       <pnx-autocomplete
-        *ngIf="occtaxConfig.moduleConf.form_fields.habitat"
+        *ngIf="occtaxConfig.moduleConf.form_fields.habitat || module === 'PHYTO'"
         apiEndPoint="{{ config.API_ENDPOINT }}/habref/habitats/autocomplete"
         [searchAsParameter]="false"
         [parentFormControl]="occtaxFormReleveService.habitatForm"
@@ -411,7 +411,7 @@
 
 
 <!-- COMMENTAIRE -->
-<div *ngIf="occtaxConfig.moduleConf.form_fields.comment_releve">
+<div *ngIf="occtaxConfig.moduleConf.form_fields.comment_releve || module === 'PHYTO'">
   <small>{{ 'Comment' | translate }}</small>
   <textarea
     class="form-control"

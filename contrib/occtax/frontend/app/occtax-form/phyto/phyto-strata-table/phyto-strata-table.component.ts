@@ -27,6 +27,7 @@ export interface VegetationStratum {
 export interface Nomenclature {
   id_nomenclature: number;
   label_default: string;
+  mnemonique: string;
 }
 
 const heightOrderValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
@@ -44,6 +45,22 @@ const heightOrderValidator: ValidatorFn = (group: AbstractControl): ValidationEr
 
   return null;
 };
+
+function minStrictValidator(min: number): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    // On ignore la validation si le champ est vide (géré par Validators.required si nécessaire)
+    if (control.value === null || control.value === undefined || control.value === '') {
+      return null;
+    }
+
+    const value = Number(control.value);
+
+    // Vérification strictement supérieure
+    return value > min ? null : { minStrict: { requiredMin: min, actual: value } };
+  };
+}
+
+
 
 /**
  * Edits vegetation-stratum cover and height values on a phyto survey.
@@ -69,6 +86,7 @@ export class PhytoStrataTableComponent implements OnInit, OnDestroy {
 
   @ViewChild('strataTable', { static: true }) public table!: MatTable<any>;
 
+  strataMnemo: Record<string, string> = {};
   strataLabels: Record<string, string> = {};
 
   private readonly destroy$ = new Subject<void>();
@@ -101,6 +119,7 @@ export class PhytoStrataTableComponent implements OnInit, OnDestroy {
       .subscribe({
         next: ([strataNomenclatures, , occtaxData]: [{ values: Nomenclature[] }, unknown, any]) => {
           this.strataLabels = {};
+          this.strataMnemo = {};
           const existingStrata = (this.parentFormControl.value || []) as VegetationStratum[];
           const savedStrata: VegetationStratum[] =
             occtaxData?.releve?.properties?.t_vegetation_stratum || [];
@@ -110,6 +129,8 @@ export class PhytoStrataTableComponent implements OnInit, OnDestroy {
             (strateNomenclature: Nomenclature) => {
               this.strataLabels[strateNomenclature.id_nomenclature] =
                 strateNomenclature.label_default;
+              this.strataMnemo[strateNomenclature.id_nomenclature] =
+                strateNomenclature.mnemonique;
 
               const currentStratum: VegetationStratum = strataToRestore.find(
                 (stratum) =>
@@ -131,11 +152,11 @@ export class PhytoStrataTableComponent implements OnInit, OnDestroy {
                   ],
                   percentage_cover_vegetation_stratum: [
                     currentStratum.percentage_cover_vegetation_stratum,
-                    [Validators.min(0), Validators.max(100)],
+                    [minStrictValidator(0), Validators.max(100)],
                   ],
-                  average_height: [currentStratum.average_height, [Validators.min(0)]],
-                  min_height: [currentStratum.min_height, [Validators.min(0)]],
-                  max_height: [currentStratum.max_height, [Validators.min(0)]],
+                  average_height: [currentStratum.average_height],
+                  min_height: [currentStratum.min_height],
+                  max_height: [currentStratum.max_height],
                 },
                 {
                   validators: heightOrderValidator,

@@ -37,12 +37,14 @@ interface Nomenclature {
   id_nomenclature: number;
   label_default: string;
   cd_nomenclature?: string;
+  mnemonique: string;
 }
 
 interface StratumColumn {
   id: number;
   key: string;
   label: string;
+  mnemonique: string;
 }
 
 interface OccurrenceInProgress {
@@ -253,6 +255,12 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
         nomenclature.label_default,
       ])
     );
+    const mnemoById = new Map(
+      nomenclatures.map((nomenclature) => [
+        nomenclature.id_nomenclature,
+        nomenclature.mnemonique,
+      ])
+    );
 
     this.strataColumns = strata
       .filter(
@@ -269,6 +277,7 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
           id,
           key: `stratum_${id}`,
           label: labelById.get(id) || '',
+          mnemonique: mnemoById.get(id) || '',
         };
       })
       .filter((column) => column.label !== '');

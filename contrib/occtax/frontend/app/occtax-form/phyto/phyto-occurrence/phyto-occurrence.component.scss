@@ -1,21 +1,37 @@
 table {
   width: 100%;
+  border: 1px solid #cfcfcf;
 }
 
 th {
   font-weight: bold;
 }
 
-.mat-column-stratum {
-  word-wrap: break-word !important;
-  white-space: unset !important;
-  flex: 0 0 20% !important;
-  width: 20% !important;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  word-break: break-word;
-  -ms-hyphens: auto;
-  -moz-hyphens: auto;
-  -webkit-hyphens: auto;
-  hyphens: auto;
+th,
+td {
+  border: 1px solid #cfcfcf;
+  padding: 0.25rem;
+}
+
+.first-col {
+  text-align: right;
+  vertical-align: bottom;
+}
+
+.abundance-table {
+  align-items: center;
+  flex-direction: column;
+}
+
+.abundance-headers {
+  // transform: rotate(190deg);
+  // writing-mode: vertical-rl;
+  // text-orientation: sideways;
+  width: 5rem;
+  text-align: center;
+  vertical-align: bottom;
+}
+
+.withTooltip {
+  text-decoration: underline dotted;
 }

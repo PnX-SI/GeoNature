@@ -40,6 +40,7 @@ export interface VegetationStratum {
 interface Nomenclature {
   id_nomenclature: number;
   label_default: string;
+  mnemonique: string;
 }
 
 interface NomenclatureResponse {
@@ -76,8 +77,7 @@ export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestro
   public advancedSectionState: AdvancedSectionState = AdvancedSectionState.COLLAPSED;
   public displayProofFromElements = false;
 
-  public strataRows: StratumRow[] = [];
-  public readonly displayedColumns = ['stratum', 'abundance'];
+  public strataColumns: StratumRow[] = [];
 
   @ViewChildren(PhytoAbundanceComponent)
   public phytoCountingComponents!: QueryList<PhytoAbundanceComponent>;
@@ -105,7 +105,7 @@ export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestro
     public configService: ConfigService,
     public occtaxConfigService: OcctaxConfigService,
     private readonly translate: TranslateService
-  ) {}
+  ) { }
 
   public ngOnInit(): void {
     this.occurrenceForm = this.phytoOccurrenceService.form;
@@ -138,7 +138,7 @@ export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestro
       .subscribe({
         next: ([data, nomenclature]: [any, NomenclatureResponse]) => {
           const strata = data.releve.properties.t_vegetation_stratum;
-          this.setStrataRows(Array.isArray(strata) ? strata : [], nomenclature.values || []);
+          this.setStrataColumns(Array.isArray(strata) ? strata : [], nomenclature.values || []);
         },
         error: (error: unknown) => {
           //TODO: move error string in i18n
@@ -252,39 +252,35 @@ export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestro
     return this.phytoCountingsService.countings || [];
   }
 
-  private setStrataRows(strata: VegetationStratum[], nomenclatures: Nomenclature[]): void {
+  private setStrataColumns(strata: VegetationStratum[], nomenclatures: Nomenclature[]): void {
     const labelByNomenclatureId = new Map(
       nomenclatures.map((nomenclature) => [
         nomenclature.id_nomenclature,
         nomenclature.label_default,
       ])
     );
-    const countingByStratumId = new Map(
-      this.countings.map((counting) => [counting.id_nomenclature_vegetation_stratum, counting])
+    const mnemoByNomenclatureId = new Map(
+      nomenclatures.map((nomenclature) => [
+        nomenclature.id_nomenclature,
+        nomenclature.mnemonique,
+      ])
     );
+    // const countingByStratumId = new Map(
+    //   this.countings.map((counting) => [counting.id_nomenclature_vegetation_stratum, counting])
+    // );
 
-    this.strataRows = strata
-      .filter(
-        (
-          stratum
-        ): stratum is VegetationStratum & {
-          id_nomenclature_vegetation_stratum: number;
-        } =>
-          stratum.id_nomenclature_vegetation_stratum != null &&
-          (stratum.percentage_cover_vegetation_stratum != null ||
-            stratum.average_height != null ||
-            stratum.min_height != null ||
-            stratum.max_height != null)
-      )
-      .map((stratum) => {
-        const idNomenclatureVegetationStratum = stratum.id_nomenclature_vegetation_stratum;
+    this.strataColumns = strata.map((stratum) => {
+      const idNomenclatureVegetationStratum = stratum.id_nomenclature_vegetation_stratum;
 
-        return {
-          id: idNomenclatureVegetationStratum,
-          label: labelByNomenclatureId.get(idNomenclatureVegetationStratum) || '',
-          counting: countingByStratumId.get(idNomenclatureVegetationStratum) || {},
-        };
-      })
+      // the only required thing is to have at least 1 counting but try not to create a counting for each stratum
+      return {
+        id: idNomenclatureVegetationStratum,
+        label: labelByNomenclatureId.get(idNomenclatureVegetationStratum) || '',
+        mnemonique: mnemoByNomenclatureId.get(idNomenclatureVegetationStratum) || '',
+        // counting: countingByStratumId.get(idNomenclatureVegetationStratum) || {},
+        counting: {},
+      };
+    })
       .filter((row) => row.label !== '');
   }
 
