@@ -79,7 +79,13 @@ cd "${BASE_DIR}"/backend
 
 if ! command -v uv >/dev/null 2>&1; then
   echo "Installation de uv..."
-  pip install --user uv
+  # Debian 12+'s python3-pip refuses any install (even --user) against the system Python
+  # (PEP 668) unless --break-system-packages is passed; Debian 11's older pip predates
+  # PEP 668 and doesn't recognize that flag at all. Try without it first (Debian 11),
+  # fall back to it on failure (Debian 12/13). --user already confines the install to the
+  # current user's ~/.local, never touching system-managed dist-packages, so the flag is
+  # safe here despite its scary name.
+  pip install --user uv || pip install --user --break-system-packages uv
 fi
 
 # Chemin du venv géré automatiquement par uv (VENV_PATH est déjà exporté par `utils`,
@@ -97,7 +103,7 @@ source "${UV_PROJECT_ENVIRONMENT}/bin/activate"
 
 echo "Installation des dépendances Python..."
 pip install --upgrade "pip>=19.3"  "wheel"  # https://www.python.org/dev/peps/pep-0440/#direct-references
-if [[ "${MODE}" == "dev" ]]; then
+if [[ "${MODE}" == "dev" || "${MODE}" == "ci" ]]; then
   echo "Installation des dépendances Python de l'environnement de DEV..."
   git submodule status | grep -E "^-" >/dev/null
   if [ $? -eq 0 ]; then
@@ -106,7 +112,11 @@ if [[ "${MODE}" == "dev" ]]; then
       exit 1
   fi
   # Uses the uv workspace (backend/dependencies/*) declared in the root pyproject.toml:
-  # siblings are installed editable from their local submodule checkout.
+  # siblings are installed editable from their local submodule checkout. MODE=ci also
+  # takes this path (unlike MODE=dev, everything else still runs as a prod install:
+  # systemd services, frontend build) so a checkout whose submodule commits are ahead of
+  # what's published on PyPI (backend/requirements.txt only ever reflects released
+  # versions) can still be installed and exercised end-to-end.
   uv sync --project "${BASE_DIR}" --active --extra tests --extra lint
 else
   # Siblings resolved from PyPI per backend/requirements.txt, no workspace/local sources involved.
