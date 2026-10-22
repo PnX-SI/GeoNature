@@ -629,3 +629,20 @@ class TestImportsOcchab:
     def test_import_upload_preset(self, field_mapped_import, preset_fieldmapping):
         for key, value in preset_fieldmapping["__preset__"].items():
             assert field_mapped_import.fieldmapping[key] == value
+
+    @pytest.mark.parametrize(
+        "preset_fieldmapping",
+        [{"__preset__": {"id_nomenclature_sensitivity": {"constant_value": "4"}}}],
+    )
+    def test_import_sensitivity(self, imported_import):
+        habitats = (
+            db.session.scalars(
+                sa.select(OccurenceHabitat).where(
+                    OccurenceHabitat.id_import == imported_import.id_import
+                )
+            )
+            .unique()
+            .all()
+        )
+        assert habitats
+        assert {h.nomenclature_sensitivity.cd_nomenclature for h in habitats} == {"4"}
