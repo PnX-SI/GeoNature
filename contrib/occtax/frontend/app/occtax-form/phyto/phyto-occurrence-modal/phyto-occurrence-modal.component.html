@@ -201,12 +201,7 @@
     [formsDefinition]="additionalFieldsForm"></pnx-dynamic-form-generator>
 
   <!-- ABUNDANCES ACCORDION -->
-  <h3 style="margin-top: 15px">
-    {{
-    (countings.length > 1 ? 'Occtax.Counting.Abundances' : 'Occtax.Counting.Abundance')
-    | translate
-    }}
-  </h3>
+  <h3 style="margin-top: 15px">{{'Occtax.Counting.Abundances' | translate }}</h3>
 
   <div *ngIf="occurrenceForm.get('cor_counting_occtax').hasError('required')" class="error" style="color: red"
     role="alert">
@@ -216,15 +211,22 @@
   <mat-accordion [multi]="true">
     <mat-expansion-panel *ngFor="let counting of countings; index as i" displayMouseOver selector=".btn-clear">
       <mat-expansion-panel-header class="right-aligned-header">
-        <mat-panel-title>
+        <mat-panel-title class="custom-panel-title">
           {{
-          stratesLabels[counting.id_nomenclature_vegetation_stratum] ||
+          strataLabels[counting.id_nomenclature_vegetation_stratum] ||
           counting.id_nomenclature_vegetation_stratum
           }}
-          <mat-icon
-          *ngIf="counting.id_nomenclature_phytosociological_abundance" 
-          aria-hidden="false" aria-label="Example home icon">search</mat-icon>          
         </mat-panel-title>
+        <mat-panel-description>
+
+          <mat-chip *ngIf="counting.id_nomenclature_phytosociological_abundance; else noVisibility"
+            matTooltip="Abondance enregistrée">
+            <mat-icon aria-hidden="false" aria-label="Abondance enregistrée" matChipAvatar>visibility</mat-icon>
+            {{ abundancesLabels[counting.id_nomenclature_phytosociological_abundance] }}
+          </mat-chip>
+          <ng-template #noVisibility><mat-icon aria-hidden="false" aria-label="Pas de valeur d'abondance"
+              matTooltip="Pas de valeur d'abondance">visibility_off</mat-icon></ng-template>
+        </mat-panel-description>
       </mat-expansion-panel-header>
 
       <pnx-occtax-form-phyto-advanced-counting [value]="counting">

@@ -68,6 +68,8 @@ function minStrictValidator(min: number): ValidatorFn {
  * Rows follow the vegetation-stratum nomenclature order. When editing a survey,
  * saved stratum values are restored if the form array has not been populated;
  * existing form values take precedence to preserve in-progress edits.
+ * 
+ * BUG: the first rows are replaced by the last edited rows
  */
 @Component({
   selector: 'pnx-phyto-strata-table',
@@ -84,7 +86,8 @@ export class PhytoStrataTableComponent implements OnInit, OnDestroy {
   ];
   @Input() public parentFormControl!: FormArray;
 
-  @ViewChild('strataTable', { static: true }) public table!: MatTable<any>;
+  @ViewChild('strataTable') public table!: MatTable<any>;
+  // @ViewChild('strataTable', { static: true }) public table!: MatTable<any>;
 
   strataMnemo: Record<string, string> = {};
   strataLabels: Record<string, string> = {};
@@ -109,22 +112,26 @@ export class PhytoStrataTableComponent implements OnInit, OnDestroy {
   private loadStrataTable(): void {
     combineLatest([
       this.dataFormService.getNomenclature('STRATE_VEGETATION'),
-      this.occtaxFormService.editionMode,
+      // this.occtaxFormService.editionMode,
       this.occtaxFormService.occtaxData,
     ])
       .pipe(
-        filter(([, editionMode, occtaxData]: [{ values: Nomenclature[] }, unknown, any]) => !editionMode || !!occtaxData?.releve?.properties),
+        // filter(([, editionMode, occtaxData]: [{ values: Nomenclature[] }, unknown, any]) => !editionMode || !!occtaxData?.releve?.properties),
         takeUntil(this.destroy$)
       )
       .subscribe({
-        next: ([strataNomenclatures, , occtaxData]: [{ values: Nomenclature[] }, unknown, any]) => {
-          this.strataLabels = {};
-          this.strataMnemo = {};
-          const existingStrata = (this.parentFormControl.value || []) as VegetationStratum[];
+        next: ([strataNomenclatures, occtaxData]: [{ values: Nomenclature[] }, any]) => {
+
+          // const existingStrata = (this.parentFormControl.value || []) as VegetationStratum[];
+
           const savedStrata: VegetationStratum[] =
             occtaxData?.releve?.properties?.t_vegetation_stratum || [];
+
+
           // Prefer form values to retain edits; use saved data when patchValue left the array empty.
-          const strataToRestore = existingStrata.length > 0 ? existingStrata : savedStrata;
+          // const strataToRestore = existingStrata.length > 0 ? existingStrata : savedStrata;
+          const strataToRestore = savedStrata;
+
           const strataFormGroups = strataNomenclatures.values.map(
             (strateNomenclature: Nomenclature) => {
               this.strataLabels[strateNomenclature.id_nomenclature] =
@@ -167,7 +174,9 @@ export class PhytoStrataTableComponent implements OnInit, OnDestroy {
 
           this.parentFormControl.clear({ emitEvent: false });
           strataFormGroups.forEach((stratum: AbstractControl) =>
-            this.parentFormControl.push(stratum, { emitEvent: false })
+            {
+              this.parentFormControl.push(stratum, { emitEvent: false });
+              }
           );
 
           this.table?.renderRows();

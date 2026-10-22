@@ -117,7 +117,6 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
   navigate(tab) {
-    console.log(tab);
     const idReleve = this.occtaxFormService.id_releve_occtax.getValue();
     if (tab == "releve") {
       if (idReleve) {

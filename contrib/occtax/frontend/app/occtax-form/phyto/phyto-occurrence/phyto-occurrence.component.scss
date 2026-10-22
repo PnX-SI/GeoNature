@@ -24,9 +24,6 @@ td {
 }
 
 .abundance-headers {
-  // transform: rotate(190deg);
-  // writing-mode: vertical-rl;
-  // text-orientation: sideways;
   width: 5rem;
   text-align: center;
   vertical-align: bottom;
@@ -34,4 +31,23 @@ td {
 
 .withTooltip {
   text-decoration: underline dotted;
+}
+
+.mat-col {
+  flex: 1;
+  min-width: 250px;
+}
+
+.mat-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1rem;
+  width: 100%;
+}
+
+.mat-danger {
+  color: #f44336;
+  margin-bottom: 8px;
+  display: block;
 }

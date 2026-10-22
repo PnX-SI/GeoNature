@@ -604,10 +604,11 @@ export class OcctaxFormReleveService {
               "info",
               "Occtax.Releve.Messages.Added",
             );
-            this.router.navigate([data.id, "taxons"], {
+            const nextModule = this.getNextTaxonTab(this.moduleService);
+            this.router.navigate([data.id, nextModule], {
               relativeTo: this.route,
             });
-            this.occtaxFormService.currentTab = "taxons";
+            this.occtaxFormService.currentTab = nextModule;
           },
           (err) => {
             this.waiting = false;

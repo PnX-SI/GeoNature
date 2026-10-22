@@ -53,7 +53,8 @@ interface StratumNomenclatureResponse {
 })
 export class PhytoOccurrenceModalComponent extends PhytoOccurrenceComponent implements OnDestroy {
   /** Labels used to display counting rows by their vegetation stratum. */
-  public stratesLabels: Record<number, string> = {};
+  public strataLabels: Record<number, string> = {};
+  public abundancesLabels: Record<number, string> = {};
   /** Vegetation strata with at least one recorded cover or height value. */
   public releveStrata: VegetationStratum[] = [];
   private readonly modalDestroy$ = new Subject<void>();
@@ -90,12 +91,16 @@ export class PhytoOccurrenceModalComponent extends PhytoOccurrenceComponent impl
     combineLatest([
       occtaxFormService.occtaxData,
       dataFormService.getNomenclature('STRATE_VEGETATION'),
+      dataFormService.getNomenclature('BRAUNBARK'),
     ])
       .pipe(takeUntil(this.modalDestroy$))
       .subscribe({
-        next: ([data, strataResponse]: [PhytoReleveData | null, StratumNomenclatureResponse]) => {
+        next: ([data, strataResponse, abundancesResponse]: [PhytoReleveData | null, StratumNomenclatureResponse, any]) => {
           strataResponse.values.forEach((stratum) => {
-            this.stratesLabels[stratum.id_nomenclature] = stratum.label_default;
+            this.strataLabels[stratum.id_nomenclature] = stratum.label_default;
+          });
+          abundancesResponse.values.forEach((abundance) => {
+            this.abundancesLabels[abundance.id_nomenclature] = abundance.label_default;
           });
           const strata = data?.releve?.properties?.t_vegetation_stratum || [];
           this.releveStrata = strata.filter((stratum) => this.hasStratumData(stratum));

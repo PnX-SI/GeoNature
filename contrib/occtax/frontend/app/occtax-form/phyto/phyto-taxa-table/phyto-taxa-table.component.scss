@@ -68,3 +68,7 @@ th {
   text-align: center;
   border-left: $inside-border-size solid #cfcfcf;
 }
+
+.striped-table .mat-mdc-row:nth-child(even) {
+  background-color: #f5f5f5; /* Adjust to match your theme's palette */
+}

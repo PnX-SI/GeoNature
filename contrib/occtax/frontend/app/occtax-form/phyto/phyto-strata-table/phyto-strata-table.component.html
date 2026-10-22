@@ -1,10 +1,9 @@
 <!-- TODO
  * the file uses some bootstrap classes: should find material angular ways
   * classes form-control-sm: replace with <mat-form-field appearance="outline" >
-  * class table-striped
-  -->
+-->
 <small>{{ 'Occtax.Releve.VegetationStrata' | translate }}</small>
-<table mat-table [dataSource]="parentFormControl.controls" class="mat-elevation-z4 table-striped" #strataTable>
+<table mat-table [dataSource]="parentFormControl.controls" class="mat-elevation-z4 striped-table" #strataTable>
   <caption class="sr-only">{{ 'Occtax.Releve.VegetationStrata' | translate }}</caption>
 
   <!-- Nom de la strate -->

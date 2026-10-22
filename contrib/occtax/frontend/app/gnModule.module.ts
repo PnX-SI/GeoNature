@@ -45,6 +45,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatTableModule } from "@angular/material/table";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
+import { MatSortModule } from '@angular/material/sort';
 import { ConfigService } from "@geonature/services/config.service";
 import { CustomTranslateLoader } from "@geonature/shared/translate/custom-loader";
 import { I18nService } from "@geonature/shared/translate/i18n-service";
@@ -108,6 +109,7 @@ export function createTranslateLoader(http: HttpClient, config: ConfigService) {
     MatInputModule,
     NgbModule,
     GNPanelModule,
+    MatSortModule,
   ],
   declarations: [
     OcctaxFormComponent,

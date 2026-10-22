@@ -1,5 +1,6 @@
-import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewContainerRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
 import { combineLatest, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
@@ -70,6 +71,10 @@ interface NomenclatureResponse {
   values: Nomenclature[];
 }
 
+function compare(a: number | string, b: number | string, isAsc: boolean) {
+  return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+}
+
 /**
  * Coordinates phyto occurrence display, sorting, editing and deletion.
  * Stratum columns are derived from releve data; abundance codes are resolved
@@ -82,8 +87,8 @@ interface NomenclatureResponse {
 })
 export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
   /** Current sort mode and direction shown by the table controls. */
-  public typeSortingTaxalist: 'lexicographic' | 'record' = 'record';
-  public sortOrder: 'asc' | 'desc' = 'desc';
+  public sortActiveColumn: string = '';
+  public sortDirection: 'asc' | 'desc' = 'desc';
 
   /** Columns that are always present, before dynamic stratum columns. */
   public readonly baseColumns: string[] = ['nom_valide'];
@@ -105,7 +110,7 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
     private readonly viewContainerRef: ViewContainerRef,
     private readonly translate: TranslateService,
     public readonly occtaxConfig: OcctaxConfigService
-  ) {}
+  ) { }
 
   /** Subscribe to releve, occurrence-edit and nomenclature data for this table. */
   public ngOnInit(): void {
@@ -184,21 +189,6 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
 
     this.editOccurrence(occurrenceInProgress.data);
     this.occtaxTaxaListService.removeOccurrenceInProgress(occurrenceInProgress.id);
-  }
-
-  public setSortType(type: 'lexicographic' | 'record'): void {
-    if (this.typeSortingTaxalist === type) {
-      return;
-    }
-
-    this.typeSortingTaxalist = type;
-    this.sortOrder = type === 'record' ? 'desc' : 'asc';
-    this.refreshOccurrences();
-  }
-
-  public toggleSortOrder(): void {
-    this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
-    this.refreshOccurrences();
   }
 
   public getStratumAbundance(occurrence: PhytoOccurrence, stratumId: number): string {
@@ -290,6 +280,18 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
     ];
   }
 
+  sortData(sort: Sort) {
+    if (!sort.active || sort.direction === '') {
+      this.sortDirection = 'asc'
+      this.sortActiveColumn = '';
+      this.refreshOccurrences();
+      return;
+    }
+    this.sortDirection = sort.direction
+    this.sortActiveColumn = sort.active;
+    this.refreshOccurrences();
+  }
+
   /** Exclude the occurrence being edited and publish a freshly sorted array. */
   private refreshOccurrences(): void {
     const filteredOccurrences = this.occurrences.filter(
@@ -299,17 +301,22 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
     );
 
     const sortedOccurrences = [...filteredOccurrences];
-    if (this.typeSortingTaxalist === 'lexicographic') {
-      sortedOccurrences.sort((first, second) =>
-        this.removeHtmlFromString(first.nom_valide)
-          .toLowerCase()
-          .localeCompare(this.removeHtmlFromString(second.nom_valide).toLowerCase())
-      );
-    }
 
-    if (this.sortOrder === 'desc') {
-      sortedOccurrences.reverse();
-    }
+    sortedOccurrences.sort((a, b) => {
+      const isAsc = this.sortDirection === 'asc';
+      if (this.sortActiveColumn.includes('stratum')) {
+        return compare(
+          this.getStratumAbundance(a, Number(this.sortActiveColumn.substring(8))),
+          this.getStratumAbundance(b, Number(this.sortActiveColumn.substring(8))),
+          isAsc
+        );
+      } else if (this.sortActiveColumn === 'nom_valide') {
+        return compare(this.removeHtmlFromString(a.taxref?.nom_valide).toLowerCase(), this.removeHtmlFromString(b.taxref?.nom_valide).toLowerCase(), isAsc);
+      } else {
+        return compare(a.id_occurrence_occtax || 0, b.id_occurrence_occtax || 0, false);
+      }
+
+    });
 
     this.occtaxTaxaListService.occurrences$.next(sortedOccurrences);
   }
