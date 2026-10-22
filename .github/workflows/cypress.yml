@@ -105,7 +105,7 @@ jobs:
         env:
           GEONATURE_CONFIG_FILE: "${{ github.workspace }}/config/test_config.toml"
       - name: Cypress run
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v7
         with:
           record: false
           working-directory: ./frontend
