@@ -1,0 +1,4 @@
+Objectif du test;id_station_source;unique_id_sinp_station;unique_dataset_id;date_min;date_max;observers;WKT;id_nomenclature_geographic_object;unique_id_sinp_habitat;nom_cite;cd_hab
+Station + habitat sur la même ligne;;5d0a9a1c-2bd1-4b33-9c1e-0c6e3a5a2f71;@VALID_DATASET_UUID@;17/11/2023;17/11/2023;import user;@COORD_STATION@;St;7f2c6b0e-3d4a-4f5e-8a9b-1c2d3e4f5a6b;prairie;24
+Habitat uniquement dans une station existante en base, JDD répété sur la ligne;;@EXISTING_STATION_UUID@;@VALID_DATASET_UUID@;;;;;;8a3d7c1f-4e5b-4a6f-9b0c-2d3e4f5a6b7c;prairie;24
+Habitat uniquement dans une station existante en base, sans JDD;;@EXISTING_STATION_UUID@;;;;;;;9b4e8d2a-5f6c-4b7a-8c1d-3e4f5a6b7c8d;prairie;24

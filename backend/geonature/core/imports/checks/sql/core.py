@@ -80,7 +80,10 @@ def init_rows_validity(imprt: TImports, dataset_name_field: str = "id_dataset"):
                 )
                 .values({entity.validity_column: True})
             )
-        if is_constant_field_indicated:
+        elif is_constant_field_indicated:
+            # Constant values are the same for every row, so they cannot tell whether a given
+            # row holds data for this entity: only rely on them when no column of the entity
+            # is mapped, meaning the entity is entirely described by constants.
             db.session.execute(
                 sa.update(transient_table)
                 .where(transient_table.c.id_import == imprt.id_import)

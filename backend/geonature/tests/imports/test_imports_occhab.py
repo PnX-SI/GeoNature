@@ -90,6 +90,15 @@ def add_in_contentmapping():
 
 
 @pytest.fixture()
+def fieldmapping_unique_dataset_id(request, import_dataset):
+    # Indirect parametrization: "constant" maps the dataset as a constant value,
+    # otherwise the default mapping (dataset read from the file column) is kept.
+    if getattr(request, "param", None) == "constant":
+        return {"constant_value": str(import_dataset.unique_dataset_id)}
+    return None
+
+
+@pytest.fixture()
 def no_default_uuid(monkeypatch):
     monkeypatch.setitem(current_app.config["IMPORT"], "DEFAULT_GENERATE_MISSING_UUID", False)
 
@@ -445,6 +454,56 @@ class TestImportsOcchab:
                 )
             )
             == imported_import.statistics["habitat_count"]
+        )
+
+    @pytest.mark.parametrize("import_file_name", ["habitat_in_existing_station.csv"])
+    @pytest.mark.parametrize(
+        "fieldmapping_unique_dataset_id", ["constant", "column"], indirect=True
+    )
+    @pytest.mark.parametrize(
+        "preset_fieldmapping",
+        [None, {"__preset__": {"station_name": {"constant_value": "Station importée"}}}],
+        ids=["no_station_constant", "station_constant"],
+    )
+    def test_import_habitat_in_existing_station(self, imported_import, station):
+        """
+        A habitat-only row referencing an existing station must not be considered as a
+        station row, whether the dataset is given as a constant (#4472) or repeated in
+        the habitat row, and whether another station field is given as a constant.
+        """
+        assert_import_errors(imported_import, set())
+        assert imported_import.statistics["station_count"] == 1
+        assert imported_import.statistics["habitat_count"] == 3
+        assert (
+            db.session.scalar(
+                sa.select(sa.func.count()).where(
+                    OccurenceHabitat.id_import == imported_import.id_import,
+                    OccurenceHabitat.id_station == station.id_station,
+                )
+            )
+            == 2
+        )
+
+    @pytest.mark.parametrize("import_file_name", ["habitat_only_in_existing_station.csv"])
+    @pytest.mark.parametrize(
+        "fieldmapping_unique_dataset_id", ["constant", "column"], indirect=True
+    )
+    def test_import_habitats_only_in_existing_station(self, imported_import, station):
+        """
+        A file without any station row (only habitats added to an existing station) must
+        not crash the station dataframe checks, which then run on an empty dataframe.
+        """
+        assert_import_errors(imported_import, set())
+        assert imported_import.statistics["station_count"] == 0
+        assert imported_import.statistics["habitat_count"] == 2
+        assert (
+            db.session.scalar(
+                sa.select(sa.func.count()).where(
+                    OccurenceHabitat.id_import == imported_import.id_import,
+                    OccurenceHabitat.id_station == station.id_station,
+                )
+            )
+            == 2
         )
 
     def test_remove_import_with_closed_af(self, client, users, imported_import):

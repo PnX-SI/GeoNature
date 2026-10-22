@@ -58,6 +58,8 @@
 - [Métadonnées] Correction d'une coquille dans le template PDF des cadres d'acquisition (#4415 par @jacquesfize)
 - [Import] Correction d'une erreur lorsque `count_max` est vide (#4187 par @christophe-ramet)
 - [Import] Correction du chargement de la page de correspondance des champs à la reprise de certains imports (#4133 par @christophe-ramet)
+- [Import][Occhab] Correction de l'ajout d'un habitat dans une station existante : la ligne n'est plus considérée comme une station lorsque le jeu de données ou un autre champ de la station est fourni en valeur constante, ou que le jeu de données est répété sur la ligne (#4472 par @jacquesfize)
+- [Import] Correction d'une erreur 500 lors des contrôles lorsqu'une entité n'est présente sur aucune ligne du fichier (ex. : import Occhab ne contenant que des habitats rattachés à des stations existantes) (#4472 par @jacquesfize)
 - [Accueil] Correction du tri et de la pagination du bloc des dernières discussions (#4333 par @jacquesfize)
 - [Authentification] Correction d'une erreur à la création de compte lorsque `ENABLE_USER_MANAGEMENT = false` (#4314 par @jacquesfize)
 - [Admin des permissions] Les zonages désactivés ne sont plus proposés dans le filtre géographique (#4402 par @IdrissaD)
