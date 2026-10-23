@@ -7,9 +7,13 @@
 $icon-button-size: 44px;
 $table-cell-horizontal-padding: 16px;
 $inside-border-size: 1px;
-$actions-column-width: calc($inside-border-size + (2 * $icon-button-size) + (2 * $table-cell-horizontal-padding));
+$actions-column-width: calc(
+  $inside-border-size + (2 * $icon-button-size) + (2 * $table-cell-horizontal-padding)
+);
 $comment-max-characters: 18ch;
-$comment-column-width: calc((2 * $inside-border-size) + (2 * $table-cell-horizontal-padding) + $comment-max-characters);
+$comment-column-width: calc(
+  (2 * $inside-border-size) + (2 * $table-cell-horizontal-padding) + $comment-max-characters
+);
 
 table {
   width: 100%;
@@ -23,8 +27,10 @@ th {
 .mat-header-cell-strata {
   justify-content: center;
   text-align: center;
-  border-right: $inside-border-size solid var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
-  border-left: $inside-border-size solid var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
+  border-right: $inside-border-size solid
+    var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
+  border-left: $inside-border-size solid
+    var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
 }
 
 .mat-column-nom_valide {
@@ -42,7 +48,8 @@ th {
   overflow-wrap: break-word;
   inline-size: $comment-max-characters;
   max-width: $comment-column-width;
-  border-left: $inside-border-size solid var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
+  border-left: $inside-border-size solid
+    var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
 }
 
 .mat-column-actions {
@@ -58,7 +65,8 @@ th {
   -moz-hyphens: auto;
   -webkit-hyphens: auto;
   hyphens: auto;
-  border-left: $inside-border-size solid var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
+  border-left: $inside-border-size solid
+    var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
 }
 
 .mat-header-cell-actions {
@@ -71,7 +79,8 @@ th {
 
 .mat-column-abundance {
   text-align: center;
-  border-left: $inside-border-size solid var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
+  border-left: $inside-border-size solid
+    var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
 }
 
 .striped-table .mat-mdc-row:nth-child(even) {

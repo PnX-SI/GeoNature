@@ -13,7 +13,6 @@ TODO: remove this migration in GN2.xx?
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "edba8d03ec71"
 down_revision = None
@@ -22,9 +21,7 @@ depends_on = ("d2c12d091e14",)
 
 
 def upgrade():
-    op.execute(
-        sa.text(
-            """
+    op.execute(sa.text("""
                 INSERT INTO gn_commons.t_modules (
                     module_code, module_label, module_picto, module_desc, module_path,
                     active_frontend, active_backend, ng_module
@@ -56,15 +53,11 @@ def upgrade():
                 JOIN gn_commons.t_modules m ON m.module_code = v.module_code
                 JOIN gn_permissions.t_objects o ON o.code_object = v.object_code
                 JOIN gn_permissions.bib_actions a ON a.code_action = v.action_code;
-    """
-        )
-    )
+    """))
 
 
 def downgrade():
-    op.execute(
-        sa.text(
-            """
+    op.execute(sa.text("""
                 DELETE FROM gn_permissions.t_permissions_available
                 WHERE id_module = gn_commons.get_id_module_bycode('PHYTO');
 
@@ -73,6 +66,4 @@ def downgrade():
 
                 DELETE FROM gn_commons.t_modules
                 WHERE module_code = 'PHYTO';
-    """
-        )
-    )
+    """))

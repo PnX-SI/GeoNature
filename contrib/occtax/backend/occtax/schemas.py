@@ -157,6 +157,7 @@ class ReleveSchema(MA.SQLAlchemyAutoSchema):
             pass
 
     t_vegetation_stratum = fields.Nested(VegetationStratumSchema, many=True)
+
     # __init__ is overridden because g.module_conf is only available during
     # a request context (i.e., at instantiation time), not at class definition time.
     def __init__(self, *args, **kwargs):

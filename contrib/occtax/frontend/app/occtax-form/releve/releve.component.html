@@ -370,7 +370,7 @@
   <!-- TECHNIQUE OBSERVATION -->
   <div class="col-6">
     <pnx-nomenclature
-      *ngIf="occtaxConfig.moduleConf.form_fields.tech_collect  && module !== 'PHYTO'"
+      *ngIf="occtaxConfig.moduleConf.form_fields.tech_collect && module !== 'PHYTO'"
       label="{{ 'Occtax.Releve.TechCollectCampanule' | translate }}"
       [parentFormControl]="propertiesForm.get('id_nomenclature_tech_collect_campanule')"
       codeNomenclatureType="TECHNIQUE_OBS"
@@ -395,10 +395,10 @@
         label="Habitat"
         placeholder="Tapez les premières lettres..."
       ></pnx-autocomplete>
+    </div>
   </div>
-</div>
 
-<div class="row">
+  <div class="row">
     <div
       *ngIf="module === 'PHYTO'"
       class="col-12"
@@ -406,9 +406,8 @@
       <pnx-phyto-strata-table
         [parentFormControl]="propertiesForm.get('t_vegetation_stratum')"
       ></pnx-phyto-strata-table>
-      </div>
     </div>
-
+  </div>
 
 <!-- COMMENTAIRE -->
 <div *ngIf="occtaxConfig.moduleConf.form_fields.comment_releve || module === 'PHYTO'">

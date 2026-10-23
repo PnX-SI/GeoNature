@@ -1,4 +1,7 @@
-<mat-card style="margin: 0.5rem;" appearance="outlined">
+<mat-card
+  style="margin: 0.5rem"
+  appearance="outlined"
+>
   <mat-card-header>
     <mat-card-title>
       <mat-icon style="vertical-align: middle">add_circle</mat-icon>
@@ -7,80 +10,143 @@
   </mat-card-header>
 
   <mat-card-content>
-    <div class="form-row" style="margin-bottom: 15px;">
-
+    <div
+      class="form-row"
+      style="margin-bottom: 15px"
+    >
       <div class="form-col">
         <!-- QUOTED NAME & VALID NAME INPUTS -->
         <div>
-          <pnx-taxonomy label="{{ 'Occtax.Taxon.QuotedName' | translate }}" [parentFormControl]="taxonForm"
-            [idList]="occtaxFormService.idTaxonList" [charNumber]="3"
-            [listLength]="occtaxConfigService.moduleConf.taxon_result_number" [displayAdvancedFilters]="false"
-            displayedLabel="search_name" (onChange)="selectAddOcc()"></pnx-taxonomy>
-          <span id="phyto-quoted-name-label" class="cdk-visually-hidden">
+          <pnx-taxonomy
+            label="{{ 'Occtax.Taxon.QuotedName' | translate }}"
+            [parentFormControl]="taxonForm"
+            [idList]="occtaxFormService.idTaxonList"
+            [charNumber]="3"
+            [listLength]="occtaxConfigService.moduleConf.taxon_result_number"
+            [displayAdvancedFilters]="false"
+            displayedLabel="search_name"
+            (onChange)="selectAddOcc()"
+          ></pnx-taxonomy>
+          <span
+            id="phyto-quoted-name-label"
+            class="cdk-visually-hidden"
+          >
             {{ 'Occtax.Taxon.QuotedName' | translate }}
           </span>
           <!-- TODO: [Angular Material v15 / Validation] Use <mat-error> instead of <small class="error"> -->
-          <small id="phyto-quoted-name-required-error"
-            *ngIf="occurrenceForm.get('nom_cite').hasError('required') && taxonForm.touched && !taxonFormFocus"
-            class="error" style="color: red" role="alert">
+          <small
+            id="phyto-quoted-name-required-error"
+            *ngIf="
+              occurrenceForm.get('nom_cite').hasError('required') &&
+              taxonForm.touched &&
+              !taxonFormFocus
+            "
+            class="error"
+            style="color: red"
+            role="alert"
+          >
             {{ 'Occtax.Taxon.Errors.NomCiteRequiredError' | translate }}
           </small>
         </div>
 
         <div *ngIf="occtaxConfigService.moduleConf.form_fields.display_nom_valide">
           <small for="phyto-valid-name">TAXREF - {{ 'Occtax.Taxon.ValidName' | translate }}</small>
-          <output id="phyto-valid-name" class="form-control form-control-sm form-nom-complet"
-            [innerHTML]="taxonForm.value?.nom_valide"></output>
-          <small id="phyto-taxref-required-error" *ngIf="!occurrenceForm.get('nom_cite').hasError('required') &&
-              occurrenceForm.get('cd_nom').hasError('required') && taxonForm.touched" class="error" style="color: red"
-            role="alert">
+          <output
+            id="phyto-valid-name"
+            class="form-control form-control-sm form-nom-complet"
+            [innerHTML]="taxonForm.value?.nom_valide"
+          ></output>
+          <small
+            id="phyto-taxref-required-error"
+            *ngIf="
+              !occurrenceForm.get('nom_cite').hasError('required') &&
+              occurrenceForm.get('cd_nom').hasError('required') &&
+              taxonForm.touched
+            "
+            class="error"
+            style="color: red"
+            role="alert"
+          >
             {{ 'Occtax.Taxon.Errors.CdNomRequiredError' | translate }}
           </small>
         </div>
-
       </div>
 
       <div class="form-col">
         <!-- COMMENT INPUT -->
-        <mat-form-field *ngIf="occtaxConfigService.moduleConf.form_fields.comment_occ" appearance="outline"
-          style="width: 100%;" subscriptSizing="dynamic">
+        <mat-form-field
+          *ngIf="occtaxConfigService.moduleConf.form_fields.comment_occ"
+          appearance="outline"
+          style="width: 100%"
+          subscriptSizing="dynamic"
+        >
           <mat-label>{{ 'Comment' | translate }}</mat-label>
-          <textarea matInput [formControl]="occurrenceForm.get('comment')" rows="4" id="commentaire"></textarea>
+          <textarea
+            matInput
+            [formControl]="occurrenceForm.get('comment')"
+            rows="4"
+            id="commentaire"
+          ></textarea>
         </mat-form-field>
       </div>
-
     </div>
 
     <div class="form-row">
       <!-- Abundances by Strata table -->
       <div class="form-col">
         <!-- TODO: [Angular Material v15 / Validation] Replace <small class="form-danger"> with <mat-error> -->
-        <small id="phyto-counting-required-error" *ngIf="occurrenceForm.get('cor_counting_occtax').hasError('required')"
-          class="form-danger" role="alert">
+        <small
+          id="phyto-counting-required-error"
+          *ngIf="occurrenceForm.get('cor_counting_occtax').hasError('required')"
+          class="form-danger"
+          role="alert"
+        >
           {{ 'Occtax.Taxon.Errors.CountingRequiredError' | translate }}
         </small>
-        <table class="mat-elevation-z3 abundance-table mdc-data-table__table"
-          [attr.aria-describedby]="occurrenceForm.get('cor_counting_occtax').hasError('required') ? 'phyto-counting-required-error' : null"
-          style="width: 100%;">
-          <caption class="cdk-visually-hidden">{{ 'Occtax.Counting.Abundance' | translate }}</caption>
+        <table
+          class="mat-elevation-z3 abundance-table mdc-data-table__table"
+          [attr.aria-describedby]="
+            occurrenceForm.get('cor_counting_occtax').hasError('required')
+              ? 'phyto-counting-required-error'
+              : null
+          "
+          style="width: 100%"
+        >
+          <caption class="cdk-visually-hidden">
+            {{ 'Occtax.Counting.Abundance' | translate }}
+          </caption>
 
           <thead>
             <tr class="mdc-data-table__header-row">
-              <th class="first-col mdc-data-table__header-cell">{{ 'Occtax.Releve.Stratum' | translate }}</th>
-              <th *ngFor="let stratum of strataColumns; index as i;"
-                class="abundance-headers withTooltip mdc-data-table__header-cell" matTooltip="{{stratum.label}}"
-                aria-label="{{stratum.label}}">{{ stratum.mnemonique }}</th>
+              <th class="first-col mdc-data-table__header-cell">
+                {{ 'Occtax.Releve.Stratum' | translate }}
+              </th>
+              <th
+                *ngFor="let stratum of strataColumns; index as i"
+                class="abundance-headers withTooltip mdc-data-table__header-cell"
+                matTooltip="{{ stratum.label }}"
+                aria-label="{{ stratum.label }}"
+              >
+                {{ stratum.mnemonique }}
+              </th>
             </tr>
           </thead>
           <tbody class="mdc-data-table__content">
             <tr class="mdc-data-table__row">
-              <th class="first-col mdc-data-table__cell">{{ 'Occtax.Counting.Abundance' | translate }}</th>
-              <td *ngFor="let stratum of strataColumns; index as i;" class="mdc-data-table__cell">
-                <pnx-phyto-abundance [value]="stratum.counting" [stratumId]="stratum.id"></pnx-phyto-abundance>
+              <th class="first-col mdc-data-table__cell">
+                {{ 'Occtax.Counting.Abundance' | translate }}
+              </th>
+              <td
+                *ngFor="let stratum of strataColumns; index as i"
+                class="mdc-data-table__cell"
+              >
+                <pnx-phyto-abundance
+                  [value]="stratum.counting"
+                  [stratumId]="stratum.id"
+                ></pnx-phyto-abundance>
               </td>
             </tr>
           </tbody>
-
         </table>
       </div>
     </div>
@@ -88,15 +154,24 @@
 
   <mat-card-actions align="end">
     <!-- SAVE BUTTON -->
-    <button id="add-occ" #saveOccurrenceButton mat-raised-button color="primary"
+    <button
+      id="add-occ"
+      #saveOccurrenceButton
+      mat-raised-button
+      color="primary"
       matTooltip="{{ 'Occtax.Taxon.Actions.SaveThisTaxon' | translate }}"
       [attr.aria-label]="'Occtax.Taxon.Actions.SaveThisTaxon' | translate"
-      [disabled]="phytoOccurrenceService.form.invalid" [attr.aria-busy]="phytoOccurrenceService.saveWaiting"
-      (click)="submitOccurrenceForm()">
-      <mat-spinner *ngIf="phytoOccurrenceService.saveWaiting" diameter="25" aria-hidden="true"></mat-spinner>
+      [disabled]="phytoOccurrenceService.form.invalid"
+      [attr.aria-busy]="phytoOccurrenceService.saveWaiting"
+      (click)="submitOccurrenceForm()"
+    >
+      <mat-spinner
+        *ngIf="phytoOccurrenceService.saveWaiting"
+        diameter="25"
+        aria-hidden="true"
+      ></mat-spinner>
       {{ 'Occtax.Taxon.Actions.SaveThisTaxon' | translate }}
       <mat-icon style="vertical-align: middle">save</mat-icon>
     </button>
   </mat-card-actions>
-
 </mat-card>
