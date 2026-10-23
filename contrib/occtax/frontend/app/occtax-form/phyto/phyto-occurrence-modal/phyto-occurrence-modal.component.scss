@@ -1,8 +1,14 @@
+@use '@angular/material' as mat;
+
+:host {
+    @include mat.expansion-density(-1);
+}
+
 :host .mat-expansion-panel {
-    overflow: hidden !important;
+    overflow: hidden;
     margin-right: 0 !important;
 }
 
 .custom-panel-title {
-    font-weight: bold !important;
+    font-weight: bold;
 }

@@ -1,4 +1,4 @@
-<mat-card style="margin: 0.5rem;">
+<mat-card style="margin: 0.5rem;" appearance="outlined">
   <mat-card-header>
     <mat-card-title>
       <mat-icon style="vertical-align: middle">add_circle</mat-icon>
@@ -7,9 +7,9 @@
   </mat-card-header>
 
   <mat-card-content>
-    <div class="mat-row" style="margin-bottom: 15px;">
+    <div class="form-row" style="margin-bottom: 15px;">
 
-      <div class="mat-col">
+      <div class="form-col">
         <!-- QUOTED NAME & VALID NAME INPUTS -->
         <div>
           <pnx-taxonomy label="{{ 'Occtax.Taxon.QuotedName' | translate }}" [parentFormControl]="taxonForm"
@@ -19,6 +19,7 @@
           <span id="phyto-quoted-name-label" class="cdk-visually-hidden">
             {{ 'Occtax.Taxon.QuotedName' | translate }}
           </span>
+          <!-- TODO: [Angular Material v15 / Validation] Use <mat-error> instead of <small class="error"> -->
           <small id="phyto-quoted-name-required-error"
             *ngIf="occurrenceForm.get('nom_cite').hasError('required') && taxonForm.touched && !taxonFormFocus"
             class="error" style="color: red" role="alert">
@@ -39,10 +40,10 @@
 
       </div>
 
-      <div class="mat-col">
+      <div class="form-col">
         <!-- COMMENT INPUT -->
         <mat-form-field *ngIf="occtaxConfigService.moduleConf.form_fields.comment_occ" appearance="outline"
-          style="width: 100%;">
+          style="width: 100%;" subscriptSizing="dynamic">
           <mat-label>{{ 'Comment' | translate }}</mat-label>
           <textarea matInput [formControl]="occurrenceForm.get('comment')" rows="4" id="commentaire"></textarea>
         </mat-form-field>
@@ -50,11 +51,12 @@
 
     </div>
 
-    <div class="mat-row">
+    <div class="form-row">
       <!-- Abundances by Strata table -->
-      <div class="mat-col">
+      <div class="form-col">
+        <!-- TODO: [Angular Material v15 / Validation] Replace <small class="form-danger"> with <mat-error> -->
         <small id="phyto-counting-required-error" *ngIf="occurrenceForm.get('cor_counting_occtax').hasError('required')"
-          class="mat-danger" role="alert">
+          class="form-danger" role="alert">
           {{ 'Occtax.Taxon.Errors.CountingRequiredError' | translate }}
         </small>
         <table class="mat-elevation-z3 abundance-table mdc-data-table__table"

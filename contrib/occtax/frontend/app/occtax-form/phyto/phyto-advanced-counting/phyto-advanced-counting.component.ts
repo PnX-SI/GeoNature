@@ -1,5 +1,5 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { UntypedFormGroup, UntypedFormArray } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
@@ -12,15 +12,22 @@ import { OcctaxConfigService } from '../../../services/occtax-config.service';
 import { ValidationErrorsId } from '@geonature/services/validators';
 import { MediasComponent } from '@geonature_common/form/media/medias.component';
 
+export interface PhytoCountingForm {
+  id_nomenclature_vegetation_stratum: FormControl<number | null>;
+  id_nomenclature_life_stage: FormControl<number | null>;
+}
+
 /**
  * Provides the phyto-specific counting form, including phytosociological
  * abundance, while reusing the standard counting layout and media controls.
+ * TODO: [Angular Material v15 / Architecture] Consider migrating to Standalone Component
  */
 @Component({
   selector: 'pnx-occtax-form-phyto-advanced-counting',
   templateUrl: './phyto-advanced-counting.component.html',
-  styleUrls: ['./phyto-advanced-counting.component.scss', '../../counting/counting.component.scss'],
+  styleUrls: ['../../counting/counting.component.scss'],
   providers: [PhytoCountingService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PhytoAdvancedCountingComponent implements OnInit, OnDestroy {
   @ViewChild(MediasComponent) private mediasComp?: MediasComponent;
@@ -29,7 +36,7 @@ export class PhytoAdvancedCountingComponent implements OnInit, OnDestroy {
     this.occtaxFormCountingService.counting.next(value);
   }
 
-  public form!: UntypedFormGroup;
+  public form!: FormGroup<PhytoCountingForm>;;
   public readonly ValidationErrorsId = ValidationErrorsId;
   public nbIndiv = 0;
   public cdNomenclatureObjDen = '';
@@ -47,35 +54,32 @@ export class PhytoAdvancedCountingComponent implements OnInit, OnDestroy {
     public readonly config: ConfigService,
     public readonly moduleService: ModuleService,
     public readonly occtaxConfig: OcctaxConfigService
-  ) {}
+  ) { }
 
-  /** Connect the counting form to the shared occurrence life-stage state. */
+  // TOCHECK: Connect the counting form to the shared occurrence life-stage state.
   public ngOnInit(): void {
-    this.form = this.occtaxFormCountingService.form;
-    this.form
-      .get('id_nomenclature_life_stage')
+    this.form = this.occtaxFormCountingService.form as FormGroup<PhytoCountingForm>;;
+    this.form.controls.id_nomenclature_life_stage
       .valueChanges.pipe(
-        filter((idNomenclatureLifeStage) => idNomenclatureLifeStage !== null),
+        filter((idNomenclatureLifeStage: number | null) => idNomenclatureLifeStage !== null),
         takeUntil(this.destroy$)
       )
-      .subscribe((idNomenclatureLifeStage) => {
+      .subscribe((idNomenclatureLifeStage: number) => {
         this.occtaxFormOccurrenceService.lifeStage.next(idNomenclatureLifeStage);
       });
   }
 
-  /** Run deferred media deletions before saving the occurrence. */
   public validateMediasDeletions(): void {
     this.mediasComp?.validateDeletions();
   }
 
-  /** Dispose local subscriptions and unregister this form from the occurrence. */
   public ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
 
     const countings = this.occtaxFormOccurrenceService.form.get(
       'cor_counting_occtax'
-    ) as UntypedFormArray;
+    ) as FormArray<FormGroup<PhytoCountingForm>>;;
     const idx = countings.controls.indexOf(this.form);
     if (idx !== -1) {
       countings.removeAt(idx);
@@ -86,7 +90,6 @@ export class PhytoAdvancedCountingComponent implements OnInit, OnDestroy {
     return this.occtaxFormOccurrenceService.taxref.getValue();
   }
 
-  /** Build media metadata defaults from the current releve and selected taxon. */
   public defaultsMedia(): Record<string, string | boolean> {
     const occtaxData = this.occtaxFormService.occtaxData.getValue();
     const taxref = this.occtaxFormOccurrenceService.taxref.getValue();

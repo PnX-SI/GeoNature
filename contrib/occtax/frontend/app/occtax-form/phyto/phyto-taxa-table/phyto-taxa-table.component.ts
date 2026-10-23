@@ -1,4 +1,5 @@
-import { Component, OnDestroy, OnInit, ViewContainerRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatDialog } from '@angular/material/dialog';
 import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
@@ -79,11 +80,15 @@ function compare(a: number | string, b: number | string, isAsc: boolean) {
  * Coordinates phyto occurrence display, sorting, editing and deletion.
  * Stratum columns are derived from releve data; abundance codes are resolved
  * from the counting nomenclature lookup.
+ * 
+ * TODO: [Angular Material v15 / Architecture] Consider migrate to Standalone Component
+ * TODO: [Angular Material v15 / Table Architecture] Consider migrating to MatTableDataSource<PhytoOccurrence> with custom sortingDataAccessor to cleanly delegate matSort interactions.
  */
 @Component({
   selector: 'pnx-phyto-taxa-table',
   templateUrl: './phyto-taxa-table.component.html',
   styleUrls: ['./phyto-taxa-table.component.scss', '../../taxa-list/taxa-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
   /** Current sort mode and direction shown by the table controls. */
@@ -109,10 +114,14 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
     private readonly dialog: MatDialog,
     private readonly viewContainerRef: ViewContainerRef,
     private readonly translate: TranslateService,
-    public readonly occtaxConfig: OcctaxConfigService
+    public readonly occtaxConfig: OcctaxConfigService,
+    private readonly liveAnnouncer: LiveAnnouncer,
   ) { }
 
-  /** Subscribe to releve, occurrence-edit and nomenclature data for this table. */
+  public trackByOccurrenceId(index: number, occurrence: PhytoOccurrence): number {
+    return occurrence.id_occurrence_occtax ?? index;
+  }
+
   public ngOnInit(): void {
     combineLatest([
       this.form.occtaxData.pipe(
@@ -138,7 +147,6 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
       });
   }
 
-  /** Release subscriptions owned by this component. */
   public ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
@@ -170,6 +178,7 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
       .subscribe((confirmed: boolean) => {
         if (confirmed) {
           this.occtaxFormOccurrenceService.deleteOccurrence(occurrence);
+          this.liveAnnouncer.announce(`${this.taxonTitle(occurrence)} deleted`);
         }
       });
   }
@@ -216,7 +225,6 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
     return this.removeHtmlFromString(occurrence.comment);
   }
 
-  /** Refresh local lookup data and visible rows after source data changes. */
   private updateTableData(
     data: PhytoDataWithProperties,
     occurrence: PhytoOccurrence | null,
@@ -237,7 +245,6 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
     this.refreshOccurrences();
   }
 
-  /** Build labeled columns only for strata with recorded vegetation values. */
   private setStrataColumns(strata: VegetationStratum[], nomenclatures: Nomenclature[]): void {
     const labelById = new Map(
       nomenclatures.map((nomenclature) => [
@@ -270,7 +277,8 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
           mnemonique: mnemoById.get(id) || '',
         };
       })
-      .filter((column) => column.label !== '');
+      .filter((column) => column.label !== '')
+      .sort((a, b) => a.id - b.id);
 
     this.displayedColumns = [
       ...this.baseColumns,
@@ -285,14 +293,15 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
       this.sortDirection = 'asc'
       this.sortActiveColumn = '';
       this.refreshOccurrences();
+      this.liveAnnouncer.announce('Sorting cleared');
       return;
     }
     this.sortDirection = sort.direction
     this.sortActiveColumn = sort.active;
     this.refreshOccurrences();
+    this.liveAnnouncer.announce(`Sorted ${sort.direction === 'asc' ? 'ascending' : 'descending'}`);
   }
 
-  /** Exclude the occurrence being edited and publish a freshly sorted array. */
   private refreshOccurrences(): void {
     const filteredOccurrences = this.occurrences.filter(
       (occurrence) =>

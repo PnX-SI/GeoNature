@@ -1,6 +1,8 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {
   AbstractControl,
+  FormGroup,
+  FormControl,
   FormArray,
   FormBuilder,
   Validators,
@@ -10,7 +12,7 @@ import {
 import { MatTable } from '@angular/material/table';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { OcctaxFormService } from '../../occtax-form.service';
-import { combineLatest, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 // Mirrors pr_occtax.t_vegetation_stratum.
@@ -22,6 +24,15 @@ export interface VegetationStratum {
   max_height?: number | null;
   average_height?: number | null;
   percentage_cover_vegetation_stratum?: number | null;
+}
+
+export interface VegetationStratumForm {
+  id_vegetation_stratum: FormControl<number | null>;
+  id_nomenclature_vegetation_stratum: FormControl<number | null>;
+  min_height: FormControl<number | null>;
+  max_height: FormControl<number | null>;
+  average_height: FormControl<number | null>;
+  percentage_cover_vegetation_stratum: FormControl<number | null>;
 }
 
 export interface Nomenclature {
@@ -61,20 +72,19 @@ function minStrictValidator(min: number): ValidatorFn {
 }
 
 
-
 /**
  * Edits vegetation-stratum cover and height values on a phyto survey.
  *
- * Rows follow the vegetation-stratum nomenclature order. When editing a survey,
- * saved stratum values are restored if the form array has not been populated;
- * existing form values take precedence to preserve in-progress edits.
+ * Rows follow the vegetation-stratum nomenclature order. 
+ * Form structure is built once on init, and data is patched reactively.
  * 
- * BUG: the first rows are replaced by the last edited rows
+ * TODO: [Angular Material v15 / Architecture] Consider refactoring to a Standalone Component
  */
 @Component({
   selector: 'pnx-phyto-strata-table',
   templateUrl: './phyto-strata-table.component.html',
   styleUrls: ['./phyto-strata-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PhytoStrataTableComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = [
@@ -84,15 +94,18 @@ export class PhytoStrataTableComponent implements OnInit, OnDestroy {
     'min_height',
     'max_height',
   ];
-  @Input() public parentFormControl!: FormArray;
 
-  @ViewChild('strataTable') public table!: MatTable<any>;
-  // @ViewChild('strataTable', { static: true }) public table!: MatTable<any>;
+  @Input() public parentFormControl!: FormArray<FormGroup<VegetationStratumForm>>;
+  @ViewChild(MatTable) table!: MatTable<any>;
 
   strataMnemo: Record<string, string> = {};
   strataLabels: Record<string, string> = {};
 
   private readonly destroy$ = new Subject<void>();
+
+  public trackByStratumId(index: number, row: AbstractControl): number {
+    return row.get('id_nomenclature_vegetation_stratum')?.value ?? index;
+  }
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -100,8 +113,12 @@ export class PhytoStrataTableComponent implements OnInit, OnDestroy {
     private readonly occtaxFormService: OcctaxFormService
   ) { }
 
+  get strataControls(): FormGroup[] {
+    return this.parentFormControl.controls as FormGroup[];
+  }
+
   public ngOnInit(): void {
-    this.loadStrataTable();
+    this.initStrataTable();
   }
 
   public ngOnDestroy(): void {
@@ -109,81 +126,91 @@ export class PhytoStrataTableComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private loadStrataTable(): void {
-    combineLatest([
-      this.dataFormService.getNomenclature('STRATE_VEGETATION'),
-      // this.occtaxFormService.editionMode,
-      this.occtaxFormService.occtaxData,
-    ])
-      .pipe(
-        // filter(([, editionMode, occtaxData]: [{ values: Nomenclature[] }, unknown, any]) => !editionMode || !!occtaxData?.releve?.properties),
-        takeUntil(this.destroy$)
-      )
+  private initStrataTable(): void {
+    this.dataFormService.getNomenclature('STRATE_VEGETATION')
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: ([strataNomenclatures, occtaxData]: [{ values: Nomenclature[] }, any]) => {
-
-          // const existingStrata = (this.parentFormControl.value || []) as VegetationStratum[];
-
-          const savedStrata: VegetationStratum[] =
-            occtaxData?.releve?.properties?.t_vegetation_stratum || [];
-
-
-          // Prefer form values to retain edits; use saved data when patchValue left the array empty.
-          // const strataToRestore = existingStrata.length > 0 ? existingStrata : savedStrata;
-          const strataToRestore = savedStrata;
-
-          const strataFormGroups = strataNomenclatures.values.map(
-            (strateNomenclature: Nomenclature) => {
-              this.strataLabels[strateNomenclature.id_nomenclature] =
-                strateNomenclature.label_default;
-              this.strataMnemo[strateNomenclature.id_nomenclature] =
-                strateNomenclature.mnemonique;
-
-              const currentStratum: VegetationStratum = strataToRestore.find(
-                (stratum) =>
-                  stratum.id_nomenclature_vegetation_stratum === strateNomenclature.id_nomenclature
-              ) || {
-                id_vegetation_stratum: null,
-                id_nomenclature_vegetation_stratum: strateNomenclature.id_nomenclature,
-                percentage_cover_vegetation_stratum: null,
-                average_height: null,
-                min_height: null,
-                max_height: null,
-              };
-
-              return this.formBuilder.group(
-                {
-                  id_vegetation_stratum: [currentStratum.id_vegetation_stratum],
-                  id_nomenclature_vegetation_stratum: [
-                    currentStratum.id_nomenclature_vegetation_stratum,
-                  ],
-                  percentage_cover_vegetation_stratum: [
-                    currentStratum.percentage_cover_vegetation_stratum,
-                    [minStrictValidator(0), Validators.max(100)],
-                  ],
-                  average_height: [currentStratum.average_height],
-                  min_height: [currentStratum.min_height],
-                  max_height: [currentStratum.max_height],
-                },
-                {
-                  validators: heightOrderValidator,
-                }
-              );
-            }
-          );
+        next: (strataNomenclatures: { values: Nomenclature[] }) => {
+          const nomenclatures = strataNomenclatures.values;
+          const preExistingValues = this.parentFormControl.value || [];
 
           this.parentFormControl.clear({ emitEvent: false });
-          strataFormGroups.forEach((stratum: AbstractControl) =>
-            {
-              this.parentFormControl.push(stratum, { emitEvent: false });
+
+          nomenclatures.forEach((strateNomenclature: Nomenclature) => {
+
+            this.strataLabels[strateNomenclature.id_nomenclature] = strateNomenclature.label_default;
+            this.strataMnemo[strateNomenclature.id_nomenclature] = strateNomenclature.mnemonique;
+
+            const existingData = preExistingValues.find(
+              (v: any) => v?.id_nomenclature_vegetation_stratum === strateNomenclature.id_nomenclature
+            ) || {};
+
+            const group = this.formBuilder.group(
+              {
+                id_vegetation_stratum: [existingData.id_vegetation_stratum || null],
+                id_nomenclature_vegetation_stratum: [strateNomenclature.id_nomenclature],
+                percentage_cover_vegetation_stratum: [
+                  existingData.percentage_cover_vegetation_stratum || null,
+                  [minStrictValidator(0), Validators.max(100)],
+                ],
+                average_height: [existingData.average_height || null],
+                min_height: [existingData.min_height || null],
+                max_height: [existingData.max_height || null],
+              },
+              {
+                validators: heightOrderValidator
               }
-          );
+            );
+
+            this.parentFormControl.push(group, { emitEvent: false });
+          });
 
           this.table?.renderRows();
+          this.protectFormArrayOrder(nomenclatures);
+          this.listenToDataChanges();
         },
         error: (error: unknown) => {
           console.error('Error loading nomenclature STRATE_VEGETATION:', error);
         },
+      });
+  }
+
+  private protectFormArrayOrder(nomenclatures: Nomenclature[]): void {
+    const originalPatchValue = this.parentFormControl.patchValue.bind(this.parentFormControl);
+
+    this.parentFormControl.patchValue = (incomingValues: any[], options?: Object) => {
+      if (!Array.isArray(incomingValues)) {
+        return originalPatchValue(incomingValues, options);
+      }
+
+      const safelyMappedValues = nomenclatures.map(nomenc => {
+        const dataForThisRow = incomingValues.find(
+          (val) => val && val.id_nomenclature_vegetation_stratum === nomenc.id_nomenclature
+        );
+
+        return dataForThisRow || { id_nomenclature_vegetation_stratum: nomenc.id_nomenclature };
+      });
+
+      return originalPatchValue(safelyMappedValues, options);
+    };
+  }
+
+  private listenToDataChanges(): void {
+    this.occtaxFormService.occtaxData
+      .pipe(
+        filter((occtaxData: any) => !!occtaxData?.releve?.properties), // Ensure data exists
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: (occtaxData: any) => {
+          const savedStrata = occtaxData.releve.properties.t_vegetation_stratum || [];
+
+          this.parentFormControl.patchValue(savedStrata, { emitEvent: false });
+
+        },
+        error: (error: unknown) => {
+          console.error('Error loading occtaxData for strata table:', error);
+        }
       });
   }
 }

@@ -1,5 +1,7 @@
+@use '@angular/material' as mat;
 table {
   width: 100%;
+  @include mat.table-density(-2);
 }
 
 th {
@@ -11,5 +13,5 @@ th {
 }
 
 .striped-table .mat-mdc-row:nth-child(even) {
-  background-color: #f5f5f5; /* Adjust to match your theme's palette */
+  background-color: var(--mat-table-row-item-hover-state-layer-color, rgba(0, 0, 0, 0.04));
 }

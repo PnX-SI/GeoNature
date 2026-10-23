@@ -1,6 +1,9 @@
+@use '@angular/material' as mat;
+
 table {
   width: 100%;
-  border: 1px solid #cfcfcf;
+  @include mat.table-density(-2);
+  border: 1px solid var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
 }
 
 th {
@@ -9,7 +12,7 @@ th {
 
 th,
 td {
-  border: 1px solid #cfcfcf;
+  border: 1px solid var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
   padding: 0.25rem;
 }
 
@@ -33,12 +36,12 @@ td {
   text-decoration: underline dotted;
 }
 
-.mat-col {
+.form-col {
   flex: 1;
   min-width: 250px;
 }
 
-.mat-row {
+.form-row {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -46,7 +49,7 @@ td {
   width: 100%;
 }
 
-.mat-danger {
+.form-danger {
   color: #f44336;
   margin-bottom: 8px;
   display: block;

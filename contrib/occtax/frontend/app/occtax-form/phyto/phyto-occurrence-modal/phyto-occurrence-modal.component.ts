@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnDestroy } from '@angular/core';
 import { combineLatest, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -38,9 +38,40 @@ interface StratumNomenclatureResponse {
   values: StratumNomenclature[];
 }
 
+export interface OccurrenceCounting {
+  id_nomenclature_vegetation_stratum?: number | null;
+  id_nomenclature_phytosociological_abundance?: number | null;
+  [key: string]: any;
+}
+
+export interface PhytoOccurrence {
+  id_occurrence_occtax?: number | null;
+  id_releve_occtax?: number;
+  nom_cite?: string | null;
+  nom_valide?: string | null;
+  comment?: string | null;
+  taxref?: {
+    cd_nom?: number | null;
+    lb_nom?: string | null;
+    nom_valide?: string | null;
+    regne?: string | null;
+    group2_inpn?: string | null;
+    group3_inpn?: string | null;
+    [key: string]: any;
+  } | null;
+  cor_counting_occtax?: OccurrenceCounting[] | null;
+  [key: string]: any;
+}
+
+export interface PhytoOccurrenceModalData {
+  occurrence: PhytoOccurrence;
+}
+
 /**
  * Edits one phyto occurrence and ensures its counting list covers each
  * vegetation stratum that has data in the releve.
+ * 
+ * TODO: [Angular Material v15 / Architecture] Consider refactoring to Standalone Component
  */
 @Component({
   selector: 'pnx-phyto-occurrence-modal',
@@ -50,17 +81,16 @@ interface StratumNomenclatureResponse {
     '../../occurrence/occurrence.component.scss',
   ],
   providers: [PhytoOccurrenceService, PhytoCountingsService],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PhytoOccurrenceModalComponent extends PhytoOccurrenceComponent implements OnDestroy {
-  /** Labels used to display counting rows by their vegetation stratum. */
   public strataLabels: Record<number, string> = {};
   public abundancesLabels: Record<number, string> = {};
-  /** Vegetation strata with at least one recorded cover or height value. */
   public releveStrata: VegetationStratum[] = [];
   private readonly modalDestroy$ = new Subject<void>();
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) data: { occurrence: any },
+    @Inject(MAT_DIALOG_DATA) public data: PhytoOccurrenceModalData,
     occtaxFormService: OcctaxFormService,
     private countingsService: PhytoCountingsService,
     phytoOccurrenceService: PhytoOccurrenceService,
@@ -87,7 +117,6 @@ export class PhytoOccurrenceModalComponent extends PhytoOccurrenceComponent impl
     this.phytoOccurrenceService.occurrence.next(data.occurrence);
     this.occurrenceForm = this.phytoOccurrenceService.form;
 
-    // Load releve data and stratum labels together before creating missing countings.
     combineLatest([
       occtaxFormService.occtaxData,
       dataFormService.getNomenclature('STRATE_VEGETATION'),
@@ -112,14 +141,12 @@ export class PhytoOccurrenceModalComponent extends PhytoOccurrenceComponent impl
       });
   }
 
-  /** Tear down modal-owned streams before delegating shared cleanup to the parent. */
   public override ngOnDestroy(): void {
     this.modalDestroy$.next();
     this.modalDestroy$.complete();
     super.ngOnDestroy();
   }
 
-  /** A stratum is relevant when it has an ID and at least one recorded value. */
   private hasStratumData(
     stratum: VegetationStratum
   ): stratum is VegetationStratum & { id_nomenclature_vegetation_stratum: number } {
@@ -132,7 +159,6 @@ export class PhytoOccurrenceModalComponent extends PhytoOccurrenceComponent impl
     );
   }
 
-  /** Add one counting for each relevant stratum that is not already represented. */
   private addMissingCountings(): void {
     const countings = this.countingsService.countings || [];
     const existingStratumIds = new Set<number | null>(
@@ -146,6 +172,7 @@ export class PhytoOccurrenceModalComponent extends PhytoOccurrenceComponent impl
 
     if (missingCountings.length > 0) {
       this.countingsService.countings = [...countings, ...missingCountings];
+      this.countingsService.countings = this.countingsService.countings.sort((a, b) => a.id_nomenclature_vegetation_stratum - b.id_nomenclature_vegetation_stratum)
     }
   }
 }

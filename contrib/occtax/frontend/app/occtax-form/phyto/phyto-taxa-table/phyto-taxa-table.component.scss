@@ -1,5 +1,10 @@
-// Angular Material 15 icon buttons are 48px wide;
-$icon-button-size: 48px;
+@use '@angular/material' as mat;
+
+:host {
+  @include mat.icon-button-density(-1);
+}
+
+$icon-button-size: 44px;
 $table-cell-horizontal-padding: 16px;
 $inside-border-size: 1px;
 $actions-column-width: calc($inside-border-size + (2 * $icon-button-size) + (2 * $table-cell-horizontal-padding));
@@ -18,12 +23,12 @@ th {
 .mat-header-cell-strata {
   justify-content: center;
   text-align: center;
-  border-right: $inside-border-size solid #cfcfcf;
-  border-left: $inside-border-size solid #cfcfcf;
+  border-right: $inside-border-size solid var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
+  border-left: $inside-border-size solid var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
 }
 
 .mat-column-nom_valide {
-  border-right: 1px solid #cfcfcf;
+  border-right: 1px solid var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
   overflow: hidden;
   text-wrap: nowrap;
   overflow-wrap: break-word;
@@ -37,7 +42,7 @@ th {
   overflow-wrap: break-word;
   inline-size: $comment-max-characters;
   max-width: $comment-column-width;
-  border-left: $inside-border-size solid #cfcfcf;
+  border-left: $inside-border-size solid var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
 }
 
 .mat-column-actions {
@@ -53,7 +58,7 @@ th {
   -moz-hyphens: auto;
   -webkit-hyphens: auto;
   hyphens: auto;
-  border-left: $inside-border-size solid #cfcfcf;
+  border-left: $inside-border-size solid var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
 }
 
 .mat-header-cell-actions {
@@ -66,9 +71,9 @@ th {
 
 .mat-column-abundance {
   text-align: center;
-  border-left: $inside-border-size solid #cfcfcf;
+  border-left: $inside-border-size solid var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
 }
 
 .striped-table .mat-mdc-row:nth-child(even) {
-  background-color: #f5f5f5; /* Adjust to match your theme's palette */
+  background-color: var(--mat-table-row-item-hover-state-layer-color, rgba(0, 0, 0, 0.04));
 }

@@ -1,10 +1,6 @@
-<!-- TODO
- * the file uses some bootstrap classes: should find material angular ways
-  * classes form-control-sm: replace with <mat-form-field appearance="outline" >
--->
 <small>{{ 'Occtax.Releve.VegetationStrata' | translate }}</small>
-<table mat-table [dataSource]="parentFormControl.controls" class="mat-elevation-z4 striped-table" #strataTable>
-  <caption class="sr-only">{{ 'Occtax.Releve.VegetationStrata' | translate }}</caption>
+<table mat-table [dataSource]="strataControls" class="mat-elevation-z4 striped-table">
+  <caption class="cdk-visually-hidden">{{ 'Occtax.Releve.VegetationStrata' | translate }}</caption>
 
   <!-- Nom de la strate -->
   <ng-container matColumnDef="label_default">
@@ -124,5 +120,5 @@
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns" [formGroup]="row"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns; trackBy: trackByStratumId" [formGroup]="row"></tr>
 </table>

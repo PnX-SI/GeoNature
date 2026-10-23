@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   OnDestroy,
@@ -8,7 +9,7 @@ import {
   ViewChild,
   ViewChildren,
 } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { combineLatest, Subject, timer } from 'rxjs';
 import { filter, map, takeUntil, tap } from 'rxjs/operators';
 import { OcctaxFormService } from '../../occtax-form.service';
@@ -53,6 +54,13 @@ interface StratumRow {
   counting: any;
 }
 
+export interface PhytoCountingForm {
+  id_nomenclature_exist_proof: FormControl<number | null>;
+  nom_cite: FormControl<string | null>;
+  cd_nom: FormControl<number | null>;
+}
+
+
 /**
  * Coordinates phyto occurrence entry, including taxon selection, proof fields,
  * and vegetation-stratum rows linked to their abundance countings.
@@ -62,16 +70,21 @@ interface StratumRow {
  * constructor dependencies compatible with the modal.
  *
  * TODO: Move proof and additional-field management into the modal.
+ * TODO: move error strings in i18n
+ * TODO: [Angular Material v15 / Architecture] Consider refactoring into a Standalone Component
+ * TODO: [Angular CDK / A11y] Replace direct document.getElementById and DOM event listeners with 
+ *  FocusMonitor from @angular/cdk/a11y or ElementRef ViewChild for platform-safe focus tracking and a11y compliance.
  */
 @Component({
   selector: 'pnx-phyto-occurrence',
   templateUrl: './phyto-occurrence.component.html',
   styleUrls: ['./phyto-occurrence.component.scss', '../../occurrence/occurrence.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestroy {
-  public occurrenceForm: UntypedFormGroup;
+  public occurrenceForm: FormGroup<PhytoCountingForm>;
 
-  public taxonForm!: UntypedFormControl;
+  public taxonForm!: FormControl<Taxon | null>;
   public taxonFormFocus = false;
 
   public advancedSectionState: AdvancedSectionState = AdvancedSectionState.COLLAPSED;
@@ -110,8 +123,7 @@ export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestro
   public ngOnInit(): void {
     this.occurrenceForm = this.phytoOccurrenceService.form;
 
-    this.occurrenceForm
-      .get('id_nomenclature_exist_proof')
+    this.occurrenceForm.controls.id_nomenclature_exist_proof
       .valueChanges.pipe(
         map((id_nomenclature: number): boolean => {
           const cdNomenclature = this.phytoOccurrenceService.getCdNomenclatureById(
@@ -140,8 +152,7 @@ export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestro
           const strata = data.releve.properties.t_vegetation_stratum;
           this.setStrataColumns(Array.isArray(strata) ? strata : [], nomenclature.values || []);
         },
-        error: (error: unknown) => {
-          //TODO: move error string in i18n
+        error: (error: unknown) => {     
           console.error('Error loading vegetation strata for countings:', error);
         },
       });
@@ -154,10 +165,10 @@ export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestro
     }
     taxonInput.focus();
 
-    // Keep the search ready for the next taxon when the current occurrence changes.
-    this.phytoOccurrenceService.occurrence.subscribe(() => taxonInput.focus());
+    this.phytoOccurrenceService.occurrence
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => taxonInput.focus());
 
-    // Track focus so the required-field error is hidden while the search is active.
     taxonInput.addEventListener('focus', (event) => (this.taxonFormFocus = true));
     taxonInput.addEventListener('blur', (event) => (this.taxonFormFocus = false));
   }
@@ -173,7 +184,7 @@ export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   private initializeTaxRefSearch(): void {
-    this.taxonForm = new UntypedFormControl(null, [
+    this.taxonForm = new FormControl(null, [
       Validators.required,
       this.formService.taxonValidator,
     ]);
@@ -244,8 +255,8 @@ export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   private setOccurrenceTaxon(values: { nom_cite: string; cd_nom: number | null }): void {
-    this.occurrenceForm.get('nom_cite').setValue(values.nom_cite);
-    this.occurrenceForm.get('cd_nom').setValue(values.cd_nom);
+    this.occurrenceForm.controls.nom_cite.setValue(values.nom_cite);
+    this.occurrenceForm.controls.cd_nom.setValue(values.cd_nom);
   }
 
   public get countings(): any[] {
@@ -265,23 +276,18 @@ export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestro
         nomenclature.mnemonique,
       ])
     );
-    // const countingByStratumId = new Map(
-    //   this.countings.map((counting) => [counting.id_nomenclature_vegetation_stratum, counting])
-    // );
 
     this.strataColumns = strata.map((stratum) => {
       const idNomenclatureVegetationStratum = stratum.id_nomenclature_vegetation_stratum;
 
-      // the only required thing is to have at least 1 counting but try not to create a counting for each stratum
       return {
         id: idNomenclatureVegetationStratum,
         label: labelByNomenclatureId.get(idNomenclatureVegetationStratum) || '',
         mnemonique: mnemoByNomenclatureId.get(idNomenclatureVegetationStratum) || '',
-        // counting: countingByStratumId.get(idNomenclatureVegetationStratum) || {},
         counting: {},
       };
-    })
-      .filter((row) => row.label !== '');
+    }).filter((row) => row.label !== '')
+      .sort((a, b) => a.id - b.id);
   }
 
   public submitOccurrenceForm(): void {
