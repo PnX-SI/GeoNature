@@ -1,6 +1,5 @@
 import {
   AfterViewInit,
-  ChangeDetectionStrategy,
   Component,
   ElementRef,
   OnDestroy,
@@ -79,7 +78,6 @@ export interface PhytoCountingForm {
   selector: 'pnx-phyto-occurrence',
   templateUrl: './phyto-occurrence.component.html',
   styleUrls: ['./phyto-occurrence.component.scss', '../../occurrence/occurrence.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestroy {
   public occurrenceForm: FormGroup<PhytoCountingForm>;
@@ -152,7 +150,7 @@ export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestro
           const strata = data.releve.properties.t_vegetation_stratum;
           this.setStrataColumns(Array.isArray(strata) ? strata : [], nomenclature.values || []);
         },
-        error: (error: unknown) => {     
+        error: (error: unknown) => {
           console.error('Error loading vegetation strata for countings:', error);
         },
       });
