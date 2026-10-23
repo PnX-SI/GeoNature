@@ -5,6 +5,7 @@ import datetime
 from unittest.mock import patch
 
 from flask import url_for
+from pypnusershub.db.models import User
 from werkzeug.exceptions import Forbidden, Unauthorized, BadRequest
 
 from geonature.utils.env import db
@@ -324,6 +325,35 @@ class TestNotification:
                 NotificationRule.id == notification_rule.id,
             )
             .select()
+        )
+
+    def test_delete_role_deletes_its_notifications_and_rules(
+        self, rule_method, rule_category, notification_rule
+    ):
+        with db.session.begin_nested():
+            role = User(groupe=False, active=True, identifiant="deleted_role", nom_role="Deleted")
+            db.session.add(role)
+        with db.session.begin_nested():
+            notification = Notification(id_role=role.id_role, title="title", code_status="UNREAD")
+            rule = NotificationRule(
+                id_role=role.id_role,
+                code_method=rule_method.code,
+                code_category=rule_category.code,
+                subscribed=False,
+            )
+            db.session.add_all([notification, rule])
+
+        # Deleting the role (e.g. from UsersHub) must not be blocked by its notifications
+        with db.session.begin_nested():
+            db.session.execute(delete(User).where(User.id_role == role.id_role))
+
+        assert not db.session.scalar(
+            exists().where(Notification.id_notification == notification.id_notification).select()
+        )
+        assert not db.session.scalar(exists().where(NotificationRule.id == rule.id).select())
+        # Rules of other roles are kept
+        assert db.session.scalar(
+            exists().where(NotificationRule.id == notification_rule.id).select()
         )
 
     def test_list_methods(self, users, rule_method):
