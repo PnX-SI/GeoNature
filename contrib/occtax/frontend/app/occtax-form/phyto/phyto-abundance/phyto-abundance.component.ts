@@ -13,6 +13,7 @@ import { PhytoOccurrenceService } from '../phyto-occurrence/occurrence.service';
 
 export interface PhytoCountingForm {
   id_nomenclature_vegetation_stratum: FormControl<number | null>;
+  id_nomenclature_phytosociological_abundance: FormControl<number | null>;
 }
 
 /**
