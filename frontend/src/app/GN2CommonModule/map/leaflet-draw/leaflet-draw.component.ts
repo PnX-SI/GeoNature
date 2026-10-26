@@ -224,6 +224,20 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     this.mapservice.setEditingMarker(false);
   }
 
+  /**
+   * Supprime le dessin courant de la carte et réinitialise l'état interne du composant.
+   *
+   * À utiliser lorsque la géométrie associée est vidée depuis l'extérieur du composant
+   * (ex: réinitialisation d'un formulaire), le changement de l'input ``geojson`` vers
+   * ``null`` n'étant pas pris en charge. Ne modifie pas l'état du contrôle de dessin
+   * (affiché ou masqué).
+   */
+  clearDraw() {
+    this.mapservice.leafletDrawFeatureGroup.clearLayers();
+    this._currentDraw = null;
+    this._currentGeojson = null;
+  }
+
   // cache le draw control
   disableDrawControl() {
     if (!this.drawControl) {
