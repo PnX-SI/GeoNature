@@ -2,7 +2,8 @@ import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angu
 import { UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { DynamicFormService } from './dynamic-form.service';
 import * as equal from 'fast-deep-equal/es6';
-import { filter } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { debounceTime, filter } from 'rxjs/operators';
 
 /**
  * Ce composant permet de créer dynamiquement des formulaire à partir
@@ -42,6 +43,11 @@ export class GenericFormGeneratorComponent implements OnInit, OnChanges {
   @Input() fieldErrors: { [name: string]: string[] } = {};
   /** Erreurs du formulaire entier, affichées sous les champs (ex : `validate_cel` de l’entité) */
   @Input() formErrors: string[] = [];
+  /**
+   * Délai (ms) avant de recalculer les champs affichés, masqués et requis
+   * (`hidden` et `required`, éventuellement évalués en fonction du formulaire).
+   */
+  @Input() updateDelay: number = 0;
 
   /**
    * Dictionnaire qui permet
@@ -58,11 +64,14 @@ export class GenericFormGeneratorComponent implements OnInit, OnChanges {
 
   public formsSelected = [];
 
+  private formsUpdate = new Subject<void>();
+
   constructor(private _dynformService: DynamicFormService) {}
 
   ngOnInit() {
     this.formsDefinition = this.formsDefinition || [];
     this.initDynamicForm();
+    this.formsUpdate.pipe(debounceTime(this.updateDelay)).subscribe(() => this.refreshForms());
     this.myFormGroup.valueChanges.subscribe((values) => {
       this.onFormsChange(values);
     });
@@ -155,23 +164,21 @@ export class GenericFormGeneratorComponent implements OnInit, OnChanges {
 
   onFormsChange(newValue) {
     if (this.hasValueChanged(newValue)) {
-      // mise à jour des formulaires affichés / cachés
-      this.setForms();
-
-      // pour dire aux formulaires qu'il y a un changement;
-
-      // fy ExpressionChangedAfterItHasBeenCheckedError
-      setTimeout(() => {
-        this.update = true;
-      });
-
-      setTimeout(() => {
-        this.update = false;
-      }, 500);
+      this.formsUpdate.next();
 
       this.change.emit(newValue);
       this.oldValue = { ...newValue };
     }
+  }
+
+  /**
+   * Recalcule les champs affichés / masqués, puis prévient les champs qu'ils doivent se mettre à jour.
+   * Le passage par `false` puis `true` garantit une mise à jour à chaque passage, même rapproché.
+   */
+  private refreshForms() {
+    this.setForms();
+    this.update = false;
+    setTimeout(() => (this.update = true));
   }
 
   removeFormControl(i) {
