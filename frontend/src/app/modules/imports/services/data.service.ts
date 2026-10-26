@@ -19,6 +19,10 @@ import {
 import { ConfigService } from '@geonature/services/config.service';
 import { map } from '@librairies/rxjs/operators';
 
+interface DestinationsRouteParams {
+  module_code?: string;
+}
+
 @Injectable()
 export class ImportDataService {
   private urlApi: string | null = null;
@@ -318,10 +322,19 @@ export class ImportDataService {
    *
    * @returns An array of {Destination} objects.
    */
-  getDestinations(actionCode: string = ''): Observable<Array<Destination>> {
+  getDestinations(
+    actionCode: string = '',
+    queryParams: DestinationsRouteParams = {}
+  ): Observable<Array<Destination>> {
+    // HttpParams is immutable: build it from the defined query params in one go
+    const params = new HttpParams({
+      fromObject: Object.fromEntries(
+        Object.entries(queryParams).filter(([, value]) => value !== undefined && value !== null)
+      ) as { [param: string]: string },
+    });
     return this._http.get<Array<Destination>>(
       `${this.config.API_ENDPOINT}/import/destinations/${actionCode}`,
-      {}
+      { params }
     );
   }
 
