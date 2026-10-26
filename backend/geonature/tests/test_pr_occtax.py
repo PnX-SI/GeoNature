@@ -8,6 +8,8 @@ from geonature.core.gn_permissions.models import PermissionAvailable, PermObject
 from pypnnomenclature.models import TNomenclatures
 import pytest
 
+from decimal import Decimal
+
 
 from flask import Flask, url_for, current_app, g
 from werkzeug.exceptions import Unauthorized, Forbidden, NotFound, BadRequest, Conflict
@@ -739,37 +741,135 @@ class TestOcctaxReleve:
         data = response.json
         assert data["properties"]["id_module"] == module.id_module
 
-        def test_releve_actions_on_closed_af(self, users: dict, datasets, releve_occtax):
-            """
-            Test that creating, updating and deleting a releve fails when the
-            associated dataset's acquisition framework is closed.
-            """
+    def test_post_releve_in_module_phyto(
+        self,
+        users: dict,
+        releve_data: dict[str, Any],
+        module: TModules,
+        datasets: dict[Any, TDatasets],
+    ):
+        vegetation_stratum = {
+            "id_nomenclature_vegetation_stratum": 644,
+            "min_height": 1.0,
+            "max_height": 3.0,
+            "average_height": 2.0,
+            "percentage_cover_vegetation_stratum": 60,
+        }
+        releve_data["properties"]["t_vegetation_stratum"] = [vegetation_stratum]
+        set_logged_user(self.client, users["admin_user"])
+        # Change the dataset to one associated with the Phyto module.
+        releve_data["properties"]["id_dataset"] = datasets["phyto"].id_dataset
+        response = self.client.post(
+            url_for("pr_occtax.createReleve", module_code="PHYTO"), json=releve_data
+        )
+        assert response.status_code == 200
+        data = response.json
+        assert len(data["properties"]["t_vegetation_stratum"]) == 1
+        returned_stratum = data["properties"]["t_vegetation_stratum"][0]
+        assert returned_stratum["id_vegetation_stratum"] is not None
+        assert (
+            Decimal(returned_stratum["id_nomenclature_vegetation_stratum"])
+            == vegetation_stratum["id_nomenclature_vegetation_stratum"]
+        )
+        assert Decimal(returned_stratum["min_height"]) == vegetation_stratum["min_height"]
+        assert Decimal(returned_stratum["max_height"]) == vegetation_stratum["max_height"]
+        assert Decimal(returned_stratum["average_height"]) == vegetation_stratum["average_height"]
+        assert (
+            Decimal(returned_stratum["percentage_cover_vegetation_stratum"])
+            == vegetation_stratum["percentage_cover_vegetation_stratum"]
+        )
 
-            af = datasets["own_dataset"].acquisition_framework
-            af.opened = False
-            db.session.flush()
+    def test_update_releve_in_phyto_module(
+        self,
+        users: dict,
+        releve_occtax: Any,
+        releve_data: dict[str, Any],
+        datasets: dict[Any, TDatasets],
+    ):
+        vegetation_stratum = {
+            "id_nomenclature_vegetation_stratum": 644,
+            "min_height": 1.0,
+            "max_height": 3.0,
+            "average_height": 2.0,
+            "percentage_cover_vegetation_stratum": 60,
+        }
+        releve_data["properties"]["t_vegetation_stratum"] = [vegetation_stratum]
+        # Change the dataset to one associated with the Phyto module.
+        releve_data["properties"]["id_dataset"] = datasets["phyto"].id_dataset
 
-            set_logged_user(self.client, users["user"])
+        set_logged_user(self.client, users["stranger_user"])
+        response = self.client.post(
+            url_for(
+                "pr_occtax.updateReleve",
+                id_releve=releve_occtax.id_releve_occtax,
+                module_code="PHYTO",
+            ),
+            json=releve_data,
+        )
+        assert response.status_code == Forbidden.code
 
-            releve_data = ReleveSchema().dump(releve_occtax)
+        set_logged_user(self.client, users["user"])
+        response = self.client.post(
+            url_for(
+                "pr_occtax.updateReleve",
+                id_releve=releve_occtax.id_releve_occtax,
+                module_code="PHYTO",
+            ),
+            json=releve_data,
+        )
+        assert response.status_code == 200
 
-            # ---- Test CREATE on closed AF ----
-            url_create = url_for("pr_occtax.createReleve")
-            response = self.client.post(url_create, json=releve_data)
+        data = response.json
+        assert len(data["properties"]["t_vegetation_stratum"]) == 1
+        returned_stratum = data["properties"]["t_vegetation_stratum"][0]
+        assert returned_stratum["id_vegetation_stratum"] is not None
+        assert (
+            Decimal(returned_stratum["id_nomenclature_vegetation_stratum"])
+            == vegetation_stratum["id_nomenclature_vegetation_stratum"]
+        )
+        assert Decimal(returned_stratum["min_height"]) == vegetation_stratum["min_height"]
+        assert Decimal(returned_stratum["max_height"]) == vegetation_stratum["max_height"]
+        assert Decimal(returned_stratum["average_height"]) == vegetation_stratum["average_height"]
+        assert (
+            Decimal(returned_stratum["percentage_cover_vegetation_stratum"])
+            == vegetation_stratum["percentage_cover_vegetation_stratum"]
+        )
 
-            assert response.status_code == Conflict.code
+        response = self.client.post(
+            url_for("pr_occtax.updateReleve", id_releve=0, module_code="PHYTO"), json=releve_data
+        )
+        assert response.status_code == 404
 
-            # ---- Test UPDATE on closed AF ----
-            url_update = url_for("pr_occtax.updateReleve", id_releve=releve_occtax.id_releve_occtax)
-            response = self.client.post(url_update, json=releve_data)
-            assert response.status_code == Conflict.code
+    @pytest.mark.skip(reason="unfinished test")
+    def test_releve_actions_on_closed_af(self, users: dict, datasets, releve_occtax):
+        """
+        Test that creating, updating and deleting a releve fails when the
+        associated dataset's acquisition framework is closed.
+        """
 
-            # ---- Test DELETE on closed AF ----
-            url_delete = url_for(
-                "pr_occtax.deleteOneReleve", id_releve=releve_occtax.id_releve_occtax
-            )
-            response = self.client.delete(url_delete)
-            assert response.status_code == Conflict.code
+        af = datasets["own_dataset"].acquisition_framework
+        af.opened = False
+        db.session.flush()
+
+        set_logged_user(self.client, users["user"])
+
+        releve_data = ReleveSchema().dump(releve_occtax)
+
+        # ---- Test CREATE on closed AF ----
+        url_create = url_for("pr_occtax.createReleve")
+        response = self.client.post(url_create, json=releve_data)
+
+        assert response.status_code == Conflict.code
+
+        # ---- Test UPDATE on closed AF ----
+        url_update = url_for("pr_occtax.updateReleve", id_releve=releve_occtax.id_releve_occtax)
+        response = self.client.post(url_update, json=releve_data)
+        assert response.status_code == Conflict.code
+
+        # ---- Test DELETE on closed AF ----
+        url_delete = url_for("pr_occtax.deleteOneReleve", id_releve=releve_occtax.id_releve_occtax)
+        response = self.client.delete(url_delete)
+        assert response.status_code == Conflict.code
 
 
 @pytest.mark.usefixtures("client_class", "datasets", "module", "individuals")

@@ -358,7 +358,7 @@ def insertOrUpdateOneReleve():
     return releve.get_geofeature(depth=depth)
 
 
-def insert_or_update_vegetation_strata(existing_strates, new_strates):
+def buildVegetationStrata(existing_strates, new_strates):
     existing_by_id = {
         strate.id_vegetation_stratum: strate
         for strate in existing_strates
@@ -443,24 +443,11 @@ def releveHandler(request, *, releve, scope, module_code=None):
         # set id_digitiser
         releve.id_digitiser = g.current_user.id_role
 
-    # Check if Phyto module is installed and called from "phyto" context
-    # TODO: this method is not up to date. ADDITIONAL FIELDS does not exist in config file
-    # Must find a way to check installation and context with the new method
-    # But this doesn't seem breaking?
-    additionalFields = current_app.config.get("ADDITIONAL_FIELDS", {})
-    implementedModules = additionalFields.get("IMPLEMENTED_MODULES", [])
-    is_phyto_installed = "PHYTO" in implementedModules
-
-    # module_code is None...
-    is_phyto_context = module_code and module_code.lower() == "phyto"
-
-    # Never reach
-    if is_phyto_installed and is_phyto_context:
+    is_phyto_context = module_code and str(module_code).lower() == "phyto"
+    if is_phyto_context:
         new_strates = properties_dict.get("t_vegetation_stratum", [])
         existing_strates = getattr(releve, "t_vegetation_stratum", [])
-        releve.t_vegetation_stratum = insert_or_update_vegetation_strata(
-            existing_strates, new_strates
-        )
+        releve.t_vegetation_stratum = buildVegetationStrata(existing_strates, new_strates)
 
     if not dataset.acquisition_framework.opened:
         raise Conflict("Cannot create or update a releve on a closed acquisition framework.")
@@ -513,6 +500,9 @@ def createReleve(scope, module_code=None):
 
     :returns: GeoJson<TRelevesOccurrence>
     """
+    if module_code is None and hasattr(g, "current_module"):
+        module_code = g.current_module.module_code
+
     # nouveau releve vide
     releve = TRelevesOccurrence()
     releve = ReleveSchema().dump(
@@ -534,6 +524,9 @@ def updateReleve(id_releve, scope, module_code=None):
     Post one Occurrence data (Occurrence + Counting) for add to Releve
 
     """
+    if module_code is None and hasattr(g, "current_module"):
+        module_code = g.current_module.module_code
+
     # get releve by id_releve
     releve = DB.session.get(TRelevesOccurrence, id_releve)
 

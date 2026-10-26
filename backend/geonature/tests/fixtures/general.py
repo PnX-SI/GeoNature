@@ -157,6 +157,13 @@ def modules():
             "active_frontend": True,
             "active_backend": True,
         },
+        2: {
+            "module_code": "PHYTO",
+            "module_label": "Phyto",
+            "module_path": "phyto",
+            "active_frontend": True,
+            "active_backend": False,
+        }
     }
     modules = []
     for key, module in dict_module_to_create.items():
@@ -554,6 +561,12 @@ def datasets(users, acquisition_frameworks, module, first_nomenclature):
         id_af=af_1.id_acquisition_framework,
         modules=[module],
     )
+
+    datasets["phyto"] = create_dataset(
+            name="phyto_dataset",
+            id_af=af_1.id_acquisition_framework,
+            modules=[module],
+        )
 
     return datasets
 
