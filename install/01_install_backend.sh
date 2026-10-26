@@ -89,7 +89,7 @@ export UV_PROJECT_ENVIRONMENT="${BASE_DIR}/${VENV_PATH}"
 if [ ! -d "${UV_PROJECT_ENVIRONMENT}" ]; then
   echo "Création du virtual env…"
   # --seed installe pip/setuptools/wheel dans le venv (requis par `geonature install-gn-module`).
-  uv venv --seed "${UV_PROJECT_ENVIRONMENT}"
+  uv venv --seed "${UV_PROJECT_ENVIRONMENT} --python 3.13"
 fi
 
 echo "Activation du virtual env..."
