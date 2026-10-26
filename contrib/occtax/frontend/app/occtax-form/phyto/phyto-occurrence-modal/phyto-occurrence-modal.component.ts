@@ -6,25 +6,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { ConfigService } from '@geonature/services/config.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { FormService } from '@geonature_common/form/form.service';
+import { Nomenclature } from '@geonature_common/interfaces';
+import { VegetationStratum, Occurrence } from '../interfaces';
 import { OcctaxConfigService } from '../../../services/occtax-config.service';
 import { OcctaxFormService } from '../../occtax-form.service';
 import { OcctaxTaxaListService } from '../../taxa-list/taxa-list.service';
 import { PhytoOccurrenceComponent } from '../phyto-occurrence/phyto-occurrence.component';
-import { PhytoOccurrenceService } from '../phyto-occurrence/occurrence.service';
-import { PhytoCountingsService } from '../phyto-abundance/countings.service';
-
-interface VegetationStratum {
-  id_nomenclature_vegetation_stratum?: number | null;
-  percentage_cover_vegetation_stratum?: number | null;
-  average_height?: number | null;
-  min_height?: number | null;
-  max_height?: number | null;
-}
-
-interface StratumNomenclature {
-  id_nomenclature: number;
-  label_default: string;
-}
+import { PhytoOccurrenceService } from '../services/occurrence.service';
+import { PhytoCountingsService } from '../services/countings.service';
 
 interface PhytoReleveData {
   releve?: {
@@ -34,37 +23,8 @@ interface PhytoReleveData {
   };
 }
 
-interface StratumNomenclatureResponse {
-  values: StratumNomenclature[];
-}
-
-export interface OccurrenceCounting {
-  id_nomenclature_vegetation_stratum?: number | null;
-  id_nomenclature_phytosociological_abundance?: number | null;
-  [key: string]: any;
-}
-
-export interface PhytoOccurrence {
-  id_occurrence_occtax?: number | null;
-  id_releve_occtax?: number;
-  nom_cite?: string | null;
-  nom_valide?: string | null;
-  comment?: string | null;
-  taxref?: {
-    cd_nom?: number | null;
-    lb_nom?: string | null;
-    nom_valide?: string | null;
-    regne?: string | null;
-    group2_inpn?: string | null;
-    group3_inpn?: string | null;
-    [key: string]: any;
-  } | null;
-  cor_counting_occtax?: OccurrenceCounting[] | null;
-  [key: string]: any;
-}
-
-export interface PhytoOccurrenceModalData {
-  occurrence: PhytoOccurrence;
+interface NomenclatureResponse {
+  values: Nomenclature[];
 }
 
 /**
@@ -90,7 +50,7 @@ export class PhytoOccurrenceModalComponent extends PhytoOccurrenceComponent impl
   private readonly modalDestroy$ = new Subject<void>();
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: PhytoOccurrenceModalData,
+    @Inject(MAT_DIALOG_DATA) public data: { occurrence: Occurrence },
     occtaxFormService: OcctaxFormService,
     private countingsService: PhytoCountingsService,
     phytoOccurrenceService: PhytoOccurrenceService,
@@ -124,7 +84,7 @@ export class PhytoOccurrenceModalComponent extends PhytoOccurrenceComponent impl
     ])
       .pipe(takeUntil(this.modalDestroy$))
       .subscribe({
-        next: ([data, strataResponse, abundancesResponse]: [PhytoReleveData | null, StratumNomenclatureResponse, any]) => {
+        next: ([data, strataResponse, abundancesResponse]: [PhytoReleveData | null, NomenclatureResponse, any]) => {
           strataResponse.values.forEach((stratum) => {
             this.strataLabels[stratum.id_nomenclature] = stratum.label_default;
           });

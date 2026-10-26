@@ -4,8 +4,8 @@ import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import { OcctaxFormService } from '../../occtax-form.service';
-import { PhytoOccurrenceService } from '../phyto-occurrence/occurrence.service';
-import { PhytoCountingService } from '../phyto-abundance/counting.service';
+import { PhytoOccurrenceService } from '../services/occurrence.service';
+import { PhytoCountingService } from '../services/counting.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { OcctaxConfigService } from '../../../services/occtax-config.service';
@@ -20,6 +20,7 @@ export interface PhytoCountingForm {
 /**
  * Provides the phyto-specific counting form, including phytosociological
  * abundance, while reusing the standard counting layout and media controls.
+ * 
  * TODO: [Angular Material v15 / Architecture] Consider migrating to Standalone Component
  */
 @Component({

@@ -8,8 +8,8 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { PhytoCountingService } from './counting.service';
-import { PhytoOccurrenceService } from '../phyto-occurrence/occurrence.service';
+import { PhytoCountingService } from '../services/counting.service';
+import { PhytoOccurrenceService } from '../services/occurrence.service';
 
 export interface PhytoCountingForm {
   id_nomenclature_vegetation_stratum: FormControl<number | null>;

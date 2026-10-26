@@ -363,7 +363,10 @@
     {{ 'Occtax.Taxon.Errors.CountingRequiredError' | translate }}
   </div>
 
-  <mat-accordion [multi]="true">
+  <mat-accordion
+    [multi]="true"
+    data-qa="phyto-occ-modal-accordion"
+  >
     <mat-expansion-panel
       *ngFor="let counting of countings; index as i"
       displayMouseOver
@@ -433,6 +436,7 @@
     #saveOccurrenceButton
     mat-raised-button
     color="primary"
+    data-qa="modal_save_occ"
     matTooltip="{{ 'Occtax.Taxon.Actions.EditAndSave' | translate }}"
     [disabled]="phytoOccurrenceService.form.invalid"
     [attr.aria-busy]="phytoOccurrenceService.saveWaiting"

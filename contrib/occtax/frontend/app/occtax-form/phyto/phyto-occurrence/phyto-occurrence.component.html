@@ -1,6 +1,7 @@
 <mat-card
   style="margin: 0.5rem"
   appearance="outlined"
+  data-qa="pnx-phyto-occurrence"
 >
   <mat-card-header>
     <mat-card-title>
@@ -86,6 +87,7 @@
             [formControl]="occurrenceForm.get('comment')"
             rows="4"
             id="commentaire"
+            data-qa="phyto-comment"
           ></textarea>
         </mat-form-field>
       </div>
@@ -111,6 +113,7 @@
               : null
           "
           style="width: 100%"
+          data-qa="pnx-phyto-abundance-table"
         >
           <caption class="cdk-visually-hidden">
             {{ 'Occtax.Counting.Abundance' | translate }}
@@ -156,6 +159,7 @@
     <!-- SAVE BUTTON -->
     <button
       id="add-occ"
+      data-qa="phyto-save-occurrence"
       #saveOccurrenceButton
       mat-raised-button
       color="primary"

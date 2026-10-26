@@ -18,8 +18,8 @@ import { OcctaxFormOccurrenceService } from "./occurrence/occurrence.service";
 import { OcctaxTaxaListService } from "./taxa-list/taxa-list.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
 import { OcctaxFormCountingsService } from "./counting/countings.service";
-import { PhytoCountingsService } from "./phyto/phyto-abundance/countings.service";
-import { PhytoOccurrenceService } from "./phyto/phyto-occurrence/occurrence.service";
+import { PhytoCountingsService } from "./phyto/services/countings.service";
+import { PhytoOccurrenceService } from "./phyto/services/occurrence.service";
 import { OcctaxFormMapService } from "./map/occtax-map.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { filter } from "rxjs/operators";
@@ -65,7 +65,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
     private _modalService: NgbModal,
     public moduleService: ModuleService,
     public occtaxConfig: OcctaxConfigService,
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.moduleService.currentModule$.subscribe((module) => {
@@ -104,7 +104,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       this.occtaxFormService.currentTab = <
         "releve" | "taxons" | "phyto-taxons"
-      >urlSegments.pop();
+        >urlSegments.pop();
     } else {
       this.occtaxFormService.currentTab = "releve";
       const idReleve = urlSegments[urlSegments.length - 1];
@@ -152,8 +152,8 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
       (<any>document.querySelector("pnx-occtax-form .tab"))
     )
       ? (<HTMLScriptElement>(
-          (<any>document.querySelector("pnx-occtax-form .tab"))
-        )).offsetHeight
+        (<any>document.querySelector("pnx-occtax-form .tab"))
+      )).offsetHeight
       : 0;
 
     this.cardContentHeight = this._commonService.calcCardContentHeight(
@@ -237,7 +237,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
     if (occ.length === 0) {
       this._ds
         .deleteReleve(this.occtaxFormService.id_releve_occtax.getValue())
-        .subscribe((d) => {});
+        .subscribe((d) => { });
     }
   }
 

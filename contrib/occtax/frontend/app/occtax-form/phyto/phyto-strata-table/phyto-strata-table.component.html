@@ -3,6 +3,7 @@
   mat-table
   [dataSource]="strataControls"
   class="mat-elevation-z4 striped-table"
+  data-qa="phyto-strata-table"
 >
   <caption class="cdk-visually-hidden">{{ 'Occtax.Releve.VegetationStrata' | translate }}</caption>
 
@@ -12,6 +13,7 @@
       mat-header-cell
       *matHeaderCellDef
       scope="col"
+      data-qa="phyto-strata-table-label_default"
     >
       {{ 'Occtax.Releve.Stratum' | translate }}
     </th>
@@ -33,6 +35,7 @@
       mat-header-cell
       *matHeaderCellDef
       scope="col"
+      data-qa="phyto-strata-table-percentage_cover_vegetation_stratum"
     >
       {{ 'Occtax.Releve.Cover' | translate }}
     </th>
@@ -59,6 +62,7 @@
             : null
         "
         formControlName="percentage_cover_vegetation_stratum"
+        data-qa="stratum-cover-{{ row.get('id_nomenclature_vegetation_stratum').value }}"
       />
       <small
         *ngIf="row.get('percentage_cover_vegetation_stratum').invalid"
@@ -76,6 +80,7 @@
       mat-header-cell
       *matHeaderCellDef
       scope="col"
+      data-qa="phyto-strata-table-average_height"
     >
       {{ 'Occtax.Releve.HeightAvg' | translate }}
     </th>
@@ -106,6 +111,7 @@
             : '')
         "
         formControlName="average_height"
+        data-qa="stratum-average-height-{{ row.get('id_nomenclature_vegetation_stratum').value }}"
       />
       <small
         *ngIf="row.get('average_height').invalid"
@@ -123,6 +129,7 @@
       mat-header-cell
       *matHeaderCellDef
       scope="col"
+      data-qa="phyto-strata-table-min_height"
     >
       {{ 'Occtax.Releve.HeightMin' | translate }}
     </th>
@@ -151,6 +158,7 @@
             : '')
         "
         formControlName="min_height"
+        data-qa="stratum-min-height-{{ row.get('id_nomenclature_vegetation_stratum').value }}"
       />
       <small
         *ngIf="row.get('min_height').invalid"
@@ -168,6 +176,7 @@
       mat-header-cell
       *matHeaderCellDef
       scope="col"
+      data-qa="phyto-strata-table-max_height"
     >
       {{ 'Occtax.Releve.HeightMax' | translate }}
     </th>
@@ -196,6 +205,7 @@
             : '')
         "
         formControlName="max_height"
+        data-qa="stratum-max-height-{{ row.get('id_nomenclature_vegetation_stratum').value }}"
       />
       <small
         *ngIf="row.get('max_height').invalid"

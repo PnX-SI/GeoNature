@@ -12,8 +12,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { combineLatest, Subject, timer } from 'rxjs';
 import { filter, map, takeUntil, tap } from 'rxjs/operators';
 import { OcctaxFormService } from '../../occtax-form.service';
-import { PhytoOccurrenceService } from './occurrence.service';
-import { PhytoCountingsService } from '../phyto-abundance/countings.service';
+import { PhytoOccurrenceService } from '../services/occurrence.service';
+import { PhytoCountingsService } from '../services/countings.service';
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
 import { FormService } from '@geonature_common/form/form.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
@@ -22,37 +22,21 @@ import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfigService } from '@geonature/services/config.service';
+import { Nomenclature } from '@geonature_common/interfaces';
+import { VegetationStratum } from '../interfaces';
 import { OcctaxConfigService } from '../../../services/occtax-config.service';
 import { PhytoAbundanceComponent } from '../phyto-abundance/phyto-abundance.component';
 import { AdvancedSectionState } from '@geonature_common/form/advanced-section/advanced-section.component';
 
-// Mirrors pr_occtax.t_vegetation_stratum
-export interface VegetationStratum {
-  id_vegetation_stratum: number | null;
-  id_releve_occtax?: number;
-  id_nomenclature_vegetation_stratum?: number | null;
-  min_height?: number | null;
-  max_height?: number | null;
-  average_height?: number | null;
-  percentage_cover_vegetation_stratum?: number | null;
-}
-
-interface Nomenclature {
-  id_nomenclature: number;
-  label_default: string;
-  mnemonique: string;
-}
 
 interface NomenclatureResponse {
   values: Nomenclature[];
 }
-
 interface StratumRow {
   id: number;
   label: string;
   counting: any;
 }
-
 export interface PhytoCountingForm {
   id_nomenclature_exist_proof: FormControl<number | null>;
   nom_cite: FormControl<string | null>;

@@ -13,16 +13,14 @@ import { map, filter, switchMap, tap, pairwise, retry, catchError } from 'rxjs/o
 import * as cloneDeep from 'lodash/cloneDeep';
 import { CommonService } from '@geonature_common/service/common.service';
 import { OcctaxFormService } from '../../occtax-form.service';
-import { PhytoCountingsService } from '../phyto-abundance/countings.service';
+import { PhytoCountingsService } from './countings.service';
 import { OcctaxDataService } from '../../../services/occtax-data.service';
 import { OcctaxFormParamService } from '../../form-param/form-param.service';
 import { OcctaxTaxaListService } from '../../taxa-list/taxa-list.service'; // TODO: change this to phyto-taxa-list
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { OcctaxConfigService } from '../../../services/occtax-config.service';
 
-/**
- * TODO: move services in a phyto-service folder
- */
+
 @Injectable()
 export class PhytoOccurrenceService {
   public form: UntypedFormGroup;
@@ -280,8 +278,8 @@ export class PhytoOccurrenceService {
 
     formValue = this.occurrenceFormValue();
 
-    if(formValue.cor_counting_occtax) {
-      formValue.cor_counting_occtax = formValue.cor_counting_occtax.filter((counting)=>{
+    if (formValue.cor_counting_occtax) {
+      formValue.cor_counting_occtax = formValue.cor_counting_occtax.filter((counting) => {
         return counting.id_nomenclature_phytosociological_abundance !== null
       })
     }

@@ -11,20 +11,10 @@ import {
 } from '@angular/forms';
 import { MatTable } from '@angular/material/table';
 import { DataFormService } from '@geonature_common/form/data-form.service';
+import { Nomenclature } from '@geonature_common/interfaces'
 import { OcctaxFormService } from '../../occtax-form.service';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
-
-// Mirrors pr_occtax.t_vegetation_stratum.
-export interface VegetationStratum {
-  id_vegetation_stratum: number | null;
-  id_releve_occtax?: number;
-  id_nomenclature_vegetation_stratum?: number | null;
-  min_height?: number | null;
-  max_height?: number | null;
-  average_height?: number | null;
-  percentage_cover_vegetation_stratum?: number | null;
-}
 
 export interface VegetationStratumForm {
   id_vegetation_stratum: FormControl<number | null>;
@@ -33,12 +23,6 @@ export interface VegetationStratumForm {
   max_height: FormControl<number | null>;
   average_height: FormControl<number | null>;
   percentage_cover_vegetation_stratum: FormControl<number | null>;
-}
-
-export interface Nomenclature {
-  id_nomenclature: number;
-  label_default: string;
-  mnemonique: string;
 }
 
 const heightOrderValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {

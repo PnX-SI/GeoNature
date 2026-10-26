@@ -7,40 +7,13 @@ import { combineLatest, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/confirmation.dialog';
 import { DataFormService } from '@geonature_common/form/data-form.service';
+import { Nomenclature } from '@geonature_common/interfaces'
+import { VegetationStratum, Counting, Occurrence } from '../interfaces';
 import { OcctaxConfigService } from '../../../services/occtax-config.service';
 import { OcctaxFormService } from '../../occtax-form.service';
-import { PhytoOccurrenceService } from '../phyto-occurrence/occurrence.service';
+import { PhytoOccurrenceService } from '../services/occurrence.service';
 import { PhytoOccurrenceModalComponent } from '../phyto-occurrence-modal/phyto-occurrence-modal.component';
 import { OcctaxTaxaListService } from '../../taxa-list/taxa-list.service';
-
-interface VegetationStratum {
-  id_nomenclature_vegetation_stratum?: number | null;
-  percentage_cover_vegetation_stratum?: number | null;
-  average_height?: number | null;
-  min_height?: number | null;
-  max_height?: number | null;
-}
-
-interface Counting {
-  id_nomenclature_vegetation_stratum?: number | null;
-  id_nomenclature_phytosociological_abundance?: number | null;
-}
-
-interface PhytoOccurrence {
-  id_occurrence_occtax?: number | null;
-  nom_cite?: string | null;
-  nom_valide?: string | null;
-  comment?: string | null;
-  taxref?: { nom_valide?: string | null } | null;
-  cor_counting_occtax?: Counting[] | null;
-}
-
-interface Nomenclature {
-  id_nomenclature: number;
-  label_default: string;
-  cd_nomenclature?: string;
-  mnemonique: string;
-}
 
 interface StratumColumn {
   id: number;
@@ -48,26 +21,21 @@ interface StratumColumn {
   label: string;
   mnemonique: string;
 }
-
 interface OccurrenceInProgress {
   id: number;
   state: 'in_progress' | 'error';
-  data: PhytoOccurrence;
+  data: Occurrence;
 }
-
 interface PhytoProperties {
-  t_occurrences_occtax?: PhytoOccurrence[];
+  t_occurrences_occtax?: Occurrence[];
   t_vegetation_stratum?: VegetationStratum[];
 }
-
 interface PhytoData {
   releve?: { properties?: PhytoProperties };
 }
-
 interface PhytoDataWithProperties extends PhytoData {
   releve: { properties: PhytoProperties };
 }
-
 interface NomenclatureResponse {
   values: Nomenclature[];
 }
@@ -102,8 +70,8 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
 
   private readonly destroy$ = new Subject<void>();
   /** Local snapshot used to reapply sorting when UI sort settings change. */
-  private occurrences: PhytoOccurrence[] = [];
-  private occurrenceInEdit: PhytoOccurrence | null = null;
+  private occurrences: Occurrence[] = [];
+  private occurrenceInEdit: Occurrence | null = null;
   private abundanceNomenclatures = new Map<number, Nomenclature>();
 
   constructor(
@@ -118,7 +86,7 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
     private readonly liveAnnouncer: LiveAnnouncer,
   ) { }
 
-  public trackByOccurrenceId(index: number, occurrence: PhytoOccurrence): number {
+  public trackByOccurrenceId(index: number, occurrence: Occurrence): number {
     return occurrence.id_occurrence_occtax ?? index;
   }
 
@@ -135,7 +103,7 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
       .subscribe({
         next: ([data, occurrence, strataResponse, abundanceResponse]: [
           PhytoDataWithProperties,
-          PhytoOccurrence | null,
+          Occurrence | null,
           NomenclatureResponse,
           NomenclatureResponse,
         ]) => {
@@ -152,11 +120,11 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  public editOccurrence(occurrence: PhytoOccurrence): void {
+  public editOccurrence(occurrence: Occurrence): void {
     this.occtaxFormOccurrenceService.occurrence.next(occurrence);
   }
 
-  public openOccurrenceModal(occurrence: PhytoOccurrence): void {
+  public openOccurrenceModal(occurrence: Occurrence): void {
     this.dialog.open(PhytoOccurrenceModalComponent, {
       data: { occurrence },
       viewContainerRef: this.viewContainerRef,
@@ -165,7 +133,7 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
     });
   }
 
-  public deleteOccurrence(occurrence: PhytoOccurrence): void {
+  public deleteOccurrence(occurrence: Occurrence): void {
     const message = `${this.translate.instant('Actions.Delete')} ${this.taxonTitle(occurrence)} ?`;
     this.dialog
       .open(ConfirmationDialog, {
@@ -187,7 +155,7 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
     return value ? value.replace(/<[^>]*>/g, '') : '';
   }
 
-  public taxonTitle(occurrence: PhytoOccurrence | null | undefined): string {
+  public taxonTitle(occurrence: Occurrence | null | undefined): string {
     return this.removeHtmlFromString(occurrence?.nom_cite);
   }
 
@@ -200,7 +168,7 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
     this.occtaxTaxaListService.removeOccurrenceInProgress(occurrenceInProgress.id);
   }
 
-  public getStratumAbundance(occurrence: PhytoOccurrence, stratumId: number): string {
+  public getStratumAbundance(occurrence: Occurrence, stratumId: number): string {
     const abundanceCodes: string[] = [];
     for (const counting of occurrence.cor_counting_occtax || []) {
       if (
@@ -221,13 +189,13 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
     return abundanceCodes.join(', ');
   }
 
-  public getOccurrenceComment(occurrence: PhytoOccurrence): string {
+  public getOccurrenceComment(occurrence: Occurrence): string {
     return this.removeHtmlFromString(occurrence.comment);
   }
 
   private updateTableData(
     data: PhytoDataWithProperties,
-    occurrence: PhytoOccurrence | null,
+    occurrence: Occurrence | null,
     strataResponse: NomenclatureResponse,
     abundanceResponse: NomenclatureResponse
   ): void {

@@ -8,13 +8,11 @@ import { OcctaxFormService } from '../../occtax-form.service';
 import { OcctaxFormParamService } from '../../form-param/form-param.service';
 import { MediaService } from '@geonature_common/service/media.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { PhytoCountingsService } from '../phyto-abundance/countings.service';
-import { PhytoOccurrenceService } from '../phyto-occurrence/occurrence.service';
+import { PhytoCountingsService } from '../services/countings.service';
+import { PhytoOccurrenceService } from './occurrence.service';
 import { minBelowMaxValidator } from '@geonature/services/validators';
 
-/**
- * TODO: move services in a phyto-service folder
- */
+
 @Injectable()
 export class PhytoCountingService implements OnDestroy {
   counting: Subject<any[]> = new Subject();

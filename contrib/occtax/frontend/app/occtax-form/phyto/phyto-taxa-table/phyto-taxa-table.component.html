@@ -1,4 +1,7 @@
-<div id="taxalist-container">
+<div
+  id="taxalist-container"
+  data-qa="pnx-phyto-taxa-table"
+>
   <ng-container
     *ngIf="
       (occtaxTaxaListService.occurrences$ | async)?.length ||
@@ -60,6 +63,7 @@
       class="striped-table"
       matSort
       (matSortChange)="sortData($event)"
+      data-qa="phyto-taxa-table"
     >
       <caption class="cdk-visually-hidden">{{ 'Occtax.Taxon.ObservedTaxon' | translate }}</caption>
 
