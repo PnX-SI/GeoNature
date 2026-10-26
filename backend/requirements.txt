@@ -31,13 +31,13 @@ blinker==1.9.0
     #   flask-mail
 bokeh==3.4.1
     # via geonature (pyproject.toml)
-brotli==1.2.0 ; platform_python_implementation == 'CPython'
+brotli==1.2.1 ; platform_python_implementation == 'CPython'
     # via fonttools
-brotlicffi==1.2.0.2 ; platform_python_implementation != 'CPython'
+brotlicffi==1.2.1.0 ; platform_python_implementation != 'CPython'
     # via fonttools
 celery==5.6.3
     # via geonature (pyproject.toml)
-certifi==2026.10.19
+certifi==2026.10.23
     # via
     #   fiona
     #   pyproj
@@ -187,7 +187,9 @@ idna==3.20
     # via
     #   email-validator
     #   requests
-importlib-metadata==9.0.1
+importlib-metadata==9.0.1 ; python_full_version < '3.11'
+    # via geonature (pyproject.toml)
+importlib-metadata==10.1.0 ; python_full_version >= '3.11'
     # via geonature (pyproject.toml)
 infinity==1.5
     # via intervals
@@ -298,7 +300,9 @@ psycopg2==2.9.13
     #   pypnusershub
     #   taxhub
     #   usershub
-pycparser==3.11 ; implementation_name != 'PyPy'
+pycparser==3.11 ; python_full_version < '3.11' and implementation_name != 'PyPy'
+    # via cffi
+pycparser==3.12 ; python_full_version >= '3.11' and implementation_name != 'PyPy'
     # via cffi
 pydyf==0.12.1 ; python_full_version < '3.11'
     # via weasyprint
@@ -459,7 +463,7 @@ vine==5.1.0
     #   amqp
     #   celery
     #   kombu
-wcwidth==0.9.3
+wcwidth==0.9.4
     # via prompt-toolkit
 weasyprint==70.0
     # via
