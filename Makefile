@@ -54,7 +54,7 @@ default: help
 help:
 	@echo "Available targets:"
 	@echo "  init_config_toml       - Initialize GeoNature configuration"
-	@echo "  init_setting_init      - Initialize GeoNature settings"
+	@echo "  init_settings_ini      - Initialize GeoNature settings (config/settings.ini)"
 	@echo "  activate_drop_db       - Activate the drop_db options in settings.ini"
 	@echo "  deactivate_drop_db     - Deactivate the drop_db options in settings.ini"
 	@echo "  update_settings        - Update settings and config files"
@@ -62,22 +62,35 @@ help:
 	@echo "  install_backend        - Install backend components"
 	@echo "  install_frontend       - Install frontend components"
 	@echo "  install_db             - Create and set up the database"
-	@echo "  install_contrib        - Install GeoNature modules"
-	@echo "  install_extra          - Install extra GeoNature modules"
-	@echo "  reset_install          - Reset installation"
+	@echo "  install_contrib        - Install core GeoNature modules (occtax, occhab, validation)"
+	@echo "  install_extra          - Install extra GeoNature modules (monitoring, export, dashboard)"
+	@echo "  install_modules        - Install core and extra GeoNature modules"
+	@echo "  reset_install          - Reset installation (backend, database and modules)"
 	@echo "  back                   - Start backend"
 	@echo "  front                  - Start frontend"
 	@echo "  celery                 - Start celery worker"
+	@echo "  celery_debug           - Start celery worker with auto-restart on Python file changes"
 	@echo "  db_status              - Show database status"
 	@echo "  autoupgrade            - Upgrade the database"
+	@echo "  completion             - Generate the GeoNature command completion file"
 	@echo "  test_frontend          - Run frontend tests"
 	@echo "  test_backend           - Run backend tests"
 	@echo "  lint_frontend          - Lint frontend code"
 	@echo "  lint_backend           - Lint backend code"
 	@echo "  compile_requirements   - Compile requirements"
-	@echo "  supergrant             - Apply a supergrant to a user by its `nom_role`. By default, the supergrant is applied to the group `Grp_admin`. Check `SUPERGRANT_NOM_ROLE` and `SUPERGRANT_ISGROUP` to override the user and if it is a group or not."
-	@echo "  benchmark              - Run benchmark"
+	@echo "  supergrant             - Apply a supergrant to a user by its nom_role. By default, applied to the group Grp_admin."
+	@echo "                           Set SUPERGRANT_NOM_ROLE and SUPERGRANT_ISGROUP to override the role and whether it is a group."
+	@echo "  setup-env              - Set up the dev environment (uv sync + editable modules)"
 	@echo "  docker_db              - Start populated database with docker (use it for dev and test only!)"
+	@echo "  docker                 - Build backend and frontend docker images"
+	@echo "  docker-dev             - Build backend and frontend dev docker images"
+	@echo "  docker-backend         - Build backend docker image"
+	@echo "  docker-backend-dev     - Build backend dev docker image"
+	@echo "  docker-frontend        - Build frontend docker image"
+	@echo "  docker-frontend-nginx  - Build frontend nginx docker image"
+	@echo "  docker-frontend-source - Build frontend source docker image"
+	@echo "  docker-frontend-dev    - Build frontend dev docker image"
+	@echo "  docker-list-images     - List the docker image names that will be built"
 
 ##############################
 #### CONFIGURATION FILES ####
@@ -185,9 +198,6 @@ test_frontend:
 test_backend:
 	source $(VENV_PATH)/bin/activate && pytest
 
-benchmark:
-	source $(VENV_PATH)/bin/activate && pytest --benchmark-only
-
 lint_frontend:
 	. ${NVM_DIR}/nvm.sh; cd frontend; nvm use; npm run format
 
@@ -200,6 +210,16 @@ supergrant:
 
 completion:
 	source $(VENV_PATH)/bin/activate && geonature generate-completion
+
+
+##############################
+##### DEVELOPMENT#############
+##############################
+
+setup-env:
+	uv sync --extra tests --extra lint
+	uv pip install -e contrib/gn_module_occhab  -e contrib/gn_module_validation -e contrib/occtax
+	uv pip install -e ${MODULE_MONITORING_DIRECTORY} -e ${MODULE_DASHBOARD_DIRECTORY} -e ${MODULE_EXPORT_DIRECTORY}
 
 
 ##############################
