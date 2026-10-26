@@ -43,6 +43,7 @@
 - [Métadonnées] Possibilité de configurer plusieurs types de zonage pour un même libellé dans `METADATA_AREA_FILTERS` (#4294 par @christophe-ramet)
 - [Installation] Le préfixe d'URL `/geonature` n'est plus codé en dur dans l'installation. Il est possible de le modifier dans `url_application_prefix_path` du fichier `settings.ini` (#3951 par @andriacap)
 - [Installation] Le backend de GeoNature peut être lancé sans fichier de configuration si tous les paramètres requis sont fournis par des variables d'environnement (#4407 par @bouttier)
+- [Import] Possibilité de filtrer les destinations par code de module via le paramètre `module_code` de la route `/import/destinations/`
 
 ### 🐛 Corrections
 
