@@ -2,12 +2,16 @@ name: Classic install (install_all.sh)
 on:
   push:
     branches:
-      - develop
       - ci/install_all
   workflow_dispatch:
+    inputs:
+      branch:
+        description: Branch (or tag/SHA) to test; defaults to the branch the workflow is run from
+        required: false
+        type: string
 
 concurrency:
-  group: install-all-${{ github.ref }}
+  group: install-all-${{ inputs.branch || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -19,11 +23,12 @@ jobs:
       fail-fast: false
       matrix:
         # Every Debian version install_all.sh accepts (its own OS/VERSION_ID gate at
-        # install/install_all/install_all.sh checks for exactly 11, 12 or 13).
+        # install/install_all/install_all.sh checks for exactly 12 or 13).
         debian-version: ["12", "13"]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
+          ref: ${{ inputs.branch || github.ref }}
           submodules: recursive
 
       - name: Build Debian + systemd image
@@ -96,7 +101,7 @@ jobs:
           user_pg_pass=geonatCiOnlyDummyPass123
           install_usershub_app=false
           usershub_release=2.4.8
-          geonature_release=develop
+          geonature_release=${{ inputs.branch || github.ref_name }}
           drop_geonaturedb=false
           geonaturedb_name=geonature2db
           srid_local=2154
