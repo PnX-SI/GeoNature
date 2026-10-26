@@ -28,10 +28,22 @@ export class IndividualsComponent implements OnInit, OnChanges {
   @Input() displayAdvancedFilters: boolean = false;
   @Input() placeholder: string = '';
   @Input() multiselect: boolean = false;
+  /**
+   * Si vrai, le `parentFormControl` contient l’objet individu complet au lieu de son identifiant.
+   */
+  @Input() bindAllItem: boolean = false;
   @Output() nbIndividuals = new EventEmitter<number>();
 
   keyLabel: string = 'individual_name';
   keyValue: string = 'id_individual';
+  compareWith = (item: Individual, selected: any) => {
+    if (this.bindAllItem) {
+      // le formControl contient des objets : comparaison sur leur identifiant
+      return item[this.keyValue] === selected?.[this.keyValue];
+    } else {
+      return item[this.keyValue] === selected;
+    }
+  };
   values: Individual[] = [];
   public isCollapseFilters = true;
   public modal: NgbModalRef;
@@ -100,7 +112,7 @@ export class IndividualsComponent implements OnInit, OnChanges {
   individualCreated(value: Individual) {
     this.closeModal();
     this.refreshIndividuals();
-    this.parentFormControl.setValue(value.id_individual);
+    this.parentFormControl.setValue(this.bindAllItem ? value : value[this.keyValue]);
   }
 
   ngOnChanges(changes: SimpleChanges) {
