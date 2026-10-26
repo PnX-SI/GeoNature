@@ -43,7 +43,7 @@
 - [Métadonnées] Possibilité de configurer plusieurs types de zonage pour un même libellé dans `METADATA_AREA_FILTERS` (#4294 par @christophe-ramet)
 - [Installation] Le préfixe d'URL `/geonature` n'est plus codé en dur dans l'installation. Il est possible de le modifier dans `url_application_prefix_path` du fichier `settings.ini` (#3951 par @andriacap)
 - [Installation] Le backend de GeoNature peut être lancé sans fichier de configuration si tous les paramètres requis sont fournis par des variables d'environnement (#4407 par @bouttier)
-- [Import] Possibilité de filtrer les destinations par code de module via le paramètre `module_code` de la route `/import/destinations/`
+- [Import] Possibilité de filtrer les destinations par code de module via le paramètre `module_code` de la route `/import/destinations/` (#4510 par @jacquesfize)
 
 ### 🐛 Corrections
 
@@ -1428,6 +1428,7 @@ GeoNature :
 ### ⚠️ Notes de version
 
 - **Avant** de mettre à jour GeoNature :
+
   - Mettre à jour les versions de TaxHub (1.10.4) et UsersHub
     (2.3.1), sans la partie migration de la base de données avec
     Alembic (elle sera faite lors de la mise à jour de GeoNature)
@@ -1445,6 +1446,7 @@ GeoNature :
   - Supprimer les paramètres de configuration qui ont disparu s'ils
     sont présents dans votre fichier de configuration
     `geonature_config.toml` :
+
     - `LOCAL_SRID`
     - `CRUVED_SEARCH_WITH_OBSERVER_AS_TXT`
     - `id_area_type_municipality`
@@ -1934,6 +1936,7 @@ dépendances et ses modules principaux est disponible](https://geonature.fr/docu
   anciennes régions (branche Alembic `ref_geo_fr_regions_1970`) --
   l'installation de ces référentiels est automatique avec
   l’installation des règles de sensibilité.
+
   - Si vous possédez déjà le référentiel, vous pouvez l'indiquer à
     Alembic :
 
@@ -2076,6 +2079,7 @@ passage à la version 3 de Marshmallow.
   les schémas `taxonomie` et `utilisateurs`)
 
 - Suppression de `supervisor` :
+
   - Stopper GeoNature : `sudo supervisorctl stop geonature2`
   - Supprimer le fichier de configuration supervisor de GeoNature :
     `sudo rm /etc/supervisor/conf.d/geonature-service.conf`
@@ -2087,6 +2091,7 @@ passage à la version 3 de Marshmallow.
   (<http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application>)
 
 - Passage à `systemd` :
+
   - Copier le fichier `install/assets/geonature.service` dans
     `/etc/systemd/system/`
   - Éditer `/etc/systemd/system/geonature.service` et remplacer les
@@ -2124,6 +2129,7 @@ passage à la version 3 de Marshmallow.
   configuration : `sudo systemctl reload apache2`
 
 - Passage à Alembic :
+
   - S'assurer d'avoir une base de données de GeoNature en version
     2.7.5
   - Si vous avez UsersHub installé, ajoutez dans votre configuration
