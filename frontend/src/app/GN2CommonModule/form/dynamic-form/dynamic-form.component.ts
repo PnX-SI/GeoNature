@@ -24,6 +24,7 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
   @Input() form: UntypedFormGroup;
 
   @Input() update;
+  @Input() errors: string[];
 
   @Output() change = new EventEmitter<any>();
 
