@@ -1,5 +1,6 @@
 const dateSaisieTaxon = '25/01/2022';
 const taxaSearch = 'canis lupus';
+const taxaSearch2 = 'acer';
 
 /**
  * End-to-end tests for the Phytosociology (Phyto) module and its dedicated components:
@@ -21,10 +22,13 @@ describe('Testing phyto components', { testIsolation: false }, () => {
 
   it('should be available in the menu tab', () => {
     cy.visit('/');
-    cy.get("[data-qa='pnx-home-content-sidebar-open-button']").click();
-    cy.get("[data-qa='gn-sidenav-link-PHYTO']").should('exist');
-    cy.get("[data-qa='gn-sidenav-link-PHYTO']").click();
-    cy.url().should('include', '/phyto');
+    if (cy.get("[data-qa='gn-sidenav-link-PHYTO']")) {
+      cy.get("[data-qa='gn-sidenav-link-PHYTO']").click();
+      cy.url().should('include', '/phyto');
+    } else {
+      cy.get("[data-qa='pnx-home-content-sidebar-open-button']").click();
+      cy.get("[data-qa='gn-sidenav-link-PHYTO']").should('exist');
+    }
   });
 
   it('should be possible to add a survey', () => {
@@ -38,7 +42,7 @@ describe('Testing phyto components', { testIsolation: false }, () => {
   // 2. Releve Prerequisites (Geometry, Observer, Dataset, Dates)
   // =========================================================================
 
-  it('should set geolocation on map and select observer', () => {
+  it('should set geolocation on map', () => {
     // Zoom and click on leaflet map to define geometry and unlock the form
     cy.get(
       'pnx-map > div > div.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom > div.leaflet-control-container > div.leaflet-top.leaflet-right > div.leaflet-control-zoom.leaflet-bar.leaflet-control > a.leaflet-control-zoom-in'
@@ -54,15 +58,26 @@ describe('Testing phyto components', { testIsolation: false }, () => {
     // Verify overlay is dismissed after geometry selection
     cy.get("[data-qa='pnx-occtax-releve-form-observers'] #overlay").should('not.exist');
 
-    // Ensure at least one observer is selected
+    cy.get('[data-qa="pnx-occtax-releve-submit-btn"]').should('be.disabled');
+  });
+
+  // Full test in occtax spec
+  it('should select an observer', () => {
     cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] .ng-select-container"
-    ).click();
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] ng-dropdown-panel div.ng-option"
+      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select']"
     )
-      .first()
-      .click();
+      .find('.ng-value-container .ng-value')
+      .should('exist');
+    cy.get(
+      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select']"
+    )
+      .find('.ng-value-container .ng-value')
+      .should('have.length', 1);
+    cy.get(
+      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select']"
+    )
+      .find('.ng-value-container .ng-value .ng-value-label')
+      .contains('ADMINISTRATEUR test');
   });
 
   it('should select dataset and survey date', () => {
@@ -163,17 +178,17 @@ describe('Testing phyto components', { testIsolation: false }, () => {
   // =========================================================================
 
   it('should submit releve and navigate to the phyto-taxons tab', () => {
-    cy.get('[data-qa]="pnx-occtax-releve-submit-btn"]').should('be.enabled').click();
+    cy.get("[data-qa='pnx-occtax-releve-submit-btn']").should('be.enabled').click();
 
     // Check URL includes phyto-taxons
     cy.url().should('include', '/phyto-taxons');
 
     // Verify main phyto components on this tab
-    cy.get("[data-qa]='pnx-phyto-occurrence'").should('exist');
-    cy.get("[data-qa]='pnx-phyto-taxa-table'").should('exist');
+    cy.get("[data-qa='pnx-phyto-occurrence']").should('exist');
+    cy.get("[data-qa='pnx-phyto-taxa-table']").should('exist');
 
     // The occurrence save button must be disabled initially before entering taxon data
-    cy.get("[data-qa]='phyto-save-occurrence'").should('be.disabled');
+    cy.get("[data-qa='phyto-save-occurrence']").should('be.disabled');
   });
 
   // =========================================================================
@@ -192,10 +207,10 @@ describe('Testing phyto components', { testIsolation: false }, () => {
 
     // 2. Verify strata columns in the abundance table
     cy.get('pnx-phyto-occurrence table.abundance-table').should('exist');
-    cy.get("[data-qa]='pnx-phyto-abundance-table'").should('exist');
+    cy.get("[data-qa='pnx-phyto-abundance-table']").should('exist');
 
     // 3. Set abundance on the first stratum
-    cy.get("[data-qa]='pnx-phyto-abundance-table' pnx-phyto-abundance ng-select").first().click();
+    cy.get("[data-qa='pnx-phyto-abundance-table'] pnx-phyto-abundance ng-select").first().click();
     cy.get('ng-dropdown-panel div.ng-option').should('exist');
     cy.get('ng-dropdown-panel div.ng-option').first().click();
 
@@ -205,7 +220,7 @@ describe('Testing phyto components', { testIsolation: false }, () => {
       .type('Test phyto observation comment');
 
     // 5. Occurrence save button should now be enabled
-    cy.get("[data-qa]='phyto-save-occurrence'").should('be.enabled').click();
+    cy.get("[data-qa='phyto-save-occurrence']").should('be.enabled').click();
 
     // Verify save spinner appears or form resets after submission
     cy.wait(500);
@@ -216,29 +231,29 @@ describe('Testing phyto components', { testIsolation: false }, () => {
   // =========================================================================
 
   it('should display the saved occurrence in the taxa table with sorting and action buttons', () => {
-    cy.get("[data-qa]='data-qa='phyto-taxa-table'").should('exist');
+    cy.get("[data-qa='phyto-taxa-table']").should('exist');
 
     // Verify that the table contains at least one saved row
-    cy.get("[data-qa]='data-qa='phyto-taxa-table' tr[mat-row]").should('have.length.at.least', 1);
+    cy.get("[data-qa='phyto-taxa-table'] tr[mat-row]").should('have.length.at.least', 1);
 
     // Verify valid name column contains expected taxon text
-    cy.get("[data-qa]='data-qa='phyto-taxa-table'-table td.mat-column-nom_valide")
+    cy.get("[data-qa='phyto-taxa-table'] td.mat-column-nom_valide")
       .first()
       .should('contain.text', 'Canis lupus');
 
     // Verify comment column contains entered comment
-    cy.get("[data-qa]='data-qa='phyto-taxa-table' td.mat-column-comment")
+    cy.get("[data-qa='phyto-taxa-table'] td.mat-column-comment")
       .first()
       .should('contain.text', 'Test phyto observation comment');
 
     // Test column sorting by clicking header
-    cy.get("[data-qa]='data-qa='phyto-taxa-table' th.mat-column-nom_valide").click();
+    cy.get("[data-qa='phyto-taxa-table'] th.mat-column-nom_valide").click();
     cy.wait(300);
 
     // Verify action buttons exist on the row (edit in modal and delete)
-    cy.get("[data-qa]='data-qa='phyto-taxa-table' table.striped-table tr[mat-row]")
+    cy.get("[data-qa='phyto-taxa-table'] tr[mat-row]")
       .first()
-      .find('button[mat-icon-button]')
+      .find("[data-qa='phyto-taxa-table-edit']")
       .should('have.length.at.least', 1);
   });
 
@@ -248,9 +263,9 @@ describe('Testing phyto components', { testIsolation: false }, () => {
 
   it('should open occurrence edit modal and configure advanced countings', () => {
     // 1. Click edit button on the first occurrence in the table
-    cy.get("[data-qa]='data-qa='phyto-taxa-table' tr[mat-row]")
+    cy.get("[data-qa='phyto-taxa-table'] tr[mat-row]")
       .first()
-      .find('button[mat-icon-button]')
+      .find("[data-qa='phyto-taxa-table-edit']")
       .first()
       .click();
 
@@ -265,20 +280,20 @@ describe('Testing phyto components', { testIsolation: false }, () => {
       .type('Updated comment from phyto modal');
 
     // 4. Verify Abundances accordion and expand first stratum panel
-    cy.get("[data-qa]='phyto-occ-modal-accordion'").should('exist');
-    cy.get("[data-qa]='phyto-occ-modal-accordion' mat-expansion-panel-header").first().click();
+    cy.get("[data-qa='phyto-occ-modal-accordion']").should('exist');
+    cy.get("[data-qa='phyto-occ-modal-accordion'] mat-expansion-panel-header").first().click();
 
     // 5. Verify pnx-occtax-form-phyto-advanced-counting is displayed inside panel
     cy.get('pnx-phyto-occurrence-modal pnx-occtax-form-phyto-advanced-counting').should('exist');
 
     // 6. Test count min > max validation error
     cy.get(
-      'pnx-phyto-occurrence-modal pnx-occtax-form-phyto-advanced-counting input[formControlName="count_min"]'
+      "pnx-phyto-occurrence-modal pnx-occtax-form-phyto-advanced-counting [data-qa='phyto-advanced-count_min']"
     )
       .clear()
       .type('10');
     cy.get(
-      'pnx-phyto-occurrence-modal pnx-occtax-form-phyto-advanced-counting input[formControlName="count_max"]'
+      "pnx-phyto-occurrence-modal pnx-occtax-form-phyto-advanced-counting [data-qa='phyto-advanced-count_max']"
     )
       .clear()
       .type('2');
@@ -290,12 +305,12 @@ describe('Testing phyto components', { testIsolation: false }, () => {
 
     // Set valid count min/max
     cy.get(
-      'pnx-phyto-occurrence-modal pnx-occtax-form-phyto-advanced-counting input[formControlName="count_min"]'
+      "pnx-phyto-occurrence-modal pnx-occtax-form-phyto-advanced-counting [data-qa='phyto-advanced-count_min']"
     )
       .clear()
       .type('2');
     cy.get(
-      'pnx-phyto-occurrence-modal pnx-occtax-form-phyto-advanced-counting input[formControlName="count_max"]'
+      "pnx-phyto-occurrence-modal pnx-occtax-form-phyto-advanced-counting [data-qa='phyto-advanced-count_max']"
     )
       .clear()
       .type('10');
@@ -305,7 +320,7 @@ describe('Testing phyto components', { testIsolation: false }, () => {
     ).should('not.exist');
 
     // 7. Save modifications via modal submit button
-    cy.get("[data-qa]='modal_save_occ'").click();
+    cy.get("[data-qa='modal_save_occ']").click();
     cy.wait(500);
 
     // Modal dialog should close and comment in table should be updated
@@ -321,13 +336,22 @@ describe('Testing phyto components', { testIsolation: false }, () => {
 
   it('should allow deleting an occurrence from the taxa table', () => {
     // Add another occurrence so deletion leaves valid releve or test deletion directly
+    cy.get("input[data-qa='taxonomy-form-input']").as('taxonInput');
+    cy.get('@taxonInput').clear().type(taxaSearch2);
+    cy.get('ngb-typeahead-window:visible').find('button.dropdown-item').as('results');
+    cy.get('@results').first().click();
+    cy.get("[data-qa='pnx-phyto-abundance-table'] pnx-phyto-abundance ng-select").first().click();
+    cy.get('ng-dropdown-panel div.ng-option').first().click();
+    cy.get("[data-qa='phyto-save-occurrence']").click();
+    cy.wait(500);
+
     cy.get('pnx-phyto-taxa-table table.striped-table tr[mat-row]').then(($rows) => {
       const initialCount = $rows.length;
 
       // Find the delete button on the row
       cy.get('pnx-phyto-taxa-table table.striped-table tr[mat-row]')
         .first()
-        .find('button[color="warn"]')
+        .find("[data-qa='phyto-taxa-table-delete']")
         .then(($btn) => {
           if ($btn.length > 0) {
             cy.wrap($btn).click();
@@ -336,7 +360,7 @@ describe('Testing phyto components', { testIsolation: false }, () => {
               .contains(/oui|yes|supprimer/i)
               .click();
             cy.wait(500);
-            cy.get('pnx-phyto-taxa-table table.striped-table tr[mat-row]').should(
+            cy.get("[data-qa='phyto-taxa-table'] tr[mat-row]").should(
               'have.length.lessThan',
               initialCount + 1
             );

@@ -160,6 +160,7 @@
               (occurrence.taxref?.nom_valide || taxonTitle(occurrence))
             "
             (click)="openOccurrenceModal(occurrence)"
+            data-qa="phyto-taxa-table-edit"
           >
             <mat-icon aria-hidden="true">edit</mat-icon>
           </button>
@@ -175,6 +176,7 @@
               (occurrence.taxref?.nom_valide || taxonTitle(occurrence))
             "
             (click)="deleteOccurrence(occurrence)"
+            data-qa="phyto-taxa-table-delete"
           >
             <mat-icon aria-hidden="true">delete_forever</mat-icon>
           </button>

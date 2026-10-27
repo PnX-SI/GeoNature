@@ -88,6 +88,7 @@
           class="form-control form-control-sm"
           type="number"
           min="0"
+          data-qa="phyto-advanced-count_min"
           [formControl]="form.get('count_min')"
           [attr.aria-invalid]="
             (form.get('count_min').invalid ||
@@ -106,6 +107,7 @@
           class="form-control form-control-sm"
           type="number"
           min="0"
+          data-qa="phyto-advanced-count_max"
           [formControl]="form.get('count_max')"
           [attr.aria-invalid]="
             (form.get('count_max').invalid ||
