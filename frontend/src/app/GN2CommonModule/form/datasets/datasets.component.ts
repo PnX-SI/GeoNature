@@ -41,7 +41,18 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
    *  Utiliser cet Input lorsque le composant ``pnx-acquisition-framework`` est en mode select simple.
    */
   @Input() idAcquisitionFramework: number;
+  /**
+   * Si vrai, le formControl contient l’objet `dataset` complet au lieu de `bindValue`.
+   */
   @Input() bindAllItem: boolean = false;
+  compareWith = (item, selected) => {
+    if (this.bindAllItem) {
+      // le formControl contient des objets : comparaison sur leur identifiant
+      return item.id_dataset === selected?.id_dataset;
+    } else {
+      return item[this.bindValue] === selected;
+    }
+  };
   /**
    * Booléan qui controle si on affiche seulement les JDD actifs ou également ceux qui sont inatif
    */
@@ -93,11 +104,8 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
         this.parentFormControl.hasValidator(Validators.required) &&
         [null, []].includes(this.parentFormControl.value)
       ) {
-        let value: number[] | number = datasets[0].id_dataset;
-        if (this.multiSelect) {
-          value = [datasets[0].id_dataset];
-        }
-        this.parentFormControl.patchValue(value);
+        const item = this.bindAllItem ? datasets[0] : datasets[0].id_dataset;
+        this.parentFormControl.patchValue(this.multiSelect ? [item] : item);
       }
     });
   }
