@@ -1,0 +1,96 @@
+<div id="filter">
+  <!-- WHAT? -->
+  <div>
+    <pnx-taxonomy
+      label="{{ 'Taxon' | translate }}"
+      [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.cd_nom"
+      [idList]="occtaxConfig.moduleConf.id_taxon_list"
+      [charNumber]="3"
+      [listLength]="20"
+    ></pnx-taxonomy>
+  </div>
+  <!-- +typo/hab -->
+
+  <!-- WHEN? -->
+  <div>
+    <pnx-date
+      label="{{ 'MinDate' | translate }}"
+      data-qa="pnx-occtax-filter-date-min"
+      [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.date_low"
+    ></pnx-date>
+  </div>
+  <div>
+    <pnx-date
+      label="{{ 'MaxDate' | translate }}"
+      data-qa="pnx-occtax-filter-date-max"
+      [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.date_up"
+    ></pnx-date>
+  </div>
+
+  <!-- WHERE -->
+  <!-- + communes + departements -->
+
+  <!-- WHO? -->
+  <div>
+    <div *ngIf="occtaxConfig.moduleConf.observers_txt; else elseBlock">
+      <pnx-observers-text
+        [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.observers_txt"
+      ></pnx-observers-text>
+    </div>
+    <ng-template #elseBlock>
+      <pnx-observers
+        class="auto"
+        label="{{ 'Observers' | translate }}"
+        [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.observers"
+        [multiSelect]="true"
+        [idMenu]="occtaxConfig.moduleConf.id_observers_list"
+      ></pnx-observers>
+    </ng-template>
+  </div>
+  <!-- +organisme -->
+
+  <!-- HOW? -->
+  <!-- +cadre d'acquisition -->
+  <div>
+    <pnx-datasets
+      class="auto"
+      label="{{ 'Dataset' | translate }}"
+      [displayAll]="true"
+      [displayOnlyActive]="false"
+      [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.id_dataset"
+      [moduleCode]="moduleService.currentModule?.module_code"
+    ></pnx-datasets>
+  </div>
+
+  <!-- ADVANCED FILTERS -->
+  <pnx-dynamic-form-generator
+    #dynamicForm
+    selectLabel="Autres Critères"
+    [myFormGroup]="occtaxMapListService.dynamicFormGroup"
+    [formsDefinition]="formsDefinition"
+  ></pnx-dynamic-form-generator>
+
+  <!-- BUTTONS -->
+  <div style="display: inline-block">
+    <button
+      mat-icon-button
+      color="warn"
+      matTooltip="{{ 'Filters.Actions.Refresh' | translate }}"
+      (click)="refreshFilters()"
+      data-qa="pnx-phyto-refresh-search"
+    >
+      <mat-icon>refresh</mat-icon>
+    </button>
+
+    <button
+      id="search-btn"
+      mat-flat-button
+      color="primary"
+      (click)="searchData()"
+      data-qa="pnx-phyto-filter-search"
+    >
+      <mat-icon>search</mat-icon>
+      {{ 'Actions.Search' | translate }}
+    </button>
+  </div>
+</div>

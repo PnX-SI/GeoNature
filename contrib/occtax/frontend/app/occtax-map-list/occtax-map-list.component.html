@@ -15,11 +15,26 @@
           {{ 'Occtax.Releve.Actions.Add' | translate }}
           <mat-icon>add_circle_outline</mat-icon>
         </a>
+      </ng-container>
+    </div>
+    <div class="float-btns">
+      <ng-container *ngIf="userCruved?.C != '0'">
+        <a
+          mat-raised-button
+          color="primary"
+          data-qa="gn-occtax-btn-add-releve"
+          class="btn-action hard-shadow button-success uppercase ml-3"
+          [routerLink]="['form/releve']"
+        >
+          {{ 'Occtax.Releve.Actions.Add' | translate }}
+          <mat-icon>add_circle_outline</mat-icon>
+        </a>
         <!-- <a [routerLink]="['form']" class="btn btn-success btn-action hard-shadow uppercase">
           {{ 'Occtax.Releve.Actions.Add' | translate }} <i class="fa fa-plus-circle" aria-hidden="true"> </i>
         </a> -->
       </ng-container>
       <button
+        *ngIf="this.moduleCode !== 'PHYTO'"
         (click)="isCollapseAvance = !isCollapseAvance"
         [attr.aria-expanded]="!isCollapseAvance"
         mat-raised-button
@@ -43,8 +58,16 @@
     </div>
 
     <div class="row">
+      <ng-container
+        *ngIf="this.moduleCode === 'PHYTO'"
+        class="col"
+        [ngStyle]="{ 'min-height.px': cardContentHeight }"
+      >
+        <pnx-phyto-list-filter></pnx-phyto-list-filter>
+      </ng-container>
+
       <div
-        class="col-xs-12 col-sm-12 col-md-6 col-lg-6 padding-sm-occ"
+        class="col padding-sm-occ"
         [ngStyle]="{ 'min-height.px': cardContentHeight }"
       >
         <!-- MAP -->
@@ -53,8 +76,9 @@
           height="100%"
         ></pnx-map-list>
       </div>
+
       <div
-        class="col-xs-12 col-sm-12 col-md-6 col-lg-6 padding-sm-occ"
+        class="col padding-sm-occ"
         [ngStyle]="{ 'min-height.px': cardContentHeight }"
       >
         <!-- LIST -->
@@ -326,6 +350,7 @@
           mat-raised-button
           color="primary"
           (click)="openModalDownload($event, modalDownload)"
+          [disabled]="this.moduleCode === 'PHYTO'"
         >
           {{ 'Actions.Download' | translate }}
 
@@ -443,8 +468,6 @@
 
         <!-- END COL 6 -->
       </div>
-
-      <!-- END ROW -->
     </div>
   </div>
 </div>

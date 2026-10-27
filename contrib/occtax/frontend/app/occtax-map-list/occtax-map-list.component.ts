@@ -41,6 +41,7 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
   public dynamicFormGroup: UntypedFormGroup;
   public formsSelected = [];
   public cardContentHeight: number;
+  public moduleCode: string;
 
   public isCollapseAvance = true;
 
@@ -73,6 +74,7 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     const currentModule = this._moduleService.currentModule;
+    this.moduleCode = currentModule.module_code;
     // get user cruved
     this.userCruved = currentModule.cruved;
 
