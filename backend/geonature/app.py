@@ -28,7 +28,7 @@ from geonature.utils.config import config
 from geonature.utils.env import MAIL, DB, db, MA, migrate, BACKEND_DIR
 from geonature.utils.logs import config_loggers
 from geonature.utils.module import is_module_installed, iter_modules_dist
-from geonature.utils.json import MyJSONProvider
+from geonature.utils.json import ExtensibleJSONProvider
 from geonature.core.admin.admin import admin
 from geonature.middlewares import SchemeFix, RequestID
 
@@ -114,7 +114,7 @@ def create_app(with_external_mods=True):
             {app.config["APPLICATION_ROOT"].rstrip("/"): app.wsgi_app},
         )
 
-    app.json = MyJSONProvider(app)
+    app.json = ExtensibleJSONProvider(app)
 
     # set logging config
     config_loggers(app.config)
