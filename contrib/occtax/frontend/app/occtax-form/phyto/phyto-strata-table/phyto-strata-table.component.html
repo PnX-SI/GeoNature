@@ -4,6 +4,7 @@
   [dataSource]="strataControls"
   class="mat-elevation-z4 striped-table"
   data-qa="phyto-strata-table"
+  sticky
 >
   <caption class="cdk-visually-hidden">{{ 'Occtax.Releve.VegetationStrata' | translate }}</caption>
 
@@ -230,7 +231,7 @@
   ></tr>
   <tr
     mat-row
-    *matRowDef="let row; columns: displayedColumns; trackBy: trackByStratumId"
+    *matRowDef="let row; columns: displayedColumns"
     [formGroup]="row"
   ></tr>
 </table>

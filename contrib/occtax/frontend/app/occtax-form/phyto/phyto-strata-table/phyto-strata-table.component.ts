@@ -87,10 +87,6 @@ export class PhytoStrataTableComponent implements OnInit, OnDestroy {
 
   private readonly destroy$ = new Subject<void>();
 
-  public trackByStratumId(index: number, row: AbstractControl): number {
-    return row.get('id_nomenclature_vegetation_stratum')?.value ?? index;
-  }
-
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly dataFormService: DataFormService,

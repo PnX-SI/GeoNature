@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { GeoJSON } from 'leaflet';
@@ -7,12 +7,14 @@ import { map, filter } from 'rxjs/operators';
 import { CommonService } from '@geonature_common/service/common.service';
 import { OcctaxFormService } from '../occtax-form.service';
 import { OcctaxFormReleveService } from './releve.service';
+import { OcctaxStoreService } from './store.service';
 import { OcctaxFormMapService } from '../map/occtax-map.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { OcctaxDataService } from '../../services/occtax-data.service';
 import { OcctaxConfigService } from '../../services/occtax-config.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { FormService as GlobalFormService } from '@geonature_common/form/form.service';
+import { MediasComponent } from '@geonature_common/form/media/medias.component';
 
 @Component({
   selector: 'pnx-occtax-form-releve',
@@ -21,6 +23,8 @@ import { FormService as GlobalFormService } from '@geonature_common/form/form.se
   providers: [],
 })
 export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
+  @ViewChild(MediasComponent) private mediasComp?: MediasComponent;
+  
   public get geojson(): GeoJSON {
     return this.occtaxFormMapService.geojson.getValue();
   }
@@ -44,8 +48,9 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
     public occtaxDataService: OcctaxDataService,
     public config: ConfigService,
     public occtaxConfig: OcctaxConfigService,
-    public globalFormService: GlobalFormService
-  ) {}
+    public globalFormService: GlobalFormService,
+    public storeService: OcctaxStoreService,
+  ) { }
 
   ngOnInit() {
     this.module = this.moduleService.currentModule.module_code;
@@ -131,5 +136,29 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
     if (this.releveForm.valid) {
       this.occtaxFormReleveService.submitReleve();
     }
+  }
+
+  public defaultsMedia(): Record<string, string | boolean> {
+    const occtaxData = this.occtaxFormService.occtaxData.getValue();
+    const releveProperties = occtaxData?.releve?.properties;
+
+    const observers = releveProperties?.observers || [];
+    const author = observers.map((o) => o.nom_complet).join(', ');
+
+    const dateMin = releveProperties?.date_min || null;
+
+    const dateForTitle = dateMin ? `${dateMin.year}_${dateMin.month}_${dateMin.day}` : '';
+    const dateForDescription = dateMin ? `${dateMin.day}/${dateMin.month}/${dateMin.year}` : '';
+
+    return {
+      displayDetails: false,
+      author: author || '',
+      title_fr: `${dateForTitle}_releve_${releveProperties?.id_releve_occtax}`,
+      description_fr: `Relevé ${releveProperties?.id_releve_occtax}, le ${dateForDescription}`,
+    };
+  }
+
+  public validateMediasDeletions(): void {
+    this.mediasComp?.validateDeletions();
   }
 }

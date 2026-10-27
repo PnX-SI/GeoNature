@@ -28,12 +28,16 @@ import { MapService } from "@geonature_common/map/map.service";
 import { ModuleService } from "@geonature/services/module.service";
 import { OcctaxConfigService } from "../../services/occtax-config.service";
 import { FormService as GlobalFormService } from "@geonature_common/form/form.service";
+import { MediaService } from '@geonature_common/service/media.service';
+
 @Injectable()
 export class OcctaxFormReleveService {
   public userReleveRigth: any;
 
   public propertiesForm: UntypedFormGroup;
   public habitatForm = new UntypedFormControl();
+  public typoHabControl = new UntypedFormControl();
+  public selectedTypo: any;
   public releve: any;
   public releveForm: UntypedFormGroup;
   //custom additional fields
@@ -63,12 +67,17 @@ export class OcctaxFormReleveService {
     public moduleService: ModuleService,
     public occtaxConfig: OcctaxConfigService,
     private _globalFormService: GlobalFormService,
+    private mediaService: MediaService,
   ) {
     this.initPropertiesForm();
     this.setObservables();
     this.releveForm = this.fb.group({
       geometry: this.occtaxFormMapService.geometry,
       properties: this.propertiesForm,
+    });
+    // get selected cd_typo to filter the habref autcomplete
+    this.typoHabControl.valueChanges.subscribe((data) => {
+      this.selectedTypo = { cd_typo: data };
     });
   }
 
@@ -126,6 +135,7 @@ export class OcctaxFormReleveService {
       id_nomenclature_exposure: null,
       id_nomenclature_location_type: null,
       id_area_attachement: null,
+      medias: [[], this.mediaService.mediasValidator()],
       additional_fields: this.fb.group({}),
     };
     // add t_vegetation_stratum form array if in phyto module
@@ -217,10 +227,10 @@ export class OcctaxFormReleveService {
         //display showTime management
         tap(
           (values) =>
-            (this.showTime = !(
-              JSON.stringify(values.date_min) ===
-              JSON.stringify(values.date_max)
-            )),
+          (this.showTime = !(
+            JSON.stringify(values.date_min) ===
+            JSON.stringify(values.date_max)
+          )),
         ),
         //get additional fidlds from releve
         switchMap((releve) => {
@@ -249,22 +259,22 @@ export class OcctaxFormReleveService {
           return forkJoin(of(releve), additionnalFieldsObservable);
         }),
         map(([releve, additional_fields]) => {
-          if(releve.additional_fields) {
+          if (releve.additional_fields) {
             additional_fields.forEach((field) => {
               //Formattage des dates
               if (field.type_widget == "date") {
                 //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
                 if (
-                typeof releve.additional_fields[field.attribut_name] !==
-                "object"
-              ) {
+                  typeof releve.additional_fields[field.attribut_name] !==
+                  "object"
+                ) {
                   releve.additional_fields[field.attribut_name] =
-                  this.occtaxFormService.formatDate(
+                    this.occtaxFormService.formatDate(
                       releve.additional_fields[field.attribut_name],
                     );
                 }
               }
-  
+
               //set value of field (eq patchValue)
               if (releve.additional_fields[field.attribut_name] !== undefined) {
                 field.value = releve.additional_fields[field.attribut_name];
@@ -554,10 +564,10 @@ export class OcctaxFormReleveService {
    * @returns a string of the type "releve" | "phyto-taxons" | "taxons", as defined by currentTab type
    */
   private getNextTaxonTab(moduleService: ModuleService): "phyto-taxons" | "taxons" {
-  return moduleService.currentModule.module_code === "PHYTO"
-    ? "phyto-taxons"
-    : "taxons";
-}
+    return moduleService.currentModule.module_code === "PHYTO"
+      ? "phyto-taxons"
+      : "taxons";
+  }
 
   submitReleve() {
     const modulePath = this.moduleService.currentModule.module_path;

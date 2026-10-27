@@ -49,6 +49,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { ConfigService } from "@geonature/services/config.service";
 import { CustomTranslateLoader } from "@geonature/shared/translate/custom-loader";
 import { I18nService } from "@geonature/shared/translate/i18n-service";
+import { OcctaxStoreService } from "./occtax-form/releve/store.service";
 
 const routes: Routes = [
   { path: "", component: OcctaxMapListComponent },
@@ -135,6 +136,7 @@ export function createTranslateLoader(http: HttpClient, config: ConfigService) {
     MapListService,
     OcctaxFormMapService,
     OcctaxFormParamService,
+    OcctaxStoreService
   ],
 })
 export class GeonatureModule {

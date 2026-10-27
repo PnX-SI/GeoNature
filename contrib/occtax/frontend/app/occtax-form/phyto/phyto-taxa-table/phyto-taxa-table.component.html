@@ -68,7 +68,10 @@
       <caption class="cdk-visually-hidden">{{ 'Occtax.Taxon.ObservedTaxon' | translate }}</caption>
 
       <!-- Valid name -->
-      <ng-container matColumnDef="nom_valide">
+      <ng-container
+        matColumnDef="nom_valide"
+        sticky
+      >
         <th
           mat-header-cell
           *matHeaderCellDef
@@ -232,7 +235,7 @@
 
       <tr
         mat-row
-        *matRowDef="let row; columns: displayedColumns; trackBy: trackByOccurrenceId"
+        *matRowDef="let row; columns: displayedColumns"
       ></tr>
 
       <tr

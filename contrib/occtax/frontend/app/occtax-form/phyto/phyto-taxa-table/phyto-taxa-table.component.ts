@@ -86,10 +86,6 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
     private readonly liveAnnouncer: LiveAnnouncer,
   ) { }
 
-  public trackByOccurrenceId(index: number, occurrence: Occurrence): number {
-    return occurrence.id_occurrence_occtax ?? index;
-  }
-
   public ngOnInit(): void {
     combineLatest([
       this.form.occtaxData.pipe(
@@ -189,6 +185,28 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
     return abundanceCodes.join(', ');
   }
 
+  public getStratumAbundanceId(occurrence: Occurrence, stratumId: number): number {
+    const abundanceIds: number[] = [];
+    for (const counting of occurrence.cor_counting_occtax || []) {
+      if (
+        counting.id_nomenclature_vegetation_stratum !== stratumId ||
+        counting.id_nomenclature_phytosociological_abundance == null
+      ) {
+        continue;
+      }
+      const abundanceId = counting.id_nomenclature_phytosociological_abundance;
+      if (abundanceId) {
+        abundanceIds.push(abundanceId);
+      }
+    }
+    if (abundanceIds.length !== 1) {
+      return -1;
+    } else {
+      return abundanceIds[0];
+    }
+
+  }
+
   public getOccurrenceComment(occurrence: Occurrence): string {
     return this.removeHtmlFromString(occurrence.comment);
   }
@@ -283,8 +301,8 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
       const isAsc = this.sortDirection === 'asc';
       if (this.sortActiveColumn.includes('stratum')) {
         return compare(
-          this.getStratumAbundance(a, Number(this.sortActiveColumn.substring(8))),
-          this.getStratumAbundance(b, Number(this.sortActiveColumn.substring(8))),
+          this.getStratumAbundanceId(a, Number(this.sortActiveColumn.substring(8))),
+          this.getStratumAbundanceId(b, Number(this.sortActiveColumn.substring(8))),
           isAsc
         );
       } else if (this.sortActiveColumn === 'nom_valide') {

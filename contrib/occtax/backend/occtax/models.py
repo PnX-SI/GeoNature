@@ -226,6 +226,14 @@ class TRelevesOccurrence(DB.Model):
     id_area_attachement = DB.Column(DB.Integer, ForeignKey("ref_geo.l_areas.id_area"))
 
     habitat = relationship(Habref, lazy="select")
+    medias = DB.relationship(
+        TMedias,
+        primaryjoin=TMedias.uuid_attached_row == unique_id_sinp_grp,
+        foreign_keys=[TMedias.uuid_attached_row],
+        cascade="all",
+        lazy="select",
+        overlaps="medias",
+    )
     additional_fields: Mapped[Optional[Any]] = mapped_column(JSONB)
 
     t_occurrences_occtax = relationship(
