@@ -415,5 +415,11 @@
       [cdNom]="formDefComp['cd_nom']"
     ></pnx-individuals>
     <small class="form-text text-muted">{{ formDefComp['help'] }}</small>
+    <ul
+      class="text-danger small mb-0 pl-3"
+      *ngIf="errors?.length"
+    >
+      <li *ngFor="let error of errors">{{ error }}</li>
+    </ul>
   </div>
 </div>
