@@ -16,8 +16,8 @@ export class OcctaxMapListService {
       date_up: null,
       date_low: null,
       municipality: null,
-      id_organisme: null,
-      id_acquisition_framework: null,
+      organism: null,
+      acquisition_framework: null,
       period_start: null,
       period_end: null
     });

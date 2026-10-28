@@ -1,6 +1,6 @@
 <div
-  id="filter"
-  style="width: 320px"
+  class="phyto-filters-container"
+  data-qa="pnx-phyto-filters-container"
 >
   <!-- WHAT? -->
   <fieldset>
@@ -114,16 +114,15 @@
   <!-- WHO? -->
   <fieldset>
     <legend>{{ 'Who' | translate }}</legend>
-    <!-- TODO: this field does not exist in t_releves_occtax: should filter by all observers within an organism ? -->
-    <!-- <pnx-multiselect
+    <pnx-multiselect
       [values]="organisms"
-      [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.id_organisme"
+      [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.organism"
       keyLabel="nom_organisme"
       keyValue="id_organisme"
       [label]="'Organism' | translate"
       debounceTime="500"
       [disabled]="false"
-    ></pnx-multiselect> -->
+    ></pnx-multiselect>
     <ng-container *ngIf="occtaxConfig.moduleConf.observers_txt; else elseBlock">
       <pnx-observers-text
         [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.observers_txt"
@@ -143,14 +142,13 @@
   <!-- HOW? -->
   <fieldset>
     <legend>{{ 'How' | translate }}</legend>
-    <!-- TODO: this field does not exist in t_releves_occtax: should filter by all observers within an organism ? -->
-    <!-- <pnx-acquisition-frameworks
+    <pnx-acquisition-frameworks
       [multiSelect]="true"
       [displayAll]="true"
-      [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.id_acquisition_framework"
+      [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.acquisition_framework"
       label="{{ 'AcquisitionFramework' | translate }}"
       data-qa="phyto-form-ca"
-    ></pnx-acquisition-frameworks> -->
+    ></pnx-acquisition-frameworks>
 
     <pnx-datasets
       class="auto"
@@ -173,19 +171,21 @@
   </fieldset>
 
   <!-- BUTTONS -->
-  <div style="display: inline-block">
+  <mat-card-actions
+    style="justify-content: space-between"
+    align="end"
+  >
     <button
-      mat-icon-button
+      mat-stroked-button
       color="warn"
-      matTooltip="{{ 'Filters.Actions.Refresh' | translate }}"
       (click)="refreshFilters()"
+      matTooltip="{{ 'Filters.Actions.Refresh' | translate }}"
       data-qa="pnx-phyto-refresh-search"
     >
-      <mat-icon>refresh</mat-icon>
+      <mat-icon style="margin-right: 0">delete_sweep</mat-icon>
     </button>
 
     <button
-      id="search-btn"
       mat-flat-button
       color="primary"
       (click)="searchData()"
@@ -194,5 +194,5 @@
       <mat-icon>search</mat-icon>
       {{ 'Actions.Search' | translate }}
     </button>
-  </div>
+  </mat-card-actions>
 </div>

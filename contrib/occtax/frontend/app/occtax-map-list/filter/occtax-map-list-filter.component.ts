@@ -30,9 +30,9 @@ export class OcctaxMapListFilterComponent implements OnInit {
     public occtaxMapListService: OcctaxMapListService,
     public moduleService: ModuleService,
     public occtaxConfig: OcctaxConfigService
-  ) {}
+  ) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   searchData() {
     this.mapListService.zoomOnLayer = true;
@@ -50,6 +50,14 @@ export class OcctaxMapListFilterComponent implements OnInit {
         this.occtaxMapListService.dynamicFormGroup.value.observers.forEach((observer) => {
           params.push({ param: 'observers', value: observer.id_role });
         });
+      } else if (key === 'organism' && value) {
+        if (value.length > 0) {
+          params.push({ param: 'organism', value });
+        }
+      } else if (key === 'acquisition_framework' && value) {
+        if (value.length > 0) {
+          params.push({ param: 'acquisition_framework', value });
+        }
       } else if (value && value !== '') {
         params.push({ param: key, value: value });
       }
