@@ -153,7 +153,7 @@ export class PhytoCountingService implements OnDestroy {
             // id_nomenclature_vegetation_stratum:
             //   this.occtaxParamS.get('counting.id_nomenclature_vegetation_stratum') || DATA['STRATE_VEGETATION'],
             // id_nomenclature_phytosociological_abundance:
-            //   this.occtaxParamS.get('counting.id_nomenclature_phytosociological_abundance') || DATA['BRAUNBARK'],
+            //   this.occtaxParamS.get('counting.id_nomenclature_phytosociological_abundance') || DATA['PHYTO_ABUNDANCE'],
             additional_fields: {},
           };
         })

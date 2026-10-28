@@ -80,7 +80,7 @@ export class PhytoOccurrenceModalComponent extends PhytoOccurrenceComponent impl
     combineLatest([
       occtaxFormService.occtaxData,
       dataFormService.getNomenclature('STRATE_VEGETATION'),
-      dataFormService.getNomenclature('BRAUNBARK'),
+      dataFormService.getNomenclature('PHYTO_ABUNDANCE'),
     ])
       .pipe(takeUntil(this.modalDestroy$))
       .subscribe({

@@ -93,7 +93,7 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
       ),
       this.occtaxFormOccurrenceService.occurrence,
       this.dataFormService.getNomenclature('STRATE_VEGETATION'),
-      this.dataFormService.getNomenclature('BRAUNBARK'),
+      this.dataFormService.getNomenclature('PHYTO_ABUNDANCE'),
     ])
       .pipe(takeUntil(this.destroy$))
       .subscribe({
