@@ -13,7 +13,14 @@ from sqlalchemy.exc import DatabaseError
 from sqlalchemy.sql import select
 from sqlalchemy.sql.functions import func
 from sqlalchemy.orm import Load, joinedload, undefer
-from werkzeug.exceptions import Conflict, BadRequest, Forbidden, InternalServerError, NotFound, NotFound
+from werkzeug.exceptions import (
+    Conflict,
+    BadRequest,
+    Forbidden,
+    InternalServerError,
+    NotFound,
+    NotFound,
+)
 from werkzeug.datastructures import MultiDict, TypeConversionDict
 from marshmallow import ValidationError, EXCLUDE
 from sqlalchemy.exc import IntegrityError
