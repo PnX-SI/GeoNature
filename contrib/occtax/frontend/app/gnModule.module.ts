@@ -30,6 +30,7 @@ import { PhytoAbundanceComponent } from "./occtax-form/phyto/phyto-abundance/phy
 import { PhytoAdvancedCountingComponent } from "./occtax-form/phyto/phyto-advanced-counting/phyto-advanced-counting.component";
 import { PhytoOccurrenceComponent } from "./occtax-form/phyto/phyto-occurrence/phyto-occurrence.component";
 import { PhytoOccurrenceModalComponent } from "./occtax-form/phyto/phyto-occurrence-modal/phyto-occurrence-modal.component";
+import { PhytoListFilterComponent } from "./occtax-map-list/phyto-filter/phyto-list-filter.component";
 
 // Service
 import { OcctaxDataService } from "./services/occtax-data.service";
@@ -129,7 +130,9 @@ export function createTranslateLoader(http: HttpClient, config: ConfigService) {
     PhytoAbundanceComponent,
     PhytoAdvancedCountingComponent,
     PhytoOccurrenceComponent,
-    PhytoOccurrenceModalComponent
+    PhytoOccurrenceModalComponent,
+    PhytoListFilterComponent,
+  
   ],
   providers: [
     OcctaxDataService,

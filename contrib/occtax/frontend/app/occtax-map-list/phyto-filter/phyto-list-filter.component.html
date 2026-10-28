@@ -1,6 +1,11 @@
-<div id="filter">
+<div
+  id="filter"
+  style="width: 320px"
+>
   <!-- WHAT? -->
-  <div>
+  <fieldset>
+    <legend>{{ 'What' | translate }}</legend>
+
     <pnx-taxonomy
       label="{{ 'Taxon' | translate }}"
       [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.cd_nom"
@@ -8,35 +13,122 @@
       [charNumber]="3"
       [listLength]="20"
     ></pnx-taxonomy>
-  </div>
-  <!-- +typo/hab -->
+
+    <!-- <div
+      *ngIf="formService.selectedtaxonFromComponent.length > 0"
+      class="alert alert-warning search-alert mt-2"
+    >
+      <p class="taxon-list">
+        <b>{{ 'Synthese.Form.SearchedTaxa' | translate }}:</b>
+      </p>
+      <ul class="taxon-list">
+        <li
+          *ngFor="let taxon of formService.selectedtaxonFromComponent; let i = index"
+          class="d-flex justify-content-between align-items-center"
+        >
+          {{ taxon.nom_valide }}
+          <i
+            (click)="formService.removeTaxon(i, formService.selectedtaxonFromComponent)"
+            class="fa fa-times clickable"
+            matTooltip="Retirer « {{ taxon.nom_valide }} » des filtres de recherche"
+          ></i>
+        </li>
+      </ul>
+    </div> -->
+
+    <!-- <button
+      (click)="openModal()"
+      class="btn btn-xs btn-outline-secondary advanced mt-2"
+    >
+      {{ 'Advanced' | translate }}
+    </button> -->
+
+    <!-- +typo/hab -->
+  </fieldset>
 
   <!-- WHEN? -->
-  <div>
+  <fieldset>
+    <legend>{{ 'When' | translate }}</legend>
     <pnx-date
       label="{{ 'MinDate' | translate }}"
       data-qa="pnx-occtax-filter-date-min"
       [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.date_low"
     ></pnx-date>
-  </div>
-  <div>
     <pnx-date
       label="{{ 'MaxDate' | translate }}"
       data-qa="pnx-occtax-filter-date-max"
       [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.date_up"
     ></pnx-date>
-  </div>
+
+    <!-- BUG: not working -->
+    <!-- <button
+      mat-icon-button
+      (click)="isCollapsePeriod = !isCollapsePeriod"
+      [attr.aria-expanded]="!isCollapsePeriod"
+      matTooltip="Ajouter une période"
+    >
+      <mat-icon>settings</mat-icon>
+    </button>
+    <div [(ngbCollapse)]="isCollapsePeriod">
+      <div class="row row-sm">
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
+          <pnx-period
+            class="form-sm"
+            label="Periode début"
+            [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.period_start"
+          ></pnx-period>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
+          <pnx-period
+            label="Periode fin"
+            [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.period_end"
+          ></pnx-period>
+        </div>
+        <small
+          *ngIf="occtaxMapListService.dynamicFormGroup.errors?.invalidPeriod"
+          class="error"
+          style="color: rgb(18, 32, 155)"
+        >
+          {{ 'Synthese.Errors.PeriodCompleteness' | translate }}
+        </small>
+      </div>
+    </div> -->
+  </fieldset>
 
   <!-- WHERE -->
-  <!-- + communes + departements -->
+  <fieldset>
+    <legend>{{ 'Where' | translate }}</legend>
+    <!-- <div *ngIf="formService.formBuilded">
+      <div *ngFor="let area of formService.areasFilters; let i = index">
+        <pnx-areas
+          [parentFormControl]="area.control"
+          [label]="area.label"
+          [typeCodes]="area.type_code_array"
+          [withoutGeom]="true"
+        ></pnx-areas>
+      </div>
+    </div> -->
+    <!-- + communes + departements -->
+  </fieldset>
 
   <!-- WHO? -->
-  <div>
-    <div *ngIf="occtaxConfig.moduleConf.observers_txt; else elseBlock">
+  <fieldset>
+    <legend>{{ 'Who' | translate }}</legend>
+    <!-- TODO: this field does not exist in t_releves_occtax: should filter by all observers within an organism ? -->
+    <!-- <pnx-multiselect
+      [values]="organisms"
+      [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.id_organisme"
+      keyLabel="nom_organisme"
+      keyValue="id_organisme"
+      [label]="'Organism' | translate"
+      debounceTime="500"
+      [disabled]="false"
+    ></pnx-multiselect> -->
+    <ng-container *ngIf="occtaxConfig.moduleConf.observers_txt; else elseBlock">
       <pnx-observers-text
         [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.observers_txt"
       ></pnx-observers-text>
-    </div>
+    </ng-container>
     <ng-template #elseBlock>
       <pnx-observers
         class="auto"
@@ -46,12 +138,20 @@
         [idMenu]="occtaxConfig.moduleConf.id_observers_list"
       ></pnx-observers>
     </ng-template>
-  </div>
-  <!-- +organisme -->
+  </fieldset>
 
   <!-- HOW? -->
-  <!-- +cadre d'acquisition -->
-  <div>
+  <fieldset>
+    <legend>{{ 'How' | translate }}</legend>
+    <!-- TODO: this field does not exist in t_releves_occtax: should filter by all observers within an organism ? -->
+    <!-- <pnx-acquisition-frameworks
+      [multiSelect]="true"
+      [displayAll]="true"
+      [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.id_acquisition_framework"
+      label="{{ 'AcquisitionFramework' | translate }}"
+      data-qa="phyto-form-ca"
+    ></pnx-acquisition-frameworks> -->
+
     <pnx-datasets
       class="auto"
       label="{{ 'Dataset' | translate }}"
@@ -60,15 +160,17 @@
       [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.id_dataset"
       [moduleCode]="moduleService.currentModule?.module_code"
     ></pnx-datasets>
-  </div>
+  </fieldset>
 
   <!-- ADVANCED FILTERS -->
-  <pnx-dynamic-form-generator
-    #dynamicForm
-    selectLabel="Autres Critères"
-    [myFormGroup]="occtaxMapListService.dynamicFormGroup"
-    [formsDefinition]="formsDefinition"
-  ></pnx-dynamic-form-generator>
+  <fieldset>
+    <legend>{{ 'Filters.Actions.Advanced' | translate }}</legend>
+    <pnx-dynamic-form-generator
+      #dynamicForm
+      [myFormGroup]="occtaxMapListService.dynamicFormGroup"
+      [formsDefinition]="formsDefinition"
+    ></pnx-dynamic-form-generator>
+  </fieldset>
 
   <!-- BUTTONS -->
   <div style="display: inline-block">
