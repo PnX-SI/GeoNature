@@ -11,12 +11,12 @@
     *ngIf="occtaxConfig.moduleConf.form_fields.precision"
     class="col-8"
   >
-    <small>Précision du pointage (m)</small>
+    <small>{{ 'Occtax.UI.Precision' | translate }}</small>
     <input
       type="number"
       [formControl]="propertiesForm.get('precision')"
       class="form-control form-control-sm"
-      placeholder="Précision du pointage"
+      [placeholder]="'Occtax.UI.PrecisionPlaceholder' | translate"
     />
   </div>
 </div>
@@ -66,7 +66,7 @@
         </span>
         <span
           class="dataset-block"
-          matTooltip="Le jeu de donnée n'est pas modifiable"
+          [matTooltip]="'Occtax.UI.DatasetLocked' | translate"
         >
           {{ dataset?.dataset_name }}
         </span>
@@ -330,7 +330,7 @@
       keyValue="search_name"
       [formatter]="formatter"
       label="Habitat"
-      placeholder="Tapez les premières lettres..."
+      [placeholder]="'Occtax.UI.TypeFirstLetters' | translate"
     ></pnx-autocomplete>
   </div>
 </div>
@@ -360,13 +360,13 @@
       class="uppercase mr-1"
       [routerLink]="['/' + moduleService.currentModule.module_path]"
     >
-      Annuler
+      {{ 'Actions.Cancel' | translate }}
     </button>
     <button
       mat-raised-button
       data-qa="pnx-occtax-releve-submit-btn"
       class="button-success uppercase"
-      matTooltip="Enregistrer le relevé et saisir les taxons"
+      [matTooltip]="'Occtax.UI.SaveSurveyHelp' | translate"
       [disabled]="releveForm.invalid || occtaxFormReleveService.waiting"
       (click)="submitReleveForm()"
     >
@@ -375,7 +375,7 @@
         diameter="25"
         strokeWidth="2"
       ></mat-spinner>
-      Enregistrer et saisir des taxons
+      {{ 'Occtax.UI.SaveAndAddTaxa' | translate }}
     </button>
   </ng-container>
   <!-- <ng-template #modifButton>

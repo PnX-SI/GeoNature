@@ -7,7 +7,7 @@
       class="modal-title"
       id="modal-basic-title"
     >
-      Paramétrage de la valeur par défaut des champs du formulaire
+      {{ 'Occtax.UI.Params.Title' | translate }}
     </h4>
     <button
       type="button"
@@ -25,23 +25,20 @@
         (click)="collapse()"
       >
         <ng-container *ngIf="state === 'collapsed'; else hideBlock">
-          Afficher l'aide
+          {{ 'Occtax.UI.Params.ShowHelp' | translate }}
           <mat-icon>arrow_drop_down</mat-icon>
         </ng-container>
         <ng-template #hideBlock>
-          Masquer l'aide
+          {{ 'Occtax.UI.Params.HideHelp' | translate }}
           <mat-icon>arrow_drop_up</mat-icon>
         </ng-template>
       </div>
       <p [@detailExpand]="state">
-        Cet espace permet de spécifier une valeur de remplacement par défaut pour certains champs du
-        formulaire.
+        {{ 'Occtax.UI.Params.Help1' | translate }}
         <br />
-        Les 3 boutons ci-dessous permettent d'activer ou de désactiver cette fonctionnalité pour les
-        différentes parties du formulaire concernées.
+        {{ 'Occtax.UI.Params.Help2' | translate }}
         <br />
-        Un champ laissé vide n'affectera pas le formulaire qui continuera de prendre la valeur
-        définie par défaut au niveau de GeoNature.
+        {{ 'Occtax.UI.Params.Help3' | translate }}
       </p>
     </div>
     <div>
@@ -51,7 +48,7 @@
         (change)="occtaxFormParamService.geometryState.next(!occtaxFormParamService.geometryState.getValue())"
         color="primary"
       >
-        Activer pour la geométrie
+        {{ 'Occtax.UI.Params.EnableGeom' | translate }}
       </mat-slide-toggle>
     </div>
     <div>
@@ -61,7 +58,7 @@
         (change)="occtaxFormParamService.releveState.next(!occtaxFormParamService.releveState.getValue())"
         color="primary"
       >
-        Activer pour les informations du relevé
+        {{ 'Occtax.UI.Params.EnableSurvey' | translate }}
       </mat-slide-toggle>
     </div>
     <div>
@@ -71,7 +68,7 @@
         (change)="occtaxFormParamService.occurrenceState.next(!occtaxFormParamService.occurrenceState.getValue())"
         color="primary"
       >
-        Activer pour les informations du taxon
+        {{ 'Occtax.UI.Params.EnableTaxon' | translate }}
       </mat-slide-toggle>
     </div>
     <div>
@@ -81,7 +78,7 @@
         (change)="occtaxFormParamService.countingState.next(!occtaxFormParamService.countingState.getValue())"
         color="primary"
       >
-        Activer pour les informations du dénombrement
+        {{ 'Occtax.UI.Params.EnableCounting' | translate }}
       </mat-slide-toggle>
     </div>
     <mat-tab-group
@@ -91,7 +88,7 @@
     >
       <!-- GEOSJON -->
       <mat-tab
-        label="Localisation"
+        [label]="'Occtax.UI.LocationTab' | translate"
         [disabled]="!(occtaxFormParamService.geometryState|async)"
       >
         <div style="display: inline-block; margin-top: 10px">
@@ -99,18 +96,18 @@
             class="btn btn-primary"
             (click)="geometryFormMapper()"
           >
-            Copier la localisation du relevé en cours
+            {{ 'Occtax.UI.Params.CopyGeom' | translate }}
           </button>
         </div>
 
         <div class="copied-geometry">
           <ng-container *ngIf="paramsForm.get('geometry').value !== null; else noGeometryBlock">
             <mat-icon style="color: green">check</mat-icon>
-            Une géométrie est proposée par défaut
+            {{ 'Occtax.UI.Params.GeomSet' | translate }}
           </ng-container>
           <ng-template #noGeometryBlock>
             <mat-icon style="color: red">close</mat-icon>
-            Aucune géométrie n'a été copiée pour le moment
+            {{ 'Occtax.UI.Params.NoGeom' | translate }}
           </ng-template>
         </div>
       </mat-tab>
@@ -126,7 +123,7 @@
             color="primary"
             (click)="releveFormMapper()"
           >
-            Copier les informations du relevé en cours
+            {{ 'Occtax.UI.Params.CopySurvey' | translate }}
           </button>
         </div>
 
@@ -135,11 +132,11 @@
             *ngIf="occtaxConfig.moduleConf.form_fields.precision"
             class="col-4"
           >
-            <small>Précision du pointage (m)</small>
+            <small>{{ 'Occtax.UI.Precision' | translate }}</small>
             <input
               type="number"
               class="form-control form-control-sm"
-              placeholder="Précision du pointage"
+              [placeholder]="'Occtax.UI.PrecisionPlaceholder' | translate"
               [formControl]="releveParamForm.get('precision')"
             />
           </div>
@@ -346,7 +343,7 @@
             color="primary"
             (click)="occurrenceFormMapper()"
           >
-            Copier les informations du taxon en cours
+            {{ 'Occtax.UI.Params.CopyTaxon' | translate }}
           </button>
         </div>
 
@@ -602,7 +599,7 @@
       class="btn btn-outline-dark"
       (click)="modal.close()"
     >
-      Fermer
+      {{ 'Actions.Close' | translate }}
     </button>
   </div>
 </ng-template>

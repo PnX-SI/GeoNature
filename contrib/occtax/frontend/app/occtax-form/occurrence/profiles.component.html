@@ -4,7 +4,7 @@
 >
   <h5>
     <mat-icon>warning</mat-icon>
-    Donnée exceptionnelle
+    {{ 'Occtax.UI.Exceptional' | translate }}
   </h5>
   <ul>
     <li *ngFor="let err of profilErrors">
@@ -18,7 +18,9 @@
       target="_blank"
       [routerLink]="['/synthese/taxon', taxon.cd_ref, 'profile']"
     >
-      <button mat-raised-button>Voir la fiche profil du taxon</button>
+      <button mat-raised-button>
+        {{ 'Occtax.UI.SeeProfile' | translate }}
+      </button>
     </a>
   </ng-container>
 </div>

@@ -8,6 +8,7 @@ import { HttpParams } from '@angular/common/http';
 import { OcctaxMapListService } from '../occtax-map-list.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { OcctaxConfigService } from '../../services/occtax-config.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'pnx-occtax-map-list-filter',
@@ -15,7 +16,7 @@ import { OcctaxConfigService } from '../../services/occtax-config.service';
   styleUrls: ['./occtax-map-list-filter.component.scss'],
 })
 export class OcctaxMapListFilterComponent implements OnInit {
-  public formsDefinition = FILTERSLIST;
+  public formsDefinition = FILTERSLIST.map((formDef) => ({ ...formDef }));
   public dynamicFormGroup: UntypedFormGroup;
   public formsSelected = [];
   public displayParams: HttpParams = new HttpParams();
@@ -29,8 +30,20 @@ export class OcctaxMapListFilterComponent implements OnInit {
     private _dateParser: NgbDateParserFormatter,
     public occtaxMapListService: OcctaxMapListService,
     public moduleService: ModuleService,
-    public occtaxConfig: OcctaxConfigService
-  ) {}
+    public occtaxConfig: OcctaxConfigService,
+    private _translate: TranslateService
+  ) {
+    // labels shared with the Synthese filters, mutated in place to keep the form controls
+    const labelKey = (formDef) =>
+      formDef.attribut_name === 'id_releve_occtax'
+        ? 'Occtax.UI.SurveyIdFilter'
+        : `Synthese.DynamicFilters.${formDef.attribut_name}`;
+    this._translate.stream(this.formsDefinition.map(labelKey)).subscribe((labels) => {
+      this.formsDefinition.forEach(
+        (formDef) => (formDef.attribut_label = labels[labelKey(formDef)])
+      );
+    });
+  }
 
   ngOnInit() {}
 

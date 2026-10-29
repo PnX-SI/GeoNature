@@ -17,6 +17,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { filter } from 'rxjs/operators';
 import { ModuleService } from '@geonature/services/module.service';
 import { OcctaxConfigService } from '../services/occtax-config.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'pnx-occtax-form',
@@ -53,7 +54,8 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
     private _commonService: CommonService,
     private _modalService: NgbModal,
     public moduleService: ModuleService,
-    public occtaxConfig: OcctaxConfigService
+    public occtaxConfig: OcctaxConfigService,
+    private _translateService: TranslateService
   ) {}
 
   ngOnInit() {
@@ -161,8 +163,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
         this.occtaxFormOccurrenceService.form.dirty)
     ) {
       //si un des 2 formulaires a été modifié mais non sauvegardé
-      const message =
-        'Êtes-vous sûr de vouloir fermer le formulaire ?<br>Des modifications non sauvegardées seront perdues.';
+      const message = this._translateService.instant('Occtax.UI.CloseConfirm');
       const dialogRef = this.dialog.open(ConfirmationDialog, {
         width: 'auto',
         position: { top: '5%' },

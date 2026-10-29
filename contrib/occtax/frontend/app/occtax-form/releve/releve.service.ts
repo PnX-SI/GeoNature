@@ -480,7 +480,9 @@ export class OcctaxFormReleveService {
           },
           (err) => {
             this.waiting = false;
-            this._commonService.regularToaster('error', 'Action non permise:' + err.error);
+            this._commonService.translateToaster('error', 'Occtax.Releve.Errors.NotAllowed', {
+              error: err.error,
+            });
           }
         );
     }

@@ -8,7 +8,7 @@
           [class.active]="occtaxFormService.currentTab === 'releve'"
         >
           <mat-icon class="example-tab-icon">place</mat-icon>
-          Relevé
+          {{ 'Occtax.Releve.Releve' | translate }}
         </a>
         <ng-container *ngIf="occtaxFormService.editionMode | async; else buttonBlock">
           <a
@@ -17,13 +17,13 @@
             [ngClass]="{ active: occtaxFormService.currentTab === 'taxons' }"
           >
             <mat-icon class="example-tab-icon">emoji_nature</mat-icon>
-            Taxons
+            {{ 'Taxons' | translate }}
           </a>
         </ng-container>
         <ng-template #buttonBlock>
           <a class="tablinks disabled">
             <mat-icon class="example-tab-icon">emoji_nature</mat-icon>
-            Taxons
+            {{ 'Taxons' | translate }}
           </a>
         </ng-template>
       </div>
@@ -32,7 +32,7 @@
         <mat-icon class="vertical-align">refresh</mat-icon>
         <mat-slide-toggle
           labelPosition="before"
-          matTooltip="Enchainer les relevés sans retourner à la liste des relevés"
+          [matTooltip]="'Occtax.UI.ChainSurveys' | translate"
           [checked]="occtaxFormService.chainRecording"
           (change)="occtaxFormService.chainRecording = !occtaxFormService.chainRecording"
           color="primary"
@@ -43,7 +43,7 @@
           mat-icon-button
           class="setting-btn"
           (click)="openParametersDialog(modalComponent)"
-          matTooltip="Paramétrer la valeur par défaut des différents champs"
+          [matTooltip]="'Occtax.UI.SetDefaults' | translate"
         >
           <mat-icon
             [matBadge]="occtaxFormParamService?.numberOfActive"
@@ -97,10 +97,10 @@
           class="col-md-5"
         >
           <h5>
-            Taxons enregistrés
+            {{ 'Occtax.UI.SavedTaxa' | translate }}
             <mat-icon
               style="vertical-align: middle"
-              matTooltip="Les taxons affichés ici ont été enregistrés dans la base de données."
+              [matTooltip]="'Occtax.UI.SavedTaxaHelp' | translate"
             >
               info
             </mat-icon>
@@ -114,11 +114,11 @@
         [disabled]="(occtaxTaxaListService.occurrences$ | async)?.length === 0"
         mat-raised-button
         color="primary"
-        matTooltip="Terminer la saisie et quitter le formulaire"
+        [matTooltip]="'Occtax.UI.FinishHelp' | translate"
         data-qa="pnx-occtax-taxon-form-finish"
         (click)="leaveTheForm(false)"
       >
-        Terminer la saisie
+        {{ 'Occtax.UI.Finish' | translate }}
       </button>
     </div>
   </div>
