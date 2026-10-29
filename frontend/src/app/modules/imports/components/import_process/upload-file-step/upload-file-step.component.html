@@ -54,7 +54,7 @@
       class="text-danger"
       *ngIf="fileName && fileName.length > maxFileNameLength"
     >
-      {{ 'Import.Errors.FileNameBig' | translate: { maxFileNameLength: maxFileNameLength } }}
+      {{ 'Import.Errors.FileNameTooBig' | translate: { maxFileNameLength: maxFileNameLength } }}
     </div>
     <!-- Navigation buttons -->
     <div class="navigate-btn">
