@@ -2,7 +2,7 @@
   <a
     class="mx-2"
     mat-fab
-    matTooltip="Gérer vos règles de notification"
+    [matTooltip]="'Notifications.ManageRules' | translate"
     routerLink="/notification/rules"
   >
     <mat-icon>build</mat-icon>
@@ -55,7 +55,7 @@
       class="btn btn-light"
       (click)="deleteNotifications()"
     >
-      Supprimer toutes vos notifications
+      {{ 'Notifications.DeleteAll' | translate }}
     </button>
   </div>
 </div>
