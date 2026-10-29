@@ -1,5 +1,5 @@
 <div class="Taxonomy">
-  <h5 class="Taxonomy__subtitle">Classification</h5>
+  <h5 class="Taxonomy__subtitle">{{ 'Synthese.InfoObs.Classification' | translate }}</h5>
   <table
     *ngIf="observedTaxon; else noClassification"
     class="Classification font-xs table table-striped table-sm"
@@ -7,7 +7,7 @@
     <tbody>
       <tr *ngFor="let information of informationsFiltered">
         <td class="Classification__name">
-          {{ information.label }}
+          {{ information.label | translate }}
         </td>
         <td
           class="Classification__value"
@@ -18,10 +18,12 @@
       </tr>
     </tbody>
   </table>
-  <ng-template #noClassification><p>Aucune</p></ng-template>
+  <ng-template #noClassification>
+    <p>{{ 'Synthese.InfoObs.NoneF' | translate }}</p>
+  </ng-template>
 
   <div *ngIf="!isAttributesEmpty || !hideLocalAttributesOnEmpty">
-    <h5 class="Taxonomy__subtitle">Attribut(s) Taxonomique(s) locaux</h5>
+    <h5 class="Taxonomy__subtitle">{{ 'Synthese.InfoObs.LocalAttributes' | translate }}</h5>
     <table
       *ngIf="!isAttributesEmpty; else noLocalAttributes"
       class="font-xs table table-striped table-sm"
@@ -36,9 +38,11 @@
         <td style="width: 100%">{{ attr.valeur_attribut }}</td>
       </tr>
     </table>
-    <ng-template #noLocalAttributes><p>Aucun</p></ng-template>
+    <ng-template #noLocalAttributes>
+      <p>{{ 'Synthese.InfoObs.NoneM' | translate }}</p>
+    </ng-template>
   </div>
-  <h5 class="Taxonomy__subtitle">Statuts</h5>
+  <h5 class="Taxonomy__subtitle">{{ 'Synthese.Sheets.Statuses' | translate }}</h5>
   <table
     class="font-xs table table-sm"
     *ngIf="!isStatusEmpty; else noStatus"
@@ -67,7 +71,7 @@
                 color="primary"
                 target="_blank"
               >
-                Voir / Télécharger
+                {{ 'Synthese.InfoObs.ViewDownload' | translate }}
                 <mat-icon aria-hidden="true">launch</mat-icon>
               </a>
             </li>
@@ -85,5 +89,7 @@
       </tr>
     </ng-container>
   </table>
-  <ng-template #noStatus><p>Aucun</p></ng-template>
+  <ng-template #noStatus>
+    <p>{{ 'Synthese.InfoObs.NoneM' | translate }}</p>
+  </ng-template>
 </div>

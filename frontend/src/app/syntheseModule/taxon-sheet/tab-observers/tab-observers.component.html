@@ -45,7 +45,7 @@
     [loadingIndicator]="isLoading"
   >
     <ngx-datatable-column
-      name="Observateur"
+      [name]="'Observer' | translate"
       [prop]="PROP_OBSERVER"
     >
       <ng-template
@@ -58,7 +58,7 @@
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column
-      name="Plus ancienne"
+      [name]="'Synthese.Sheets.Oldest' | translate"
       [prop]="PROP_DATE_MIN"
     >
       <ng-template
@@ -71,7 +71,7 @@
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column
-      name="Plus récente"
+      [name]="'Synthese.Sheets.Newest' | translate"
       [prop]="PROP_DATE_MAX"
     >
       <ng-template
@@ -84,7 +84,7 @@
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column
-      name="Nombre d'observation(s)"
+      [name]="'Synthese.Sheets.ObservationCount' | translate"
       [prop]="PROP_OBSERVATION_COUNT"
     >
       <ng-template
@@ -97,7 +97,7 @@
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column
-      name="Nombre de media(s)"
+      [name]="'Synthese.Sheets.MediaCount' | translate"
       [prop]="PROP_MEDIA_COUNT"
     >
       <ng-template

@@ -85,7 +85,7 @@
         (click)="backToModule(row.url_source, row.entity_source_pk_value)"
       >
         <i
-          matTooltip="Voir l'observation dans le module de saisie"
+          [matTooltip]="'Synthese.List.OpenInModule' | translate"
           class="fa fa-file-text"
           aria-hidden="true"
         ></i>
@@ -122,7 +122,7 @@
               config.SYNTHESE.ENABLE_TAXON_SHEETS && row.hasOwnProperty('cd_nom');
               else cellDefault
             "
-            matTooltip="Afficher la fiche du taxon"
+            [matTooltip]="'Synthese.List.TaxonSheet' | translate"
           >
             <ng-container *ngTemplateOutlet="cellDefault"></ng-container>
           </a>
@@ -132,7 +132,7 @@
             class="Link"
             [routerLink]="['/metadata/dataset_detail/' + row.id_dataset]"
             *ngIf="row.hasOwnProperty('id_dataset'); else cellDefault"
-            matTooltip="Afficher la fiche du jeu de données"
+            [matTooltip]="'Synthese.List.DatasetSheet' | translate"
           >
             <ng-container *ngTemplateOutlet="cellDefault"></ng-container>
           </a>

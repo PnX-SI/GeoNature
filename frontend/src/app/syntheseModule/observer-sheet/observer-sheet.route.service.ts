@@ -19,19 +19,19 @@ import { AuthService } from '@geonature/components/auth/auth.service';
 
 export const ALL_OBSERVERS_ADVANCED_INFOS_ROUTES: Array<ChildRouteDescription> = [
   {
-    label: 'Observations',
+    label: 'Synthese.Sheets.Tabs.Observations',
     path: 'observations',
     component: ObservationsComponent,
     configEnabledField: 'ENABLE_TAB_OBSERVATIONS',
   },
   {
-    label: 'Taxons',
+    label: 'Synthese.Sheets.Tabs.Taxa',
     path: 'taxa',
     component: TabTaxaComponent,
     configEnabledField: 'ENABLE_TAB_TAXA',
   },
   {
-    label: 'Medias',
+    label: 'Synthese.Sheets.Tabs.MediaObserver',
     path: 'medias',
     component: TabMediaComponent,
     configEnabledField: 'ENABLE_TAB_MEDIA',

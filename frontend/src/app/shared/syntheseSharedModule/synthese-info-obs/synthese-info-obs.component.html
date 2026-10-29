@@ -11,7 +11,7 @@
     <ng-container *ngIf="!alertOpen; else alertTitle">
       {{ 'Synthese.ModalTitle' | translate }}
     </ng-container>
-    <ng-template #alertTitle>Signalement</ng-template>
+    <ng-template #alertTitle>{{ 'Synthese.InfoObs.Report' | translate }}</ng-template>
   </h5>
 
   <button
@@ -237,7 +237,7 @@
 >
   <mat-tab *ngFor="let tab of filteredTabs">
     <ng-template mat-tab-label>
-      <span>{{ tab.label }}</span>
+      <span>{{ tab.label | translate }}</span>
     </ng-template>
     <ng-container [ngSwitch]="tab.path">
       <ng-container *ngSwitchCase="'details'">
@@ -277,35 +277,35 @@
             <td>{{ selectedObs?.nomenclature_life_stage?.label_default }}</td>
           </tr>
           <tr>
-            <td>Denombrement min</td>
+            <td>{{ 'Synthese.InfoObs.CountMin' | translate }}</td>
             <td>{{ selectedObs?.count_min }}</td>
           </tr>
           <tr>
-            <td>Denombrement max</td>
+            <td>{{ 'Synthese.InfoObs.CountMax' | translate }}</td>
             <td>{{ selectedObs?.count_max }}</td>
           </tr>
           <tr>
-            <td>Type de dénombrement</td>
+            <td>{{ 'Synthese.DynamicFilters.id_nomenclature_type_count' | translate }}</td>
             <td>{{ selectedObs?.nomenclature_type_count?.label_default }}</td>
           </tr>
           <tr>
-            <td>Objet du dénombrement</td>
+            <td>{{ 'Synthese.DynamicFilters.id_nomenclature_obj_count' | translate }}</td>
             <td>{{ selectedObs?.nomenclature_obj_count?.label_default }}</td>
           </tr>
           <tr>
-            <td>Naturalité</td>
+            <td>{{ 'Synthese.DynamicFilters.id_nomenclature_naturalness' | translate }}</td>
             <td>{{ selectedObs?.nomenclature_naturalness?.label_default }}</td>
           </tr>
           <tr>
-            <td>Commentaire relevé</td>
+            <td>{{ 'Synthese.InfoObs.CommentSurvey' | translate }}</td>
             <td>{{ selectedObs?.comment_context }}</td>
           </tr>
           <tr>
-            <td>Commentaire occurrence</td>
+            <td>{{ 'Synthese.InfoObs.CommentOccurrence' | translate }}</td>
             <td>{{ selectedObs?.comment_description }}</td>
           </tr>
           <tr>
-            <td>Determinateur</td>
+            <td>{{ 'Synthese.InfoObs.Determiner' | translate }}</td>
             <td>{{ selectedObs?.determiner }}</td>
           </tr>
           <tr>
@@ -313,60 +313,60 @@
             <td>{{ selectedObs?.nomenclature_determination_method?.label_default }}</td>
           </tr>
           <tr>
-            <td>Preuve d'existence</td>
+            <td>{{ 'Synthese.DynamicFilters.id_nomenclature_exist_proof' | translate }}</td>
             <td>{{ selectedObs?.nomenclature_exist_proof?.label_default }}</td>
           </tr>
           <tr>
-            <td>Preuve numérique</td>
+            <td>{{ 'Synthese.DynamicFilters.digital_proof' | translate }}</td>
             <td>{{ selectedObs?.digital_proof }}</td>
           </tr>
           <tr>
-            <td>Preuve non numérique</td>
+            <td>{{ 'Synthese.DynamicFilters.non_digital_proof' | translate }}</td>
             <td>{{ selectedObs?.non_digital_proof }}</td>
           </tr>
           <tr>
-            <td>Echantillon de preuve</td>
+            <td>{{ 'Synthese.InfoObs.ProofSample' | translate }}</td>
             <td>{{ selectedObs?.sample_number_proof }}</td>
           </tr>
           <tr></tr>
           <tr>
-            <td>Type de regroupement</td>
+            <td>{{ 'Synthese.DynamicFilters.id_nomenclature_grp_typ' | translate }}</td>
             <td>{{ selectedObs?.nomenclature_grp_typ?.label_default }}</td>
           </tr>
           <tr>
-            <td>Méthode de regroupement</td>
+            <td>{{ 'Synthese.DynamicFilters.grp_method' | translate }}</td>
             <td>{{ selectedObs?.grp_method }}</td>
           </tr>
           <tr>
-            <td>Source de la donnée</td>
+            <td>{{ 'Synthese.DynamicFilters.id_source' | translate }}</td>
             <td>{{ selectedObs?.nomenclature_source_status?.label_default }}</td>
           </tr>
           <tr>
-            <td>Statut de validation</td>
+            <td>{{ 'Synthese.Form.ValidationStatus' | translate }}</td>
             <td>{{ selectedObs?.nomenclature_valid_status?.label_default }}</td>
           </tr>
           <tr>
-            <td>Sensibilité</td>
+            <td>{{ 'Synthese.DynamicFilters.id_nomenclature_sensitivity' | translate }}</td>
             <td>{{ selectedObs?.nomenclature_sensitivity?.label_default }}</td>
           </tr>
           <tr>
-            <td>Niveau de diffusion</td>
+            <td>{{ 'Synthese.DynamicFilters.id_nomenclature_diffusion_level' | translate }}</td>
             <td>{{ selectedObs?.nomenclature_diffusion_level?.label_default }}</td>
           </tr>
           <tr>
-            <td>Nature de l'objet géographique</td>
+            <td>{{ 'Synthese.DynamicFilters.id_nomenclature_geo_object_nature' | translate }}</td>
             <td>{{ selectedObs?.nomenclature_geo_object_nature?.label_default }}</td>
           </tr>
           <tr>
-            <td>Floutage</td>
+            <td>{{ 'Synthese.DynamicFilters.id_nomenclature_blurring' | translate }}</td>
             <td>{{ selectedObs?.nomenclature_blurring?.label_default }}</td>
           </tr>
           <tr>
-            <td>Identifiant unique SINP</td>
+            <td>{{ 'Synthese.InfoObs.UniqueIdSinp' | translate }}</td>
             <td>{{ selectedObs?.unique_id_sinp }}</td>
           </tr>
           <tr class="bg-info font-weight-bold">
-            <td>Champs additionnels :</td>
+            <td>{{ 'Synthese.InfoObs.AdditionalFields' | translate }}</td>
             <td></td>
           </tr>
           <ng-container *additionalFields="let field of selectedObs?.additional_data">
@@ -382,17 +382,17 @@
       <ng-container *ngSwitchCase="'metadata'">
         <table class="font-xs table table-striped table-sm">
           <tr>
-            <td>Jeu de données</td>
+            <td>{{ 'Dataset' | translate }}</td>
             <td data-qa="synthese-obs-detail-jdd">{{ selectedObs?.dataset.dataset_name }}</td>
           </tr>
           <tr>
-            <td>Cadre d'acquisition</td>
+            <td>{{ 'AcquisitionFramework' | translate }}</td>
             <td data-qa="synthese-obs-detail-ca">
               {{ selectedObs?.dataset.acquisition_framework.acquisition_framework_name }}
             </td>
           </tr>
           <tr>
-            <td>Acteurs</td>
+            <td>{{ 'Actors' | translate }}</td>
             <td>
               <ul>
                 <li *ngFor="let actor of selectedObs?.dataset.cor_dataset_actor">
@@ -402,7 +402,7 @@
             </td>
           </tr>
           <tr>
-            <td>Module de provenance</td>
+            <td>{{ 'Synthese.InfoObs.SourceModule' | translate }}</td>
             <td>{{ selectedObs?.source.name_source }}</td>
           </tr>
         </table>
@@ -413,11 +413,13 @@
       </ng-container>
 
       <ng-container *ngSwitchCase="'media'">
-        <h5 class="underlined underlined-sm main-color">Médias</h5>
+        <h5 class="underlined underlined-sm main-color">
+          {{ 'Synthese.InfoObs.Media' | translate }}
+        </h5>
         <table class="font-xs table table-striped table-sm">
           <ng-container *ngFor="let media of selectedObs?.medias; index as i">
             <tr>
-              <td>Titre</td>
+              <td>{{ 'Title' | translate }}</td>
               <td>
                 <a
                   target="_blank"
@@ -428,11 +430,11 @@
               </td>
             </tr>
             <tr *ngIf="media.description_fr">
-              <td>Description</td>
+              <td>{{ 'Description' | translate }}</td>
               <td>{{ media.description_fr }}</td>
             </tr>
             <tr *ngIf="media.author">
-              <td>Auteur</td>
+              <td>{{ 'HomePage.Author' | translate }}</td>
               <td>{{ media.author }}</td>
             </tr>
             <tr>
@@ -452,8 +454,8 @@
         <table class="font-xs table table-striped table-sm">
           <thead>
             <tr>
-              <th class="table_date">Type de zonage</th>
-              <th class="table_comment">Zones</th>
+              <th class="table_date">{{ 'Synthese.InfoObs.ZoningType' | translate }}</th>
+              <th class="table_comment">{{ 'Synthese.InfoObs.Zones' | translate }}</th>
             </tr>
           </thead>
 
@@ -479,16 +481,16 @@
       <ng-container *ngSwitchCase="'validation'">
         <div *ngIf="showValidation">
           <h3 data-qa="synthese-obs-detail-validation-title">
-            Historique de validation de la donnée
+            {{ 'Synthese.InfoObs.ValidationHistory' | translate }}
           </h3>
 
           <table class="font-xs table table-striped table-sm">
             <thead>
               <tr>
-                <th class="table_date">Date de validation</th>
-                <th class="table_status">Statut</th>
-                <th class="table_comment">Validateur</th>
-                <th class="table_comment">Commentaire</th>
+                <th class="table_date">{{ 'Synthese.InfoObs.ValidationDate' | translate }}</th>
+                <th class="table_status">{{ 'Status' | translate }}</th>
+                <th class="table_comment">{{ 'HomePage.Validator' | translate }}</th>
+                <th class="table_comment">{{ 'Comment' | translate }}</th>
               </tr>
             </thead>
 
@@ -524,38 +526,38 @@
 
           <div *ngIf="config.FRONTEND.ENABLE_PROFILES">
             <div *ngIf="profile; else noProfile">
-              <h3>Profil du taxon</h3>
+              <h3>{{ 'Synthese.InfoObs.TaxonProfile' | translate }}</h3>
               <div class="row row-sm">
                 <div class="col-4 padding-sm">
-                  <h5>Informations générales sur le taxon</h5>
+                  <h5>{{ 'Synthese.InfoObs.TaxonGeneralInfo' | translate }}</h5>
                   <table class="font-xs table table-striped table-sm">
                     <tr>
-                      <td>Nombre de données valides</td>
+                      <td>{{ 'Synthese.InfoObs.ValidCount' | translate }}</td>
                       <td>{{ profile?.properties?.count_valid_data }}</td>
                     </tr>
                     <tr>
-                      <td>Altitude minimale valide</td>
+                      <td>{{ 'Synthese.InfoObs.ValidAltitudeMin' | translate }}</td>
                       <td>{{ profile?.properties?.altitude_min }}</td>
                     </tr>
                     <tr>
-                      <td>Altitude maximale valide</td>
+                      <td>{{ 'Synthese.InfoObs.ValidAltitudeMax' | translate }}</td>
                       <td>{{ profile?.properties?.altitude_max }}</td>
                     </tr>
 
                     <tr>
-                      <td>Première observation valide</td>
+                      <td>{{ 'Synthese.InfoObs.FirstValid' | translate }}</td>
                       <td>{{ profile?.properties?.first_valid_data | date: 'dd/MM/yyyy' }}</td>
                     </tr>
                     <tr>
-                      <td>Dernière observation valide</td>
+                      <td>{{ 'Synthese.InfoObs.LastValid' | translate }}</td>
                       <td>{{ profile?.properties?.last_valid_data | date: 'dd/MM/yyyy' }}</td>
                     </tr>
                   </table>
 
-                  <h5>Cohérence de la donnée</h5>
+                  <h5>{{ 'Synthese.InfoObs.Consistency' | translate }}</h5>
                   <table class="font-xs table table-sm table-striped">
                     <tr>
-                      <td>Dans l'aire d'observation valide</td>
+                      <td>{{ 'Synthese.InfoObs.InValidArea' | translate }}</td>
                       <td *ngIf="profileDataChecks?.valid_distribution">
                         <mat-icon class="success">check</mat-icon>
                       </td>
@@ -564,7 +566,7 @@
                       </td>
                     </tr>
                     <tr>
-                      <td>Cohérence phénologique</td>
+                      <td>{{ 'Synthese.InfoObs.PhenologyConsistency' | translate }}</td>
                       <td *ngIf="profileDataChecks?.valid_phenology">
                         <mat-icon class="success">check</mat-icon>
                       </td>
@@ -573,7 +575,7 @@
                       </td>
                     </tr>
                     <tr>
-                      <td>Dans la fourchette altitudinale valide</td>
+                      <td>{{ 'Synthese.InfoObs.InValidAltitude' | translate }}</td>
                       <td *ngIf="profileDataChecks?.valid_altitude">
                         <mat-icon class="success">check</mat-icon>
                       </td>
@@ -582,7 +584,7 @@
                       </td>
                     </tr>
                     <tr>
-                      <td>Score</td>
+                      <td>{{ 'Synthese.Form.Score' | translate }}</td>
                       <td>{{ profileDataChecks?.score }}</td>
                     </tr>
                   </table>
@@ -590,7 +592,7 @@
               </div>
             </div>
 
-            <h5>Aire de répartition des observations valides</h5>
+            <h5>{{ 'Synthese.InfoObs.ValidRange' | translate }}</h5>
             <div class="mb-3 border border-secondary">
               <pnx-map height="40vh">
                 <pnx-geojson
@@ -605,7 +607,7 @@
             </div>
           </div>
           <ng-template #noProfile>
-            <span class="alert alert-info">Pas de profil pour ce taxon</span>
+            <span class="alert alert-info">{{ 'Synthese.InfoObs.NoProfile' | translate }}</span>
             <br />
             <br />
           </ng-template>

@@ -13,25 +13,25 @@ import { TaxonSheetService } from '../taxon-sheet.service';
 
 const INDICATORS: Array<IndicatorDescription> = [
   {
-    name: 'observation(s) valide(s)*',
+    name: 'Synthese.Sheets.Indicators.ValidObservations',
     matIcon: 'search',
     field: 'count_valid_data',
     type: 'number',
   },
   {
-    name: 'Première observation*',
+    name: 'Synthese.Sheets.Indicators.FirstObservation',
     matIcon: 'schedule',
     field: 'first_valid_data',
     type: 'date',
   },
   {
-    name: 'Dernière observation*',
+    name: 'Synthese.Sheets.Indicators.LastObservation',
     matIcon: 'search',
     field: 'last_valid_data',
     type: 'date',
   },
   {
-    name: "Plage d'altitude(s)*",
+    name: 'Synthese.Sheets.Indicators.ValidAltitudeRange',
     matIcon: 'terrain',
     field: ['altitude_min', 'altitude_max'],
     unit: 'm',
@@ -70,7 +70,10 @@ export class TabProfileComponent implements OnInit {
         (errors) => {
           this.profile = null;
           if (errors.status == 404) {
-            this._commonService.regularToaster('warning', 'Aucune donnée de profil pour ce taxon');
+            this._commonService.translateToaster(
+              'warning',
+              'Synthese.FicheTaxon.Messages.MessageNoProfil'
+            );
           }
         }
       );

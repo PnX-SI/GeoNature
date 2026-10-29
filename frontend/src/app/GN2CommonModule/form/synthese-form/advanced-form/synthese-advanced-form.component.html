@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title pull-left">Filtres taxonomiques avancés</h4>
+  <h4 class="modal-title pull-left">{{ 'Synthese.AdvancedForm.Title' | translate }}</h4>
   <button
     type="button"
     class="close pull-right"
@@ -12,7 +12,7 @@
 
 <div class="modal-body">
   <div>
-    <h5>Rangs taxonomiques</h5>
+    <h5>{{ 'Synthese.AdvancedForm.TaxonomicRanks' | translate }}</h5>
     <div class="form-group">
       <pnx-autocomplete
         [apiEndPoint]="URL_AUTOCOMPLETE"
@@ -23,7 +23,7 @@
         [mapFunc]="mapFunc"
         [formatter]="formatter"
         keyValue="displayed_name"
-        label="Rechercher un rang taxonomique (nom latin - au dessus du genre)"
+        [label]="'Synthese.AdvancedForm.SearchRank' | translate"
         (onChange)="onTaxonSelected($event)"
       ></pnx-autocomplete>
 
@@ -31,7 +31,9 @@
         class="searched-taxa-list alert alert-warning taxon-alert"
         *ngIf="formService.selectedTaxonFromRankInput.length > 0"
       >
-        <h5><small>Taxon(s) recherché(s):</small></h5>
+        <h5>
+          <small>{{ 'Synthese.AdvancedForm.SearchedTaxa' | translate }}</small>
+        </h5>
         <ul class="list-group d-flex flex-row flex-wrap">
           <li
             class="list-group-item d-flex justify-content-between w-50"
@@ -57,7 +59,7 @@
         id="btn-tree"
         class="btn btn-sm btn-outline-primary"
       >
-        Arbre taxonomique
+        {{ 'Synthese.AdvancedForm.TaxonomicTree' | translate }}
         <i
           *ngIf="isCollapseTree"
           class="fa fa-chevron-down"
@@ -71,7 +73,7 @@
       </button>
 
       <div [(ngbCollapse)]="isCollapseTree">
-        <small>Sélectionner un ou plusieurs taxons à partir de la hiérarchie taxonomique</small>
+        <small>{{ 'Synthese.AdvancedForm.TreeHelp' | translate }}</small>
         <br />
         <div class="card">
           <div class="card-body tree-wrapper">
@@ -108,14 +110,14 @@
           class="btn btn-sm btn-outline-danger"
           (click)="resetTree()"
         >
-          <small>Réinitialiser la sélection</small>
+          <small>{{ 'Synthese.AdvancedForm.ResetSelection' | translate }}</small>
         </button>
       </div>
     </div>
   </div>
 
   <div *ngIf="formService.formBuilded && formService.statusFilters.length > 0">
-    <h5>Statuts</h5>
+    <h5>{{ 'Synthese.AdvancedForm.Statuses' | translate }}</h5>
     <div
       class="form-group"
       *ngFor="let status of formService.statusFilters; let i = index"
@@ -156,7 +158,7 @@
     </div>
 
     <div *ngIf="formService.formBuilded && formService.redListsFilters.length > 0">
-      <h5>Listes rouges</h5>
+      <h5>{{ 'Synthese.AdvancedForm.RedLists' | translate }}</h5>
       <div
         class="form-group"
         *ngFor="let redList of formService.redListsFilters; let i = index"
@@ -175,7 +177,7 @@
     </div>
 
     <div *ngIf="storeService.formBuilded">
-      <h5>Attributs TaxRef</h5>
+      <h5>{{ 'Synthese.AdvancedForm.TaxrefAttributesTitle' | translate }}</h5>
 
       <div class="form-group">
         <pnx-multiselect
@@ -183,7 +185,7 @@
           [parentFormControl]="formService.searchForm.controls.taxonomy_id_hab"
           keyLabel="nom_habitat"
           keyValue="id_habitat"
-          label="Habitat"
+          [label]="'Habitat' | translate"
           (onChange)="onTaxRefAttributsSelected($event.id_habitat)"
           (onDelete)="onTaxRefAttributsDeleted($event.value.id_habitat)"
         ></pnx-multiselect>
@@ -195,7 +197,7 @@
           [parentFormControl]="formService.searchForm.controls.taxonomy_group2_inpn"
           keyLabel="value"
           keyValue="value"
-          label="Groupe 2 INPN"
+          [label]="'Synthese.AdvancedForm.Group2' | translate"
           (onChange)="onTaxRefAttributsSelected($event.value)"
           (onDelete)="onTaxRefAttributsDeleted($event.value.value)"
         ></pnx-multiselect>
@@ -206,7 +208,7 @@
           [parentFormControl]="formService.searchForm.controls.taxonomy_group3_inpn"
           keyLabel="value"
           keyValue="value"
-          label="Groupe 3 INPN"
+          [label]="'Synthese.AdvancedForm.Group3' | translate"
           (onChange)="onTaxRefAttributsSelected($event.value)"
           (onDelete)="onTaxRefAttributsDeleted($event.value.value)"
         ></pnx-multiselect>
@@ -214,7 +216,7 @@
     </div>
 
     <div *ngIf="storeService.formBuilded && storeService.taxhubAttributes.length > 0">
-      <h5>Attributs TaxHub</h5>
+      <h5>{{ 'Synthese.AdvancedForm.TaxhubAttributes' | translate }}</h5>
       <div
         class="dynamic-form padding-sm"
         *ngFor="let formDef of storeService.taxhubAttributes; let i = index"
@@ -244,6 +246,6 @@
     class="btn btn-success"
     (click)="onCloseModal()"
   >
-    Valider et fermer
+    {{ 'Synthese.AdvancedForm.ValidateAndClose' | translate }}
   </button>
 </div>

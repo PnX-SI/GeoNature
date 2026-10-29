@@ -19,25 +19,25 @@ import { Observer } from './observer';
 
 const INDICATORS: Array<IndicatorDescription> = [
   {
-    name: 'observation(s)',
+    name: 'Synthese.Sheets.Indicators.Observations',
     matIcon: 'search',
     field: 'observation_count',
     type: 'number',
   },
   {
-    name: 'taxon(s) observé(s)',
+    name: 'Synthese.Sheets.Indicators.ObservedTaxa',
     matIcon: 'search',
     field: 'taxa_count',
     type: 'number',
   },
   {
-    name: 'commune(s)',
+    name: 'Synthese.Sheets.Indicators.Municipalities',
     matIcon: 'location_on',
     field: 'area_count',
     type: 'number',
   },
   {
-    name: "Plage d'observation(s)",
+    name: 'Synthese.Sheets.Indicators.ObservationRange',
     matIcon: 'date_range',
     type: 'date',
     field: ['date_min', 'date_max'],
