@@ -79,7 +79,7 @@
               <span class="badge badge-pill badge-light border mr-2 mb-2 af-stat-badge">
                 <img
                   src="./assets/images/JDD_icon.svg"
-                  alt="Icône Jeu de données"
+                  [alt]="'MetaData.UI.IconDataset' | translate"
                 />
                 <span>{{ 'Datasets' | translate }}</span>
                 <span class="af-stat-badge__value">{{ stats.nb_dataset }}</span>
@@ -90,7 +90,7 @@
               >
                 <img
                   src="./assets/images/Donnee_icon.svg"
-                  alt="Icône Donnée"
+                  [alt]="'MetaData.UI.IconData' | translate"
                 />
                 <span>{{ getObservationCountTooltip(item.key) }}</span>
                 <span class="af-stat-badge__value">{{ item.value }}</span>
@@ -101,7 +101,7 @@
               >
                 <img
                   src="./assets/images/Taxon_icon.svg"
-                  alt="Icône Taxon"
+                  [alt]="'MetaData.UI.IconTaxon' | translate"
                 />
                 <span>{{ 'Taxons' | translate }}</span>
                 <span class="af-stat-badge__value">{{ stats.nb_taxons }}</span>

@@ -263,7 +263,7 @@
           [pageSizeOptions]="metadataService.pageSizeOptions"
           [pageIndex]="metadataService.currentPage - 1"
           (page)="changePaginator($event)"
-          aria-label="Sélectionner une page"
+          [attr.aria-label]="'MetaData.UI.SelectPage' | translate"
         ></mat-paginator>
       </ng-container>
       <ng-template #noAcquisitionFrameworks>
