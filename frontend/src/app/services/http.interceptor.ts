@@ -11,6 +11,7 @@ import {
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute } from '@angular/router';
 import { ConfigService } from './config.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
 export class MyCustomInterceptor implements HttpInterceptor {
@@ -25,11 +26,12 @@ export class MyCustomInterceptor implements HttpInterceptor {
     let errTitle: string;
     let errMsg: string;
     let enableHtml: boolean = false;
+    const translate = this.inj.get(TranslateService);
     if (error instanceof HttpErrorResponse) {
       if ([401, 404].includes(error.status)) return;
       if (error.status == 502) {
         errTitle = 'Timeout';
-        errMsg = 'La requête n’a pas abouti dans le temps imparti';
+        errMsg = translate.instant('Errors.Timeout');
       } else if (
         typeof error.error === 'object' &&
         'name' in error.error &&
@@ -39,15 +41,15 @@ export class MyCustomInterceptor implements HttpInterceptor {
         errMsg = error.error.description;
         enableHtml = true;
         if ('request_id' in error.error) {
-          errMsg += `<br><b>Requête :</b> ${error.error.request_id}`;
+          errMsg += `<br><b>${translate.instant('Errors.RequestColon')}</b> ${error.error.request_id}`;
         }
       } else {
         errTitle = error.name;
         errMsg = error.message;
       }
     } else {
-      errTitle = 'Erreur';
-      errMsg = 'Une erreur inconnue est survenue.';
+      errTitle = translate.instant('Errors.Title');
+      errMsg = translate.instant('Errors.Unknown');
     }
     this._toastrService.error(errMsg, errTitle, {
       disableTimeOut: true,

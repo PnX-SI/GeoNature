@@ -10,6 +10,7 @@ import {
   ValidationItem,
 } from './home-validations.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { TranslateService } from '@ngx-translate/core';
 import {
   DEFAULT_PAGINATION,
   SyntheseDataPaginationItem,
@@ -56,7 +57,8 @@ export class HomeValidationsComponent implements OnInit, OnDestroy {
   constructor(
     private _config: ConfigService,
     private _router: Router,
-    private _homeValidations: HomeValidationsService
+    private _homeValidations: HomeValidationsService,
+    private _translate: TranslateService
   ) {}
 
   ngOnInit() {
@@ -125,10 +127,12 @@ export class HomeValidationsComponent implements OnInit, OnDestroy {
   }
 
   private _formatObservation(validation: any): string {
+    const label = (key: string) =>
+      `<strong>${this._translate.instant(key)}${this._translate.instant('ColonCharSpaced')}</strong>`;
     return `
-      <strong>Nom Cité :</strong> ${validation.nom_cite || 'N/A'}<br>
-      <strong>Observateurs :</strong> ${validation.observers || 'N/A'}<br>
-      <strong>Date Observation :</strong> ${
+      ${label('HomePage.CitedName')} ${validation.nom_cite || 'N/A'}<br>
+      ${label('Observers')} ${validation.observers || 'N/A'}<br>
+      ${label('HomePage.ObservationDate')} ${
         this._formatDateRange(validation.date_min, validation.date_max) || 'N/A'
       }
     `;
