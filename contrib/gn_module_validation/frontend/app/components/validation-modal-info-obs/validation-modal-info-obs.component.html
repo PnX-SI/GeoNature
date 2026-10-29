@@ -1,7 +1,7 @@
 <!-- MODAL HEADER -->
 <div class="modal-header padding-md-all">
   <h5 class="my-3 ml-3">
-    {{ edit ? 'Modifier le statut de validation' : "Information sur l'observation" }}
+    {{ (edit ? 'Validation.UI.EditStatus' : 'Validation.UI.ObservationInfo') | translate }}
   </h5>
 
   <button
@@ -21,7 +21,7 @@
   id="statusChange"
   class="m-4"
 >
-  <p>Sélectionner le statut de l'observation :</p>
+  <p>{{ 'Validation.UI.SelectStatus' | translate }}</p>
   <form class="my-3">
     <div class="my-3">
       <span
@@ -56,10 +56,10 @@
       style="width: 100%"
       class="my-3"
     >
-      <mat-label class="gn-color">Commentaire :</mat-label>
+      <mat-label class="gn-color">{{ 'Validation.UI.CommentColon' | translate }}</mat-label>
       <textarea
         matInput
-        placeholder="Votre commentaire...."
+        [placeholder]="'Validation.UI.CommentPlaceholder' | translate"
         [formControl]="statusForm.controls.comment"
       ></textarea>
     </mat-form-field>
@@ -73,7 +73,7 @@
       data-dismiss="modal"
       (click)="cancel()"
     >
-      Annuler
+      {{ 'Actions.Cancel' | translate }}
     </button>
     <button
       mat-raised-button
@@ -87,7 +87,7 @@
       data-dismiss="modal"
       #required
     >
-      Enregistrer
+      {{ 'Validation.UI.Save' | translate }}
     </button>
   </div>
 </div>

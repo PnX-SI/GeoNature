@@ -5,7 +5,7 @@
   class="btn btn-sm btn-light box-shadow"
   (click)="getDefinitions()"
 >
-  Masquer les définitions des statuts
+  {{ 'Validation.UI.HideDefinitions' | translate }}
 </button>
 <button
   *ngIf="!showDefinitions"
@@ -14,7 +14,7 @@
   class="btn btn-sm btn-light box-shadow"
   (click)="getDefinitions()"
 >
-  Afficher les définitions des statuts
+  {{ 'Validation.UI.ShowDefinitions' | translate }}
 </button>
 
 <p></p>
@@ -22,8 +22,8 @@
 <table *ngIf="showDefinitions">
   <thead>
     <tr>
-      <th class="table_status">Statut</th>
-      <th class="table_definition">Définition</th>
+      <th class="table_status">{{ 'Status' | translate }}</th>
+      <th class="table_definition">{{ 'Validation.UI.Definition' | translate }}</th>
     </tr>
   </thead>
 
