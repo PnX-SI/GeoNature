@@ -13,7 +13,7 @@
         dense
       >
         <mat-form-field class="example-form-field">
-          <mat-label>Taper pour chercher</mat-label>
+          <mat-label>{{ 'DynamicForm.TypeToSearch' | translate }}</mat-label>
           <input
             [ngModel]="search"
             (ngModelChange)="searchChanged($event)"
@@ -44,7 +44,7 @@
           *ngIf="filteredValues.length == 0"
           class="not-clickable"
         >
-          Pas d'élément trouvé
+          {{ 'DynamicForm.NoItemFound' | translate }}
         </mat-option>
         <mat-option
           *ngFor="let value of filteredValues"
@@ -67,7 +67,7 @@
     </mat-form-field>
   </div>
 
-  <ng-template #loadingBlock>DataListComponent : Chargement en cours...</ng-template>
+  <ng-template #loadingBlock>{{ 'DynamicForm.Loading' | translate }}</ng-template>
   <ng-template #bootstrapBlock>
     <small>{{ label }}</small>
 

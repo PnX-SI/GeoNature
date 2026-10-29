@@ -25,5 +25,5 @@
   *ngIf="!isLoading && noResult && parentFormControl.value?.length >= 3"
   style="color: red"
 >
-  Aucun élement trouvé
+  {{ 'Autocomplete.NoItemFound' | translate }}
 </small>

@@ -24,27 +24,27 @@
                     *ngIf="media.valid() && !media.bLoading"
                     class="btn-clear d-none"
                     (click)="deleteMedia(i)"
-                    matTooltip="Supprimer ce media"
+                    [matTooltip]="'Media.Actions.Delete' | translate"
                   >
                     <mat-icon>clear</mat-icon>
                   </button>
                   <mat-icon
                     *ngIf="!media.valid() && !media.bLoading"
-                    [matTooltip]="'Veuillez compléter le formulaire.'"
+                    [matTooltip]="'Media.Messages.Incomplete' | translate"
                     class="not-valid"
                   >
                     error
                   </mat-icon>
                   <mat-icon
                     *ngIf="media.valid() && !media.bLoading"
-                    matTooltip="Le media est valide"
+                    [matTooltip]="'Media.Messages.Valid' | translate"
                     class="valid"
                   >
                     check
                   </mat-icon>
                   <mat-icon
                     *ngIf="media.bLoading"
-                    matTooltip="chargement en cours"
+                    [matTooltip]="'Media.Messages.loading' | translate"
                     class="fa-spin"
                   >
                     settings
@@ -56,10 +56,12 @@
                     display="icon"
                   ></pnx-media-item>
                   <span>
-                    Titre: {{ media.title_fr }}
+                    {{ 'Media.TitleColon' | translate }} {{ media.title_fr }}
                     <i>
                       ({{ ms.typeMedia(media) }}
-                      <span *ngIf="media.author">par {{ media.author }}</span>
+                      <span *ngIf="media.author">
+                        {{ 'Media.ByAuthor' | translate: { author: media.author } }}
+                      </span>
                       )
                     </i>
                   </span>
