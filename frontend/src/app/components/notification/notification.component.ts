@@ -11,6 +11,7 @@ import { NotificationCard } from '@geonature/components/notification/notificatio
 import { MatPaginator } from '@angular/material/paginator';
 import { Observable } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'pnx-notification',
@@ -22,7 +23,10 @@ export class NotificationComponent implements OnInit, OnDestroy, AfterViewInit {
   obs: Observable<any>;
   dataSource: MatTableDataSource<NotificationCard> = new MatTableDataSource<NotificationCard>();
 
-  constructor(private notificationDataService: NotificationDataService) {}
+  constructor(
+    private notificationDataService: NotificationDataService,
+    public translate: TranslateService
+  ) {}
 
   ngOnInit(): void {
     this.obs = this.dataSource.connect();
