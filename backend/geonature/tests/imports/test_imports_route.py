@@ -12,7 +12,7 @@ from jsonschema import validate as validate_json
 from geonature.utils.env import db
 from geonature.tests.utils import set_logged_user
 
-from geonature.core.imports.models import TImports
+from geonature.core.imports.models import Destination, TImports
 
 from .jsonschema_definitions import jsonschema_definitions
 
@@ -122,3 +122,88 @@ class TestImportsRoute:
             ).json["allowed"]
             is True
         )
+
+
+@pytest.mark.usefixtures("client_class", "temporary_transaction")
+class TestImportDestinationsRoute:
+    def test_list_destinations_unauthenticated(self):
+        r = self.client.get(url_for("import.list_all_destinations"))
+        assert r.status_code == Unauthorized.code, r.data
+        r = self.client.get(url_for("import.list_all_destinations", action_code="C"))
+        assert r.status_code == Unauthorized.code, r.data
+
+    def test_list_all_destinations(self, users, all_modules_destination):
+        set_logged_user(self.client, users["noright_user"])
+        r = self.client.get(url_for("import.list_all_destinations"))
+        assert r.status_code == 200, r.data
+        codes = {d["code"] for d in r.get_json()}
+        expected = {d.code for d in all_modules_destination.values()}
+        assert expected <= codes
+
+    @pytest.mark.parametrize("user_key", ["noright_user", "user", "admin_user"])
+    def test_list_destinations_with_action_code(self, users, user_key):
+        user = users[user_key]
+        set_logged_user(self.client, user)
+        r = self.client.get(url_for("import.list_all_destinations", action_code="C"))
+        assert r.status_code == 200, r.data
+        codes = {d["code"] for d in r.get_json()}
+        all_dest = db.session.scalars(select(Destination)).all()
+        expected = {d.code for d in all_dest if d.active and d.has_instance_permission(user, "C")}
+        assert codes == expected
+        if user_key == "noright_user":
+            assert codes == set()
+        if user_key == "admin_user":
+            assert codes  # admin can create imports in at least one destination
+
+    def test_list_destinations_module_code_filter(self, users, all_modules_destination):
+        set_logged_user(self.client, users["noright_user"])
+        for module_code, destination in all_modules_destination.items():
+            r = self.client.get(url_for("import.list_all_destinations", module_code=module_code))
+            assert r.status_code == 200, r.data
+            assert [d["code"] for d in r.get_json()] == [destination.code]
+
+    def test_list_destinations_unknown_module_code(self, users):
+        set_logged_user(self.client, users["admin_user"])
+        r = self.client.get(url_for("import.list_all_destinations", module_code="UNKNOWN_MODULE"))
+        assert r.status_code == 200, r.data
+        assert r.get_json() == []
+
+    @pytest.mark.parametrize("user_key", ["noright_user", "admin_user"])
+    def test_list_destinations_action_code_and_module_code(
+        self, users, all_modules_destination, user_key
+    ):
+        set_logged_user(self.client, users[user_key])
+        for module_code, destination in all_modules_destination.items():
+            r = self.client.get(
+                url_for("import.list_all_destinations", action_code="C", module_code=module_code)
+            )
+            assert r.status_code == 200, r.data
+            codes = [d["code"] for d in r.get_json()]
+            if destination.has_instance_permission(users[user_key], "C"):
+                assert codes == [destination.code]
+            else:
+                assert codes == []
+        r = self.client.get(
+            url_for("import.list_all_destinations", action_code="C", module_code="UNKNOWN_MODULE")
+        )
+        assert r.get_json() == []
+
+    def test_get_destination_unauthenticated(self, all_modules_destination):
+        destination = next(iter(all_modules_destination.values()))
+        r = self.client.get(url_for("import.get_destination", destinationCode=destination.code))
+        assert r.status_code == Unauthorized.code, r.data
+
+    def test_get_destination(self, users, all_modules_destination):
+        set_logged_user(self.client, users["noright_user"])
+        for module_code, destination in all_modules_destination.items():
+            r = self.client.get(url_for("import.get_destination", destinationCode=destination.code))
+            assert r.status_code == 200, r.data
+            data = r.get_json()
+            assert data["module"]["module_code"] == module_code
+            assert data["code"] == destination.code
+
+    def test_get_destination_unknown(self, users):
+        set_logged_user(self.client, users["user"])
+        r = self.client.get(url_for("import.get_destination", destinationCode="unknown"))
+        assert r.status_code == 200, r.data
+        assert r.get_json() == {}

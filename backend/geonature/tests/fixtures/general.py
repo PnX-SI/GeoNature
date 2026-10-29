@@ -381,8 +381,10 @@ def users(app):
 def celery_eager(app, monkeypatch):
     from geonature.utils.celery import celery_app
 
-    monkeypatch.setattr(celery_app.conf, "task_always_eager", True)
-    monkeypatch.setattr(celery_app.conf, "task_eager_propagates", True)
+    # celery's conf stores settings in a mapping, not in __dict__: pytest>=9.2 setattr
+    # would fail on undo (delattr), so patch items instead
+    monkeypatch.setitem(celery_app.conf, "task_always_eager", True)
+    monkeypatch.setitem(celery_app.conf, "task_eager_propagates", True)
 
 
 @pytest.fixture(scope="session")

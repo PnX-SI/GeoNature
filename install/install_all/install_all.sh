@@ -37,9 +37,9 @@ then
     exit 1
 fi
 
-if [ "$OS_VERSION" != "11" ] && [ "$OS_VERSION" != "12" ] && [ "$OS_VERSION" != "13" ]
+if [ "$OS_VERSION" != "12" ] && [ "$OS_VERSION" != "13" ]
 then
-    echo -e "\e[91m\e[1mLe script d'installation n'est prévu que pour Debian 11, 12 ou 13\e[0m" >&2
+    echo -e "\e[91m\e[1mLe script d'installation n'est prévu que pour Debian 12 ou 13\e[0m" >&2
     exit 1
 fi
 
@@ -100,7 +100,7 @@ sed -i "s/MODE=.*$/MODE=$mode/g" config/settings.ini
 sed -i "s/my_local=.*$/my_local=$my_local/g" config/settings.ini
 sed -i "s/my_url=.*$/my_url=$my_url/g" config/settings.ini
 if grep -q '^url_application_prefix_path=' config/settings.ini; then
-    sed -i "s#^url_application_prefix_path=.*$#url_application_prefix_path=$url_application_prefix_path#g" config/settings.ini
+    sed -i "s#^url_application_prefix_path=.*\$#url_application_prefix_path=$url_application_prefix_path#g" config/settings.ini
 fi
 sed -i "s/drop_apps_db=.*$/drop_apps_db=$drop_geonaturedb/g" config/settings.ini
 sed -i "s/db_name=.*$/db_name=$geonaturedb_name/g" config/settings.ini

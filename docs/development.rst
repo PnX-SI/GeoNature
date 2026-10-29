@@ -1008,7 +1008,7 @@ Le problème « n+1 » est un anti-pattern courant des routes de type « liste �
 
 En effet, on souhaite par exemple afficher la liste des cadres d’acquisitions, et pour chacun d’entre eux, la liste des jeux de données :
 
-::
+.. code-block:: python
 
     af_list = AcquisitionFramwork.query.all()
 
@@ -1020,7 +1020,7 @@ En effet, on souhaite par exemple afficher la liste des cadres d’acquisitions,
 
 Ainsi, lors de la sérialisation de chaque AF, on demande à sérialiser l’attribut ``datasets``, qui est une relationships vers la liste des DS associés :
 
-::
+.. code-block:: python
 
     class AcquisitionFramework(db.Model)
         datasets = db.relationships(Dataset, uselist=True)
@@ -1053,7 +1053,7 @@ Pour cela, plusieurs solutions :
 
 Il est également possible de joindre les relations d’une relation, par exemple le créateur des jeux de données :
 
-::
+.. code-block:: python
 
     af_list = (
         AcquisitionFramework.query
@@ -1067,7 +1067,7 @@ Il est également possible de joindre les relations d’une relation, par exempl
 
 Afin d’être sûr d’avoir joint toutes les relations nécessaires, il est possible d’utiliser la stratégie ``raise`` par défaut, ce qui va provoquer le lancement d’une exception lors de l’accès à un attribut non pré-chargé, nous incitant à le joindre également :
 
-::
+.. code-block:: python
 
     from sqlalchemy.orm import raiseload, joinedload
 
@@ -1381,6 +1381,8 @@ On suppose souhaiter l’ajout d’un nouveau type de filtre « foo ».
 9. Implémenter le support de son nouveau filtre à l’endroit voulu (typiquement la synthèse).
 
 10. Compléter ou faire évoluer la table ``t_permissions_available`` pour déclarer le nouveau filtre comme disponible pour son module.
+
+
 
 
 Développement Frontend
@@ -1717,6 +1719,14 @@ Pour générer la documentation HTML :
 
 La documentation générée se trouve dans le dossier ``build/html/``.
 
+.. note::
+
+    Il est possible d’utiliser `sphinx-autobuild <https://github.com/sphinx-doc/sphinx-autobuild>`_ qui permet
+    de recompiler automatiquement la documentation au fur et à mesure de vos modifications.
+
+    .. code-block:: bash
+
+        sphinx-autobuild docs docs/_build/html
 
 Release
 -------
@@ -1725,13 +1735,14 @@ Pour sortir une nouvelle version de GeoNature :
 
 - Faites les éventuelles Releases des dépendances (UsersHub, TaxHub, UsersHub-authentification-module, Nomenclature-api-module, RefGeo, Utils-Flask-SQLAlchemy, Utils-Flask-SQLAlchemy-Geo)
 - Assurez-vous que les sous-modules git de GeoNature pointent sur les bonnes versions des dépendances et que le ``backend/requirements.in`` a bien été mis à jour.
+- N'oubliez pas de mettre à jour les dépendances tierces : ``uv lock --upgrade``
 - Regénérer ``uv.lock`` (résolution du workspace de dev) et ``backend/requirements.txt`` (résolution PyPI de prod) avec la commande suivante, ou directement via ``make compile_requirements``, dans la plus petite version de python supportée par GeoNature
 
-  ::
+  ..code:: bash
 
     uv lock
-    uv export --no-hashes --extra tests --extra lint -o backend/requirements-dev.txt > backend/requirements-dev.txt
-    cd backend && uv pip compile requirements.in -o requirements.txt
+    uv export --no-hashes --extra tests --extra lint -o backend/requirements-dev.txt
+    uv pip compile pyproject.toml --no-sources --universal --python-version=3.10 --refresh -o backend/requirements.txt
 
 - Mettez à jour la version de GeoNature et éventuellement des dépendances dans ``install/install_all/install_all.ini``
 - Complétez le fichier ``docs/CHANGELOG.md`` (en comparant les branches https://github.com/PnX-SI/GeoNature/compare/develop) et dater la version à sortir
