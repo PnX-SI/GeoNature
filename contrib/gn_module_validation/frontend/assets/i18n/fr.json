@@ -24,7 +24,7 @@
       "CommentColon": "Commentaire :",
       "Save": "Enregistrer",
       "ChooseStatus": "Choix du statut",
-      "ToggleAll": "Sélectionner/déselectionner tout",
+      "ToggleAll": "Sélectionner/désélectionner tout",
       "SelectedTotal": "{{ selected }} sélectionnée(s) / {{ total }} au total",
       "CommentPlaceholder": "Votre commentaire....",
       "ModifiedSinceValidation": "Attention données modifiées depuis la dernière validation",
