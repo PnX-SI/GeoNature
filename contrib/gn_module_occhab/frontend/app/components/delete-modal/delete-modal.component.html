@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title pull-left">Suppression</h4>
+  <h4 class="modal-title pull-left">{{ 'Import.Modal.DeleteTitle' | translate }}</h4>
   <button
     type="button"
     class="close pull-right"
@@ -11,15 +11,14 @@
 </div>
 <div class="modal-body">
   <p>
-    Attention vous vous apprêtez à supprimer une station qui comporte
-    {{ nbHabitats }} habitat(s)
+    {{ 'Occhab.UI.DeleteWarning' | translate: { n: nbHabitats } }}
   </p>
   <button
     mat-raised-button
     (click)="c()"
     class="btn btn-secondary"
   >
-    Annuler
+    {{ 'Actions.Cancel' | translate }}
   </button>
   <button
     mat-raised-button
@@ -27,6 +26,6 @@
     class="mr-1"
     (click)="deleteStation(); c()"
   >
-    Supprimer
+    {{ 'Actions.Delete' | translate }}
   </button>
 </div>

@@ -24,7 +24,7 @@ export class ModalDeleteStation implements OnInit {
     this.onDelete.emit();
     this._occHabDataService.deleteStation(this.idStation).subscribe(
       (d) => {
-        this._commonService.regularToaster('success', 'Station supprimée avec succès');
+        this._commonService.translateToaster('success', 'Occhab.UI.StationDeleted');
 
         this._router.navigate(['/occhab']);
       },
