@@ -79,15 +79,30 @@ def do_nomenclatures_mapping(
             .values({field.dest_field: TNomenclatures.id_nomenclature})
         )
         db.session.execute(stmt)
-        erroneous_conds = [dest_col == None]
+        # Source values explicitly mapped to "no nomenclature" (mapped to an empty
+        # cd_nomenclature) are valid and must not be reported as invalid nomenclatures.
+        explicitly_null_mapping = sa.exists(
+            select(sa.literal("1"))
+            .select_from(sa.func.JSON_EACH_TEXT(TImports.contentmapping[field.mnemonique]))
+            .where(
+                sa.and_(
+                    TImports.id_import == imprt.id_import,
+                    sa.func.nullif(column("key"), "").isnot_distinct_from(source_col),
+                    column("value") == "",
+                )
+            )
+        )
+        erroneous_conds = [dest_col == None, ~explicitly_null_mapping]
         if fill_with_defaults:
-            # Set default nomenclature for empty user fields
+            # Set default nomenclature for empty user fields, except those explicitly
+            # mapped to "no nomenclature"
             stmt = (
                 update(transient_table)
                 .where(
                     transient_table.c.id_import == imprt.id_import,
                     source_col == None,
                     dest_col == None,
+                    ~explicitly_null_mapping,
                 )  # empty source_col may be have been completed by mapping
                 .values(
                     {

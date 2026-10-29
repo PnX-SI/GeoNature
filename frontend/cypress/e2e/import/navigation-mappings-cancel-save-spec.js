@@ -164,7 +164,7 @@ describe('Navigation - cancel and save', () => {
       });
 
       it('contentmapping - cancel', () => {
-        const FIELD = 'id_nomenclature_behaviour';
+        const FIELD = 'OCC_COMPORTEMENT';
         const VALUE = '0 - Inconnu';
         runTheProcessUntilContentMapping(user);
         cy.url().then((url) => {
@@ -193,7 +193,7 @@ describe('Navigation - cancel and save', () => {
       });
 
       it('contentmapping - save', () => {
-        const FIELD = 'id_nomenclature_behaviour';
+        const FIELD = 'OCC_COMPORTEMENT';
         const VALUE = '0 - Inconnu';
 
         runTheProcessUntilContentMapping(user);

@@ -224,10 +224,23 @@
                           "
                         ></ng-container>
                         <ng-template #nomenclature_label>
-                          {{
-                            nomenclatures[nomenclature_type.key].nomenclatures[mapping.value]
-                              .label_default
-                          }}
+                          <span
+                            *ngIf="
+                              nomenclatures[nomenclature_type.key].nomenclatures[
+                                mapping.value
+                              ];
+                              else no_nomenclature
+                            "
+                          >
+                            {{
+                              nomenclatures[nomenclature_type.key].nomenclatures[
+                                mapping.value
+                              ].label_default
+                            }}
+                          </span>
+                          <ng-template #no_nomenclature>
+                            Ne pas associer à une nomenclature
+                          </ng-template>
                         </ng-template>
                         <ng-template #nomenclature_code>{{ mapping.value }}</ng-template>
                       </td>
