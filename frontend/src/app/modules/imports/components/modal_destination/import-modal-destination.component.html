@@ -57,7 +57,7 @@
   color="primary"
   (click)="onOpenModal(content)"
   data-qa="import-modal-destination-start"
-  matTooltip="Nouvel import"
+  [matTooltip]="'Import.Process.List.New' | translate"
 >
   <mat-icon>add</mat-icon>
 </button>

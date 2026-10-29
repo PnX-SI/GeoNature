@@ -29,7 +29,7 @@ export class FieldsMappingStepComponent implements OnInit {
   public targetFields;
   public sourceFields: Array<string> = [];
   public isLoading: boolean = true;
-  public loadingMessage: string = 'Chargement des champs...';
+  public loadingMessage: string = 'Import.Messages.LoadingFields';
   public cruved: Cruved;
   public importData: Import;
   public updateAvailable: boolean = false;
@@ -152,7 +152,7 @@ export class FieldsMappingStepComponent implements OnInit {
 
   onSaveData(loadImport = false): Observable<Import> {
     this.isLoading = true;
-    this.loadingMessage = 'Préparation des données';
+    this.loadingMessage = 'Import.Messages.PreparingData';
     const formgroup = this._fieldMappingService.mappingFormGroup;
     const mappingSelected = this._fieldMappingService.currentFieldMapping !== null;
     return of(this.importProcessService.getImportData()).pipe(
@@ -286,12 +286,11 @@ export class FieldsMappingStepComponent implements OnInit {
 
   openModal(editModal: TemplateRef<any>) {
     this.modalData = {
-      title: 'Modification',
-      bodyMessage:
-        "Des modifications ont été apportées à la correspondance des champs. L'ancienne correspondance des champs sera supprimée.",
-      additionalMessage: 'Êtes-vous sûr de continuer ?',
-      cancelButtonText: 'Annuler',
-      confirmButtonText: 'Confirmer',
+      title: 'Import.Modal.EditTitle',
+      bodyMessage: 'Import.Modal.FieldMappingChanged',
+      additionalMessage: 'Import.Modal.AreYouSure',
+      cancelButtonText: 'Actions.Cancel',
+      confirmButtonText: 'Actions.Confirm',
       confirmButtonColor: 'warn',
       headerDataQa: 'import-modal-edit',
       confirmButtonDataQa: 'modal-edit-validate',

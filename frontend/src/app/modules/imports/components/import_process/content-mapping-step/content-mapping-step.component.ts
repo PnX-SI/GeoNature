@@ -244,9 +244,10 @@ export class ContentMappingStepComponent implements OnInit {
       .pipe()
       .subscribe(
         () => {
-          this._commonService.regularToaster(
+          this._commonService.translateToaster(
             'success',
-            'Le mapping ' + this.selectMappingContentForm.value.label + ' a bien été supprimé'
+            'Import.FieldMapping.Messages.MappingDeleted',
+            { label: this.selectMappingContentForm.value.label }
           );
           this.selectMappingContentForm.setValue(null, { emitEvent: false });
           this.userContentMappings = this.userContentMappings.filter((mapping) => {
@@ -329,12 +330,11 @@ export class ContentMappingStepComponent implements OnInit {
 
   openModal(editModal: TemplateRef<any>) {
     this.modalData = {
-      title: 'Modification',
-      bodyMessage:
-        "Des modifications ont été apportées à la correspondances des nomenclatures. L'ancienne correspondance des nomenclatures sera supprimé.",
-      additionalMessage: 'Êtes-vous sûr de continuer ?',
-      cancelButtonText: 'Annuler',
-      confirmButtonText: 'Confirmer',
+      title: 'Import.Modal.EditTitle',
+      bodyMessage: 'Import.Modal.ContentMappingChanged',
+      additionalMessage: 'Import.Modal.AreYouSure',
+      cancelButtonText: 'Actions.Cancel',
+      confirmButtonText: 'Actions.Confirm',
       confirmButtonColor: 'warn',
       headerDataQa: 'import-modal-edit',
       confirmButtonDataQa: 'modal-edit-validate',

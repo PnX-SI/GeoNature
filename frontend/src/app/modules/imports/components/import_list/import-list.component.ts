@@ -190,18 +190,13 @@ export class ImportListComponent implements OnInit {
         return;
       }
 
-      let additionalMessage: string;
-      additionalMessage =
-        'Attention : Vous vous apprêtez à modifier un import terminé.' +
-        ' Toute modification entraînera la suppression des données importées' +
-        " jusqu'à ce que vous terminiez l'import à nouveau.";
-
       this.editModalData = {
-        title: 'Modification',
-        bodyMessage: `Modifier l'import n°${this.selectedRow.id_import}?`,
-        additionalMessage: additionalMessage,
-        cancelButtonText: 'Annuler',
-        confirmButtonText: 'Confirmer',
+        title: 'Import.Modal.EditTitle',
+        bodyMessage: 'Import.Modal.EditBody',
+        additionalMessage: 'Import.Modal.EditDoneWarning',
+        params: { id: this.selectedRow.id_import },
+        cancelButtonText: 'Actions.Cancel',
+        confirmButtonText: 'Actions.Confirm',
         confirmButtonColor: 'warn',
         headerDataQa: 'import-modal-edit',
         confirmButtonDataQa: 'modal-edit-validate',
@@ -209,13 +204,12 @@ export class ImportListComponent implements OnInit {
     } else if (actionType === 'D') {
       this._ds.setDestination(this.selectedRow.destination.code);
       this.deleteModalData = {
-        title: 'Suppression',
-        bodyMessage: `Supprimer cet import commencé le ${row.date_create_import}?`,
-        additionalMessage: this.selectedRow.date_end_import
-          ? 'Attention : cela supprimera aussi les données importées.'
-          : '',
-        cancelButtonText: 'Annuler',
-        confirmButtonText: 'Supprimer',
+        title: 'Import.Modal.DeleteTitle',
+        bodyMessage: 'Import.Modal.DeleteBody',
+        additionalMessage: this.selectedRow.date_end_import ? 'Import.Modal.DeleteDataWarning' : '',
+        params: { date: row.date_create_import },
+        cancelButtonText: 'Actions.Cancel',
+        confirmButtonText: 'Actions.Delete',
         confirmButtonColor: 'warn',
         headerDataQa: 'import-modal-delete',
         confirmButtonDataQa: 'modal-delete-validate',
