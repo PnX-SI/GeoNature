@@ -147,7 +147,7 @@
               >
                 <img
                   src="./assets/images/Taxon_icon.svg"
-                  alt="Icône Taxon"
+                  [alt]="'MetaData.UI.IconTaxon' | translate"
                 />
                 <span>{{ 'Taxons' | translate }}</span>
                 <span class="af-stat-badge__value">{{ nbTaxons }}</span>
@@ -158,7 +158,7 @@
               >
                 <img
                   src="./assets/images/Donnee_icon.svg"
-                  alt="Icône Donnée"
+                  [alt]="'MetaData.UI.IconData' | translate"
                 />
                 <span>{{ getObservationCountTooltip(item.key) }}</span>
                 <span class="af-stat-badge__value">{{ item.value }}</span>

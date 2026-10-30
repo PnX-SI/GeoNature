@@ -153,7 +153,7 @@ export class DatasetCardComponent implements OnInit {
   }
 
   delete_Dataset(idDataset) {
-    if (window.confirm('Etes-vous sûr de vouloir supprimer ce jeu de données ?')) {
+    if (window.confirm(this.translate.instant('MetaData.UI.ConfirmDeleteDataset'))) {
       this._dfs.deleteDs(idDataset).subscribe((d) => {
         this._router.navigate(['metadata']);
       });
