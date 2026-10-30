@@ -27,7 +27,7 @@
             class="fa {{ home_page.module_picto }} picto"
             aria-hidden="true"
           ></i>
-          <span class="module-name">{{ home_page.module_label }}</span>
+          <span class="module-name">{{ home_page.module_label | translate }}</span>
         </mat-list-item>
       </a>
       <ng-container *ngFor="let module of moduleService.getDisplayedModules(); let index = index">
@@ -71,14 +71,14 @@
 
   <div class="navbar-footer">
     <p class="p-small">
-      Réalisé avec
+      {{ 'Sidenav.MadeWith' | translate }}
       <a
         target="_blank"
         href="http://geonature.fr"
       >
         GeoNature
       </a>
-      version
+      {{ 'Sidenav.Version' | translate }}
       <a
         target="_blank"
         href="https://github.com/PnX-SI/GeoNature/releases"
@@ -96,14 +96,14 @@
 
       <mat-menu #modulesMenu="matMenu">
         <div class="menu-content">
-          <b>Version des modules GeoNature :</b>
+          <b>{{ 'Sidenav.ModulesVersion' | translate }}</b>
           <br />
           <div *ngIf="getModulesVersionTooltip()?.length > 0">
             <div *ngFor="let module of getModulesVersionTooltip()">
               <span *ngIf="module.version">{{ module.module_label }} : {{ module.version }}</span>
             </div>
           </div>
-          <b>Version des Référentiels :</b>
+          <b>{{ 'Sidenav.ReferentialsVersion' | translate }}</b>
           <br />
           <div *ngIf="isRefVersionLoaded">
             <div *ngFor="let referential of ref_data">
@@ -114,12 +114,12 @@
       </mat-menu>
     </p>
     <p class="p-small">
-      Logiciel open source développé par une
+      {{ 'Sidenav.OpenSource' | translate }}
       <a
         target="_blank"
         href="http://docs.geonature.fr/authors.html"
       >
-        communauté de structures
+        {{ 'Sidenav.Community' | translate }}
       </a>
     </p>
   </div>

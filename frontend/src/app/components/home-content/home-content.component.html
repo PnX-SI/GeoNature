@@ -14,7 +14,7 @@
         <!-- mr-0 and ml-0 since row puts margin-left and right at -15px... -->
         <div class="panel-heading row mr-0 ml-0">
           <div class="col-12 col-lg-5 col-xl-7">
-            <span>Les 100 dernières observations</span>
+            <span>{{ 'HomePage.LastObservations' | translate }}</span>
           </div>
           <div class="col-12 col-lg-7 col-xl-5">
             <button
@@ -24,7 +24,7 @@
               class="uppercase ml-1 mt-1 float-right"
               data-qa="pnx-home-content-explore-data-button"
             >
-              Explorer les données
+              {{ 'HomePage.ExploreData' | translate }}
             </button>
           </div>
         </div>
@@ -54,7 +54,7 @@
               ></mat-spinner>
               {{ generalStat?.nb_data | number: '1.0-0' : locale }}
             </div>
-            <div class="text-muted">Observations</div>
+            <div class="text-muted">{{ 'Observations' | translate }}</div>
           </div>
         </div>
       </div>
@@ -69,7 +69,7 @@
               ></mat-spinner>
               {{ generalStat?.nb_species | number: '1.0-0' : locale }}
             </div>
-            <div class="text-muted">Taxons</div>
+            <div class="text-muted">{{ 'Taxons' | translate }}</div>
           </div>
         </div>
       </div>
@@ -86,7 +86,7 @@
                 ~{{ generalStat?.nb_observers | number: '1.0-0' : locale }}
               </ng-template>
             </div>
-            <div class="text-muted">Observateurs</div>
+            <div class="text-muted">{{ 'Observers' | translate }}</div>
           </div>
         </div>
       </div>
@@ -101,7 +101,7 @@
               ></mat-spinner>
               {{ generalStat?.nb_dataset | number: '1.0-0' : locale }}
             </div>
-            <div class="text-muted">Jeux de données</div>
+            <div class="text-muted">{{ 'Datasets' | translate }}</div>
           </div>
         </div>
       </div>
@@ -109,7 +109,7 @@
     <div class="d-flex justify-content-center">
       <div class="col-xs-12 pr-2 text-muted">
         <small>
-          Dernière mise à jour
+          {{ 'HomePage.LastUpdate' | translate }}
           {{ generalStat?.createdDate | date: 'full' : undefined : locale }}
         </small>
       </div>
@@ -122,13 +122,13 @@
     <mat-tab-group>
       <mat-tab
         *ngIf="displayDiscussions"
-        label="Discussions"
+        [label]="'HomePage.Discussions' | translate"
       >
         <pnx-home-discussions></pnx-home-discussions>
       </mat-tab>
       <mat-tab
         *ngIf="displayValidations"
-        label="Validations"
+        [label]="'HomePage.Validations' | translate"
       >
         <pnx-home-validations></pnx-home-validations>
       </mat-tab>

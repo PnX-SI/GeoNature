@@ -67,7 +67,7 @@ export class AlertInfoComponent implements OnInit, OnChanges {
         content: this.alertForm.get('content').value,
       })
       .subscribe((success) => {
-        this._commonService.translateToaster('success', 'Signalement sauvegardé !');
+        this._commonService.translateToaster('success', 'Synthese.Alert.Saved');
         this.openCloseAlert();
       });
   }

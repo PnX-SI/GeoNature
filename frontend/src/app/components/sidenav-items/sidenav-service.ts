@@ -34,7 +34,7 @@ export class SideNavService {
   getHomeItem(): Module {
     return {
       module_url: '/',
-      module_label: 'Accueil',
+      module_label: 'Home',
       module_picto: 'fa-home',
       id_module: 1,
       module_path: '/geonature',

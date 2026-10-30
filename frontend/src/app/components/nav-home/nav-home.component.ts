@@ -19,7 +19,8 @@ import { BreakpointObserver } from '@angular/cdk/layout';
   styleUrls: ['./nav-home.component.scss'],
 })
 export class NavHomeComponent implements OnInit {
-  public moduleName = 'Accueil';
+  public moduleName = 'Home';
+  public isHome = true;
   public currentUser: User;
   public currentDocUrl: string;
   public moduleUrl: string;
@@ -77,6 +78,7 @@ export class NavHomeComponent implements OnInit {
 
   private onModuleChange() {
     this._moduleService.currentModule$.subscribe((module) => {
+      this.isHome = !module;
       if (!module) {
         // If in Home Page
         module = this.sideNavService.getHomeItem();
