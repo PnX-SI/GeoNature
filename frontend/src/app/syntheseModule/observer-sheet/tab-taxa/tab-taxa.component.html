@@ -69,7 +69,7 @@
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column
-      name="Plus ancienne"
+      [name]="'Synthese.Sheets.Oldest' | translate"
       [prop]="PROP_DATE_MIN"
     >
       <ng-template
@@ -82,7 +82,7 @@
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column
-      name="Plus récente"
+      [name]="'Synthese.Sheets.Newest' | translate"
       [prop]="PROP_DATE_MAX"
     >
       <ng-template
@@ -95,7 +95,7 @@
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column
-      name="Nombre d'observation(s)"
+      [name]="'Synthese.Sheets.ObservationCount' | translate"
       [prop]="PROP_OBSERVATION_COUNT"
     >
       <ng-template
@@ -108,7 +108,7 @@
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column
-      name="Nombre de dataset(s)"
+      [name]="'Synthese.Sheets.DatasetCount' | translate"
       [prop]="PROP_DATASET_COUNT"
     >
       <ng-template

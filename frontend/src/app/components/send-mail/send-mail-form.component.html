@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Envoyer un email</h2>
+<h2 mat-dialog-title>{{ 'Mail.Title' | translate }}</h2>
 
 <mat-dialog-content>
   <form [formGroup]="mailForm">
@@ -29,7 +29,7 @@
       appearance="fill"
       class="w-100"
     >
-      <mat-label>Sujet</mat-label>
+      <mat-label>{{ 'Mail.Subject' | translate }}</mat-label>
       <input
         matInput
         formControlName="subject"
@@ -43,7 +43,7 @@
       appearance="fill"
       class="w-100 mt-3"
     >
-      <mat-label>Contenu</mat-label>
+      <mat-label>{{ 'Mail.Content' | translate }}</mat-label>
       <textarea
         matInput
         formControlName="message"
@@ -65,7 +65,7 @@
     type="button"
     (click)="onCancel()"
   >
-    Annuler
+    {{ 'Actions.Cancel' | translate }}
   </button>
   <button
     mat-raised-button

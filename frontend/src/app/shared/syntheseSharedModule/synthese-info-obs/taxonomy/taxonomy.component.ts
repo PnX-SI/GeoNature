@@ -38,39 +38,39 @@ export class TaxonomyComponent {
 
   readonly INFORMATIONS: Array<TaxonInformation> = [
     {
-      label: 'Groupe taxonomique',
+      label: 'Synthese.InfoObs.Taxonomy.TaxonomicGroup',
       field: 'classe',
     },
     {
-      label: 'Ordre',
+      label: 'Synthese.InfoObs.Taxonomy.Order',
       field: 'ordre',
     },
     {
-      label: 'Famille',
+      label: 'Synthese.InfoObs.Taxonomy.Family',
       field: 'famille',
     },
     {
-      label: 'lb nom',
+      label: 'Synthese.InfoObs.Taxonomy.LbNom',
       field: 'lb_nom',
     },
     {
-      label: 'cd nom',
+      label: 'Synthese.InfoObs.Taxonomy.CdNom',
       field: 'cd_nom',
     },
     {
-      label: 'cd ref',
+      label: 'Synthese.InfoObs.Taxonomy.CdRef',
       field: 'cd_ref',
     },
     {
-      label: 'Nom valide',
+      label: 'Synthese.InfoObs.Taxonomy.ValidName',
       field: 'nom_valide',
     },
     {
-      label: 'Nom cite',
+      label: 'Synthese.InfoObs.Taxonomy.CitedName',
       field: 'nom_cite',
     },
     {
-      label: 'Rang taxonomique',
+      label: 'Synthese.InfoObs.Taxonomy.Rank',
       field: 'nom_rang',
     },
   ];

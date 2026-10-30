@@ -20,32 +20,32 @@ import { filter, takeUntil } from 'rxjs/operators';
 
 const INDICATORS: Array<IndicatorDescription> = [
   {
-    name: 'observation(s)',
+    name: 'Synthese.Sheets.Indicators.Observations',
     matIcon: 'search',
     field: 'observation_count',
     type: 'number',
   },
   {
-    name: 'observateur(s)',
+    name: 'Synthese.Sheets.Indicators.Observers',
     matIcon: 'people',
     field: 'observer_count',
     type: 'number',
   },
   {
-    name: 'commune(s)',
+    name: 'Synthese.Sheets.Indicators.Municipalities',
     matIcon: 'location_on',
     field: 'area_count',
     type: 'number',
   },
   {
-    name: "Plage d'altitude(s)",
+    name: 'Synthese.Sheets.Indicators.AltitudeRange',
     matIcon: 'terrain',
     unit: 'm',
     type: 'number',
     field: ['altitude_min', 'altitude_max'],
   },
   {
-    name: "Plage d'observation(s)",
+    name: 'Synthese.Sheets.Indicators.ObservationRange',
     matIcon: 'date_range',
     type: 'date',
     field: ['date_min', 'date_max'],
