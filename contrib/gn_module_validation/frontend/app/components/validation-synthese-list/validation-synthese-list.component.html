@@ -29,7 +29,7 @@
         <input
           type="checkbox"
           (click)="toggleSelection($event)"
-          matTooltip="Sélectionner/déselectionner tout"
+          [matTooltip]="'Validation.UI.ToggleAll' | translate"
         />
       </label>
     </ng-template>
@@ -62,7 +62,7 @@
           *ngIf="row.last_validation && row.meta_update_date > row.last_validation.validation_date"
           class="modif_data"
         >
-          {{ modif_text }}
+          {{ modif_text | translate }}
         </span>
       </div>
     </ng-template>
@@ -133,7 +133,9 @@
           class="statusName"
         >
           <span>{{ row.nomenclature_valid_status?.mnemonique }}</span>
-          <span *ngIf="row.last_validation?.validation_auto">(automatique)</span>
+          <span *ngIf="row.last_validation?.validation_auto">
+            {{ 'Validation.UI.Automatic' | translate }}
+          </span>
         </div>
       </div>
     </ng-template>
@@ -190,7 +192,9 @@
           class="statusName"
         >
           <span>{{ row?.nomenclature_valid_status?.mnemonique }}</span>
-          <span *ngIf="row.last_validation?.validation_auto">(automatique)</span>
+          <span *ngIf="row.last_validation?.validation_auto">
+            {{ 'Validation.UI.Automatic' | translate }}
+          </span>
         </div>
       </div>
     </ng-template>
@@ -205,7 +209,7 @@
       let-column="column"
       ngx-datatable-header-template
     >
-      <span>Score</span>
+      <span>{{ 'Synthese.Form.Score' | translate }}</span>
     </ng-template>
     <ng-template
       let-row="row"
@@ -262,12 +266,12 @@
         </mat-chip>
       </div>
 
-      <ng-template #popTitle>Cohérence par rapport au profil</ng-template>
+      <ng-template #popTitle>{{ 'Validation.UI.ProfileConsistency' | translate }}</ng-template>
 
       <ng-template #popContent>
         <table class="table table-sm font-xs table-striped">
           <tr>
-            <td>Aire de répartition</td>
+            <td>{{ 'Validation.UI.Range' | translate }}</td>
             <td *ngIf="row.profile.valid_distribution">
               <mat-icon class="success">check</mat-icon>
             </td>
@@ -276,7 +280,7 @@
             </td>
           </tr>
           <tr>
-            <td>Phénologie</td>
+            <td>{{ 'Validation.UI.Phenology' | translate }}</td>
             <td *ngIf="row.profile.valid_phenology">
               <mat-icon class="success">check</mat-icon>
             </td>
@@ -285,7 +289,7 @@
             </td>
           </tr>
           <tr>
-            <td>Altitudes</td>
+            <td>{{ 'Validation.UI.Altitudes' | translate }}</td>
             <td *ngIf="row.profile.valid_altitude">
               <mat-icon class="success">check</mat-icon>
             </td>

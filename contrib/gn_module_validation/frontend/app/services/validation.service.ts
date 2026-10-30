@@ -18,7 +18,7 @@ export class ValidationService {
   postNewValidStatusAndUpdateUI(value, idSynthese: Array<number>): Observable<Nomenclature> {
     return this._api.postStatus(value, idSynthese).pipe(
       tap((newValidationStatus) => {
-        this._commonService.translateToaster('success', 'Nouveau statut de validation enregistré');
+        this._commonService.translateToaster('success', 'Validation.UI.StatusSaved');
         this._mapListService.tableData.forEach((obs) => {
           if (idSynthese.includes(obs.id_synthese)) {
             obs['nomenclature_valid_status'] = newValidationStatus;
