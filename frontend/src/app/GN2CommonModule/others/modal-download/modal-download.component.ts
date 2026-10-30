@@ -11,6 +11,7 @@ import {
 } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 import { CommonService } from '@geonature_common/service/common.service';
+import { TranslateService } from '@ngx-translate/core';
 
 export const FormatMapMime = new Map([
   ['csv', 'text/csv'],
@@ -33,14 +34,15 @@ export class ModalDownloadComponent implements OnInit {
   public downloadProgress$: BehaviorSubject<number>;
   public isDownloading: boolean = false;
   private _blob: Blob;
-  public message = 'Téléchargement en cours';
+  public message: string;
   public type = 'info';
   public animated = true;
   public endLoad: boolean = false;
   constructor(
     private _modalService: NgbModal,
     private _api: HttpClient,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    private _translate: TranslateService
   ) {
     this.downloadProgress$ = <BehaviorSubject<number>>new BehaviorSubject(0.0);
     this.downloadProgress$.subscribe((state) => {
@@ -52,7 +54,8 @@ export class ModalDownloadComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.labelButton = this.labelButton || 'Télécharger';
+    this.labelButton = this.labelButton || this._translate.instant('Actions.Download');
+    this.message = this._translate.instant('Download.InProgress');
     this.queryString = this.queryString || new HttpParams();
   }
 
@@ -107,13 +110,13 @@ export class ModalDownloadComponent implements OnInit {
 
   progress() {
     this.downloadProgress$.next(0.0);
-    this.message = 'Téléchargement en cours';
+    this.message = this._translate.instant('Download.InProgress');
     this.type = 'info';
     this.animated = true;
   }
 
   done() {
-    this.message = 'Export téléchargé avec succès ! Veuillez patienter ...  ';
+    this.message = this._translate.instant('Download.Done');
     this.type = 'success';
     this.animated = false;
   }

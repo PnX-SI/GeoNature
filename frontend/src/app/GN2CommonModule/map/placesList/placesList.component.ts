@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { GeoJSON } from 'leaflet';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Affiche une modale permettant d'aficher la liste des lieux enregistrés pour l'utilisateur actif, puis affiche le lieux sélectionnés sur la carte.
@@ -35,7 +36,8 @@ export class PlacesListComponent extends MarkerComponent implements OnInit {
     public modalService: NgbModal,
     public commonService: CommonService,
     private _dfs: DataFormService,
-    public config: ConfigService
+    public config: ConfigService,
+    private _translate: TranslateService
   ) {
     super(mapService, commonService, config);
   }
@@ -53,7 +55,7 @@ export class PlacesListComponent extends MarkerComponent implements OnInit {
       'url(assets/images/liste.png)'
     );
     this.map.addControl(new placesLegend());
-    document.getElementById('ListPlacesLegend').title = 'Liste des lieux';
+    document.getElementById('ListPlacesLegend').title = this._translate.instant('Map.Places.List');
     L.DomEvent.disableClickPropagation(document.getElementById('ListPlacesLegend'));
     document.getElementById('ListPlacesLegend').onclick = () => {
       this.fetchPlaces();
@@ -63,7 +65,7 @@ export class PlacesListComponent extends MarkerComponent implements OnInit {
 
   loadPlace() {
     if (this.place == null) {
-      this.commonService.translateToaster('error', 'Aucun lieu sélectionné');
+      this.commonService.translateToaster('error', 'Map.Places.NoneSelected');
       return;
     }
     this.selectedPlace = this.place;
@@ -86,11 +88,11 @@ export class PlacesListComponent extends MarkerComponent implements OnInit {
 
   deletePlace() {
     if (this.place == null) {
-      this.commonService.translateToaster('error', 'Aucun lieu sélectionné');
+      this.commonService.translateToaster('error', 'Map.Places.NoneSelected');
       return;
     }
     this.selectedPlace = this.place;
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce lieu?')) {
+    if (confirm(this._translate.instant('Map.Places.ConfirmDelete'))) {
       this._dfs.deletePlace(this.selectedPlace.id).subscribe((res) => {
         this.fetchPlaces();
       });

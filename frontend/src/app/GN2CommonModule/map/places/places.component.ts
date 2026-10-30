@@ -8,6 +8,7 @@ import * as L from 'leaflet';
 import { Subscription } from 'rxjs/Subscription';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ConfigService } from '@geonature/services/config.service';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Affiche une modale permettant de renseigner le nom d'un lieu et de l'enregistrer dans la table T_PLACE.
@@ -28,7 +29,8 @@ export class PlacesComponent extends MarkerComponent implements OnInit, OnDestro
     public modalService: NgbModal,
     public commonService: CommonService,
     private _dfs: DataFormService,
-    public config: ConfigService
+    public config: ConfigService,
+    private _translate: TranslateService
   ) {
     super(mapService, commonService, config);
   }
@@ -50,14 +52,11 @@ export class PlacesComponent extends MarkerComponent implements OnInit, OnDestro
       'url(assets/images/location-save.png)'
     );
     this.map.addControl(new PlacesLegend());
-    document.getElementById('PlacesLegend').title = 'Enregistrer un lieu';
+    document.getElementById('PlacesLegend').title = this._translate.instant('Map.Places.Save');
     L.DomEvent.disableClickPropagation(document.getElementById('PlacesLegend'));
     document.getElementById('PlacesLegend').onclick = () => {
       if (this.geojson == null) {
-        this.commonService.translateToaster(
-          'warning',
-          "Veuillez d'abord saisir une géométrie sur la carte."
-        );
+        this.commonService.translateToaster('warning', 'Map.Places.DrawFirst');
       } else {
         this.modalService.open(this.modalContent);
       }
@@ -70,7 +69,7 @@ export class PlacesComponent extends MarkerComponent implements OnInit, OnDestro
     }
     this.geojson.properties['place_name'] = placeName.toString();
     this._dfs.addPlace(this.geojson).subscribe((res) => {
-      this.commonService.translateToaster('success', 'Lieux ajouté avec succès.');
+      this.commonService.translateToaster('success', 'Map.Places.Added');
       this.modalService.dismissAll();
       this.placeForm.reset();
     });

@@ -22,7 +22,7 @@
       class="modal-title"
       id="modalLabel"
     >
-      Télécharger les données
+      {{ 'Actions.DownloadData' | translate }}
     </h5>
     <button
       type="button"
@@ -44,7 +44,7 @@
         type="button"
         class="btn btn-success format-btn"
       >
-        Format {{ format }}
+        {{ 'Synthese.Download.Format' | translate: { format: format } }}
       </button>
     </div>
 
