@@ -10,7 +10,7 @@
       <mat-button-toggle-group
         class="sort-type-group"
         name="sortType"
-        aria-label="Type de tri"
+        [attr.aria-label]="'Occtax.UI.SortType' | translate"
         [value]="typeSortingTaxalist"
         (change)="setSortType($event.value)"
       >
@@ -40,8 +40,8 @@
         [ngClass]="occ_in_progress.state"
         [matTooltip]="
           occ_in_progress.state == 'in_progress'
-            ? 'Enregistrement en cours'
-            : 'Une erreur est survenue lors de l\'enregistrement'
+            ? ('Occtax.UI.SavingInProgress' | translate)
+            : ('Occtax.UI.SaveError' | translate)
         "
         matTooltipPosition="left"
         (click)="inProgressErrorToForm(occ_in_progress)"
@@ -57,7 +57,7 @@
           *ngIf="occ_in_progress.state == 'error'"
           style="font-size: 12px"
         >
-          Erreur : cliquez pour reprendre ce taxon
+          {{ 'Occtax.UI.TaxonError' | translate }}
         </div>
       </div>
     </ng-container>
@@ -88,7 +88,7 @@
                   class="btn-edit"
                   (click)="editOccurrence(occurrence)"
                 >
-                  <mat-icon matTooltip="Editer le taxon">edit</mat-icon>
+                  <mat-icon [matTooltip]="'Occtax.UI.EditTaxonTooltip' | translate">edit</mat-icon>
                 </button>
                 <button
                   *ngIf="(occtaxTaxaListService.occurrences$ | async)?.length != 1 || i != 0"
@@ -96,7 +96,9 @@
                   class="btn-clear"
                   (click)="deleteOccurrence(occurrence)"
                 >
-                  <mat-icon matTooltip="Supprimer le taxon">clear</mat-icon>
+                  <mat-icon [matTooltip]="'Occtax.UI.DeleteTaxonTooltip' | translate">
+                    clear
+                  </mat-icon>
                 </button>
               </span>
             </mat-panel-description>
@@ -109,7 +111,9 @@
                 id="tabOccurence{{ occurrence.id_occurrence_occtax }}"
               >
                 <div>
-                  <div class="label">ID occurrence :</div>
+                  <div class="label">
+                    {{ 'Occtax.UI.OccurrenceId' | translate }}
+                  </div>
                   <div class="value">{{ occurrence.id_occurrence_occtax }}</div>
                 </div>
 
@@ -124,7 +128,9 @@
                 </div>
 
                 <div>
-                  <div class="label">Taxref (nom complet) :</div>
+                  <div class="label">
+                    {{ 'Occtax.UI.TaxrefFullName' | translate }}
+                  </div>
                   <div class="value">{{ occurrence?.taxref?.nom_complet }}</div>
                 </div>
 
@@ -282,81 +288,95 @@
             </mat-tab>
 
             <mat-tab
-              label="Taxonomie"
+              [label]="'Occtax.UI.Taxonomy' | translate"
               *ngIf="occurrence.taxref"
             >
               <div class="list-values">
                 <div>
-                  <div class="label">Version Taxref :</div>
+                  <div class="label">
+                    {{ 'Occtax.UI.TaxrefVersion' | translate }}
+                  </div>
                   <div class="value">{{ occurrence?.meta_v_taxref }}</div>
                 </div>
 
                 <div>
-                  <div class="label">Groupe 1 INPN :</div>
+                  <div class="label">{{ 'Occtax.UI.Group1' | translate }}</div>
                   <div class="value">{{ occurrence.taxref.group1_inpn }}</div>
                 </div>
                 <div>
-                  <div class="label">Groupe 2 INPN :</div>
+                  <div class="label">{{ 'Occtax.UI.Group2' | translate }}</div>
                   <div class="value">{{ occurrence.taxref.group2_inpn }}</div>
                 </div>
                 <div>
-                  <div class="label">Règne :</div>
+                  <div class="label">{{ 'Occtax.UI.Kingdom' | translate }}</div>
                   <div class="value">{{ occurrence.taxref.regne }}</div>
                 </div>
                 <div>
-                  <div class="label">Phylum :</div>
+                  <div class="label">{{ 'Occtax.UI.Phylum' | translate }}</div>
                   <div class="value">{{ occurrence.taxref.phylum }}</div>
                 </div>
                 <div>
-                  <div class="label">Classe :</div>
+                  <div class="label">{{ 'Occtax.UI.Class' | translate }}</div>
                   <div class="value">{{ occurrence.taxref.classe }}</div>
                 </div>
                 <div>
-                  <div class="label">Ordre :</div>
+                  <div class="label">{{ 'Occtax.UI.Order' | translate }}</div>
                   <div class="value">{{ occurrence.taxref.ordre }}</div>
                 </div>
                 <div>
-                  <div class="label">Famille :</div>
+                  <div class="label">{{ 'Occtax.UI.Family' | translate }}</div>
                   <div class="value">{{ occurrence.taxref.famille }}</div>
                 </div>
                 <div>
-                  <div class="label">Sous-Famille :</div>
+                  <div class="label">
+                    {{ 'Occtax.UI.Subfamily' | translate }}
+                  </div>
                   <div class="value">{{ occurrence.taxref.sous_famille }}</div>
                 </div>
                 <div>
-                  <div class="label">Tribu :</div>
+                  <div class="label">{{ 'Occtax.UI.Tribe' | translate }}</div>
                   <div class="value">{{ occurrence.taxref.tribu }}</div>
                 </div>
                 <div>
-                  <div class="label">CD_NOM :</div>
+                  <div class="label">{{ 'Occtax.UI.CdNom' | translate }}</div>
                   <div class="value">{{ occurrence.taxref.cd_nom }}</div>
                 </div>
                 <div>
-                  <div class="label">Nom complet :</div>
+                  <div class="label">
+                    {{ 'Occtax.UI.FullName' | translate }}
+                  </div>
                   <div class="value">{{ occurrence.taxref.nom_complet }}</div>
                 </div>
                 <div>
-                  <div class="label">CD_REF :</div>
+                  <div class="label">{{ 'Occtax.UI.CdRef' | translate }}</div>
                   <div class="value">{{ occurrence.taxref.cd_ref }}</div>
                 </div>
                 <div>
-                  <div class="label">Nom valide :</div>
+                  <div class="label">
+                    {{ 'Occtax.UI.ValidName' | translate }}
+                  </div>
                   <div class="value">{{ occurrence.taxref.nom_valide }}</div>
                 </div>
                 <div>
-                  <div class="label">Rang :</div>
+                  <div class="label">{{ 'Occtax.UI.Rank' | translate }}</div>
                   <div class="value">{{ occurrence.taxref.id_rang }}</div>
                 </div>
                 <div>
-                  <div class="label">Nom vern :</div>
+                  <div class="label">
+                    {{ 'Occtax.UI.VernName' | translate }}
+                  </div>
                   <div class="value">{{ occurrence.taxref.nom_vern }}</div>
                 </div>
                 <div>
-                  <div class="label">Nom vern eng :</div>
+                  <div class="label">
+                    {{ 'Occtax.UI.VernNameEng' | translate }}
+                  </div>
                   <div class="value">{{ occurrence.taxref.nom_vern_eng }}</div>
                 </div>
                 <div>
-                  <div class="label">Fiche INPN :</div>
+                  <div class="label">
+                    {{ 'Occtax.UI.InpnSheet' | translate }}
+                  </div>
                   <div class="value">
                     <a
                       href="{{ occurrence.taxref.url }}"
@@ -369,7 +389,7 @@
               </div>
             </mat-tab>
 
-            <-- TAB pour afficher les infos de dénombrements -- >
+            <!-- TAB pour afficher les infos de dénombrements -->
             <mat-tab
               *ngIf="occurrence.cor_counting_occtax"
               label="counting#{{ occurrence.id_occurrence_occtax }}"
@@ -379,7 +399,7 @@
                   [matBadge]="occurrence.cor_counting_occtax.length"
                   matBadgeOverlap="false"
                 >
-                  Dénombrement
+                  {{ 'Occtax.UI.Counting' | translate }}
                   <ng-container *ngIf="occurrence.cor_counting_occtax.length > 1">s</ng-container>
                 </span>
               </ng-template>
@@ -397,7 +417,9 @@
                     <div class="value">{{ counting.id_counting_occtax }}</div>
                   </div>
                   <div>
-                    <div class="label">UUID SINP :</div>
+                    <div class="label">
+                      {{ 'Occtax.UI.SinpUuid' | translate }}
+                    </div>
                     <div class="value">
                       {{ counting.unique_id_sinp_occtax }}
                     </div>
@@ -485,6 +507,8 @@
     </div>
   </ng-container>
   <ng-template #zeroOccurrenceBlk>
-    <div id="zero-taxon-container">Aucun taxon pour ce relevé</div>
+    <div id="zero-taxon-container">
+      {{ 'Occtax.UI.NoTaxonInSurvey' | translate }}
+    </div>
   </ng-template>
 </div>

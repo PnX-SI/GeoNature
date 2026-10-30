@@ -19,7 +19,7 @@
             <mat-card>
               <mat-card-content>
                 <mat-card-title>
-                  Relevé n°{{ id }}
+                  {{ 'Occtax.UI.SurveyNo' | translate: { id: id } }}
 
                   <ng-container *ngIf="releve">
                     <!-- We don't use disabled here because with it we can't print tooltip when disabled -->
@@ -51,7 +51,9 @@
                 <div class="row">
                   <div class="col-6">
                     <div>
-                      <div class="label">Observateur(s) :</div>
+                      <div class="label">
+                        {{ 'Occtax.UI.ObserversColon' | translate }}
+                      </div>
                       <div class="value">
                         <span *ngIf="occtaxConfig.moduleConf.observers_txt">
                           {{ releve.observers_txt }}
@@ -65,12 +67,14 @@
                       </div>
                     </div>
                     <div>
-                      <div class="label">Entre le :</div>
+                      <div class="label">
+                        {{ 'Occtax.UI.Between' | translate }}
+                      </div>
                       <div class="value">
                         {{ releve.date_min | date: 'dd/MM/yyyy' }}
                         {{ releve.hour_min }}
                       </div>
-                      <div class="label">&nbsp; et le :</div>
+                      <div class="label">&nbsp; {{ 'Occtax.UI.And' | translate }}</div>
                       <div class="value">
                         {{ releve.date_max | date: 'dd/MM/yyyy' }}
                         {{ releve.hour_max }}
@@ -139,7 +143,9 @@
                       <div class="value">{{ releve.grp_method || '-' }}</div>
                     </div>
                     <div>
-                      <div class="label">UUID regroupement:</div>
+                      <div class="label">
+                        {{ 'Occtax.UI.GroupUuid' | translate }}
+                      </div>
                       <div class="value">{{ releve.unique_id_sinp_grp }}</div>
                     </div>
                     <div *ngIf="occtaxConfig.moduleConf.form_fields.geo_object_nature">
@@ -149,14 +155,18 @@
                       </div>
                     </div>
                     <div *ngIf="occtaxConfig.moduleConf.form_fields.habitat">
-                      <div class="label">Habitat associé :</div>
+                      <div class="label">
+                        {{ 'Occtax.UI.Habitat' | translate }}
+                      </div>
                       <div class="value">
                         {{ releve.habitat?.lb_hab_fr }} -
                         {{ releve.habitat?.lb_code }}
                       </div>
                     </div>
                     <div *ngIf="occtaxConfig.moduleConf.form_fields.comment_releve">
-                      <div class="label">Commentaire :</div>
+                      <div class="label">
+                        {{ 'Occtax.UI.CommentColon' | translate }}
+                      </div>
                       <div class="value">{{ releve.comment || '-' }}</div>
                     </div>
                   </div>
@@ -198,11 +208,11 @@
               <mat-card>
                 <mat-card-content>
                   <mat-card-title>
-                    Détails -
+                    {{ 'Occtax.UI.Details' | translate }}
                     {{ (displayOccurrence | async).taxref.nom_valide }}
                   </mat-card-title>
                   <mat-tab-group>
-                    <mat-tab label="Caractérisation de l'occurrence">
+                    <mat-tab [label]="'Occtax.UI.Characterisation' | translate">
                       <div *ngIf="occtaxConfig.moduleConf.form_fields.observation_status">
                         <div class="label">
                           {{ 'Occtax.Taxon.ObservationStatus' | translate }} :
@@ -272,7 +282,9 @@
                         </div>
                       </div>
                       <div>
-                        <div class="label">Nom cité:</div>
+                        <div class="label">
+                          {{ 'Occtax.UI.CitedName' | translate }}
+                        </div>
                         <div class="value">
                           {{ (displayOccurrence | async).nom_cite || '' }}
                         </div>
@@ -333,7 +345,7 @@
                         </div>
                       </ng-container>
                     </mat-tab>
-                    <mat-tab label="Dénombrement">
+                    <mat-tab [label]="'Occtax.UI.Counting' | translate">
                       <div
                         *ngFor="
                           let counting of (displayOccurrence | async).cor_counting_occtax;
@@ -404,7 +416,9 @@
                         </div>
 
                         <div>
-                          <div class="label">UUID SINP :</div>
+                          <div class="label">
+                            {{ 'Occtax.UI.SinpUuid' | translate }}
+                          </div>
                           <div class="value">
                             {{ counting?.unique_id_sinp_occtax }}
                           </div>
@@ -459,7 +473,7 @@
             </div>
           </ng-container>
         </div>
-        <ng-template #waitingBlock>Chargement des données en cours</ng-template>
+        <ng-template #waitingBlock>{{ 'Occtax.UI.Loading' | translate }}</ng-template>
       </div>
     </div>
   </div>
@@ -471,7 +485,9 @@
   let-c="close"
 >
   <div class="modal-header">
-    <h4 class="modal-title pull-left">Suppression</h4>
+    <h4 class="modal-title pull-left">
+      {{ 'Import.Modal.DeleteTitle' | translate }}
+    </h4>
     <button
       type="button"
       class="close pull-right"
@@ -483,16 +499,17 @@
   </div>
   <div class="modal-body">
     <p>
-      Attention vous vous apprêtez à supprimer un releve qui comporte
-      {{ occurrences.length }} occurrence(s) de taxon(s) et {{ nbCounting }}
-      dénombrement(s).
+      {{
+        'Occtax.UI.DeleteWarning'
+          | translate: { occurrences: occurrences.length, countings: nbCounting }
+      }}
     </p>
     <button
       type="button"
       class="btn btn-secondary"
       (click)="c()"
     >
-      Annuler
+      {{ 'Actions.Cancel' | translate }}
     </button>
 
     <button
@@ -501,7 +518,7 @@
       data-qa="pnx-occtax-delete"
       (click)="deleteReleve(modalDelete); c()"
     >
-      Supprimer
+      {{ 'Actions.Delete' | translate }}
     </button>
   </div>
 </ng-template>

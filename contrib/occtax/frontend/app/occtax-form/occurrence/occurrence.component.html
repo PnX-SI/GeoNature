@@ -1,4 +1,4 @@
-<h5>Ajout d'un taxon</h5>
+<h5>{{ 'Occtax.UI.AddTaxon' | translate }}</h5>
 <div
   class="row"
   style="height: 70px !important"
@@ -39,7 +39,7 @@
     *ngIf="occtaxConfig.moduleConf.form_fields.display_nom_valide"
     class="col-sm-6"
   >
-    <small>TAXREF - Nom valide</small>
+    <small>{{ 'Occtax.UI.TaxrefValidName' | translate }}</small>
     <span
       data-qa="occurrence-nom-valide"
       class="form-control form-control-sm form-nom-complet"
@@ -380,12 +380,14 @@
   >
     <mat-expansion-panel [expanded]="countings.length === i + 1">
       <mat-expansion-panel-header class="right-aligned-header">
-        <mat-panel-title>Dénombrement #{{ i + 1 }}</mat-panel-title>
+        <mat-panel-title>
+          {{ 'Occtax.UI.CountingNo' | translate: { n: i + 1 } }}
+        </mat-panel-title>
         <mat-panel-description
           *ngIf="countings.length > 1"
           class="btn-clear d-none"
           (click)="removeCounting(i)"
-          matTooltip="Supprimer ce denombrement"
+          [matTooltip]="'Occtax.UI.DeleteCounting' | translate"
         >
           <mat-icon>clear</mat-icon>
         </mat-panel-description>
@@ -405,7 +407,7 @@
       class="btn-add-counting"
       (click)="addCounting()"
     >
-      <mat-icon matTooltip="Ajouter un denombrement">add</mat-icon>
+      <mat-icon [matTooltip]="'Occtax.UI.AddCounting' | translate">add</mat-icon>
     </button>
   </div>
 
@@ -421,7 +423,7 @@
       data-qa="occurrence-add-btn"
       mat-raised-button
       class="button-success uppercase"
-      matTooltip="Enregistrer ce taxon"
+      [matTooltip]="'Occtax.UI.SaveTaxon' | translate"
       [disabled]="occtaxFormOccurrenceService.form.invalid"
       (click)="submitOccurrenceForm()"
     >
@@ -430,7 +432,7 @@
         diameter="25"
         strokeWidth="2"
       ></mat-spinner>
-      Enregistrer ce taxon
+      {{ 'Occtax.UI.SaveTaxon' | translate }}
       <mat-icon style="vertical-align: middle">save</mat-icon>
     </button>
   </ng-container>
@@ -440,16 +442,16 @@
       style="margin-right: 20px"
       color="warn"
       mat-raised-button
-      matTooltip="Annuler les modifications sur ce taxon"
+      [matTooltip]="'Occtax.UI.CancelTaxon' | translate"
       (click)="resetOccurrenceForm()"
     >
-      Annuler
+      {{ 'Actions.Cancel' | translate }}
     </button>
     <button
       id="add-occ"
       class="button-success uppercase"
       mat-raised-button
-      matTooltip="Modifier et enregistrer ce taxon"
+      [matTooltip]="'Occtax.UI.EditSaveTaxon' | translate"
       [disabled]="occtaxFormOccurrenceService.form.invalid"
       (click)="submitOccurrenceForm()"
     >
@@ -458,7 +460,7 @@
         diameter="25"
         strokeWidth="2"
       ></mat-spinner>
-      Modifier ce taxon
+      {{ 'Occtax.UI.EditTaxon' | translate }}
       <mat-icon style="vertical-align: middle">save</mat-icon>
     </button>
   </ng-template>

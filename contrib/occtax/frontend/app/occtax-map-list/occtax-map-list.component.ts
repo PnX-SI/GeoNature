@@ -300,7 +300,7 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
       if (row.observers_txt !== null && row.observers_txt.trim() !== '') {
         tooltip.push(row.observers_txt.trim());
       } else {
-        tooltip.push('Aucun observateurs');
+        tooltip.push(this.translate.instant('Occtax.UI.NoObserver'));
       }
     } else {
       for (let i = 0; i < row.observers.length; i++) {
@@ -328,7 +328,7 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
     let taxons =
       this.displayTaxonsTooltip(feature.properties)
         .map((taxon) => `${taxon['taxName']}<br>${taxon['icons']}`)
-        .join('<br>') || 'Aucun taxon';
+        .join('<br>') || this.translate.instant('Occtax.UI.NoTaxon');
     divTaxons.innerHTML = taxons;
 
     this.renderer.appendChild(leafletPopup, divObservateurs);

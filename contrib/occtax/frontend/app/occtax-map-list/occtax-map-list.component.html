@@ -95,17 +95,17 @@
               let-expanded="expanded"
             >
               <div>
-                <strong>ID relevé :</strong>
+                <strong>{{ 'Occtax.UI.SurveyId' | translate }}</strong>
                 {{ row.id_releve_occtax }}
               </div>
               <ng-container *ngIf="row.comment !== null && row?.comment.trim() !== ''">
                 <div>
-                  <strong>Commentaire :</strong>
+                  <strong>{{ 'Occtax.UI.CommentColon' | translate }}</strong>
                   {{ row.comment }}
                 </div>
               </ng-container>
               <div>
-                <strong>Altitude :</strong>
+                <strong>{{ 'Occtax.UI.Altitude' | translate }}</strong>
                 {{
                   row.altitude_min == row.altitude_max
                     ? row.altitude_min
@@ -113,23 +113,27 @@
                 }}
               </div>
               <div>
-                <strong>Saisi par :</strong>
+                <strong>{{ 'Occtax.UI.DigitisedBy' | translate }}</strong>
                 {{ row?.digitiser?.nom_complet || '-' }}
               </div>
               <div *ngIf="row.place_name != null && row.place_name != ''">
                 <strong>{{ 'Occtax.Releve.PlaceName' | translate }} :</strong>
                 {{ row.place_name }}
               </div>
-              <div><strong>Observé par:</strong></div>
+              <div>
+                <strong>{{ 'Occtax.UI.ObservedBy' | translate }}</strong>
+              </div>
               <div style="margin-left: 20px">
                 <div *ngFor="let obs of displayObservateursTooltip(row)">
                   {{ obs }}
                 </div>
               </div>
-              <div><strong>Taxon(s):</strong></div>
+              <div>
+                <strong>{{ 'Occtax.UI.TaxaColon' | translate }}</strong>
+              </div>
               <div style="margin-left: 20px">
                 <div *ngIf="row.t_occurrences_occtax && row.t_occurrences_occtax.length == 0">
-                  Aucun taxon
+                  {{ 'Occtax.UI.NoTaxon' | translate }}
                 </div>
                 <div *ngFor="let taxon of displayTaxonsTooltip(row)">
                   {{ taxon.taxName }}
@@ -173,7 +177,7 @@
             >
               <a
                 href="javascript:void(0)"
-                matTooltip="Ouvrir/fermer le détail"
+                [matTooltip]="'Occtax.UI.ToggleDetail' | translate"
                 [class.datatable-icon-right]="!expanded"
                 [class.datatable-icon-down]="expanded"
                 (click)="toggleExpandRow(row)"
@@ -274,7 +278,9 @@
                   </span>
                   <span
                     *ngSwitchCase="'nb_taxons'"
-                    [matTooltip]="displayTaxons(row).join('\n') || 'Aucun taxon'"
+                    [matTooltip]="
+                      displayTaxons(row).join('\n') || ('Occtax.UI.NoTaxon' | translate)
+                    "
                     matTooltipPosition="left"
                     matTooltipClass="mat-tooltip"
                   >
@@ -282,7 +288,9 @@
                   </span>
                   <span
                     *ngSwitchCase="'taxons'"
-                    [matTooltip]="displayTaxons(row).join('\n') || 'Aucun taxon'"
+                    [matTooltip]="
+                      displayTaxons(row).join('\n') || ('Occtax.UI.NoTaxon' | translate)
+                    "
                     matTooltipPosition="left"
                     matTooltipClass="mat-tooltip"
                   >
@@ -290,7 +298,7 @@
                       <span class="badge badge-dark">
                         {{ row.t_occurrences_occtax?.length || '0' }}
                       </span>
-                      {{ displayTaxons(row).join(', ') || 'Aucun taxon' }}
+                      {{ displayTaxons(row).join(', ') || ('Occtax.UI.NoTaxon' | translate) }}
                     </span>
                   </span>
                   <span
@@ -302,10 +310,10 @@
                   </span>
                   <span
                     *ngSwitchCase="'dataset'"
-                    [matTooltip]="row?.dataset.dataset_name || 'Aucun JDD'"
+                    [matTooltip]="row?.dataset.dataset_name || ('Occtax.UI.NoDataset' | translate)"
                     matTooltipPosition="left"
                   >
-                    {{ row['dataset'].dataset_name || 'Aucun JDD' }}
+                    {{ row['dataset'].dataset_name || ('Occtax.UI.NoDataset' | translate) }}
                   </span>
                   <span
                     *ngSwitchDefault
@@ -435,7 +443,7 @@
                 mat-raised-button
                 class="button-success mr-1 mb-2"
               >
-                Format {{ format }}
+                {{ 'Synthese.Download.Format' | translate: { format: format } }}
               </button>
             </div>
           </div>
