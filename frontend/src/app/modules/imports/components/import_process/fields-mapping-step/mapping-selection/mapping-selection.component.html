@@ -77,7 +77,7 @@
         class="d-flex justify-content-center align-content-between mr-2 button-success"
         (click)="renameMapping()"
         mat-raised-button
-        matTooltip="Modifier le nom du modèle d'import"
+        [matTooltip]="'Import.Process.Mapping.EditName' | translate"
         [disabled]="
           !createOrRenameMappingForm.valid ||
           fieldMappingForm.value.label.trim() == this.createOrRenameMappingForm.value.trim()
@@ -87,7 +87,7 @@
         <mat-icon>check</mat-icon>
       </button>
       <button
-        matTooltip="Annuler la modification du nom du modèle d'import"
+        [matTooltip]="'Import.Process.Mapping.CancelEditName' | translate"
         class="d-flex justify-content-center align-content-between"
         (click)="toggleRenameMappingForm()"
         mat-raised-button
@@ -100,7 +100,7 @@
   </fieldset>
 </form>
 <ng-template #placeholder>
-  <div class="text text-muted">Aucune correspondance des champs prédéfinie n'a été trouvée.</div>
+  <div class="text text-muted">{{ 'Import.Process.Mapping.NoneFound' | translate }}</div>
 </ng-template>
 <!-- MODALS -->
 

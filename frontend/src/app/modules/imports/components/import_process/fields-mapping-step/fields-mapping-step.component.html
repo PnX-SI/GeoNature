@@ -9,7 +9,7 @@
     <gn-loadable-layout
       [isLoading]="isLoading && importData"
       style="padding: 1em"
-      [message]="loadingMessage"
+      [message]="loadingMessage | translate"
     >
       <div class="card-body FieldmappingForm">
         <pnx-mapping-selection></pnx-mapping-selection>
@@ -152,7 +152,7 @@
             [formControl]="modalCreateMappingForm"
             class="form-control"
             id="mappingName"
-            placeholder="Nom du modèle"
+            [placeholder]="'Import.Process.Mapping.NameHint' | translate"
             data-qa="import-fieldmapping-saving-modal-mapping-name"
           />
           <span

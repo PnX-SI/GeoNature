@@ -4,7 +4,7 @@
 >
   <div class="card">
     <div class="card-header d-flex flex-column justify-content-center ImportList__title">
-      <h5 class="card-title">Liste des imports</h5>
+      <h5 class="card-title">{{ 'Import.Process.List.Title' | translate }}</h5>
     </div>
     <div class="card-body">
       <div *ngIf="!empty; else emptyBlock">
@@ -54,7 +54,7 @@
           data-qa="import-list-table"
         >
           <ngx-datatable-column
-            name="Id Import"
+            [name]="'Import.Process.List.ImportId' | translate"
             prop="id_import"
             [sortable]="true"
             [width]="70"
@@ -140,7 +140,7 @@
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column
-            name="Fin import"
+            [name]="'Import.Process.List.End' | translate"
             [sortable]="true"
             prop="date_end_import"
           >
@@ -153,19 +153,19 @@
                 *ngIf="inErrorImport.includes(row.id_import)"
                 class="import-status"
               >
-                import en erreur
+                {{ 'Import.Process.List.InError' | translate }}
               </p>
               <p
                 *ngIf="runningImport.includes(row.id_import)"
                 class="import-status"
               >
-                import en cours
+                {{ 'Import.Process.List.Running' | translate }}
               </p>
               <p
                 *ngIf="checkingImport.includes(row.id_import)"
                 class="import-status"
               >
-                vérifications en cours
+                {{ 'Import.Process.List.Checking' | translate }}
               </p>
             </ng-template>
           </ngx-datatable-column>
@@ -174,7 +174,9 @@
             [draggable]="false"
             [maxWidth]="50"
           >
-            <ng-template ngx-datatable-header-template>Stats</ng-template>
+            <ng-template ngx-datatable-header-template>
+              {{ 'Import.Process.List.Stats' | translate }}
+            </ng-template>
             <ng-template
               ngx-datatable-cell-template
               let-row="row"
@@ -225,7 +227,7 @@
               </button>
               <button
                 class="Datatable__button"
-                matTooltip="Rapport"
+                [matTooltip]="'Report' | translate"
                 mat-icon-button
                 color="primary"
                 [routerLink]="[row.destination.code, row.id_import, 'report']"
@@ -239,7 +241,7 @@
                 class="Datatable__button"
                 color="primary"
                 (click)="downloadFileWithInvalidLine(row)"
-                matTooltip="Téléchargement des données invalides"
+                [matTooltip]="'Import.Process.List.DownloadInvalid' | translate"
                 [attr.data-qa]="'import-list-table-row-' + index + '-actions-csv'"
               >
                 <i
@@ -262,7 +264,7 @@
           </ngx-datatable-column>
         </ngx-datatable>
       </div>
-      <ng-template #emptyBlock>Vous n'avez effectué aucun import</ng-template>
+      <ng-template #emptyBlock>{{ 'Import.Process.List.Empty' | translate }}</ng-template>
 
       <import-modal-destination
         class="pull-right mt-3"
