@@ -219,6 +219,7 @@ def get_status_names(permissions):
         JSON list of active validation status nomenclatures, each containing:
         - id_nomenclature: Nomenclature identifier
         - mnemonique: Mnemonic code
+        - label_default: Label in the default language of the instance
         - cd_nomenclature: Nomenclature code
         - definition_default: Default definition of the status
 
@@ -251,7 +252,13 @@ def get_status_names(permissions):
     return jsonify(
         [
             nomenc.as_dict(
-                fields=["id_nomenclature", "mnemonique", "cd_nomenclature", "definition_default"]
+                fields=[
+                    "id_nomenclature",
+                    "mnemonique",
+                    "cd_nomenclature",
+                    "label_default",
+                    "definition_default",
+                ]
             )
             for nomenc in db.session.scalars(nomenclatures).all()
         ]
