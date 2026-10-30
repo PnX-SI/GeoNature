@@ -2,7 +2,7 @@
   <div class="well well-sm well-margin">
     <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-        <small class="font-sm">Règne:</small>
+        <small class="font-sm">{{ 'TaxonSearch.KingdomColon' | translate }}</small>
         <select
           [formControl]="regneControl"
           class="form-control form-control-sm"
@@ -17,12 +17,12 @@
       </div>
       <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
         <div *ngIf="regneControl.value !== null">
-          <small class="font-sm">Groupe:</small>
+          <small class="font-sm">{{ 'TaxonSearch.GroupColon' | translate }}</small>
           <select
             [formControl]="groupControl"
             class="form-control form-control-sm"
             id="sel1"
-            placeholder="Taxonomiques"
+            [placeholder]="'TaxonSearch.GroupPlaceholder' | translate"
           >
             <option
               class="clickable"
@@ -60,7 +60,7 @@
       (click)="isCollapseTaxonomy = !isCollapseTaxonomy"
       [attr.aria-expanded]="!isCollapseTaxonomy"
       class="btn btn-sm btn-outline-shadow"
-      matTooltip="Filtrer les taxons proposés à l'autocompletion  par règne et groupe INPN"
+      [matTooltip]="'TaxonSearch.FilterHelp' | translate"
     >
       <i
         class="fa fa-filter"

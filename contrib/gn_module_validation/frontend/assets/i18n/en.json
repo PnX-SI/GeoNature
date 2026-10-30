@@ -9,6 +9,29 @@
       "SetStatus": "Assign a validation status",
       "ChangeStatus": "Change validation status"
     },
-    "SelectedObservations": "observation{{plural}} selected"
+    "SelectedObservations": "observation{{plural}} selected",
+    "UI": {
+      "HideDefinitions": "Hide status definitions",
+      "ShowDefinitions": "Show status definitions",
+      "Definition": "Definition",
+      "Automatic": "(automatic)",
+      "ProfileConsistency": "Consistency with the profile",
+      "Range": "Range",
+      "Phenology": "Phenology",
+      "Altitudes": "Altitudes",
+      "SelectStatus": "Select the observation status:",
+      "CommentColon": "Comment:",
+      "Save": "Save",
+      "ChooseStatus": "Status choice",
+      "ToggleAll": "Select/deselect all",
+      "SelectedTotal": "{{ selected }} selected / {{ total }} total",
+      "CommentPlaceholder": "Your comment...",
+      "ModifiedSinceValidation": "Warning: data modified since the last validation",
+      "StatusSaved": "New validation status saved",
+      "Last100": "The last 100 observations",
+      "EditStatus": "Edit the validation status",
+      "ObservationInfo": "Observation information",
+      "ObsLimit": "The module displays at most {{ limit }} observations"
+    }
   }
 }

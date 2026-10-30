@@ -13,15 +13,15 @@
   [typeahead]="taxaInput$"
   [loading]="loading"
   [formControl]="parentFormControl"
-  clearAllText="Supprimer tous les noms"
-  addTagText="Ajouter un nom"
+  [clearAllText]="'TaxonSearch.ClearAll' | translate"
+  [addTagText]="'TaxonSearch.AddTag' | translate"
   (change)="onSelectionChange.emit($event)"
 >
   <ng-template ng-typetosearch-tmp>
     <div class="ng-option disabled">
       <span class="bg-info text-light p-2 rounded">
         <mat-icon inline>help_outline</mat-icon>
-        Commencer à saisir un nom ...
+        {{ 'TaxonSearch.TypeToSearch' | translate }}
       </span>
     </div>
   </ng-template>
@@ -33,7 +33,7 @@
     <div class="ng-option disabled">
       <span class="bg-warning p-2 rounded">
         <mat-icon inline>warning_amber</mat-icon>
-        Aucune correspondance pour «&nbsp;{{ searchTerm }}&nbsp;»
+        {{ 'Geo.Areas.NotFound' | translate: { term: searchTerm } }}
       </span>
     </div>
   </ng-template>
@@ -45,7 +45,7 @@
     <div class="ng-option disabled">
       <span class="bg-info p-2 rounded">
         <mat-icon inline>autorenew</mat-icon>
-        Chargements pour «&nbsp;{{ searchTerm }}&nbsp;»
+        {{ 'Geo.Areas.LoadingShort' | translate: { term: searchTerm } }}
       </span>
     </div>
   </ng-template>

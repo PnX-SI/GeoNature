@@ -7,7 +7,7 @@ const hideDetails = ({ value, meta, attribut_name }) => {
 
 export const mediaFormDefinitionsDict = {
   file: {
-    attribut_label: 'Choisir un fichier',
+    attribut_label: 'Media.Form.file',
     type_widget: 'file',
     hidden: ({ value }) => !value.bFile,
     required: ({ value }) => value.bFile && !value.media_path,
@@ -38,29 +38,29 @@ export const mediaFormDefinitionsDict = {
     },
   },
   media_url: {
-    attribut_label: 'URL',
+    attribut_label: 'Media.Form.media_url',
     type_widget: 'text',
     hidden: ({ value }) => value.bFile,
     required: ({ value }) => !value.bFile,
   },
   displayDetails: {
     type_widget: 'bool_checkbox',
-    attribut_label: 'Avancé',
-    definition: "Afficher plus d'options pour le formulaire",
+    attribut_label: 'Media.Form.displayDetails',
+    definition: 'Media.Form.displayDetailsHelp',
     value: true,
     hidden: ({ meta }) => !(meta.details && meta.details.length) || meta.hideDetailsFields,
   },
   id_nomenclature_media_type: {
-    attribut_label: 'Type de média',
+    attribut_label: 'Media.Form.id_nomenclature_media_type',
     type_widget: 'nomenclature',
     required: true,
     code_nomenclature_type: 'TYPE_MEDIA',
     hidden: hideDetails,
   },
   bFile: {
-    attribut_label: 'Import du média',
+    attribut_label: 'Media.Form.bFile',
     type_widget: 'bool_radio',
-    values: ['Uploader un fichier', 'Renseigner une URL'],
+    values: ['Media.Form.Upload', 'Media.Form.Url'],
     value: true,
     required: true,
     hidden: ({ value, meta, attribut_name }) => {
@@ -80,18 +80,18 @@ export const mediaFormDefinitionsDict = {
     },
   },
   title_fr: {
-    attribut_label: 'Titre',
+    attribut_label: 'Media.Form.title_fr',
     type_widget: 'text',
     required: true,
     hidden: hideDetails,
   },
   description_fr: {
-    attribut_label: 'Description',
+    attribut_label: 'Media.Form.description_fr',
     type_widget: 'text',
     hidden: hideDetails,
   },
   author: {
-    attribut_label: 'Auteur',
+    attribut_label: 'Media.Form.author',
     type_widget: 'text',
     hidden: hideDetails,
   },
