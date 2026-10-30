@@ -11,7 +11,7 @@
       color="primary"
       class="button-success hard-shadow btn-action uppercase"
       [routerLink]="['add']"
-      matTooltip="Ajouter une nouvelle station d'habitat"
+      [matTooltip]="'Occhab.UI.AddStation' | translate"
     >
       {{ 'Actions.Add' | translate }}
       <mat-icon>add_circle_outline</mat-icon>
@@ -24,7 +24,7 @@
     class="hard-shadow btn-action uppercase"
     mat-raised-button
     color="primary"
-    matTooltip="Rechercher des habitats"
+    [matTooltip]="'Occhab.UI.SearchHabitats' | translate"
     [matBadgeHidden]="mapListFormService.nbOfFilter() == 0"
     [matBadge]="mapListFormService.nbOfFilter()"
     matBadgeColor="warn"
@@ -81,36 +81,42 @@
                 let-expanded="expanded"
               >
                 <div>
-                  <strong>ID station :</strong>
+                  <strong>{{ 'Occhab.UI.StationId' | translate }}</strong>
                   {{ row.id_station }}
                 </div>
                 <ng-container *ngIf="row.comment !== null && row?.comment.trim() !== ''">
                   <div>
-                    <strong>Commentaire :</strong>
+                    <strong>{{ 'Occhab.UI.CommentColon' | translate }}</strong>
                     {{ row.comment }}
                   </div>
                 </ng-container>
                 <div>
-                  <strong>Altitude :</strong>
+                  <strong>{{ 'Occhab.UI.AltitudeColon' | translate }}</strong>
                   {{
                     row.altitude_min == row.altitude_max
                       ? row.altitude_min
                       : row.altitude_min + ' - ' + row.altitude_max
                   }}
                 </div>
-                <div><strong>Observé par:</strong></div>
+                <div>
+                  <strong>{{ 'Occhab.UI.ObservedBy' | translate }}</strong>
+                </div>
                 <div style="margin-left: 20px">
                   <div *ngFor="let obs of displayObservateursTooltip(row)">
                     {{ obs }}
                   </div>
                 </div>
-                <div><strong>Habitats(s):</strong></div>
+                <div>
+                  <strong>{{ 'Occhab.UI.HabitatsColon' | translate }}</strong>
+                </div>
                 <div style="margin-left: 20px">
                   <div *ngFor="let hab of displayHabTooltip(row)">
                     {{ hab }}
                   </div>
                 </div>
-                <div><strong>UUID de la station:</strong></div>
+                <div>
+                  <strong>{{ 'Occhab.UI.StationUuid2' | translate }}</strong>
+                </div>
                 <div style="margin-left: 20px">
                   {{ row.unique_id_sinp_station }}
                 </div>
@@ -130,7 +136,7 @@
               >
                 <a
                   href="javascript:void(0)"
-                  matTooltip="Ouvrir/fermer le détail"
+                  [matTooltip]="'Occhab.UI.ToggleDetail' | translate"
                   [class.datatable-icon-right]="!expanded"
                   [class.datatable-icon-down]="expanded"
                   (click)="toggleExpandRow(row)"
@@ -221,7 +227,7 @@
               </ng-template>
             </ngx-datatable-column>
 
-            <ngx-datatable-column name="Date min">
+            <ngx-datatable-column [name]="'Synthese.Form.DateMin' | translate">
               <ng-template
                 ngx-datatable-cell-template
                 let-row="row"
@@ -233,7 +239,7 @@
               </ng-template>
             </ngx-datatable-column>
 
-            <ngx-datatable-column name="Jeu de données">
+            <ngx-datatable-column [name]="'Dataset' | translate">
               <ng-template
                 ngx-datatable-cell-template
                 let-row="row"
