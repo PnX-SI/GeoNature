@@ -309,6 +309,7 @@
 
   "DownloadOverflow": "The number of items is too large to be downloaded, please refine your search or contact your administrator",
   "DynamicForm": {
+    "ChooseFile": "Choose a file",
     "Errors": {
       "CheckBoxError": "Please select at least one option",
       "InvalidUuid": "The field must contain a valid UUID."
@@ -955,6 +956,8 @@
     },
     "MediaType": "Media type",
     "Form": {
+      "description_fr": "Description",
+      "media_url": "URL",
       "file": "Choose a file",
       "displayDetails": "Advanced",
       "displayDetailsHelp": "Show more options for the form",

@@ -307,6 +307,7 @@
 
   "DownloadOverflow": "Le nombre d'élément est trop important pour être téléchargé, veuillez affiner votre recherche ou contacter votre administrateur",
   "DynamicForm": {
+    "ChooseFile": "Choisir un fichier",
     "Errors": {
       "CheckBoxError": "Veuillez choisir au moins une option",
       "InvalidUuid": "Le champ doit contenir un UUID valide."
@@ -953,6 +954,8 @@
     },
     "MediaType": "Type de média",
     "Form": {
+      "description_fr": "Description",
+      "media_url": "URL",
       "file": "Choisir un fichier",
       "displayDetails": "Avancé",
       "displayDetailsHelp": "Afficher plus d'options pour le formulaire",
