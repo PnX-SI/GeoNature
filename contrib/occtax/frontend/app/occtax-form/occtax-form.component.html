@@ -36,19 +36,19 @@
               [ngClass]="{ active: occtaxFormService.currentTab === 'phyto-taxons' }"
             >
               <mat-icon class="example-tab-icon">emoji_nature</mat-icon>
-              Relevé phytosocio
+               Taxons
             </a>
           </ng-container>
           <ng-template #buttonBlockPhyto>
             <a class="tablinks disabled">
               <mat-icon class="example-tab-icon">emoji_nature</mat-icon>
-              Relevé phytosocio
+              Taxons
             </a>
           </ng-template>
         </ng-container>
       </div>
 
-      <div class="tab-right mt-2">
+      <div *ngIf="module !== 'PHYTO'" class="tab-right mt-2">
         <mat-icon class="vertical-align">refresh</mat-icon>
         <mat-slide-toggle
           labelPosition="before"

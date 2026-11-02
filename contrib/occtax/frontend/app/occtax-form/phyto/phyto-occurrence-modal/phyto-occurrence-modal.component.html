@@ -169,20 +169,6 @@
     </div>
 
     <div
-      *ngIf="occtaxConfigService.moduleConf.form_fields.behaviour"
-      class="col-lg-4 col-sm-6"
-    >
-      <pnx-nomenclature
-        label="{{ 'Occtax.Taxon.OccBehaviour' | translate }}"
-        [parentFormControl]="occurrenceForm.get('id_nomenclature_behaviour')"
-        codeNomenclatureType="OCC_COMPORTEMENT"
-        [regne]="taxref?.regne"
-        [group2Inpn]="taxref?.group2_inpn"
-        [group3Inpn]="taxref?.group3_inpn"
-      ></pnx-nomenclature>
-    </div>
-
-    <div
       *ngIf="occtaxConfigService.moduleConf.form_fields.source_status"
       class="col-lg-4 col-sm-6"
     >

@@ -20,7 +20,6 @@
         </a> -->
       </ng-container>
       <button
-        *ngIf="this.moduleCode !== 'PHYTO'"
         (click)="isCollapseAvance = !isCollapseAvance"
         [attr.aria-expanded]="!isCollapseAvance"
         mat-raised-button
@@ -44,14 +43,6 @@
     </div>
 
     <div class="row">
-      <ng-container
-        *ngIf="this.moduleCode === 'PHYTO'"
-        class="col"
-        [ngStyle]="{ 'min-height.px': cardContentHeight }"
-      >
-        <pnx-phyto-list-filter></pnx-phyto-list-filter>
-      </ng-container>
-
       <div
         class="col padding-sm-occ"
         [ngStyle]="{ 'min-height.px': cardContentHeight }"
@@ -336,7 +327,6 @@
           mat-raised-button
           color="primary"
           (click)="openModalDownload($event, modalDownload)"
-          [disabled]="this.moduleCode === 'PHYTO'"
         >
           {{ 'Actions.Download' | translate }}
 

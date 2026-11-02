@@ -9,34 +9,35 @@ import {
   ViewChildren,
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { combineLatest, Subject, timer } from 'rxjs';
-import { filter, map, takeUntil, tap } from 'rxjs/operators';
-import { OcctaxFormService } from '../../occtax-form.service';
-import { PhytoOccurrenceService } from '../services/occurrence.service';
-import { PhytoCountingsService } from '../services/countings.service';
-import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
-import { FormService } from '@geonature_common/form/form.service';
-import { DataFormService } from '@geonature_common/form/data-form.service';
-import { OcctaxTaxaListService } from '../../taxa-list/taxa-list.service';
-import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/confirmation.dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { combineLatest, Subject, timer } from 'rxjs';
+import { filter, map, takeUntil, tap } from 'rxjs/operators';
 import { ConfigService } from '@geonature/services/config.service';
-import { Nomenclature } from '@geonature_common/interfaces';
-import { VegetationStratum } from '../interfaces';
-import { OcctaxConfigService } from '../../../services/occtax-config.service';
-import { PhytoAbundanceComponent } from '../phyto-abundance/phyto-abundance.component';
 import { AdvancedSectionState } from '@geonature_common/form/advanced-section/advanced-section.component';
-
+import { DataFormService } from '@geonature_common/form/data-form.service';
+import { FormService } from '@geonature_common/form/form.service';
+import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
+import { Nomenclature } from '@geonature_common/interfaces';
+import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/confirmation.dialog';
+import { OcctaxConfigService } from '../../../services/occtax-config.service';
+import { OcctaxFormService } from '../../occtax-form.service';
+import { OcctaxTaxaListService } from '../../taxa-list/taxa-list.service';
+import { VegetationStratum } from '../interfaces';
+import { PhytoAbundanceComponent } from '../phyto-abundance/phyto-abundance.component';
+import { PhytoCountingsService } from '../services/countings.service';
+import { PhytoOccurrenceService } from '../services/occurrence.service';
 
 interface NomenclatureResponse {
   values: Nomenclature[];
 }
+
 interface StratumRow {
   id: number;
   label: string;
   counting: any;
 }
+
 export interface PhytoCountingForm {
   id_nomenclature_exist_proof: FormControl<number | null>;
   nom_cite: FormControl<string | null>;
@@ -55,8 +56,9 @@ export interface PhytoCountingForm {
  * TODO: Move proof and additional-field management into the modal.
  * TODO: move error strings in i18n
  * TODO: [Angular Material v15 / Architecture] Consider refactoring into a Standalone Component
- * TODO: [Angular CDK / A11y] Replace direct document.getElementById and DOM event listeners with 
- *  FocusMonitor from @angular/cdk/a11y or ElementRef ViewChild for platform-safe focus tracking and a11y compliance.
+ * TODO: [Angular CDK / A11y] Replace direct document.getElementById and DOM event listeners
+ * with FocusMonitor from @angular/cdk/a11y or ElementRef ViewChild for platform-safe focus
+ * tracking and a11y compliance.
  */
 @Component({
   selector: 'pnx-phyto-occurrence',
@@ -100,7 +102,7 @@ export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestro
     public configService: ConfigService,
     public occtaxConfigService: OcctaxConfigService,
     private readonly translate: TranslateService
-  ) { }
+  ) {}
 
   public ngOnInit(): void {
     this.occurrenceForm = this.phytoOccurrenceService.form;
@@ -173,7 +175,14 @@ export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestro
 
     this.taxonForm.valueChanges
       .pipe(
-        tap(() => this.phytoOccurrenceService.taxref.next(null)),
+        tap((taxon: any) => {
+          this.phytoOccurrenceService.taxref.next(null);
+          if (taxon === '') {
+            this.occurrenceForm.controls.nom_cite.setValue(null);
+            this.occurrenceForm.controls.cd_nom.setValue(null);
+            this.phytoOccurrenceService.form.markAsDirty();
+          }
+        }),
         filter(
           (taxon: any): taxon is Taxon =>
             taxon !== null && typeof taxon !== 'string' && taxon.cd_nom !== undefined
@@ -186,7 +195,9 @@ export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestro
         tap(() => this.phytoOccurrenceService.form.markAsDirty()),
         takeUntil(this.destroy$)
       )
-      .subscribe((values: { nom_cite: string; cd_nom: number | null; }) => this.handleTaxonSelection(values));
+      .subscribe((values: { nom_cite: string; cd_nom: number | null }) =>
+        this.handleTaxonSelection(values)
+      );
 
     this.phytoOccurrenceService.occurrence
       .pipe(
@@ -259,16 +270,18 @@ export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestro
       ])
     );
 
-    this.strataColumns = strata.map((stratum) => {
-      const idNomenclatureVegetationStratum = stratum.id_nomenclature_vegetation_stratum;
+    this.strataColumns = strata
+      .map((stratum) => {
+        const idNomenclatureVegetationStratum = stratum.id_nomenclature_vegetation_stratum;
 
-      return {
-        id: idNomenclatureVegetationStratum,
-        label: labelByNomenclatureId.get(idNomenclatureVegetationStratum) || '',
-        mnemonique: mnemoByNomenclatureId.get(idNomenclatureVegetationStratum) || '',
-        counting: {},
-      };
-    }).filter((row) => row.label !== '')
+        return {
+          id: idNomenclatureVegetationStratum,
+          label: labelByNomenclatureId.get(idNomenclatureVegetationStratum) || '',
+          mnemonique: mnemoByNomenclatureId.get(idNomenclatureVegetationStratum) || '',
+          counting: {},
+        };
+      })
+      .filter((row) => row.label !== '')
       .sort((a, b) => a.id - b.id);
   }
 

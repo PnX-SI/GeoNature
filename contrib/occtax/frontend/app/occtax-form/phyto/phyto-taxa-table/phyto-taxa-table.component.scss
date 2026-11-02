@@ -1,12 +1,9 @@
 @use '@angular/material' as mat;
 
-:host {
-  @include mat.icon-button-density(-1);
-}
-
 $icon-button-size: 44px;
 $table-cell-horizontal-padding: 16px;
 $inside-border-size: 1px;
+$table-border-color: var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
 $actions-column-width: calc(
   $inside-border-size + (2 * $icon-button-size) + (2 * $table-cell-horizontal-padding)
 );
@@ -16,71 +13,73 @@ $comment-column-width: calc(
 );
 
 table {
-  width: 100%;
+  @include mat.table-density(-4);
+
   max-width: 100%;
+  width: 100%;
 }
 
 th {
   font-weight: bold;
 }
 
+th,
+td {
+  font-size: small;
+}
+
 .mat-header-cell-strata {
+  border-right: $inside-border-size solid $table-border-color;
+  border-left: $inside-border-size solid $table-border-color;
   justify-content: center;
   text-align: center;
-  border-right: $inside-border-size solid
-    var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
-  border-left: $inside-border-size solid
-    var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
+}
+
+.mat-column-nom_valide,
+.mat-column-comment {
+  inline-size: $comment-max-characters;
+  max-width: $comment-column-width;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  text-wrap: nowrap;
 }
 
 .mat-column-nom_valide {
-  border-right: 1px solid var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
-  overflow: hidden;
-  text-wrap: nowrap;
-  overflow-wrap: break-word;
-  inline-size: $comment-max-characters;
-  max-width: $comment-column-width;
+  border-right: $inside-border-size solid $table-border-color;
 }
 
 .mat-column-comment {
-  overflow: hidden;
-  text-wrap: nowrap;
-  overflow-wrap: break-word;
-  inline-size: $comment-max-characters;
-  max-width: $comment-column-width;
-  border-left: $inside-border-size solid
-    var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
+  border-left: $inside-border-size solid $table-border-color;
 }
 
 .mat-column-actions {
+  flex: 0 0 $actions-column-width !important;
+  min-width: $actions-column-width !important;
+  width: $actions-column-width !important;
   align-items: center;
   justify-content: space-between;
-  word-wrap: break-word !important;
-  white-space: unset !important;
-  flex: 0 0 $actions-column-width !important;
-  width: $actions-column-width !important;
-  min-width: $actions-column-width !important;
   overflow-wrap: break-word;
+  white-space: unset !important;
+  word-wrap: break-word !important;
   -ms-hyphens: auto;
   -moz-hyphens: auto;
   -webkit-hyphens: auto;
   hyphens: auto;
-  border-left: $inside-border-size solid
-    var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
+  border-left: $inside-border-size solid $table-border-color;
 }
 
 .mat-header-cell-actions {
   text-align: center;
 }
 
-.withTooltip {
-  text-decoration: underline dotted;
+.mat-column-abundance {
+  border-left: $inside-border-size solid $table-border-color;
+  text-align: center;
 }
 
-.mat-column-abundance {
-  text-align: center;
-  border-left: $inside-border-size solid
-    var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
+.withTooltip {
+  cursor: help;
+  text-decoration: underline dotted;
 }
 
 .striped-table .mat-mdc-row:nth-child(even) {
