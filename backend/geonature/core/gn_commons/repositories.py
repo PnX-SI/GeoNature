@@ -16,6 +16,13 @@ from geonature.core.gn_commons.models import TMedias, BibTablesLocation
 from geonature.utils.env import DB
 from geonature.utils.errors import GeoNatureError
 
+ALLOWED_UPLOAD_EXTENSIONS = {
+    "Photo": {"jpg", "jpeg", "png", "gif", "webp", "bmp"},
+    "PDF": {"pdf"},
+    "Audio": {"mp3", "ogg", "oga", "wav", "flac", "m4a", "aac"},
+    "Vidéo (fichier)": {"mp4", "webm", "ogv", "mov", "avi", "mkv"},
+}
+
 
 class TMediaRepository:
     """
@@ -203,10 +210,52 @@ class TMediaRepository:
 
         return file_path
 
+    def validate_upload(self):
+        """
+        Valide le fichier uploadé AVANT toute écriture sur le disque.
+
+        Le dossier des médias est servi sur l'origine de GeoNature : un fichier
+        HTML/SVG piégé y permettrait une XSS stockée. On vérifie donc :
+          - que le type de média accepte bien un fichier joint ;
+          - que l'extension appartient à la liste blanche de ce type ;
+          - que le contenu réel correspond (images via PIL, PDF via magic bytes),
+            afin qu'un fichier malveillant renommé (ex. ``evil.html`` -> ``x.jpg``)
+            soit rejeté.
+        """
+        media_type = self.media_type()
+        allowed = ALLOWED_UPLOAD_EXTENSIONS.get(media_type)
+        if allowed is None:
+            raise GeoNatureError(
+                "Le type de média « {} » n'accepte pas de fichier joint.".format(media_type)
+            )
+
+        extension = Path(self.file.filename or "").suffix.lower().lstrip(".")
+        if extension not in allowed:
+            raise GeoNatureError(
+                "Extension de fichier « .{} » non autorisée pour le type « {} » "
+                "(autorisées : {}).".format(extension, media_type, ", ".join(sorted(allowed)))
+            )
+
+        # Vérification du contenu réel (pas seulement l'extension)
+        stream = self.file.stream
+        position = stream.tell()
+        try:
+            if media_type == "Photo":
+                try:
+                    Image.open(stream).verify()
+                except Exception:
+                    raise GeoNatureError("Le fichier n'est pas une image valide.")
+            elif media_type == "PDF":
+                if stream.read(5) != b"%PDF-":
+                    raise GeoNatureError("Le fichier n'est pas un PDF valide.")
+        finally:
+            stream.seek(position)
+
     def upload_file(self):
         """
         Upload des fichiers sur le serveur
         """
+        self.validate_upload()
 
         # SI c'est une modification =>
         #       suppression de l'ancien fichier

@@ -39,6 +39,18 @@ from pypnusershub.login_manager import login_manager
 
 csv.field_size_limit(config["IMPORT"]["CSV_FIELD_SIZE_LIMIT"])
 
+# Types MIME que l'on accepte d'afficher en ligne (inline) dans le navigateur
+# depuis le dossier des médias. Tout le reste est forcé en téléchargement.
+# SVG est volontairement exclu : il peut contenir du script exécutable.
+INLINE_SAFE_MEDIA_MIMETYPES = {
+    "image/jpeg",
+    "image/png",
+    "image/gif",
+    "image/webp",
+    "image/bmp",
+    "application/pdf",
+}
+
 
 @migrate.configure
 def configure_alembic(alembic_config):
@@ -192,9 +204,19 @@ def create_app(with_external_mods=True):
     babel = Babel(app, locale_selector=get_locale)
 
     # Enable serving of media files
+    def send_media_file(directory, filename):
+        response = send_from_directory(directory, filename)
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["Content-Security-Policy"] = "default-src 'none'; sandbox"
+        if response.mimetype not in INLINE_SAFE_MEDIA_MIMETYPES:
+            response.headers["Content-Disposition"] = response.headers.get(
+                "Content-Disposition", "attachment"
+            ).replace("inline", "attachment", 1)
+        return response
+
     app.add_url_rule(
         f"{config['MEDIA_URL']}/<path:filename>",
-        view_func=lambda filename: send_from_directory(config["MEDIA_FOLDER"], filename),
+        view_func=lambda filename: send_media_file(config["MEDIA_FOLDER"], filename),
         endpoint="media",
     )
 
@@ -206,7 +228,7 @@ def create_app(with_external_mods=True):
 
     app.add_url_rule(
         f"{app.config['MEDIA_URL']}/{taxhub_folder}/<path:filename>",
-        view_func=lambda filename: send_from_directory(media_path, filename),
+        view_func=lambda filename: send_media_file(media_path, filename),
         endpoint="media_taxhub",
     )
 
