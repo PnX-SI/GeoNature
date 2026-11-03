@@ -39,7 +39,7 @@ export class ValidationSyntheseListComponent implements OnInit, OnChanges, After
   public rowNumber: number;
   private _latestWidth: number;
   public id_same_coordinates = []; // list of observation ids having same geographic coordinates
-  public modif_text = 'Attention données modifiées depuis la dernière validation';
+  public modif_text = 'Validation.UI.ModifiedSinceValidation';
   public npage;
 
   @Input() inputSyntheseData: Array<any>;
