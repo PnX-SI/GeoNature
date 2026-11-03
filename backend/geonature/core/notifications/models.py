@@ -119,7 +119,7 @@ class Notification(db.Model):
     __tablename__ = "t_notifications"
     __table_args__ = {"schema": "gn_notifications"}
     id_notification: Mapped[int] = mapped_column(Integer, primary_key=True)
-    id_role: Mapped[int] = mapped_column(Integer, ForeignKey(User.id_role))
+    id_role: Mapped[int] = mapped_column(Integer, ForeignKey(User.id_role, ondelete="CASCADE"))
     title: Mapped[Optional[str]] = mapped_column(Unicode)
     content: Mapped[Optional[str]] = mapped_column(UnicodeText)
     url: Mapped[Optional[str]] = mapped_column(Unicode)
@@ -149,7 +149,9 @@ class NotificationRule(db.Model):
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    id_role: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey(User.id_role))
+    id_role: Mapped[Optional[int]] = mapped_column(
+        Integer, ForeignKey(User.id_role, ondelete="CASCADE")
+    )
     code_method: Mapped[str] = mapped_column(Unicode, ForeignKey(NotificationMethod.code))
     code_category: Mapped[str] = mapped_column(
         Unicode,
