@@ -8,7 +8,8 @@ import {
   ViewChild,
   ViewChildren,
 } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
+import { TaxonomyComponent } from '@geonature_common/form/taxonomy/taxonomy.component';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { combineLatest, Subject, timer } from 'rxjs';
@@ -23,27 +24,27 @@ import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/
 import { OcctaxConfigService } from '../../../services/occtax-config.service';
 import { OcctaxFormService } from '../../occtax-form.service';
 import { OcctaxTaxaListService } from '../../taxa-list/taxa-list.service';
-import { VegetationStratum } from '../interfaces';
+import {
+  AdditionalFieldDefinition,
+  Counting,
+  NomenclatureResponse,
+  Occurrence,
+  OccurrenceForm,
+  PhytoData,
+  PhytoDataWithProperties,
+  TaxonReference,
+} from '../utils/interfaces';
 import { PhytoAbundanceComponent } from '../phyto-abundance/phyto-abundance.component';
-import { PhytoCountingsService } from '../services/countings.service';
+import { PhytoCountingStateService } from '../services/counting-state.service';
 import { PhytoOccurrenceService } from '../services/occurrence.service';
+import {
+  getEligibleVegetationStratumRows,
+  VegetationStratumRow,
+} from '../utils/vegetation-strata.utils';
 
-interface NomenclatureResponse {
-  values: Nomenclature[];
+interface StratumRow extends VegetationStratumRow {
+  counting: Counting;
 }
-
-interface StratumRow {
-  id: number;
-  label: string;
-  counting: any;
-}
-
-export interface PhytoCountingForm {
-  id_nomenclature_exist_proof: FormControl<number | null>;
-  nom_cite: FormControl<string | null>;
-  cd_nom: FormControl<number | null>;
-}
-
 
 /**
  * Coordinates phyto occurrence entry, including taxon selection, proof fields,
@@ -54,11 +55,7 @@ export interface PhytoCountingForm {
  * constructor dependencies compatible with the modal.
  *
  * TODO: Move proof and additional-field management into the modal.
- * TODO: move error strings in i18n
  * TODO: [Angular Material v15 / Architecture] Consider refactoring into a Standalone Component
- * TODO: [Angular CDK / A11y] Replace direct document.getElementById and DOM event listeners
- * with FocusMonitor from @angular/cdk/a11y or ElementRef ViewChild for platform-safe focus
- * tracking and a11y compliance.
  */
 @Component({
   selector: 'pnx-phyto-occurrence',
@@ -66,10 +63,10 @@ export interface PhytoCountingForm {
   styleUrls: ['./phyto-occurrence.component.scss', '../../occurrence/occurrence.component.scss'],
 })
 export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestroy {
-  public occurrenceForm: FormGroup<PhytoCountingForm>;
+  public occurrenceForm: OccurrenceForm;
 
   public isCardExpanded = true;
-  public taxonForm!: FormControl<Taxon | null>;
+  public taxonForm!: FormControl<Taxon | string | null>;
   public taxonFormFocus = false;
 
   public advancedSectionState: AdvancedSectionState = AdvancedSectionState.COLLAPSED;
@@ -80,13 +77,16 @@ export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestro
   @ViewChildren(PhytoAbundanceComponent)
   public phytoCountingComponents!: QueryList<PhytoAbundanceComponent>;
 
+  @ViewChild(TaxonomyComponent)
+  private taxonSearch?: TaxonomyComponent;
+
   @ViewChild('saveOccurrenceButton')
   private saveOccurrenceButton?: ElementRef<HTMLButtonElement>;
 
-  get taxref(): any {
+  get taxref(): TaxonReference | null {
     return this.phytoOccurrenceService.taxref.getValue();
   }
-  get additionalFieldsForm(): any[] {
+  get additionalFieldsForm(): AdditionalFieldDefinition[] {
     return this.phytoOccurrenceService.additionalFieldsForm;
   }
 
@@ -94,7 +94,7 @@ export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestro
 
   constructor(
     public occtaxFormService: OcctaxFormService,
-    private phytoCountingsService: PhytoCountingsService,
+    private countingStateService: PhytoCountingStateService,
     public phytoOccurrenceService: PhytoOccurrenceService,
     private formService: FormService,
     private occtaxTaxaListService: OcctaxTaxaListService,
@@ -108,8 +108,8 @@ export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestro
   public ngOnInit(): void {
     this.occurrenceForm = this.phytoOccurrenceService.form;
 
-    this.occurrenceForm.controls.id_nomenclature_exist_proof
-      .valueChanges.pipe(
+    this.occurrenceForm.controls.id_nomenclature_exist_proof.valueChanges
+      .pipe(
         map((id_nomenclature: number): boolean => {
           const cdNomenclature = this.phytoOccurrenceService.getCdNomenclatureById(
             id_nomenclature,
@@ -128,14 +128,19 @@ export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestro
     this.initializeTaxRefSearch();
 
     combineLatest([
-      this.occtaxFormService.occtaxData.pipe(filter((data: any) => !!data?.releve?.properties)),
+      this.occtaxFormService.occtaxData.pipe(
+        filter((data: PhytoData): data is PhytoDataWithProperties => !!data?.releve?.properties)
+      ),
       this.dataFormService.getNomenclature('STRATE_VEGETATION'),
     ])
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: ([data, nomenclature]: [any, NomenclatureResponse]) => {
+        next: ([data, nomenclature]: [PhytoDataWithProperties, NomenclatureResponse]) => {
           const strata = data.releve.properties.t_vegetation_stratum;
-          this.setStrataColumns(Array.isArray(strata) ? strata : [], nomenclature.values || []);
+          this.strataColumns = getEligibleVegetationStratumRows(
+            Array.isArray(strata) ? strata : [],
+            nomenclature.values || []
+          ).map((row) => ({ ...row, counting: {} }));
         },
         error: (error: unknown) => {
           console.error('Error loading vegetation strata for countings:', error);
@@ -164,7 +169,7 @@ export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestro
     this.destroy$.complete();
   }
 
-  public setExistProofData(data: any): void {
+  public setExistProofData(data: Nomenclature[]): void {
     this.phytoOccurrenceService.existProof_DATA = data;
   }
 
@@ -173,14 +178,11 @@ export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   private initializeTaxRefSearch(): void {
-    this.taxonForm = new FormControl(null, [
-      Validators.required,
-      this.formService.taxonValidator,
-    ]);
+    this.taxonForm = new FormControl(null, [Validators.required, this.formService.taxonValidator]);
 
     this.taxonForm.valueChanges
       .pipe(
-        tap((taxon: any) => {
+        tap((taxon) => {
           this.phytoOccurrenceService.taxref.next(null);
           if (taxon === '') {
             this.occurrenceForm.controls.nom_cite.setValue(null);
@@ -189,10 +191,10 @@ export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestro
           }
         }),
         filter(
-          (taxon: any): taxon is Taxon =>
+          (taxon): taxon is Taxon =>
             taxon !== null && typeof taxon !== 'string' && taxon.cd_nom !== undefined
         ),
-        tap((taxon: any) => this.phytoOccurrenceService.taxref.next(taxon)),
+        tap((taxon) => this.phytoOccurrenceService.taxref.next(taxon)),
         map((taxon: Taxon) => ({
           nom_cite: (taxon.search_name || '').replace(/<[^>]*>/g, ''),
           cd_nom: taxon.cd_nom || null,
@@ -207,16 +209,16 @@ export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestro
     this.phytoOccurrenceService.occurrence
       .pipe(
         tap(() => this.taxonForm.setValue(null)),
-        filter((occurrence: any) => !!occurrence),
+        filter((occurrence): occurrence is Occurrence => !!occurrence),
         map(
-          (occurrence: any): Taxon => ({
+          (occurrence): Taxon => ({
             ...(occurrence.taxref || {}),
             search_name: String(occurrence.nom_cite || '').replace(/<[^>]*>/g, ''),
           })
         ),
         takeUntil(this.destroy$)
       )
-      .subscribe((taxon: any) => this.taxonForm.setValue(taxon));
+      .subscribe((taxon) => this.taxonForm.setValue(taxon));
   }
 
   private handleTaxonSelection(values: { nom_cite: string; cd_nom: number | null }): void {
@@ -257,37 +259,8 @@ export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestro
     this.occurrenceForm.controls.cd_nom.setValue(values.cd_nom);
   }
 
-  public get countings(): any[] {
-    return this.phytoCountingsService.countings || [];
-  }
-
-  private setStrataColumns(strata: VegetationStratum[], nomenclatures: Nomenclature[]): void {
-    const labelByNomenclatureId = new Map(
-      nomenclatures.map((nomenclature) => [
-        nomenclature.id_nomenclature,
-        nomenclature.label_default,
-      ])
-    );
-    const mnemoByNomenclatureId = new Map(
-      nomenclatures.map((nomenclature) => [
-        nomenclature.id_nomenclature,
-        nomenclature.mnemonique,
-      ])
-    );
-
-    this.strataColumns = strata
-      .map((stratum) => {
-        const idNomenclatureVegetationStratum = stratum.id_nomenclature_vegetation_stratum;
-
-        return {
-          id: idNomenclatureVegetationStratum,
-          label: labelByNomenclatureId.get(idNomenclatureVegetationStratum) || '',
-          mnemonique: mnemoByNomenclatureId.get(idNomenclatureVegetationStratum) || '',
-          counting: {},
-        };
-      })
-      .filter((row) => row.label !== '')
-      .sort((a, b) => a.id - b.id);
+  public get countings(): Counting[] {
+    return this.countingStateService.countings || [];
   }
 
   public submitOccurrenceForm(): void {

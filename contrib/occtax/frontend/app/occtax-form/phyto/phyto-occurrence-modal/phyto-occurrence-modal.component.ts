@@ -6,31 +6,24 @@ import { TranslateService } from '@ngx-translate/core';
 import { ConfigService } from '@geonature/services/config.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { FormService } from '@geonature_common/form/form.service';
-import { Nomenclature } from '@geonature_common/interfaces';
-import { VegetationStratum, Occurrence } from '../interfaces';
+import {
+  NomenclatureResponse,
+  Occurrence,
+  PhytoData,
+  VegetationStratum,
+} from '../utils/interfaces';
 import { OcctaxConfigService } from '../../../services/occtax-config.service';
 import { OcctaxFormService } from '../../occtax-form.service';
 import { OcctaxTaxaListService } from '../../taxa-list/taxa-list.service';
 import { PhytoOccurrenceComponent } from '../phyto-occurrence/phyto-occurrence.component';
 import { PhytoOccurrenceService } from '../services/occurrence.service';
-import { PhytoCountingsService } from '../services/countings.service';
-
-interface PhytoReleveData {
-  releve?: {
-    properties?: {
-      t_vegetation_stratum?: VegetationStratum[];
-    };
-  };
-}
-
-interface NomenclatureResponse {
-  values: Nomenclature[];
-}
+import { PhytoCountingStateService } from '../services/counting-state.service';
+import { getEligibleVegetationStratumRows } from '../utils/vegetation-strata.utils';
 
 /**
  * Edits one phyto occurrence and ensures its counting list covers each
  * vegetation stratum that has data in the releve.
- * 
+ *
  * TODO: [Angular Material v15 / Architecture] Consider refactoring to Standalone Component
  */
 @Component({
@@ -40,8 +33,8 @@ interface NomenclatureResponse {
     './phyto-occurrence-modal.component.scss',
     '../../occurrence/occurrence.component.scss',
   ],
-  providers: [PhytoOccurrenceService, PhytoCountingsService],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  providers: [PhytoOccurrenceService, PhytoCountingStateService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PhytoOccurrenceModalComponent extends PhytoOccurrenceComponent implements OnDestroy {
   public strataLabels: Record<number, string> = {};
@@ -52,7 +45,7 @@ export class PhytoOccurrenceModalComponent extends PhytoOccurrenceComponent impl
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { occurrence: Occurrence },
     occtaxFormService: OcctaxFormService,
-    private countingsService: PhytoCountingsService,
+    private modalCountingStateService: PhytoCountingStateService,
     phytoOccurrenceService: PhytoOccurrenceService,
     formService: FormService,
     occtaxTaxaListService: OcctaxTaxaListService,
@@ -64,7 +57,7 @@ export class PhytoOccurrenceModalComponent extends PhytoOccurrenceComponent impl
   ) {
     super(
       occtaxFormService,
-      countingsService,
+      modalCountingStateService,
       phytoOccurrenceService,
       formService,
       occtaxTaxaListService,
@@ -84,15 +77,22 @@ export class PhytoOccurrenceModalComponent extends PhytoOccurrenceComponent impl
     ])
       .pipe(takeUntil(this.modalDestroy$))
       .subscribe({
-        next: ([data, strataResponse, abundancesResponse]: [PhytoReleveData | null, NomenclatureResponse, any]) => {
-          strataResponse.values.forEach((stratum) => {
-            this.strataLabels[stratum.id_nomenclature] = stratum.label_default;
-          });
+        next: ([data, strataResponse, abundancesResponse]: [
+          PhytoData | null,
+          NomenclatureResponse,
+          NomenclatureResponse,
+        ]) => {
+          const eligibleStrata = getEligibleVegetationStratumRows(
+            data?.releve?.properties?.t_vegetation_stratum || [],
+            strataResponse.values || []
+          );
+          this.strataLabels = Object.fromEntries(
+            eligibleStrata.map(({ id, label }) => [id, label])
+          );
           abundancesResponse.values.forEach((abundance) => {
             this.abundancesLabels[abundance.id_nomenclature] = abundance.label_default;
           });
-          const strata = data?.releve?.properties?.t_vegetation_stratum || [];
-          this.releveStrata = strata.filter((stratum) => this.hasStratumData(stratum));
+          this.releveStrata = eligibleStrata.map((row) => row.stratum);
           this.addMissingCountings();
         },
         error: (error: unknown) => {
@@ -107,20 +107,8 @@ export class PhytoOccurrenceModalComponent extends PhytoOccurrenceComponent impl
     super.ngOnDestroy();
   }
 
-  private hasStratumData(
-    stratum: VegetationStratum
-  ): stratum is VegetationStratum & { id_nomenclature_vegetation_stratum: number } {
-    return (
-      stratum.id_nomenclature_vegetation_stratum != null &&
-      (stratum.percentage_cover_vegetation_stratum != null ||
-        stratum.average_height != null ||
-        stratum.min_height != null ||
-        stratum.max_height != null)
-    );
-  }
-
   private addMissingCountings(): void {
-    const countings = this.countingsService.countings || [];
+    const countings = this.modalCountingStateService.countings || [];
     const existingStratumIds = new Set<number | null>(
       countings.map((counting) => counting.id_nomenclature_vegetation_stratum ?? null)
     );
@@ -131,8 +119,10 @@ export class PhytoOccurrenceModalComponent extends PhytoOccurrenceComponent impl
       }));
 
     if (missingCountings.length > 0) {
-      this.countingsService.countings = [...countings, ...missingCountings];
-      this.countingsService.countings = this.countingsService.countings.sort((a, b) => a.id_nomenclature_vegetation_stratum - b.id_nomenclature_vegetation_stratum)
+      this.modalCountingStateService.countings = [...countings, ...missingCountings];
+      this.modalCountingStateService.countings = this.modalCountingStateService.countings.sort(
+        (a, b) => a.id_nomenclature_vegetation_stratum - b.id_nomenclature_vegetation_stratum
+      );
     }
   }
 }

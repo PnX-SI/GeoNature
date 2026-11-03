@@ -1,49 +1,63 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
+  FormControl,
+  FormGroup,
   Validators,
-  UntypedFormArray,
+  FormArray,
   ValidatorFn,
   ValidationErrors,
   AbstractControl,
 } from '@angular/forms';
-import { BehaviorSubject, Observable, of, forkJoin, combineLatest } from 'rxjs';
-import { map, filter, switchMap, tap, pairwise, retry, catchError } from 'rxjs/operators';
-import * as cloneDeep from 'lodash/cloneDeep';
+import { BehaviorSubject, Observable, Subject, of, combineLatest } from 'rxjs';
+import {
+  map,
+  filter,
+  switchMap,
+  tap,
+  pairwise,
+  retry,
+  catchError,
+  takeUntil,
+} from 'rxjs/operators';
 import { CommonService } from '@geonature_common/service/common.service';
 import { OcctaxFormService } from '../../occtax-form.service';
-import { PhytoCountingsService } from './countings.service';
+import { PhytoCountingStateService } from './counting-state.service';
 import { OcctaxDataService } from '../../../services/occtax-data.service';
 import { OcctaxFormParamService } from '../../form-param/form-param.service';
 import { OcctaxTaxaListService } from '../../taxa-list/taxa-list.service'; // TODO: change this to phyto-taxa-list
-import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateParserFormatter, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { OcctaxConfigService } from '../../../services/occtax-config.service';
-
+import { Nomenclature } from '@geonature_common/interfaces';
+import {
+  AdditionalFieldDefinition,
+  CountingForm,
+  CountingFormControls,
+  Occurrence,
+  OccurrenceForm,
+  OccurrenceFormControls,
+  TaxonReference,
+  PhytoData,
+} from '../utils/interfaces';
 
 @Injectable()
-export class PhytoOccurrenceService {
-  public form: UntypedFormGroup;
-  public taxref: BehaviorSubject<any> = new BehaviorSubject(null);
-  public lifeStage: BehaviorSubject<any> = new BehaviorSubject(null);
-  public occurrence: BehaviorSubject<any> = new BehaviorSubject(null);
-  // public countings: any[];
-  public existProof_DATA: Array<any> = [];
+export class PhytoOccurrenceService implements OnDestroy {
+  public form: OccurrenceForm;
+  public taxref = new BehaviorSubject<TaxonReference | null>(null);
+  public lifeStage = new BehaviorSubject<number | null>(null);
+  public occurrence = new BehaviorSubject<Occurrence | null>(null);
+  public existProof_DATA: Nomenclature[] = [];
   public saveWaiting: boolean = false;
 
-  public data: any;
+  public data: Occurrence | null = null;
 
-  public additionalFieldsForm: any[] = [];
+  public additionalFieldsForm: AdditionalFieldDefinition[] = [];
 
-  public profilErrors = [];
-
-  public formFieldsStatus: any;
+  private readonly destroy$ = new Subject<void>();
 
   constructor(
-    private fb: UntypedFormBuilder,
     private commonService: CommonService,
     private occtaxFormService: OcctaxFormService,
-    private occtaxFormCountingsService: PhytoCountingsService,
+    private countingStateService: PhytoCountingStateService,
     private occtaxDataService: OcctaxDataService,
     private occtaxParamS: OcctaxFormParamService,
     private occtaxTaxaListService: OcctaxTaxaListService,
@@ -54,29 +68,42 @@ export class PhytoOccurrenceService {
     this.setObservables();
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.taxref.complete();
+    this.lifeStage.complete();
+    this.occurrence.complete();
+  }
+
   initForm(): void {
-    this.form = this.fb.group({
-      id_nomenclature_obs_technique: [null], //req?
-      id_nomenclature_bio_condition: [null], //req?
-      id_nomenclature_bio_status: null,
-      id_nomenclature_naturalness: null,
-      id_nomenclature_exist_proof: null,
-      id_nomenclature_behaviour: null,
-      id_nomenclature_observation_status: null,
-      id_nomenclature_blurring: null,
-      id_nomenclature_source_status: null,
-      determiner: null,
-      id_nomenclature_determination_method: null,
-      id_nomenclature_organism_support: null,
-      nom_cite: [null, Validators.required],
-      cd_nom: [null, Validators.required],
-      meta_v_taxref: null,
-      sample_number_proof: null,
-      digital_proof: null,
-      non_digital_proof: null,
-      comment: null,
-      additional_fields: this.fb.group({}),
-      cor_counting_occtax: this.fb.array([], Validators.required),
+    const nullableNumber = () => new FormControl<number | null>(null);
+    const nullableString = () => new FormControl<string | null>(null);
+    this.form = new FormGroup<OccurrenceFormControls>({
+      id_nomenclature_obs_technique: nullableNumber(),
+      id_nomenclature_bio_condition: nullableNumber(),
+      id_nomenclature_bio_status: nullableNumber(),
+      id_nomenclature_naturalness: nullableNumber(),
+      id_nomenclature_exist_proof: nullableNumber(),
+      id_nomenclature_behaviour: nullableNumber(),
+      id_nomenclature_observation_status: nullableNumber(),
+      id_nomenclature_blurring: nullableNumber(),
+      id_nomenclature_source_status: nullableNumber(),
+      determiner: nullableString(),
+      id_nomenclature_determination_method: nullableNumber(),
+      id_nomenclature_organism_support: nullableNumber(),
+      nom_cite: new FormControl<string | null>(null, Validators.required),
+      cd_nom: new FormControl<number | null>(null, Validators.required),
+      meta_v_taxref: new FormControl<unknown>(null),
+      sample_number_proof: nullableString(),
+      digital_proof: nullableString(),
+      non_digital_proof: nullableString(),
+      comment: nullableString(),
+      additional_fields: new FormGroup<Record<string, FormControl<unknown>>>({}),
+      cor_counting_occtax: new FormArray<FormGroup<CountingFormControls>>(
+        [],
+        atLeastOneAbundanceValidator
+      ),
     });
   }
 
@@ -85,76 +112,67 @@ export class PhytoOccurrenceService {
    **/
   private setObservables() {
     //patch le form par les valeurs par defaut si creation
-    const $_occurrenceSub = this.occurrence.pipe(
+    const occurrenceFields$ = this.occurrence.pipe(
       switchMap((occurrence) => {
         //on oriente la source des données pour patcher le formulaire
-        return occurrence ? this.occurrence : this.defaultValues;
+        return occurrence ? of(occurrence) : this.defaultValues;
       }),
-      tap(
-        (occurrence) => (this.occtaxFormCountingsService.countings = occurrence.cor_counting_occtax)
-      ),
+      tap((occurrence) => {
+        this.countingStateService.countings = occurrence.cor_counting_occtax || [];
+      }),
       //get additional global fields from occurrence, datasaet fields are taken by occtax-form.service > occtaxData observable
-      switchMap((occurrence): Observable<any[]> => {
-        //observable : get occurrence & countinf filed in same array, explode for separate into double array (occ array & couting array)
-        const $_globalFieldsObservable = this.occtaxFormService
+      switchMap((occurrence) => {
+        const globalFields$: Observable<AdditionalFieldDefinition[]> = this.occtaxFormService
           .getAdditionnalFields(['OCCTAX_OCCURRENCE'])
-          .pipe(catchError(() => of([])));
+          .pipe(
+            catchError((error: unknown) => {
+              this.reportAdditionalFieldsError(error);
+              return of([] as AdditionalFieldDefinition[]);
+            })
+          );
 
-        return forkJoin(of(occurrence), $_globalFieldsObservable);
+        return combineLatest([of(occurrence), globalFields$]);
       })
     );
 
-    /**
-     * Get dataset additional fields
-     */
-    const $_datasetSub = this.occtaxFormService.occtaxData.asObservable().pipe(
-      map((data) => (((data || {}).releve || {}).properties || {}).id_dataset),
-      filter((id_dataset) => id_dataset !== undefined && id_dataset !== null),
-      switchMap((id_dataset): Observable<any[]> => {
-        return this.occtaxFormService
-          .getAdditionnalFields(['OCCTAX_OCCURRENCE'], id_dataset)
-          .pipe(catchError(() => of([])));
-      })
-    );
+    const datasetFields$: Observable<AdditionalFieldDefinition[]> =
+      this.occtaxFormService.occtaxData.asObservable().pipe(
+        map((data: PhytoData) => data?.releve?.properties?.id_dataset),
+        filter((id_dataset) => id_dataset !== undefined && id_dataset !== null),
+        switchMap((id_dataset) => {
+          return this.occtaxFormService
+            .getAdditionnalFields(['OCCTAX_OCCURRENCE'], String(id_dataset))
+            .pipe(
+              catchError((error: unknown) => {
+                this.reportAdditionalFieldsError(error);
+                return of([] as AdditionalFieldDefinition[]);
+              })
+            );
+        })
+      );
 
-    //observ global and dataset additional fields to set additionalFieldsForm only one time on each change (optimise memory usage)
-    combineLatest($_occurrenceSub, $_datasetSub)
+    combineLatest([occurrenceFields$, datasetFields$])
       .pipe(
-        map(([[occurrence, global_additional_fields], dataset_additional_fields]) => {
-          const additional_fields = [].concat(global_additional_fields, dataset_additional_fields);
-          return [occurrence, additional_fields];
+        map(([[occurrence, globalFields], datasetFields]) => ({
+          occurrence,
+          additionalFields: [...globalFields, ...datasetFields],
+        })),
+        tap(({ occurrence, additionalFields }) => {
+          additionalFields.forEach((field) => {
+            const value = occurrence.additional_fields?.[field.attribut_name];
+            if (field.type_widget === 'date' && typeof value === 'string') {
+              occurrence.additional_fields![field.attribut_name] =
+                this.occtaxFormService.formatDate(value);
+            }
+            if (value !== undefined) {
+              field.value = occurrence.additional_fields?.[field.attribut_name];
+            }
+          });
+          this.additionalFieldsForm = additionalFields;
         }),
-        tap(([occurrence, additional_fields]) => {
-          if (occurrence.additional_fields) {
-            //manage occ_additional_f
-            additional_fields.forEach((field) => {
-              //Formattage des dates
-              if (field.type_widget == 'date') {
-                //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
-                if (typeof occurrence.additional_fields[field.attribut_name] !== 'object') {
-                  occurrence.additional_fields[field.attribut_name] =
-                    this.occtaxFormService.formatDate(
-                      occurrence.additional_fields[field.attribut_name]
-                    );
-                }
-              }
-
-              //set value of field (eq patchValue)
-              if (occurrence.additional_fields[field.attribut_name] !== undefined) {
-                field.value = occurrence.additional_fields[field.attribut_name];
-              }
-            });
-          }
-
-          return [occurrence, additional_fields];
-        }),
-        tap(([occurrence, additional_fields]) => {
-          this.additionalFieldsForm = additional_fields;
-        }),
-        //map for return occurrence data only
-        map(([occurrence, additional_fields]): any => occurrence)
+        takeUntil(this.destroy$)
       )
-      .subscribe((occurrence: any) => this.form.patchValue(occurrence));
+      .subscribe(({ occurrence }) => this.form.patchValue(occurrence));
 
     //Gestion des erreurs pour les preuves d'existence
     this.form
@@ -162,7 +180,8 @@ export class PhytoOccurrenceService {
       .valueChanges.pipe(
         map((id_nomenclature: number): string => {
           return this.getCdNomenclatureById(id_nomenclature, this.existProof_DATA);
-        })
+        }),
+        takeUntil(this.destroy$)
       )
       .subscribe((cd_nomenclature: string) => {
         if (cd_nomenclature == '1') {
@@ -194,7 +213,8 @@ export class PhytoOccurrenceService {
         filter(([prev, next]: [string, string]) => prev !== next),
         map(([prev, next]: [string, string]) => {
           return next.length > 0 ? next : null;
-        })
+        }),
+        takeUntil(this.destroy$)
       )
       .subscribe((val) => this.form.get('digital_proof').setValue(val));
 
@@ -207,17 +227,18 @@ export class PhytoOccurrenceService {
         filter(([prev, next]: [string, string]) => prev !== next),
         map(([prev, next]: [string, string]) => {
           return next.length > 0 ? next : null;
-        })
+        }),
+        takeUntil(this.destroy$)
       )
       .subscribe((val) => this.form.get('non_digital_proof').setValue(val));
   }
 
-  private get defaultValues(): Observable<any> {
+  private get defaultValues(): Observable<Occurrence> {
     return this.occtaxFormService
       .getDefaultValues(this.occtaxFormService.currentUser.id_organisme)
       .pipe(
-        map((DATA) => {
-          return {
+        map(
+          (DATA): Occurrence => ({
             determiner:
               this.occtaxParamS.get('occurrence.determiner') ||
               this.occtaxFormService.currentUser.nom_complet,
@@ -252,49 +273,45 @@ export class PhytoOccurrenceService {
               DATA['OCC_COMPORTEMENT'],
             additional_fields: {},
             cor_counting_occtax: [{}],
-          };
-        })
+          })
+        )
       );
   }
 
-  addCountingForm(form: UntypedFormGroup): void {
-    (this.form.get('cor_counting_occtax') as UntypedFormArray).push(form);
+  addCountingForm(form: CountingForm): void {
+    this.form.controls.cor_counting_occtax.push(form);
   }
 
-  getCdNomenclatureById(IdNomenclature, DATA) {
-    //currentCD = null;
-    let i = 0;
-    while (i < DATA.length) {
-      if (DATA[i].id_nomenclature == IdNomenclature) {
-        return DATA[i].cd_nomenclature;
-      }
-      i++;
-    }
-    return null;
+  getCdNomenclatureById(
+    idNomenclature: number | null,
+    nomenclatures: Nomenclature[]
+  ): string | null {
+    return (
+      nomenclatures.find((nomenclature) => nomenclature.id_nomenclature === idNomenclature)
+        ?.cd_nomenclature || null
+    );
   }
 
   submitOccurrence() {
-    let formValue = Object.assign({}, this.form.value);
-
-    formValue = this.occurrenceFormValue();
+    const formValue = this.occurrenceFormValue();
 
     if (formValue.cor_counting_occtax) {
       formValue.cor_counting_occtax = formValue.cor_counting_occtax.filter((counting) => {
-        return counting.id_nomenclature_phytosociological_abundance !== null
-      })
+        return counting.id_nomenclature_phytosociological_abundance !== null;
+      });
     }
 
-    let id_releve = this.occtaxFormService.id_releve_occtax.getValue();
-    let TEMP_ID_OCCURRENCE = this.uuidv4();
+    const idReleve = this.occtaxFormService.id_releve_occtax.getValue();
+    const temporaryOccurrenceId = this.uuidv4();
 
     this.occtaxTaxaListService.addOccurrenceInProgress(
-      TEMP_ID_OCCURRENCE,
+      temporaryOccurrenceId,
       this.occurrence.getValue() !== null
         ? Object.assign(this.occurrence.getValue(), this.form.value)
         : this.form.value //pour gerer la modification si erreur
     );
 
-    let api: Observable<any>;
+    let api: Observable<Occurrence>;
 
     if (this.occurrence.getValue() && this.occurrence.getValue().id_occurrence_occtax) {
       //update
@@ -309,7 +326,7 @@ export class PhytoOccurrenceService {
         );
     } else {
       //create
-      api = this.occtaxDataService.createOccurrence(id_releve, formValue).pipe(
+      api = this.occtaxDataService.createOccurrence(idReleve, formValue).pipe(
         tap((occurrence) => {
           this.commonService.translateToaster('info', 'Occtax.Taxon.Messages.CreateDone');
           this.occtaxFormService.addOccurrenceData(occurrence);
@@ -319,11 +336,11 @@ export class PhytoOccurrenceService {
 
     api.subscribe(
       (occurrence) => {
-        this.occtaxTaxaListService.removeOccurrenceInProgress(TEMP_ID_OCCURRENCE);
+        this.occtaxTaxaListService.removeOccurrenceInProgress(temporaryOccurrenceId);
       },
       (error) => {
         this.commonService.translateToaster('error', 'Errors.ErrorOccurs');
-        this.occtaxTaxaListService.errorOccurrenceInProgress(TEMP_ID_OCCURRENCE);
+        this.occtaxTaxaListService.errorOccurrenceInProgress(temporaryOccurrenceId);
       }
     );
 
@@ -331,42 +348,47 @@ export class PhytoOccurrenceService {
     this.reset();
   }
 
-  deleteOccurrence(occurrence) {
-    this.occtaxDataService.deleteOccurrence(occurrence.id_occurrence_occtax).subscribe(
-      (confirm: boolean) => {
-        this.occtaxFormService.removeOccurrenceData(occurrence.id_occurrence_occtax);
-        this.commonService.translateToaster('info', 'Occtax.Taxon.Messages.DeleteDone');
-      },
-      (error) => {
-        this.commonService.translateToaster('error', 'Errors.ErrorOccurs');
-      }
-    );
+  deleteOccurrence(occurrence: Occurrence): void {
+    if (occurrence.id_occurrence_occtax == null) {
+      return;
+    }
+
+    this.occtaxDataService
+      .deleteOccurrence(occurrence.id_occurrence_occtax)
+      .subscribe(
+        (confirm: boolean) => {
+          this.occtaxFormService.removeOccurrenceData(occurrence.id_occurrence_occtax);
+          this.commonService.translateToaster('info', 'Occtax.Taxon.Messages.DeleteDone');
+        },
+        (error) => {
+          this.commonService.translateToaster('error', 'Errors.ErrorOccurs');
+        }
+      );
   }
 
-  occurrenceFormValue() {
-    let value = JSON.parse(JSON.stringify(this.form.value));
+  private reportAdditionalFieldsError(error: unknown): void {
+    console.error('Error loading phyto occurrence additional fields:', error);
+    this.commonService.translateToaster('error', 'Errors.ErrorOccurs');
+  }
+
+  occurrenceFormValue(): Occurrence {
+    const value = this.form.getRawValue();
     /* Champs additionnels - formatter les dates et les nomenclatures */
-    this.additionalFieldsForm.forEach((fieldForm: any) => {
+    this.additionalFieldsForm.forEach((fieldForm: AdditionalFieldDefinition) => {
       if (fieldForm.type_widget == 'date') {
-        value.additional_fields[fieldForm.attribut_name] = this.dateParser.format(
-          value.additional_fields[fieldForm.attribut_name]
-        );
+        const dateValue = value.additional_fields[fieldForm.attribut_name];
+        if (isNgbDateStruct(dateValue)) {
+          value.additional_fields[fieldForm.attribut_name] = this.dateParser.format(dateValue);
+        }
       }
     });
 
-    //TODO: recuperer les info des counting à partir du counting.service
     return value;
   }
 
-  reset() {
+  reset(): void {
     this.form.reset();
     this.occurrence.next(null);
-  }
-
-  private clearFormArray(formArray: UntypedFormArray) {
-    while (formArray.length !== 0) {
-      formArray.removeAt(0);
-    }
   }
 
   private uuidv4() {
@@ -378,7 +400,23 @@ export class PhytoOccurrenceService {
   }
 }
 
-export const proofRequiredValidator: ValidatorFn = (control: UntypedFormGroup): ValidationErrors | null => {
+function isNgbDateStruct(value: unknown): value is NgbDateStruct {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+  return (
+    'year' in value &&
+    'month' in value &&
+    'day' in value &&
+    typeof value.year === 'number' &&
+    typeof value.month === 'number' &&
+    typeof value.day === 'number'
+  );
+}
+
+export const proofRequiredValidator: ValidatorFn = (
+  control: AbstractControl
+): ValidationErrors | null => {
   const digital_proof = control.get('digital_proof');
   const non_digital_proof = control.get('non_digital_proof');
 
@@ -394,9 +432,21 @@ export const proofRequiredValidator: ValidatorFn = (control: UntypedFormGroup): 
   return null;
 };
 
-export function proofNotNullValidator(control: AbstractControl): { [key: string]: boolean } | null {
+export function proofNotNullValidator(control: AbstractControl): ValidationErrors | null {
   if (control.value !== null) {
     return { proofNotNull: true };
   }
   return null;
 }
+
+export const atLeastOneAbundanceValidator: ValidatorFn = (
+  control: AbstractControl
+): ValidationErrors | null => {
+  const countings = control as FormArray<FormGroup<CountingFormControls>>;
+  const hasAbundance = countings.controls.some(
+    (counting) =>
+      counting.controls.id_nomenclature_phytosociological_abundance.value != null
+  );
+
+  return hasAbundance ? null : { required: true };
+};

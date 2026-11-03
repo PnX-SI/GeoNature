@@ -60,6 +60,7 @@
       "Actions": {
         "Save": "Enregistrer le taxon",
         "SaveThisTaxon": "Enregistrer ce taxon",
+        "ToggleAddTaxonForm": "Afficher ou masquer le formulaire d'ajout de taxon",
         "CancelModifications":"Annuler les modifications sur ce taxon",
         "EditAndSave":"Modifier et enregistrer ce taxon",
         "Edit":"Modifier ce taxon",
@@ -126,6 +127,9 @@
       "SaveInProgress":"Enregistrement en cours",
       "SaveError":"Une erreur est survenue lors de l’enregistrement",
       "ClickToContinue":"Erreur : cliquez pour reprendre ce taxon",
+      "TaxonDeletedAnnouncement": "{{ taxon }} supprimé",
+      "SortingCleared": "Tri réinitialisé",
+      "SortAnnouncement": "Tri {{ direction }}",
       "Comment": "Commentaire",
       "Actions" : "Actions"
     },
@@ -143,6 +147,8 @@
       "CountingType": "Type de dénombrement",
       "Abundance": "Abondance",
       "Abundances": "Abondances",
+      "AbundanceRecorded": "Abondance enregistrée",
+      "NoAbundanceValue": "Aucune valeur d'abondance",
       "Numbers": "Effectif",
       "Total": "Total",
       "Errors": {

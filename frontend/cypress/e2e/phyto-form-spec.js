@@ -135,7 +135,16 @@ describe('Testing phyto components', { testIsolation: false }, () => {
     // Target the first stratum row
     cy.get("[data-qa='phyto-strata-table'] tr[mat-row]").first().as('firstStratumRow');
 
-    // 1. Test Cover range validation (> 100 is invalid)
+    // Cover values from >0 to 100 are valid.
+    cy.get('@firstStratumRow')
+      .find('input[formControlName="percentage_cover_vegetation_stratum"]')
+      .clear()
+      .type('0');
+    cy.get('@firstStratumRow')
+      .find('small.text-danger[id^="stratum-cover-error-"]')
+      .should('exist');
+
+    // Values above 100 are invalid.
     cy.get('@firstStratumRow')
       .find('input[formControlName="percentage_cover_vegetation_stratum"]')
       .clear()

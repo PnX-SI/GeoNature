@@ -18,7 +18,7 @@ import { OcctaxFormOccurrenceService } from "./occurrence/occurrence.service";
 import { OcctaxTaxaListService } from "./taxa-list/taxa-list.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
 import { OcctaxFormCountingsService } from "./counting/countings.service";
-import { PhytoCountingsService } from "./phyto/services/countings.service";
+import { PhytoCountingStateService } from "./phyto/services/counting-state.service";
 import { PhytoOccurrenceService } from "./phyto/services/occurrence.service";
 import { OcctaxFormMapService } from "./map/occtax-map.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
@@ -37,7 +37,7 @@ import { OcctaxConfigService } from "../services/occtax-config.service";
     OcctaxTaxaListService,
     OcctaxFormCountingsService,
     OcctaxFormMapService,
-    PhytoCountingsService,
+    PhytoCountingStateService,
     PhytoOccurrenceService,
   ],
 })

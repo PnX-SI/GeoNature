@@ -7,14 +7,10 @@ import {
   OnInit,
   SimpleChanges,
 } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { PhytoCountingService } from '../services/counting.service';
+import { FormArray } from '@angular/forms';
+import { PhytoCountingFormService } from '../services/counting-form.service';
 import { PhytoOccurrenceService } from '../services/occurrence.service';
-
-export interface PhytoCountingForm {
-  id_nomenclature_vegetation_stratum: FormControl<number | null>;
-  id_nomenclature_phytosociological_abundance: FormControl<number | null>;
-}
+import { Counting, CountingForm } from '../utils/interfaces';
 
 /**
  * Displays the phytosociological abundance selector for one vegetation stratum.
@@ -23,26 +19,26 @@ export interface PhytoCountingForm {
 @Component({
   selector: 'pnx-phyto-abundance',
   templateUrl: './phyto-abundance.component.html',
-  providers: [PhytoCountingService],
+  providers: [PhytoCountingFormService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PhytoAbundanceComponent implements OnInit, OnChanges, OnDestroy {
   @Input()
-  set value(counting: any) {
-    this.countingService.counting.next(counting);
+  set value(counting: Counting) {
+    this.countingFormService.counting.next(counting);
   }
 
   @Input() public stratumId: number | null = null;
 
-  public form!: FormGroup<PhytoCountingForm>;
+  public form!: CountingForm;
 
   constructor(
-    private readonly countingService: PhytoCountingService,
+    private readonly countingFormService: PhytoCountingFormService,
     private readonly phytoOccurrenceService: PhytoOccurrenceService
-  ) { }
+  ) {}
 
   public ngOnInit(): void {
-    this.form = this.countingService.form as FormGroup<PhytoCountingForm>;
+    this.form = this.countingFormService.form;
     this.setStratum();
   }
 
@@ -54,10 +50,9 @@ export class PhytoAbundanceComponent implements OnInit, OnChanges, OnDestroy {
 
   private setStratum(): void {
     if (this.stratumId != null) {
-      this.form.controls.id_nomenclature_vegetation_stratum.setValue(
-        this.stratumId,
-        { emitEvent: false }
-      );
+      this.form.controls.id_nomenclature_vegetation_stratum.setValue(this.stratumId, {
+        emitEvent: false,
+      });
     }
   }
 
@@ -68,7 +63,7 @@ export class PhytoAbundanceComponent implements OnInit, OnChanges, OnDestroy {
 
     const countingForms = this.phytoOccurrenceService.form.get(
       'cor_counting_occtax'
-    ) as FormArray<FormGroup<PhytoCountingForm>>;
+    ) as FormArray<CountingForm>;
     const formIndex = countingForms.controls.indexOf(this.form);
     if (formIndex !== -1) {
       countingForms.removeAt(formIndex);

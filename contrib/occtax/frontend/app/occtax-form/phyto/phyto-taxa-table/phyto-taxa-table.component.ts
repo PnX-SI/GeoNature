@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewContainerRef,
+} from '@angular/core';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MatDialog } from '@angular/material/dialog';
@@ -8,13 +14,20 @@ import { combineLatest, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/confirmation.dialog';
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { Nomenclature } from '@geonature_common/interfaces'
-import { VegetationStratum, Counting, Occurrence } from '../interfaces';
+import { Nomenclature } from '@geonature_common/interfaces';
+import {
+  NomenclatureResponse,
+  Occurrence,
+  PhytoData,
+  PhytoDataWithProperties,
+} from '../utils/interfaces';
 import { OcctaxConfigService } from '../../../services/occtax-config.service';
 import { OcctaxFormService } from '../../occtax-form.service';
 import { PhytoOccurrenceService } from '../services/occurrence.service';
 import { PhytoOccurrenceModalComponent } from '../phyto-occurrence-modal/phyto-occurrence-modal.component';
 import { OcctaxTaxaListService } from '../../taxa-list/taxa-list.service';
+import { getEligibleVegetationStratumRows } from '../utils/vegetation-strata.utils';
+import { compareValues, getStratumAbundance } from '../utils/taxa-table.utils';
 
 interface StratumColumn {
   id: number;
@@ -27,29 +40,11 @@ interface OccurrenceInProgress {
   state: 'in_progress' | 'error';
   data: Occurrence;
 }
-interface PhytoProperties {
-  t_occurrences_occtax?: Occurrence[];
-  t_vegetation_stratum?: VegetationStratum[];
-}
-interface PhytoData {
-  releve?: { properties?: PhytoProperties };
-}
-interface PhytoDataWithProperties extends PhytoData {
-  releve: { properties: PhytoProperties };
-}
-interface NomenclatureResponse {
-  values: Nomenclature[];
-}
-
-function compare(a: number | string, b: number | string, isAsc: boolean) {
-  return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
-}
-
 /**
  * Coordinates phyto occurrence display, sorting, editing and deletion.
  * Stratum columns are derived from releve data; abundance codes are resolved
  * from the counting nomenclature lookup.
- * 
+ *
  * TODO: [Angular Material v15 / Architecture] Consider migrate to Standalone Component
  * TODO: [Angular Material v15 / Table Architecture] Consider migrating to MatTableDataSource<PhytoOccurrence> with custom sortingDataAccessor to cleanly delegate matSort interactions.
  */
@@ -69,9 +64,9 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
   public strataColumns: StratumColumn[] = [];
   public displayedColumns: string[] = [...this.baseColumns, 'comment', 'actions'];
   public displayedColumnKeys: string[] = [...this.baseColumns, 'strata', 'comment', 'actions'];
-  public isHandset$ = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
-    map(state => state.matches)
-  );
+  public isHandset$ = this.breakpointObserver
+    .observe(Breakpoints.Handset)
+    .pipe(map((state) => state.matches));
 
   private readonly destroy$ = new Subject<void>();
   /** Local snapshot used to reapply sorting when UI sort settings change. */
@@ -89,8 +84,8 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
     private readonly translate: TranslateService,
     public readonly occtaxConfig: OcctaxConfigService,
     private readonly liveAnnouncer: LiveAnnouncer,
-    private readonly breakpointObserver: BreakpointObserver,
-  ) { }
+    private readonly breakpointObserver: BreakpointObserver
+  ) {}
 
   public ngOnInit(): void {
     combineLatest([
@@ -148,7 +143,11 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
       .subscribe((confirmed: boolean) => {
         if (confirmed) {
           this.occtaxFormOccurrenceService.deleteOccurrence(occurrence);
-          this.liveAnnouncer.announce(`${this.taxonTitle(occurrence)} deleted`);
+          this.liveAnnouncer.announce(
+            this.translate.instant('Occtax.TaxaList.TaxonDeletedAnnouncement', {
+              taxon: this.taxonTitle(occurrence),
+            })
+          );
         }
       });
   }
@@ -171,46 +170,11 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
   }
 
   public getStratumAbundance(occurrence: Occurrence, stratumId: number): string {
-    const abundanceCodes: string[] = [];
-    for (const counting of occurrence.cor_counting_occtax || []) {
-      if (
-        counting.id_nomenclature_vegetation_stratum !== stratumId ||
-        counting.id_nomenclature_phytosociological_abundance == null
-      ) {
-        continue;
-      }
-
-      const abundanceCode = this.abundanceNomenclatures.get(
-        counting.id_nomenclature_phytosociological_abundance
-      )?.cd_nomenclature;
-      if (abundanceCode) {
-        abundanceCodes.push(abundanceCode);
-      }
-    }
-
-    return abundanceCodes.join(', ');
+    return getStratumAbundance(occurrence, stratumId, this.abundanceNomenclatures).label;
   }
 
   public getStratumAbundanceId(occurrence: Occurrence, stratumId: number): number {
-    const abundanceIds: number[] = [];
-    for (const counting of occurrence.cor_counting_occtax || []) {
-      if (
-        counting.id_nomenclature_vegetation_stratum !== stratumId ||
-        counting.id_nomenclature_phytosociological_abundance == null
-      ) {
-        continue;
-      }
-      const abundanceId = counting.id_nomenclature_phytosociological_abundance;
-      if (abundanceId) {
-        abundanceIds.push(abundanceId);
-      }
-    }
-    if (abundanceIds.length !== 1) {
-      return -1;
-    } else {
-      return abundanceIds[0];
-    }
-
+    return getStratumAbundance(occurrence, stratumId, this.abundanceNomenclatures).id;
   }
 
   public getOccurrenceComment(occurrence: Occurrence): string {
@@ -233,65 +197,42 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
       ])
     );
 
-    this.setStrataColumns(properties.t_vegetation_stratum || [], strataResponse.values || []);
-    this.refreshOccurrences();
-  }
-
-  private setStrataColumns(strata: VegetationStratum[], nomenclatures: Nomenclature[]): void {
-    const labelById = new Map(
-      nomenclatures.map((nomenclature) => [
-        nomenclature.id_nomenclature,
-        nomenclature.label_default,
-      ])
-    );
-    const mnemoById = new Map(
-      nomenclatures.map((nomenclature) => [
-        nomenclature.id_nomenclature,
-        nomenclature.mnemonique,
-      ])
-    );
-
-    this.strataColumns = strata
-      .filter(
-        (stratum): stratum is VegetationStratum & { id_nomenclature_vegetation_stratum: number } =>
-          stratum.id_nomenclature_vegetation_stratum != null &&
-          (stratum.percentage_cover_vegetation_stratum != null ||
-            stratum.average_height != null ||
-            stratum.min_height != null ||
-            stratum.max_height != null)
-      )
-      .map((stratum) => {
-        const id = stratum.id_nomenclature_vegetation_stratum;
-        return {
-          id,
-          key: `stratum_${id}`,
-          label: labelById.get(id) || '',
-          mnemonique: mnemoById.get(id) || '',
-        };
-      })
-      .filter((column) => column.label !== '')
-      .sort((a, b) => a.id - b.id);
-
+    this.strataColumns = getEligibleVegetationStratumRows(
+      properties.t_vegetation_stratum || [],
+      strataResponse.values || []
+    ).map(({ id, label, mnemonique }) => ({
+      id,
+      key: `stratum_${id}`,
+      label,
+      mnemonique,
+    }));
     this.displayedColumns = [
       ...this.baseColumns,
       ...this.strataColumns.map((column) => column.key),
       'comment',
       'actions',
     ];
+    this.refreshOccurrences();
   }
 
   sortData(sort: Sort) {
     if (!sort.active || sort.direction === '') {
-      this.sortDirection = 'asc'
+      this.sortDirection = 'asc';
       this.sortActiveColumn = '';
       this.refreshOccurrences();
-      this.liveAnnouncer.announce('Sorting cleared');
+      this.liveAnnouncer.announce(this.translate.instant('Occtax.TaxaList.SortingCleared'));
       return;
     }
-    this.sortDirection = sort.direction
+    this.sortDirection = sort.direction;
     this.sortActiveColumn = sort.active;
     this.refreshOccurrences();
-    this.liveAnnouncer.announce(`Sorted ${sort.direction === 'asc' ? 'ascending' : 'descending'}`);
+    this.liveAnnouncer.announce(
+      this.translate.instant('Occtax.TaxaList.SortAnnouncement', {
+        direction: this.translate.instant(
+          sort.direction === 'asc' ? 'Occtax.TaxaList.SortAsc' : 'Occtax.TaxaList.SortDesc'
+        ),
+      })
+    );
   }
 
   private refreshOccurrences(): void {
@@ -306,23 +247,26 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
     sortedOccurrences.sort((a, b) => {
       const isAsc = this.sortDirection === 'asc';
       if (this.sortActiveColumn.includes('stratum')) {
-        return compare(
+        return compareValues(
           this.getStratumAbundanceId(a, Number(this.sortActiveColumn.substring(8))),
           this.getStratumAbundanceId(b, Number(this.sortActiveColumn.substring(8))),
           isAsc
         );
       } else if (this.sortActiveColumn === 'nom_valide') {
-        return compare(this.removeHtmlFromString(a.taxref?.nom_valide).toLowerCase(), this.removeHtmlFromString(b.taxref?.nom_valide).toLowerCase(), isAsc);
+        return compareValues(
+          this.removeHtmlFromString(a.taxref?.nom_valide).toLowerCase(),
+          this.removeHtmlFromString(b.taxref?.nom_valide).toLowerCase(),
+          isAsc
+        );
       } else {
-        return compare(a.id_occurrence_occtax || 0, b.id_occurrence_occtax || 0, false);
+        return compareValues(a.id_occurrence_occtax || 0, b.id_occurrence_occtax || 0, false);
       }
-
     });
 
     this.occtaxTaxaListService.occurrences$.next(sortedOccurrences);
   }
 
   get strataColumnKeys(): string[] {
-  return this.strataColumns.map(column => column.key);
-}
+    return this.strataColumns.map((column) => column.key);
+  }
 }

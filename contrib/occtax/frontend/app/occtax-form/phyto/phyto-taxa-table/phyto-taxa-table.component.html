@@ -89,9 +89,13 @@
         <td
           mat-cell
           *matCellDef="let occurrence"
+          [matTooltipDisabled]="occurrence.taxref?.nom_valide.length < 24"
           matTooltip="{{ occurrence.taxref?.nom_valide || '' }}"
           aria-label="{{ occurrence.taxref?.nom_valide || '' }}"
-          class="withTooltip p-1"
+          [ngClass]="{
+            'p-1': true,
+            withTooltip: occurrence.taxref?.nom_valide.length > 25
+          }"
         >
           {{ occurrence.taxref?.nom_valide || '' }}
         </td>

@@ -12,7 +12,7 @@
         class="phyto-title-toggle"
         [attr.aria-expanded]="isCardExpanded"
         aria-controls="phyto-occurrence-content phyto-occurrence-actions"
-        aria-label="Toggle add taxon form"
+        [attr.aria-label]="'Occtax.Taxon.Actions.ToggleAddTaxonForm' | translate"
         (click)="toggleCard()"
       >
         <mat-icon class="phyto-title-icon">
@@ -48,6 +48,8 @@
           [listLength]="occtaxConfigService.moduleConf.taxon_result_number"
           [displayAdvancedFilters]="false"
           displayedLabel="search_name"
+          (focusin)="taxonFormFocus = true"
+          (focusout)="taxonFormFocus = false"
           (onChange)="selectAddOcc()"
           [ngClass]="
             occurrenceForm.get('nom_cite').hasError('required') &&
@@ -165,7 +167,7 @@
         aria-hidden="true"
       ></mat-spinner>
       {{ 'Occtax.Taxon.Actions.SaveThisTaxon' | translate }}
-      <mat-icon style="vertical-align: middle">save</mat-icon>
+      <mat-icon class="align-middle">save</mat-icon>
     </button>
   </mat-card-actions>
 </mat-card>

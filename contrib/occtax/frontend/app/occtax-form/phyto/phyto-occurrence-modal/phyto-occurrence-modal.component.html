@@ -22,8 +22,7 @@
           taxonForm.touched &&
           !taxonFormFocus
         "
-        class="error"
-        style="color: red"
+        class="error text-danger"
         role="alert"
       >
         {{ 'Occtax.Taxon.Errors.NomCiteRequiredError' | translate }}
@@ -34,8 +33,7 @@
           occurrenceForm.get('cd_nom').hasError('required') &&
           taxonForm.touched
         "
-        class="error"
-        style="color: red"
+        class="error text-danger"
         role="alert"
       >
         {{ 'Occtax.Taxon.Errors.CdNomRequiredError' | translate }}
@@ -82,8 +80,7 @@
           occurrenceForm.get('determiner').hasError('required') &&
           occurrenceForm.get('determiner').touched
         "
-        class="error"
-        style="color: red"
+        class="error text-danger"
         id="phyto-determiner-error"
         role="alert"
       >
@@ -108,8 +105,7 @@
           occurrenceForm.get('id_nomenclature_determination_method').hasError('required') &&
           occurrenceForm.get('id_nomenclature_determination_method').touched
         "
-        class="error"
-        style="color: red"
+        class="error text-danger"
         role="alert"
       >
         {{ 'Occtax.Taxon.Errors.DeterminationMethodRequiredError' | translate }}
@@ -132,8 +128,7 @@
           occurrenceForm.get('id_nomenclature_observation_status').hasError('required') &&
           occurrenceForm.get('id_nomenclature_observation_status').touched
         "
-        class="error"
-        style="color: red"
+        class="error text-danger"
         role="alert"
       >
         {{ 'Occtax.Taxon.Errors.ObservationStatusRequiredError' | translate }}
@@ -195,7 +190,7 @@
     <div
       *ngIf="occtaxConfigService.moduleConf.form_fields.exist_proof"
       class="col-lg-4 col-sm-6"
-      style="margin-bottom: 1rem"
+      class="mb-3"
     >
       <pnx-nomenclature
         label="{{ 'Occtax.Taxon.ExistProof' | translate }}"
@@ -245,8 +240,7 @@
       </div>
       <small
         *ngIf="occurrenceForm.get('digital_proof').hasError('pattern')"
-        class="error"
-        style="color: red"
+        class="error text-danger"
         id="phyto-digital-proof-pattern-error"
         role="alert"
       >
@@ -295,8 +289,7 @@
 
   <div
     *ngIf="occurrenceForm.hasError('proofRequired')"
-    class="error"
-    style="color: red; margin-top: -0.8rem; margin-bottom: 0.5rem; font-size: 80%; font-weight: 400"
+    class="error text-danger phyto-proof-message"
     id="phyto-proof-required-error"
     role="alert"
   >
@@ -308,8 +301,7 @@
       occurrenceForm.get('non_digital_proof').hasError('proofNotNull') ||
       occurrenceForm.get('digital_proof').hasError('proofNotNull')
     "
-    class="error"
-    style="color: red; margin-top: -0.8rem; margin-bottom: 0.5rem; font-size: 80%; font-weight: 400"
+    class="error text-danger phyto-proof-message"
     id="phyto-proof-not-required-error"
     role="alert"
   >
@@ -320,7 +312,7 @@
     *ngIf="occtaxConfigService.moduleConf.form_fields.comment_occ"
     appearance="outline"
     subscriptSizing="dynamic"
-    style="width: 100%"
+    class="w-100"
   >
     <mat-label>{{ 'Comment' | translate }}</mat-label>
     <textarea
@@ -338,12 +330,11 @@
   ></pnx-dynamic-form-generator>
 
   <!-- ABUNDANCES ACCORDION -->
-  <h3 style="margin-top: 15px">{{ 'Occtax.Counting.Abundances' | translate }}</h3>
+  <h3 class="phyto-section-title">{{ 'Occtax.Counting.Abundances' | translate }}</h3>
 
   <div
     *ngIf="occurrenceForm.get('cor_counting_occtax').hasError('required')"
-    class="error"
-    style="color: red"
+    class="error text-danger"
     role="alert"
   >
     {{ 'Occtax.Taxon.Errors.CountingRequiredError' | translate }}
@@ -369,11 +360,11 @@
           <mat-chip-set>
             <mat-chip
               *ngIf="counting.id_nomenclature_phytosociological_abundance; else noVisibility"
-              matTooltip="Abondance enregistrée"
+              [matTooltip]="'Occtax.Counting.AbundanceRecorded' | translate"
             >
               <mat-icon
                 aria-hidden="false"
-                aria-label="Abondance enregistrée"
+                [attr.aria-label]="'Occtax.Counting.AbundanceRecorded' | translate"
                 matChipAvatar
               >
                 visibility
@@ -384,8 +375,8 @@
           <ng-template #noVisibility>
             <mat-icon
               aria-hidden="false"
-              aria-label="Pas de valeur d'abondance"
-              matTooltip="Pas de valeur d'abondance"
+              [attr.aria-label]="'Occtax.Counting.NoAbundanceValue' | translate"
+              [matTooltip]="'Occtax.Counting.NoAbundanceValue' | translate"
             >
               visibility_off
             </mat-icon>
@@ -403,7 +394,7 @@
 </mat-dialog-content>
 
 <mat-dialog-actions
-  style="justify-content: space-between"
+  class="justify-content-between"
   align="end"
 >
   <button
@@ -445,7 +436,7 @@
     </span>
     {{ 'Occtax.Taxon.Actions.Edit' | translate }}
     <mat-icon
-      style="vertical-align: middle"
+      class="align-middle"
       aria-hidden="true"
     >
       save

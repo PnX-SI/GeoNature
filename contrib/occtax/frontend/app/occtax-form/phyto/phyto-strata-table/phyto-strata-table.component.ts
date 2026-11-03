@@ -1,8 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {
   AbstractControl,
-  FormGroup,
-  FormControl,
   FormArray,
   FormBuilder,
   Validators,
@@ -16,15 +14,7 @@ import { Nomenclature } from '@geonature_common/interfaces'
 import { OcctaxFormService } from '../../occtax-form.service';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
-
-export interface VegetationStratumForm {
-  id_vegetation_stratum: FormControl<number | null>;
-  id_nomenclature_vegetation_stratum: FormControl<number | null>;
-  min_height: FormControl<number | null>;
-  max_height: FormControl<number | null>;
-  average_height: FormControl<number | null>;
-  percentage_cover_vegetation_stratum: FormControl<number | null>;
-}
+import { PhytoData, PhytoDataWithProperties, VegetationStratum, VegetationStratumForm } from '../utils/interfaces';
 
 const heightOrderValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
   const min = group.get('min_height')?.value;
@@ -80,8 +70,8 @@ export class PhytoStrataTableComponent implements OnInit, OnDestroy {
     'max_height',
   ];
 
-  @Input() public parentFormControl!: FormArray<FormGroup<VegetationStratumForm>>;
-  @ViewChild(MatTable) table!: MatTable<any>;
+  @Input() public parentFormControl!: FormArray<VegetationStratumForm>;
+  @ViewChild(MatTable) table!: MatTable<VegetationStratumForm>;
 
   strataMnemo: Record<string, string> = {};
   strataLabels: Record<string, string> = {};
@@ -98,8 +88,8 @@ export class PhytoStrataTableComponent implements OnInit, OnDestroy {
     private readonly breakpointObserver: BreakpointObserver
   ) { }
 
-  get strataControls(): FormGroup[] {
-    return this.parentFormControl.controls as FormGroup[];
+  get strataControls(): VegetationStratumForm[] {
+    return this.parentFormControl.controls;
   }
 
   public ngOnInit(): void {
@@ -117,7 +107,7 @@ export class PhytoStrataTableComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (strataNomenclatures: { values: Nomenclature[] }) => {
           const nomenclatures = strataNomenclatures.values;
-          const preExistingValues = this.parentFormControl.value || [];
+          const preExistingValues: VegetationStratum[] = this.parentFormControl.getRawValue();
 
           this.parentFormControl.clear({ emitEvent: false });
 
@@ -126,21 +116,23 @@ export class PhytoStrataTableComponent implements OnInit, OnDestroy {
             this.strataLabels[strateNomenclature.id_nomenclature] = strateNomenclature.label_default;
             this.strataMnemo[strateNomenclature.id_nomenclature] = strateNomenclature.mnemonique;
 
-            const existingData = preExistingValues.find(
-              (v: any) => v?.id_nomenclature_vegetation_stratum === strateNomenclature.id_nomenclature
-            ) || {};
+            const existingData: Partial<VegetationStratum> =
+              preExistingValues.find(
+                (value) =>
+                  value.id_nomenclature_vegetation_stratum === strateNomenclature.id_nomenclature
+              ) || {};
 
             const group = this.formBuilder.group(
               {
-                id_vegetation_stratum: [existingData.id_vegetation_stratum || null],
+                id_vegetation_stratum: [existingData.id_vegetation_stratum ?? null],
                 id_nomenclature_vegetation_stratum: [strateNomenclature.id_nomenclature],
                 percentage_cover_vegetation_stratum: [
-                  existingData.percentage_cover_vegetation_stratum || null,
+                  existingData.percentage_cover_vegetation_stratum ?? null,
                   [minStrictValidator(0), Validators.max(100)],
                 ],
-                average_height: [existingData.average_height || null],
-                min_height: [existingData.min_height || null],
-                max_height: [existingData.max_height || null],
+                average_height: [existingData.average_height ?? null],
+                min_height: [existingData.min_height ?? null],
+                max_height: [existingData.max_height ?? null],
               },
               {
                 validators: heightOrderValidator
@@ -163,14 +155,15 @@ export class PhytoStrataTableComponent implements OnInit, OnDestroy {
   private protectFormArrayOrder(nomenclatures: Nomenclature[]): void {
     const originalPatchValue = this.parentFormControl.patchValue.bind(this.parentFormControl);
 
-    this.parentFormControl.patchValue = (incomingValues: any[], options?: Object) => {
+    this.parentFormControl.patchValue = (incomingValues, options) => {
       if (!Array.isArray(incomingValues)) {
         return originalPatchValue(incomingValues, options);
       }
 
       const safelyMappedValues = nomenclatures.map(nomenc => {
         const dataForThisRow = incomingValues.find(
-          (val) => val && val.id_nomenclature_vegetation_stratum === nomenc.id_nomenclature
+          (value) =>
+            value?.id_nomenclature_vegetation_stratum === nomenc.id_nomenclature
         );
 
         return dataForThisRow || { id_nomenclature_vegetation_stratum: nomenc.id_nomenclature };
@@ -183,11 +176,13 @@ export class PhytoStrataTableComponent implements OnInit, OnDestroy {
   private listenToDataChanges(): void {
     this.occtaxFormService.occtaxData
       .pipe(
-        filter((occtaxData: any) => !!occtaxData?.releve?.properties), // Ensure data exists
-        takeUntil(this.destroy$)
-      )
-      .subscribe({
-        next: (occtaxData: any) => {
+      filter((occtaxData: PhytoData): occtaxData is PhytoDataWithProperties =>
+        !!occtaxData?.releve?.properties
+      ),
+      takeUntil(this.destroy$)
+    )
+    .subscribe({
+      next: (occtaxData: PhytoDataWithProperties) => {
           const savedStrata = occtaxData.releve.properties.t_vegetation_stratum || [];
 
           this.parentFormControl.patchValue(savedStrata, { emitEvent: false });

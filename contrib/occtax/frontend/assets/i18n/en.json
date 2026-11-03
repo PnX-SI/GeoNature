@@ -52,6 +52,7 @@
       "Actions": {
         "Save": "Save the taxon",
         "SaveThisTaxon": "Save this taxon",
+        "ToggleAddTaxonForm": "Toggle the add taxon form",
         "CancelModifications":"Cancel the modifications for this taxon",
         "EditAndSave":"Edit and save this taxon",
         "Edit":"Edit this taxon",
@@ -117,6 +118,9 @@
       "SaveInProgress":"Save in progress",
       "SaveError":"An error occurs during the saving process",
       "ClickToContinue":"Error : click here to continue editing this taxon",
+      "TaxonDeletedAnnouncement": "{{ taxon }} deleted",
+      "SortingCleared": "Sorting cleared",
+      "SortAnnouncement": "Sorted {{ direction }}",
       "Comment": "Comment",
       "Actions" : "Actions"
     },
@@ -134,6 +138,8 @@
       "CountingType": "Count type",
       "Abundance": "Abundance",
       "Abundances": "Abundances",
+      "AbundanceRecorded": "Abundance recorded",
+      "NoAbundanceValue": "No abundance value",
       "Numbers": "Count",
       "Total": "Total",
       "Errors": {

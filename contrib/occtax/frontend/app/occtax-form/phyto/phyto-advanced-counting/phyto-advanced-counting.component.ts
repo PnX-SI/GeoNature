@@ -1,72 +1,79 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { FormArray } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import { OcctaxFormService } from '../../occtax-form.service';
 import { PhytoOccurrenceService } from '../services/occurrence.service';
-import { PhytoCountingService } from '../services/counting.service';
+import { PhytoCountingFormService } from '../services/counting-form.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { OcctaxConfigService } from '../../../services/occtax-config.service';
 import { ValidationErrorsId } from '@geonature/services/validators';
 import { MediasComponent } from '@geonature_common/form/media/medias.component';
-
-export interface PhytoCountingForm {
-  id_nomenclature_vegetation_stratum: FormControl<number | null>;
-  id_nomenclature_life_stage: FormControl<number | null>;
-}
+import {
+  AdditionalFieldDefinition,
+  Counting,
+  CountingForm,
+  TaxonReference,
+} from '../utils/interfaces';
 
 /**
  * Provides the phyto-specific counting form, including phytosociological
  * abundance, while reusing the standard counting layout and media controls.
- * 
+ *
  * TODO: [Angular Material v15 / Architecture] Consider migrating to Standalone Component
  */
 @Component({
   selector: 'pnx-occtax-form-phyto-advanced-counting',
   templateUrl: './phyto-advanced-counting.component.html',
   styleUrls: ['../../counting/counting.component.scss'],
-  providers: [PhytoCountingService],
+  providers: [PhytoCountingFormService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PhytoAdvancedCountingComponent implements OnInit, OnDestroy {
   @ViewChild(MediasComponent) private mediasComp?: MediasComponent;
   @Input('value')
-  set counting(value: any) {
-    this.occtaxFormCountingService.counting.next(value);
+  set counting(value: Counting) {
+    this.countingFormService.counting.next(value);
   }
 
-  public form!: FormGroup<PhytoCountingForm>;;
+  public form!: CountingForm;
   public readonly ValidationErrorsId = ValidationErrorsId;
   public nbIndiv = 0;
   public cdNomenclatureObjDen = '';
 
   private readonly destroy$ = new Subject<void>();
 
-  public get additionalFieldsForm(): any[] {
-    return this.occtaxFormCountingService.additionalFieldsForm;
+  public get additionalFieldsForm(): AdditionalFieldDefinition[] {
+    return this.countingFormService.additionalFieldsForm;
   }
 
   constructor(
     public readonly occtaxFormService: OcctaxFormService,
-    public readonly occtaxFormOccurrenceService: PhytoOccurrenceService,
-    private readonly occtaxFormCountingService: PhytoCountingService,
+    public readonly phytoOccurrenceService: PhytoOccurrenceService,
+    private readonly countingFormService: PhytoCountingFormService,
     public readonly config: ConfigService,
     public readonly moduleService: ModuleService,
     public readonly occtaxConfig: OcctaxConfigService
-  ) { }
+  ) {}
 
-  // TOCHECK: Connect the counting form to the shared occurrence life-stage state.
   public ngOnInit(): void {
-    this.form = this.occtaxFormCountingService.form as FormGroup<PhytoCountingForm>;;
-    this.form.controls.id_nomenclature_life_stage
-      .valueChanges.pipe(
+    this.form = this.countingFormService.form;
+    this.form.controls.id_nomenclature_life_stage.valueChanges
+      .pipe(
         filter((idNomenclatureLifeStage: number | null) => idNomenclatureLifeStage !== null),
         takeUntil(this.destroy$)
       )
       .subscribe((idNomenclatureLifeStage: number) => {
-        this.occtaxFormOccurrenceService.lifeStage.next(idNomenclatureLifeStage);
+        this.phytoOccurrenceService.lifeStage.next(idNomenclatureLifeStage);
       });
   }
 
@@ -78,22 +85,22 @@ export class PhytoAdvancedCountingComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
 
-    const countings = this.occtaxFormOccurrenceService.form.get(
+    const countings = this.phytoOccurrenceService.form.get(
       'cor_counting_occtax'
-    ) as FormArray<FormGroup<PhytoCountingForm>>;;
+    ) as FormArray<CountingForm>;
     const idx = countings.controls.indexOf(this.form);
     if (idx !== -1) {
       countings.removeAt(idx);
     }
   }
 
-  public get taxref(): any {
-    return this.occtaxFormOccurrenceService.taxref.getValue();
+  public get taxref(): TaxonReference | null {
+    return this.phytoOccurrenceService.taxref.getValue();
   }
 
   public defaultsMedia(): Record<string, string | boolean> {
     const occtaxData = this.occtaxFormService.occtaxData.getValue();
-    const taxref = this.occtaxFormOccurrenceService.taxref.getValue();
+    const taxref = this.phytoOccurrenceService.taxref.getValue();
     const releveProperties = occtaxData?.releve?.properties;
 
     if (!releveProperties || !taxref) {
