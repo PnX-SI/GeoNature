@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MatDialog } from '@angular/material/dialog';
 import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
 import { combineLatest, Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, map, takeUntil } from 'rxjs/operators';
 import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/confirmation.dialog';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { Nomenclature } from '@geonature_common/interfaces'
@@ -67,6 +68,10 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
   public readonly baseColumns: string[] = ['nom_valide'];
   public strataColumns: StratumColumn[] = [];
   public displayedColumns: string[] = [...this.baseColumns, 'comment', 'actions'];
+  public displayedColumnKeys: string[] = [...this.baseColumns, 'strata', 'comment', 'actions'];
+  public isHandset$ = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
+    map(state => state.matches)
+  );
 
   private readonly destroy$ = new Subject<void>();
   /** Local snapshot used to reapply sorting when UI sort settings change. */
@@ -84,6 +89,7 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
     private readonly translate: TranslateService,
     public readonly occtaxConfig: OcctaxConfigService,
     private readonly liveAnnouncer: LiveAnnouncer,
+    private readonly breakpointObserver: BreakpointObserver,
   ) { }
 
   public ngOnInit(): void {
@@ -315,4 +321,8 @@ export class PhytoTaxaTableComponent implements OnInit, OnDestroy {
 
     this.occtaxTaxaListService.occurrences$.next(sortedOccurrences);
   }
+
+  get strataColumnKeys(): string[] {
+  return this.strataColumns.map(column => column.key);
+}
 }

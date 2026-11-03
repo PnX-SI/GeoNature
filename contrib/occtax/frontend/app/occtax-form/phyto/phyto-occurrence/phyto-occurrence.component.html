@@ -1,16 +1,33 @@
 <mat-card
-  class="m-1 phyto-card"
+  class="m-1 mb-3 phyto-card"
   appearance="outlined"
   data-qa="pnx-phyto-occurrence"
 >
   <mat-card-header class="p-0 m-0">
-    <mat-card-title class="phyto-card-title p-0 m-0">
-      <mat-icon class="phyto-title-icon">add_circle</mat-icon>
+    <mat-card-title class="phyto-card-title p-1 m-0">
+      <button
+        mat-mini-fab
+        type="button"
+        [color]="isCardExpanded ? 'warn' : 'primary'"
+        class="phyto-title-toggle"
+        [attr.aria-expanded]="isCardExpanded"
+        aria-controls="phyto-occurrence-content phyto-occurrence-actions"
+        aria-label="Toggle add taxon form"
+        (click)="toggleCard()"
+      >
+        <mat-icon class="phyto-title-icon">
+          {{ isCardExpanded ? 'close_small' : 'add_circle' }}
+        </mat-icon>
+      </button>
       {{ 'Occtax.Taxon.AddTaxon' | translate }}
     </mat-card-title>
   </mat-card-header>
 
-  <mat-card-content class="container-fluid p-1 m-0">
+  <mat-card-content
+    *ngIf="isCardExpanded"
+    id="phyto-occurrence-content"
+    class="container-fluid p-1 m-0"
+  >
     <div class="row">
       <div class="col col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6">
         <!-- QUOTED NAME & VALID NAME INPUTS -->
@@ -123,6 +140,8 @@
   </mat-card-content>
 
   <mat-card-actions
+    *ngIf="isCardExpanded"
+    id="phyto-occurrence-actions"
     class="phyto-card-actions m-0 p-1"
     align="end"
   >

@@ -68,6 +68,7 @@ export interface PhytoCountingForm {
 export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestroy {
   public occurrenceForm: FormGroup<PhytoCountingForm>;
 
+  public isCardExpanded = true;
   public taxonForm!: FormControl<Taxon | null>;
   public taxonFormFocus = false;
 
@@ -165,6 +166,10 @@ export class PhytoOccurrenceComponent implements OnInit, AfterViewInit, OnDestro
 
   public setExistProofData(data: any): void {
     this.phytoOccurrenceService.existProof_DATA = data;
+  }
+
+  public toggleCard(): void {
+    this.isCardExpanded = !this.isCardExpanded;
   }
 
   private initializeTaxRefSearch(): void {

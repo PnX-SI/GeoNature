@@ -10,11 +10,12 @@ import {
   ValidatorFn,
 } from '@angular/forms';
 import { MatTable } from '@angular/material/table';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { Nomenclature } from '@geonature_common/interfaces'
 import { OcctaxFormService } from '../../occtax-form.service';
 import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
 export interface VegetationStratumForm {
   id_vegetation_stratum: FormControl<number | null>;
@@ -84,13 +85,17 @@ export class PhytoStrataTableComponent implements OnInit, OnDestroy {
 
   strataMnemo: Record<string, string> = {};
   strataLabels: Record<string, string> = {};
+  isHandset$ = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
+    map(state => state.matches)
+  );
 
   private readonly destroy$ = new Subject<void>();
 
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly dataFormService: DataFormService,
-    private readonly occtaxFormService: OcctaxFormService
+    private readonly occtaxFormService: OcctaxFormService,
+    private readonly breakpointObserver: BreakpointObserver
   ) { }
 
   get strataControls(): FormGroup[] {

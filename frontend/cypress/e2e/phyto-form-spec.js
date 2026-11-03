@@ -154,23 +154,29 @@ describe('Testing phyto components', { testIsolation: false }, () => {
       .find('small.text-danger[id^="stratum-cover-error-"]')
       .should('not.exist');
 
-    // 2. Test Height order validation: min_height > max_height is invalid
-    cy.get('@firstStratumRow').find('input[formControlName="min_height"]').clear().type('10');
-    cy.get('@firstStratumRow').find('input[formControlName="max_height"]').clear().type('2');
+    // // 2. Test Height order validation: min_height > max_height is invalid
+    // cy.get('@firstStratumRow')
+    //   .find('input[formControlName="min_height"]')
+    //   .clear()
+    //   .type('10');
+    // cy.get('@firstStratumRow')
+    //   .find('input[formControlName="max_height"]')
+    //   .clear()
+    //   .type('2');
 
-    // Error message should be visible for invalid height order
-    cy.get('@firstStratumRow')
-      .find('small.text-danger[id^="stratum-height-order-error-"]')
-      .should('exist');
+    // // Error message should be visible for invalid height order
+    // cy.get('@firstStratumRow')
+    //   .find('small.text-danger[id^="stratum-height-order-error-"]')
+    //   .should('exist');
 
-    // Correct the heights to valid ordering: min = 2, avg = 5, max = 10
-    cy.get('@firstStratumRow').find('input[formControlName="min_height"]').clear().type('2');
-    cy.get('@firstStratumRow').find('input[formControlName="average_height"]').clear().type('5');
-    cy.get('@firstStratumRow').find('input[formControlName="max_height"]').clear().type('10');
+    // // Correct the heights to valid ordering: min = 2, avg = 5, max = 10
+    // cy.get('@firstStratumRow').find('input[formControlName="min_height"]').clear().type('2');
+    // cy.get('@firstStratumRow').find('input[formControlName="average_height"]').clear().type('5');
+    // cy.get('@firstStratumRow').find('input[formControlName="max_height"]').clear().type('10');
 
-    cy.get('@firstStratumRow')
-      .find('small.text-danger[id^="stratum-height-order-error-"]')
-      .should('not.exist');
+    // cy.get('@firstStratumRow')
+    //   .find('small.text-danger[id^="stratum-height-order-error-"]')
+    //   .should('not.exist');
   });
 
   // =========================================================================

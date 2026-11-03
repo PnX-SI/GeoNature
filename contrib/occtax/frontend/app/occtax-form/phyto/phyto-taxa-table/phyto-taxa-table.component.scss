@@ -1,6 +1,6 @@
 @use '@angular/material' as mat;
 
-$icon-button-size: 44px;
+$icon-button-size: 18px;
 $table-cell-horizontal-padding: 16px;
 $inside-border-size: 1px;
 $table-border-color: var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
@@ -12,9 +12,14 @@ $comment-column-width: calc(
   (2 * $inside-border-size) + (2 * $table-cell-horizontal-padding) + $comment-max-characters
 );
 
+.table-container {
+  max-height: 95vh;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
 table {
   @include mat.table-density(-4);
-
   max-width: 100%;
   width: 100%;
 }
@@ -46,6 +51,16 @@ td {
 
 .mat-column-nom_valide {
   border-right: $inside-border-size solid $table-border-color;
+}
+
+.mat-header-cell-comment,
+.mat-header-cell-nom_valide {
+  text-align: center;
+}
+
+::ng-deep .mat-header-cell-nom_valide .mat-sort-header-container,
+::ng-deep .mat-column-abundance .mat-sort-header-container {
+  justify-content: center;
 }
 
 .mat-column-comment {
@@ -83,5 +98,36 @@ td {
 }
 
 .striped-table .mat-mdc-row:nth-child(even) {
-  background-color: var(--mat-table-row-item-hover-state-layer-color, rgba(0, 0, 0, 0.04));
+  background-color: #f5f5f5;
+}
+
+.striped-table .mat-mdc-row:nth-child(odd) {
+  background-color: white;
+}
+
+.mat-mdc-header-row,
+.mat-mdc-row {
+  height: 28px;
+  min-height: 28px;
+}
+
+.mat-mdc-header-cell {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.phyto-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  vertical-align: middle;
+}
+
+.phyto-action-icon {
+  font-size: $icon-button-size;
+  height: $icon-button-size;
+  width: $icon-button-size;
 }
