@@ -167,7 +167,7 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
       },
       (error) => {
         if (error.status === 403) {
-          this._commonService.translateToaster('error', 'Erros.NotAllowed');
+          this._commonService.translateToaster('error', 'Errors.NotAllowed');
         } else {
           this._commonService.translateToaster('error', 'Errors.ErrorOccurs');
         }

@@ -133,7 +133,7 @@
   class="error"
   style="color: red; font-size: 80%; font-weight: 400"
 >
-  {{ 'Occtax.Releve.Errors.DatesReversed' | translate }}
+  {{ 'Errors.DatesReversed' | translate }}
 </div>
 
 <div
@@ -277,7 +277,7 @@
     <!-- TYPE REGROUPEMENT -->
     <pnx-nomenclature
       *ngIf="occtaxConfig.moduleConf.form_fields.group_type"
-      label="{{ 'Releve.GroupType' | translate }}"
+      label="{{ 'Occtax.Releve.GroupType' | translate }}"
       [parentFormControl]="propertiesForm.get('id_nomenclature_grp_typ')"
       codeNomenclatureType="TYP_GRP"
     ></pnx-nomenclature>
