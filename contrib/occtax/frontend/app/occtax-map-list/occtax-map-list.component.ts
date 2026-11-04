@@ -40,22 +40,23 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
   public apiEndPoint: string;
   public dynamicFormGroup: UntypedFormGroup;
   public formsSelected = [];
-  public cardContentHeight: number = 200;
+  public minHeight: number = 0;
+  public cardContentHeight: number = 0;
 
   public isCollapseAvance = true;
   public colWidths: Array<number | string> = [
     240,
     24,
-    480,
+    240,
     24,
     'minmax(0, 1fr)',
   ];
   public colMinWidths: Array<number> = [
     80,
     24,
-    140,
+    80,
     24,
-    0,
+    160,
   ];
 
   advandedFilterOpen = false;
@@ -69,6 +70,7 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
   table: DatatableComponent;
 
   private tableRecalculationFrame: number | null = null;
+  private rowCountRefreshTimeout: number | null = null;
 
   constructor(
     public mapListService: MapListService,
@@ -126,7 +128,6 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
       this.calcCardContentHeight();
       this.colWidths[2] = this.cardContentHeight * 0.75;
     this.scheduleTableRecalculation();
-
     }, 500);
     if (this._mapService.currentExtend) {
       this._mapService.map.setView(
@@ -137,7 +138,10 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
     this._mapService.removeLayerFeatureGroups([this._mapService.fileLayerFeatureGroup]);
   }
 
-  onResize(event: MouseEvent, colIndex: number): void {
+  onResize(event, colIndex: number): void {
+    if (window.innerWidth < 1024) {
+      return;
+    }
     event.preventDefault();
     const startX = event.pageX;
     const startWidth = this.colWidths[colIndex] as number;
@@ -163,6 +167,20 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
   onWindowResize(): void {
     this.calcCardContentHeight();
     this.scheduleTableRecalculation();
+    const previousRowPerPage = this.occtaxMapListS.rowPerPage;
+    this.calculateNbRow();
+    if (previousRowPerPage !== this.occtaxMapListS.rowPerPage) {
+      if (this.rowCountRefreshTimeout !== null) {
+        window.clearTimeout(this.rowCountRefreshTimeout);
+      }
+      this.rowCountRefreshTimeout = window.setTimeout(() => {
+        this.rowCountRefreshTimeout = null;
+        this.mapListService.setHttpParam('limit', this.occtaxMapListS.rowPerPage);
+        this.mapListService.deleteHttpParam('offset');
+        this.mapListService.page.pageNumber = 0;
+        this.mapListService.refreshData(this.apiEndPoint, 'set');
+      }, 200);
+    }
   }
 
   private scheduleTableRecalculation(): void {
@@ -178,8 +196,8 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
 
   calculateNbRow() {
     let wH = window.innerHeight;
-    let listHeight = wH - 64 - 150;
-    this.occtaxMapListS.rowPerPage = Math.round(listHeight / 40);
+    let listHeight = wH - 250;
+    this.occtaxMapListS.rowPerPage = Math.max(1,Math.round(listHeight / 40));
   }
 
   refreshForms() {
@@ -198,7 +216,7 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
 
     let height = wH - (tbH + 40);
 
-    this.cardContentHeight = height >= 350 ? height : 350;
+    this.cardContentHeight = height >= this.minHeight ? height : this.minHeight;
     // resize map after resize container
     if (this._mapService.map) {
       setTimeout(() => {
