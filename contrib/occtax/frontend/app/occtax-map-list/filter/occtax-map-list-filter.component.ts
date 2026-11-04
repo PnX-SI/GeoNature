@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { TaxonomyComponent } from '@geonature_common/form/taxonomy/taxonomy.component';
 import { UntypedFormGroup } from '@angular/forms';
@@ -14,15 +14,13 @@ import { OcctaxConfigService } from '../../services/occtax-config.service';
   templateUrl: 'occtax-map-list-filter.component.html',
   styleUrls: ['./occtax-map-list-filter.component.scss'],
 })
-export class OcctaxMapListFilterComponent implements OnInit {
+export class OcctaxMapListFilterComponent implements OnInit, AfterViewInit {
   public formsDefinition = FILTERSLIST;
   public dynamicFormGroup: UntypedFormGroup;
   public formsSelected = [];
   public displayParams: HttpParams = new HttpParams();
   @ViewChild(TaxonomyComponent)
   public taxonomyComponent: TaxonomyComponent;
-
-  advandedFilterOpen = false;
 
   constructor(
     private mapListService: MapListService,
@@ -33,6 +31,17 @@ export class OcctaxMapListFilterComponent implements OnInit {
   ) {}
 
   ngOnInit() {}
+
+  ngAfterViewInit() {
+    const savedFilters = localStorage.getItem('occtaxFilters');
+    if (savedFilters) {
+      const parsedFilters = JSON.parse(savedFilters);
+      setTimeout(() => {
+        this.occtaxMapListService.dynamicFormGroup.patchValue(parsedFilters);
+        this.searchData();
+      }, 500)
+    }
+  }
 
   searchData() {
     this.mapListService.zoomOnLayer = true;
@@ -54,21 +63,17 @@ export class OcctaxMapListFilterComponent implements OnInit {
         params.push({ param: key, value: value });
       }
     }
-    this.closeAdvancedFilters();
+    localStorage.setItem(
+      'occtaxFilters',
+      JSON.stringify(this.occtaxMapListService.dynamicFormGroup.value)
+    );
     this.mapListService.refreshData(null, 'set', params);
-  }
-
-  toggleAdvancedFilters() {
-    this.advandedFilterOpen = !this.advandedFilterOpen;
-  }
-
-  closeAdvancedFilters() {
-    this.advandedFilterOpen = false;
   }
 
   refreshFilters() {
     this.taxonomyComponent.refreshAllInput();
     this.occtaxMapListService.dynamicFormGroup.reset();
     this.mapListService.refreshUrlQuery(12);
+    localStorage.removeItem('occtaxFilters');
   }
 }
