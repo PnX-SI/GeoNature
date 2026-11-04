@@ -5,21 +5,37 @@
   margin-left: 5px;
 }
 
-.map-list-container {
+.map-list-grid {
   background-color: #fff;
   border: 1px solid #f1f1f1;
   border-radius: 2px;
-  padding: 10px 15px;
+  padding: 10px 0px;
   box-shadow:
     0 2px 1px -1px rgba(0, 0, 0, 0.2),
     0 1px 1px 0 rgba(0, 0, 0, 0.14),
     0 1px 3px 0 rgba(0, 0, 0, 0.12);
   height: 100%;
+  display: grid;
+  gap: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow: auto;
+}
+
+.handle-container {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.resize-handle {
+  cursor: col-resize;
 }
 
 .uppercase {
   text-transform: uppercase;
 }
+
 .action-btn {
   font-size: 18px;
 }

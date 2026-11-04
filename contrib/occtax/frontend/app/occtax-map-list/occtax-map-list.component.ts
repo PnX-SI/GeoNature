@@ -40,9 +40,23 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
   public apiEndPoint: string;
   public dynamicFormGroup: UntypedFormGroup;
   public formsSelected = [];
-  public cardContentHeight: number;
+  public cardContentHeight: number = 200;
 
   public isCollapseAvance = true;
+  public colWidths: Array<number | string> = [
+    240,
+    24,
+    480,
+    24,
+    'minmax(0, 1fr)',
+  ];
+  public colMinWidths: Array<number> = [
+    80,
+    24,
+    140,
+    24,
+    0,
+  ];
 
   advandedFilterOpen = false;
   @ViewChild(NgbModal)
@@ -53,6 +67,8 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
   public dynamicForm: GenericFormGeneratorComponent;
   @ViewChild('table')
   table: DatatableComponent;
+
+  private tableRecalculationFrame: number | null = null;
 
   constructor(
     public mapListService: MapListService,
@@ -106,7 +122,12 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    setTimeout(() => this.calcCardContentHeight(), 500);
+    setTimeout(() =>{
+      this.calcCardContentHeight();
+      this.colWidths[2] = this.cardContentHeight * 0.75;
+    this.scheduleTableRecalculation();
+
+    }, 500);
     if (this._mapService.currentExtend) {
       this._mapService.map.setView(
         this._mapService.currentExtend.center,
@@ -116,9 +137,43 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
     this._mapService.removeLayerFeatureGroups([this._mapService.fileLayerFeatureGroup]);
   }
 
-  @HostListener('window:resize', ['$event'])
-  onResize(event) {
+  onResize(event: MouseEvent, colIndex: number): void {
+    event.preventDefault();
+    const startX = event.pageX;
+    const startWidth = this.colWidths[colIndex] as number;
+
+    const onMouseMove = (e: MouseEvent) => {
+      const newWidth = Math.max(this.colMinWidths[colIndex], startWidth + (e.pageX - startX));
+      this.colWidths[colIndex] = newWidth;
+      this.scheduleTableRecalculation();
+    };
+
+    const onMouseUp = () => {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+       this.calcCardContentHeight()
+      this.scheduleTableRecalculation();
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  }
+
+  @HostListener('window:resize')
+  onWindowResize(): void {
     this.calcCardContentHeight();
+    this.scheduleTableRecalculation();
+  }
+
+  private scheduleTableRecalculation(): void {
+    if (this.tableRecalculationFrame !== null) {
+      return;
+    }
+
+    this.tableRecalculationFrame = requestAnimationFrame(() => {
+      this.tableRecalculationFrame = null;
+      this.table?.recalculate();
+    });
   }
 
   calculateNbRow() {
@@ -354,4 +409,7 @@ export class OcctaxMapListComponent implements OnInit, AfterViewInit {
   isActionAllowed(row: any, action: 'U' | 'D'): boolean {
     return this.actionService.isActionAllowed(row.rights, row.dataset.acquisition_framework?.opened, action);
   }
+
+  get gridColumns(): string {
+    return this.colWidths.map((width) => (typeof width === 'number' ? `${width}px` : width)).join(' ');  }
 }
