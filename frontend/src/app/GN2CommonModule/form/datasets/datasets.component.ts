@@ -57,6 +57,12 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
    */
   @Input() creatableInModule: string;
   @Input() bindValue: string = 'id_dataset';
+  /**
+   * fields:
+   * Si l'on souhaite ne récupérer que certains champs,
+   * par exemple, avec ['id_dataset', 'dataset_name'] : les champs 'id_dataset' et 'dataset_name'
+   */
+  @Input() fields: string[] = null;
 
   constructor(
     private _dfs: DataFormService,
@@ -85,7 +91,7 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
     if (this.creatableInModule) {
       filter_param['create'] = this.creatableInModule;
     }
-    this._dfs.getDatasets((params = filter_param)).subscribe((datasets) => {
+    this._dfs.getDatasets((params = filter_param), undefined, this.fields).subscribe((datasets) => {
       this.datasets = datasets;
       this.valueLoaded.emit({ value: datasets });
       if (
