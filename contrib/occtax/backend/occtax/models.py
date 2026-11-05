@@ -2,10 +2,21 @@ from typing import Any, Optional
 
 from geoalchemy2 import Geometry
 from sqlalchemy import Column, DateTime, FetchedValue, ForeignKey, Integer, Unicode, not_
+from sqlalchemy import (
+    Column,
+    DateTime,
+    FetchedValue,
+    ForeignKey,
+    Integer,
+    Unicode,
+    String,
+    Numeric,
+    not_,
+)
 from sqlalchemy.sql import select, func, and_
 from sqlalchemy.orm import relationship, backref, Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import UUID, JSONB
-from flask import g
+from flask import g, current_app
 
 from pypnusershub.db.models import User
 from pypn_habref_api.models import Habref
@@ -58,6 +69,12 @@ class CorCountingOccurrence(DB.Model):
     id_nomenclature_obj_count: Mapped[int] = mapped_column(Integer, server_default=FetchedValue())
     id_nomenclature_type_count: Mapped[Optional[int]] = mapped_column(
         Integer, server_default=FetchedValue()
+    )
+    id_nomenclature_vegetation_stratum: Mapped[Optional[int]] = mapped_column(
+        Integer, ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature")
+    )
+    id_nomenclature_phytosociological_abundance: Mapped[Optional[int]] = mapped_column(
+        Integer, ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature")
     )
     count_min: Mapped[Optional[int]]
     count_max: Mapped[Optional[int]]
@@ -122,6 +139,7 @@ class TOccurrencesOccurrence(DB.Model):
     id_nomenclature_determination_method: Mapped[Optional[int]] = mapped_column(
         Integer, server_default=FetchedValue()
     )
+    id_nomenclature_organism_support = DB.Column(DB.Integer)
     id_nomenclature_behaviour: Mapped[Optional[int]] = mapped_column(
         Integer, server_default=FetchedValue()
     )
@@ -198,8 +216,24 @@ class TRelevesOccurrence(DB.Model):
     geom_local: Mapped[Optional[Any]] = mapped_column(Geometry("GEOMETRY"))
     cd_hab: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey(Habref.cd_hab))
     precision: Mapped[Optional[int]]
+    code_releve: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    slope: Mapped[Optional[Numeric]] = mapped_column(Numeric(4, 2))
+    area: Mapped[Optional[Numeric]] = mapped_column(Numeric(20, 2))
+    id_nomenclature_exposure: Mapped[Optional[int]] = mapped_column(Integer)
+    id_nomenclature_location_type: Mapped[Optional[int]] = mapped_column(
+        Integer, ForeignKey("ref_geo.bib_areas_types.id_type")
+    )
+    id_area_attachement = DB.Column(DB.Integer, ForeignKey("ref_geo.l_areas.id_area"))
 
     habitat = relationship(Habref, lazy="select")
+    medias = DB.relationship(
+        TMedias,
+        primaryjoin=TMedias.uuid_attached_row == unique_id_sinp_grp,
+        foreign_keys=[TMedias.uuid_attached_row],
+        cascade="all",
+        lazy="select",
+        overlaps="medias",
+    )
     additional_fields: Mapped[Optional[Any]] = mapped_column(JSONB)
 
     t_occurrences_occtax = relationship(
@@ -273,6 +307,30 @@ class TRelevesOccurrence(DB.Model):
             action: self.has_instance_permission(scope)
             for action, scope in get_scopes_by_action(**kwargs).items()
         }
+
+
+@serializable
+class TVegetationStratum(DB.Model):
+    __tablename__ = "t_vegetation_stratum"
+    __table_args__ = {"schema": "pr_occtax"}
+
+    id_vegetation_stratum = DB.Column(DB.Integer, primary_key=True)
+    id_releve_occtax = DB.Column(DB.Integer, ForeignKey(TRelevesOccurrence.id_releve_occtax))
+    id_nomenclature_vegetation_stratum = DB.Column(DB.Integer)
+    min_height = DB.Column(DB.Numeric(5, 2))
+    max_height = DB.Column(DB.Numeric(5, 2))
+    average_height = DB.Column(DB.Numeric(5, 2))
+    percentage_cover_vegetation_stratum = DB.Column(DB.Numeric(5, 2))  # it's int4 in DB
+
+    releve = relationship("TRelevesOccurrence", back_populates="t_vegetation_stratum")
+
+
+TRelevesOccurrence.t_vegetation_stratum = relationship(
+    "TVegetationStratum",
+    lazy="joined",
+    cascade="all, delete-orphan",
+    back_populates="releve",
+)
 
 
 @serializable

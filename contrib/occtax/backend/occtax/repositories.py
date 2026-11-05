@@ -140,7 +140,6 @@ def get_query_occtax_filters(
         ).exists()
         q = q.where(exists_criteria)
         params.pop("observers")
-
     if "date_up" in params:
         testT = testDataType(params.get("date_up"), DB.DateTime, "date_up")
         if testT:
@@ -161,21 +160,24 @@ def get_query_occtax_filters(
         if testT:
             raise GeonatureApiError(message=testT)
         q = q.where(mappedView.altitude_max <= params.pop("altitude_max"))
-
     if "altitude_min" in params:
         testT = testDataType(params.get("altitude_min"), DB.Integer, "altitude_min")
         if testT:
             raise GeonatureApiError(message=testT)
         q = q.where(mappedView.altitude_min >= params.pop("altitude_min"))
-
+    # TODO: support multiselect
     if "organism" in params:
         q = q.join(CorDatasetActor, CorDatasetActor.id_dataset == mappedView.id_dataset).where(
             CorDatasetActor.id_organism == int(params.pop("organism"))
         )
-
     if "observers_txt" in params:
         observers_query = "%{}%".format(params.pop("observers_txt"))
         q = q.where(getattr(mappedView, obs_txt_column).ilike(observers_query))
+    # TODO: support multiselect
+    if "acquisition_framework" in params:
+        q = q.join(TDatasets, TDatasets.id_dataset == mappedView.id_dataset).where(
+            TDatasets.id_acquisition_framework == int(params.pop("acquisition_framework"))
+        )
 
     if from_generic_table:
         table_columns = mappedView

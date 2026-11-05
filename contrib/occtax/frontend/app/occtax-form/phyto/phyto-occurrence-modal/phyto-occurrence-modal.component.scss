@@ -1,0 +1,26 @@
+@use '@angular/material' as mat;
+
+:host {
+  @include mat.expansion-density(-1);
+}
+
+:host .mat-expansion-panel {
+  overflow: hidden;
+  margin-right: 0 !important;
+}
+
+.custom-panel-title {
+  font-weight: bold;
+}
+
+.phyto-proof-message {
+  display: block;
+  margin-top: -0.8rem;
+  margin-bottom: 0.5rem;
+  font-size: 80%;
+  font-weight: 400;
+}
+
+.phyto-section-title {
+  margin-top: 15px;
+}

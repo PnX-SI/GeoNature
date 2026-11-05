@@ -1,0 +1,266 @@
+<div
+  id="taxalist-container"
+  data-qa="pnx-phyto-taxa-table"
+  class="table-container mb-2"
+>
+  <ng-container
+    *ngIf="
+      (occtaxTaxaListService.occurrences$ | async)?.length ||
+        occtaxTaxaListService.rec_occurrences_in_progress.length;
+      else zeroOccurrenceBlk
+    "
+  >
+    <!-- Unsaved occurence management -->
+    <ng-container
+      *ngFor="let occurrenceInProgress of occtaxTaxaListService.rec_occurrences_in_progress"
+    >
+      <div
+        class="in-progress-panel"
+        [ngClass]="occurrenceInProgress.state"
+        [attr.role]="occurrenceInProgress.state === 'error' ? 'button' : 'status'"
+        [attr.tabindex]="occurrenceInProgress.state === 'error' ? 0 : null"
+        [attr.aria-label]="
+          (occurrenceInProgress.state === 'error'
+            ? ('Occtax.TaxaList.ClickToContinue' | translate)
+            : ('Occtax.TaxaList.SaveInProgress' | translate)) +
+          ': ' +
+          taxonTitle(occurrenceInProgress.data)
+        "
+        [matTooltip]="
+          occurrenceInProgress.state === 'in_progress'
+            ? ('Occtax.TaxaList.SaveInProgress' | translate)
+            : ('Occtax.TaxaList.SaveError' | translate)
+        "
+        matTooltipPosition="left"
+        (click)="inProgressErrorToForm(occurrenceInProgress)"
+        (keydown.enter)="inProgressErrorToForm(occurrenceInProgress)"
+        (keydown.space)="inProgressErrorToForm(occurrenceInProgress); $event.preventDefault()"
+      >
+        <mat-spinner
+          *ngIf="occurrenceInProgress.state === 'in_progress'"
+          diameter="20"
+          strokeWidth="2"
+          aria-hidden="true"
+        ></mat-spinner>
+        <mat-icon
+          *ngIf="occurrenceInProgress.state === 'error'"
+          aria-hidden="true"
+        >
+          warning
+        </mat-icon>
+        <span [innerHTML]="taxonTitle(occurrenceInProgress.data)"></span>
+        <div
+          *ngIf="occurrenceInProgress.state === 'error'"
+          class="error-hint"
+        >
+          {{ 'Occtax.TaxaList.ClickToContinue' | translate }}
+        </div>
+      </div>
+    </ng-container>
+
+    <table
+      mat-table
+      [dataSource]="occtaxTaxaListService.occurrences$ | async"
+      class="striped-table"
+      matSort
+      (matSortChange)="sortData($event)"
+      data-qa="phyto-taxa-table"
+    >
+      <caption class="cdk-visually-hidden">
+        {{ 'Occtax.Taxon.ObservedTaxon' | translate }}
+      </caption>
+
+      <!-- Valid name -->
+      <ng-container
+        matColumnDef="nom_valide"
+        sticky
+      >
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header="nom_valide"
+          [attr.rowspan]="2"
+          scope="col"
+          sortActionDescription="Sort by valid name"
+          class="mat-header-cell-nom_valide p-1"
+        >
+          {{ 'Occtax.Taxon.ValidName' | translate }}
+        </th>
+        <td
+          mat-cell
+          *matCellDef="let occurrence"
+          [matTooltipDisabled]="occurrence.taxref?.nom_valide.length < 24"
+          matTooltip="{{ occurrence.taxref?.nom_valide || '' }}"
+          aria-label="{{ occurrence.taxref?.nom_valide || '' }}"
+          [ngClass]="{
+            'p-1': true,
+            withTooltip: occurrence.taxref?.nom_valide.length > 25
+          }"
+        >
+          {{ occurrence.taxref?.nom_valide || '' }}
+        </td>
+      </ng-container>
+
+      <!-- Strata columns -->
+      <ng-container
+        *ngFor="let column of strataColumns"
+        [matColumnDef]="column.key"
+      >
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          scope="col"
+          [matTooltip]="column.label"
+          [matTooltipDisabled]="!(isHandset$ | async)"
+          aria-label="{{ column.label }}"
+          [ngClass]="{
+            'p-1': true,
+            'mat-column-abundance': true,
+            withTooltip: (isHandset$ | async)
+          }"
+          [sortActionDescription]="'Sort by ' + column.label"
+        >
+          {{ (isHandset$ | async) ? column.mnemonique : column.label }}
+        </th>
+        <td
+          mat-cell
+          *matCellDef="let occurrence"
+          class="mat-column-abundance p-1"
+        >
+          {{ getStratumAbundance(occurrence, column.id) }}
+        </td>
+      </ng-container>
+
+      <!-- Comment -->
+      <ng-container matColumnDef="comment">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          [attr.rowspan]="2"
+          scope="col"
+          class="mat-header-cell-comment p-1"
+        >
+          {{ 'Occtax.TaxaList.Comment' | translate }}
+        </th>
+        <td
+          mat-cell
+          *matCellDef="let occurrence"
+          matTooltip="{{ getOccurrenceComment(occurrence) }}"
+          aria-label="{{ getOccurrenceComment(occurrence) }}"
+          class="withTooltip p-1"
+        >
+          {{ getOccurrenceComment(occurrence) }}
+        </td>
+      </ng-container>
+
+      <!-- Actions -->
+      <ng-container matColumnDef="actions">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          [attr.rowspan]="2"
+          scope="col"
+          class="mat-header-cell-actions p-1"
+        >
+          {{ 'Occtax.TaxaList.Actions' | translate }}
+        </th>
+        <td
+          mat-cell
+          *matCellDef="let occurrence; let i = index"
+          class="p-1"
+        >
+          <button
+            mat-icon-button
+            color="primary"
+            type="button"
+            class="phyto-action-button"
+            matTooltip="{{ 'Occtax.Taxon.Actions.EditInModal' | translate }}"
+            [attr.aria-label]="
+              ('Occtax.Taxon.Actions.EditInModal' | translate) +
+              ': ' +
+              (occurrence.taxref?.nom_valide || taxonTitle(occurrence))
+            "
+            (click)="openOccurrenceModal(occurrence)"
+            data-qa="phyto-taxa-table-edit"
+          >
+            <mat-icon
+              class="phyto-action-icon"
+              aria-hidden="true"
+            >
+              edit
+            </mat-icon>
+          </button>
+          <button
+            *ngIf="(occtaxTaxaListService.occurrences$ | async)?.length !== 1 || i !== 0"
+            mat-icon-button
+            color="warn"
+            type="button"
+            class="phyto-action-button"
+            matTooltip="{{ 'Occtax.Taxon.Actions.Delete' | translate }}"
+            [attr.aria-label]="
+              ('Occtax.Taxon.Actions.Delete' | translate) +
+              ': ' +
+              (occurrence.taxref?.nom_valide || taxonTitle(occurrence))
+            "
+            (click)="deleteOccurrence(occurrence)"
+            data-qa="phyto-taxa-table-delete"
+          >
+            <mat-icon
+              class="phyto-action-icon"
+              aria-hidden="true"
+            >
+              delete_forever
+            </mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="strata">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          class="mat-header-cell-strata p-1"
+          scope="colgroup"
+          [attr.colspan]="strataColumns.length || 1"
+        >
+          {{ 'Occtax.Releve.VegetationStrata' | translate }}
+        </th>
+      </ng-container>
+
+      <tr
+        mat-header-row
+        *matHeaderRowDef="displayedColumnKeys; sticky: true"
+      ></tr>
+      <tr
+        mat-header-row
+        *matHeaderRowDef="strataColumnKeys; sticky: true"
+      ></tr>
+
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+      ></tr>
+
+      <tr
+        class="mat-row"
+        *matNoDataRow
+      >
+        <td
+          class="mat-cell p-1"
+          colspan="4"
+        >
+          {{ 'Occtax.TaxaList.NoTaxon' | translate }}
+        </td>
+      </tr>
+    </table>
+  </ng-container>
+
+  <ng-template #zeroOccurrenceBlk>
+    <div
+      id="zero-taxon-container"
+      role="status"
+      aria-live="polite"
+    ></div>
+  </ng-template>
+</div>

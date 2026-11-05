@@ -1,0 +1,87 @@
+@use '@angular/material' as mat;
+
+.phyto-card {
+  background-color: var(--mat-table-row-item-hover-state-layer-color, rgba(0, 0, 0, 0.04));
+}
+
+.abundance-table {
+  --phyto-table-border-color: var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
+
+  @include mat.table-density(-4);
+
+  border: 1px solid var(--phyto-table-border-color);
+  border-radius: 4px;
+  border-collapse: separate;
+  border-spacing: 0;
+  height: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  width: 100%;
+}
+
+th {
+  font-weight: bold;
+}
+
+th,
+td {
+  border-left: 0.5px solid var(--phyto-table-border-color);
+  font-size: small;
+}
+
+th:first-child,
+td:first-child {
+  border-left: none;
+}
+
+.first-col {
+  text-align: right;
+  vertical-align: bottom;
+  width: 5rem;
+}
+
+.abundance-headers {
+  text-align: center;
+  vertical-align: bottom;
+  width: 5rem;
+}
+
+.withTooltip {
+  cursor: help;
+  text-decoration: underline dotted;
+}
+
+.form-danger {
+  color: #f44336;
+  display: block;
+}
+
+.tr-compacted {
+  height: 36px;
+}
+
+.phyto-card-actions {
+  min-height: 36px;
+}
+
+.button-compacted {
+  @include mat.button-density(-3);
+
+  height: 24px;
+}
+
+.phyto-title-icon {
+  font-size: 12px;
+  height: 12px;
+  width: 12px;
+}
+
+.phyto-title-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  vertical-align: middle;
+}

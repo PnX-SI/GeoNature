@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from flask import current_app, g
-from marshmallow import pre_load, post_load, pre_dump, post_dump, fields, ValidationError
+from marshmallow import pre_load, post_load, pre_dump, post_dump, fields, ValidationError, EXCLUDE
 from marshmallow_sqlalchemy.convert import ModelConverter as BaseModelConverter
 from shapely.geometry import shape
 from geoalchemy2.shape import to_shape, from_shape
@@ -11,7 +11,12 @@ from geojson import Feature, FeatureCollection
 from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
 
 from geonature.utils.env import MA
-from .models import CorCountingOccurrence, TOccurrencesOccurrence, TRelevesOccurrence
+from .models import (
+    CorCountingOccurrence,
+    TOccurrencesOccurrence,
+    TRelevesOccurrence,
+    TVegetationStratum,
+)
 from geonature.core.gn_meta.schemas import DatasetSchema
 from geonature.core.gn_commons.schemas import MediaSchema
 from geonature.core.taxonomie.schemas import TaxrefSchema
@@ -81,6 +86,8 @@ class CountingSchema(MA.SQLAlchemyAutoSchema):
     medias = MA.Nested(MediaSchema, many=True)
     id_individual = MA.auto_field()
     individual = MA.Nested(TIndividualsSchema, dump_only=True)
+    id_nomenclature_vegetation_stratum = MA.auto_field()
+    id_nomenclature_phytosociological_abundance = MA.auto_field()
 
     @pre_load
     def make_counting(self, data, **kwargs):
@@ -102,6 +109,15 @@ class OccurrenceSchema(MA.SQLAlchemyAutoSchema):
     additional_fields = AdditionalDataWithNomenclatureField(object_code="OCCTAX_OCCURRENCE")
     cor_counting_occtax = MA.Nested(CountingSchema, many=True)
     taxref = MA.Nested(TaxrefSchema, dump_only=True)
+
+
+class VegetationStratumSchema(MA.SQLAlchemyAutoSchema):
+    class Meta:
+        model = TVegetationStratum
+        load_instance = True
+        include_fk = True
+
+    id_vegetation_stratum = fields.Integer(allow_none=True)
 
 
 class ReleveSchema(MA.SQLAlchemyAutoSchema):
@@ -139,6 +155,21 @@ class ReleveSchema(MA.SQLAlchemyAutoSchema):
             self.fields["observers"].allow_none = observers_allow_none
         except:
             pass
+
+    t_vegetation_stratum = fields.Nested(VegetationStratumSchema, many=True)
+    medias = MA.Nested(MediaSchema, many=True)
+
+    # __init__ is overridden because g.module_conf is only available during
+    # a request context (i.e., at instantiation time), not at class definition time.
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        try:
+            observers_allow_none = g.module_conf.get("observers_txt", True)
+            self.fields["observers"].allow_none = observers_allow_none
+        except:
+            pass
+
+    t_vegetation_stratum = fields.Nested(VegetationStratumSchema, many=True)
 
     @pre_load
     def make_releve(self, data, **kwargs):

@@ -543,6 +543,11 @@ pnx-root:empty + #cover-spin-removable {
   animation: spin 0.8s linear infinite;
 }
 
+// NG-DROPDOWN: in use for dropdown not attached to ng-select's
+.ng-dropdown-panel {
+  z-index: 2000 !important;
+}
+
 // NG-SELECT
 .ng-select .ng-dropdown-panel {
   z-index: 3001;

@@ -19,6 +19,7 @@
         "Modified": "Relevé modifié"
       },
       "SavedTaxon": "Taxon(s) enregistré(s)",
+      "SavedTaxons": "Taxons enregistrés",
 
       "InfoGeo": "Informations géographiques du relevé",
       "Info": "Informations relevé",
@@ -32,8 +33,23 @@
       "StayOnFormInterface": "Enchainer les relevés sans retourner à l'interface carte/liste",
       "GeoObjectNature": "Nature de l'objet géographique",
       "PlaceName": "Nom du lieu",
-      "Precision": "Precision",
+      "Precision": "Précision",
+      "CodeReleve": "Code du relevé",
+      "Area": "Surface (m²)",
+      "Slope": "Pente (degrés)",
+      "Exposure": "Exposition",
+      "LocationType": "Type de localisation",
+      "AreaAttachement": "Rattachement à une localisation existante",
+      "VegetationStrata":  "Strates de végétation",
+      "Stratum":  "Strate",
+      "Cover": "Recouvrement (%)",
+      "HeightAvg": "Hauteur moy. (m)",
+      "HeightMin": "Hauteur inf. (m)",
+      "HeightMax": "Hauteur sup. (m)",
       "Errors": {
+        "CoverRangeError": "Le recouvrement doit être compris entre 0 et 100 %.",
+        "HeightNonNegativeError": "La hauteur doit être supérieure ou égale à 0 m.",
+        "HeightOrderError": "Les hauteurs doivent respecter l'ordre : minimale, moyenne, puis maximale.",
         "AltitudeError": "L'altitude max ne peut être inférieure à l'altitude min",
         "DepthError": "La profondeur max ne peut être inférieure à la profondeur min",
         "HourMaxError": "L'heure de début ne peut pas être supérieure à l'heure de fin",
@@ -43,16 +59,24 @@
     "Taxon": {
       "Actions": {
         "Save": "Enregistrer le taxon",
+        "SaveThisTaxon": "Enregistrer ce taxon",
+        "ToggleAddTaxonForm": "Afficher ou masquer le formulaire d'ajout de taxon",
+        "CancelModifications":"Annuler les modifications sur ce taxon",
+        "EditAndSave":"Modifier et enregistrer ce taxon",
+        "Edit":"Modifier ce taxon",
+        "EditInModal":"Modifier ce taxon dans une fenêtre",
         "Add": "Ajouter le taxon",
-        "Cancel": "Annuler la saisie du taxon",
-        "Validate": "Valider le taxon"
+        "Cancel": "Annuler",
+        "Validate": "Valider le taxon",
+        "Delete" : "Supprimer le taxon"
       },
       "Messages": {
         "DeleteDone": "Taxon supprimé",
         "CreateDone": "Taxon ajouté au relevé",
         "UpdateDone": "Taxon mis à jour",
         "NoTaxonFound": "Aucun taxon trouvé pour cette recherche",
-        "CurrentlyEditing": "Veuillez enregistrer le taxon en cours d'édition avant d'en éditer un nouveau"
+        "CurrentlyEditing": "Veuillez enregistrer le taxon en cours d'édition avant d'en éditer un nouveau",
+        "DuplicateTaxonConfirmation": "Le taxon saisi est déjà dans la liste des taxons enregistrés.<br/><small>Privilégiez l'ajout de plusieurs dénombrements sur le même taxon.</small><br/>Voulez-vous continuer ?"
       },
       "Errors": {
         "ExistProofValidation": "Ce champs doit débuter par 'http://', 'https://', ou 'ftp://'",
@@ -64,11 +88,15 @@
         "DeterminationMethodRequiredError": "Veuillez indiquer la méthode de détermination",
         "TechObsRequiredError": "Veuillez indiquer la technique d'observation",
         "BiologicalConditionRequiredError": "Veuillez indiquer l'état biologique",
-        "CountingRequiredError": "Veuillez renseigner un dénombrement"
+        "CountingRequiredError": "Veuillez renseigner un dénombrement",
+        "ObservationStatusRequiredError": "Veuillez renseigner un statut d'observation"
       },
       "ObservedTaxon": "Taxon(s) observé(s)",
+      "AddTaxon": "Ajout d'un taxon",
+      "EditTaxon": "Edition avancée du taxon",
       "Priority": "Prioritaire",
-      "NomCite": "Taxon (nom cité)",
+      "QuotedName": "Taxon (nom cité)",
+      "ValidName": "Nom valide",
       "TaxonName": "Nom du taxon",
       "ObsTech": "Technique d'observation",
       "BiologicalCondition": "Etat biologique",
@@ -76,6 +104,7 @@
       "Naturalness": "Naturalite",
       "DeterminationMethod": "Méthode de détermination",
       "DeterminationMethodComplement": "Complément méthode de détermination",
+      "SupportOrganism": "Type de support",
       "Determiner": "Déterminateur",
       "ExistProof": "Preuve d'existence",
       "SampleNumber": "Numéro du prélevement",
@@ -85,13 +114,24 @@
       "ObservationStatus": "Statut d'observation",
       "Blurring": "Floutage",
       "StatusSource": "Statut source",
-      "OccBehaviour": "Comportement"
+      "OccBehaviour": "Comportement",
+      "OccSupport": "Support"
     },
     "TaxaList": {
       "SortByRecord": "Ordre de saisie",
       "SortByName": "Ordre alphabétique",
       "SortAsc": "Ordre croissant",
-      "SortDesc": "Ordre décroissant"
+      "SortDesc": "Ordre décroissant",
+      "NoTaxon": "Aucun taxon pour ce relevé",
+      "SortType":"Type de tri",
+      "SaveInProgress":"Enregistrement en cours",
+      "SaveError":"Une erreur est survenue lors de l’enregistrement",
+      "ClickToContinue":"Erreur : cliquez pour reprendre ce taxon",
+      "TaxonDeletedAnnouncement": "{{ taxon }} supprimé",
+      "SortingCleared": "Tri réinitialisé",
+      "SortAnnouncement": "Tri {{ direction }}",
+      "Comment": "Commentaire",
+      "Actions" : "Actions"
     },
     "Counting": {
       "Counting": "Dénombrement",
@@ -105,6 +145,10 @@
       "Phenology": "Phénologie",
       "CountingObject": "Objet du dénombrement",
       "CountingType": "Type de dénombrement",
+      "Abundance": "Abondance",
+      "Abundances": "Abondances",
+      "AbundanceRecorded": "Abondance enregistrée",
+      "NoAbundanceValue": "Aucune valeur d'abondance",
       "Numbers": "Effectif",
       "Total": "Total",
       "Errors": {
@@ -112,6 +156,9 @@
         "LifeStageRequiredError": "Veuillez indiquer le stade de vie",
         "SexRequiredError": "Veuillez indiquer le sexe",
         "CountingObjectRequiredError": "Veuillez indiquer l'objet du dénombrement"
+      },
+      "Actions": {
+        "DeleteCounting": "Supprimer ce dénombrement" 
       }
     }
   }

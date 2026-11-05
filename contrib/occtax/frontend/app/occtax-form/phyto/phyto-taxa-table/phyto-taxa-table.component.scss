@@ -1,0 +1,133 @@
+@use '@angular/material' as mat;
+
+$icon-button-size: 18px;
+$table-cell-horizontal-padding: 16px;
+$inside-border-size: 1px;
+$table-border-color: var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
+$actions-column-width: calc(
+  $inside-border-size + (2 * $icon-button-size) + (2 * $table-cell-horizontal-padding)
+);
+$comment-max-characters: 18ch;
+$comment-column-width: calc(
+  (2 * $inside-border-size) + (2 * $table-cell-horizontal-padding) + $comment-max-characters
+);
+
+.table-container {
+  max-height: 95vh;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+table {
+  @include mat.table-density(-4);
+  max-width: 100%;
+  width: 100%;
+}
+
+th {
+  font-weight: bold;
+}
+
+th,
+td {
+  font-size: small;
+}
+
+.mat-header-cell-strata {
+  border-right: $inside-border-size solid $table-border-color;
+  border-left: $inside-border-size solid $table-border-color;
+  justify-content: center;
+  text-align: center;
+}
+
+.mat-column-nom_valide,
+.mat-column-comment {
+  inline-size: $comment-max-characters;
+  max-width: $comment-column-width;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  text-wrap: nowrap;
+}
+
+.mat-column-nom_valide {
+  border-right: $inside-border-size solid $table-border-color;
+}
+
+.mat-header-cell-comment,
+.mat-header-cell-nom_valide {
+  text-align: center;
+}
+
+::ng-deep .mat-header-cell-nom_valide .mat-sort-header-container,
+::ng-deep .mat-column-abundance .mat-sort-header-container {
+  justify-content: center;
+}
+
+.mat-column-comment {
+  border-left: $inside-border-size solid $table-border-color;
+}
+
+.mat-column-actions {
+  flex: 0 0 $actions-column-width !important;
+  min-width: $actions-column-width !important;
+  width: $actions-column-width !important;
+  align-items: center;
+  justify-content: space-between;
+  overflow-wrap: break-word;
+  white-space: unset !important;
+  word-wrap: break-word !important;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  border-left: $inside-border-size solid $table-border-color;
+}
+
+.mat-header-cell-actions {
+  text-align: center;
+}
+
+.mat-column-abundance {
+  border-left: $inside-border-size solid $table-border-color;
+  text-align: center;
+}
+
+.withTooltip {
+  cursor: help;
+  text-decoration: underline dotted;
+}
+
+.striped-table .mat-mdc-row:nth-child(even) {
+  background-color: #f5f5f5;
+}
+
+.striped-table .mat-mdc-row:nth-child(odd) {
+  background-color: white;
+}
+
+.mat-mdc-header-row,
+.mat-mdc-row {
+  height: 28px;
+  min-height: 28px;
+}
+
+.mat-mdc-header-cell {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.phyto-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  vertical-align: middle;
+}
+
+.phyto-action-icon {
+  font-size: $icon-button-size;
+  height: $icon-button-size;
+  width: $icon-button-size;
+}

@@ -1,6 +1,7 @@
 *.*~
 settings.ini
 config/*_config.toml
+contrib/occtax/occtax_config.toml
 
 **/conf_gn_module.toml
 **/module.config.ts

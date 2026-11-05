@@ -50,6 +50,10 @@
                 </mat-card-subtitle>
                 <div class="row">
                   <div class="col-6">
+                    <div *ngIf="config.OCCTAX.form_fields.code_releve">
+                      <div class="label">{{ 'Occtax.Releve.CodeReleve' | translate }} :</div>
+                      <div class="value">{{ releve.code_releve ?? '-' }}</div>
+                    </div>
                     <div>
                       <div class="label">Observateur(s) :</div>
                       <div class="value">
@@ -91,6 +95,24 @@
                     <div *ngIf="occtaxConfig.moduleConf.form_fields.altitude_max">
                       <div class="label">{{ 'MaxAltitude' | translate }}</div>
                       <div class="value">{{ releve.altitude_max ?? '-' }}</div>
+                    </div>
+                    <div *ngIf="config.OCCTAX.form_fields.area">
+                      <!-- TODO: config.OCCTAX to occtaxConfig.moduleConf -->
+                      <div class="label">{{ 'Occtax.Releve.Area' | translate }} :</div>
+                      <div class="value">{{ releve.area ?? '-' }}</div>
+                    </div>
+                    <div *ngIf="config.OCCTAX.form_fields.slope">
+                      <!-- TODO: config.OCCTAX to occtaxConfig.moduleConf -->
+                      <div class="label">{{ 'Occtax.Releve.Slope' | translate }} :</div>
+                      <div class="value">{{ releve.slope ?? '-' }}</div>
+                    </div>
+                    <div *ngIf="config.OCCTAX.form_fields.area">
+                      <div class="label">{{ 'Occtax.Releve.Area' | translate }} :</div>
+                      <div class="value">{{ releve.area ?? '-' }}</div>
+                    </div>
+                    <div *ngIf="config.OCCTAX.form_fields.slope">
+                      <div class="label">{{ 'Occtax.Releve.Slope' | translate }} :</div>
+                      <div class="value">{{ releve.slope ?? '-' }}</div>
                     </div>
                     <!--Champs additionnels-->
                     <ng-container *ngFor="let dynamiqueField of releveAddFields">
@@ -313,6 +335,16 @@
                           }}
                         </div>
                       </div>
+                      <div *ngIf="occtaxConfig.moduleConf.form_fields.support_organism">
+                        <div class="label">{{ 'Occtax.Taxon.OccSupport' | translate }} :</div>
+                        <div class="value">
+                          {{
+                            getLibelleByID(
+                              (displayOccurrence | async).id_nomenclature_organism_support
+                            )
+                          }}
+                        </div>
+                      </div>
                       <div *ngIf="occtaxConfig.moduleConf.form_fields.comment_occ">
                         <div class="label">{{ 'Comment' | translate }} :</div>
                         <div class="value">
@@ -373,6 +405,7 @@
                         </div>
 
                         <div *ngIf="config.OCCTAX.form_fields.individual && counting.id_individual">
+                          <!-- TODO: config.OCCTAX to occtaxConfig.moduleConf -->
                           <div class="label">{{ 'Individual.Raw' | translate }} :</div>
                           <div class="value">
                             {{ counting.individual?.individual_name }}

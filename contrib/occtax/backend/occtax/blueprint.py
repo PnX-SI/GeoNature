@@ -30,6 +30,7 @@ from .models import (
     TOccurrencesOccurrence,
     CorCountingOccurrence,
     DefaultNomenclaturesValue,
+    TVegetationStratum,
 )
 from .repositories import (
     ReleveRepository,
@@ -357,14 +358,70 @@ def insertOrUpdateOneReleve():
     return releve.get_geofeature(depth=depth)
 
 
-def releveHandler(request, *, releve, scope):
+def buildVegetationStrata(existing_strates, new_strates):
+    existing_by_id = {
+        strate.id_vegetation_stratum: strate
+        for strate in existing_strates
+        if strate.id_vegetation_stratum is not None
+    }
+    result = []
+    for strate in new_strates:
+        # Skip strata where all relevant fields are empty
+        if all(
+            strate.get(field) is None
+            for field in [
+                "id_vegetation_stratum",
+                "percentage_cover_vegetation_stratum",
+                "average_height",
+                "min_height",
+                "max_height",
+            ]
+        ):
+            continue
+
+        id_strate = strate.get("id_vegetation_stratum")
+        fields = [
+            "id_nomenclature_vegetation_stratum",
+            "percentage_cover_vegetation_stratum",
+            "average_height",
+            "min_height",
+            "max_height",
+        ]
+        if id_strate and id_strate in existing_by_id:
+            # Update
+            if all(
+                strate.get(field) is None
+                for field in [
+                    "percentage_cover_vegetation_stratum",
+                    "average_height",
+                    "min_height",
+                    "max_height",
+                ]
+            ):
+                # Skip if all update fields are empty (could be considered as a 'delete')
+                continue
+            else:
+                existing_strate = existing_by_id[id_strate]
+                # Update each field with the new value
+                for field in fields:
+                    setattr(existing_strate, field, strate.get(field))
+                result.append(existing_strate)
+        else:
+            # Create
+            new_strate = TVegetationStratum(**{field: strate.get(field) for field in fields})
+            result.append(new_strate)
+    return result
+
+
+def releveHandler(request, *, releve, scope, module_code=None):
     releveSchema = ReleveSchema()
     # Modification de la requete geojson en releve
     json_req = request.get_json()
-    json_req["properties"]["geom_4326"] = json_req["geometry"]
+    properties_dict = dict(json_req.get("properties", {}))
+    properties_dict["geom_4326"] = json_req.get("geometry")
     # chargement des données POST et merge avec relevé initial
     try:
-        releve = releveSchema.load(json_req["properties"], instance=releve)
+        releve = releveSchema.load(properties_dict, instance=releve)
     except ValidationError as error:
         log.exception(error.messages)
         raise BadRequest(error.messages)
@@ -385,8 +442,16 @@ def releveHandler(request, *, releve, scope):
             )
         # set id_digitiser
         releve.id_digitiser = g.current_user.id_role
+
+    is_phyto_context = module_code and str(module_code).lower() == "phyto"
+    if is_phyto_context:
+        new_strates = properties_dict.get("t_vegetation_stratum", [])
+        existing_strates = getattr(releve, "t_vegetation_stratum", [])
+        releve.t_vegetation_stratum = buildVegetationStrata(existing_strates, new_strates)
+
     if not dataset.acquisition_framework.opened:
         raise Conflict("Cannot create or update a releve on a closed acquisition framework.")
+
     DB.session.add(releve)
     DB.session.commit()
     return releve
@@ -395,7 +460,7 @@ def releveHandler(request, *, releve, scope):
 @blueprint.route("/<module_code>/only/releve", methods=["POST"])
 @blueprint.route("/only/releve", methods=["POST"])
 @permissions.check_cruved_scope("C", get_scope=True)
-def createReleve(scope):
+def createReleve(scope, module_code=None):
     """
     Post one Occtax data (Releve + Occurrence + Counting)
 
@@ -423,9 +488,14 @@ def createReleve(scope):
 
     :returns: GeoJson<TRelevesOccurrence>
     """
+    if module_code is None and hasattr(g, "current_module"):
+        module_code = g.current_module.module_code
+
     # nouveau releve vide
     releve = TRelevesOccurrence()
-    releve = ReleveSchema().dump(releveHandler(request=request, releve=releve, scope=scope))
+    releve = ReleveSchema().dump(
+        releveHandler(request=request, releve=releve, scope=scope, module_code=module_code)
+    )
 
     return {
         "geometry": releve.pop("geom_4326", None),
@@ -437,18 +507,23 @@ def createReleve(scope):
 @blueprint.route("/<module_code>/only/releve/<int:id_releve>", methods=["POST"])
 @blueprint.route("/only/releve/<int:id_releve>", methods=["POST"])
 @permissions.check_cruved_scope("U", get_scope=True)
-def updateReleve(id_releve, scope):
+def updateReleve(id_releve, scope, module_code=None):
     """
     Post one Occurrence data (Occurrence + Counting) for add to Releve
 
     """
+    if module_code is None and hasattr(g, "current_module"):
+        module_code = g.current_module.module_code
+
     # get releve by id_releve
     releve = DB.session.get(TRelevesOccurrence, id_releve)
 
     if not releve:
         return {"message": "not found"}, 404
 
-    releve = ReleveSchema().dump(releveHandler(request=request, releve=releve, scope=scope))
+    releve = ReleveSchema().dump(
+        releveHandler(request=request, releve=releve, scope=scope, module_code=module_code)
+    )
 
     return {
         "geometry": releve.pop("geom_4326", None),

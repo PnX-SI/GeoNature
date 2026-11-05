@@ -1,70 +1,90 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { GN2CommonModule } from '@geonature_common/GN2Common.module';
-import { Routes, RouterModule } from '@angular/router';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { GNPanelModule } from '@geonature/templates/gn-panel/gn-panel.module';
-import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { HttpClient } from "@angular/common/http";
+import { GN2CommonModule } from "@geonature_common/GN2Common.module";
+import { Routes, RouterModule } from "@angular/router";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { GNPanelModule } from "@geonature/templates/gn-panel/gn-panel.module";
+import {
+  TranslateModule,
+  TranslateLoader,
+  TranslateService,
+} from "@ngx-translate/core";
 
 // Components
-import { OcctaxMapListComponent } from './occtax-map-list/occtax-map-list.component';
-import { OcctaxMapListFilterComponent } from './occtax-map-list/filter/occtax-map-list-filter.component';
-import { OcctaxMapInfoComponent } from './occtax-map-info/occtax-map-info.component';
+import { OcctaxMapListComponent } from "./occtax-map-list/occtax-map-list.component";
+import { OcctaxMapListFilterComponent } from "./occtax-map-list/filter/occtax-map-list-filter.component";
+import { OcctaxMapInfoComponent } from "./occtax-map-info/occtax-map-info.component";
 
-import { OcctaxFormComponent } from './occtax-form/occtax-form.component';
-import { OcctaxFormMapComponent } from './occtax-form/map/occtax-map.component';
-import { OcctaxFormReleveComponent } from './occtax-form/releve/releve.component';
-import { OcctaxFormOccurrenceComponent } from './occtax-form/occurrence/occurrence.component';
-import { OcctaxFormTaxaListComponent } from './occtax-form/taxa-list/taxa-list.component';
-import { OcctaxFormCountingComponent } from './occtax-form/counting/counting.component';
-import { OcctaxProfilesComponent } from './occtax-form/occurrence/profiles.component';
-import { OcctaxFormParamDialog } from './occtax-form/form-param/form-param.dialog';
+import { OcctaxFormComponent } from "./occtax-form/occtax-form.component";
+import { OcctaxFormMapComponent } from "./occtax-form/map/occtax-map.component";
+import { OcctaxFormReleveComponent } from "./occtax-form/releve/releve.component";
+import { OcctaxFormOccurrenceComponent } from "./occtax-form/occurrence/occurrence.component";
+import { OcctaxFormTaxaListComponent } from "./occtax-form/taxa-list/taxa-list.component";
+import { OcctaxFormCountingComponent } from "./occtax-form/counting/counting.component";
+import { OcctaxProfilesComponent } from "./occtax-form/occurrence/profiles.component";
+import { OcctaxFormParamDialog } from "./occtax-form/form-param/form-param.dialog";
+import { PhytoStrataTableComponent } from "./occtax-form/phyto/phyto-strata-table/phyto-strata-table.component";
+import { PhytoTaxaTableComponent } from "./occtax-form/phyto/phyto-taxa-table/phyto-taxa-table.component";
+import { PhytoAbundanceComponent } from "./occtax-form/phyto/phyto-abundance/phyto-abundance.component";
+import { PhytoAdvancedCountingComponent } from "./occtax-form/phyto/phyto-advanced-counting/phyto-advanced-counting.component";
+import { PhytoOccurrenceComponent } from "./occtax-form/phyto/phyto-occurrence/phyto-occurrence.component";
+import { PhytoOccurrenceModalComponent } from "./occtax-form/phyto/phyto-occurrence-modal/phyto-occurrence-modal.component";
 
 // Service
-import { OcctaxDataService } from './services/occtax-data.service';
-import { MapListService } from '@geonature_common/map-list/map-list.service';
+import { OcctaxDataService } from "./services/occtax-data.service";
+import { MapListService } from "@geonature_common/map-list/map-list.service";
 
-import { OcctaxFormMapService } from './occtax-form/map/occtax-map.service';
-import { OcctaxFormParamService } from './occtax-form/form-param/form-param.service';
+import { OcctaxFormMapService } from "./occtax-form/map/occtax-map.service";
+import { OcctaxFormParamService } from "./occtax-form/form-param/form-param.service";
 
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatTabsModule } from '@angular/material/tabs';
-import { ConfigService } from '@geonature/services/config.service';
-import { CustomTranslateLoader } from '@geonature/shared/translate/custom-loader';
-import { I18nService } from '@geonature/shared/translate/i18n-service';
+import { MatTabsModule } from "@angular/material/tabs";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatTableModule } from "@angular/material/table";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { MatSortModule } from '@angular/material/sort';
+import { ConfigService } from "@geonature/services/config.service";
+import { CustomTranslateLoader } from "@geonature/shared/translate/custom-loader";
+import { I18nService } from "@geonature/shared/translate/i18n-service";
+import { OcctaxStoreService } from "./occtax-form/releve/store.service";
 
 const routes: Routes = [
-  { path: '', component: OcctaxMapListComponent },
+  { path: "", component: OcctaxMapListComponent },
   {
-    path: 'form',
+    path: "form",
     component: OcctaxFormComponent,
     children: [
       {
-        path: 'releve',
+        path: "releve",
         component: OcctaxFormReleveComponent,
       },
       {
-        path: 'releve/:id',
+        path: "releve/:id",
         component: OcctaxFormReleveComponent,
       },
       {
-        path: ':id/taxons',
+        path: ":id/taxons",
         component: OcctaxFormOccurrenceComponent,
+      },
+      {
+        path: ":id/phyto-taxons",
+        component: PhytoOccurrenceComponent,
       },
     ],
   },
-  { path: 'info/:id', component: OcctaxMapInfoComponent, pathMatch: 'full' },
+  { path: "info/:id", component: OcctaxMapInfoComponent, pathMatch: "full" },
   {
-    path: 'info/id_counting/:id_counting',
+    path: "info/id_counting/:id_counting",
     component: OcctaxMapInfoComponent,
-    pathMatch: 'full',
+    pathMatch: "full",
   },
 ];
 
 export function createTranslateLoader(http: HttpClient, config: ConfigService) {
-  return new CustomTranslateLoader(http, config, { moduleName: 'occtax' });
+  return new CustomTranslateLoader(http, config, { moduleName: "occtax" });
 }
 
 @NgModule({
@@ -83,8 +103,14 @@ export function createTranslateLoader(http: HttpClient, config: ConfigService) {
     MatSlideToggleModule,
     MatButtonToggleModule,
     MatTabsModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatTableModule,
+    MatFormFieldModule,
+    MatInputModule,
     NgbModule,
     GNPanelModule,
+    MatSortModule,
   ],
   declarations: [
     OcctaxFormComponent,
@@ -98,13 +124,25 @@ export function createTranslateLoader(http: HttpClient, config: ConfigService) {
     OcctaxFormCountingComponent,
     OcctaxProfilesComponent,
     OcctaxFormParamDialog,
+    PhytoStrataTableComponent,
+    PhytoTaxaTableComponent,
+    PhytoAbundanceComponent,
+    PhytoAdvancedCountingComponent,
+    PhytoOccurrenceComponent,
+    PhytoOccurrenceModalComponent,  
   ],
-  providers: [OcctaxDataService, MapListService, OcctaxFormMapService, OcctaxFormParamService],
+  providers: [
+    OcctaxDataService,
+    MapListService,
+    OcctaxFormMapService,
+    OcctaxFormParamService,
+    OcctaxStoreService
+  ],
 })
 export class GeonatureModule {
   constructor(
     private translateService: TranslateService,
-    private i18nService: I18nService
+    private i18nService: I18nService,
   ) {
     // Workaround to force translation loaded for LazyModule.
     // See: https://github.com/ngx-translate/core/issues/1302
