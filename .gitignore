@@ -1,5 +1,8 @@
 *.*~
 settings.ini
+install/install.toml
+install/install.dev.toml
+install/.state/
 config/*_config.toml
 
 **/conf_gn_module.toml
@@ -150,7 +153,6 @@ ENV/
 *.orig
 
 
-install_all/install_all.log
 
 # Pycharm
 .idea/

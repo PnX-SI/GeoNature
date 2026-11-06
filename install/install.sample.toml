@@ -1,0 +1,36 @@
+# Configuration de l'installation GeoNature.
+# Copier vers install/install.toml puis adapter. Les clés absentes prennent la valeur
+# par défaut de install/installer/render.py (DEFAULTS). Toute valeur peut contenir des caractères spéciaux.
+
+mode = "prod"                 # "dev" : pas de systemd ni d'Apache ; lancez `geonature dev-back` et `ng serve`
+my_local = "fr_FR.UTF-8"      # `locale -a` pour la liste des locales disponibles
+my_url = "http://mon.domaine.com/"
+url_application_prefix_path = "geonature"   # "" pour servir à la racine
+
+db_host = "localhost"
+db_port = 5432
+db_name = "geonature2db"
+user_pg = "geonatadmin"
+# Laisser vide pour générer un mot de passe aléatoire (conservé dans config/settings.ini).
+user_pg_pass = ""
+drop_apps_db = false          # supprime la base existante : à utiliser avec précaution
+
+srid_local = 2154
+default_language = "fr"
+install_bdc_statuts = true
+taxref_region = "fr"
+install_sig_layers = true
+install_grid_layer = true
+install_default_dem = true
+vectorise_dem = false
+add_sample_data = true
+install_ref_sensitivity = true
+
+install_module_validation = true
+install_module_occhab = true
+
+proxy_http = ""
+proxy_https = ""
+
+# Mode dev uniquement : port du backend (`geonature dev-back`) ; my_url est alors celle du serveur Angular.
+# dev_backend_port = 8000
