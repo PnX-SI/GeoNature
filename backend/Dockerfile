@@ -120,15 +120,15 @@ RUN mkdir -p media/attachments
 
 WORKDIR /dist/geonature
 
-COPY --chmod=755 /install/03b_populate_db.sh /populate_db.sh
-COPY --chmod=755 /install/assets/docker_entrypoint.sh /entrypoint.sh
+COPY /install/installer /opt/geonature-install/installer
+COPY --chmod=755 /install/assets/docker_entrypoint.py /opt/geonature-install/entrypoint.py
 COPY /install/assets/gunicorn.conf.py .
 
 ENV GEONATURE_CONFIG_FILE=""
 
 EXPOSE 8000
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/opt/geonature-install/entrypoint.py"]
 
 CMD [ "gunicorn", "geonature:create_app()", \
     "--name=geonature", \
