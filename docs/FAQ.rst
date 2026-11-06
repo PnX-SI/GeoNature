@@ -7,7 +7,7 @@ Problèmes liés au frontend
 Changement d'URL de GeoNature
 """""""""""""""""""""""""""""
 
-Si vous souhaitez changer l'URL de l'API de GeoNature, il est nécessaire d'indiquer les nouvelles adresses dans le fichier de configuration principale (``geonature/config/geonature_config.toml`` pour GeoNature, ainsi que celle de UsersHub)  ainsi que le fichier ``frontend/src/assets/config.json`` précisant l'URL de l'API au frontend. Pour mettre à jour ce fichier automatiquement, relancer le script ``install/05_install_frontend.sh``.
+Si vous souhaitez changer l'URL de l'API de GeoNature, il est nécessaire d'indiquer les nouvelles adresses dans le fichier de configuration principale (``geonature/config/geonature_config.toml`` pour GeoNature, ainsi que celle de UsersHub)  ainsi que le fichier ``frontend/src/assets/config.json`` précisant l'URL de l'API au frontend. Pour mettre à jour ce fichier automatiquement, rejouer l'étape ``frontend`` : ``python3 install/install.py --config install/install.toml --reset-state --only frontend``.
  
 Message d'erreur lors de la compilation du frontend
 """""""""""""""""""""""""""""""""""""""""""""""""""

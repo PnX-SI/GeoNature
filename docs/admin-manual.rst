@@ -202,7 +202,7 @@ Si une branche a au moins sa première révision d’appliquée, alors un petit 
       [x] ─ 72f227e37bdf utilisateurs sample data
 
 La commande ``autoupgrade`` permet de mettre automatiquement à jour toutes les branches dont au moins une révision est appliquée lorsque celles-ci possèdent une ou plusieurs révisions non appliquées.
-Cette commande est appelée par le script ``migration.sh`` lors d’une mise à jour de la base de données.
+Cette commande est appelée par la commande ``install.py update`` lors d’une mise à jour de la base de données.
 Elle accepte également les paramètres ``-x`` qui sont alors fournis à la commande ``upgrade`` lorsque appelée sur chaque branche en retard.
 
 La commande ``heads`` permet de lister l’ensemble des branches disponibles, ainsi que la dernière révision disponible pour chaque branche :

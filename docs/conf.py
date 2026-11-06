@@ -114,7 +114,7 @@ exclude_patterns = [
     "admin/*",
     "utilisateur/*",
     "development/*",
-    "installation-all.rst",
+    "installation-python.rst",
     "installation-standalone.rst",
     "installation-docker.rst",
     "https.rst",

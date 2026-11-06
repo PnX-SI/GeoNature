@@ -40,7 +40,12 @@ Fonctionnement de l’image :
   (`documentation Flask <https://flask.palletsprojects.com/en/2.2.x/api/#flask.Config.from_prefixed_env>`_).
   Si vous souhaitez définir une variable de configuration se trouvant dans une section, utilisez deux *underscore*.
   Par exemple, pour définir le paramètre ``NB_LAST_OBS`` de la section ``[SYNTHESE]``, on définira une variable d’environnement ``GEONATURE_SYNTHESE__NB_LAST_OBS``.
-* Pour peupler la base de données, référez-vous au script ``install/03_create_db.sh``.
+* Au démarrage, le point d'entrée de l'image (``install/assets/docker_entrypoint.py``) crée ou met à jour la base avec les mêmes
+  fonctions que l'installateur Python (``populate_database`` dans ``install/installer/steps.py``), puis lance gunicorn.
+  Les options se passent en variables d'environnement, avec les noms de ``install/install.sample.toml`` : ``srid_local`` (2154 par défaut),
+  ``install_bdc_statuts``, ``taxref_region``, ``add_sample_data``, ``install_sig_layers``, ``install_grid_layer``,
+  ``install_ref_sensitivity``, ``install_default_dem``, ``vectorise_dem``, ainsi que ``usershub`` et ``usershub_samples``.
+  ``GEONATURE_SKIP_POPULATE_DB=true`` désactive ce peuplement et ``GEONATURE_SUPERGRANT_ARGS`` lance ``geonature permissions supergrant`` avec ces arguments.
 
 Image frontend
 --------------

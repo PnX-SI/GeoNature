@@ -203,7 +203,7 @@ Cette section documente comment passer en mode développement une installation d
 Récupération des sources
 ************************
 
-Si vous avez téléchargé GeoNature zippé (via la procédure d'installation globale ``install_all.sh`` ou en suivant la documentation d'installation standalone), il est nécessaire de rattacher votre répertoire au dépôt GitHub afin de pouvoir télécharger les dernières avancées du coeur en ``git pull``. Pour cela, suivez les commandes suivantes en vous placant à la racine du répertoire de GeoNature.
+Si vous avez téléchargé GeoNature zippé (via une ancienne procédure d'installation par archive ou en suivant la documentation d'installation standalone), il est nécessaire de rattacher votre répertoire au dépôt GitHub afin de pouvoir télécharger les dernières avancées du coeur en ``git pull``. Pour cela, suivez les commandes suivantes en vous placant à la racine du répertoire de GeoNature.
 
 .. code-block:: bash
 
@@ -1744,7 +1744,6 @@ Pour sortir une nouvelle version de GeoNature :
     uv export --no-hashes --extra tests --extra lint -o backend/requirements-dev.txt
     uv pip compile pyproject.toml --no-sources --universal --python-version=3.10 --refresh -o backend/requirements.txt
 
-- Mettez à jour la version de GeoNature et éventuellement des dépendances dans ``install/install_all/install_all.ini``
 - Complétez le fichier ``docs/CHANGELOG.md`` (en comparant les branches https://github.com/PnX-SI/GeoNature/compare/develop) et dater la version à sortir
 - Mettez à jour le fichier ``VERSION``
 - Mergez la branche ``develop`` dans la branche ``master``

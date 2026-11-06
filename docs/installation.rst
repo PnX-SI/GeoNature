@@ -14,7 +14,7 @@ GeoNature repose sur les composants suivants :
 
 Trois méthodes d’installation existent :
 
-- :ref:`installation-all` : Installation automatisée de GeoNature (incluant TaxHub) et UsersHub.
+- :ref:`installation-python` : Installation avec l'installateur Python ``install/install.py`` (configuration unique, étapes reprenables, mise à jour sur place avec sauvegarde). Elle installe GeoNature (incluant TaxHub) ; UsersHub s'installe séparément.
 - :ref:`installation-standalone` : UsersHub n'est pas installé (mais son schéma de BDD est tout de même créé dans la base de données de GeoNature).
 - :ref:`installation-docker` : GeoNature et ses principaux modules (Export, Dashboard, Monitoring) ainsi que UsersHub installés avec Docker (solution la plus simple recommandée).
 
@@ -120,9 +120,9 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
     su - geonatureadmin
 
 
-.. _installation-all:
+.. _installation-python:
 
-.. include:: installation-all.rst
+.. include:: installation-python.rst
 
 .. _installation-standalone:
 
@@ -280,47 +280,22 @@ Mise à jour de l'application
     (et la récupération éventuelle de la configuration); le script de migration de GeoNature s’occupera automatiquement
     d’installer la nouvelle version du module.
 
-La mise à jour de GeoNature consiste à télécharger sa nouvelle version dans un nouveau répertoire, récupérer les fichiers de configuration et de surcouche, ainsi que les médias depuis la version actuelle et de relancer l'installation dans le répertoire de la nouvelle version.
-
-La mise à jour doit être réalisée avec votre utilisateur linux courant (``geonatureadmin`` par exemple) et non pas le super-utilisateur ``root``.
-
-* Télécharger la dernière version de GeoNature :
-
-  .. code-block:: bash
-
-      wget https://github.com/PnX-SI/GeoNature/archive/X.Y.Z.zip
-      unzip X.Y.Z.zip
-      rm X.Y.Z.zip
-
-* Renommer l'ancien repertoire de l'application, ainsi que le nouveau :
-
-  .. code-block:: bash
-
-      mv ~/geonature/ ~/geonature_old/
-      mv ~/GeoNature-X.Y.Z ~/geonature/
-      cd ~/geonature
-
-* Suivez les éventuelles notes de version spécifiques décrites au niveau de chaque version : https://github.com/PnX-SI/GeoNature/releases.
-
-Sauf mentions contraires dans les notes de version, vous pouvez sauter des versions mais en suivant bien les différentes notes de versions intermédiaires.
-
-* Si vous devez aussi mettre à jour UsersHub, suivez ses notes de version et sa documentation (https://usershub.readthedocs.io).
-
-* Lancez le script de ``migration.sh`` à la racine du dossier ``geonature``:
-
-  .. code-block:: bash
-
-      ./install/migration/migration.sh 2>&1 | tee install/migration/migration.log
-
-Depuis la version 2.12, le script `migration.sh` peut prendre en argument le chemin vers l'ancien dossier d'installation de GeoNature. Il peut s’agir du même dossier que la nouvelle installation de GeoNature. Cela permet d'utiliser ce script si la nouvelle version de GeoNature est dans le même dossier et donc de gérer le cas où GeoNature est installé et mis à jour avec git.
-
-Dans ce cas, les commandes à exécuter sont : 
+La mise à jour se fait sur place, dans le dossier cloné, avec la commande ``update`` de l'installateur
+(sauvegarde automatique, reprise en cas d'interruption, retour arrière) : voir :ref:`installation-python`
+(section « Mise à jour »).
 
 .. code-block:: bash
 
-    cd ~/GeoNature
-    git status # optionnel, pour connaitre l'état et la version ou branche actuellement utilisée
-    git fetch
-    git checkout X.Y.Z # où X.Y.Z est le numéro du tag de la version vers laquelle faire la mise à jour, ou le nom de la branche à utiliser
-    git submodule update # ou "git config submodule.recurse true" lancé une seule fois, pour que la mise à jour des sous-modules soit relancée automatiquement à chaque "git pull"
-    ./install/migration/migration.sh .
+    cd ~/geonature
+    python3 install/install.py update X.Y.Z --dry-run   # ce qui serait fait, sans rien modifier
+    python3 install/install.py update X.Y.Z
+
+* Suivez les éventuelles notes de version spécifiques décrites au niveau de chaque version : https://github.com/PnX-SI/GeoNature/releases.
+
+  Sauf mentions contraires dans les notes de version, vous pouvez sauter des versions mais en suivant bien les différentes notes de versions intermédiaires.
+
+* Si vous devez aussi mettre à jour UsersHub, suivez ses notes de version et sa documentation (https://usershub.readthedocs.io).
+
+* La mise à jour est réservée aux versions 2.15.0 et supérieures. Pour une version plus ancienne, passez d'abord à la 2.15.0
+  avec la procédure de cette version (le script ``install/migration/migration.sh`` existe dans le tag ``2.15.0`` :
+  ``git show 2.15.0:install/migration/migration.sh``).

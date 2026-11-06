@@ -2,7 +2,7 @@ Installation de GeoNature uniquement
 ************************************
 
 Cette procédure détaille l’installation de GeoNature (incluant TaxHub) sans UsersHub.
-Si vous souhaitez installer GeoNature avec UsersHub, reportez-vous à la section :ref:`installation-all`.
+Pour une installation automatisée, voir :ref:`installation-python`. UsersHub s'installe séparément (voir sa `documentation <https://usershub.readthedocs.io>`_).
 
 Installation des dépendances
 ----------------------------
@@ -17,34 +17,22 @@ Installer les paquets suivants :
 Récupération de l'application
 -----------------------------
 
-* Se placer dans le répertoire de l'utilisateur (``/home/geonatureadmin/`` dans notre cas) 
+* Se placer dans le répertoire de l'utilisateur (``/home/geonatureadmin/`` dans notre cas)
 
-* Récupérer l'application (``X.Y.Z`` à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_).
+* Cloner le dépôt à la version voulue (``X.Y.Z`` à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnX-SI/GeoNature/releases>`_) :
 
-  .. code:: shell 
+  .. code:: shell
 
-    wget https://github.com/PnX-SI/GeoNature/archive/X.Y.Z.zip
-
-* Dézipper l'archive de l'application
-
-  .. code:: shell 
-
-    unzip X.Y.Z.zip
-    rm X.Y.Z.zip
-
-* Renommer le répertoire de l'application puis placez-vous dedans : 
-
-  .. code:: shell 
-
-    mv GeoNature-X.Y.Z /home/`whoami`/geonature/
+    git clone --branch X.Y.Z https://github.com/PnX-SI/GeoNature geonature
     cd geonature
+    git submodule update --init --recursive
 
-* Copier puis mettre à jour le fichier de configuration (``config/settings.ini``) comportant les informations relatives à votre environnement serveur :
+* Copier puis mettre à jour le fichier de configuration (``install/install.toml``) comportant les informations relatives à votre environnement serveur :
 
-  .. code:: shell 
+  .. code:: shell
 
-    cp config/settings.ini.sample config/settings.ini
-    nano config/settings.ini
+    cp install/install.sample.toml install/install.toml
+    nano install/install.toml
 
   Le paramètre ``url_application_prefix_path`` permet de choisir le préfixe d'URL dès la 1ère installation :
   ``geonature`` (défaut), ``saisie`` ou vide pour servir à la racine ``/``.
@@ -53,24 +41,30 @@ Récupération de l'application
 Installation de l'application
 -----------------------------
 
-Rendez vous dans le dossier ``install`` et lancez successivement dans l’ordre les scripts suivants :
+L'installation s'exécute étape par étape avec ``install/install.py`` (voir :ref:`installation-python`) :
 
-* ``00_install_nvm.sh`` : Installation de NVM
-* ``01_install_backend.sh`` : Création du virtualenv python, installation des dépendances et du backend de GeoNature dans celui-ci.
-* ``02_configure_systemd.sh`` : Création des services systemd ``geonature`` et ``geonature-worker``, configuration de ``logrotate``, création des dossiers ``/run/geonature`` et ``/var/log/geonature``.
-* ``03_create_db.sh`` : Création du role PostgreSQL, de la base de données, ajout des extensions nécessaires (PostGIS, …), création des schémas nécessaires à GeoNature et ajout des données métiers.
-* ``04_install_gn_modules.sh`` : Installation des modules Occtax, Occhab et Validation (si activé dans le fichier `settings.ini`).
-* ``05_install_frontend.sh`` : Création des dossiers et liens symboliques nécessaires, création des fichiers custom à partir des fichiers d’exemple, génération des fichiers de configuration grâce à la commande ``geonature``, installation de nvm, npm et node ainsi que toutes les dépendances javascript nécessaires puis build du frontend, génération du fichier ``src/assets/config.json`` qui permet de connecter le frontend au backend.
-* ``06_configure_apache.sh`` : Installation du fichier de configuration Apache ``/etc/apache2/conf-available/geonature.conf`` et activation des modules Apache nécessaires.
+.. code:: shell
+
+  python3 install/install.py --config install/install.toml --only apt        # paquets système
+  python3 install/install.py --config install/install.toml --only nvm        # Node (nvm)
+  python3 install/install.py --config install/install.toml --only backend    # virtualenv (uv), dépendances et backend
+  python3 install/install.py --config install/install.toml --only systemd    # services geonature et geonature-worker, logrotate
+  python3 install/install.py --config install/install.toml --only database   # rôle, base, extensions, schémas et données métiers
+  python3 install/install.py --config install/install.toml --only modules    # Occtax, Occhab, Validation (si activés), supergrant
+  python3 install/install.py --config install/install.toml --only frontend   # configuration, dépendances npm, build, config.json
+  python3 install/install.py --config install/install.toml --only apache     # configuration Apache
+  python3 install/install.py --config install/install.toml --only services   # démarrage des services
+
+Sans ``--only``, toutes les étapes non terminées sont exécutées dans cet ordre. ``--reset-state`` rejoue une étape déjà faite.
 
 Vous pouvez alors démarrer le backend de GeoNature : ``sudo systemctl start geonature``
 
 Configuration Apache
 --------------------
 
-* Le script ``install/06_configure_apache.sh`` copie le fichier de configuration de référence ``install/assets/geonature_apache.conf``, le place dans ``/etc/apache2/conf-available/geonature.conf`` et remplace ses variables à partir de votre configuration de GeoNature.
+* L'étape ``apache`` de ``install/install.py`` copie le fichier de configuration de référence ``install/assets/geonature_apache.conf``, le place dans ``/etc/apache2/conf-available/geonature.conf`` et remplace ses variables à partir de votre configuration de GeoNature.
 
-  Relancez ce script si vous changez l'URL de votre GeoNature ou les paramètres liés aux chemins et URL des fichiers statiques et des médias.
+  Rejouez cette étape (``--reset-state --only apache``) si vous changez l'URL de votre GeoNature ou les paramètres liés aux chemins et URL des fichiers statiques et des médias.
 
 * Créez la configuration du vhost, incluant la configuration par défaut créée précédemment :
 
@@ -111,7 +105,7 @@ Pour passer votre GeoNature en maintenance, vous pouvez alors désactiver le vho
 Dépendances
 -----------
 
-Lors de l'installation de la BDD (``02_create_db.sh``), le schéma ``utilisateurs`` de UsersHub et le schéma ``taxonomie`` de TaxHub sont intégrés automatiquement dans la BDD de GeoNature. 
+Lors de l'installation de la BDD (étape ``database``), le schéma ``utilisateurs`` de UsersHub et le schéma ``taxonomie`` de TaxHub sont intégrés automatiquement dans la BDD de GeoNature. 
 
 UsersHub n'est pas nécessaire au fonctionnement de GeoNature mais il sera utile pour avoir une interface de gestion des utilisateurs, des groupes et de leurs droits. 
 
