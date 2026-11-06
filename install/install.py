@@ -16,7 +16,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from installer import configure, preflight, render, steps, update  # noqa: E402
+from installer import configure, preflight, render, steps, summary, update  # noqa: E402
 from installer.run import CommandError, Runner  # noqa: E402
 from installer.state import State  # noqa: E402
 
@@ -211,6 +211,8 @@ def main(argv=None):
         print(f"\n\033[91mÉchec : {e}\033[0m", file=sys.stderr)
         return 1
     print(f"\nTerminé ({len(done)} étape(s) exécutée(s)).")
+    if not args.only:
+        print(summary.format_summary(resolved, ROOT, done))
     if flag_usershub(resolved):
         print(
             "UsersHub (install_usershub_app) n'est pas géré ici : installez-le séparément (https://usershub.readthedocs.io)."

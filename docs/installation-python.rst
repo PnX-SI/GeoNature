@@ -90,6 +90,8 @@ Installation
 
 Les étapes sont, dans l'ordre : ``apt``, ``nvm``, ``backend``, ``systemd``, ``database``, ``modules``, ``frontend``, ``apache`` et ``services``. Le détail des commandes est écrit dans ``install/install.log``.
 
+À la fin d'une installation complète, un résumé indique l'adresse de l'application et de l'API, la base utilisée (le mot de passe n'est jamais affiché : il est dans ``config/settings.ini``), les dossiers de configuration et de journal, le compte de démonstration ``admin`` / ``admin`` (à changer) et les commandes utiles ensuite (services systemd, ou lancement du backend et du frontend en mode ``dev``). Il n'est pas affiché avec ``--only``.
+
 En cas d'échec, corrigez le problème puis relancez la même commande : les étapes déjà terminées sont ignorées. Options utiles :
 
 - ``--from-step NOM`` : reprend à une étape donnée ;
