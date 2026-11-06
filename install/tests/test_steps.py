@@ -337,3 +337,21 @@ def test_ci_and_dev_backend_sync_keeps_installed_modules(tmp_path, monkeypatch):
         steps.step_backend(ctx)
         sync = next(c for c in calls if c[:2] == ["uv", "sync"])
         assert "--inexact" in sync
+
+
+def test_prod_backend_install_ignores_uv_workspace_sources(tmp_path, monkeypatch):
+    # sans --no-sources : "conflicting URLs for usershub" (requirements.txt vs [tool.uv.sources])
+    calls = []
+    runner = SimpleNamespace(
+        env=None,
+        run=lambda cmd, **kw: calls.append(cmd) or SimpleNamespace(returncode=0),
+        capture=lambda cmd, **kw: SimpleNamespace(stdout=""),
+    )
+    monkeypatch.setattr(steps, "ensure_uv", lambda ctx: None)
+    monkeypatch.setattr(steps, "patch_activate", lambda f: False)
+    ctx = make_ctx(tmp_path, MODE="prod")
+    ctx.runner = runner
+    ctx.venv.mkdir(parents=True, exist_ok=True)
+    steps.step_backend(ctx)
+    pip = next(c for c in calls if c[:3] == ["uv", "pip", "install"])
+    assert "--no-sources" in pip and "requirements.txt" in pip

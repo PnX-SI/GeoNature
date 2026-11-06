@@ -45,6 +45,18 @@ def fmt(v):
 # --- git -------------------------------------------------------------------------------------
 
 
+# Certains sous-modules imbriqués (Utils-Flask-SQLAlchemy-Geo) déclarent une URL SSH : sans clé GitHub,
+# le clonage échoue. Réécriture en HTTPS pour cette commande uniquement, rien n'est écrit dans la config.
+SUBMODULE_UPDATE = [
+    "-c",
+    "url.https://github.com/.insteadOf=git@github.com:",
+    "submodule",
+    "update",
+    "--init",
+    "--recursive",
+]
+
+
 def git(ctx, *args, check=True):
     return ctx.runner.run(["git", *args], cwd=ctx.root, check=check)
 
@@ -227,7 +239,7 @@ def step_checkout(ctx):
     for name in GENERATED_FILES:
         git(ctx, "checkout", "--", name, check=False)
     git(ctx, "checkout", ctx.extra["ref"])
-    git(ctx, "submodule", "update", "--init", "--recursive")
+    git(ctx, *SUBMODULE_UPDATE)
 
 
 def ensure_secret_key(path):
@@ -368,7 +380,7 @@ def rollback(ctx, backup_root, backup=None, restore_db=False, confirm_restore=No
     ctx.log(f"Retour à {manifest['from_commit'][:10]} (version {manifest['from_version']}).")
     step_stop(ctx)
     git(ctx, "checkout", manifest["from_commit"])
-    git(ctx, "submodule", "update", "--init", "--recursive")
+    git(ctx, *SUBMODULE_UPDATE)
     for f in (backup / "config").glob("*"):
         shutil.copy2(f, ctx.root / "config" / f.name)
     if (backup / "environ").is_file():

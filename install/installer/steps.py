@@ -175,8 +175,10 @@ def step_backend(ctx):
             cwd=ctx.root,
         )
     else:
+        # --no-sources : requirements.txt est compilé sans le workspace uv, sinon `usershub` (URL git)
+        # entre en conflit avec [tool.uv.sources] de pyproject.toml
         ctx.runner.run(
-            ["uv", "pip", "install", "-e", str(ctx.root), "-r", "requirements.txt"],
+            ["uv", "pip", "install", "--no-sources", "-e", str(ctx.root), "-r", "requirements.txt"],
             env=env,
             cwd=ctx.root / "backend",
         )

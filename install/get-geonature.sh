@@ -46,7 +46,9 @@ main() {
 
     say "Récupération de GeoNature $version dans $dir"
     git clone --quiet --branch "$version" "$repo" "$dir" || die "échec du clonage ($repo, $version)."
-    git -C "$dir" submodule update --init --recursive --quiet || die "échec de la récupération des sous-modules."
+    # certains sous-modules imbriqués ont une URL SSH : réécrite en HTTPS (sans clé GitHub, le clonage échouerait)
+    git -C "$dir" -c url.https://github.com/.insteadOf=git@github.com: \
+        submodule update --init --recursive --quiet || die "échec de la récupération des sous-modules."
 
     if [ ! -f "$dir/install/install.toml" ]; then
         cp "$dir/install/install.sample.toml" "$dir/install/install.toml"
