@@ -57,6 +57,11 @@ SUBMODULE_UPDATE = [
 ]
 
 
+def fetch_command(shallow):
+    """Un clone superficiel (get-geonature.sh) le reste : sans --depth, `--tags` rapatrie tout l'historique."""
+    return ["git", "fetch", "--tags", "--force", *(["--depth", "1"] if shallow else []), "origin"]
+
+
 def git(ctx, *args, check=True):
     return ctx.runner.run(["git", *args], cwd=ctx.root, check=check)
 
@@ -127,8 +132,9 @@ def run_preflight(ctx, ref):
         if dirty
         else Check("Arbre git", OK, "propre")
     )
+    shallow = ctx.runner.capture(["git", "rev-parse", "--is-shallow-repository"], cwd=ctx.root)
     fetched = ctx.runner.run(
-        ["git", "fetch", "--tags", "--force", "origin"], cwd=ctx.root, check=False
+        fetch_command(shallow.stdout.strip() == "true"), cwd=ctx.root, check=False
     )
     checks.append(
         Check("git fetch", OK)

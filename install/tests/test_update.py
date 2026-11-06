@@ -204,3 +204,9 @@ def test_generated_lockfile_is_ignored_then_restored_before_checkout(ctx, repo):
     ctx.extra["ref"] = "2.16.0"
     update.step_checkout(ctx)  # ne doit pas échouer à cause de uv.lock modifié
     assert (repo / "VERSION").read_text().strip() == "2.16.0"
+
+
+def test_fetch_stays_shallow_on_shallow_clones():
+    assert "--depth" not in update.fetch_command(False)
+    cmd = update.fetch_command(True)
+    assert cmd[cmd.index("--depth") + 1] == "1" and cmd[-1] == "origin"

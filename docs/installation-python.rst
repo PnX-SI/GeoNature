@@ -23,7 +23,21 @@ Connecté avec l'utilisateur dédié (pas en ``root``, mais avec ``sudo``), lanc
 
 (``X.Y.Z`` : numéro de la `dernière version stable <https://github.com/PnX-SI/GeoNature/releases>`_). Fixer la version dans l'URL garantit que vous exécutez le script de cette version ; vous pouvez le lire avant de le lancer en le téléchargeant d'abord avec ``curl -LsSfO <url>``.
 
-Le script se limite à l'amorçage : il installe ``git`` et ``python3`` s'ils manquent, clone GeoNature dans ``~/geonature`` (version choisie avec la variable ``GEONATURE_VERSION``, par défaut la dernière version stable ; dossier avec ``GEONATURE_DIR``), crée ``install/install.toml`` à partir de l'exemple et lance le contrôle des prérequis. Il n'installe rien d'autre et refuse de s'exécuter si le dossier existe déjà. Suivez ensuite les étapes qu'il affiche : adapter ``install.toml``, puis lancer ``install.py``.
+Pour installer une autre version (tag ou branche) que la dernière version stable, définissez ``GEONATURE_VERSION`` pour ``sh`` (et non pour ``curl``) :
+
+.. code:: console
+
+    curl -LsSf https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/get-geonature.sh | GEONATURE_VERSION=X.Y.Z sh
+
+Le clone est superficiel (``--depth 1``, sous-modules compris) : seul le commit de la version est téléchargé, et ``install.py update`` reste superficiel lui aussi.
+
+Le script se limite à l'amorçage : il installe ``git`` et ``python3`` s'ils manquent, clone GeoNature dans ``~/geonature`` (version choisie avec la variable ``GEONATURE_VERSION``, par défaut la dernière version stable ; dossier avec ``GEONATURE_DIR``), crée ``install/install.toml`` à partir de l'exemple, vous pose les questions sur les principaux paramètres puis lance le contrôle des prérequis. Il n'installe rien d'autre et refuse de s'exécuter si le dossier existe déjà. Suivez ensuite l'étape qu'il affiche : lancer ``install.py``.
+
+Les questions (mode, URL, préfixe, base et utilisateur PostgreSQL, mot de passe, puis en option les données et modules à installer) sont posées dans le terminal, même avec ``curl | sh``. Entrée garde la valeur proposée, ``-`` donne une valeur vide (par exemple pour servir GeoNature à la racine). Sans terminal, ou avec ``GEONATURE_NO_PROMPT=1``, elles sont ignorées et il faut éditer ``install.toml`` à la main. Elles peuvent être reposées à tout moment :
+
+.. code:: console
+
+    python3 install/install.py --configure --config install/install.toml
 
 Les sections suivantes détaillent ces étapes, qui peuvent aussi être faites à la main.
 
@@ -50,7 +64,7 @@ Configuration
     cp install/install.sample.toml install/install.toml
     nano install/install.toml
 
-Renseignez à minima ``my_url`` (avec un ``/`` final), ``url_application_prefix_path`` et ``user_pg``. Laissez ``user_pg_pass`` vide pour qu'un mot de passe aléatoire soit généré : il est conservé dans ``config/settings.ini`` et n'est jamais régénéré aux relances.
+Si vous n'avez pas utilisé ``get-geonature.sh`` ou ``--configure``, renseignez à minima ``my_url`` (avec un ``/`` final), ``url_application_prefix_path`` et ``user_pg``. Laissez ``user_pg_pass`` vide pour qu'un mot de passe aléatoire soit généré : il est conservé dans ``config/settings.ini`` et n'est jamais régénéré aux relances.
 
 Le fichier ``install.toml`` reprend les paramètres de l'ancien fichier ``install_all.ini``. Les clés absentes prennent leur valeur par défaut (``DEFAULTS`` dans ``install/installer/render.py``).
 

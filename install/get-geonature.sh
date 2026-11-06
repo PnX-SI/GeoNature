@@ -3,8 +3,12 @@
 #
 #   curl -LsSf https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/get-geonature.sh | sh
 #
-# Ce script clone le dépôt, prépare install/install.toml puis vérifie les prérequis. Toute la logique
+# Ce script clone le dépôt, prépare install/install.toml (questions interactives) puis vérifie les prérequis. Toute la logique
 # d'installation est dans install/install.py (Python) : ce fichier ne fait que l'amener sur la machine.
+#
+# Les principaux paramètres sont demandés dans le terminal (GEONATURE_NO_PROMPT=1 pour les ignorer).
+#
+# Le clone est superficiel (--depth 1) : seul le commit de la version est téléchargé.
 #
 # Variables : GEONATURE_VERSION (tag ou branche, défaut : dernière version stable),
 #             GEONATURE_DIR (défaut : ~/geonature), GEONATURE_REPO (défaut : le dépôt GitHub).
@@ -45,14 +49,22 @@ main() {
     fi
 
     say "Récupération de GeoNature $version dans $dir"
-    git clone --quiet --branch "$version" "$repo" "$dir" || die "échec du clonage ($repo, $version)."
+    git clone --quiet --depth 1 --branch "$version" "$repo" "$dir" || die "échec du clonage ($repo, $version)."
     # certains sous-modules imbriqués ont une URL SSH : réécrite en HTTPS (sans clé GitHub, le clonage échouerait)
     git -C "$dir" -c url.https://github.com/.insteadOf=git@github.com: \
-        submodule update --init --recursive --quiet || die "échec de la récupération des sous-modules."
+        submodule update --init --recursive --depth 1 --quiet || die "échec de la récupération des sous-modules."
 
     if [ ! -f "$dir/install/install.toml" ]; then
         cp "$dir/install/install.sample.toml" "$dir/install/install.toml"
         chmod 600 "$dir/install/install.toml"
+    fi
+
+    # `curl | sh` occupe l'entrée standard : les questions passent par le terminal (/dev/tty).
+    configured=0
+    if [ -z "${GEONATURE_NO_PROMPT:-}" ] && [ -r /dev/tty ] && [ -w /dev/tty ]; then
+        say ""
+        python3 "$dir/install/install.py" --configure --config "$dir/install/install.toml" \
+            </dev/tty && configured=1
     fi
 
     say ""
@@ -62,11 +74,14 @@ main() {
 
     say ""
     say "Étapes suivantes :"
-    say "  1. Adaptez la configuration :  nano $dir/install/install.toml   (au minimum my_url)"
-    step=2
+    step=1
+    if [ "$configured" -eq 0 ]; then
+        say "  $step. Adaptez la configuration :  nano $dir/install/install.toml   (au minimum my_url)"
+        step=$((step + 1))
+    fi
     if [ "$precheck" -ne 0 ]; then
-        say "  2. Corrigez les prérequis signalés ci-dessus"
-        step=3
+        say "  $step. Corrigez les prérequis signalés ci-dessus"
+        step=$((step + 1))
     fi
     say "  $step. Lancez l'installation :  python3 $dir/install/install.py --config $dir/install/install.toml"
 }

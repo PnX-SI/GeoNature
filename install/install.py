@@ -2,6 +2,7 @@
 """Installateur GeoNature. Bibliothèque standard uniquement : il tourne avant l'existence du venv.
 
 python3 install/install.py --check [--config install.toml] [--offline]
+python3 install/install.py --configure --config install/install.toml
 python3 install/install.py --render-config|--render-settings --config install/install.toml [--force]
 python3 install/install.py --config install/install.toml [--from-step NOM | --only NOM]
                            [--confirm-drop BASE] [--skip-check] [--reset-state]
@@ -15,7 +16,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from installer import preflight, render, steps, update  # noqa: E402
+from installer import configure, preflight, render, steps, update  # noqa: E402
 from installer.run import CommandError, Runner  # noqa: E402
 from installer.state import State  # noqa: E402
 
@@ -96,6 +97,20 @@ def update_main(argv):
     return 0
 
 
+def configure_main(args, parser):
+    if not args.config:
+        parser.error("--config install.toml est requis")
+    path = Path(args.config)
+    if not path.exists():
+        path.write_text((ROOT / "install" / "install.sample.toml").read_text())
+    if not sys.stdin.isatty():
+        print("--configure demande un terminal interactif : éditez le fichier à la main.")
+        return 1
+    configure.configure(path, load_config(path))
+    print(f"\nConfiguration écrite dans {path}")
+    return 0
+
+
 def main(argv=None):
     argv = sys.argv[1:] if argv is None else argv
     if argv and argv[0] == "update":
@@ -104,6 +119,11 @@ def main(argv=None):
     parser.add_argument("--check", action="store_true", help="vérifie les prérequis puis s'arrête")
     parser.add_argument(
         "--config", help="fichier install.toml (active les contrôles locale/PostgreSQL)"
+    )
+    parser.add_argument(
+        "--configure",
+        action="store_true",
+        help="demande interactivement les principaux paramètres et les écrit dans --config",
     )
     parser.add_argument(
         "--offline", action="store_true", help="ne teste pas l'accès aux domaines externes"
@@ -135,6 +155,9 @@ def main(argv=None):
         help="oublie les étapes terminées (seulement celle de --only s'il est donné)",
     )
     args = parser.parse_args(argv)
+
+    if args.configure:
+        return configure_main(args, parser)
 
     cfg = load_config(args.config)
     if args.check:
