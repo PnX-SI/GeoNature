@@ -355,3 +355,18 @@ def test_prod_backend_install_ignores_uv_workspace_sources(tmp_path, monkeypatch
     steps.step_backend(ctx)
     pip = next(c for c in calls if c[:3] == ["uv", "pip", "install"])
     assert "--no-sources" in pip and "requirements.txt" in pip
+
+
+def test_untraversable_dirs_reports_parents_apache_cannot_enter(tmp_path):
+    home = tmp_path / "home"
+    target = home / "gn" / "frontend" / "dist"
+    target.mkdir(parents=True)
+    for d in (tmp_path, home, home / "gn", home / "gn" / "frontend", target):
+        d.chmod(0o755)
+    home.chmod(0o700)  # adduser Debian : /home/<user> en 0700
+    blocked = [
+        d for d in steps.untraversable_dirs(target) if tmp_path in d.parents or d == tmp_path
+    ]
+    assert blocked == [home]
+    home.chmod(0o711)
+    assert home not in steps.untraversable_dirs(target)

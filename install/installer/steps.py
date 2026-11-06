@@ -469,6 +469,15 @@ def frontend_prefix(url_application):
     return urlsplit(url_application).path
 
 
+def untraversable_dirs(path):
+    """Dossiers parents de `path` sans droit de traversée (o+x) pour `www-data` (ex. /home/x en 0700)."""
+    out = []
+    for parent in reversed(Path(path).resolve().parents):
+        if str(parent) != "/" and not parent.stat().st_mode & 0o001:
+            out.append(parent)
+    return out
+
+
 def step_apache(ctx):
     get = lambda key: geonature_output(ctx, "get-config", key)
     values = {
@@ -482,6 +491,14 @@ def step_apache(ctx):
         "FRONTEND_PREFIX": frontend_prefix(get("URL_APPLICATION")),
         "GUNICORN_URL": "http://127.0.0.1:8000",
     }
+    # Apache sert le frontend et les médias depuis le dossier de l'utilisateur : sans droit de
+    # traversée sur ses parents (Debian crée /home/<user> en 0700), toutes les pages sont en 403.
+    for folder in (values["FRONTEND_FOLDER"], values["MEDIA_FOLDER"], values["STATIC_FOLDER"]):
+        for parent in untraversable_dirs(folder):
+            ctx.log(
+                f"Droit de traversée pour Apache sur {parent} (chmod o+x, sans droit de lecture)."
+            )
+            ctx.runner.run(["sudo", "chmod", "o+x", str(parent)])
     sudo_write(
         ctx,
         "/etc/apache2/conf-available/geonature.conf",
