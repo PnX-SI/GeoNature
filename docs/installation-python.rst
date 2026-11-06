@@ -135,3 +135,19 @@ Le code revient au commit enregistré avant la mise à jour et les fichiers de c
     python3 install/install.py update --rollback --restore-db --confirm-restore NOM_BASE
 
 Cette restauration remplace la base par la sauvegarde et **perd les données saisies depuis**. Le nom exact de la base est exigé pour la lancer.
+
+Désinstallation des services
+----------------------------
+
+Pour retirer les services systemd et la configuration Apache écrits par l'installateur :
+
+.. code:: console
+
+    python3 install/install.py uninstall --dry-run   # liste les actions sans rien modifier
+    python3 install/install.py uninstall             # demande confirmation (--yes pour l'ignorer)
+
+Sont retirés : les services ``geonature`` et ``geonature-worker`` (arrêt, désactivation, fichiers), ``tmpfiles.d``, ``logrotate``, les sites et la configuration Apache ``geonature`` ainsi que la page de maintenance, puis les marqueurs d'étapes de ``install/.state``. Seul ce qui existe sur la machine est listé.
+
+**La base de données et son rôle PostgreSQL ne sont jamais supprimés**, pas plus que ``config/``, le code, le venv, les médias et ``~/geonature_backups``. Pour supprimer aussi la base, faites-le à la main avec ``DROP DATABASE`` après vous être assuré d'avoir une sauvegarde.
+
+Le générateur systemd et les unités ``geonature-reload`` sont partagés avec d'anciens montages à instances (``geonature@.service``) : ils ne sont retirés qu'avec ``--include-shared``. Les droits de traversée donnés à Apache sur les dossiers parents (``chmod o+x``) ne sont pas annulés.

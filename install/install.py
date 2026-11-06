@@ -7,6 +7,7 @@ python3 install/install.py --render-config|--render-settings --config install/in
 python3 install/install.py --config install/install.toml [--from-step NOM | --only NOM]
                            [--confirm-drop BASE] [--skip-check] [--reset-state]
 python3 install/install.py update <tag|branche> [--dry-run] [--backup-dir DIR]
+python3 install/install.py uninstall [--dry-run] [--yes] [--include-shared]
 python3 install/install.py update --rollback [--backup DIR] [--restore-db --confirm-restore BASE]
 """
 
@@ -16,7 +17,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from installer import configure, preflight, render, steps, summary, update  # noqa: E402
+from installer import configure, preflight, render, steps, summary, uninstall, update  # noqa: E402
 from installer.run import CommandError, Runner  # noqa: E402
 from installer.state import State  # noqa: E402
 
@@ -97,6 +98,56 @@ def update_main(argv):
     return 0
 
 
+def uninstall_main(argv):
+    parser = argparse.ArgumentParser(
+        prog="install.py uninstall",
+        description="Retire les services systemd et la configuration Apache écrits par l'installateur "
+        "(jamais la base de données)",
+    )
+    parser.add_argument(
+        "--dry-run", action="store_true", help="liste les actions sans rien modifier"
+    )
+    parser.add_argument("--yes", action="store_true", help="ne demande pas de confirmation")
+    parser.add_argument(
+        "--include-shared",
+        action="store_true",
+        help="retire aussi le générateur systemd et les unités geonature-reload, partagés avec "
+        "d'anciens montages à instances",
+    )
+    args = parser.parse_args(argv)
+
+    plan = uninstall.build_plan(args.include_shared)
+    if not plan:
+        print("Aucun service ni configuration Apache de GeoNature à retirer.")
+        return 0
+    print("Actions prévues :")
+    for label, _, _ in plan:
+        print(f"  - {label}")
+    print("Conservés : " + " ; ".join(uninstall.KEPT) + ".")
+    if args.dry_run:
+        return 0
+    if not args.yes:
+        if not sys.stdin.isatty():
+            print("Confirmation impossible sans terminal : relancez avec --yes.", file=sys.stderr)
+            return 1
+        if input("Continuer ? [o/N] ").strip().lower() not in ("o", "oui", "y", "yes"):
+            print("Abandon.")
+            return 1
+    ctx = steps.Context(
+        root=ROOT,
+        cfg={},
+        runner=Runner(ROOT / "install" / "uninstall.log", cwd=ROOT),
+        state=State(ROOT / "install" / ".state"),
+    )
+    try:
+        uninstall.run(ctx, plan)
+    except (CommandError, RuntimeError) as e:
+        print(f"\n\033[91mÉchec : {e}\033[0m", file=sys.stderr)
+        return 1
+    print("\nDésinstallation terminée. La base de données n'a pas été touchée.")
+    return 0
+
+
 def configure_main(args, parser):
     if not args.config:
         parser.error("--config install.toml est requis")
@@ -115,6 +166,8 @@ def main(argv=None):
     argv = sys.argv[1:] if argv is None else argv
     if argv and argv[0] == "update":
         return update_main(argv[1:])
+    if argv and argv[0] == "uninstall":
+        return uninstall_main(argv[1:])
     parser = argparse.ArgumentParser(description="Installateur GeoNature")
     parser.add_argument("--check", action="store_true", help="vérifie les prérequis puis s'arrête")
     parser.add_argument(
