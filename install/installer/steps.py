@@ -12,6 +12,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from . import net, pg
+from .progress import Progress
 from .state import State
 
 APT_PACKAGES = (
@@ -45,6 +46,9 @@ class Context:
     state: State
     confirm_drop: str = None
     log: callable = print
+    before_step: callable = (
+        None  # ex. renouveler le cache sudo avant que la ligne de progression ne s'affiche
+    )
     extra: dict = field(default_factory=dict)
 
     @property
@@ -562,17 +566,31 @@ def run_steps(ctx, steps=STEPS, from_step=None, only=None):
     for wanted in (from_step, only):
         if wanted and wanted not in names:
             raise ValueError(f"Étape inconnue '{wanted}'. Étapes : {', '.join(names)}")
+    selected = []
     started = from_step is None
-    executed = []
     for step in steps:
         started = started or step.name == from_step
-        if not started or (only and step.name != only):
-            continue
-        if ctx.state.is_done(step.name):
-            ctx.log(f"✔ {step.title} (déjà fait)")
-            continue
-        ctx.log(f"▶ {step.title}…")
-        step.run(ctx)
-        ctx.state.mark_done(step.name)
-        executed.append(step.name)
+        if started and not (only and step.name != only):
+            selected.append(step)
+    progress = Progress(len(selected), log_file=getattr(ctx.runner, "log_file", None))
+    previous_log, ctx.log = ctx.log, progress.message
+    executed = []
+    try:
+        for step in selected:
+            if ctx.state.is_done(step.name):
+                progress.skipped(step.title)
+                continue
+            if ctx.before_step:
+                ctx.before_step()
+            progress.start(step.title)
+            try:
+                step.run(ctx)
+            except BaseException:
+                progress.failed()
+                raise
+            ctx.state.mark_done(step.name)
+            progress.done()
+            executed.append(step.name)
+    finally:
+        ctx.log = previous_log
     return executed

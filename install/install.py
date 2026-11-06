@@ -12,6 +12,7 @@ python3 install/install.py update --rollback [--backup DIR] [--restore-db --conf
 """
 
 import argparse
+import subprocess
 import sys
 from pathlib import Path
 
@@ -148,6 +149,12 @@ def uninstall_main(argv):
     return 0
 
 
+def refresh_sudo():
+    """`sudo -v` sur le terminal : le mot de passe est demandé avant la ligne de progression, jamais dessous."""
+    if sys.stdin.isatty():
+        subprocess.run(["sudo", "-v"], check=False)
+
+
 def configure_main(args, parser):
     if not args.config:
         parser.error("--config install.toml est requis")
@@ -257,6 +264,7 @@ def main(argv=None):
         runner=Runner(ROOT / "install" / "install.log", cwd=ROOT),
         state=state,
         confirm_drop=args.confirm_drop,
+        before_step=refresh_sudo,
     )
     try:
         done = steps.run_steps(ctx, from_step=args.from_step, only=args.only)
