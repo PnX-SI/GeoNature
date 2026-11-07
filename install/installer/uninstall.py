@@ -32,7 +32,7 @@ APACHE_FILES = (
 
 KEPT = (
     "la base de données et son rôle PostgreSQL",
-    "config/ (settings.ini, geonature_config.toml…) et le mot de passe de la base",
+    "install/install.toml (avec le mot de passe de la base) et config/",
     "le code, le venv, les médias et ~/geonature_backups",
 )
 

@@ -64,7 +64,9 @@ Configuration
     cp install/install.sample.toml install/install.toml
     nano install/install.toml
 
-Si vous n'avez pas utilisé ``get-geonature.sh`` ou ``--configure``, renseignez à minima ``my_url`` (avec un ``/`` final), ``url_application_prefix_path`` et ``user_pg``. Laissez ``user_pg_pass`` vide pour qu'un mot de passe aléatoire soit généré : il est conservé dans ``config/settings.ini`` et n'est jamais régénéré aux relances.
+Si vous n'avez pas utilisé ``get-geonature.sh`` ou ``--configure``, renseignez à minima ``my_url`` (avec un ``/`` final), ``url_application_prefix_path`` et ``user_pg``. Laissez ``user_pg_pass`` vide pour qu'un mot de passe aléatoire soit généré : il est écrit dans ``install.toml`` (droits ``0600``) au premier lancement et n'est jamais régénéré aux relances.
+
+``install.toml`` est la seule source de configuration. L'ancien fichier ``config/settings.ini`` n'est plus généré : les installations antérieures qui en ont un continuent de fonctionner (il sert de repli, notamment pour le mot de passe de la base, qui est alors recopié dans ``install.toml``). Les scripts shell de ``data/`` obtiennent les mêmes variables avec ``eval "$(python3 install/install.py --print-settings)"``.
 
 Le fichier ``install.toml`` reprend les paramètres de l'ancien fichier ``install_all.ini``. Les clés absentes prennent leur valeur par défaut (``DEFAULTS`` dans ``install/installer/render.py``).
 
@@ -92,15 +94,15 @@ Les étapes sont, dans l'ordre : ``apt``, ``nvm``, ``backend``, ``systemd``, ``d
 
 Sur un terminal, l'avancement s'affiche sur une ligne rafraîchie en continu : barre d'étapes, numéro de l'étape, durée écoulée et dernière ligne du journal (par exemple le paquet en cours d'installation). Chaque étape terminée est ensuite figée avec sa durée. Sans terminal (redirection, CI), seules des lignes simples sont écrites. Le mot de passe ``sudo`` est demandé avant le début de chaque étape, jamais pendant l'affichage de la ligne.
 
-À la fin d'une installation complète, un résumé indique l'adresse de l'application et de l'API, la base utilisée (le mot de passe n'est jamais affiché : il est dans ``config/settings.ini``), les dossiers de configuration et de journal, le compte de démonstration ``admin`` / ``admin`` (à changer) et les commandes utiles ensuite (services systemd, ou lancement du backend et du frontend en mode ``dev``). Il n'est pas affiché avec ``--only``.
+À la fin d'une installation complète, un résumé indique l'adresse de l'application et de l'API, la base utilisée (le mot de passe n'est jamais affiché : il est dans ``install.toml``), les dossiers de configuration et de journal, le compte de démonstration ``admin`` / ``admin`` (à changer) et les commandes utiles ensuite (services systemd, ou lancement du backend et du frontend en mode ``dev``). Il n'est pas affiché avec ``--only``.
 
 En cas d'échec, corrigez le problème puis relancez la même commande : les étapes déjà terminées sont ignorées. Options utiles :
 
 - ``--from-step NOM`` : reprend à une étape donnée ;
 - ``--only NOM`` : n'exécute qu'une étape ;
 - ``--reset-state`` : oublie les étapes terminées (seulement celle de ``--only`` s'il est donné) ;
-- ``--render-config`` : génère uniquement ``config/settings.ini`` et ``config/geonature_config.toml`` ;
-- ``--render-settings`` : génère uniquement ``config/settings.ini`` (utilisé par ``make init_settings_ini``) ;
+- ``--render-config`` : génère uniquement ``config/geonature_config.toml`` ;
+- ``--print-settings`` : affiche les variables de ``install.toml`` (``clé=valeur``, à passer à ``eval``) pour les scripts shell ;
 - ``--confirm-drop NOM_BASE`` : autorise la suppression d'une base existante lorsque ``drop_apps_db = true``. Sans cette confirmation, la base n'est jamais supprimée ;
 - ``--skip-check`` : n'exécute pas le contrôle des prérequis.
 
@@ -150,6 +152,6 @@ Pour retirer les services systemd et la configuration Apache écrits par l'insta
 
 Sont retirés : les services ``geonature`` et ``geonature-worker`` (arrêt, désactivation, fichiers), ``tmpfiles.d``, ``logrotate``, les sites et la configuration Apache ``geonature`` ainsi que la page de maintenance, puis les marqueurs d'étapes de ``install/.state``. Seul ce qui existe sur la machine est listé.
 
-**La base de données et son rôle PostgreSQL ne sont jamais supprimés**, pas plus que ``config/``, le code, le venv, les médias et ``~/geonature_backups``. Pour supprimer aussi la base, faites-le à la main avec ``DROP DATABASE`` après vous être assuré d'avoir une sauvegarde.
+**La base de données et son rôle PostgreSQL ne sont jamais supprimés**, pas plus que ``install.toml`` (qui contient le mot de passe de la base), ``config/``, le code, le venv, les médias et ``~/geonature_backups``. Pour supprimer aussi la base, faites-le à la main avec ``DROP DATABASE`` après vous être assuré d'avoir une sauvegarde.
 
 Le générateur systemd et les unités ``geonature-reload`` sont partagés avec d'anciens montages à instances (``geonature@.service``) : ils ne sont retirés qu'avec ``--include-shared``. Les droits de traversée donnés à Apache sur les dossiers parents (``chmod o+x``) ne sont pas annulés.

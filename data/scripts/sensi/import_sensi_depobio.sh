@@ -4,7 +4,7 @@
 # Utilisé pour DEPOBIO pour disposer des règles de sensibilité à jour, au niveau départemantal.
 
 rootdir=`pwd`/../../../
-. $rootdir/config/settings.ini 
+eval "$(python3 $rootdir/install/install.py --print-settings)"
 export PGPASSWORD=$user_pg_pass
 rm /tmp/sensibles_to_inpn_20201218.csv
 wget --cache=off https://geonature.fr/data/inpn/sensitivity/ref_sensibilite_21122020.csv -P /tmp

@@ -23,10 +23,10 @@ def root(tmp_path):
     return tmp_path
 
 
-def sourced(path, key):
-    """Valeur vue par les anciens scripts bash qui font `. settings.ini`."""
+def sourced(text, key):
+    """Valeur vue par un script shell qui fait `eval "$(install.py --print-settings)"`."""
     out = subprocess.run(
-        ["bash", "-c", f'. "{path}" && printf %s "${key}"'],
+        ["bash", "-c", f'eval "$1" && printf %s "${key}"', "_", text],
         capture_output=True,
         text=True,
         check=True,
@@ -34,11 +34,12 @@ def sourced(path, key):
     return out.stdout
 
 
-def test_special_password_survives_ini_and_toml(root):
-    render.render_all(root, {"my_url": "http://x.org/", "user_pg_pass": NASTY})
-    settings = root / "config" / "settings.ini"
-    assert sourced(settings, "user_pg_pass") == NASTY
-    assert sourced(settings, "db_name") == "geonature2db"
+def test_special_password_survives_shell_and_toml(root):
+    user = {"my_url": "http://x.org/", "user_pg_pass": NASTY}
+    render.render_all(root, user)
+    text = render.settings_text(user)
+    assert sourced(text, "user_pg_pass") == NASTY
+    assert sourced(text, "db_name") == "geonature2db"
 
     uri = tomllib.loads((root / "config" / "geonature_config.toml").read_text())[
         "SQLALCHEMY_DATABASE_URI"
@@ -52,43 +53,38 @@ def test_special_password_survives_ini_and_toml(root):
 def test_ini_values_are_shell_quoted_one_per_line():
     out = render.format_ini({"user_pg": "x y", "proxy_http": "http://p:3128"})
     assert "user_pg='x y'\n" in out and "proxy_http=http://p:3128\n" in out
-    assert out.startswith("##")  # en-tête : fichier généré
+    assert out.startswith("##")
 
 
-def test_defaults_fill_missing_keys(root):
-    render.render_all(root, {"my_url": "http://x.org/"})
-    settings = root / "config" / "settings.ini"
-    assert sourced(settings, "srid_local") == "2154"
-    assert sourced(settings, "MODE") == "prod"
-    assert sourced(settings, "install_module_occhab") == "true"
+def test_defaults_fill_missing_keys():
+    text = render.settings_text({"my_url": "http://x.org/"})
+    assert sourced(text, "srid_local") == "2154"
+    assert sourced(text, "MODE") == "prod"
+    assert sourced(text, "install_module_occhab") == "true"
 
 
-def test_settings_only_does_not_touch_geonature_config(root):
-    written = render.render_all(root, {"my_url": "http://x.org/"}, settings_only=True)
-    assert written == [root / "config" / "settings.ini"]
-    assert not (root / "config" / "geonature_config.toml").exists()
+def test_settings_ini_is_no_longer_generated(root):
+    written = render.render_all(root, {"my_url": "http://x.org/"})
+    assert written == [root / "config" / "geonature_config.toml"]
+    assert not (root / "config" / "settings.ini").exists()
 
 
-def test_password_generated_once_then_kept(root):
-    cfg = {"my_url": "http://x.org/"}
-    render.render_all(root, cfg)
-    first = render.read_ini_value(root / "config" / "settings.ini", "user_pg_pass")
-    assert len(first) >= 16
-    # même un rendu forcé reprend le mot de passe déjà appliqué à la base
-    render.render_all(root, cfg, force=True)
-    assert render.read_ini_value(root / "config" / "settings.ini", "user_pg_pass") == first
+def test_legacy_settings_ini_password_is_still_read(root):
+    (root / "config" / "settings.ini").write_text("user_pg_pass=ancien\n")
+    cfg = render.resolve_config({"my_url": "http://x.org/"}, root / "config" / "settings.ini")
+    assert cfg["user_pg_pass"] == "ancien"
 
 
 def test_existing_files_not_overwritten(root):
     render.render_all(root, {"my_url": "http://x.org/"})
-    before = (root / "config" / "settings.ini").read_text()
+    before = (root / "config" / "geonature_config.toml").read_text()
     assert render.render_all(root, {"my_url": "http://autre.org/"}) == []
-    assert (root / "config" / "settings.ini").read_text() == before
+    assert (root / "config" / "geonature_config.toml").read_text() == before
 
 
 def test_secret_files_are_private(root):
     render.render_all(root, {"my_url": "http://x.org/"})
-    assert (root / "config" / "settings.ini").stat().st_mode & 0o777 == 0o600
+    assert (root / "config" / "geonature_config.toml").stat().st_mode & 0o777 == 0o600
 
 
 @pytest.mark.parametrize(
@@ -119,7 +115,8 @@ def test_sample_install_toml_is_valid_and_complete():
 
 def test_existing_config_pointing_elsewhere_is_reported(root):
     render.render_all(root, {"my_url": "http://x.org/", "db_name": "autre"})
-    cfg = render.resolve_config({"my_url": "http://x.org/"}, root / "config" / "settings.ini")
+    (root / "config" / "settings.ini").write_text("db_name=autre\n")  # ancienne installation
+    cfg = render.resolve_config({"my_url": "http://x.org/"})
     problems = render.config_mismatches(root, cfg)
     assert any("settings.ini : db_name=autre" in p for p in problems)
     assert any("geonature_config.toml : db_name=autre" in p for p in problems)
@@ -128,8 +125,7 @@ def test_existing_config_pointing_elsewhere_is_reported(root):
 def test_matching_config_has_no_mismatch(root):
     user = {"my_url": "http://x.org/", "db_name": "gn", "user_pg": "u", "user_pg_pass": "p@ss/w"}
     render.render_all(root, user)
-    cfg = render.resolve_config(user, root / "config" / "settings.ini")
-    assert render.config_mismatches(root, cfg) == []
+    assert render.config_mismatches(root, render.resolve_config(user)) == []
 
 
 def test_dev_mode_api_endpoint_is_the_backend_port(root):
@@ -144,3 +140,35 @@ def test_prod_api_endpoint_unchanged_by_dev_port(root):
     render.render_all(root, {"my_url": "http://x.org/", "dev_backend_port": 9999})
     gn = tomllib.loads((root / "config" / "geonature_config.toml").read_text())
     assert gn["API_ENDPOINT"] == "http://x.org/geonature/api"
+
+
+def test_generated_password_is_persisted_in_install_toml(tmp_path, monkeypatch):
+    import importlib
+
+    sys.path.insert(0, str(REPO / "install"))
+    install = importlib.import_module("install")
+    monkeypatch.setattr(install, "ROOT", tmp_path)
+    toml = tmp_path / "install.toml"
+    toml.write_text('my_url = "http://x.org/"\nuser_pg_pass = ""  # généré\n')
+    cfg = install.persist_password(toml, tomllib.loads(toml.read_text()))
+    saved = tomllib.loads(toml.read_text())["user_pg_pass"]
+    assert saved and cfg["user_pg_pass"] == saved and toml.stat().st_mode & 0o777 == 0o600
+    assert "# généré" in toml.read_text()
+    # relance : rien n'est régénéré, install.toml fait foi sans settings.ini
+    again = install.persist_password(toml, tomllib.loads(toml.read_text()))
+    assert again["user_pg_pass"] == saved
+    assert render.resolve_config(again)["user_pg_pass"] == saved
+
+
+def test_legacy_settings_ini_password_is_migrated_into_install_toml(tmp_path, monkeypatch):
+    import importlib
+
+    sys.path.insert(0, str(REPO / "install"))
+    install = importlib.import_module("install")
+    monkeypatch.setattr(install, "ROOT", tmp_path)
+    (tmp_path / "config").mkdir()
+    (tmp_path / "config" / "settings.ini").write_text("user_pg_pass=ancien\n")
+    toml = tmp_path / "install.toml"
+    toml.write_text('my_url = "http://x.org/"\nuser_pg_pass = ""\n')
+    install.persist_password(toml, tomllib.loads(toml.read_text()))
+    assert tomllib.loads(toml.read_text())["user_pg_pass"] == "ancien"

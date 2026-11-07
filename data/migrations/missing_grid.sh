@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-. ../../config/settings.ini
+eval "$(python3 ../../install/install.py --print-settings)"
 cd ../../
 
 sudo ls

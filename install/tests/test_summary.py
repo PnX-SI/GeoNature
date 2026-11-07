@@ -21,7 +21,7 @@ def test_prod_summary_gives_url_login_and_services():
 
 def test_summary_never_prints_the_database_password():
     text = summary.format_summary(cfg(user_pg_pass="s3cr3t-pass"), "/srv/geonature")
-    assert "s3cr3t-pass" not in text and "config/settings.ini" in text
+    assert "s3cr3t-pass" not in text and "install/install.toml" in text
 
 
 def test_dev_summary_gives_dev_commands_and_backend_api():

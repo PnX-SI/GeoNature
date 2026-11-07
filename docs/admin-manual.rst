@@ -903,7 +903,7 @@ Configuration
 
 Pour configurer GeoNature, actuellement il y a :
 
-- Une configuration pour l'installation : ``config/settings.ini``
+- Une configuration pour l'installation : ``install/install.toml``
 - Une configuration globale de l'application : ``<GEONATURE_DIRECTORY>/config/geonature_config.toml`` (générée lors de l'installation de GeoNature)
 - Une configuration optionnelle par module : placée dans le dossier de configuration de GeoNature (``<GEONATURE_DIRECTORY>/config/``)
 - Une table ``gn_commons.t_parameters`` pour des paramètres gérés dans la BDD
@@ -916,7 +916,7 @@ Configuration générale de l'application
 """""""""""""""""""""""""""""""""""""""
 
 La configuration générale de GeoNature se fait dans le fichier ``config/geonature_config.toml``.
-Une version minimaliste est générée à l’installation à partir du fichier ``config/settings.ini``.
+Une version minimaliste est générée à l’installation à partir du fichier ``install/install.toml``.
 Vous pouvez compléter votre configuration en vous inspirant des paramètres par défaut présents dans le fichier ``config/default_config.toml.example``.
 
 .. _post_config_change:

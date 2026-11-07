@@ -11,7 +11,7 @@ db_host = "localhost"
 db_port = 5432
 db_name = "geonature2db"
 user_pg = "geonatadmin"
-# Laisser vide pour générer un mot de passe aléatoire (conservé dans config/settings.ini).
+# Laisser vide pour générer un mot de passe aléatoire : il est alors écrit ici au premier lancement.
 user_pg_pass = ""
 drop_apps_db = false          # supprime la base existante : à utiliser avec précaution
 

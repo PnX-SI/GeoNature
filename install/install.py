@@ -3,7 +3,8 @@
 
 python3 install/install.py --check [--config install.toml] [--offline]
 python3 install/install.py --configure --config install/install.toml
-python3 install/install.py --render-config|--render-settings --config install/install.toml [--force]
+python3 install/install.py --render-config --config install/install.toml [--force]
+eval "$(python3 install/install.py --print-settings)"   # variables de install.toml pour un script shell
 python3 install/install.py --config install/install.toml [--from-step NOM | --only NOM]
                            [--confirm-drop BASE] [--skip-check] [--reset-state]
 python3 install/install.py update <tag|branche> [--dry-run] [--backup-dir DIR]
@@ -75,12 +76,18 @@ def update_main(argv):
         parser.error("indiquez la version cible, ou --rollback")
 
     settings = ROOT / "config" / "settings.ini"
-    if not settings.exists():
-        print(f"{settings} introuvable : GeoNature ne semble pas installé ici.", file=sys.stderr)
+    toml = ROOT / "install" / "install.toml"
+    if not settings.exists() and not toml.exists():
+        print(f"{toml} introuvable : GeoNature ne semble pas installé ici.", file=sys.stderr)
         return 1
     ctx = steps.Context(
         root=ROOT,
-        cfg=render.read_ini(settings),
+        # install.toml fait foi ; settings.ini (anciennes installations) ne sert que de repli
+        cfg=(
+            render.resolve_config(load_config(toml) if toml.exists() else {}, settings)
+            if toml.exists()
+            else render.read_ini(settings)
+        ),
         runner=Runner(ROOT / "install" / "update.log", cwd=ROOT),
         state=State(ROOT / "install" / ".state"),
     )
@@ -149,6 +156,27 @@ def uninstall_main(argv):
     return 0
 
 
+def print_settings(config):
+    if not Path(config).exists():
+        print(f"{config} introuvable : installez GeoNature ou précisez --config.", file=sys.stderr)
+        return 1
+    cfg = persist_password(config, load_config(config))
+    sys.stdout.write(render.settings_text(cfg, ROOT / "config" / "settings.ini"))
+    return 0
+
+
+def persist_password(path, cfg):
+    """Écrit dans install.toml le mot de passe PostgreSQL généré : il y reste, il n'est jamais régénéré."""
+    if not path or cfg.get("user_pg_pass"):
+        return cfg
+    password = render.resolve_config(cfg, ROOT / "config" / "settings.ini")["user_pg_pass"]
+    path = Path(path)
+    path.write_text(configure.set_values(path.read_text(), {"user_pg_pass": password}))
+    path.chmod(0o600)
+    print(f"Mot de passe PostgreSQL généré et conservé dans {path}", file=sys.stderr)
+    return {**cfg, "user_pg_pass": password}
+
+
 def refresh_sudo():
     """`sudo -v` sur le terminal : le mot de passe est demandé avant la ligne de progression, jamais dessous."""
     if sys.stdin.isatty():
@@ -191,12 +219,12 @@ def main(argv=None):
     parser.add_argument(
         "--render-config",
         action="store_true",
-        help="génère config/settings.ini et geonature_config.toml",
+        help="génère config/geonature_config.toml",
     )
     parser.add_argument(
-        "--render-settings",
+        "--print-settings",
         action="store_true",
-        help="génère uniquement config/settings.ini (Makefile de développement)",
+        help="affiche les variables de install.toml (clé=valeur, à passer à eval) pour les scripts shell",
     )
     parser.add_argument(
         "--force", action="store_true", help="écrase les fichiers de configuration existants"
@@ -219,6 +247,9 @@ def main(argv=None):
     if args.configure:
         return configure_main(args, parser)
 
+    if args.print_settings:
+        return print_settings(args.config or str(ROOT / "install" / "install.toml"))
+
     cfg = load_config(args.config)
     if args.check:
         ok = preflight.report(preflight.run_all(cfg, network=not args.offline))
@@ -226,12 +257,13 @@ def main(argv=None):
 
     if not args.config:
         parser.error("--config install.toml est requis")
-    written = render.render_all(ROOT, cfg, force=args.force, settings_only=args.render_settings)
+    cfg = persist_password(args.config, cfg)
+    written = render.render_all(ROOT, cfg, force=args.force)
     for path in written:
         print(f"écrit : {path}")
     if not written:
         print("Fichiers de configuration déjà présents, rien à faire (--force pour les régénérer).")
-    if args.render_config or args.render_settings:
+    if args.render_config:
         return 0
 
     problems = render.config_mismatches(
@@ -244,7 +276,7 @@ def main(argv=None):
         print(
             "Ils ne sont jamais réécrits : les commandes utiliseraient l'ancienne configuration.\n"
             "Alignez install.toml sur ces fichiers, lancez l'installation dans une copie propre du dépôt, "
-            "ou relancez avec --force pour les régénérer (écrase config/settings.ini et geonature_config.toml)."
+            "ou relancez avec --force pour les régénérer (écrase config/geonature_config.toml)."
         )
         return 1
 

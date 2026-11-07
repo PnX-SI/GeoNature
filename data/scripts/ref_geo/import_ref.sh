@@ -3,10 +3,9 @@
 
 set -e
 
-. settings.ini 
 rootdir=`pwd`/../../../
 
-. $rootdir/config/settings.ini 
+eval "$(python3 $rootdir/install/install.py --print-settings)"
 
 export PGPASSWORD=$user_pg_pass;
 

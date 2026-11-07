@@ -18,7 +18,7 @@ COMPLETION_FILE_NAME = "geonature_completion"
 
 
 def default_completion_file():
-    """Completion file sourced by the virtualenv 'activate' script (see install/01_install_backend.sh)."""
+    """Completion file sourced by the virtualenv 'activate' script (see install/installer/steps.py)."""
     return Path(sys.prefix) / "bin" / COMPLETION_FILE_NAME
 
 

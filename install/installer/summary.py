@@ -23,10 +23,10 @@ def format_summary(cfg, root, done=()):
     lines.append(f"API                 : {api_url}")
     lines.append(
         f"Base PostgreSQL     : {cfg['db_name']} sur {cfg['db_host']}:{cfg['db_port']}"
-        f" (utilisateur {cfg['user_pg']}, mot de passe dans config/settings.ini)"
+        f" (utilisateur {cfg['user_pg']}, mot de passe dans install/install.toml)"
     )
     lines.append(f"Dossier             : {root}")
-    lines.append(f"Configuration       : {root / 'config'} (settings.ini, geonature_config.toml)")
+    lines.append(f"Configuration       : {root / 'config'} (geonature_config.toml)")
     lines.append(f"Journal             : {root / 'install' / 'install.log'}")
     lines.append("")
     lines.append("Connexion : admin / admin (compte de démonstration : changez ce mot de passe).")

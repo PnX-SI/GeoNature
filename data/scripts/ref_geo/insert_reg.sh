@@ -3,7 +3,7 @@
 filepath=$(realpath $0)
 GEONATURE_ROOT=$(dirname $(dirname $(dirname $filepath)))
 
-. $GEONATURE_ROOT/config/settings.ini
+eval "$(python3 $GEONATURE_ROOT/install/install.py --print-settings)"
 
 --wget  --cache=off http://geonature.fr/data/ign/reg_fr_admin_express_2020-07.zip -P $GEONATURE_ROOT/tmp/geonature
 

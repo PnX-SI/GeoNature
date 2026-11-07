@@ -3,7 +3,7 @@
 # faux sudo car sinon la commande "sudo -n -u" ne le demande pas
 sudo ls
 
-. ../../config/settings.ini
+eval "$(python3 ../../install/install.py --print-settings)"
 
 touch ../../var/log/migration_2.0.1_to_2.1.0.log
 

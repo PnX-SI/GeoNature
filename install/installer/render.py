@@ -1,7 +1,8 @@
 """Génération des fichiers de configuration à partir de `install.toml`, sans `sed`.
 
-`config/settings.ini` est écrit depuis `DEFAULTS` et `install.toml` ; `geonature_config.toml.sample` sert de
-modèle (les commentaires sont conservés) et seules les lignes `CLÉ = valeur` de premier niveau sont remplacées.
+`install.toml` est la seule source de configuration (`DEFAULTS` pour les clés absentes) ; `settings.ini` n'est plus
+généré, les scripts shell obtiennent les mêmes variables avec `install.py --print-settings`.
+`geonature_config.toml.sample` sert de modèle (les commentaires sont conservés) et seules les lignes `CLÉ = valeur` de premier niveau sont remplacées.
 """
 
 import json
@@ -12,8 +13,8 @@ import shlex
 from pathlib import Path
 from urllib.parse import quote, unquote, urlsplit
 
-# Clés de settings.ini lues par les anciens scripts (`. settings.ini`) ; les valeurs sont donc
-# protégées pour le shell.
+# Clés reconnues dans install.toml, exportées en variables shell par `--print-settings`
+# (valeurs protégées pour le shell).
 SETTINGS_KEYS = (
     "MODE",
     "venv_path",
@@ -71,8 +72,7 @@ DEFAULTS = {
 }
 
 SETTINGS_HEADER = (
-    "## Généré par install/install.py à partir de install.toml.\n"
-    "## Lu par le Makefile et les scripts de data/ ; pour modifier l'installation, éditez install.toml.\n"
+    "## Variables de install.toml (install.py --print-settings), à charger avec eval.\n"
 )
 
 
@@ -83,7 +83,7 @@ def _scalar(value):
 
 
 def format_ini(values):
-    """Fichier `clé=valeur` lisible par `. settings.ini` : les valeurs sont protégées pour le shell."""
+    """Lignes `clé=valeur` à `eval` dans un script shell : les valeurs sont protégées pour le shell."""
     lines = [f"{k}={shlex.quote(_scalar(v))}" for k, v in values.items()]
     return SETTINGS_HEADER + "\n".join(lines) + "\n"
 
@@ -157,8 +157,9 @@ def read_ini(path):
 def resolve_config(user_cfg, existing_settings=None):
     """Fusionne `DEFAULTS`, install.toml et secrets.
 
-    Le mot de passe PostgreSQL absent est repris de settings.ini s'il existe, sinon généré :
-    relancer l'installation ne change donc jamais un mot de passe déjà appliqué à la base.
+    Le mot de passe PostgreSQL vient d'install.toml ; absent, il est repris de settings.ini (anciennes
+    installations) s'il existe, sinon généré : relancer l'installation ne change donc jamais un mot de
+    passe déjà appliqué à la base.
     """
     cfg = dict(DEFAULTS)
     cfg.update(user_cfg)  # une valeur vide est un choix (ex. préfixe d'URL vide = racine)
@@ -218,21 +219,20 @@ def write_file(path, content, force=False, mode=0o600):
     return True
 
 
-def render_all(root, user_cfg, force=False, settings_only=False):
-    """Génère config/settings.ini (et config/geonature_config.toml sauf `settings_only`).
+def settings_text(user_cfg, existing_settings=None):
+    """Variables shell (`clé=valeur`) de la configuration résolue : remplace la lecture de settings.ini."""
+    cfg = resolve_config(user_cfg, existing_settings)
+    return format_ini({k: cfg[k] for k in SETTINGS_KEYS if k in cfg})
 
-    Retourne les fichiers écrits.
-    """
+
+def render_all(root, user_cfg, force=False):
+    """Génère config/geonature_config.toml. Retourne les fichiers écrits."""
     config_dir = Path(root) / "config"
-    settings_path = config_dir / "settings.ini"
-    cfg = resolve_config(user_cfg, settings_path)
+    cfg = resolve_config(
+        user_cfg, config_dir / "settings.ini"
+    )  # settings.ini : anciennes installations
 
     written = []
-    settings = {k: cfg[k] for k in SETTINGS_KEYS if k in cfg}
-    if write_file(settings_path, format_ini(settings), force):
-        written.append(settings_path)
-    if settings_only:
-        return written
 
     app_url, api_url = application_urls(
         cfg["my_url"],
