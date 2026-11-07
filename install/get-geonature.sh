@@ -24,10 +24,10 @@ main() {
 
     # couleurs seulement sur un terminal (la sortie standard reste le terminal même avec `curl | sh`)
     if [ -t 1 ]; then
-        bold='\033[1m'; gray='\033[90m'; red='\033[31m'; green='\033[32m'; cyan='\033[36m'; off='\033[0m'
+        bold='\033[1m'; gray='\033[90m'; red='\033[31m'; green='\033[32m'; yellow='\033[33m'; cyan='\033[36m'; off='\033[0m'
         rocket='🚀 '; box='📦 '
     else
-        bold=''; gray=''; red=''; green=''; cyan=''; off=''; rocket=''; box=''
+        bold=''; gray=''; red=''; green=''; yellow=''; cyan=''; off=''; rocket=''; box=''
     fi
     say() { printf '%s\n' "$*"; }
     title() { printf '%b%s%s%b\n' "$bold" "$1" "$2" "$off"; }
@@ -81,7 +81,11 @@ main() {
     python3 "$dir/install/install.py" --check --config "$dir/install/install.toml" || precheck=$?
 
     say ""
-    printf '%b✔ Prêt.%b\n' "$green" "$off"
+    if [ "$precheck" -eq 0 ]; then
+        printf '%b✔ Prêt.%b\n' "$green" "$off"
+    else
+        printf '%b⚠ Des prérequis ne sont pas satisfaits (voir ci-dessus).%b\n' "$yellow" "$off"
+    fi
     title "" "Étapes suivantes :"
     step=1
     if [ "$configured" -eq 0 ]; then
@@ -93,6 +97,11 @@ main() {
         step=$((step + 1))
     fi
     printf "  %s. Lancez l'installation :  %bpython3 %s/install/install.py --config %s/install/install.toml%b\n" "$step" "$cyan" "$dir" "$dir" "$off"
+    if [ "$precheck" -ne 0 ]; then
+        say ""
+        printf '%bPour installer malgré les prérequis manquants (à vos risques : l'"'"'installation peut échouer) :%b\n' "$yellow" "$off"
+        printf '  %bpython3 %s/install/install.py --config %s/install/install.toml --skip-check%b\n' "$cyan" "$dir" "$dir" "$off"
+    fi
 }
 
 main "$@"

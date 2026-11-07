@@ -39,6 +39,8 @@ Les questions (mode, URL, préfixe, base et utilisateur PostgreSQL, mot de passe
 
     python3 install/install.py --configure --config install/install.toml
 
+Si le contrôle des prérequis échoue, le script le signale et rappelle qu'il est possible de forcer l'installation malgré tout, à vos risques, en ajoutant ``--skip-check`` à la commande ``install.py``.
+
 Les sections suivantes détaillent ces étapes, qui peuvent aussi être faites à la main.
 
 Récupération du code

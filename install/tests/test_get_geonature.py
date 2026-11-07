@@ -81,6 +81,9 @@ def test_prepares_private_config_and_runs_preflight(env, tmp_path):
     assert toml.read_text() == 'my_url = "http://x/"\n' and toml.stat().st_mode & 0o777 == 0o600
     assert "--check" in r.stdout and "Lancez l'installation" in r.stdout
     assert "2. Lancez l'installation" in r.stdout
+    assert (
+        "--skip-check" not in r.stdout and "✔ Prêt" in r.stdout
+    )  # prérequis valides : pas de forçage
 
 
 def test_failing_preflight_is_reported_not_fatal(env, tmp_path):
@@ -88,6 +91,9 @@ def test_failing_preflight_is_reported_not_fatal(env, tmp_path):
     r = run(env)
     assert r.returncode == 0
     assert "Corrigez les prérequis" in r.stdout and "3. Lancez l'installation" in r.stdout
+    # l'utilisateur peut forcer l'installation
+    assert "--skip-check" in r.stdout and "prérequis ne sont pas satisfaits" in r.stdout
+    assert r.stdout.index("Lancez l'installation") < r.stdout.index("--skip-check")
 
 
 def test_refuses_existing_directory_and_leaves_it_alone(env, tmp_path):
