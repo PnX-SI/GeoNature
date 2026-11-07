@@ -43,6 +43,7 @@ extensions = [
     "sphinx.ext.githubpages",
     "sphinx.ext.napoleon",
     "myst_parser",
+    "sphinxcontrib.mermaid",
 ]
 
 ## AUTOAPI

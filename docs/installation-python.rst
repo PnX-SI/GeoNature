@@ -12,6 +12,22 @@ L'installateur ``install/install.py`` remplace l'ancienne installation globale (
 
     Cet installateur est récent. Il installe GeoNature (incluant TaxHub) mais pas UsersHub, qui pilote le schéma ``utilisateurs`` : installez-le séparément en suivant sa `documentation <https://usershub.readthedocs.io>`_ pour disposer d'une interface de gestion des utilisateurs.
 
+Vue d'ensemble
+--------------
+
+.. mermaid::
+
+    flowchart TB
+        A["<b>Amorçage</b><br/>get-geonature.sh : clone superficiel"] --> B["<b>Questions</b><br/>install.py --configure"]
+        B --> C{"<b>Pré-vol</b><br/>install.py --check"}
+        C -- OK --> D["<b>Installation</b><br/>9 étapes reprenables"]
+        C -- échec --> E["Prérequis manquants"]
+        E -- "corriger puis relancer" --> C
+        E -. "--skip-check : forcer" .-> D
+        D --> F["<b>Résumé</b><br/>URL, base, compte, commandes"]
+
+Le pré-vol s'arrête sur un prérequis manquant, mais l'installation peut être forcée avec ``--skip-check``. Tout passe par ``install.toml`` : il est écrit par les questions, lu par le pré-vol et l'installation.
+
 Installation rapide
 -------------------
 
@@ -70,6 +86,15 @@ Si vous n'avez pas utilisé ``get-geonature.sh`` ou ``--configure``, renseignez 
 
 ``install.toml`` est la seule source de configuration. L'ancien fichier ``config/settings.ini`` n'est plus généré : les installations antérieures qui en ont un continuent de fonctionner (il sert de repli, notamment pour le mot de passe de la base, qui est alors recopié dans ``install.toml``). Les scripts shell de ``data/`` obtiennent les mêmes variables avec ``eval "$(python3 install/install.py --print-settings)"``.
 
+.. mermaid::
+
+    flowchart LR
+        T["install/install.toml<br/>source unique de configuration"] --> P["install.py<br/>DEFAULTS + install.toml"]
+        S["config/settings.ini<br/>ancien fichier"] -. repli .-> P
+        P -- génère --> G["config/geonature_config.toml"]
+        P -- "--print-settings" --> D["scripts shell de data/"]
+        P -- pilote --> U["install.py update"]
+
 Le fichier ``install.toml`` reprend les paramètres de l'ancien fichier ``install_all.ini``. Les clés absentes prennent leur valeur par défaut (``DEFAULTS`` dans ``install/installer/render.py``).
 
 Vérification des prérequis
@@ -97,6 +122,16 @@ Les étapes sont, dans l'ordre : ``apt``, ``nvm``, ``backend``, ``systemd``, ``d
 Sur un terminal, l'avancement s'affiche sur une ligne rafraîchie en continu : barre d'étapes, numéro de l'étape, durée écoulée et dernière ligne du journal (par exemple le paquet en cours d'installation). Chaque étape terminée est ensuite figée avec sa durée. Les couleurs (vert pour une étape réussie, rouge pour un échec, jaune pour un avertissement, gris pour les détails) et une icône par étape (📦 🟢 🐍 ⚙️ 🗄️ 🧩 🎨 🌐 🚀) ne sont utilisées que sur un terminal : sans terminal (redirection, CI, journal), seules des lignes simples sont écrites, sans caractère de contrôle ni emoji. Le mot de passe ``sudo`` est demandé avant le début de chaque étape, jamais pendant l'affichage de la ligne.
 
 À la fin d'une installation complète, un résumé indique l'adresse de l'application et de l'API, la base utilisée (le mot de passe n'est jamais affiché : il est dans ``install.toml``), les dossiers de configuration et de journal, le compte de démonstration ``admin`` / ``admin`` (à changer) et les commandes utiles ensuite (services systemd, ou lancement du backend et du frontend en mode ``dev``). Il n'est pas affiché avec ``--only``.
+
+.. mermaid::
+
+    flowchart LR
+        apt["apt"]:::done --> nvm["nvm"]:::done --> backend["backend"]:::done --> systemd["systemd"]:::done --> database["database<br/>échec"]:::fail -.-> modules["modules"]:::todo -.-> frontend["frontend"]:::todo -.-> apache["apache"]:::todo -.-> services["services"]:::todo
+        classDef done fill:#ddf0e6,stroke:#1b7a5a,color:#14201b
+        classDef fail fill:#fbdedb,stroke:#b3261e,color:#14201b
+        classDef todo fill:none,stroke:#7a8a83,stroke-dasharray:4 3
+
+Après un échec à l'étape ``database``, la même commande ignore les quatre premières étapes (leur marqueur ``install/.state/<étape>.done`` existe) et reprend à la cinquième.
 
 En cas d'échec, corrigez le problème puis relancez la même commande : les étapes déjà terminées sont ignorées. Options utiles :
 
@@ -158,3 +193,41 @@ Sont retirés : les services ``geonature`` et ``geonature-worker`` (arrêt, dés
 **La base de données et son rôle PostgreSQL ne sont jamais supprimés**, pas plus que ``install.toml`` (qui contient le mot de passe de la base), ``config/``, le code, le venv, les médias et ``~/geonature_backups``. Pour supprimer aussi la base, faites-le à la main avec ``DROP DATABASE`` après vous être assuré d'avoir une sauvegarde.
 
 Le générateur systemd et les unités ``geonature-reload`` sont partagés avec d'anciens montages à instances (``geonature@.service``) : ils ne sont retirés qu'avec ``--include-shared``. Les droits de traversée donnés à Apache sur les dossiers parents (``chmod o+x``) ne sont pas annulés.
+
+Ce que chaque commande modifie
+------------------------------
+
+.. list-table::
+    :header-rows: 1
+    :widths: 14 16 14 26 16 14
+
+    * - Commande
+      - Services systemd et Apache
+      - Code (git)
+      - Base PostgreSQL
+      - ``install.toml``
+      - Sauvegardes
+    * - ``install.py``
+      - créés et démarrés
+      - inchangé (déjà cloné)
+      - créée et peuplée ; supprimée seulement avec ``drop_apps_db`` et ``--confirm-drop``
+      - lu ; mot de passe généré écrit
+      - aucune
+    * - ``update X.Y.Z``
+      - mis à jour, redémarrés
+      - passage au tag demandé
+      - migrations appliquées
+      - lu
+      - créées avant toute modification
+    * - ``update --rollback``
+      - redémarrés
+      - retour au commit d'avant
+      - restaurée seulement avec ``--restore-db`` et ``--confirm-restore``
+      - lu
+      - lues
+    * - ``uninstall``
+      - retirés
+      - inchangé
+      - **jamais touchée**
+      - **conservé**
+      - inchangées

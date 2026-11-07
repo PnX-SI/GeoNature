@@ -3,3 +3,5 @@ furo
 myst-parser
 sphinx-autoapi
 sphinx-copybutton
+sphinxcontrib-mermaid
+sphinx-autobuild
