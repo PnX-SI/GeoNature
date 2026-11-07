@@ -100,6 +100,7 @@ En cas d'échec, corrigez le problème puis relancez la même commande : les ét
 
 - ``--from-step NOM`` : reprend à une étape donnée ;
 - ``--only NOM`` : n'exécute qu'une étape ;
+- ``-v``, ``--verbose`` : affiche en direct la sortie des commandes (``apt``, ``uv``, ``npm``, ``geonature``…) en plus du journal, au lieu de la seule ligne de progression. Disponible aussi pour ``update``. Sans ce mode, ``tail -f install/install.log`` dans un autre terminal montre la même sortie ;
 - ``--reset-state`` : oublie les étapes terminées (seulement celle de ``--only`` s'il est donné) ;
 - ``--render-config`` : génère uniquement ``config/geonature_config.toml`` ;
 - ``--print-settings`` : affiche les variables de ``install.toml`` (``clé=valeur``, à passer à ``eval``) pour les scripts shell ;

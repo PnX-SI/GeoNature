@@ -152,3 +152,29 @@ def test_runner_capture_honours_env(tmp_path, monkeypatch):
     r = Runner(tmp_path / "e.log")
     out = r.capture(["sh", "-c", 'printf "%s|%s" "$HOME" "$EXTRA"'], env={"EXTRA": "x"}).stdout
     assert out == "/home/precieux|x"
+
+
+def test_verbose_runner_streams_output_to_screen_and_log(tmp_path):
+    shown = []
+    runner = Runner(tmp_path / "x.log", verbose=True, echo=shown.append)
+    runner.run(["sh", "-c", "echo un; echo deux >&2"])
+    log = (tmp_path / "x.log").read_text()
+    assert "un" in log and "deux" in log
+    assert any(line.startswith("$ sh -c") for line in shown)
+    assert "un\n" in shown and "deux\n" in shown
+
+
+def test_verbose_runner_feeds_input_and_still_raises_on_failure(tmp_path):
+    shown = []
+    runner = Runner(tmp_path / "x.log", verbose=True, echo=shown.append)
+    runner.run(["cat"], input="depuis stdin\n")
+    assert "depuis stdin\n" in shown
+    with pytest.raises(CommandError):
+        runner.run(["sh", "-c", "echo avant; exit 3"])
+    assert "avant\n" in shown
+
+
+def test_quiet_runner_does_not_echo(tmp_path):
+    shown = []
+    Runner(tmp_path / "x.log", echo=shown.append).run(["echo", "silence"])
+    assert shown == [] and "silence" in (tmp_path / "x.log").read_text()

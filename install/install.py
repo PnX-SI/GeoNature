@@ -6,8 +6,8 @@ python3 install/install.py --configure --config install/install.toml
 python3 install/install.py --render-config --config install/install.toml [--force]
 eval "$(python3 install/install.py --print-settings)"   # variables de install.toml pour un script shell
 python3 install/install.py --config install/install.toml [--from-step NOM | --only NOM]
-                           [--confirm-drop BASE] [--skip-check] [--reset-state]
-python3 install/install.py update <tag|branche> [--dry-run] [--backup-dir DIR]
+                           [--confirm-drop BASE] [--skip-check] [--reset-state] [-v]
+python3 install/install.py update <tag|branche> [--dry-run] [--backup-dir DIR] [-v]
 python3 install/install.py uninstall [--dry-run] [--yes] [--include-shared]
 python3 install/install.py update --rollback [--backup DIR] [--restore-db --confirm-restore BASE]
 """
@@ -71,6 +71,9 @@ def update_main(argv):
         default=str(Path.home() / "geonature_backups"),
         help="dossier des sauvegardes",
     )
+    parser.add_argument(
+        "-v", "--verbose", action="store_true", help="affiche en direct la sortie des commandes"
+    )
     args = parser.parse_args(argv)
     if not args.ref and not args.rollback:
         parser.error("indiquez la version cible, ou --rollback")
@@ -88,7 +91,7 @@ def update_main(argv):
             if toml.exists()
             else render.read_ini(settings)
         ),
-        runner=Runner(ROOT / "install" / "update.log", cwd=ROOT),
+        runner=Runner(ROOT / "install" / "update.log", cwd=ROOT, verbose=args.verbose),
         state=State(ROOT / "install" / ".state"),
     )
     try:
@@ -238,6 +241,12 @@ def main(argv=None):
     )
     parser.add_argument("--skip-check", action="store_true", help="n'exécute pas le pré-vol")
     parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="affiche en direct la sortie des commandes (toujours écrite dans install/install.log)",
+    )
+    parser.add_argument(
         "--reset-state",
         action="store_true",
         help="oublie les étapes terminées (seulement celle de --only s'il est donné)",
@@ -293,7 +302,7 @@ def main(argv=None):
     ctx = steps.Context(
         root=ROOT,
         cfg=resolved,
-        runner=Runner(ROOT / "install" / "install.log", cwd=ROOT),
+        runner=Runner(ROOT / "install" / "install.log", cwd=ROOT, verbose=args.verbose),
         state=state,
         confirm_drop=args.confirm_drop,
         before_step=refresh_sudo,

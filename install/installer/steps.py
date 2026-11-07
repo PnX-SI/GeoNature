@@ -572,7 +572,9 @@ def run_steps(ctx, steps=STEPS, from_step=None, only=None):
         started = started or step.name == from_step
         if started and not (only and step.name != only):
             selected.append(step)
-    progress = Progress(len(selected), log_file=getattr(ctx.runner, "log_file", None))
+    # en mode verbeux la sortie des commandes défile : pas de ligne rafraîchie par-dessus
+    live = False if getattr(ctx.runner, "verbose", False) else None
+    progress = Progress(len(selected), log_file=getattr(ctx.runner, "log_file", None), tty=live)
     previous_log, ctx.log = ctx.log, progress.message
     executed = []
     try:

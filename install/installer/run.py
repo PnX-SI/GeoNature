@@ -3,6 +3,8 @@
 import contextlib
 import os
 import subprocess
+import sys
+import threading
 import time
 from pathlib import Path
 
@@ -17,8 +19,38 @@ class CommandError(RuntimeError):
 
 
 class Runner:
-    def __init__(self, log_file, cwd=None, env=None):
+    def __init__(self, log_file, cwd=None, env=None, verbose=False, echo=None):
         self.log_file, self.cwd, self.env = Path(log_file), cwd, env
+        self.verbose = verbose  # affiche aussi la sortie des commandes, en direct
+        self.echo = echo or (lambda line: (sys.stdout.write("    │ " + line), sys.stdout.flush()))
+
+    def _run_tee(self, cmd, input, env, cwd, log):
+        """Exécute `cmd` en copiant sa sortie (stdout + stderr) dans le journal et à l'écran, ligne à ligne."""
+        self.echo(f"$ {' '.join(map(str, cmd))}\n")
+        proc = subprocess.Popen(
+            cmd,
+            stdin=subprocess.PIPE if input is not None else None,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            cwd=cwd or self.cwd,
+            env=env,
+        )
+        if input is not None:
+            # écriture dans un thread : une entrée volumineuse ne doit pas bloquer la lecture de la sortie
+            def feed():
+                with contextlib.suppress(BrokenPipeError):
+                    proc.stdin.write(input)
+                with contextlib.suppress(BrokenPipeError):
+                    proc.stdin.close()
+
+            threading.Thread(target=feed, daemon=True).start()
+        for line in proc.stdout:
+            log.write(line)
+            log.flush()
+            self.echo(line)
+        proc.wait()
+        return subprocess.CompletedProcess(cmd, proc.returncode)
 
     def _merge_env(self, env=None):
         """Environnement du processus : celui de l'appelant complété, jamais remplacé."""
@@ -42,16 +74,19 @@ class Runner:
             log.flush()
             out = stack.enter_context(open(stdout_path, "wb")) if stdout_path else log
             stdin = stack.enter_context(open(stdin_path, "rb")) if stdin_path else None
-            proc = subprocess.run(
-                cmd,
-                input=None if stdin else input,
-                text=not (stdout_path or stdin_path),
-                stdin=stdin,
-                stdout=out,
-                stderr=log if stdout_path else subprocess.STDOUT,
-                cwd=cwd or self.cwd,
-                env=merged_env,
-            )
+            if self.verbose and not (stdout_path or stdin_path):
+                proc = self._run_tee(cmd, input, merged_env, cwd, log)
+            else:
+                proc = subprocess.run(
+                    cmd,
+                    input=None if stdin else input,
+                    text=not (stdout_path or stdin_path),
+                    stdin=stdin,
+                    stdout=out,
+                    stderr=log if stdout_path else subprocess.STDOUT,
+                    cwd=cwd or self.cwd,
+                    env=merged_env,
+                )
         if check and proc.returncode != 0:
             raise CommandError(cmd, proc.returncode, self.log_file)
         return proc

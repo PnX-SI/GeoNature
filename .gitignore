@@ -1,7 +1,6 @@
 *.*~
 settings.ini
 install/install.toml
-install/install.dev.toml
 install/.state/
 config/*_config.toml
 
