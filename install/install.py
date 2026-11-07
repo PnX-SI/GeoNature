@@ -22,6 +22,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from installer import configure, preflight, render, steps, summary, uninstall, update  # noqa: E402
 from installer.run import CommandError, Runner  # noqa: E402
 from installer.state import State  # noqa: E402
+from installer.style import Style  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -104,7 +105,7 @@ def update_main(argv):
             done = update.run_update(ctx, args.ref, args.backup_dir, dry_run=args.dry_run)
             print("\nMise à jour terminée." if done else "\nRien à faire.")
     except (update.UpdateError, CommandError, RuntimeError) as e:
-        print(f"\n\033[91mÉchec : {e}\033[0m", file=sys.stderr)
+        print("\n" + Style.for_stream(sys.stderr).red(f"✘ Échec : {e}"), file=sys.stderr)
         return 1
     return 0
 
@@ -153,7 +154,7 @@ def uninstall_main(argv):
     try:
         uninstall.run(ctx, plan)
     except (CommandError, RuntimeError) as e:
-        print(f"\n\033[91mÉchec : {e}\033[0m", file=sys.stderr)
+        print("\n" + Style.for_stream(sys.stderr).red(f"✘ Échec : {e}"), file=sys.stderr)
         return 1
     print("\nDésinstallation terminée. La base de données n'a pas été touchée.")
     return 0
@@ -195,7 +196,7 @@ def configure_main(args, parser):
     if not sys.stdin.isatty():
         print("--configure demande un terminal interactif : éditez le fichier à la main.")
         return 1
-    configure.configure(path, load_config(path))
+    configure.configure(path, load_config(path), style=Style.for_stream())
     print(f"\nConfiguration écrite dans {path}")
     return 0
 
@@ -310,11 +311,12 @@ def main(argv=None):
     try:
         done = steps.run_steps(ctx, from_step=args.from_step, only=args.only)
     except (CommandError, RuntimeError, ValueError) as e:
-        print(f"\n\033[91mÉchec : {e}\033[0m", file=sys.stderr)
+        print("\n" + Style.for_stream(sys.stderr).red(f"✘ Échec : {e}"), file=sys.stderr)
         return 1
-    print(f"\nTerminé ({len(done)} étape(s) exécutée(s)).")
+    style = Style.for_stream()
+    print("\n" + style.green(f"✔ Terminé ({len(done)} étape(s) exécutée(s))."))
     if not args.only:
-        print(summary.format_summary(resolved, ROOT, done))
+        print(summary.format_summary(resolved, ROOT, done, style))
     if flag_usershub(resolved):
         print(
             "UsersHub (install_usershub_app) n'est pas géré ici : installez-le séparément (https://usershub.readthedocs.io)."

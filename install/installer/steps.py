@@ -580,11 +580,11 @@ def run_steps(ctx, steps=STEPS, from_step=None, only=None):
     try:
         for step in selected:
             if ctx.state.is_done(step.name):
-                progress.skipped(step.title)
+                progress.skipped(step.title, step.name)
                 continue
             if ctx.before_step:
                 ctx.before_step()
-            progress.start(step.title)
+            progress.start(step.title, step.name)
             try:
                 step.run(ctx)
             except BaseException:

@@ -8,6 +8,8 @@ import threading
 import time
 from pathlib import Path
 
+from .style import Style
+
 
 class CommandError(RuntimeError):
     def __init__(self, cmd, returncode, log_file):
@@ -22,7 +24,19 @@ class Runner:
     def __init__(self, log_file, cwd=None, env=None, verbose=False, echo=None):
         self.log_file, self.cwd, self.env = Path(log_file), cwd, env
         self.verbose = verbose  # affiche aussi la sortie des commandes, en direct
-        self.echo = echo or (lambda line: (sys.stdout.write("    │ " + line), sys.stdout.flush()))
+        self.echo = echo or self._print_line
+
+    @staticmethod
+    def _print_line(line):
+        """Sortie détaillée : commandes en cyan, sortie en gris (couleurs seulement sur un terminal)."""
+        style = Style.for_stream()
+        text = (
+            style.cyan(line.rstrip("\n"))
+            if line.startswith("$ ")
+            else style.gray(line.rstrip("\n"))
+        )
+        sys.stdout.write("    " + style.gray("│") + " " + text + "\n")
+        sys.stdout.flush()
 
     def _run_tee(self, cmd, input, env, cwd, log):
         """Exécute `cmd` en copiant sa sortie (stdout + stderr) dans le journal et à l'écran, ligne à ligne."""

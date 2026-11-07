@@ -11,6 +11,8 @@ import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
 
+from .style import Style
+
 OK, WARN, FAIL = "OK", "WARN", "FAIL"
 
 PYTHON_VERSION = "3.13"  # version demandée à uv, cf. steps.py
@@ -168,14 +170,24 @@ def run_all(settings=None, network=True):
     return checks
 
 
-def report(checks):
+def report(checks, style=None):
     """Affiche le rapport et retourne True si aucun contrôle bloquant n'a échoué."""
-    colors = {OK: "\033[92m", WARN: "\033[93m", FAIL: "\033[91m"}
+    style = style or Style.for_stream()
+    paint = {OK: style.green, WARN: style.yellow, FAIL: style.red}
     for c in checks:
         print(
-            f"[{colors[c.status]}{c.status:<4}\033[0m] {c.name}"
-            + (f" : {c.detail}" if c.detail else "")
+            f"[{paint[c.status](f'{c.status:<4}')}] {c.name}"
+            + (style.gray(f" : {c.detail}") if c.detail else "")
         )
     failures = [c for c in checks if c.status == FAIL]
-    print(f"\n{len(failures)} échec(s), {sum(c.status == WARN for c in checks)} avertissement(s).")
+    warnings = sum(c.status == WARN for c in checks)
+    summary = f"{len(failures)} échec(s), {warnings} avertissement(s)."
+    print(
+        "\n"
+        + (
+            style.red(summary)
+            if failures
+            else style.yellow(summary) if warnings else style.green(summary)
+        )
+    )
     return not failures

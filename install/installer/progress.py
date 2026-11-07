@@ -10,6 +10,8 @@ import threading
 import time
 from pathlib import Path
 
+from .style import Style
+
 SPINNER = "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏"
 BAR_WIDTH = 20
 
@@ -57,10 +59,15 @@ def fit(text, width):
 
 
 class Progress:
-    def __init__(self, total, log_file=None, stream=None, tty=None, clock=time.monotonic):
+    def __init__(
+        self, total, log_file=None, stream=None, tty=None, clock=time.monotonic, style=None
+    ):
         self.total, self.log_file, self.clock = total, log_file, clock
         self.stream = stream or sys.stdout
         self.tty = self.stream.isatty() if tty is None else tty
+        # couleurs : selon le terminal, même quand la ligne en direct est désactivée (mode verbeux)
+        self.style = style or Style.for_stream(self.stream)
+        self.icon = ""
         self.index = 0
         self.title = ""
         self._started = 0
@@ -71,15 +78,23 @@ class Progress:
     # --- affichage ---------------------------------------------------------------------------
 
     def live_line(self, frame, width):
-        elapsed = format_duration(self.clock() - self._started)
-        head = f"[{format_bar(self.index - 1, self.total)}] {self.index}/{self.total} {self.title} {SPINNER[frame % len(SPINNER)]} {elapsed}"
-        room = width - len(head) - 2
+        st = self.style
+        spin = f"{SPINNER[frame % len(SPINNER)]} {format_duration(self.clock() - self._started)}"
+        bar = f"[{format_bar(self.index - 1, self.total)}]"
+        middle = f" {self.index}/{self.total} {self.title} "
+        width -= 3 if self.icon else 0  # une icône occupe deux colonnes et une espace
+        room = width - len(bar) - len(middle) - len(spin) - 2
         detail = (
             fit(tail_line(self.log_file, self._log_start), room)
             if self.log_file and room > 10
             else ""
         )
-        return fit(f"{head}  {detail}".rstrip(), width)
+        plain = fit(f"{bar}{middle}{spin}  {detail}".rstrip(), width)
+        if not st.enabled or len(plain) < len(f"{bar}{middle}{spin}"):
+            return self.icon + plain
+        # couleurs ajoutées après le calcul des largeurs, sur le texte brut
+        line = st.cyan(bar) + middle + st.gray(spin)
+        return self.icon + line + (f"  {st.gray(detail)}" if detail else "")
 
     def _write_live(self, frame):
         width = shutil.get_terminal_size((100, 20)).columns - 1
@@ -98,16 +113,20 @@ class Progress:
 
     # --- cycle d'une étape -------------------------------------------------------------------
 
-    def skipped(self, title):
+    def skipped(self, title, step=None):
         self.index += 1
-        self.message(f"✔ [{self.index}/{self.total}] {title} (déjà fait)")
+        st = self.style
+        self.message(st.gray(f"✔ {st.icon(step)}[{self.index}/{self.total}] {title} (déjà fait)"))
 
-    def start(self, title):
+    def start(self, title, step=None):
         self.index += 1
         self.title, self._started = title, self.clock()
+        self.icon = self.style.icon(step)
         self._log_start = log_size(self.log_file) if self.log_file else 0
         if not self.tty:
-            self.message(f"▶ [{self.index}/{self.total}] {title}…")
+            self.message(
+                f"{self.style.cyan('▶')} {self.icon}{self.style.bold(f'[{self.index}/{self.total}] {title}')}…"
+            )
             return
         self._stop = threading.Event()
         self._write_live(0)
@@ -124,12 +143,19 @@ class Progress:
     def done(self):
         self._halt()
         took = format_duration(self.clock() - self._started)
-        self.message(f"✔ [{self.index}/{self.total}] {self.title} ({took})")
+        st = self.style
+        self.message(
+            f"{st.green('✔')} {self.icon}[{self.index}/{self.total}] {self.title} {st.gray(f'({took})')}"
+        )
 
     def failed(self):
         self._halt()
         took = format_duration(self.clock() - self._started)
-        self.message(f"✘ [{self.index}/{self.total}] {self.title} : échec après {took}")
+        self.message(
+            self.style.red(
+                f"✘ {self.icon}[{self.index}/{self.total}] {self.title} : échec après {took}"
+            )
+        )
 
     def message(self, text):
         """Écrit une ligne sans casser la ligne en direct (utilisé comme `ctx.log`)."""

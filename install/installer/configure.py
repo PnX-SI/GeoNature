@@ -11,6 +11,7 @@ import re
 from pathlib import Path
 
 from . import render
+from .style import PLAIN
 
 MODES = ("prod", "dev", "ci")
 YES = ("o", "oui", "y", "yes", "true")
@@ -92,14 +93,14 @@ def _convert(kind, raw):
     return raw
 
 
-def ask(kind, question, default, input_fn, secret_fn, out):
+def ask(kind, question, default, input_fn, secret_fn, out, style=PLAIN):
     shown = default
     if kind == "bool":
         shown = "o" if str(default).lower() == "true" else "n"
-    suffix = "" if kind == "secret" else f" [{shown}]"
+    suffix = "" if kind == "secret" else " " + style.cyan(f"[{shown}]")
     while True:
         read = secret_fn if kind == "secret" else input_fn
-        raw = read(f"{question}{suffix} : ").strip()
+        raw = read(f"{style.bold(question)}{suffix} : ").strip()
         if raw == "":
             if kind == "secret":
                 return ""
@@ -107,10 +108,10 @@ def ask(kind, question, default, input_fn, secret_fn, out):
         try:
             return _convert(kind, raw)
         except ValueError as e:
-            out(f"  ! {e}")
+            out(style.yellow(f"  ! {e}"))
 
 
-def configure(path, cfg, input_fn=input, secret_fn=getpass.getpass, out=print):
+def configure(path, cfg, input_fn=input, secret_fn=getpass.getpass, out=print, style=PLAIN):
     """Pose les questions, écrit `path` et retourne les valeurs choisies."""
     answers = {}
 
@@ -119,14 +120,23 @@ def configure(path, cfg, input_fn=input, secret_fn=getpass.getpass, out=print):
             default = _default({**cfg, **answers}, key)
             if kind == "bool":
                 default = str(default).lower()
-            value = ask(kind, question, default, input_fn, secret_fn, out)
+            value = ask(kind, question, default, input_fn, secret_fn, out, style)
             if kind == "secret" and value == "":
                 continue  # mot de passe laissé tel quel (déjà dans le fichier, ou généré à l'installation)
             answers[key] = value
 
-    out("Configuration de l'installation (Entrée : garder la valeur proposée)\n")
+    out(
+        style.bold(
+            "⚙️  Configuration de l'installation"
+            if style.enabled
+            else "Configuration de l'installation"
+        )
+    )
+    out(style.gray("Entrée : garder la valeur proposée\n"))
     run(MAIN_QUESTIONS)
-    if ask("bool", "Personnaliser les données et les modules", "false", input_fn, secret_fn, out):
+    if ask(
+        "bool", "Personnaliser les données et les modules", "false", input_fn, secret_fn, out, style
+    ):
         run(DATA_QUESTIONS)
 
     path = Path(path)

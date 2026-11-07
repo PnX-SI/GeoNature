@@ -22,8 +22,16 @@ main() {
     dir="${GEONATURE_DIR:-$HOME/geonature}"
     version="${GEONATURE_VERSION:-}"
 
+    # couleurs seulement sur un terminal (la sortie standard reste le terminal même avec `curl | sh`)
+    if [ -t 1 ]; then
+        bold='\033[1m'; gray='\033[90m'; red='\033[31m'; green='\033[32m'; cyan='\033[36m'; off='\033[0m'
+        rocket='🚀 '; box='📦 '
+    else
+        bold=''; gray=''; red=''; green=''; cyan=''; off=''; rocket=''; box=''
+    fi
     say() { printf '%s\n' "$*"; }
-    die() { printf 'Erreur : %s\n' "$*" >&2; exit 1; }
+    title() { printf '%b%s%s%b\n' "$bold" "$1" "$2" "$off"; }
+    die() { printf '%b✘ Erreur : %s%b\n' "$red" "$*" "$off" >&2; exit 1; }
     have() { command -v "$1" >/dev/null 2>&1; }
 
     [ "$(id -u)" -ne 0 ] || die "ne lancez pas ce script en root (utilisez l'utilisateur dédié, avec sudo)."
@@ -35,7 +43,7 @@ main() {
     have python3 || missing="$missing python3"
     if [ -n "$missing" ]; then
         have apt-get || die "installez :$missing"
-        say "Installation de :$missing"
+        title "$box" "Installation de :$missing"
         sudo apt-get install -y $missing
     fi
     python3 -c 'import sys; sys.exit(sys.version_info < (3, 11))' \
@@ -48,7 +56,7 @@ main() {
         [ -n "$version" ] || die "impossible de déterminer la dernière version de $repo."
     fi
 
-    say "Récupération de GeoNature $version dans $dir"
+    title "$rocket" "Récupération de GeoNature $version dans $dir"
     git clone --quiet --depth 1 --branch "$version" "$repo" "$dir" || die "échec du clonage ($repo, $version)."
     # certains sous-modules imbriqués ont une URL SSH : réécrite en HTTPS (sans clé GitHub, le clonage échouerait)
     git -C "$dir" -c url.https://github.com/.insteadOf=git@github.com: \
@@ -68,22 +76,23 @@ main() {
     fi
 
     say ""
-    say "Vérification des prérequis…"
+    title "" "Vérification des prérequis…"
     precheck=0
     python3 "$dir/install/install.py" --check --config "$dir/install/install.toml" || precheck=$?
 
     say ""
-    say "Étapes suivantes :"
+    printf '%b✔ Prêt.%b\n' "$green" "$off"
+    title "" "Étapes suivantes :"
     step=1
     if [ "$configured" -eq 0 ]; then
-        say "  $step. Adaptez la configuration :  nano $dir/install/install.toml   (au minimum my_url)"
+        printf '  %s. Adaptez la configuration :  %bnano %s/install/install.toml%b   %b(au minimum my_url)%b\n' "$step" "$cyan" "$dir" "$off" "$gray" "$off"
         step=$((step + 1))
     fi
     if [ "$precheck" -ne 0 ]; then
         say "  $step. Corrigez les prérequis signalés ci-dessus"
         step=$((step + 1))
     fi
-    say "  $step. Lancez l'installation :  python3 $dir/install/install.py --config $dir/install/install.toml"
+    printf "  %s. Lancez l'installation :  %bpython3 %s/install/install.py --config %s/install/install.toml%b\n" "$step" "$cyan" "$dir" "$dir" "$off"
 }
 
 main "$@"

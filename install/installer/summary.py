@@ -3,9 +3,10 @@
 from pathlib import Path
 
 from . import render
+from .style import PLAIN
 
 
-def format_summary(cfg, root, done=()):
+def format_summary(cfg, root, done=(), style=PLAIN):
     """Texte du résumé ; `cfg` est la configuration résolue (cf. render.resolve_config)."""
     root = Path(root)
     mode = cfg.get("MODE", "prod")
@@ -15,23 +16,33 @@ def format_summary(cfg, root, done=()):
         cfg["my_url"], cfg.get("url_application_prefix_path"), port if dev else None
     )
     venv = root / cfg.get("venv_path", "backend/venv")
-    lines = ["", "Résumé de l'installation", "========================"]
-    lines.append(f"Mode                : {mode}")
+    st = style
+
+    def row(label, value):
+        return f"{st.gray(f'{label:<20}')}: {value}"
+
+    title = "🎉 Résumé de l'installation" if st.enabled else "Résumé de l'installation"
+    lines = ["", st.bold(title), st.gray("=" * 24)]
+    lines.append(row("Mode", mode))
+    lines.append(row("Application (dev)" if dev else "Application", st.cyan(f"{app_url}/")))
+    lines.append(row("API", st.cyan(api_url)))
     lines.append(
-        f"Application         : {app_url}/" if not dev else f"Application (ng serve) : {app_url}/"
+        row(
+            "Base PostgreSQL",
+            f"{cfg['db_name']} sur {cfg['db_host']}:{cfg['db_port']}"
+            f" (utilisateur {cfg['user_pg']}, mot de passe dans install/install.toml)",
+        )
     )
-    lines.append(f"API                 : {api_url}")
+    lines.append(row("Dossier", root))
+    lines.append(row("Configuration", f"{root / 'config'} (geonature_config.toml)"))
+    lines.append(row("Journal", root / "install" / "install.log"))
+    lines.append("")
     lines.append(
-        f"Base PostgreSQL     : {cfg['db_name']} sur {cfg['db_host']}:{cfg['db_port']}"
-        f" (utilisateur {cfg['user_pg']}, mot de passe dans install/install.toml)"
+        f"Connexion : {st.bold('admin / admin')} "
+        + st.yellow("(compte de démonstration : changez ce mot de passe).")
     )
-    lines.append(f"Dossier             : {root}")
-    lines.append(f"Configuration       : {root / 'config'} (geonature_config.toml)")
-    lines.append(f"Journal             : {root / 'install' / 'install.log'}")
     lines.append("")
-    lines.append("Connexion : admin / admin (compte de démonstration : changez ce mot de passe).")
-    lines.append("")
-    lines.append("Pour la suite :")
+    lines.append(st.bold("Pour la suite :"))
     if dev:
         lines += [
             f"  - backend  : source {venv}/bin/activate && geonature dev-back --port {port}",
