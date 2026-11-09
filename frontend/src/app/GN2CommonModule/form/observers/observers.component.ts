@@ -61,7 +61,8 @@ export class ObserversComponent extends GenericFormComponent implements OnInit {
         this.observers = this._dfService.getObserversFromCode(this.codeList).pipe(
           map((data) => {
             if (this.parentFormControl.value) {
-              this.parentFormControl.setValue(this.parentFormControl.value);
+              // différé : map est exécuté pendant la détection de changement (async pipe)
+              setTimeout(() => this.parentFormControl.setValue(this.parentFormControl.value));
             }
             return data;
           })
