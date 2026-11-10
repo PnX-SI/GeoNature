@@ -99,6 +99,7 @@ export class NomenclatureComponent
     this.subscription = this._translate.onLangChange.subscribe((event: LangChangeEvent) => {
       this.labelLang = 'label_' + this._translate.currentLang;
       this.definitionLang = 'definition_' + this._translate.currentLang;
+      this.fillMissingLabels();
     });
 
     // set cdNomenclature
@@ -164,9 +165,18 @@ export class NomenclatureComponent
       .subscribe((data) => {
         this.labels = data.values;
         this.savedLabels = data.values;
+        this.fillMissingLabels();
         this.labelsLoaded.emit(this.labels);
         this.emitCurrentCdNomenclature(this.parentFormControl.value);
       });
+  }
+
+  // label_<lang> is empty for most nomenclatures, the SINP reference being French only
+  private fillMissingLabels() {
+    (this.labels || []).forEach((item) => {
+      item[this.labelLang] ||= item.label_default;
+      item[this.definitionLang] ||= item.definition_default;
+    });
   }
 
   ngOnDestroy() {
