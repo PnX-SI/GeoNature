@@ -47,7 +47,7 @@
             [formControl]="statusForm.controls.statut"
             value="{{ item.id_nomenclature }}"
           />
-          {{ item.mnemonique }}
+          {{ item.label_default }}
         </label>
       </span>
     </div>
@@ -114,7 +114,7 @@
         : 'transparent'
     }"
   >
-    {{ currentValidationStatus.mnemonique }}
+    {{ currentValidationStatus.label_default }}
     <mat-icon>edit</mat-icon>
   </button>
 </pnx-synthese-info-obs>

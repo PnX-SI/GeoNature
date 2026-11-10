@@ -273,7 +273,7 @@
                 *ngFor="let actor of dataset.cor_dataset_actor"
               >
                 <div>
-                  <b>{{ actor?.nomenclature_actor_role.mnemonique }} :</b>
+                  <b>{{ actor?.nomenclature_actor_role.label_default }} :</b>
                   {{ actor?.organism?.nom_organisme }}
                   <span
                     *ngIf="

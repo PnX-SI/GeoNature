@@ -132,7 +132,7 @@
           }"
           class="statusName"
         >
-          <span>{{ row.nomenclature_valid_status?.mnemonique }}</span>
+          <span>{{ row.nomenclature_valid_status?.label_default }}</span>
           <span *ngIf="row.last_validation?.validation_auto">(automatique)</span>
         </div>
       </div>
@@ -189,7 +189,7 @@
           }"
           class="statusName"
         >
-          <span>{{ row?.nomenclature_valid_status?.mnemonique }}</span>
+          <span>{{ row?.nomenclature_valid_status?.label_default }}</span>
           <span *ngIf="row.last_validation?.validation_auto">(automatique)</span>
         </div>
       </div>
