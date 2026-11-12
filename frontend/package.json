@@ -67,7 +67,7 @@
   "devDependencies": {
     "@angular-devkit/core": "^15.1.2",
     "@angular/compiler-cli": "15.1.1",
-    "@compodoc/compodoc": "^1.1.26",
+    "@compodoc/compodoc": "^2.0.0",
     "@types/node": "^22.8.4",
     "cypress": "^13.15.1",
     "cypress-promise": "^1.1.0",
