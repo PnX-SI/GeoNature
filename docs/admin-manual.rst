@@ -1984,12 +1984,15 @@ Dupliquer le module Occtax
 
 Il est possible de "dupliquer" le module Occtax pour créer des nouveaux modules, basé sur le moteur d'Occtax, en y ajoutant des champs additionnels propre au module.
 
+Dupliquer
+`````````
+
 Pour cela lancer la commande : 
 
-    ::
+::
 
-      geonature occtax create-duplicated-module "TEST" "Le module test"
-      # geonature occtax create-duplicated-module --help -> voir tous les paramètres disponible
+    geonature occtax create-duplicated-module "TEST" "Le module test"
+    # geonature occtax create-duplicated-module --help -> voir tous les paramètres disponible
 
 Le schéma de base de données ainsi que les routes du backend utilisées restent les mêmes (celles d'Occtax). En base de données un nouveau champs ``id_module`` permet de différencier les données venant des differents modules. Concernant l'API, les routes sont appelées avec le préfixe du module code :
 
@@ -1998,8 +2001,8 @@ Le schéma de base de données ainsi que les routes du backend utilisées resten
 
 Pour créer un nouveau module "Occtax dupliqué"
 
-Associer des jeux de données et des champs additionnels
-```````````````````````````````````````````````````````
+Associer des jeux de données
+`````````````````````````````
 
 Dans le module Métadonnées (formulaire des jeux de données), associez les jeux de données que vous souhaitez rendre saisissables au nouveau module dupliqué.
 
@@ -2007,17 +2010,41 @@ Dans le module Métadonnées (formulaire des jeux de données), associez les jeu
 Module Admin
 -------------
 
-Administration des champs additionnels
+Administrer des champs additionnels
 """"""""""""""""""""""""""""""""""""""
 
 Certains protocoles nécessitent la saisie de champs qui vont au-delà des standards du SINP sur lesquels GeoNature s'appuie. Les champs additionnels permettent ainsi d'étendre les formulaires en ajoutant des informations spécifiques pour des jeux de données (JDD) ou pour l'ensemble d'un module.
 
 Les champs additionnels ne sont pas créés comme des colonnes à part entière, mais leurs valeurs sont stockées dans un champs ``additional_data`` au format JSON.
 
-Actuellement seul le module Occtax implémente la gestion de ces champs additionnels.
+De plus en plus de modules implémentent la gestion de ces champs additionnels (Occtax, Métadonnées, ...).
 
 Le module "Admin" de GeoNature offre une interface de création et de gestion de ces champs additionnels.
-Un champ additionnel est définit par:
+
+Autoriser la configuration des champs additionnels
+``````````````````````````````````````````````````
+Exemple du module `OCCTAX`.
+
+Pour activer les champs additionels pour le module `OCCTAX`, se connecter à la base de données, passer à `true` la colonne `support_additional_fields` de la table `gn_commons.t_modules` :
+
+.. code-block:: sql
+
+    UPDATE gn_commons.t_modules 
+    SET support_additional_fields = true
+    WHERE module_code = 'OCCTAX';
+
+Pour activer les champs additionels des objets `OCCTAX_DENOMBREMENT / OCCTAX_RELEVE /OCCTAX_OCCURRENCE`, passer à `true` la colonne `support_additional_fields` de la table `gn_permissions.t_objects` :
+
+.. code-block:: sql
+
+    UPDATE gn_permissions.t_objects 
+    SET support_additional_fields = true
+    WHERE code_object IN ('OCCTAX_DENOMBREMENT','OCCTAX_RELEVE','OCCTAX_OCCURRENCE');
+
+Configurer des champs additionnels
+`````````````````````````````````````
+
+Dans le module Admin, un champ additionnel est définit par:
 
 - son nom (nom dans la base de données)
 - son label (nom tel qu'il sera affiché sur l'interface)
