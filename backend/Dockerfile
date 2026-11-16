@@ -141,6 +141,15 @@ CMD [ "gunicorn", "geonature:create_app()", \
 
 FROM base AS dev
 
+# Ask uv sync to create the venv here
+ENV UV_PROJECT_ENVIRONMENT=/opt/venv
+# Ask uv pip to use this venv
+ENV VIRTUAL_ENV=/opt/venv
+# Ask uv to trust VIRTUAL_ENV
+ENV UV_SYSTEM_PYTHON=false
+# Discover the python from the venv
+ENV PATH="/opt/venv/bin:$PATH"
+
 WORKDIR /sources/GeoNature
 
 # rw required by --editable to write .egg-info stuffs
@@ -148,10 +157,10 @@ WORKDIR /sources/GeoNature
 # [tool.uv.sources] in the root pyproject.toml (uv workspace).
 RUN --mount=type=cache,target=/root/.cache \
   --mount=type=bind,source=.,target=/sources/GeoNature,rw \
-  cd backend && uv pip install --system -e '..[tests]'
+  uv sync --extra tests --extra lint
 RUN --mount=type=cache,target=/root/.cache \
   --mount=type=bind,source=.,target=/sources/GeoNature,rw \
-  uv pip install --system \
+  uv pip install \
   -e contrib/occtax \
   -e contrib/gn_module_occhab \
   -e contrib/gn_module_validation
