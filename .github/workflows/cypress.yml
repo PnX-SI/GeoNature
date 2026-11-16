@@ -16,6 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      matrix:
+        node-version: [">=24.22.1"]
     services:
       postgres:
         image: ghcr.io/pnx-si/geonature-db:latest
@@ -75,7 +77,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
       - name: Node ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node-version }}
       - name: generate frontend config
