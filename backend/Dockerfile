@@ -6,8 +6,8 @@ FROM ${PYTHON_IMAGE} AS build
 
 ENV PIP_ROOT_USER_ACTION=ignore
 RUN --mount=type=cache,target=/root/.cache \
-    pip install uv build && \
-    uv pip install --system --upgrade pip setuptools wheel
+  pip install uv build && \
+  uv pip install --system --upgrade pip setuptools wheel
 
 FROM build AS build-habref
 WORKDIR /build/
@@ -99,15 +99,15 @@ FROM ${NODE_IMAGE} AS node
 WORKDIR /dist/
 COPY /backend/static/package*.json .
 RUN --mount=type=cache,target=/root/.npm \
-    npm ci --omit=dev
+  npm ci --omit=dev
 
 
 FROM ${PYTHON_IMAGE} AS base
 
 ENV PIP_ROOT_USER_ACTION=ignore
 RUN --mount=type=cache,target=/root/.cache \
-    pip install uv && \
-    uv pip install --system  --upgrade pip setuptools wheel
+  pip install uv && \
+  uv pip install --system  --upgrade pip setuptools wheel
 
 WORKDIR /dist
 ENV GEONATURE_STATIC_FOLDER=/dist/static/
@@ -131,12 +131,12 @@ EXPOSE 8000
 ENTRYPOINT ["/entrypoint.sh"]
 
 CMD [ "gunicorn", "geonature:create_app()", \
-    "--name=geonature", \
-    "--workers=2", \
-    "--threads=2", \
-    "--access-logfile=-", \
-    "--bind=0.0.0.0:8000" \
-    ]
+  "--name=geonature", \
+  "--workers=2", \
+  "--threads=2", \
+  "--access-logfile=-", \
+  "--bind=0.0.0.0:8000" \
+  ]
 
 
 FROM base AS dev
@@ -147,14 +147,14 @@ WORKDIR /sources/GeoNature
 # Siblings resolve to their local backend/dependencies/* submodule checkout via
 # [tool.uv.sources] in the root pyproject.toml (uv workspace).
 RUN --mount=type=cache,target=/root/.cache \
-    --mount=type=bind,source=.,target=/sources/GeoNature,rw \
-    cd backend && uv pip install --system -e '..[tests]'
+  --mount=type=bind,source=.,target=/sources/GeoNature,rw \
+  cd backend && uv pip install --system -e '..[tests]'
 RUN --mount=type=cache,target=/root/.cache \
-    --mount=type=bind,source=.,target=/sources/GeoNature,rw \
-    uv pip install --system \
-    -e contrib/occtax \
-    -e contrib/gn_module_occhab \
-    -e contrib/gn_module_validation
+  --mount=type=bind,source=.,target=/sources/GeoNature,rw \
+  uv pip install --system \
+  -e contrib/occtax \
+  -e contrib/gn_module_occhab \
+  -e contrib/gn_module_validation
 
 CMD [ "geonature", "dev-back" ]
 
@@ -183,7 +183,7 @@ FROM wheels-light AS prod-light
 
 WORKDIR /dist/geonature
 RUN --mount=type=cache,target=/root/.cache \
-    uv pip install --system *.whl
+  uv pip install --system *.whl
 RUN rm -f *.whl
 
 
@@ -191,6 +191,6 @@ FROM wheels AS prod
 
 WORKDIR /dist/geonature
 RUN --mount=type=cache,target=/root/.cache \
-    uv pip install --system *.whl
+  uv pip install --system *.whl
 RUN pip uninstall -y uv
 RUN rm -f *.whl
