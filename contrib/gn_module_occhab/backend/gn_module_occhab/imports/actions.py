@@ -23,12 +23,10 @@ import typing
 
 from geonature.utils.env import db
 from geonature.core.imports.models import Entity, BibFields, TImports
-from geonature.core.imports.actions import ImportActions, ImportStatisticsLabels
+from geonature.core.imports.actions import ImportActions, ImportStatisticsLabels, import_hook
 
 from geonature.core.imports.utils import (
     get_mapping_data,
-    load_transient_data_in_dataframe,
-    update_transient_data_from_dataframe,
     compute_bounding_box,
 )
 
@@ -103,6 +101,50 @@ class OcchabImportActions(ImportActions):
             )
 
     @staticmethod
+    @import_hook(progress=0.1)
+    def check_transient_data_pre(task, logger, imprt: TImports, update_progress) -> None:
+        """
+        Global checks run once before the dataframe batches.
+
+        Does not call ``ImportActions.check_transient_data_pre``: the rows validity is
+        initialised with ``dataset_name_field="unique_dataset_id"``, which the default
+        does not do.
+        """
+        # The dataset does not identify a station: a habitat row may repeat it while
+        # referencing an existing station.
+        init_rows_validity(imprt, dataset_name_field="unique_dataset_id")
+        update_progress(0.5)
+        check_orphan_rows(imprt)
+
+        # We first check station consistency in order to avoid checking
+        # incoherent station data
+        OcchabImportActions.check_station_consistency(imprt)
+
+    @staticmethod
+    @import_hook(progress=0.4)
+    def check_transient_data_df_batch(
+        task, logger, imprt: TImports, entity: Entity, df, update_progress
+    ) -> set:
+        """
+        Dataframe checks for one batch of one entity: routes to the station or habitat checks.
+
+        The dataframe is loaded and written back by the core; the checks are row-wise.
+        """
+        if entity.code == "station":
+            return OcchabImportActions.check_station_dataframe(imprt, entity, df)
+        if entity.code == "habitat":
+            return OcchabImportActions.check_habitat_dataframe(imprt, entity, df)
+        return set()
+
+    @staticmethod
+    @import_hook(progress=0.5)
+    def check_transient_data_post(task, logger, imprt: TImports, update_progress) -> None:
+        # We run station & habitat dataframe checks (df_batch) before SQL checks in order to
+        # avoid check_types overriding generated values during SQL checks.
+        OcchabImportActions.check_station_sql(imprt)
+        OcchabImportActions.check_habitat_sql(imprt)
+
+    @staticmethod
     def dataframe_checks(imprt, df, entity, fields, selected_fields):
         updated_cols = set({})
         updated_cols |= check_types(
@@ -114,36 +156,47 @@ class OcchabImportActions(ImportActions):
         return updated_cols
 
     @staticmethod
-    def check_habitat_dataframe(imprt):
+    def check_habitat_dataframe(imprt: TImports, entity: Entity, df) -> set:
         """
-        Check the habitat data before importing.
+        Check the habitat data of one batch, in the dataframe.
 
         List of checks (in order of execution):
-        - check required values
         - check types
-        - check the existence of cd_hab
-        - check the duplicates of unique_id_sinp_habitat (in the file and in the database)
+        - check required values
 
         Parameters
         ----------
         imprt : TImports
             The import to check.
+        entity : Entity
+            The habitat entity.
+        df : pandas.DataFrame
+            The habitat data of the batch (loaded and written back by the core).
 
+        Returns
+        -------
+        set
+            Names of the columns modified in ``df``.
         """
-        _, entity_habitat = get_occhab_entities()
-        fields, selected_fields, source_cols = get_mapping_data(imprt, entity_habitat)
+        fields, selected_fields, _ = get_mapping_data(imprt, entity)
 
+        # Save column names where the data was changed in the dataframe
         updated_cols = set()
 
-        ### Dataframe checks
-        df = load_transient_data_in_dataframe(imprt, entity_habitat, source_cols)
         updated_cols |= OcchabImportActions.dataframe_checks(
-            imprt, df, entity_habitat, fields, selected_fields
+            imprt, df, entity, fields, selected_fields
         )
-        update_transient_data_from_dataframe(imprt, entity_habitat, updated_cols, df)
+        return updated_cols
 
     @staticmethod
     def check_habitat_sql(imprt):
+        """
+        Check the habitat data before importing, in SQL.
+
+        List of checks (in order of execution):
+        - check the existence of cd_hab
+        - check the duplicates of unique_id_sinp_habitat (in the file and in the database)
+        """
         entity_station, entity_habitat = get_occhab_entities()
         fields, selected_fields, _ = get_mapping_data(imprt, entity_habitat)
 
@@ -244,55 +297,49 @@ class OcchabImportActions(ImportActions):
             )
 
     @staticmethod
-    def check_station_dataframe(imprt):
+    def check_station_dataframe(imprt: TImports, entity: Entity, df) -> set:
         """
-        Check the station data before importing.
+        Check the station data of one batch, in the dataframe.
 
-        List of checks and data operations (in order of execution):
-        - check datasets
+        List of checks (in order of execution):
         - check types
         - check required values
-        - convert geom columns
+        - check datasets
         - check geography
-        - generate altitudes if requested
-        - check altitudes
-        - check dates
-        - check depths
-        - check if given geometries are valid (see ST_VALID in PostGIS)
-        - if requested, check if given geometry is outside the restricted area
 
         Parameters
         ----------
         imprt : TImports
             The import to check.
+        entity : Entity
+            The station entity.
+        df : pandas.DataFrame
+            The station data of the batch (loaded and written back by the core).
 
+        Returns
+        -------
+        set
+            Names of the columns modified in ``df``.
         """
-
-        entity_station, _ = get_occhab_entities()
-
-        fields, selected_fields, source_cols = get_mapping_data(imprt, entity_station)
+        fields, selected_fields, _ = get_mapping_data(imprt, entity)
 
         # Save column names where the data was changed in the dataframe
         updated_cols = set()
 
-        ### Dataframe checks
-        df = load_transient_data_in_dataframe(imprt, entity_station, source_cols)
-
         updated_cols |= OcchabImportActions.dataframe_checks(
-            imprt, df, entity_station, fields, selected_fields
+            imprt, df, entity, fields, selected_fields
         )
         updated_cols |= check_datasets(
             imprt,
-            entity_station,
+            entity,
             df,
             uuid_field=fields["unique_dataset_id"],
             id_field=fields["id_dataset"],
             module_code="OCCHAB",
         )
-
         updated_cols |= check_geometry(
             imprt,
-            entity_station,
+            entity,
             df,
             file_srid=imprt.srid,
             geom_4326_field=fields["geom_4326"],
@@ -301,11 +348,22 @@ class OcchabImportActions(ImportActions):
             latitude_field=fields["latitude"],
             longitude_field=fields["longitude"],
         )
-
-        update_transient_data_from_dataframe(imprt, entity_station, updated_cols, df)
+        return updated_cols
 
     @staticmethod
     def check_station_sql(imprt):
+        """
+        Check the station data before importing, in SQL.
+
+        List of checks and data operations (in order of execution):
+        - convert geom columns
+        - generate altitudes if requested
+        - check altitudes
+        - check dates
+        - check depths
+        - check if given geometries are valid (see ST_VALID in PostGIS)
+        - if requested, check if given geometry is outside the restricted area
+        """
         transient_table = imprt.destination.get_transient_table()
         entity_station, _ = get_occhab_entities()
 
@@ -418,33 +476,6 @@ class OcchabImportActions(ImportActions):
             )
         else:
             check_mandatory_field(imprt, entity_station, fields["unique_id_sinp_station"])
-
-    @staticmethod
-    def check_transient_data(task, logger, imprt: TImports):
-        task.update_state(state="PROGRESS", meta={"progress": 0})
-        entity_station, _ = get_occhab_entities()
-
-        fields, selected_fields, _ = get_mapping_data(imprt, entity_station)
-        # The dataset does not identify a station: a habitat row may repeat it while
-        # referencing an existing station.
-        init_rows_validity(imprt, dataset_name_field="unique_dataset_id")
-        task.update_state(state="PROGRESS", meta={"progress": 0.05})
-        check_orphan_rows(imprt)
-        task.update_state(state="PROGRESS", meta={"progress": 0.1})
-
-        # We first check station consistency in order to avoid checking
-        # incoherent station data
-        OcchabImportActions.check_station_consistency(imprt)
-
-        # We run station & habitat dataframe checks before SQL checks in order to avoid
-        # check_types overriding generated values during SQL checks.
-        OcchabImportActions.check_station_dataframe(imprt)
-        OcchabImportActions.check_habitat_dataframe(imprt)
-        task.update_state(state="PROGRESS", meta={"progress": 0.5})
-        OcchabImportActions.check_station_sql(imprt)
-        OcchabImportActions.check_habitat_sql(imprt)
-
-        task.update_state(state="PROGRESS", meta={"progress": 1})
 
     @staticmethod
     def import_data_to_destination(imprt: TImports) -> None:
