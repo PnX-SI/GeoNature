@@ -396,3 +396,45 @@
   </button>
 </div>
 <!-- <pre>form value: <br>{{formService.searchForm.value | json}}</pre> -->
+
+<ng-template
+  #confirmSearchModal
+  let-modal
+>
+  <h4 mat-dialog-title>{{ 'Filters.ConfirmSearch.Title' | translate }}</h4>
+  <div mat-dialog-content>
+    <p>{{ 'Filters.ConfirmSearch.Message' | translate }}</p>
+    <ul>
+      <li *ngFor="let filter of filtersToConfirm">
+        <strong>{{ filter.name }}:</strong>
+        {{ filter.value | json }}
+      </li>
+    </ul>
+  </div>
+  <div
+    mat-dialog-actions
+    align="end"
+  >
+    <button
+      type="button"
+      class="modal-button"
+      mat-button
+      mat-raised-button
+      color="warn"
+      (click)="modal.dismiss()"
+    >
+      {{ 'Actions.Cancel' | translate }}
+    </button>
+    <button
+      type="button"
+      class="modal-button"
+      mat-button
+      mat-raised-button
+      color="primary"
+      (click)="modal.close()"
+      cdkFocusInitial
+    >
+      {{ 'Actions.Search' | translate }}
+    </button>
+  </div>
+</ng-template>

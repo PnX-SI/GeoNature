@@ -515,6 +515,10 @@
       "Advanced": "Filtres avancés",
       "Add": "Ajouter un filtre",
       "Other": "Autres filtres"
+    },
+    "ConfirmSearch": {
+      "Title": "Confirmer les filtres",
+      "Message": "Confirmez-vous les valeurs des filtres suivants avant de lancer la recherche ?"
     }
   },
   "TaxonSearch": {

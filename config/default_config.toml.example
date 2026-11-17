@@ -281,6 +281,10 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # id of the observer list -- utilisateurs.t_menus
     ID_SEARCH_OBSERVER_LIST = 1
 
+    # Filtres dont les valeurs sont soumises à confirmation avant la recherche
+    # Exemple : ["date_min", "date_max"]
+    CONFIRM_SEARCH_FILTERS = []
+
     # Activer (=true) ou pas (=false) la clusterisation des objets sur la carte
     # Si 'false', passez le NB_MAX_OBS_MAP à 10000 pour éviter
     # de surcharger les navigateurs des clients (question de performances).

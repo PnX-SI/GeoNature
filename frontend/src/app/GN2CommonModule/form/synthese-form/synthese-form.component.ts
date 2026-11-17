@@ -1,4 +1,13 @@
-import { Component, OnInit, Output, EventEmitter, Input, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  Input,
+  ViewEncapsulation,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -33,6 +42,10 @@ export class SyntheseSearchComponent implements OnInit {
   @Input() defaultFilters = {};
   @Output() searchClicked = new EventEmitter();
   @Output() resetFilter = new EventEmitter();
+
+  @ViewChild('confirmSearchModal') private confirmSearchModal: TemplateRef<any>;
+
+  public filtersToConfirm: Array<{ name: string; value: any }> = [];
 
   constructor(
     public dataService: SyntheseDataService,
@@ -87,7 +100,34 @@ export class SyntheseSearchComponent implements OnInit {
 
   onSubmitForm() {
     const updatedParams = this.formService.formatParams();
-    this.searchClicked.emit(updatedParams);
+    const filtersToConfirmConf = this.config.SYNTHESE.CONFIRM_SEARCH_FILTERS || [];
+    this.filtersToConfirm = filtersToConfirmConf
+      .filter((name) => this.hasFilterValue(updatedParams[name]))
+      .map((name) => ({ name, value: updatedParams[name] }));
+
+    if (this.filtersToConfirm.length === 0) {
+      this.searchClicked.emit(updatedParams);
+      return;
+    }
+
+    const modalRef = this.ngbModal.open(this.confirmSearchModal, { centered: true });
+    modalRef.result.then(
+      () => this.searchClicked.emit(updatedParams), //on fullfilled
+      () => {} // on rejected
+    );
+  }
+
+  private hasFilterValue(value: any): boolean {
+    if (value == null) {
+      return false;
+    }
+    if (typeof value === 'string') {
+      return value.trim().length > 0;
+    }
+    if (Array.isArray(value)) {
+      return value.length > 0;
+    }
+    return true;
   }
 
   refreshFilters() {
