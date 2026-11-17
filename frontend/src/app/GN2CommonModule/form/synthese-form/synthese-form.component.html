@@ -401,40 +401,44 @@
   #confirmSearchModal
   let-modal
 >
-  <h4 mat-dialog-title>{{ 'Filters.ConfirmSearch.Title' | translate }}</h4>
-  <div mat-dialog-content>
-    <p>{{ 'Filters.ConfirmSearch.Message' | translate }}</p>
-    <ul>
-      <li *ngFor="let filter of filtersToConfirm">
-        <strong>{{ filter.name }}:</strong>
-        {{ filter.value | json }}
-      </li>
-    </ul>
-  </div>
-  <div
-    mat-dialog-actions
-    align="end"
-  >
-    <button
-      type="button"
-      class="modal-button"
-      mat-button
-      mat-raised-button
-      color="warn"
-      (click)="modal.dismiss()"
+  <div data-qa="synthese-search-filters-modal">
+    <h4 mat-dialog-title>{{ 'Filters.ConfirmSearch.Title' | translate }}</h4>
+    <div mat-dialog-content>
+      <p>{{ 'Filters.ConfirmSearch.Message' | translate }}</p>
+      <ul>
+        <li *ngFor="let filter of filtersToConfirm">
+          <strong>{{ filter.name }}:</strong>
+          {{ filter.value | json }}
+        </li>
+      </ul>
+    </div>
+    <div
+      mat-dialog-actions
+      align="end"
     >
-      {{ 'Actions.Cancel' | translate }}
-    </button>
-    <button
-      type="button"
-      class="modal-button"
-      mat-button
-      mat-raised-button
-      color="primary"
-      (click)="modal.close()"
-      cdkFocusInitial
-    >
-      {{ 'Actions.Search' | translate }}
-    </button>
+      <button
+        type="button"
+        class="modal-button"
+        mat-button
+        mat-raised-button
+        color="warn"
+        (click)="modal.dismiss()"
+        data-qa="synthese-search-filters-modal-cancel-button"
+      >
+        {{ 'Actions.Cancel' | translate }}
+      </button>
+      <button
+        type="button"
+        class="modal-button"
+        mat-button
+        mat-raised-button
+        color="primary"
+        (click)="modal.close()"
+        cdkFocusInitial
+        data-qa="synthese-search-filters-modal-confirm-button"
+      >
+        {{ 'Actions.Search' | translate }}
+      </button>
+    </div>
   </div>
 </ng-template>
