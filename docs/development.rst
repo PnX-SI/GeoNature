@@ -223,6 +223,34 @@ Si vous avez téléchargé GeoNature zippé (via la procédure d'installation gl
   git submodule update
 
 
+🔧 Travailler avec les sous-modules (Développeurs avec accès en écriture)
+-------------------------------------------------------------------------
+
+Pour garantir que les forks de GeoNature fonctionnent de manière fluide pour la communauté, le fichier ``.gitmodules`` de GeoNature utilise exclusivement des URL absolues en HTTPS. 
+
+Si vous êtes un développeur interne ou que vous disposez de droits d'écriture sur les dépôts de l'organisation ``PnX-SI``, vous utilisez probablement des clés SSH pour pousser vos commits. **Veuillez ne pas modifier le fichier .gitmodules pour y mettre des URL SSH.**
+
+À la place, vous pouvez configurer votre Git local pour qu'il traduise automatiquement les URL HTTPS de l'organisation en URL SSH. Il vous suffit d'exécuter cette commande une seule fois sur votre machine :
+
+.. code-block:: bash
+
+    git config --global url."git@github.com:PnX-SI/".insteadOf "https://github.com/PnX-SI/"
+
+Si vous avez besoin de modifier **temporairement** l'URL d'un sous-module, **ne modifiez pas le fichier .gitmodules** mais utilisez les commandes suivantes :
+
+.. code-block:: bash
+
+    git config submodule.<nom-du-module>.url git@github.com:<user>/<module>.git
+    git submodule update
+
+Pour revenir à la normale, utilisez :
+
+.. code-block:: bash
+
+    git submodule sync
+    git submodule update
+
+
 Installation du venv en dev
 ***************************
 
