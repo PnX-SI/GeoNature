@@ -1,5 +1,7 @@
+import math
 import typing
 
+from flask import current_app
 from sqlalchemy.inspection import inspect
 from werkzeug.exceptions import Conflict
 
@@ -22,7 +24,51 @@ from geonature.utils.config import config
 
 from geonature.utils.env import db
 from geonature.core.imports.models import Entity, TImports
+from geonature.core.imports.checks.dataframe import check_types
+from geonature.core.imports.checks.sql import check_orphan_rows, init_rows_validity
+from geonature.core.imports.utils import (
+    get_mapping_data,
+    load_transient_data_in_dataframe,
+    update_transient_data_from_dataframe,
+)
 from pypnusershub.db.models import User
+
+
+def get_update_task_progress_callback(task, to_global_progress: typing.Callable[[float], float]):
+    """
+    Return the ``update_progress(v)`` callable given to a hook.
+
+    ``v`` is clamped to [0, 1], converted to the real progress of the import
+    (``to_global_progress``) and sent to celery if a task is given.
+    """
+
+    def update_task_progress(v: float) -> None:
+        v = min(max(float(v), 0.0), 1.0)
+        if task is not None:
+            task.update_state(state="PROGRESS", meta={"progress": to_global_progress(v)})
+
+    return update_task_progress
+
+
+def import_hook(progress: float):
+    """
+    Decorator for the import check hooks (see ``ImportActions.check_transient_data``).
+
+    Attaches the weight ``progress`` of the hook to the decorated function. The weights
+    of the three hooks (``pre``, ``df_batch``, ``post``) must sum to 1.
+
+    Usage: place it under ``@staticmethod`` so that the weight is reachable through the class::
+
+        @staticmethod
+        @import_hook(progress=0.1)
+        def check_transient_data_pre(task, logger, imprt, update_progress): ...
+    """
+
+    def decorator(func):
+        func.progress = progress
+        return func
+
+    return decorator
 
 
 class ImportStatisticsLabels(typing.TypedDict):
@@ -101,9 +147,116 @@ class ImportActions:
         pass
 
     @staticmethod
-    def check_transient_data(task, logger, imprt: TImports) -> None:
+    def get_source_cols(imprt: TImports, entity: Entity) -> typing.List[str]:
+        """
+        Source columns of the transient table loaded in the dataframe of ``entity``.
+
+        By default: the columns given by ``get_mapping_data``. A destination needing other
+        columns (for example all the fields, because CEL conditions may use any field)
+        overrides it.
+        """
+        _, _, source_cols = get_mapping_data(imprt, entity)
+        return source_cols
+
+    @staticmethod
+    @import_hook(progress=0.1)
+    def check_transient_data_pre(task, logger, imprt: TImports, update_progress) -> None:
+        """
+        Global checks (typically SQL), run once before the dataframe batches.
+
+        By default: initialise the rows validity and mark the orphan rows. A destination
+        overriding it should call ``ImportActions.check_transient_data_pre`` first, then its
+        own global checks (consistency, nomenclature mapping...).
+
+        Parameters
+        ----------
+        task : Any
+            The celery task (may be None).
+        logger : Any
+            Logger instance.
+        imprt : TImports
+            The import being checked.
+        update_progress : Callable[[float], None]
+            Reports the progress of this hook, ``v`` in [0, 1].
+        """
+        init_rows_validity(imprt)
+        check_orphan_rows(imprt)
+
+    @staticmethod
+    @import_hook(progress=0.8)
+    def check_transient_data_df_batch(
+        task, logger, imprt: TImports, entity: Entity, df, update_progress
+    ) -> typing.Optional[set]:
+        """
+        Dataframe checks, called once per entity and per batch of lines.
+
+        By default: check the types of the columns (``check_types``). A destination overriding
+        it should call ``ImportActions.check_transient_data_df_batch`` (or ``check_types``)
+        and add its own checks.
+
+        Parameters
+        ----------
+        task : Any
+            The celery task (may be None).
+        logger : Any
+            Logger instance.
+        imprt : TImports
+            The import being checked.
+        entity : Entity
+            The entity checked.
+        df : pandas.DataFrame
+            The transient data of this entity for this batch (valid rows only, ordered by
+            ``line_no``). It may be empty.
+        update_progress : Callable[[float], None]
+            Reports the progress of the current batch, ``v`` in [0, 1].
+
+        Returns
+        -------
+        set or None
+            Names of the columns modified in ``df``: they are written back to the transient
+            table. None if nothing was modified.
+        """
+        fields, _, _ = get_mapping_data(imprt, entity)
+        return check_types(imprt, entity, df, fields)
+
+    @staticmethod
+    @import_hook(progress=0.1)
+    def check_transient_data_post(task, logger, imprt: TImports, update_progress) -> None:
+        """
+        Global checks (typically SQL), run once after all the dataframe batches.
+
+        Does nothing by default. Override it in destinations which need it.
+
+        Parameters
+        ----------
+        task : Any
+            The celery task (may be None).
+        logger : Any
+            Logger instance.
+        imprt : TImports
+            The import being checked.
+        update_progress : Callable[[float], None]
+            Reports the progress of this hook, ``v`` in [0, 1].
+        """
+        pass
+
+    @classmethod
+    def check_transient_data(cls, task, logger, imprt: TImports) -> None:
         """
         Validate and process the transient data for the given import.
+
+        By default, the check is composed of three hooks, run in this order:
+
+        1. ``check_transient_data_pre``, once;
+        2. ``check_transient_data_df_batch``, once per entity present in the import
+           (ordered by ``Entity.order``) and per batch of lines;
+        3. ``check_transient_data_post``, once.
+
+        A batch covers a range of ``line_no`` identical for all entities. Batches are made
+        of ``IMPORT.DATAFRAME_BATCH_SIZE`` consecutive lines of the import (all lines, valid
+        or not for a given entity), so that a batch can be empty for an entity.
+
+        Subclasses overriding this method keep their own behaviour.
 
         Parameters
         ----------
@@ -113,14 +266,86 @@ class ImportActions:
             Logger instance for logging information during validation. Used by celery.
         imprt : TImports
             The import object containing metadata about the import process.
-
-        Raises
-        ------
-        NotImplementedError
-            If the method is not implemented.
         """
+        pre = cls.check_transient_data_pre
+        batch = cls.check_transient_data_df_batch
+        post = cls.check_transient_data_post
+        w_pre, w_batch, w_post = pre.progress, batch.progress, post.progress
+        assert math.isclose(w_pre + w_batch + w_post, 1), "Hook progress weights must sum to 1"
 
-        raise NotImplementedError
+        ### PRE hook
+        update_pre = get_update_task_progress_callback(task, lambda v: w_pre * v)
+        pre(task, logger, imprt, update_pre)
+        update_pre(1)  # the hook may not report its end, the composer does
+
+        ### DF BATCH hook
+        entities = [
+            entity
+            for entity in sorted(
+                imprt.destination.entities, key=lambda e: (e.order is None, e.order or 0)
+            )
+            if entity.validity_column is not None
+        ]
+        # Batches are offset/limit slices of the rows valid for each entity, computed after
+        # the pre hook (which may invalidate rows). T = sum of the batch counts of all entities.
+        batch_size = current_app.config["IMPORT"]["DATAFRAME_BATCH_SIZE"]
+        batch_counts = [
+            math.ceil(cls.count_valid_rows(imprt, entity) / batch_size) for entity in entities
+        ]
+        total_batches = sum(batch_counts)
+
+        first_batch_index = 0  # k - 1 for the first batch of the current entity
+        for entity_index, (entity, n_batches) in enumerate(zip(entities, batch_counts)):
+            source_cols = cls.get_source_cols(imprt, entity)
+            for batch_index in range(n_batches):
+                # k is the global index of the batch, from 1 to T
+                k = first_batch_index + batch_index + 1
+                update_progress = get_update_task_progress_callback(
+                    task,
+                    lambda v, k=k: w_pre + w_batch * ((k - 1 + v) / total_batches),
+                )
+                # Log prefix: entity k/p (entity name), then batch n/m of this entity
+                prefix = (
+                    f"[entité {entity_index + 1}/{len(entities)} ({entity.code})] "
+                    f"[batch {batch_index + 1}/{n_batches}]"
+                )
+                logger.info(f"{prefix} Loading import data in dataframe…")
+                df = load_transient_data_in_dataframe(
+                    imprt,
+                    entity,
+                    source_cols,
+                    offset=batch_index * batch_size,
+                    limit=batch_size,
+                )
+                updated_cols = batch(task, logger, imprt, entity, df, update_progress)
+                logger.info(f"{prefix} Updating import data from dataframe…")
+                update_transient_data_from_dataframe(imprt, entity, updated_cols, df)
+                # Empty batches still count for progress
+                update_progress(1)
+            first_batch_index += n_batches
+
+        ### POST hook
+        update_post = get_update_task_progress_callback(
+            task, lambda v: w_pre + w_batch + w_post * v
+        )
+        post(task, logger, imprt, update_post)
+        update_post(1)
+
+    @staticmethod
+    def count_valid_rows(imprt: TImports, entity: Entity) -> int:
+        """
+        Number of rows loaded for ``entity`` by ``load_transient_data_in_dataframe``
+        (validity not NULL), i.e. the rows its batches cover.
+        """
+        transient_table = imprt.destination.get_transient_table()
+        return db.session.scalar(
+            select(func.count())
+            .select_from(transient_table)
+            .where(
+                transient_table.c.id_import == imprt.id_import,
+                transient_table.c[entity.validity_column].isnot(None),
+            )
+        )
 
     @staticmethod
     def import_data_to_destination(imprt: TImports) -> None:
