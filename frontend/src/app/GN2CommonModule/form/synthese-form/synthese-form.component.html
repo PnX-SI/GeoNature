@@ -408,9 +408,18 @@
     <h4 mat-dialog-title>{{ 'Filters.ConfirmSearch.DefaultTitle' | translate }}</h4>
     <div mat-dialog-content>
       <mat-list>
-        <mat-list-item *ngFor="let filter of filtersToConfirm">
+        <mat-list-item
+          class="confirmation-list-item"
+          lines="3"
+          *ngFor="let filter of filtersToConfirm"
+        >
           <mat-icon matListItemIcon>warning</mat-icon>
-          <div matListItemTitle>{{ filter.message | translate }}</div>
+          <div
+            matListItemTitle
+            class="confirmation-message"
+          >
+            {{ filter.message | translate }}
+          </div>
           <!-- <div matListItemLine>{{ filter.field }}&nbsp;: {{ filter.value || 'No value' }}</div> -->
           <mat-divider></mat-divider>
         </mat-list-item>
