@@ -282,7 +282,16 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     ID_SEARCH_OBSERVER_LIST = 1
 
     # Filtres dont les valeurs sont soumises à confirmation avant la recherche
-    # Exemple : ["date_min", "date_max"]
+    # Exemple : [
+    #     "cd_ref",
+    #     "date_max",
+    #     "date_min",
+    #     "id_acquisition_framework",
+    #     "id_dataset",
+    #     "id_organism",
+    #     "municipalities",
+    #     "observers_list",
+    #   ]
     CONFIRM_SEARCH_FILTERS = []
 
     # Activer (=true) ou pas (=false) la clusterisation des objets sur la carte
