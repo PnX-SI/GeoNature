@@ -516,8 +516,10 @@
       "Other": "Other filters"
     },
     "ConfirmSearch": {
-      "Title": "Confirm filters",
-      "Message": "Confirm the following filter values before starting the search?"
+      "DefaultTitle": "Confirm filters",
+      "DefaultMessage": "Confirm the following filter values before starting the search?",
+      "CancelButton": "Cancel",
+      "SearchButton": "Search"
     }
   },
   "TaxonSearch": {

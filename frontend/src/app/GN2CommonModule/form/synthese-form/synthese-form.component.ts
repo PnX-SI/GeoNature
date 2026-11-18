@@ -100,10 +100,16 @@ export class SyntheseSearchComponent implements OnInit {
 
   onSubmitForm() {
     const updatedParams = this.formService.formatParams();
-    const filtersToConfirmConf = this.config.SYNTHESE.CONFIRM_SEARCH_FILTERS || [];
-    this.filtersToConfirm = filtersToConfirmConf
-      .filter((name) => this.hasFilterValue(updatedParams[name]))
-      .map((name) => ({ name, value: updatedParams[name] }));
+    const configuredFilters = this.config.SYNTHESE.CONFIRM_SEARCH_FILTERS || [];
+    this.filtersToConfirm = configuredFilters
+      .filter((configuredFilter) =>
+        this.hasValueToConfirm(configuredFilter, updatedParams[configuredFilter.field])
+      )
+      .map((configuredFilter) => ({
+        field: configuredFilter.field,
+        value: updatedParams[configuredFilter.field],
+        message: configuredFilter.message?.trim() || 'Filters.ConfirmSearch.DefaultMessage',
+      }));
 
     if (this.filtersToConfirm.length === 0) {
       this.searchClicked.emit(updatedParams);
@@ -117,17 +123,20 @@ export class SyntheseSearchComponent implements OnInit {
     );
   }
 
-  private hasFilterValue(value: any): boolean {
-    if (value == null) {
-      return false;
+  private hasValueToConfirm(filter: any, value: any): boolean {
+    const configuredValues = Array.isArray(filter.values) ? filter.values : [];
+    const selectedValues = (Array.isArray(value) ? value : value == null ? [] : [value]).filter(
+      (item) => item != null && !(typeof item === 'string' && item.trim() === '')
+    );
+
+    // Without specific trigger values, confirm when this filter has a value when confirmOnAbsence.
+    // And confirm when no value is selected when confirmOnAbsence is true
+    if (configuredValues.length === 0) {
+      return filter.confirmOnAbsence ? selectedValues.length === 0 : selectedValues.length > 0;
     }
-    if (typeof value === 'string') {
-      return value.trim().length > 0;
-    }
-    if (Array.isArray(value)) {
-      return value.length > 0;
-    }
-    return true;
+
+    const isIntersected = selectedValues.some((item) => configuredValues.includes(item));
+    return filter.confirmOnAbsence ? !isIntersected : isIntersected;
   }
 
   refreshFilters() {

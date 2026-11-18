@@ -390,7 +390,7 @@ class Synthese(Schema):
     # Id of the observer list -- utilisateurs.t_menus
     ID_SEARCH_OBSERVER_LIST = fields.Integer(load_default=1)
     # Search filters that require user confirmation before submitting
-    CONFIRM_SEARCH_FILTERS = fields.List(fields.String(), load_default=[])
+    CONFIRM_SEARCH_FILTERS = fields.List(fields.Dict, load_default=[])
     # Regulatory or not status list of fields
     STATUS_FILTERS = fields.List(
         fields.Dict,

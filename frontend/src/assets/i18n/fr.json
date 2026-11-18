@@ -517,8 +517,10 @@
       "Other": "Autres filtres"
     },
     "ConfirmSearch": {
-      "Title": "Confirmer les filtres",
-      "Message": "Confirmez-vous les valeurs des filtres suivants avant de lancer la recherche ?"
+      "DefaultTitle": "Confirmer les filtres",
+      "DefaultMessage": "Confirmez-vous les valeurs des filtres suivants avant de lancer la recherche ?",
+      "CancelButton": "Annuler",
+      "SearchButton": "Rechercher"
     }
   },
   "TaxonSearch": {

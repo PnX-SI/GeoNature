@@ -401,16 +401,20 @@
   #confirmSearchModal
   let-modal
 >
-  <div data-qa="synthese-search-filters-modal">
-    <h4 mat-dialog-title>{{ 'Filters.ConfirmSearch.Title' | translate }}</h4>
+  <div
+    class="modal-container"
+    data-qa="synthese-search-filters-modal"
+  >
+    <h4 mat-dialog-title>{{ 'Filters.ConfirmSearch.DefaultTitle' | translate }}</h4>
     <div mat-dialog-content>
-      <p>{{ 'Filters.ConfirmSearch.Message' | translate }}</p>
-      <ul>
-        <li *ngFor="let filter of filtersToConfirm">
-          <strong>{{ filter.name }}:</strong>
-          {{ filter.value | json }}
-        </li>
-      </ul>
+      <mat-list>
+        <mat-list-item *ngFor="let filter of filtersToConfirm">
+          <mat-icon matListItemIcon>warning</mat-icon>
+          <div matListItemTitle>{{ filter.message | translate }}</div>
+          <!-- <div matListItemLine>{{ filter.field }}&nbsp;: {{ filter.value || 'No value' }}</div> -->
+          <mat-divider></mat-divider>
+        </mat-list-item>
+      </mat-list>
     </div>
     <div
       mat-dialog-actions
@@ -425,7 +429,7 @@
         (click)="modal.dismiss()"
         data-qa="synthese-search-filters-modal-cancel-button"
       >
-        {{ 'Actions.Cancel' | translate }}
+        {{ 'Filters.ConfirmSearch.CancelButton' | translate }}
       </button>
       <button
         type="button"
@@ -437,7 +441,7 @@
         cdkFocusInitial
         data-qa="synthese-search-filters-modal-confirm-button"
       >
-        {{ 'Actions.Search' | translate }}
+        {{ 'Filters.ConfirmSearch.SearchButton' | translate }}
       </button>
     </div>
   </div>

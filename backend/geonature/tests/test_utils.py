@@ -11,7 +11,7 @@ from flask import g
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_commons.schemas import ModuleSchema
 from geonature.utils.env import db
-from geonature.utils.config_schema import GnPySchemaConf
+from geonature.utils.config_schema import GnPySchemaConf, Synthese
 from geonature.utils.utilstoml import *
 from geonature.utils.errors import GeoNatureError, ConfigError
 from geonature.utils.module import (
@@ -212,6 +212,29 @@ class TestUtils:
         assert not is_module_installed(
             python_module_name="gn_module_occhab", check_if_all_revisions_have_been_applied=True
         )
+
+    @pytest.mark.parametrize("confirm_on_absence", [True, False])
+    def test_confirm_search_filters_config(self, tmp_path, confirm_on_absence):
+        config_file = tmp_path / "geonature_config.toml"
+        config_file.write_text(f"""
+            CONFIRM_SEARCH_FILTERS = [
+                {{
+                    field = "date_min",
+                    values = ["24/12/2016"],
+                    confirmOnAbsence = {str(confirm_on_absence).lower()}
+                }}
+            ]
+            """)
+
+        config = Synthese().load(load_toml(config_file))
+
+        assert config["CONFIRM_SEARCH_FILTERS"] == [
+            {
+                "field": "date_min",
+                "values": ["24/12/2016"],
+                "confirmOnAbsence": confirm_on_absence,
+            }
+        ]
 
 
 pagination_schema = {
