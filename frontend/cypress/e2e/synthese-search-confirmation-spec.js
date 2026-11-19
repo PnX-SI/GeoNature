@@ -119,7 +119,7 @@ describe('Synthese search confirmation', () => {
     searchWithoutConfirmation();
   });
 
-  it('groups matching confirmation rules with the same field', () => {
+  it('shows all confirmation rules with the same field', () => {
     openSyntheseWithConfirmationConfig([
       {
         field: 'date_min',
@@ -143,11 +143,7 @@ describe('Synthese search confirmation', () => {
     selectDateMin();
 
     searchAndExpectConfirmation();
-    cy.get('[data-qa="synthese-search-filters-modal"] mat-list-item').should('have.length', 1);
-    cy.get('[data-qa="synthese-search-filters-modal"] .confirmation-message div').should(
-      'have.length',
-      2
-    );
+    cy.get('[data-qa="synthese-search-filters-modal"] mat-list-item').should('have.length', 2);
     cy.get('[data-qa="synthese-search-filters-modal-cancel-button"]').click();
   });
 });

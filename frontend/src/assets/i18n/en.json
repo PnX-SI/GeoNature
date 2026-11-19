@@ -517,9 +517,9 @@
     },
     "ConfirmSearch": {
       "DefaultTitle": "Confirm filters",
-      "DefaultMessage": "Confirm the following filter values before starting the search?",
-      "CancelButton": "Cancel",
-      "SearchButton": "Search"
+      "DefaultMessage": "Confirm the filter values before starting the search?",
+      "CancelButton": "Search using the recommended values",
+      "SearchButton": "Search using the values entered"
     }
   },
   "TaxonSearch": {

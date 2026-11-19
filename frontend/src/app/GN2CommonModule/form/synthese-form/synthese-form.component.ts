@@ -23,10 +23,8 @@ import {
   SearchParams,
   restoreSearchParams,
   TaxonRef,
-  Digitiser
+  Digitiser,
 } from './search-filter-restoration/search-filter-restoration';
-
-
 
 @Component({
   selector: 'pnx-synthese-search',
