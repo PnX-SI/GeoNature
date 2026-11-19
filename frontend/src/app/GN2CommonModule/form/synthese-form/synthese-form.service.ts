@@ -142,9 +142,9 @@ export class SyntheseFormService {
     tab.splice(index, 1);
   }
 
-  formatParams() {
+  formatParams(): Record<string, unknown> {
     const params = Object.assign({}, this.searchForm.value);
-    const updatedParams = {};
+    const updatedParams: Record<string, unknown> = {};
     // eslint-disable-next-line guard-for-in
 
     for (const key in params) {
@@ -205,6 +205,21 @@ export class SyntheseFormService {
       ];
     }
     return updatedParams;
+  }
+
+  toFormValue(field: string, value: unknown) {
+    if (value == null) {
+      return null;
+    }
+
+    const scalarValue = Array.isArray(value) ? value[0] : value;
+    if (field === 'date_min' || field === 'date_max') {
+      return typeof scalarValue === 'string' ? this._dateParser.parse(scalarValue) : null;
+    }
+    if (field === 'period_start' || field === 'period_end') {
+      return typeof scalarValue === 'string' ? this._periodFormatter.parse(scalarValue) : null;
+    }
+    return value;
   }
 
   periodValidator(): ValidatorFn {

@@ -3,15 +3,17 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 export interface ConfiguredSearchFilter {
   field: string;
-  values: Array<any> | null;
+  values: Array<unknown> | null;
   message: string | null;
   confirmOnAbsence: boolean | null;
 }
 
 export interface SearchFilter {
   field: string;
-  value: any;
-  messages: string[];
+  value: unknown;
+  message: string;
+  confirmOnAbsence: boolean | null;
+  values: Array<unknown> | null;
 }
 
 @Component({
@@ -26,10 +28,10 @@ export class ConfirmationModalComponent {
   ) {}
 
   onCancelClick(): void {
-    this.dialogRef.close(false);
+    this.dialogRef.close({ canceled: true });
   }
 
   onConfirmClick(): void {
-    this.dialogRef.close(true);
+    this.dialogRef.close({ confirmed: true });
   }
 }

@@ -1,17 +1,8 @@
 .modal-button {
   margin: 4px;
-  min-width: 0;
   max-width: 100%;
-  height: auto;
-  min-height: 36px;
-  line-height: 1.2;
   white-space: normal;
   overflow-wrap: anywhere;
-  padding: 4px;
-}
-
-.modal-container {
-  padding: 8px;
 }
 
 .modal-container .mat-mdc-list-item .confirmation-message {
@@ -23,4 +14,11 @@
 
 .modal-container .confirmation-list-item {
   height: auto;
+}
+
+.close-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1; /* Ensures it stays clickable above other elements */
 }
