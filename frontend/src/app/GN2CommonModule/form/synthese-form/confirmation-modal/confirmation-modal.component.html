@@ -1,0 +1,55 @@
+<div
+  class="modal-container"
+  data-qa="synthese-search-filters-modal"
+>
+  <h4 mat-dialog-title>{{ 'Filters.ConfirmSearch.DefaultTitle' | translate }}</h4>
+  <div mat-dialog-content>
+    <mat-list>
+      <mat-list-item
+        class="confirmation-list-item"
+        lines="3"
+        *ngFor="let filter of searchFilter"
+      >
+        <mat-icon matListItemIcon>warning</mat-icon>
+        <div
+          matListItemTitle
+          class="confirmation-message"
+        >
+          <div *ngFor="let message of filter.messages">
+            {{ message | translate }}
+          </div>
+        </div>
+        <!-- <div matListItemLine>{{ filter.field }}&nbsp;: {{ filter.value || 'No value' }}</div> -->
+        <mat-divider></mat-divider>
+      </mat-list-item>
+    </mat-list>
+  </div>
+  <div
+    mat-dialog-actions
+    align="end"
+  >
+    <button
+      type="button"
+      class="modal-button"
+      mat-button
+      mat-raised-button
+      color="warn"
+      (click)="onCancelClick()"
+      data-qa="synthese-search-filters-modal-cancel-button"
+    >
+      {{ 'Filters.ConfirmSearch.CancelButton' | translate }}
+    </button>
+    <button
+      type="button"
+      class="modal-button"
+      mat-button
+      mat-raised-button
+      color="primary"
+      (click)="onConfirmClick()"
+      cdkFocusInitial
+      data-qa="synthese-search-filters-modal-confirm-button"
+    >
+      {{ 'Filters.ConfirmSearch.SearchButton' | translate }}
+    </button>
+  </div>
+</div>

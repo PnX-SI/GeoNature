@@ -1,18 +1,15 @@
-import {
-  Component,
-  OnInit,
-  Output,
-  EventEmitter,
-  Input,
-  ViewEncapsulation,
-  TemplateRef,
-  ViewChild,
-} from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, ViewEncapsulation } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MapService } from '@geonature_common/map/map.service';
 import { TaxonAdvancedModalComponent } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-component';
+import {
+  SearchFilter,
+  ConfiguredSearchFilter,
+  ConfirmationModalComponent,
+} from '@geonature_common/form/synthese-form/confirmation-modal/confirmation-modal.component';
 import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ActivatedRoute } from '@angular/router';
@@ -43,9 +40,7 @@ export class SyntheseSearchComponent implements OnInit {
   @Output() searchClicked = new EventEmitter();
   @Output() resetFilter = new EventEmitter();
 
-  @ViewChild('confirmSearchModal') private confirmSearchModal: TemplateRef<any>;
-
-  public filtersToConfirm: Array<{ name: string; value: any }> = [];
+  public filtersToConfirm: SearchFilter[] = [];
 
   constructor(
     public dataService: SyntheseDataService,
@@ -55,7 +50,8 @@ export class SyntheseSearchComponent implements OnInit {
     private _storeService: TaxonAdvancedStoreService,
     private _api: DataFormService,
     private route: ActivatedRoute,
-    public config: ConfigService
+    public config: ConfigService,
+    public dialog: MatDialog
   ) {
     this.route.queryParams.subscribe((params) => {
       this.params = params;
@@ -99,31 +95,49 @@ export class SyntheseSearchComponent implements OnInit {
   }
 
   onSubmitForm() {
-    const updatedParams = this.formService.formatParams();
-    const configuredFilters = this.config.SYNTHESE.CONFIRM_SEARCH_FILTERS || [];
-    this.filtersToConfirm = configuredFilters
-      .filter((configuredFilter) =>
-        this.hasValueToConfirm(configuredFilter, updatedParams[configuredFilter.field])
-      )
-      .map((configuredFilter) => ({
-        field: configuredFilter.field,
-        value: updatedParams[configuredFilter.field],
-        message: configuredFilter.message?.trim() || 'Filters.ConfirmSearch.DefaultMessage',
-      }));
+    const updatedParams: any = this.formService.formatParams();
+    const configuredFiltersToConfirm = this.config.SYNTHESE.CONFIRM_SEARCH_FILTERS || [];
+    const filtersByField = new Map<string, SearchFilter>();
+
+    configuredFiltersToConfirm.forEach((configuredFilter: ConfiguredSearchFilter) => {
+      const value = updatedParams[configuredFilter.field];
+      if (!this.hasValueToConfirm(configuredFilter, value)) {
+        return;
+      }
+
+      const message = configuredFilter.message?.trim() || 'Filters.ConfirmSearch.DefaultMessage';
+      const existingFilter = filtersByField.get(configuredFilter.field);
+      if (existingFilter) {
+        if (!existingFilter.messages.includes(message)) {
+          existingFilter.messages.push(message);
+        }
+      } else {
+        filtersByField.set(configuredFilter.field, {
+          field: configuredFilter.field,
+          value,
+          messages: [message],
+        });
+      }
+    });
+
+    this.filtersToConfirm = Array.from(filtersByField.values());
 
     if (this.filtersToConfirm.length === 0) {
       this.searchClicked.emit(updatedParams);
       return;
     }
 
-    const modalRef = this.ngbModal.open(this.confirmSearchModal, { centered: true });
-    modalRef.result.then(
-      () => this.searchClicked.emit(updatedParams), //on fullfilled
-      () => {} // on rejected
-    );
+    const dialogRef = this.dialog.open(ConfirmationModalComponent, {
+      data: this.filtersToConfirm,
+    });
+    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.searchClicked.emit(updatedParams);
+      }
+    });
   }
 
-  private hasValueToConfirm(filter: any, value: any): boolean {
+  private hasValueToConfirm(filter: ConfiguredSearchFilter, value: any): boolean {
     const configuredValues = Array.isArray(filter.values) ? filter.values : [];
     const selectedValues = (Array.isArray(value) ? value : value == null ? [] : [value]).filter(
       (item) => item != null && !(typeof item === 'string' && item.trim() === '')

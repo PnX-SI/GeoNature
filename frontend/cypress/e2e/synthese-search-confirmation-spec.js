@@ -118,4 +118,36 @@ describe('Synthese search confirmation', () => {
 
     searchWithoutConfirmation();
   });
+
+  it('groups matching confirmation rules with the same field', () => {
+    openSyntheseWithConfirmationConfig([
+      {
+        field: 'date_min',
+        values: [DATE_MIN],
+        confirmOnAbsence: false,
+        message: 'Filters.ConfirmSearch.Messages.date_min',
+      },
+      {
+        field: 'date_min',
+        values: [DATE_MIN],
+        confirmOnAbsence: false,
+        message: 'Filters.ConfirmSearch.Messages.other_date_min',
+      },
+      {
+        field: 'date_min',
+        values: ['2017-01-01'],
+        confirmOnAbsence: false,
+        message: 'Filters.ConfirmSearch.Messages.unmatched_date_min',
+      },
+    ]);
+    selectDateMin();
+
+    searchAndExpectConfirmation();
+    cy.get('[data-qa="synthese-search-filters-modal"] mat-list-item').should('have.length', 1);
+    cy.get('[data-qa="synthese-search-filters-modal"] .confirmation-message div').should(
+      'have.length',
+      2
+    );
+    cy.get('[data-qa="synthese-search-filters-modal-cancel-button"]').click();
+  });
 });

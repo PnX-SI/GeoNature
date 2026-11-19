@@ -111,30 +111,3 @@ legend {
 :host ::ng-deep ngb-typeahead-window > button {
   padding-left: 5px;
 }
-
-.modal-button {
-  margin: 4px;
-  min-width: 0;
-  max-width: 100%;
-  height: auto;
-  min-height: 36px;
-  line-height: 1.2;
-  white-space: normal;
-  overflow-wrap: anywhere;
-  padding: 4px;
-}
-
-.modal-container {
-  padding: 8px;
-}
-
-.modal-container .mat-mdc-list-item .confirmation-message {
-  white-space: normal;
-  overflow: visible;
-  text-overflow: clip;
-  overflow-wrap: anywhere;
-}
-
-.modal-container .confirmation-list-item {
-  height: auto;
-}
