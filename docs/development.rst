@@ -1710,6 +1710,7 @@ Pour sortir une nouvelle version de GeoNature :
     pip-compile requirements-dev.in > requirements-dev.txt
 
 - Mettez à jour la version de GeoNature et éventuellement des dépendances dans ``install/install_all/install_all.ini``
+- Assurez vous que la version de nginx et de node dans `frontend/Dockerfile` est la plus récente possible
 - Complétez le fichier ``docs/CHANGELOG.md`` (en comparant les branches https://github.com/PnX-SI/GeoNature/compare/develop) et dater la version à sortir
 - Mettez à jour le fichier ``VERSION``
 - Mergez la branche ``develop`` dans la branche ``master``
