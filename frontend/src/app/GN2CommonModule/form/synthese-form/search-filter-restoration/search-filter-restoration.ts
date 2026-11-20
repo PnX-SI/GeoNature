@@ -64,7 +64,7 @@ export function getTaxonRefs(value: unknown): TaxonRef[] {
 }
 
 export function hasValueToConfirm(filter: SearchFilter, value: unknown): boolean {
-  if(typeof filter.field !== 'string' || filter.field.length === 0) {
+  if (typeof filter.field !== 'string' || filter.field.length === 0) {
     console.warn(`Empty field value in SYNTHESE.CONFIRM_SEARCH_FILTERS: ${JSON.stringify(filter)}`);
     return false;
   }
