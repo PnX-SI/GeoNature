@@ -1,24 +1,24 @@
-.modal-button {
-  margin: 4px;
-  max-width: 100%;
-  white-space: normal;
-  overflow-wrap: anywhere;
+.close-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1; /* Ensures it stays clickable above other elements */
 }
 
-.modal-container .mat-mdc-list-item .confirmation-message {
+.confirmation-list-item {
+  height: auto;
+}
+
+.confirmation-message {
   white-space: normal;
   overflow: visible;
   text-overflow: clip;
   overflow-wrap: anywhere;
 }
 
-.modal-container .confirmation-list-item {
-  height: auto;
-}
-
-.close-button {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 1; /* Ensures it stays clickable above other elements */
+.modal-button {
+  margin: 4px;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }

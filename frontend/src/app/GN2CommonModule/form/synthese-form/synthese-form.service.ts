@@ -207,21 +207,6 @@ export class SyntheseFormService {
     return updatedParams;
   }
 
-  toFormValue(field: string, value: unknown) {
-    if (value == null) {
-      return null;
-    }
-
-    const scalarValue = Array.isArray(value) ? value[0] : value;
-    if (field === 'date_min' || field === 'date_max') {
-      return typeof scalarValue === 'string' ? this._dateParser.parse(scalarValue) : null;
-    }
-    if (field === 'period_start' || field === 'period_end') {
-      return typeof scalarValue === 'string' ? this._periodFormatter.parse(scalarValue) : null;
-    }
-    return value;
-  }
-
   periodValidator(): ValidatorFn {
     return (formGroup: UntypedFormGroup): { [key: string]: boolean } => {
       const perioStart = formGroup.controls.period_start.value;

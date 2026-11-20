@@ -3,12 +3,12 @@
   data-qa="synthese-search-filters-modal"
 >
   <button
-    class="close-button"
     mat-icon-button
     mat-dialog-close
-    aria-label="Close dialog"
+    class="close-button"
+    [attr.aria-label]="'Close' | translate"
   >
-    <mat-icon>close</mat-icon>
+    <mat-icon aria-hidden="true">close</mat-icon>
   </button>
   <h4
     mat-dialog-title
@@ -19,19 +19,22 @@
   <div mat-dialog-content>
     <mat-list>
       <mat-list-item
+        *ngFor="let filter of searchFilters"
         class="confirmation-list-item"
         lines="3"
-        *ngFor="let filter of searchFilter"
       >
-        <mat-icon matListItemIcon>warning</mat-icon>
+        <mat-icon
+          matListItemIcon
+          aria-hidden="true"
+        >
+          warning
+        </mat-icon>
         <div
           matListItemTitle
           class="confirmation-message"
         >
           {{ filter.message | translate }}
         </div>
-        <!-- <div matListItemLine>{{ filter.field }}&nbsp;: {{ filter.value || 'No value' }}</div> -->
-        <mat-divider></mat-divider>
       </mat-list-item>
     </mat-list>
   </div>
@@ -40,24 +43,20 @@
     align="end"
   >
     <button
-      type="button"
-      class="modal-button"
-      mat-button
       mat-raised-button
       color="primary"
       (click)="onCancelClick()"
+      class="modal-button"
       data-qa="synthese-search-filters-modal-cancel-button"
+      cdkFocusInitial
     >
       {{ 'Filters.ConfirmSearch.CancelButton' | translate }}
     </button>
     <button
-      type="button"
-      class="modal-button"
-      mat-button
       mat-raised-button
       color="warn"
       (click)="onConfirmClick()"
-      cdkFocusInitial
+      class="modal-button"
       data-qa="synthese-search-filters-modal-confirm-button"
     >
       {{ 'Filters.ConfirmSearch.SearchButton' | translate }}
