@@ -1,16 +1,8 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
-export interface ConfiguredSearchFilter {
-  field: string;
-  values: Array<unknown> | null;
-  message: string | null;
-  confirmOnAbsence: boolean | null;
-}
-
 export interface SearchFilter {
   field: string;
-  value: unknown;
   message: string;
   confirmOnAbsence: boolean | null;
   values: Array<unknown> | null;

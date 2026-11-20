@@ -1,4 +1,4 @@
-import { ConfiguredSearchFilter } from '@geonature_common/form/synthese-form/confirmation-modal/confirmation-modal.component';
+import { SearchFilter } from '@geonature_common/form/synthese-form/confirmation-modal/confirmation-modal.component';
 
 export type SearchParams = Record<string, unknown>;
 
@@ -63,7 +63,11 @@ export function getTaxonRefs(value: unknown): TaxonRef[] {
   });
 }
 
-export function hasValueToConfirm(filter: ConfiguredSearchFilter, value: unknown): boolean {
+export function hasValueToConfirm(filter: SearchFilter, value: unknown): boolean {
+  if(typeof filter.field !== 'string' || filter.field.length === 0) {
+    console.warn(`Empty field value in SYNTHESE.CONFIRM_SEARCH_FILTERS: ${JSON.stringify(filter)}`);
+    return false;
+  }
   const configuredValues = Array.isArray(filter.values) ? filter.values : [];
   const selectedValues = (Array.isArray(value) ? value : value == null ? [] : [value]).filter(
     (item) => item != null && !(typeof item === 'string' && item.trim() === '')

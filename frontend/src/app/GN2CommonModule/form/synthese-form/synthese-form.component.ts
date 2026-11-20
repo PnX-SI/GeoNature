@@ -9,7 +9,6 @@ import { MapService } from '@geonature_common/map/map.service';
 import { TaxonAdvancedModalComponent } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-component';
 import {
   SearchFilter,
-  ConfiguredSearchFilter,
   ConfirmationModalComponent,
 } from '@geonature_common/form/synthese-form/confirmation-modal/confirmation-modal.component';
 import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service';
@@ -109,12 +108,11 @@ export class SyntheseSearchComponent implements OnInit {
     const updatedParams = this.formService.formatParams();
     const configuredFiltersToConfirm = this.config.SYNTHESE.CONFIRM_SEARCH_FILTERS || [];
     this.filtersToConfirm = configuredFiltersToConfirm
-      .filter((configuredFilter: ConfiguredSearchFilter) =>
+      .filter((configuredFilter: SearchFilter) =>
         hasValueToConfirm(configuredFilter, updatedParams[configuredFilter.field])
       )
-      .map((configuredFilter: ConfiguredSearchFilter) => ({
+      .map((configuredFilter: SearchFilter) => ({
         field: configuredFilter.field,
-        value: updatedParams[configuredFilter.field],
         message: configuredFilter.message?.trim() || 'Filters.ConfirmSearch.DefaultMessage',
         confirmOnAbsence: configuredFilter.confirmOnAbsence,
         values: configuredFilter.values,
