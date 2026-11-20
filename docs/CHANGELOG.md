@@ -109,6 +109,10 @@
 - La valeur par défaut du paramètre `AUTO_VALIDATION_CRONTAB` du module Validation passe de `* 1 * * *` à `0 * * * *`. Vérifiez votre configuration si vous l'aviez surcouchée (#4355)
 - La fonction `gn_commons.is_in_period` est supprimée (#4315)
 
+## 2.17.6 (2026-11-20)
+
+- [Système] Mise à jour de la version de nginx (par @christophe-ramet)
+
 ## 2.17.5 (2026-08-04)
 
 ### 🐛 Corrections

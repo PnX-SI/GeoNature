@@ -1,5 +1,5 @@
 ARG NODE_IMAGE="node:24"
-ARG NGINX_IMAGE="nginx:mainline-alpine"
+ARG NGINX_IMAGE="nginx:1.31.9"
 
 
 FROM ${NODE_IMAGE} AS occhab-node-modules
