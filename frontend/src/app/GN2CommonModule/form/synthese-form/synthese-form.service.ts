@@ -142,9 +142,9 @@ export class SyntheseFormService {
     tab.splice(index, 1);
   }
 
-  formatParams() {
+  formatParams(): Record<string, unknown> {
     const params = Object.assign({}, this.searchForm.value);
-    const updatedParams = {};
+    const updatedParams: Record<string, unknown> = {};
     // eslint-disable-next-line guard-for-in
 
     for (const key in params) {

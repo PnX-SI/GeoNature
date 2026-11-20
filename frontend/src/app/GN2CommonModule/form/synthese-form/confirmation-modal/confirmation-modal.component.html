@@ -1,0 +1,65 @@
+<div
+  class="modal-container"
+  data-qa="synthese-search-filters-modal"
+>
+  <button
+    mat-icon-button
+    mat-dialog-close
+    class="close-button"
+    [attr.aria-label]="'Close' | translate"
+  >
+    <mat-icon aria-hidden="true">close</mat-icon>
+  </button>
+  <h4
+    mat-dialog-title
+    class="dialog-header"
+  >
+    {{ 'Filters.ConfirmSearch.DefaultTitle' | translate }}
+  </h4>
+  <div mat-dialog-content>
+    <mat-list>
+      <mat-list-item
+        *ngFor="let filter of searchFilters"
+        class="confirmation-list-item"
+        lines="3"
+      >
+        <mat-icon
+          matListItemIcon
+          aria-hidden="true"
+        >
+          warning
+        </mat-icon>
+        <div
+          matListItemTitle
+          class="confirmation-message"
+        >
+          {{ filter.message | translate }}
+        </div>
+      </mat-list-item>
+    </mat-list>
+  </div>
+  <div
+    mat-dialog-actions
+    align="end"
+  >
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="onCancelClick()"
+      class="modal-button"
+      data-qa="synthese-search-filters-modal-cancel-button"
+      cdkFocusInitial
+    >
+      {{ 'Filters.ConfirmSearch.CancelButton' | translate }}
+    </button>
+    <button
+      mat-raised-button
+      color="warn"
+      (click)="onConfirmClick()"
+      class="modal-button"
+      data-qa="synthese-search-filters-modal-confirm-button"
+    >
+      {{ 'Filters.ConfirmSearch.SearchButton' | translate }}
+    </button>
+  </div>
+</div>
