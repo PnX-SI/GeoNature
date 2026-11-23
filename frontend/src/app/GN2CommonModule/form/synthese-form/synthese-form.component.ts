@@ -1,4 +1,5 @@
 import { Component, OnInit, Output, EventEmitter, Input, ViewEncapsulation } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -8,6 +9,12 @@ import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ActivatedRoute } from '@angular/router';
 import { ConfigService } from '@geonature/services/config.service';
+import { ConfirmationModalComponent } from './confirmation-modal/confirmation-modal.component';
+import {
+  isParamToConfirm,
+  restoreSearchParams,
+  SearchFilter,
+} from './confirmation-modal/confirmation-modal-utils';
 
 @Component({
   selector: 'pnx-synthese-search',
@@ -42,7 +49,8 @@ export class SyntheseSearchComponent implements OnInit {
     private _storeService: TaxonAdvancedStoreService,
     private _api: DataFormService,
     private route: ActivatedRoute,
-    public config: ConfigService
+    public config: ConfigService,
+    public dialog: MatDialog
   ) {
     this.route.queryParams.subscribe((params) => {
       this.params = params;
@@ -87,7 +95,32 @@ export class SyntheseSearchComponent implements OnInit {
 
   onSubmitForm() {
     const updatedParams = this.formService.formatParams();
-    this.searchClicked.emit(updatedParams);
+    const configuredFiltersToConfirm: SearchFilter[] =
+      this.config.SYNTHESE.CONFIRM_SEARCH_FILTERS || [];
+    const filtersToConfirm: SearchFilter[] = configuredFiltersToConfirm.filter((configuredFilter) =>
+      isParamToConfirm(updatedParams[configuredFilter.field], configuredFilter)
+    );
+
+    if (filtersToConfirm.length === 0) {
+      this.searchClicked.emit(updatedParams);
+    } else {
+      const dialogRef = this.dialog.open(ConfirmationModalComponent, {
+        data: filtersToConfirm,
+      });
+      dialogRef.afterClosed().subscribe((feedback: { confirmed?: boolean }) => {
+        if (!feedback) {
+          return;
+        } else if (feedback.confirmed) {
+          this.searchClicked.emit(updatedParams);
+        } else {
+          const restoredParams = restoreSearchParams(updatedParams, filtersToConfirm);
+          filtersToConfirm.forEach((filter) => {
+            this.formService.searchForm.get(filter.field)?.setValue(restoredParams[filter.field]);
+          });
+          this.searchClicked.emit(restoredParams);
+        }
+      });
+    }
   }
 
   refreshFilters() {

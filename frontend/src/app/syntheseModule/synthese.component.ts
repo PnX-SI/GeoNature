@@ -96,8 +96,7 @@ export class SyntheseComponent implements OnInit {
       });
   }
 
-  loadData() {
-    let formParams = this.formService.formatParams();
+  loadData(formParams = this.formService.formatParams()) {
     this.searchService.dataLoaded = false;
     this.formService.searchForm.markAsPristine();
 
@@ -246,12 +245,12 @@ export class SyntheseComponent implements OnInit {
     }
   }
 
-  onSearchEvent() {
+  onSearchEvent(formParams) {
     // Remove limit
     this.formService.selectors = this.formService.selectors.delete('limit');
     // By clicking the search button, clean the cache and call the data loading
     this.syntheseStore.clearData();
-    this.loadData();
+    this.loadData(formParams);
   }
 
   openInfoModal(idSynthese) {

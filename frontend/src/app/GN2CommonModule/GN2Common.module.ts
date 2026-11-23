@@ -82,6 +82,7 @@ import { PlacesComponent } from './map/places/places.component';
 import { PlacesListComponent } from './map/placesList/placesList.component';
 import { StatusBadgesComponent } from '@geonature_common/others/status-badges/status-badges.component';
 import { SyntheseSearchComponent } from '@geonature_common/form/synthese-form/synthese-form.component';
+import { ConfirmationModalComponent } from '@geonature_common/form/synthese-form/confirmation-modal/confirmation-modal.component';
 import { TaxaComponent } from '@geonature_common/form/taxa/taxa.component';
 import { TaxonAdvancedModalComponent } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-component';
 import { TaxonomyComponent } from './form/taxonomy/taxonomy.component';
@@ -220,6 +221,7 @@ import { IndividualsCreateComponent } from './form/individuals/create/individual
     StatusBadgesComponent,
     StripHtmlPipe,
     TabsLayoutComponent,
+    ConfirmationModalComponent,
     TaxaComponent,
     TaxonAdvancedModalComponent,
     TaxonomyComponent,
