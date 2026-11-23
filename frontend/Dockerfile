@@ -43,7 +43,7 @@ WORKDIR /build/
 RUN npm run build
 
 
-FROM nginx:mainline-alpine AS prod-base
+FROM nginx:1.31.9 AS prod-base
 
 ENV NGINX_PORT 80
 ENV NGINX_HOST localhost

@@ -1,4 +1,5 @@
 bokeh==3.4.1
+brotli>=1.2.1
 celery[redis]
 chardet  # imports
 click>=7.0
