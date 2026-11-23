@@ -1,3 +1,5 @@
+@use 'sass:map';
+@use '@angular/material' as mat;
 @use '../_auth-shared' as *;
 
 .gn-form-brand {
@@ -136,15 +138,30 @@
 
 .gn-alert-error {
   display: flex;
-  gap: 10px;
-  align-items: flex-start;
-  background: #fdeceb;
-  border-left: 4px solid #f44336;
+  gap: 12px;
+  align-items: center;
+  background: map.get(mat.$red-palette, 50);
+  border: 1px solid map.get(mat.$red-palette, 200);
   border-radius: 4px;
-  padding: 10px 12px;
-  margin: 0 0 16px;
-  font-size: 12.5px;
-  color: rgba(0, 0, 0, 0.8);
+  padding: 12px 14px;
+  margin: 0 0 20px;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: 0.0178571429em;
+  color: map.get(mat.$red-palette, 900);
+
+  .gn-alert-error-icon {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    color: map.get(mat.$red-palette, 500);
+  }
+
+  strong {
+    font-weight: 500;
+  }
 }
 
 .gn-loading {

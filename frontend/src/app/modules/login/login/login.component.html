@@ -26,6 +26,22 @@
     </div>
 
     <mat-card-content>
+      <p
+        *ngIf="_authService.loginError || errorMsg"
+        class="gn-alert-error"
+        role="alert"
+      >
+        <mat-icon
+          class="gn-alert-error-icon"
+          aria-hidden="true"
+        >
+          error_outline
+        </mat-icon>
+        <strong>
+          {{ errorMsg ? errorMsg : ('Authentication.Errors.WrongLoginOrPassword' | translate) }}
+        </strong>
+      </p>
+
       <ng-container *ngIf="!login_or_pass_recovery; else logPwdRecoBlock">
         <div>
           <ng-container *ngFor="let provider of primaryProviders">
@@ -160,16 +176,6 @@
           </form>
         </ng-container>
       </ng-template>
-
-      <p
-        *ngIf="_authService.loginError || errorMsg"
-        class="gn-alert-error"
-        role="alert"
-      >
-        <strong>
-          {{ errorMsg ? errorMsg : ('Authentication.Errors.WrongLoginOrPassword' | translate) }}
-        </strong>
-      </p>
 
       <div
         class="gn-loading"
