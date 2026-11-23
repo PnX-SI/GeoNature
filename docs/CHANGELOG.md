@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 2.17.6 (2026-11-20)
+## 2.17.6 (2026-11-23)
 
 - [Sécurité] Mise à jour de nginx en version 1.31.9 dans l'image Docker de GeoNature (#4558 par @christophe-ramet)
 
