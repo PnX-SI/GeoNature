@@ -1,4 +1,12 @@
-import { Component, OnInit, Input, ViewChildren, QueryList } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  ViewChildren,
+  QueryList,
+  EventEmitter,
+} from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { Media } from './media';
 import { MatExpansionPanel } from '@angular/material/expansion';
@@ -27,6 +35,12 @@ export class MediasComponent implements OnInit {
   @Input() disabledTxt: string;
   /* fix #1083 Cacher les champs présents dans details */
   @Input() hideDetailsFields: boolean = false;
+
+  /**
+   * Emit true if medias has changed (added, deleted or modified).
+   * Like that the parent form can be marked as dirty
+   */
+  @Output() mediasChange = new EventEmitter<boolean>();
 
   public bInitialized: boolean;
   pendingDeletes: Media[] = [];
@@ -68,6 +82,7 @@ export class MediasComponent implements OnInit {
 
   onMediaChange() {
     this.parentFormControl.patchValue(this.parentFormControl.value);
+    this.mediasChange.emit(true);
   }
 
   addMedia() {
@@ -82,6 +97,7 @@ export class MediasComponent implements OnInit {
     const media = this.parentFormControl.value.splice(index, 1)[0];
     this.pendingDeletes.push(media);
     this.parentFormControl.patchValue(this.parentFormControl.value);
+    this.mediasChange.emit(true);
   }
 
   validateDeletions() {
