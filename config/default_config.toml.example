@@ -281,6 +281,80 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     # id of the observer list -- utilisateurs.t_menus
     ID_SEARCH_OBSERVER_LIST = 1
 
+    # Filtres dont les valeurs sont soumises à confirmation avant la recherche
+    # Format : [{ field: string, values: array | null, message: string | null, confirmOnAbsence: bool | null }]
+    # field : nom du champ de filtre sur lequel appliquer la règle de confirmation
+    # values : tableau des valeurs pour lesquelles la règle de confirmation se déclenche
+    #    si null ou vide déclenche la règle peu importe la valeur du filtre
+    # message : chemin dans le fichier de traduction du message à afficher dans la boite de dialogue quand la règle de confirmation se déclenche
+    #    on peu écrire les messages dans les fichiers custom/traslations/*.json
+    # confirmOnAbsence : booléen qui permet d'inverser la logique de la boite de dialogue. 
+    #    si false ou null le message de confirmation s'affiche quand le filtre est renseigné ou possède une des valeurs renseignées 
+    #    si true le message de confirmation s'affiche quand le filtre est vide ou que la valeur n'est pas dans le tableau de valeurs renseignées
+    # Liste de champs utilisables
+    #     "area_COM"
+    #     "observers"
+    #     "id_organism"
+    #     "id_acquisition_framework"
+    #     "id_dataset"
+    #     "comment_context"
+    #     "comment_description"
+    #     "id_digitiser"
+    #     "id_nomenclature_valid_status"
+    #     "has_pin"
+    #     "has_comment"
+    #     "has_alert"
+    #     "has_medias"
+    #     "id_nomenclature_geo_object_nature"
+    #     "id_nomenclature_behaviour"
+    #     "precision"
+    #     "grp_method"
+    #     "place_name"
+    #     "id_nomenclature_grp_typ"
+    #     "id_nomenclature_observation_status"
+    #     "id_nomenclature_obs_technique"
+    #     "id_nomenclature_bio_condition"
+    #     "id_nomenclature_bio_status"
+    #     "id_nomenclature_biogeo_status"
+    #     "id_nomenclature_naturalness"
+    #     "id_nomenclature_determination_method"
+    #     "id_nomenclature_exist_proof"
+    #     "id_nomenclature_diffusion_level"
+    #     "id_nomenclature_source_status"
+    #     "id_nomenclature_blurring"
+    #     "id_nomenclature_life_stage"
+    #     "id_nomenclature_sex"
+    #     "id_nomenclature_obj_count"
+    #     "id_nomenclature_type_count"
+    #     "id_nomenclature_geo_object_nature"
+    #     "id_nomenclature_sensitivity"
+    #     "id_nomenclature_info_geo_type"
+    #     "digital_proof"
+    #     "reference_biblio"
+    #     "non_digital_proof"
+    #     "comment_context"
+    #     "comment_description"
+    #     "determiner"
+    #     "unique_id_sinp"
+    #     "id_synthese"
+    #     "id_import"
+    #     "id_source"
+    #     "id_module"
+    # Exemple :
+    # CONFIRM_SEARCH_FILTERS = [
+    #    {
+    #        field = "cd_ref",
+    #        values = [60612],
+    #        message = "Filters.ConfirmSearch.Messages.cd_ref"
+    #   },
+    #   {
+    #        field = "date_min",
+    #        message = "Filters.ConfirmSearch.Messages.date_min",
+    #        confirmOnAbsence = true
+    #   }
+    #]
+    CONFIRM_SEARCH_FILTERS = []
+
     # Activer (=true) ou pas (=false) la clusterisation des objets sur la carte
     # Si 'false', passez le NB_MAX_OBS_MAP à 10000 pour éviter
     # de surcharger les navigateurs des clients (question de performances).
