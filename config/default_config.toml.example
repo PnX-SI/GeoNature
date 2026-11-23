@@ -342,16 +342,11 @@ MEDIA_CLEAN_CRONTAB = "0 1 * * *"
     #     "id_module"
     # Exemple :
     # CONFIRM_SEARCH_FILTERS = [
-    #    {
-    #        field = "cd_ref",
-    #        values = [60612],
-    #        message = "Filters.ConfirmSearch.Messages.cd_ref"
-    #   },
     #   {
-    #        field = "date_min",
-    #        message = "Filters.ConfirmSearch.Messages.date_min",
-    #        confirmOnAbsence = true
-    #   }
+    #       field = "id_nomenclature_valid_status",
+    #       values = [458],
+    #       message = "Filters.ConfirmSearch.Messages.id_nomenclature_valid_status"
+    #  }
     #]
     CONFIRM_SEARCH_FILTERS = []
 

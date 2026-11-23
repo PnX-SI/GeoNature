@@ -2711,6 +2711,49 @@ Exemple de filtres par défaut :
 
 D'autres élements sont paramètrables dans le module Synthese. La liste complète est disponible dans le fichier ``config/default_config.toml.example`` rubrique ``SYNTHESE``.
 
+Définir des filtres déclenchant un pop-up de confirmation
+`````````````````````````````````````````````````````````
+
+Il s'agit du paramètre ``CONFIRM_SEARCH_FILTERS``.
+C'est un dictionnaire qui liste la valeur des champs et y associe des paramtres influencant le comportement du pop-up.
+`Par défaut, ce pop-up ne se déclenche pas.`
+
+Dans le cas où l'on veut demander confirmation pour un champ de nomenclature, il faut fournir l'id des nomenclature.
+
+Format :
+* ``field`` (``string``) (obligatoire) : nom du champ de filtre sur lequel appliquer la règle de confirmation
+* ``values`` (``array``) : tableau des valeurs pour lesquelles la règle de confirmation se déclenche
+  * si ``null`` ou vide déclenche la règle peu importe la valeur du filtre
+* ``message`` (``string``) : chemin dans le fichier de traduction du message à afficher dans la boite de dialogue quand la règle de confirmation se déclenche
+  * on peu écrire les messages dans les fichiers ``custom/traslations/*.json``
+* ``confirmOnAbsence`` (``boolean``) : booléen qui permet d'inverser la logique de la boite de dialogue. 
+  * si ``false`` ou ``null`` le message de confirmation s'affiche quand le filtre est renseigné ou possède une des valeurs renseignées 
+  * si ``true`` le message de confirmation s'affiche quand le filtre est vide ou que la valeur n'est pas dans le tableau de valeurs renseignées
+
+Tous les champs peuvent être filtrés sauf : 
+* ``cd_ref``
+* ``cd_ref_parent``
+* ``date_min``
+* ``date_max``
+* ``period_start``
+* ``period_end``
+
+Exemple de filtres :
+
+.. code::toml
+
+  [SYNTHESE]
+  ...
+
+  CONFIRM_SEARCH_FILTERS = [
+    {
+        field = "id_nomenclature_valid_status",
+        values = [458],
+        message = "Filters.ConfirmSearch.Messages.id_nomenclature_valid_status"
+    }
+  ]
+  
+
 Module VALIDATION
 -----------------
 
