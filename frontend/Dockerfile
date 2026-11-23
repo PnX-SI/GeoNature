@@ -19,7 +19,7 @@ WORKDIR /build/
 COPY ./frontend/package.json .
 COPY ./frontend/package-lock.json .
 RUN --mount=type=cache,target=/root/.npm \
-    npm ci --omit=dev
+  npm ci --omit=dev
 
 COPY ./frontend/angular.json .
 COPY ./frontend/tsconfig.json .
