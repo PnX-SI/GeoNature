@@ -236,6 +236,7 @@ class TBaseSites(DB.Model):
     uuid_base_site: Mapped[Optional[Any]] = mapped_column(
         UUID(as_uuid=True), default=select(func.uuid_generate_v4())
     )
+    active: Mapped[Optional[bool]] = mapped_column(Boolean, default=True)
 
     meta_create_date: Mapped[Optional[datetime]] = mapped_column(DateTime)
     meta_update_date: Mapped[Optional[datetime]] = mapped_column(DateTime)
