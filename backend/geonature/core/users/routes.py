@@ -378,10 +378,11 @@ def login_recovery():
 
     data = request.get_json()
     try:
-        user_manager.create_cor_role_token(data["email"])
+        # only active users can recover their account
         user = db.session.execute(
-            select(User).where(User.email == data["email"]),
+            select(User).where(User.email == data["email"]).where(User.is_active),
         ).scalar_one()
+        user_manager.create_cor_role_token(data["email"])
         send_email_for_recovery(user)
     except Exception as e:
         raise BadRequest(str(e))

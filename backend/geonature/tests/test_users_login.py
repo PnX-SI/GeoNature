@@ -82,3 +82,34 @@ class TestUsersLogin:
         monkeypatch.setitem(app.config, "PUBLIC_ACCESS_USERNAME", "unknown-public-user")
         response = self.client.post(url_for("auth.public_login"))
         assert response.status_code == 403
+
+    def test_inactive_user_not_authenticated(self, app, user):
+        """
+        An inactive user with a valid token must be treated as anonymous
+        """
+        user.active = False
+        db.session.flush()
+        with app.test_request_context(headers=logged_user_headers(user)):
+            app.preprocess_request()
+            assert not g.current_user.is_authenticated
+
+    def test_public_user_inactive(self, app, user, monkeypatch):
+        """
+        An inactive PUBLIC_ACCESS_USERNAME must not be able to log in
+        """
+        user.active = False
+        db.session.flush()
+        monkeypatch.setitem(app.config, "PUBLIC_ACCESS_USERNAME", user.identifiant)
+        response = self.client.post(url_for("auth.public_login"))
+        assert response.status_code == 403
+
+    def test_group_cannot_login(self, app, user):
+        """
+        A group (even with a password) must not be able to log in
+        """
+        user.groupe = True
+        db.session.flush()
+        response = self.client.post(
+            url_for("auth.login"), json={"login": user.identifiant, "password": "password"}
+        )
+        assert response.status_code == 401
