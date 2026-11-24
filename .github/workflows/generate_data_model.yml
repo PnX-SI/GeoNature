@@ -1,9 +1,15 @@
 name: Generate Dump and Push
 
 on:
+  release:
+    types: [published]
   push:
     branches:
+      - develop
       - master
+  pull_request:
+    branches:
+      - feat/fix-ci
 
 jobs:
   generate-dump:
@@ -43,7 +49,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: "3.13"
 
       - name: Install dependencies
         run: |
@@ -69,11 +75,12 @@ jobs:
         working-directory: docs/data_model
         run: ./generate_dump.sh
       - name: Commit and Push Changes
+        if: github.event_name == 'release'
         run: |
           git config --global user.email "github-actions@github.com"
           git config --global user.name "github-actions"
           git add .
           git commit -m "Automated dump generation" || echo "No changes to commit"
-          git push origin HEAD:${{ github.ref_name }}
+          git push origin HEAD:${{ github.event.release.target_commitish }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
