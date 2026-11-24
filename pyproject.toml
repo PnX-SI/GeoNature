@@ -42,6 +42,14 @@ geonature = ["**/templates/**/*.html"]
 version = { file = "VERSION" }
 dependencies = { file = "backend/requirements.in" }
 
+# usershub not on PyPi, this is a workaround
+# to generate the requirements.txt file
+# with the correct version of usershub
+[tool.uv]
+override-dependencies = [
+  "usershub @ git+https://github.com/PnX-SI/UsersHub@2.4.8"
+]
+
 [tool.uv.workspace]
 members = [
   "backend/dependencies/UsersHub-authentification-module",

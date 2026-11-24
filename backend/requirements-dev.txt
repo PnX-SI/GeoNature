@@ -37,7 +37,7 @@ alembic==1.20.1
     #   pypn-habref-api
     #   pypn-ref-geo
     #   pypnusershub
-amqp==5.4.1
+amqp==5.4.2
     # via kombu
 async-timeout==5.0.1 ; python_full_version < '3.11.3'
     # via redis
@@ -46,7 +46,7 @@ attrs==26.1.0
     #   fiona
     #   jsonschema
     #   referencing
-authlib==1.9.1
+authlib==1.9.10
     # via pypnusershub
 babel==2.18.0
     # via flask-babel
@@ -54,7 +54,7 @@ backports-datetime-fromisoformat==2.0.3 ; python_full_version < '3.11'
     # via marshmallow
 bcrypt==5.0.0
     # via pypnusershub
-billiard==4.3.1
+billiard==4.3.2
     # via celery
 black==26.10.1
     # via geonature
@@ -68,9 +68,9 @@ brotli==1.2.1 ; platform_python_implementation == 'CPython'
     # via fonttools
 brotlicffi==1.2.1.0 ; platform_python_implementation != 'CPython'
     # via fonttools
-celery==5.6.3
+celery==5.7.0
     # via geonature
-certifi==2026.10.23
+certifi==2026.11.20
     # via
     #   fiona
     #   pyproj
@@ -82,9 +82,9 @@ cffi==2.1.1
     #   weasyprint
 chardet==7.7.0
     # via geonature
-charset-normalizer==3.5.2
+charset-normalizer==3.5.3
     # via requests
-click==8.5.0
+click==8.5.1
     # via
     #   black
     #   celery
@@ -116,7 +116,7 @@ contourpy==1.4.0 ; python_full_version >= '3.12'
     # via bokeh
 coverage==7.16.2 ; python_full_version < '3.11'
     # via pytest-cov
-coverage==7.17.0 ; python_full_version >= '3.11'
+coverage==7.17.5 ; python_full_version >= '3.11'
     # via pytest-cov
 cryptography==50.0.2
     # via
@@ -126,11 +126,11 @@ cssselect2==0.10.1
     # via weasyprint
 dnspython==2.8.0 ; python_full_version < '3.11'
     # via email-validator
-dnspython==2.9.0 ; python_full_version >= '3.11'
+dnspython==2.9.2 ; python_full_version >= '3.11'
     # via email-validator
-email-validator==2.3.0
+email-validator==2.4.0
     # via usershub
-exceptiongroup==1.3.1 ; python_full_version < '3.11'
+exceptiongroup==1.3.2 ; python_full_version < '3.11'
     # via
     #   celery
     #   pytest
@@ -211,9 +211,9 @@ flask-wtf==1.3.0
     #   usershub
 fonttools==4.65.0 ; python_full_version < '3.11'
     # via weasyprint
-fonttools==4.67.0 ; python_full_version >= '3.11'
+fonttools==4.68.0 ; python_full_version >= '3.11'
     # via weasyprint
-geoalchemy2==0.20.0
+geoalchemy2==0.21.0
     # via utils-flask-sqlalchemy-geo
 geojson==3.3.0
     # via
@@ -221,7 +221,7 @@ geojson==3.3.0
     #   utils-flask-sqlalchemy-geo
 greenlet==3.5.6 ; platform_machine == 'AMD64' or platform_machine == 'WIN32' or platform_machine == 'aarch64' or platform_machine == 'amd64' or platform_machine == 'ppc64le' or platform_machine == 'win32' or platform_machine == 'x86_64'
     # via sqlalchemy
-gunicorn==26.2.0
+gunicorn==27.0.1
     # via
     #   geonature
     #   taxhub
@@ -232,7 +232,7 @@ idna==3.20
     #   requests
 importlib-metadata==9.0.1 ; python_full_version < '3.11'
     # via geonature
-importlib-metadata==10.1.0 ; python_full_version >= '3.11'
+importlib-metadata==10.2.0 ; python_full_version >= '3.11'
     # via geonature
 infinity==1.5
     # via intervals
@@ -252,7 +252,11 @@ jinja2==3.1.6
     #   flask
     #   flask-admin
     #   flask-babel
-joserfc==1.7.7
+joserfc==1.7.7 ; python_full_version < '3.11'
+    # via
+    #   authlib
+    #   pypnusershub
+joserfc==1.8.0 ; python_full_version >= '3.11'
     # via
     #   authlib
     #   pypnusershub
@@ -260,8 +264,10 @@ jsonschema==4.26.0
     # via geonature
 jsonschema-specifications==2025.9.1
     # via jsonschema
-kombu==5.6.2
+kombu==5.7.0
     # via celery
+lazy-importer==0.1.0 ; python_full_version >= '3.11' and python_full_version < '3.15'
+    # via importlib-metadata
 lxml==6.1.3
     # via geonature
 mako==1.4.3
@@ -275,7 +281,14 @@ markupsafe==3.0.4
     #   werkzeug
     #   wtforms
     #   wtforms-components
-marshmallow==4.3.1
+marshmallow==4.3.1 ; python_full_version < '3.11'
+    # via
+    #   flask-marshmallow
+    #   geonature
+    #   marshmallow-sqlalchemy
+    #   utils-flask-sqlalchemy
+    #   utils-flask-sqlalchemy-geo
+marshmallow==4.4.0 ; python_full_version >= '3.11'
     # via
     #   flask-marshmallow
     #   geonature
@@ -290,7 +303,7 @@ marshmallow-sqlalchemy==1.6.0
     #   taxhub
     #   usershub
     #   utils-flask-sqlalchemy-geo
-mypy-extensions==1.1.0
+mypy-extensions==1.2.0
     # via black
 numpy==2.2.6 ; python_full_version < '3.11'
     # via
@@ -304,7 +317,7 @@ numpy==2.4.6 ; python_full_version == '3.11.*'
     #   contourpy
     #   pandas
     #   shapely
-numpy==2.5.4 ; python_full_version >= '3.12'
+numpy==2.5.5 ; python_full_version >= '3.12'
     # via
     #   bokeh
     #   contourpy
@@ -322,7 +335,7 @@ pandas==2.3.3 ; python_full_version < '3.11'
     # via
     #   bokeh
     #   geonature
-pandas==3.1.0 ; python_full_version >= '3.11'
+pandas==3.1.1 ; python_full_version >= '3.11'
     # via
     #   bokeh
     #   geonature
@@ -342,7 +355,7 @@ pillow==13.0.0 ; python_full_version >= '3.11'
     #   weasyprint
 platformdirs==4.12.4 ; python_full_version < '3.11'
     # via black
-platformdirs==4.13.5 ; python_full_version >= '3.11'
+platformdirs==4.14.8 ; python_full_version >= '3.11'
     # via black
 pluggy==1.7.0
     # via
@@ -381,19 +394,19 @@ pyproj==3.7.2 ; python_full_version == '3.11.*'
     # via geonature
 pyproj==3.8.0 ; python_full_version >= '3.12'
     # via geonature
-pytest==9.1.1
+pytest==9.2.0
     # via
     #   geonature
     #   pytest-benchmark
     #   pytest-cov
     #   pytest-flask
-pytest-benchmark==5.3.0
+pytest-benchmark==5.3.1
     # via geonature
 pytest-cov==7.1.0
     # via geonature
 pytest-flask==1.3.0
     # via geonature
-python-dateutil==3.0.0
+python-dateutil==2.9.0.post0
     # via
     #   celery
     #   geonature
@@ -409,15 +422,17 @@ python-dotenv==1.2.4
     #   usershub
 pytokens==0.4.1
     # via black
-pytz==2026.5
+pytz==2026.6
     # via
     #   flask-babel
     #   pandas
-pyyaml==6.0.3
+pyyaml==6.0.4
     # via bokeh
 rdflib==7.6.0
     # via sparqlwrapper
-redis==6.4.0
+redis==8.1.0 ; python_full_version < '3.11'
+    # via kombu
+redis==8.2.0 ; python_full_version >= '3.11'
     # via kombu
 referencing==0.37.0
     # via
@@ -445,7 +460,7 @@ six==1.17.0
     # via python-dateutil
 sparqlwrapper==2.0.0
     # via taxhub
-sqlalchemy==2.0.55
+sqlalchemy==2.0.58
     # via
     #   alembic
     #   flask-sqlalchemy
@@ -479,7 +494,7 @@ tomli==2.5.0 ; python_full_version < '3.15'
     #   pytest
 tornado==6.5.10 ; python_full_version < '3.11'
     # via bokeh
-tornado==6.6 ; python_full_version >= '3.11'
+tornado==6.6.1 ; python_full_version >= '3.11'
     # via bokeh
 typing-extensions==4.16.0
     # via
@@ -493,11 +508,10 @@ typing-extensions==4.16.0
     #   marshmallow
     #   referencing
     #   sqlalchemy
-tzdata==2026.5
+tzdata==2026.6 ; python_full_version < '3.11' or sys_platform == 'emscripten' or sys_platform == 'win32'
     # via
     #   kombu
     #   pandas
-    #   python-dateutil
     #   tzlocal
 tzlocal==5.4.5
     # via celery
@@ -514,7 +528,7 @@ vine==5.1.0
     #   amqp
     #   celery
     #   kombu
-wcwidth==0.9.4
+wcwidth==0.9.5
     # via prompt-toolkit
 weasyprint==70.0
     # via
@@ -541,7 +555,9 @@ wtforms==3.1.2
     #   usershub
     #   wtforms-components
     #   wtforms-sqlalchemy
-wtforms-components==0.11.0
+wtforms-components==0.11.0 ; python_full_version < '3.11'
+    # via usershub
+wtforms-components==0.12.0 ; python_full_version >= '3.11'
     # via usershub
 wtforms-sqlalchemy==0.4.2
     # via geonature
