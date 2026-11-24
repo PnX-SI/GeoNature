@@ -98,7 +98,7 @@
 - [Frontend] Ajout d'une propriété `placeholder` au composant `pnx-observers` (#4174 par @CynthiaBorotPNV)
 - [Installation] Utilisation de `uv` pour installer l'environnement Python du backend, remplacement des fichiers `setup.py` par des fichiers `pyproject.toml` et réduction des fichiers de requirements à un seul fichier `requirements.in` (#4320 par @jacquesfize)
 - [CI/CD] Suppression de Debian 11 de la CI et correction de l'envoi de la couverture de code vers Codecov (#4185 par @amandine-sahl)
-- [CI/CD] Le workflow de génération du dump du modèle de données ne commite et ne pousse le résultat que lors de la publication d'une release (par @jacquesfize)
+- [CI/CD] Le workflow de génération du dump du modèle de données ne commite et ne pousse le résultat que lors de la publication d'une release (#4564 par @jacquesfize)
 - [Documentation] Correction de la syntaxe RST dans la section "Arborescence" de la documentation développeur (#4304 par @raphj) et correction de la compilation de la documentation (#4340 par @jacquesfize)
 
 ### ⚠️ Notes de version
