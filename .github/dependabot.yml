@@ -1,14 +1,52 @@
 version: 2
 updates:
-
   - package-ecosystem: "pip"
     directory: "/backend/"
     schedule:
-      interval: "daily"
-    target-branch: 'develop'
+      interval: "weekly"
+    target-branch: "develop"
+    groups:
+      # regroup minor and patch python dependencies in one PR
+      pip-minor-patch:
+        update-types: ["minor", "patch"]
 
   - package-ecosystem: "npm"
     directory: "/frontend/"
     schedule:
-      interval: "daily"
-    target-branch: 'develop'
+      interval: "weekly"
+    target-branch: "develop"
+    groups:
+      # regroup minor and patch python dependencies in one PR
+      npm-minor-patch:
+        update-types: ["minor", "patch"]
+
+  - package-ecosystem: "docker"
+    directories:
+      - "/backend/"
+      - "/frontend/"
+    schedule:
+      interval: "weekly"
+    target-branch: "develop"
+    cooldown:
+      # S'appuie sur https://docs.publishing.service.gov.uk/manual/manage-dependencies.html
+      default-days: 7
+    groups:
+      docker-images:
+        patterns: ["*"]
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+    commit-message:
+      prefix: "chore(docker)"
+    labels: ["dependencies", "docker"]
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    target-branch: "develop"
+    groups:
+      github-actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: "chore(ci)"
