@@ -64,8 +64,8 @@ jobs:
           pip install -e contrib/gn_module_validation
       - name: Install core modules database
         run: |
-          geonature upgrade-modules-db
           geonature db autoupgrade
+          geonature upgrade-modules-db
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
 
