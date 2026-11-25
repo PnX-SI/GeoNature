@@ -816,6 +816,7 @@ class TestValidationRoutes:
             assert "id_nomenclature" in status
             assert "mnemonique" in status
             assert "cd_nomenclature" in status
+            assert "label_default" in status
             assert "definition_default" in status
 
     def test_get_status_names_only_active(self, users):
