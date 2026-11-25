@@ -56,6 +56,7 @@
               "node_modules/leaflet/dist/leaflet.css",
               "node_modules/ngx-toastr/toastr.css",
               "node_modules/leaflet-draw/dist/leaflet.draw.css",
+              "node_modules/leaflet.control.layers.tree/L.Control.Layers.Tree.css",
               "node_modules/@swimlane/ngx-datatable/index.css",
               "node_modules/@swimlane/ngx-datatable/themes/material.css",
               "node_modules/@swimlane/ngx-datatable/assets/icons.css",
