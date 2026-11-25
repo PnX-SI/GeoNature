@@ -104,15 +104,16 @@ export class DataFormService {
     });
   }
 
-  getDatasets(params?: ParamsDict, queryStrings: ParamsDict = {}, fields = []) {
+  getDatasets(params?: ParamsDict, queryStrings: ParamsDict = {}, fields: string[] = []) {
     let queryString: HttpParams = new HttpParams();
     queryString = this.addOrderBy(queryString, 'dataset_name');
     Object.keys(queryStrings).forEach((key) => {
       queryString = queryString.append(key, queryStrings[key]);
     });
-    fields.forEach((f) => {
-      queryString = queryString.append('fields', f);
-    });
+    if (fields) {
+      const fieldsString = fields.join();
+      queryString = queryString.append('fields', fieldsString);
+    }
     return this._http.post<any>(`${this.config.API_ENDPOINT}/meta/datasets`, params, {
       params: queryString,
     });
