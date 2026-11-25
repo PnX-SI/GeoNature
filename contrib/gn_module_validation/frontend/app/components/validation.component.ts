@@ -37,12 +37,10 @@ export class ValidationComponent implements OnInit {
     this._fs.selectedtaxonFromComponent = [];
     this._fs.processedDefaultFilters = {};
     this.getStatusNames();
-    this._commonService.translateToaster(
-      'info',
-      "La limite de nombre d'observations affichable dans le module est de " +
-        this.config.VALIDATION.NB_MAX_OBS_MAP
-    );
-    this._commonService.translateToaster('info', 'Les 100 dernières observations');
+    this._commonService.translateToaster('info', 'Validation.UI.ObsLimit', {
+      limit: this.config.VALIDATION.NB_MAX_OBS_MAP,
+    });
+    this._commonService.translateToaster('info', 'Validation.UI.Last100');
     this.idSynthese = this._route.snapshot.paramMap.get('id_synthese');
     this.selectedTab = this._route.snapshot.paramMap.get('tab');
   }
