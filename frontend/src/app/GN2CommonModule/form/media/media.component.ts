@@ -191,10 +191,8 @@ export class MediaComponent implements OnInit {
 
     this.mediaForm.patchValue(this.media);
 
-    // Patch pourri pour être sûr d'avoir le bon media.sent
-    setTimeout(() => {
-      this.mediaFormInitialized = true;
-    }, 500);
+    this.mediaForm.markAsPristine();
+    this.mediaFormInitialized = true;
   }
 
   setValue(value) {
@@ -203,10 +201,13 @@ export class MediaComponent implements OnInit {
   }
 
   onFormChange(value) {
+    const userChanges = this.mediaFormInitialized && this.mediaForm.dirty && !this.isRestoringState;
+
     if (this.media.valid()) {
       this.tmpMedia = new Media(JSON.parse(JSON.stringify(this.media)));
     }
-    if (this.mediaFormInitialized && !this.isRestoringState) {
+
+    if (userChanges) {
       this.media.sent = false;
     } else {
       this.isRestoringState = false;
@@ -263,7 +264,9 @@ export class MediaComponent implements OnInit {
       });
     }
 
-    this.mediaChange.emit(this.media);
+    if (userChanges) {
+      this.mediaChange.emit(this.media);
+    }
   }
 
   onMediaFormInit(mediaForm) {
