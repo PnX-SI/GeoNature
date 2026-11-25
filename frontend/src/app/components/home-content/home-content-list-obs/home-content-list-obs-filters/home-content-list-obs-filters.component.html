@@ -1,0 +1,23 @@
+<div class="home-content-list-obs-filters">
+  <ng-select
+    *ngIf="showGroup2Filter"
+    [items]="group2InpnOptions"
+    [formControl]="group2InpnControl"
+    bindLabel="value"
+    bindValue="value"
+    [clearable]="true"
+    [searchable]="true"
+    placeholder="Groupe 2 INPN"
+  ></ng-select>
+
+  <ng-select
+    *ngIf="showGroup3Filter"
+    [items]="group3InpnOptions"
+    [formControl]="group3InpnControl"
+    bindLabel="value"
+    bindValue="value"
+    [clearable]="true"
+    [searchable]="true"
+    placeholder="Groupe 3 INPN"
+  ></ng-select>
+</div>

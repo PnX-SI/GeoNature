@@ -58,3 +58,36 @@ ngx-datatable-column {
   margin-left: 1rem;
   margin-right: 1rem;
 }
+
+.home-content-list-obs {
+  height: 100%;
+}
+
+.home-content-side-panel {
+  display: flex;
+  min-height: 0;
+}
+
+.home-content-last-obs-panel {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+}
+
+.home-content-last-obs-body {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+@media (max-width: 991.98px) {
+  .home-content-last-obs-panel {
+    height: auto;
+    min-height: 0;
+  }
+
+  .home-content-last-obs-panel .panel-body-intro,
+  .home-content-last-obs-body {
+    overflow: visible;
+    height: auto;
+  }
+}
