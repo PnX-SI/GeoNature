@@ -8,18 +8,18 @@
           data-qa="import-report-back"
         >
           <mat-icon>keyboard_arrow_left</mat-icon>
-          Retour
+          {{ 'Back' | translate }}
         </button>
       </div>
       <h5 class="col-sm-8">
-        Rapport d'import :
+        {{ 'Import.Report.Title' | translate }}
         <b>{{ importData?.id_import }}</b>
       </h5>
       <h5
         class="col-sm-2 Status"
         [ngClass]="importStatusClass"
       >
-        {{ importStatus }}
+        {{ 'Import.Report.Status.' + importStatusClass | translate }}
       </h5>
     </div>
     <div
@@ -29,12 +29,12 @@
       <div class="card card-margin mb-2">
         <div class="card-header">
           <mat-icon>info</mat-icon>
-          <h6>Description de l'import</h6>
+          <h6>{{ 'Import.Report.Description' | translate }}</h6>
         </div>
         <div class="card-body row">
           <div class="col-sm-5">
             <p>
-              <b>Fichier :</b>
+              <b>{{ 'Import.Report.File' | translate }}</b>
               <a
                 [routerLink]=""
                 (click)="downloadSourceFile()"
@@ -43,33 +43,33 @@
               </a>
             </p>
             <p>
-              <b>Jeux de données</b>
+              <b>{{ 'Datasets' | translate }}</b>
               <app-dataset-links [datasets]="importData.datasets"></app-dataset-links>
             </p>
             <p>
-              <b>Date de soumission de l'import :</b>
+              <b>{{ 'Import.Report.SubmissionDate' | translate }}</b>
               {{ importData?.date_create_import | date: 'dd/MM/yyyy' }}
             </p>
             <p>
-              <b>Auteur :</b>
+              <b>{{ 'Import.Report.Author' | translate }}</b>
               {{ importData?.authors_name }}
             </p>
           </div>
           <div class="col-sm-5">
             <p>
-              <b>SRID :</b>
+              <b>{{ 'Import.Report.Srid' | translate }}</b>
               {{ importData?.srid }}
             </p>
             <p>
-              <b>Encodage :</b>
+              <b>{{ 'Import.Process.Decode.Encoding' | translate }}</b>
               {{ importData?.encoding }}
             </p>
             <p>
-              <b>Format :</b>
+              <b>{{ 'Import.Process.Decode.Format' | translate }}</b>
               {{ importData?.format_source_file }}
             </p>
             <p>
-              <b>Nombre de lignes importées :</b>
+              <b>{{ 'Import.Report.ImportedRows' | translate }}</b>
               {{ formattedRowCount(importData) }}
             </p>
             <div *ngIf="importStatus === 'TERMINE'">
@@ -97,7 +97,7 @@
               class="align-self-center"
               data-qa="import-report-download-pdf"
             >
-              Rapport PDF
+              {{ 'Import.Report.Pdf' | translate }}
               <mat-icon *ngIf="loadingPdf">
                 <mat-spinner
                   color="warn"
@@ -112,14 +112,19 @@
       <div class="card card-margin mb-2">
         <div class="card-header">
           <mat-icon>compare_arrows</mat-icon>
-          <h6>Correspondances</h6>
+          <h6>{{ 'Import.Report.Mappings' | translate }}</h6>
         </div>
         <div class="card-body row">
           <div class="col-sm-10 d-flex flex-column mb-1">
             <mat-expansion-panel>
               <mat-expansion-panel-header [collapsedHeight]="expansionPanelHeight">
                 <mat-panel-title>
-                  <h6>Champs ({{ (importData?.fieldmapping || {} | keyvalue).length }})</h6>
+                  <h6>
+                    {{
+                      'Import.Report.FieldsCount'
+                        | translate: { n: (importData?.fieldmapping || {} | keyvalue).length }
+                    }}
+                  </h6>
                 </mat-panel-title>
               </mat-expansion-panel-header>
               <table
@@ -133,24 +138,24 @@
                       rowspan="1"
                       colspan="2"
                     >
-                      Source
+                      {{ 'Source' | translate }}
                     </th>
                     <th
                       rowspan="2"
                       colspan="1"
                     >
-                      Champ cible
+                      {{ 'Import.Report.TargetField' | translate }}
                     </th>
                     <th
                       rowspan="2"
                       colspan="1"
                     >
-                      Description
+                      {{ 'Description' | translate }}
                     </th>
                   </tr>
                   <tr>
-                    <th>Champ source</th>
-                    <th>Valeur constante</th>
+                    <th>{{ 'Import.Report.SourceField' | translate }}</th>
+                    <th>{{ 'Import.Report.ConstantValue' | translate }}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -172,7 +177,7 @@
               (click)="exportFieldMapping()"
               class="align-self-center"
             >
-              Exporter
+              {{ 'Import.Report.Export' | translate }}
             </button>
           </div>
           <div class="col-sm-10 d-flex flex-column">
@@ -180,16 +185,18 @@
               <mat-expansion-panel-header [collapsedHeight]="expansionPanelHeight">
                 <mat-panel-title>
                   <h6>
-                    Nomenclatures ({{ (importData?.contentmapping || {} | keyvalue).length }}
-                    type(s))
+                    {{
+                      'Import.Report.NomenclaturesCount'
+                        | translate: { n: (importData?.contentmapping || {} | keyvalue).length }
+                    }}
                   </h6>
                 </mat-panel-title>
               </mat-expansion-panel-header>
               <table class="table table-striped table-bordered">
                 <thead>
                   <tr>
-                    <th>Valeur source</th>
-                    <th>Nomenclature</th>
+                    <th>{{ 'Import.Report.SourceValue' | translate }}</th>
+                    <th>{{ 'Import.Report.Nomenclature' | translate }}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -245,7 +252,7 @@
               (click)="exportContentMapping()"
               class="align-self-center"
             >
-              Exporter
+              {{ 'Import.Report.Export' | translate }}
             </button>
           </div>
         </div>
@@ -254,7 +261,7 @@
       <div class="card card-margin mb-2">
         <div class="card-header">
           <mat-icon>warning</mat-icon>
-          <h6>Données invalides</h6>
+          <h6>{{ 'Import.Report.InvalidData' | translate }}</h6>
         </div>
         <div class="card-body row">
           <div [ngClass]="nbTotalErrors !== 0 ? 'col-sm-10' : 'col-sm-12'">
@@ -264,17 +271,22 @@
             >
               <mat-expansion-panel-header [collapsedHeight]="expansionPanelHeight">
                 <mat-panel-title>
-                  <h6 data-qa="import-report-errors-title">{{ importErrors.length }} erreur(s)</h6>
+                  <h6
+                    data-qa="import-report-errors-title"
+                    [textContent]="
+                      'Import.Process.Summary.Errors' | translate: { n: importErrors.length }
+                    "
+                  ></h6>
                 </mat-panel-title>
               </mat-expansion-panel-header>
               <table class="table table-responsive table-striped table-bordered">
                 <thead>
                   <tr>
-                    <th>Type d'erreur</th>
-                    <th>Champ</th>
-                    <th>Description erreur</th>
-                    <th>Nombre d'erreur(s)</th>
-                    <th>Numéro des lignes en erreur</th>
+                    <th>{{ 'Import.Report.ErrorType' | translate }}</th>
+                    <th>{{ 'Import.Report.Field' | translate }}</th>
+                    <th>{{ 'Import.Report.ErrorDescription' | translate }}</th>
+                    <th>{{ 'Import.Report.ErrorCount' | translate }}</th>
+                    <th>{{ 'Import.Report.ErrorRows' | translate }}</th>
                     <th>{{ 'Import.Entity' | translate }}</th>
                   </tr>
                 </thead>
@@ -300,7 +312,7 @@
                         ...
                         <button
                           mat-icon-button
-                          matTooltip="Voir plus"
+                          [matTooltip]="'Import.Report.SeeMore' | translate"
                           (click)="error.show = !error.show"
                         >
                           <mat-icon>expand_more</mat-icon>
@@ -310,7 +322,7 @@
                         {{ error.rows.join(', ') }}
                         <button
                           mat-icon-button
-                          matTooltip="Voir moins"
+                          [matTooltip]="'Import.Report.SeeLess' | translate"
                           *ngIf="error.rows.length >= 10"
                           (click)="error.show = !error.show"
                         >
@@ -328,17 +340,21 @@
             <mat-expansion-panel [disabled]="!importWarnings.length">
               <mat-expansion-panel-header [collapsedHeight]="expansionPanelHeight">
                 <mat-panel-title>
-                  <h6>{{ importWarnings.length }} avertissement(s)</h6>
+                  <h6>
+                    {{
+                      'Import.Process.Summary.Warnings' | translate: { n: importWarnings.length }
+                    }}
+                  </h6>
                 </mat-panel-title>
               </mat-expansion-panel-header>
               <table class="table table-responsive table-striped table-bordered">
                 <thead>
                   <tr>
-                    <th>Type d'avertissement</th>
-                    <th>Champ</th>
-                    <th>Description de l'avertissement</th>
-                    <th>Nombre d'avertissement(s)</th>
-                    <th>Numéro des lignes en avertissement</th>
+                    <th>{{ 'Import.Report.WarningType' | translate }}</th>
+                    <th>{{ 'Import.Report.Field' | translate }}</th>
+                    <th>{{ 'Import.Report.WarningDescription' | translate }}</th>
+                    <th>{{ 'Import.Report.WarningCount' | translate }}</th>
+                    <th>{{ 'Import.Report.WarningRows' | translate }}</th>
                     <th>{{ 'Import.Entity' | translate }}</th>
                   </tr>
                 </thead>
@@ -364,7 +380,7 @@
                         ...
                         <button
                           mat-icon-button
-                          matTooltip="Voir plus"
+                          [matTooltip]="'Import.Report.SeeMore' | translate"
                           (click)="error.show = !error.show"
                         >
                           <mat-icon>expand_more</mat-icon>
@@ -374,7 +390,7 @@
                         {{ error.rows.join(', ') }}
                         <button
                           mat-icon-button
-                          matTooltip="Voir moins"
+                          [matTooltip]="'Import.Report.SeeLess' | translate"
                           *ngIf="error.rows.length >= 10"
                           (click)="error.show = !error.show"
                         >
@@ -401,7 +417,9 @@
               (click)="_csvExport.onCSV(importData?.id_import)"
               data-qa="import-report-errors-csv"
             >
-              <div class="ButtonContent">Exporter vos {{ nbTotalErrors }} lignes invalides</div>
+              <div class="ButtonContent">
+                {{ 'Import.Report.ExportInvalid' | translate: { n: nbTotalErrors } }}
+              </div>
             </button>
           </div>
         </div>
@@ -410,14 +428,14 @@
       <div class="card card-margin mb-2">
         <div class="card-header">
           <mat-icon>location_on</mat-icon>
-          <h6>Données importées</h6>
+          <h6>{{ 'Import.Report.ImportedData' | translate }}</h6>
         </div>
         <div class="card-body row">
           <div
             *ngIf="validBbox"
             class="col-sm-6 d-flex flex-column"
           >
-            <h5 class="card-title mt-1">Périmètre géographique des données importées</h5>
+            <h5 class="card-title mt-1">{{ 'Import.Report.ImportedExtent' | translate }}</h5>
             <pnx-map
               height="40vh"
               searchBar="false"
@@ -438,7 +456,9 @@
                 color="primary"
                 [disabled]="!importProcessService.isImportCompleted"
               >
-                Afficher dans {{ this.importData.destination.label }}
+                {{
+                  'Import.Report.ShowIn' | translate: { dest: this.importData.destination.label }
+                }}
               </a>
             </div>
           </div>

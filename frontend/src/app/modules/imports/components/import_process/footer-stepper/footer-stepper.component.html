@@ -7,7 +7,7 @@
     color="warn"
     data-qa="import-new-footer-delete"
   >
-    Annuler et supprimer l’import
+    {{ 'Import.Process.Footer.CancelDelete' | translate }}
   </button>
   <button
     *ngIf="stepComponent.step > 1"
@@ -19,6 +19,6 @@
     [disabled]="!stepComponent.isNextStepAvailable()"
     data-qa="import-new-footer-save"
   >
-    Enregistrer et quitter
+    {{ 'Import.Process.Footer.SaveQuit' | translate }}
   </button>
 </div>

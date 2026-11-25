@@ -5,21 +5,21 @@
       (click)="importProcessService.navigateToStep(Step.Upload)"
       data-qa="import-upload-step-btn"
     >
-      Téléversement du fichier
+      {{ 'Import.Process.Steps.Upload' | translate }}
     </li>
     <li
       [ngClass]="{ done: step > Step.Decode, current: step == Step.Decode }"
       (click)="importProcessService.navigateToStep(Step.Decode)"
       data-qa="import-decode-step-btn"
     >
-      Configuration du fichier
+      {{ 'Import.Process.Steps.Decode' | translate }}
     </li>
     <li
       [ngClass]="{ done: step > Step.FieldMapping, current: step == Step.FieldMapping }"
       (click)="importProcessService.navigateToStep(Step.FieldMapping)"
       data-qa="import-fieldmapping-step-btn"
     >
-      Correspondance des champs
+      {{ 'Import.Process.Steps.FieldMapping' | translate }}
     </li>
     <li
       *ngIf="config.IMPORT.ALLOW_VALUE_MAPPING"
@@ -27,7 +27,7 @@
       (click)="importProcessService.navigateToStep(Step.ContentMapping)"
       data-qa="import-contentmapping-step-btn"
     >
-      Correspondance des nomenclatures
+      {{ 'Import.Process.Steps.ContentMapping' | translate }}
     </li>
     <li
       *ngIf="isObserverMappingAllowed | async"
@@ -35,14 +35,14 @@
       (click)="importProcessService.navigateToStep(Step.ObserverMapping)"
       data-qa="import-observersmapping-step-btn"
     >
-      Correspondance des observateurs
+      {{ 'Import.Process.Steps.ObserverMapping' | translate }}
     </li>
     <li
       [ngClass]="{ done: step > Step.Import, current: step == Step.Import }"
       (click)="importProcessService.navigateToStep(Step.Import)"
       data-qa="import-data-step-btn"
     >
-      Import des données
+      {{ 'Import.Process.Steps.Import' | translate }}
     </li>
   </ul>
 </div>

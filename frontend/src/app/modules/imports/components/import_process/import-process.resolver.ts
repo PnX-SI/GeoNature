@@ -55,10 +55,7 @@ export class ImportProcessResolver implements Resolve<Import> {
           concatMap((importData: Import) => {
             this.importProcessService.setImportData(importData);
             if (this.importProcessService.getLastAvailableStep() < step) {
-              this.commonService.regularToaster(
-                'info',
-                'Vous avez été redirigé vers la dernière étape validée.'
-              );
+              this.commonService.translateToaster('info', 'Import.Messages.RedirectedToLastStep');
               this.importProcessService.navigateToLastStep();
               return EMPTY;
             } else {

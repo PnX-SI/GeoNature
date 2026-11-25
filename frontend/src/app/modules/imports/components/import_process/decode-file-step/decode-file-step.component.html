@@ -1,12 +1,12 @@
 <div class="card">
   <div class="card-header">
-    <h5 class="card-title mb-0">Configuration du fichier</h5>
+    <h5 class="card-title mb-0">{{ 'Import.Process.Steps.Decode' | translate }}</h5>
   </div>
   <div class="card-body">
     <form [formGroup]="paramsForm">
       <!-- Encoding field -->
       <div class="form-group">
-        <label>Encodage :</label>
+        <label>{{ 'Import.Process.Decode.Encoding' | translate }}</label>
         <select
           class="custom-select mr-sm-2"
           id="encoding"
@@ -19,14 +19,17 @@
             [value]="encoding"
           >
             {{ encoding }}
-            <p *ngIf="encoding == importData.detected_encoding">(auto-détecté)</p>
+            <p
+              *ngIf="encoding == importData.detected_encoding"
+              [textContent]="'Import.Process.Decode.AutoDetected' | translate"
+            ></p>
           </option>
         </select>
-        <div class="invalid-feedback">Sélectionnez un encodage</div>
+        <div class="invalid-feedback">{{ 'Import.Process.Decode.SelectEncoding' | translate }}</div>
       </div>
       <!-- Format field -->
       <div class="form-group">
-        <label>Format :</label>
+        <label>{{ 'Import.Process.Decode.Format' | translate }}</label>
         <select
           class="custom-select mr-sm-2"
           id="format"
@@ -39,14 +42,17 @@
             [value]="format"
           >
             {{ format }}
-            <p *ngIf="format == importData.detected_format">(auto-détecté)</p>
+            <p
+              *ngIf="format == importData.detected_format"
+              [textContent]="'Import.Process.Decode.AutoDetected' | translate"
+            ></p>
           </option>
         </select>
-        <div class="invalid-feedback">Sélectionnez un format</div>
+        <div class="invalid-feedback">{{ 'Import.Process.Decode.SelectFormat' | translate }}</div>
       </div>
       <!-- SRID field -->
       <div class="form-group">
-        <label>Séparateur :</label>
+        <label>{{ 'Import.Process.Decode.Separator' | translate }}</label>
         <select
           class="custom-select mr-sm-2"
           id="separator"
@@ -59,12 +65,15 @@
             [value]="separator"
           >
             {{ separator }}
-            <p *ngIf="separator == importData.detected_separator">(auto-détecté)</p>
+            <p
+              *ngIf="separator == importData.detected_separator"
+              [textContent]="'Import.Process.Decode.AutoDetected' | translate"
+            ></p>
           </option>
         </select>
       </div>
       <div class="form-group">
-        <label>SRID des données géographiques :</label>
+        <label>{{ 'Import.Process.Decode.Srid' | translate }}</label>
         <select
           class="custom-select mr-sm-2"
           id="srid"
@@ -79,7 +88,7 @@
             {{ srid.name }}
           </option>
         </select>
-        <div class="invalid-feedback">Sélectionnez un SRID</div>
+        <div class="invalid-feedback">{{ 'Import.Process.Decode.SelectSrid' | translate }}</div>
       </div>
     </form>
     <!-- Navigation buttons -->
@@ -94,7 +103,7 @@
         data-qa="import-file-decode-back-btn"
       >
         <i class="material-icons">navigate_before</i>
-        Précédent
+        {{ 'Previous' | translate }}
       </button>
       <button
         type="submit"
@@ -106,7 +115,7 @@
         id="validate"
         data-qa="import-new-decode-validate"
       >
-        Suivant
+        {{ 'Next' | translate }}
         <i class="material-icons">navigate_next</i>
       </button>
     </div>

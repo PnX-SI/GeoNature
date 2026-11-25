@@ -163,7 +163,7 @@ export class ImportStepComponent implements OnInit {
           this.importRunning = false;
           this.importProcessService.setImportData(importData);
           this.importDone = true;
-          this._commonService.regularToaster('info', 'Données importées !');
+          this._commonService.translateToaster('info', 'Import.Messages.DataImported');
           this._router.navigate([
             this.config.IMPORT.MODULE_URL,
             this.importData.destination.code,
@@ -209,12 +209,11 @@ export class ImportStepComponent implements OnInit {
 
   openModal(editModal: TemplateRef<any>) {
     this.modalData = {
-      title: 'Modification',
-      bodyMessage:
-        'Des données ont déjà été importées. Si vous continuez ces dernières seront supprimées.',
-      additionalMessage: 'Êtes-vous sûr de continuer ?',
-      cancelButtonText: 'Annuler',
-      confirmButtonText: 'Confirmer',
+      title: 'Import.Modal.EditTitle',
+      bodyMessage: 'Import.Modal.DataAlreadyImported',
+      additionalMessage: 'Import.Modal.AreYouSure',
+      cancelButtonText: 'Actions.Cancel',
+      confirmButtonText: 'Actions.Confirm',
       confirmButtonColor: 'warn',
       headerDataQa: 'import-modal-edit',
       confirmButtonDataQa: 'modal-edit-validate',

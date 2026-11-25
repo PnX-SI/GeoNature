@@ -7,4 +7,5 @@ export interface ModalData {
   confirmButtonColor?: 'primary' | 'accent' | 'warn'; // Couleur du bouton Confirmer (optionnel)
   headerDataQa?: string; // Attribut `data-qa` pour le header de la modal (optionnel)
   confirmButtonDataQa?: string; // Attribut `data-qa` pour le bouton Confirmer (optionnel)
+  params?: Object; // Paramètres d'interpolation des clés de traduction (optionnel)
 }

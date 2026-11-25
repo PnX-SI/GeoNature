@@ -4,13 +4,12 @@
 >
   <h4 class="card-header">
     <mat-icon>check</mat-icon>
-    Validation
+    {{ 'Synthese.Form.Validation' | translate }}
   </h4>
   <div class="card-body">
     <div *ngIf="!progressBar && errorIsNotCheck">
       <p>
-        Avant de procéder à l'import de vos données, il est nécessaire de valider la conformité de
-        ces dernières
+        {{ 'Import.Process.Check.Intro' | translate }}
       </p>
       <button
         (click)="performChecks()"
@@ -18,14 +17,14 @@
         color="primary"
         data-qa="import-new-verification-start"
       >
-        Lancer la vérification
+        {{ 'Import.Process.Check.Start' | translate }}
       </button>
     </div>
-    <div *ngIf="errorIsCheck">Erreur lors de la vérification, veuillez vérifier votre fichier</div>
+    <div *ngIf="errorIsCheck">{{ 'Import.Process.Check.Error' | translate }}</div>
     <div *ngIf="progressBar">
       <div class="d-flex justify-content-center align-items-center">
         <div class="text-controls d-flex align-items-center flex-column pb-2">
-          <p>Contrôles en cours sur les données</p>
+          <p>{{ 'Import.Process.Check.InProgress' | translate }}</p>
           <mat-progress-bar [value]="progress"></mat-progress-bar>
         </div>
       </div>
@@ -37,11 +36,11 @@
     *ngIf="tableReady"
     data-qa="import-recapitulatif"
   >
-    <h3 class="title mb-0">Récapitulatif avant import</h3>
+    <h3 class="title mb-0">{{ 'Import.Process.Summary.Title' | translate }}</h3>
     <div class="card card-margin">
       <h4 class="card-header card-margin">
         <mat-icon>build</mat-icon>
-        Rapports
+        {{ 'Import.Process.Summary.Reports' | translate }}
       </h4>
       <div class="card-body card-margin">
         <div class="content-report card-margin">
@@ -50,10 +49,14 @@
             mat-raised-button
             color="accent"
           >
-            Rapport d'import
+            {{ 'Import.Process.Summary.ImportReport' | translate }}
           </button>
-          <div *ngIf="errorCount > 0">{{ errorCount }} erreur(s)</div>
-          <div *ngIf="warningCount > 0">{{ warningCount }} avertissement(s)</div>
+          <div *ngIf="errorCount > 0">
+            {{ 'Import.Process.Summary.Errors' | translate: { n: errorCount } }}
+          </div>
+          <div *ngIf="warningCount > 0">
+            {{ 'Import.Process.Summary.Warnings' | translate: { n: warningCount } }}
+          </div>
         </div>
         <div
           *ngIf="invalidRowCount > 0"
@@ -64,7 +67,7 @@
             color="primary"
             (click)="_csvExport.onCSV(importData.id_import)"
           >
-            Exporter vos {{ invalidRowCount }} observations invalides
+            {{ 'Import.Process.Summary.ExportInvalid' | translate: { n: invalidRowCount } }}
           </button>
         </div>
       </div>
@@ -77,7 +80,7 @@
     >
       <h4 class="card-header">
         <mat-icon>room</mat-icon>
-        Zone géographique
+        {{ 'Import.Process.Summary.Area' | translate }}
       </h4>
       <pnx-map
         height="40vh"
@@ -98,7 +101,7 @@
     <div class="card-header">
       <h5 class="card-title mb-0">
         <mat-icon>reorder</mat-icon>
-        Prévisualisation des observations valides prêtes à être importées
+        {{ 'Import.Process.Summary.Preview' | translate }}
       </h5>
     </div>
     <div class="card-body">
@@ -126,8 +129,10 @@
               class="alert alert-info mt-3"
               role="alert"
             >
-              Aucun(e) {{ entityPreview.entity.label.toLowerCase() }}
-              valide n'a été trouvée
+              {{
+                'Import.Process.Summary.NoValid'
+                  | translate: { entity: entityPreview.entity.label.toLowerCase() }
+              }}
             </div>
           </ng-container>
         </mat-tab>
@@ -138,7 +143,7 @@
         *ngIf="importRunning"
         class="d-flex flex-column justify-content-center align-items-center w-100 mb-3"
       >
-        <p>Import des données en cours</p>
+        <p>{{ 'Import.Process.Run.InProgress' | translate }}</p>
         <mat-progress-bar [value]="progress"></mat-progress-bar>
       </div>
 
@@ -153,7 +158,7 @@
           color="primary"
         >
           <mat-icon>navigate_before</mat-icon>
-          Précédent
+          {{ 'Previous' | translate }}
         </button>
         <button
           *ngIf="nValidData > 0 && !importDone && errorIsNotImport"
@@ -162,7 +167,7 @@
           mat-raised-button
           data-qa="import-new-execute-start"
         >
-          Importer vos {{ nValidData }} entités valides
+          {{ 'Import.Process.Run.ImportValid' | translate: { n: nValidData } }}
           <mat-icon>done</mat-icon>
         </button>
         <div
@@ -197,17 +202,17 @@
   <div class="card-header">
     <h5 class="card-title">
       <mat-icon>check</mat-icon>
-      Import terminé
+      {{ 'Import.Process.Run.Done' | translate }}
     </h5>
   </div>
   <div class="card-body">
-    <p>Vos {{ nValidData }} observations ont bien été importées</p>
+    <p>{{ 'Import.Process.Run.Imported' | translate: { n: nValidData } }}</p>
     <button
       mat-raised-button
       color="primary"
       (click)="onRedirect()"
     >
-      Retour à la liste des imports
+      {{ 'Import.Process.Run.BackToList' | translate }}
     </button>
   </div>
 </div>
@@ -233,7 +238,7 @@
       class="modal-title"
       id="modal-basic-title"
     >
-      Import des données en cours...
+      {{ 'Import.Process.Run.InProgressEllipsis' | translate }}
     </h4>
     <button
       type="button"
@@ -245,8 +250,7 @@
     </button>
   </div>
   <div class="modal-body">
-    L'import des fichier dans la synthèse est en cours... Un mail de notification vous sera envoyé à
-    la fin du traitement.
+    {{ 'Import.Process.Run.Notification' | translate }}
   </div>
   <div class="modal-footer">
     <button
@@ -254,7 +258,7 @@
       class="btn btn-warning"
       (click)="onRedirect(); modal.close()"
     >
-      OK
+      {{ 'Import.Process.Ok' | translate }}
     </button>
   </div>
 </ng-template>

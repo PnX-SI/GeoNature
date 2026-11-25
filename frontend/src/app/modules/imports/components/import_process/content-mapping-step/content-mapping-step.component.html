@@ -86,7 +86,7 @@
             class="d-flex justify-content-center align-content-between mr-2 button-success"
             (click)="renameMapping()"
             mat-raised-button
-            matTooltip="Modifier le nom du modèle d'import"
+            [matTooltip]="'Import.Process.Mapping.EditName' | translate"
             [disabled]="
               !createOrRenameMappingForm.valid ||
               selectMappingContentForm.value.label.trim() ==
@@ -97,14 +97,14 @@
             <mat-icon>check</mat-icon>
           </button>
           <button
-            matTooltip="Annuler la modification du nom du modèle d'import"
+            [matTooltip]="'Import.Process.Mapping.CancelEditName' | translate"
             class="d-flex justify-content-center align-content-between"
             (click)="hideCreateOrRenameMappingForm()"
             mat-raised-button
             color="warn"
             data-qa="import-contentmapping-selection-rename-cancel"
           >
-            Annuler
+            {{ 'Actions.Cancel' | translate }}
           </button>
         </div>
         <div *ngIf="unmappedFields.size > 0 || mappedFields.size > 0">
@@ -113,7 +113,6 @@
             class="alert alert-success mat-alert"
           >
             {{ 'Import.ContentMapping.Messages.NomenclatureValuesAllMapped' | translate }}
-            L'ensemble des valeurs du fichier a été automatiquement associé aux nomenclatures.
           </div>
           <div
             *ngIf="unmappedFields.size == 1"
@@ -194,9 +193,9 @@
             <div class="card-title mb-0">
               {{ targetField.value.nomenclature_type.label_default }}
               <i
-                matTooltip="{{
-                  targetField.value.nomenclature_type.definition_default
-                }} |  Valeur par défaut: TODO"
+                matTooltip="{{ targetField.value.nomenclature_type.definition_default }} | {{
+                  'Import.ContentMapping.DefaultValueColon' | translate
+                }} TODO"
                 matTooltipClass="custom-tooltip"
                 class="fa fa-info-circle"
                 aria-hidden="true"
@@ -230,7 +229,7 @@
                 >
                   <i
                     *ngIf="value == null || value == ''"
-                    matTooltip="Nomenclature à utiliser pour les cellules sans valeur (N/A, null)"
+                    [matTooltip]="'Import.Process.Mapping.DefaultNomenclature' | translate"
                     matTooltipClass="custom-tooltip"
                     class="fa fa-info-circle mr-1"
                     aria-hidden="true"
@@ -312,7 +311,7 @@
       class="modal-title"
       id="modal-basic-title"
     >
-      Enregistrement du modèle
+      {{ 'Import.Process.Mapping.SaveTitle' | translate }}
     </h4>
     <button
       type="button"
@@ -345,7 +344,7 @@
           [formControl]="modalCreateMappingForm"
           class="form-control"
           id="mappingName"
-          placeholder="Nom du modèle"
+          [placeholder]="'Import.Process.Mapping.NameHint' | translate"
           data-qa="import-contentmapping-saving-modal-mapping-name"
         />
         <span
@@ -432,7 +431,7 @@
       class="btn btn-warning"
       (click)="onRedirect(); modal.close()"
     >
-      OK
+      {{ 'Import.Process.Ok' | translate }}
     </button>
   </div>
 </ng-template>
@@ -441,7 +440,7 @@
   let-modalDelete
   data-qa="import-contentmapping-selection-modal-delete"
 >
-  <div class="modal-header">Confirmation</div>
+  <div class="modal-header">{{ 'Confirmation' | translate }}</div>
   <div class="modal-body">{{ 'Import.Mapping.Questions.Delete?' | translate }}</div>
   <div class="modal-footer">
     <button

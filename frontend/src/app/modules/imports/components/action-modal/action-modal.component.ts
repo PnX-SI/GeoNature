@@ -16,10 +16,10 @@ export class ModalActionImport implements OnInit {
   @Input() actionType: 'delete' | 'edit' = 'delete';
   @Input() modalData: ModalData = {
     title: 'Confirmation',
-    bodyMessage: 'Êtes-vous sûr de vouloir effectuer cette action ?',
+    bodyMessage: 'Import.Modal.ConfirmAction',
     additionalMessage: '',
-    cancelButtonText: 'Annuler',
-    confirmButtonText: 'Confirmer',
+    cancelButtonText: 'Actions.Cancel',
+    confirmButtonText: 'Actions.Confirm',
     confirmButtonColor: 'warn',
     headerDataQa: 'generic-modal-header',
     confirmButtonDataQa: 'modal-confirm-action',

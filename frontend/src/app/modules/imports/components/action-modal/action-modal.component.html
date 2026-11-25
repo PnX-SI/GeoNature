@@ -2,7 +2,7 @@
   class="modal-header"
   [attr.data-qa]="modalData.headerDataQa"
 >
-  <h4 class="modal-title pull-left">{{ modalData.title }}</h4>
+  <h4 class="modal-title pull-left">{{ modalData.title | translate: modalData.params }}</h4>
   <button
     type="button"
     class="close pull-right"
@@ -13,12 +13,12 @@
   </button>
 </div>
 <div class="modal-body">
-  <p>{{ modalData.bodyMessage }}</p>
+  <p>{{ modalData.bodyMessage | translate: modalData.params }}</p>
   <p
     *ngIf="modalData.additionalMessage"
     class="attention-message"
   >
-    {{ modalData.additionalMessage }}
+    {{ modalData.additionalMessage | translate: modalData.params }}
   </p>
 
   <button
@@ -27,7 +27,7 @@
     mat-raised-button
     class="mr-1"
   >
-    {{ modalData.cancelButtonText || 'Annuler' }}
+    {{ modalData.cancelButtonText || 'Actions.Cancel' | translate }}
   </button>
 
   <button
@@ -37,6 +37,6 @@
     [color]="modalData.confirmButtonColor || 'primary'"
     [attr.data-qa]="modalData.confirmButtonDataQa"
   >
-    {{ modalData.confirmButtonText || 'Confirmer' }}
+    {{ modalData.confirmButtonText || 'Actions.Confirm' | translate }}
   </button>
 </div>
