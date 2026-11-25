@@ -3,7 +3,7 @@
   [ngClass]="class"
   [items]="areas | async"
   bindLabel="area_name"
-  [bindValue]="valueFieldName"
+  [bindValue]="bindAllItem ? null : valueFieldName"
   [compareWith]="compareWith"
   [hideSelected]="true"
   [placeholder]="label"

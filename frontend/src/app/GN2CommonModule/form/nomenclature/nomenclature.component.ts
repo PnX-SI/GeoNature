@@ -74,7 +74,19 @@ export class NomenclatureComponent
    */
   @Input() keyValue = 'id_nomenclature';
 
-  @Input() bindAllItem: false;
+  /**
+   * Si vrai, le formControl contient l’objet `nomenclature` complet au lieu de `keyValue`.
+   */
+  @Input() bindAllItem: boolean = false;
+
+  compareWith = (item, selected) => {
+    if (this.bindAllItem) {
+      // le formControl contient des objets : comparaison sur leur identifiant
+      return item.id_nomenclature === selected?.id_nomenclature;
+    } else {
+      return item[this.keyValue] === selected;
+    }
+  };
 
   @Input() cdNomenclatures: Array<string> = [];
 

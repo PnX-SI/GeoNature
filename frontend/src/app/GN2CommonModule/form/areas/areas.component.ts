@@ -74,7 +74,19 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
    * @param selected
    * @returns
    */
-  @Input() compareWith = (item, selected) => item[this.valueFieldName] === selected;
+  @Input() compareWith = (item, selected) => {
+    if (this.bindAllItem) {
+      // le formControl contient des objets : comparaison sur leur identifiant
+      return item[this.valueFieldName] === selected?.[this.valueFieldName];
+    } else {
+      return item[this.valueFieldName] === selected;
+    }
+  };
+  /**
+   * Si vrai, le `parentFormControl` contient l’objet zone complet au lieu de la valeur
+   * de `valueFieldName`.
+   */
+  @Input() bindAllItem: boolean = false;
   /**
    * Tableau d'objets qui doivent contenir chacun à minima 2 attributs :
    *  - un attribut correspondant à la valeur de l'input `valueFieldName` et
