@@ -57,7 +57,7 @@ export class ConfirmAccountComponent implements OnInit {
   submit() {
     this._authService.confirmToken({ token: this.token }).subscribe(
       (res) => {
-        this.commonService.regularToaster('success', 'Votre compte a bien été activé !');
+        this.commonService.translateToaster('success', 'Authentication.Messages.AccountActivated');
       },
       (error) => {
         this.commonService.regularToaster('error', error.error.msg);

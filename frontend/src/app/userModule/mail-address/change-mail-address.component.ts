@@ -39,7 +39,7 @@ export class ChangeMailAddressComponent implements OnInit {
         this.currentEmail = user.email;
       },
       error: () => {
-        this.commonService.regularToaster('error', "Erreur lors de la récupération de l'email");
+        this.commonService.translateToaster('error', 'MyAccount.Messages.EmailLoadError');
       },
     });
   }

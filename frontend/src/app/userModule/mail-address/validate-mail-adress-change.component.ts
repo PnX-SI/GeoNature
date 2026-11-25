@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserDataService } from '../services/user-data.service';
 import { CommonService } from '@geonature_common/service/common.service';
-import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'pnx-validate-mail',
@@ -20,8 +19,7 @@ export class ValidateMailAddressChangeComponent implements OnInit {
     private _route: ActivatedRoute,
     private _router: Router,
     private _userDataService: UserDataService,
-    private _commonService: CommonService,
-    private _toastr: ToastrService
+    private _commonService: CommonService
   ) {}
 
   ngOnInit(): void {
@@ -39,7 +37,7 @@ export class ValidateMailAddressChangeComponent implements OnInit {
       next: () => {
         this.validated = true;
         this.loading = false;
-        this._toastr.success('Email validé avec succès');
+        this._commonService.translateToaster('success', 'MyAccount.Messages.EmailValidated');
         setTimeout(() => {
           this._router.navigate(['/user']);
         }, 3000);

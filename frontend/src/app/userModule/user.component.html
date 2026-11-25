@@ -1,6 +1,6 @@
 <div class="card card-page center-in-div">
   <div class="card-header">
-    <h3 class="underlined main-color">Mes informations</h3>
+    <h3 class="underlined main-color">{{ 'MyAccount.MyInformation' | translate }}</h3>
   </div>
 
   <div class="card-body">
@@ -11,14 +11,14 @@
             for="nom_role"
             class="col-sm-3 col-form-label text-right"
           >
-            Nom
+            {{ 'MyAccount.LastName' | translate }}
           </label>
           <div class="col-sm-9 col-xl-5">
             <input
               type="text"
               [ngClass]="form.disabled ? 'form-control-plaintext' : 'form-control'"
               id="nom_role"
-              placeholder="Nom"
+              [placeholder]="'MyAccount.LastName' | translate"
               formControlName="nom_role"
             />
           </div>
@@ -28,14 +28,14 @@
             for="prenom_role"
             class="col-sm-3 col-form-label text-right"
           >
-            Prenom
+            {{ 'MyAccount.FirstName' | translate }}
           </label>
           <div class="col-sm-9 col-xl-5">
             <input
               type="text"
               [ngClass]="form.disabled ? 'form-control-plaintext' : 'form-control'"
               id="prenom_role"
-              placeholder="Prenom"
+              [placeholder]="'MyAccount.FirstName' | translate"
               formControlName="prenom_role"
             />
           </div>
@@ -46,7 +46,7 @@
             for="email"
             class="col-sm-3 col-form-label text-right"
           >
-            Adresse mail
+            {{ 'MyAccount.Email' | translate }}
           </label>
           <div class="col-sm-9 col-xl-5">
             <input
@@ -69,7 +69,7 @@
           mat-raised-button
           color="primary"
         >
-          Changer d'adresse mail
+          {{ 'MyAccount.ChangeEmail' | translate }}
         </a>
       </div>
       <br />
@@ -112,7 +112,7 @@
           mat-raised-button
           color="primary"
         >
-          Changer de mot de passe
+          {{ 'MyAccount.ChangePassword' | translate }}
         </a>
       </div>
       <br />
@@ -123,13 +123,13 @@
           for="remarques"
           class="col-sm-3 col-form-label text-right"
         >
-          Remarques
+          {{ 'MyAccount.Remarks' | translate }}
         </label>
         <div class="col-sm-9">
           <textarea
             id="remarques"
             [ngClass]="form.disabled ? 'form-control-plaintext' : 'form-control'"
-            placeholder="Informations complémentaires..."
+            [placeholder]="'MyAccount.RemarksPlaceholder' | translate"
             formControlName="remarques"
           ></textarea>
         </div>
@@ -141,11 +141,11 @@
             type="button"
             mat-raised-button
             color="primary"
-            matTooltip="Editer ces informations"
+            [matTooltip]="'MyAccount.EditTooltip' | translate"
             matTooltipPosition="left"
             (click)="form.enable()"
           >
-            Editer
+            {{ 'MyAccount.Edit' | translate }}
             <mat-icon>edit</mat-icon>
           </button>
         </ng-container>
@@ -153,20 +153,20 @@
           <button
             mat-raised-button
             color="warn"
-            matTooltip="Annuler modifications"
+            [matTooltip]="'MyAccount.CancelTooltip' | translate"
             (click)="cancel()"
           >
-            Annuler
+            {{ 'Actions.Cancel' | translate }}
           </button>
           <button
             mat-raised-button
             type="button"
             class="button-success ml-1"
-            matTooltip="Enrigistrer modifications"
+            [matTooltip]="'MyAccount.SaveTooltip' | translate"
             (click)="save()"
             [disabled]="form.invalid"
           >
-            Enregistrer
+            {{ 'Actions.Save' | translate }}
             <mat-icon>save</mat-icon>
           </button>
         </ng-template>

@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { UserDataService } from '../services/user-data.service';
 import { ToastrService, ToastrConfig } from 'ngx-toastr';
 import { similarValidator } from '@geonature/services/validators';
+import { TranslateService } from '@ngx-translate/core';
 import { CommonService } from '@geonature_common/service/common.service';
 import { PasswordService } from '../services/password.service';
 @Component({
@@ -25,7 +26,8 @@ export class PasswordComponent implements OnInit {
     private router: Router,
     private userService: UserDataService,
     private passwordService: PasswordService,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    private _translate: TranslateService
   ) {}
 
   ngOnInit() {
@@ -49,7 +51,7 @@ export class PasswordComponent implements OnInit {
 
     return Object.keys(control.errors).map((errorKey) => {
       const error = control.errors[errorKey];
-      return error.message || 'Erreur inconnue';
+      return error.message || this._translate.instant('MyAccount.Messages.UnknownError');
     });
   }
 
