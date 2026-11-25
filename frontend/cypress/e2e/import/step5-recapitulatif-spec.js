@@ -1,6 +1,5 @@
 import { USERS } from './constants/users';
 import { VIEWPORTS } from './constants/common';
-import { FILES } from './constants/files';
 import {
   SELECTOR_IMPORT_RECAPITULATIF,
   SELECTOR_IMPORT_RECAPITULATIF_MAP,
@@ -14,15 +13,7 @@ const USER_ADMIN = USERS[0];
 const VIEWPORT = VIEWPORTS[0];
 
 function runTheProcess(user) {
-  cy.visitImport();
-  cy.startImport();
-  cy.pickDestination();
-  cy.loadImportFile(FILES.synthese.valid.fixture);
-  cy.configureImportFile();
-  cy.configureImportFieldMapping(user.dataset);
-  cy.configureImportContentMapping();
-  cy.configureImportObserverMapping();
-  cy.triggerImportVerification();
+  cy.setupImportViaApi('import', { datasetName: user.dataset }).as('currentImportId');
 }
 
 // ////////////////////////////////////////////////////////////////////////////
@@ -43,7 +34,9 @@ describe('Import - Recapitulatif step', () => {
     });
 
     afterEach(() => {
-      cy.deleteCurrentImport();
+      cy.get('@currentImportId').then((importId) => {
+        cy.deleteImport(importId, 'synthese');
+      });
     });
   });
 });

@@ -27,3 +27,4 @@ import './verifyImport';
 import './visitImport';
 import './setObserverMapping';
 import './selectDataset';
+import './setupImportViaApi';

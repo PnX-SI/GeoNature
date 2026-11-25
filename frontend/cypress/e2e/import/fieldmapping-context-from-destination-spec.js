@@ -1,5 +1,5 @@
 import { USERS } from './constants/users';
-import { TIMEOUT_WAIT, VIEWPORTS } from './constants/common';
+import { VIEWPORTS } from './constants/common';
 import { FILES } from './constants/files';
 import {
   SELECTOR_IMPORT_FIELDMAPPING_CONSTANT_ALTITUDE_MAX,
@@ -88,7 +88,6 @@ describe('Import - Upload step', () => {
     beforeEach(() => {
       cy.viewport(VIEWPORT.width, VIEWPORT.height);
       cy.geonatureLogin(USER.login.username, USER.login.password);
-      cy.wait(TIMEOUT_WAIT);
     });
 
     paramsByDestination.forEach(({ destination, queryParams }) => {
@@ -105,7 +104,6 @@ describe('Import - Upload step', () => {
         it(`Validates fields for destination: ${destination}`, () => {
           queryParams.forEach(
             ({ expectedValue, isNgSelect, entityLabel, constantDataQA: constantDataQA }) => {
-              cy.wait(200);
               if (entityLabel) {
                 const dataQaEntity = `[data-qa="import-entity-tab-${entityLabel}"]`;
                 cy.get(dataQaEntity, { timeout: 30000 }).should('be.visible').click();

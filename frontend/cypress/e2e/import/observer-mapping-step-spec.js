@@ -1,6 +1,5 @@
 import { USERS } from './constants/users';
-import { TIMEOUT_WAIT, VIEWPORTS } from './constants/common';
-import { FILES } from './constants/files';
+import { VIEWPORTS } from './constants/common';
 
 // ////////////////////////////////////////////////////////////////////////////
 //
@@ -31,13 +30,7 @@ const SELECTORS = {
 // ////////////////////////////////////////////////////////////////////////////
 
 function runTheProcessToObserverMapping() {
-  cy.visitImport();
-  cy.startImport();
-  cy.pickDestination();
-  cy.loadImportFile(FILES.synthese.valid.fixture);
-  cy.configureImportFile();
-  cy.configureImportFieldMapping(USER.dataset);
-  cy.configureImportContentMapping();
+  cy.setupImportViaApi('observermapping', { datasetName: USER.dataset }).as('currentImportId');
 }
 
 // ////////////////////////////////////////////////////////////////////////////
@@ -105,8 +98,6 @@ describe('Import - Observer Mapping step', () => {
             });
         });
 
-        cy.wait(500);
-
         // Now fill with different observer (second option instead of first)
         cy.get(SELECTORS.observersForm).each(($form) => {
           cy.wrap($form)
@@ -121,11 +112,7 @@ describe('Import - Observer Mapping step', () => {
                 .eq(1)
                 .click({ force: true });
             });
-
-          cy.wait(200);
         });
-
-        cy.wait(500);
 
         // Verify forms are filled with different values
         cy.get(SELECTORS.observersForm).each(($form) => {
@@ -135,15 +122,12 @@ describe('Import - Observer Mapping step', () => {
         // Now reset all mappings
         cy.get(SELECTORS.resetButton).should('exist').should('be.enabled').click();
 
-        cy.wait(500);
-
         // Verify all forms are back to their initial state with exact same values
         cy.get(SELECTORS.observersForm).each(($form, index) => {
           cy.wrap($form)
             .find('ng-select .ng-value')
-            .invoke('text')
-            .then((text) => {
-              const currentValue = text?.trim() || '';
+            .should(($el) => {
+              const currentValue = $el.text()?.trim() || '';
               expect(currentValue).to.equal(initialValues[index]);
             });
         });
@@ -167,16 +151,10 @@ describe('Import - Observer Mapping step', () => {
                 .eq(1)
                 .click({ force: true });
             });
-
-          cy.wait(200);
         });
-
-        cy.wait(500);
 
         // Now clear all mappings
         cy.get(SELECTORS.clearButton).should('exist').should('be.enabled').click();
-
-        cy.wait(500);
 
         // Verify all forms are empty after clearing
         cy.get(SELECTORS.observersForm).each(($form) => {
@@ -189,7 +167,9 @@ describe('Import - Observer Mapping step', () => {
     });
 
     afterEach(() => {
-      cy.deleteCurrentImport();
+      cy.get('@currentImportId').then((importId) => {
+        cy.deleteImport(importId, 'synthese');
+      });
     });
   });
 });
