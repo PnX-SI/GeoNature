@@ -251,9 +251,14 @@ export class FieldMappingInputComponent implements ControlValueAccessor {
   // Field label
   // //////////////////////////////////////////////////////////////////////////
 
+  // eng_label is not filled for every field, fr_label stays the fallback
+  fieldLabel(field: BibField): string {
+    return (this._translateService.currentLang === 'en' && field?.eng_label) || field?.fr_label;
+  }
+
   _getFieldsLabel(labels: string[]): string[] {
     return labels.map((label) => {
-      return this.siblings.find((field) => field.name_field === label)?.fr_label;
+      return this.fieldLabel(this.siblings.find((field) => field.name_field === label));
     });
   }
 
