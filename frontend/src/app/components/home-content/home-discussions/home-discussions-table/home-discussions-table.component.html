@@ -30,7 +30,7 @@
       >
         <i
           #iElement
-          [matTooltip]="'Voir le fil de discussion lié à la synthese id : ' + row.id_synthese"
+          [matTooltip]="'HomePage.SeeDiscussion' | translate: { id: row.id_synthese }"
           class="fa fa-info-circle"
           aria-hidden="true "
         ></i>
@@ -40,7 +40,7 @@
   <ngx-datatable-column
     width="150"
     [prop]="PROP_CREATION_DATE"
-    name="Date commentaire"
+    [name]="'HomePage.CommentDate' | translate"
     [sortable]="true"
     [resizeable]="true"
     [canAutoResize]="true"
@@ -55,7 +55,7 @@
   <ngx-datatable-column
     width="150"
     [prop]="PROP_USER"
-    name="Auteur"
+    [name]="'HomePage.Author' | translate"
     [sortable]="true"
     [resizeable]="true"
     [canAutoResize]="true"
@@ -71,7 +71,7 @@
     [prop]="PROP_CONTENT"
     width="600"
     height="100"
-    name="Contenu"
+    [name]="'HomePage.Content' | translate"
     [sortable]="true"
     [resizeable]="true"
     [canAutoResize]="true"
@@ -90,7 +90,7 @@
   <ngx-datatable-column
     width="600"
     [prop]="PROP_OBSERVATION"
-    name="Observation"
+    [name]="'Observation' | translate"
     [sortable]="false"
     [resizeable]="true"
   >

@@ -87,7 +87,7 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
     this.commentForm.get('item').setValue(this.idSynthese);
     this.commentForm.get('type').setValue('discussion');
     this._syntheseDataService.createReport(this.commentForm.value).subscribe((data) => {
-      this._commonService.regularToaster('success', 'Commentaire sauvegardé !');
+      this._commonService.translateToaster('success', 'Synthese.Discussion.Saved');
       // close add comment panel and refresh list
       this.openCloseComment();
       this.getDiscussions();

@@ -2,7 +2,7 @@
   id="createAlert"
   class="m-4"
 >
-  <p [ngStyle]="{ 'font-size': '16px' }">Description du signalement :</p>
+  <p [ngStyle]="{ 'font-size': '16px' }">{{ 'Synthese.Alert.Description' | translate }}</p>
   <form
     class="my-3"
     *ngIf="!alert?.content"
@@ -13,13 +13,15 @@
       focused
       class="my-3 alert-field"
     >
-      <mat-label class="gn-color">Détailler ici le signalement :</mat-label>
+      <mat-label class="gn-color">{{ 'Synthese.Alert.Detail' | translate }}</mat-label>
       <textarea
         matInput
-        placeholder="Votre commentaire...."
+        [placeholder]="'Synthese.Discussion.Placeholder' | translate"
         [formControl]="alertForm.controls.content"
       ></textarea>
-      <mat-error *ngIf="!this.alertForm.valid">Veuillez saisir un commentaire</mat-error>
+      <mat-error *ngIf="!this.alertForm.valid">
+        {{ 'Synthese.Discussion.Required' | translate }}
+      </mat-error>
     </mat-form-field>
   </form>
   <mat-card *ngIf="alert?.content">{{ alert?.content }}</mat-card>
@@ -33,7 +35,7 @@
       (click)="openCloseAlert()"
     >
       <mat-icon>west</mat-icon>
-      Retour
+      {{ 'Synthese.Alert.Back' | translate }}
     </button>
     <button
       *ngIf="!alert || !alert?.id_report"
@@ -49,7 +51,7 @@
       #required
     >
       <mat-icon>check</mat-icon>
-      Enregistrer
+      {{ 'Actions.Save' | translate }}
     </button>
     <button
       mat-raised-button
@@ -62,13 +64,13 @@
       type="button"
       class="btn btn-sm mt-2 mr-2 link-infos"
       data-dismiss="modal"
-      ngbTooltip="Supprimer ce signalement"
+      [ngbTooltip]="'Synthese.Alert.Delete' | translate"
       placement="bottom"
       color="primary"
       #required
     >
       <mat-icon>verified</mat-icon>
-      Signalement pris en compte !
+      {{ 'Synthese.Alert.Handled' | translate }}
     </button>
   </div>
 </div>

@@ -17,11 +17,11 @@
         <button
           class="mat-elevation-z1 mr-2"
           mat-icon-button
-          matTooltip="Ouvrir le menu principal"
+          [matTooltip]="'Toolbar.OpenMenu' | translate"
           (click)="closeSideBar()"
           data-qa="pnx-home-content-sidebar-open-button"
         >
-          <mat-icon aria-label="Ouvrir le menu principal">menu</mat-icon>
+          <mat-icon [attr.aria-label]="'Toolbar.OpenMenu' | translate">menu</mat-icon>
         </button>
 
         <span class="mx-2">
@@ -30,7 +30,7 @@
             class="home-link"
             [routerLink]="moduleUrl"
           >
-            {{ moduleName }}
+            {{ isHome ? ('Home' | translate) : moduleName }}
           </a>
         </span>
 
@@ -66,7 +66,7 @@
           <a
             class="mx-2 mat-elevation-z1"
             mat-icon-button
-            matTooltip="Accéder aux notifications"
+            [matTooltip]="'Toolbar.Notifications' | translate"
             matBadge="{{ notificationNumber }}"
             matBadgeHidden="{{ notificationNumber == 0 }}"
             (click)="openNotification()"
@@ -104,7 +104,7 @@
           <a
             class="mx-1 mat-elevation-z1"
             mat-icon-button
-            matTooltip="Accéder aux notifications"
+            [matTooltip]="'Toolbar.Notifications' | translate"
             matBadge="{{ notificationNumber }}"
             matBadgeHidden="{{ notificationNumber == 0 }}"
             (click)="openNotification()"
@@ -117,7 +117,7 @@
         <button
           class="mx-1 mat-elevation-z1"
           mat-icon-button
-          matTooltip="Plus d'options"
+          [matTooltip]="'Toolbar.MoreOptions' | translate"
           [matMenuTriggerFor]="mobileMenu"
           data-qa="pnx-home-content-mobile-menu-button"
         >

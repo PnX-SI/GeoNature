@@ -23,7 +23,7 @@
     <!-- Public access -->
     <ng-container *ngSwitchCase="'public'">
       <mat-icon>accessibility_new</mat-icon>
-      <span class="user-name">Accès public</span>
+      <span class="user-name">{{ 'Toolbar.PublicAccess' | translate }}</span>
     </ng-container>
 
     <!-- Account management menu -->
@@ -31,7 +31,7 @@
       <button
         class="user-button mx-1"
         mat-raised-button
-        matTooltip="Ouvrir le menu de mon profil"
+        [matTooltip]="'Toolbar.OpenProfile' | translate"
         [matMenuTriggerFor]="userMenuDesktop"
       >
         <mat-icon>person</mat-icon>
@@ -41,7 +41,7 @@
       <mat-menu #userMenuDesktop="matMenu">
         <a
           mat-menu-item
-          matTooltip="Accéder aux paramètres de mon compte"
+          [matTooltip]="'Toolbar.AccountSettings' | translate"
           matTooltipPosition="before"
           routerLink="/user"
         >
@@ -50,7 +50,7 @@
         <a
           *ngIf="hasObserverSheet"
           mat-menu-item
-          matTooltip="Accéder à ma fiche observateur"
+          [matTooltip]="'Toolbar.ObserverSheet' | translate"
           matTooltipPosition="before"
           [routerLink]="observerSheetUrl"
         >
@@ -95,7 +95,7 @@
         disabled
       >
         <mat-icon>accessibility_new</mat-icon>
-        <span>Accès public</span>
+        <span>{{ 'Toolbar.PublicAccess' | translate }}</span>
       </button>
     </ng-container>
 

@@ -12,6 +12,7 @@ import {
   SyntheseDataSortItem,
 } from '@geonature_common/form/synthese-form/synthese-data-sort-item';
 import { HttpParams } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   standalone: true,
@@ -59,7 +60,8 @@ export class HomeDiscussionsTableComponent implements OnInit, OnDestroy {
   constructor(
     private _router: Router,
     private _syntheseApi: SyntheseDataService,
-    private _homeDiscussions: HomeDiscussionsService
+    private _homeDiscussions: HomeDiscussionsService,
+    private _translate: TranslateService
   ) {}
 
   ngOnInit() {
@@ -134,10 +136,12 @@ export class HomeDiscussionsTableComponent implements OnInit, OnDestroy {
   }
 
   private _formatObservation(synthese: any): string {
+    const label = (key: string) =>
+      `<strong>${this._translate.instant(key)}${this._translate.instant('ColonCharSpaced')}</strong>`;
     return `
-      <strong>Nom Cité:</strong> ${synthese.nom_cite || 'N/A'}<br>
-      <strong>Observateurs:</strong> ${synthese.observers || 'N/A'}<br>
-      <strong>Date Observation:</strong> ${
+      ${label('HomePage.CitedName')} ${synthese.nom_cite || 'N/A'}<br>
+      ${label('Observers')} ${synthese.observers || 'N/A'}<br>
+      ${label('HomePage.ObservationDate')} ${
         this._formatDateRange(synthese.date_min, synthese.date_max) || 'N/A'
       }
     `;

@@ -32,9 +32,7 @@
       >
         <i
           #iElement
-          [matTooltip]="
-            'Voir les informations de validations liées à l\'observation : ' + row.id_synthese
-          "
+          [matTooltip]="'HomePage.SeeValidation' | translate: { id: row.id_synthese }"
           class="fa fa-info-circle"
           aria-hidden="true "
         ></i>
@@ -43,7 +41,7 @@
   </ngx-datatable-column>
   <ngx-datatable-column
     width="150"
-    name="Date"
+    [name]="'Date' | translate"
     [sortable]="true"
     [resizeable]="true"
     [canAutoResize]="true"
@@ -59,7 +57,7 @@
   <ngx-datatable-column
     width="150"
     [prop]="PROP_VALIDATOR"
-    name="Validateur"
+    [name]="'HomePage.Validator' | translate"
     [sortable]="true"
     [resizeable]="true"
     [canAutoResize]="true"
@@ -74,7 +72,7 @@
   <ngx-datatable-column
     [prop]="PROP_VALIDATION_STATUS"
     width="300"
-    name="Statut de validation"
+    [name]="'HomePage.ValidationStatus' | translate"
     [sortable]="false"
     [resizeable]="true"
     [canAutoResize]="true"
@@ -96,7 +94,7 @@
     [prop]="PROP_VALIDATION_MESSAGE"
     width="500"
     height="100"
-    name="Message de validation"
+    [name]="'HomePage.ValidationMessage' | translate"
     [sortable]="true"
     [resizeable]="true"
     [canAutoResize]="true"
@@ -116,7 +114,7 @@
   <ngx-datatable-column
     width="500"
     [prop]="PROP_OBSERVATION"
-    name="Observation"
+    [name]="'Observation' | translate"
     [sortable]="false"
     [resizeable]="true"
   >

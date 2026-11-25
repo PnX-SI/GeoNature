@@ -26,14 +26,18 @@
           class="disccusion-field"
           style="width: 100%"
         >
-          <mat-label class="gn-color">Commentaire :</mat-label>
+          <mat-label class="gn-color">
+            {{ 'Synthese.Discussion.CommentColon' | translate }}
+          </mat-label>
           <textarea
             matInput
             [maxlength]="config.SYNTHESE?.DISCUSSION_MAX_LENGTH"
-            placeholder="Votre commentaire...."
+            [placeholder]="'Synthese.Discussion.Placeholder' | translate"
             [formControl]="commentForm.get('content')"
           ></textarea>
-          <mat-error *ngIf="!this.commentForm.valid">Veuillez saisir un commentaire</mat-error>
+          <mat-error *ngIf="!this.commentForm.valid">
+            {{ 'Synthese.Discussion.Required' | translate }}
+          </mat-error>
         </mat-form-field>
       </mat-card-content>
       <mat-card-actions
@@ -45,7 +49,7 @@
           mat-stroked-button
           class="cancelBtn link-infos"
         >
-          Annuler
+          {{ 'Actions.Cancel' | translate }}
         </button>
         <button
           mat-stroked-button
@@ -53,7 +57,7 @@
           class="saveBtn link-infos"
           (click)="handleSubmitComment(commentForm.get('content').value)"
         >
-          Envoyer
+          {{ 'Actions.Send' | translate }}
         </button>
       </mat-card-actions>
     </mat-card>
@@ -105,7 +109,7 @@
         <mat-icon class="statusIcon mr-3">sync</mat-icon>
         <span class="statusName">
           <strong>{{ comment.validator }}</strong>
-          a changé le statut en
+          {{ 'Synthese.Discussion.ChangedStatus' | translate }}
           <span
             ngbTooltip="{{ comment.comment }}"
             placement="right"
@@ -143,7 +147,9 @@
           <strong *ngIf="comment.user.nom_complet">
             {{ comment.user.nom_complet }}
           </strong>
-          a supprimé le commentaire du {{ formatDate(comment.creation_date) }}
+          {{
+            'Synthese.Discussion.DeletedOn' | translate: { date: formatDate(comment.creation_date) }
+          }}
         </span>
       </div>
     </span>

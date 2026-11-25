@@ -21,10 +21,7 @@ export class ModuleGuardService implements CanActivate {
       return true;
     } else {
       this._router.navigate(['/']);
-      this._commonService.regularToaster(
-        'error',
-        "Vous n'avez pas les droits d'accès au module " + moduleName
-      );
+      this._commonService.translateToaster('error', 'Errors.ModuleAccess', { module: moduleName });
       return false;
     }
   }

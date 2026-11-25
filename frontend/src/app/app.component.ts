@@ -35,13 +35,16 @@ export class AppComponent implements OnInit {
         map(() => this.getDeepestChild(this.activatedRoute)),
         mergeMap((route) => route.data)
       )
-      .subscribe((data: { module_label?: string; module_code?: string }) => {
-        let title = config.appName;
-        const complement = data['module_label'] || data['module_code'];
-        if (complement) {
-          title = `${title} - ${complement}`;
+      .subscribe((data: { module_label?: string; module_code?: string; title_key?: string }) => {
+        const setTitle = (complement) =>
+          this.titleService.setTitle(
+            complement ? `${config.appName} - ${complement}` : config.appName
+          );
+        if (data['title_key']) {
+          this.translate.get(data['title_key']).subscribe(setTitle);
+        } else {
+          setTitle(data['module_label'] || data['module_code']);
         }
-        this.titleService.setTitle(title);
       });
   }
   private getDeepestChild(route: ActivatedRoute): ActivatedRoute {
