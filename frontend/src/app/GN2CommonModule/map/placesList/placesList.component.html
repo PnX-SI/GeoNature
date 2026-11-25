@@ -4,7 +4,7 @@
   let-d="dismiss"
 >
   <div class="modal-header">
-    <h4 class="modal-title">Liste de mes lieux</h4>
+    <h4 class="modal-title">{{ 'Map.Places.MyPlaces' | translate }}</h4>
     <button
       type="button"
       class="close"
@@ -36,7 +36,7 @@
           color="warn"
           (click)="deletePlace()"
         >
-          Supprimer le lieu
+          {{ 'Map.Places.Delete' | translate }}
         </button>
       </div>
     </div>
@@ -48,7 +48,7 @@
       class="button-success"
       (click)="loadPlace()"
     >
-      Valider
+      {{ 'Actions.Validate' | translate }}
     </button>
   </div>
 </ng-template>

@@ -16,7 +16,7 @@
         (selectItem)="onResultSelected($event)"
         [inputFormatter]="formatter"
         [ngClass]="{ loading: searching }"
-        placeholder="Rechercher un lieu"
+        [placeholder]="'Map.Actions.SearchLocation' | translate"
       />
       <ng-template
         #dropdown

@@ -359,10 +359,9 @@ export class MapService {
     } else {
       const layer = this.geometryToLayer(data.geometry);
       if (!layer) {
-        this._commonService.translateToaster(
-          'error',
-          `Le type de géométrie "${data.geometry.type}" n'est pas supporté.`
-        );
+        this._commonService.translateToaster('error', 'Map.Errors.UnsupportedGeometry', {
+          type: data.geometry.type,
+        });
         return;
       }
       this.leafletDrawFeatureGroup.addLayer(layer);

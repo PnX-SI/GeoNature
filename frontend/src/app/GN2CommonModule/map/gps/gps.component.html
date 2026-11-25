@@ -4,7 +4,7 @@
   let-d="dismiss"
 >
   <div class="modal-header">
-    <h4 class="modal-title">Coordonnées GPS</h4>
+    <h4 class="modal-title">{{ 'Map.Gps.Title' | translate }}</h4>
     <button
       type="button"
       class="close"
@@ -15,7 +15,7 @@
     </button>
   </div>
   <div class="modal-body">
-    <p>Degrés décimaux (WGS84)</p>
+    <p>{{ 'Map.Gps.DecimalDegrees' | translate }}</p>
     <div class="form-inline">
       <div class="form-group d-flex w-100">
         <input
@@ -32,14 +32,14 @@
         />
       </div>
       <div class="form-group w-100 mt-2">
-        <p class="mb-1">OU Format texte (WGS84)</p>
+        <p class="mb-1">{{ 'Map.Gps.TextFormat' | translate }}</p>
         <input
           type="text"
           class="form-control w-100"
           placeholder="Latitude, Longitude (Y,X)"
           [(ngModel)]="coordsInput"
           (ngModelChange)="onCoordsInputChange($event)"
-          ngbTooltip="Exemple : 47.619, -3.425"
+          [ngbTooltip]="'Map.Gps.Example' | translate"
           triggers="hover focus"
           container="body"
         />
@@ -53,7 +53,7 @@
       (click)="d()"
       (click)="setMarkerFromGps(x, y)"
     >
-      Valider
+      {{ 'Actions.Validate' | translate }}
     </button>
   </div>
 </ng-template>
