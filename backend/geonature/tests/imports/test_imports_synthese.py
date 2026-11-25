@@ -843,6 +843,16 @@ class TestImportsSynthese:
         r = self.client.delete(url_for("import.delete_import", import_id=imprt.id_import))
         assert r.status_code == 200, r.data
 
+    @pytest.mark.parametrize("insert_batch_size", [3, 6, 7])
+    def test_import_valid_file_insert_batches(
+        self, monkeypatch, users, fieldmapping, import_file_name, insert_batch_size
+    ):
+        monkeypatch.setitem(current_app.config["IMPORT"], "INSERT_BATCH_SIZE", insert_batch_size)
+        set_logged_user(self.client, users["user"])
+        imprt = self.import_valid_file(fieldmapping, import_file_name)
+        r = self.client.delete(url_for("import.delete_import", import_id=imprt.id_import))
+        assert r.status_code == 200, r.data
+
     def test_uuid_generation(self, users, fieldmapping, import_file_name):
         set_logged_user(self.client, users["user"])
         current_app.config["IMPORT"]["DEFAULT_GENERATE_MISSING_UUID"] = True

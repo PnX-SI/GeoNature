@@ -398,9 +398,10 @@ class SyntheseImportActions(ImportActions):
         ]
         batch_size = current_app.config["IMPORT"]["INSERT_BATCH_SIZE"]
         batch_count = ceil(imprt.source_count / batch_size)
+        first_line_no = 2
         for batch in range(batch_count):
-            min_line_no = batch * batch_size
-            max_line_no = (batch + 1) * batch_size
+            min_line_no = first_line_no + batch * batch_size
+            max_line_no = min_line_no + batch_size
             insert_stmt = sa.insert(Synthese).from_select(
                 names=names,
                 select=select_stmt.where(

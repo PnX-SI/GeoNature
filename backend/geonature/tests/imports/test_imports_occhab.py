@@ -103,6 +103,11 @@ def no_default_uuid(monkeypatch):
     monkeypatch.setitem(current_app.config["IMPORT"], "DEFAULT_GENERATE_MISSING_UUID", False)
 
 
+@pytest.fixture()
+def insert_batch_size(request, monkeypatch):
+    monkeypatch.setitem(current_app.config["IMPORT"], "INSERT_BATCH_SIZE", request.param)
+
+
 # ######################################################################################
 # Fixtures -- station
 # ######################################################################################
@@ -501,6 +506,20 @@ class TestImportsOcchab:
                 sa.select(sa.func.count()).where(
                     OccurenceHabitat.id_import == imported_import.id_import,
                     OccurenceHabitat.id_station == station.id_station,
+                )
+            )
+            == 2
+        )
+
+    @pytest.mark.parametrize("import_file_name", ["habitat_only_in_existing_station.csv"])
+    @pytest.mark.parametrize("insert_batch_size", [2, 3], indirect=True)
+    def test_import_insert_batches(self, insert_batch_size, imported_import, station):
+        assert_import_errors(imported_import, set())
+        assert imported_import.statistics["habitat_count"] == 2
+        assert (
+            db.session.scalar(
+                sa.select(sa.func.count()).where(
+                    OccurenceHabitat.id_import == imported_import.id_import
                 )
             )
             == 2
