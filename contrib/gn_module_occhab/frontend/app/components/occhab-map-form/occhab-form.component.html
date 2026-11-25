@@ -15,8 +15,8 @@
             <thead style="font-weight: bold">
               <tr>
                 <td>N°</td>
-                <td>Habitat</td>
-                <td>Abondance</td>
+                <td>{{ 'Habitat' | translate }}</td>
+                <td>{{ 'Occhab.UI.Abundance' | translate }}</td>
                 <td>#</td>
               </tr>
             </thead>
@@ -36,7 +36,7 @@
                   <td>{{ hab?.id_nomenclature_abundance?.label_default }}</td>
                   <td>
                     <span
-                      matTooltip="Editer cet habitat"
+                      [matTooltip]="'Occhab.UI.EditHabitat' | translate"
                       type="button"
                       class="btn btn-primary btn-sm"
                       (click)="editHab(i)"
@@ -47,7 +47,7 @@
                       ></i>
                     </span>
                     <span
-                      matTooltip="Supprimer cet habitat de la station"
+                      [matTooltip]="'Occhab.UI.RemoveHabitat' | translate"
                       type="button"
                       class="btn btn-danger btn-sm"
                       (click)="occHabForm.deleteHab(i)"
@@ -108,7 +108,7 @@
             class="fa fa-flag"
             aria-hidden="true"
           ></i>
-          Station
+          {{ 'Occhab.UI.Station' | translate }}
         </h5>
 
         <div class="card-body">
@@ -285,7 +285,7 @@
 
           <pnx-dumb-select
             *ngIf="config.OCCHAB.formConfig['exposure']"
-            label="Exposition"
+            label="{{ 'Occhab.UI.Exposure' | translate }}"
             [parentFormControl]="occHabForm.stationForm.get('id_nomenclature_exposure')"
             [items]="storeService.nomenclatureItems.EXPOSITION"
             comparedKey="id_nomenclature"
@@ -298,7 +298,7 @@
               class="col padding-sm"
               *ngIf="config.OCCHAB.formConfig['area']"
             >
-              <small>Surface (en m²)</small>
+              <small>{{ 'Occhab.UI.AreaM2' | translate }}</small>
               <input
                 class="form-control form-control-sm"
                 [formControl]="occHabForm.stationForm.get('area')"
@@ -309,7 +309,7 @@
             <div class="col padding-sm">
               <pnx-dumb-select
                 *ngIf="config.OCCHAB.formConfig['area_surface_calculation']"
-                label="Méthode de calcul de la surface"
+                [label]="'Occhab.UI.AreaMethod' | translate"
                 [parentFormControl]="
                   occHabForm.stationForm.get('id_nomenclature_area_surface_calculation')
                 "
@@ -325,7 +325,7 @@
             <div class="form-group col-6 padding-sm">
               <pnx-dumb-select
                 *ngIf="config.OCCHAB.formConfig['geographic_object']"
-                label="Nature objet géographique"
+                [label]="'Occhab.UI.GeoObjectNature' | translate"
                 [parentFormControl]="
                   occHabForm.stationForm.get('id_nomenclature_geographic_object')
                 "
@@ -340,7 +340,7 @@
             <div class="form-group col-6 padding-sm">
               <pnx-dumb-select
                 *ngIf="config.OCCHAB.formConfig['type_sol']"
-                label="Type de sol"
+                [label]="'Occhab.UI.SoilType' | translate"
                 [parentFormControl]="occHabForm.stationForm.get('id_nomenclature_type_sol')"
                 [items]="storeService.nomenclatureItems.TYPE_SOL"
                 comparedKey="id_nomenclature"
@@ -358,7 +358,7 @@
               <textarea
                 class="form-control form-control-sm"
                 type="textarea"
-                placeholder="Commentaire"
+                [placeholder]="'Comment' | translate"
                 [formControl]="occHabForm.stationForm.get('comment')"
               ></textarea>
             </div>
@@ -376,7 +376,7 @@
         (click)="postStation()"
         [disabled]="occHabForm.stationForm.invalid || showHabForm || !atLeastOneHab"
       >
-        Valider la station
+        {{ 'Occhab.UI.ValidateStation' | translate }}
       </button>
 
       <div class="card border-primary">
@@ -389,7 +389,7 @@
               class="fa fa-leaf"
               aria-hidden="true"
             ></i>
-            Habitat
+            {{ 'Habitat' | translate }}
             <button
               *ngIf="!showHabForm"
               type="button"
@@ -402,7 +402,7 @@
                 class="fa fa-plus"
                 aria-hidden="true"
               ></i>
-              Ajouter un habitat à la station
+              {{ 'Occhab.UI.AddHabitat' | translate }}
             </button>
             <button
               *ngIf="showHabForm"
@@ -414,7 +414,7 @@
                 class="fa fa-minus"
                 aria-hidden="true"
               ></i>
-              Annuler l'édition de l'habitat
+              {{ 'Occhab.UI.CancelHabitat' | translate }}
             </button>
           </h5>
           <div
@@ -426,12 +426,12 @@
               class="form-row"
             >
               <div class="col-6 padding-sm">
-                <small>Sélectionner une typologie d'habitat</small>
+                <small>{{ 'Occhab.UI.SelectTypology' | translate }}</small>
                 <select
                   [formControl]="occHabForm.typoHabControl"
                   class="form-control form-control-sm"
                 >
-                  <option [ngValue]="null">Toutes</option>
+                  <option [ngValue]="null">{{ 'Occhab.UI.All' | translate }}</option>
                   <option
                     *ngFor="let typo of storeService.typoHabitat"
                     [ngValue]="typo.cd_typo"
@@ -460,7 +460,7 @@
                   [formatter]="formatter"
                   keyValue="search_name"
                   label="Habitat"
-                  placeholder="Tapez les premières lettres..."
+                  [placeholder]="'Occhab.UI.TypeFirstLetters' | translate"
                   (onChange)="occHabForm.patchNomCite($event)"
                 ></pnx-autocomplete>
                 <div
@@ -472,7 +472,7 @@
                     [attr.aria-expanded]="!isCollaspeTypo"
                     class="btn btn-sm btn-outline-shadow"
                     aria-expanded="false"
-                    matTooltip="Filtrer les habitat proposés à l'autocompletion  par typologie"
+                    [matTooltip]="'Occhab.UI.FilterTypology' | translate"
                   >
                     <i
                       class="fa fa-filter"
@@ -484,7 +484,7 @@
               <div class="col-6 padding-sm">
                 <pnx-dumb-select
                   *ngIf="config.OCCHAB.formConfig['community_interest']"
-                  label="Habitat d'interet communautaire"
+                  [label]="'Occhab.UI.CommunityInterest' | translate"
                   [parentFormControl]="
                     occHabForm.stationForm
                       .get('habitats')
@@ -506,7 +506,7 @@
                 class="col"
                 *ngIf="config.OCCHAB.formConfig['determiner']"
               >
-                <small>Déterminateur</small>
+                <small>{{ 'Occhab.UI.Determiner' | translate }}</small>
                 <input
                   type="text"
                   name="determinter"
@@ -523,7 +523,7 @@
                 *ngIf="config.OCCHAB.formConfig['determination_type']"
               >
                 <pnx-dumb-select
-                  label="Type de détermination"
+                  [label]="'Occhab.UI.DeterminationType' | translate"
                   [parentFormControl]="
                     occHabForm.stationForm
                       .get('habitats')
@@ -541,7 +541,7 @@
 
             <pnx-dumb-select
               *ngIf="config.OCCHAB.formConfig['collection_technique']"
-              label="Technique de collecte"
+              [label]="'Occhab.UI.CollectionTechnique' | translate"
               [parentFormControl]="
                 occHabForm.stationForm
                   .get('habitats')
@@ -561,7 +561,7 @@
                 *ngIf="config.OCCHAB.formConfig['technical_precision']"
                 type="text"
                 class="form-control form-control-sm"
-                placeholder="Précision sur la technique de collecte"
+                [placeholder]="'Occhab.UI.TechniquePlaceholder' | translate"
                 [ngClass]="{
                   'ng-invalid':
                     occHabForm.stationForm.get('habitats').controls[
@@ -584,14 +584,14 @@
               class="error"
               style="color: red"
             >
-              Veuillez fournir des précisions concernant la technique de collecte
+              {{ 'Occhab.UI.TechniqueRequired' | translate }}
             </small>
 
             <div
               class="form-group"
               *ngIf="config.OCCHAB.formConfig['recovery_percentage']"
             >
-              <small>Pourcentage de recouvrement</small>
+              <small>{{ 'Occhab.UI.Cover' | translate }}</small>
               <input
                 type="number"
                 name="recovery"
@@ -606,7 +606,7 @@
 
             <pnx-dumb-select
               *ngIf="config.OCCHAB.formConfig['abundance']"
-              label="Abondance"
+              label="{{ 'Occhab.UI.Abundance' | translate }}"
               [parentFormControl]="
                 occHabForm.stationForm
                   .get('habitats')
@@ -634,7 +634,7 @@
               "
               data-qa="pnx-occhab-form-valid-button"
             >
-              Valider cet habitat
+              {{ 'Occhab.UI.ValidateHabitat' | translate }}
               <mat-icon>done</mat-icon>
             </button>
           </div>

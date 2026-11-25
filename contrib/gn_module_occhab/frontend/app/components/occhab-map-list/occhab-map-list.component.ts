@@ -44,8 +44,7 @@ export class OccHabMapListComponent implements OnInit {
     private _moduleService: ModuleService,
     public cruvedStore: CruvedStoreService,
     private translate: TranslateService,
-    private actionService: ActionService,
-
+    private actionService: ActionService
   ) {}
 
   ngOnInit() {
@@ -63,7 +62,7 @@ export class OccHabMapListComponent implements OnInit {
     this.destinationImportCode = currentModule.destination[0]?.code;
 
     if (this.storeService.firstMessageMapList) {
-      this._commonService.regularToaster('info', 'Les 50 dernières stations saisies');
+      this._commonService.translateToaster('info', 'Occhab.UI.Last50');
       this.storeService.firstMessageMapList = false;
     }
 
@@ -145,7 +144,7 @@ export class OccHabMapListComponent implements OnInit {
   displayHabTooltip(row): string[] {
     let tooltip = [];
     if (row.habitats === undefined) {
-      tooltip.push('Aucun habitat');
+      tooltip.push(this.translate.instant('Occhab.UI.NoHabitat'));
     } else {
       for (let i = 0; i < row.habitats.length; i++) {
         let occ = row.habitats[i];
@@ -161,7 +160,7 @@ export class OccHabMapListComponent implements OnInit {
       if (row.observers_txt !== null && row.observers_txt.trim() !== '') {
         tooltip.push(row.observers_txt.trim());
       } else {
-        tooltip.push('Aucun observateurs');
+        tooltip.push(this.translate.instant('Occhab.UI.NoObserver'));
       }
     } else {
       for (let i = 0; i < row.observers.length; i++) {
