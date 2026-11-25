@@ -1,9 +1,10 @@
-import { NgModule } from '@angular/core';
+import { Injectable, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { Routes, RouterModule } from '@angular/router';
 import { HttpClientXsrfModule } from '@angular/common/http';
 import { MatPaginatorIntl } from '@angular/material/paginator';
+import { TranslateService } from '@ngx-translate/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -36,21 +37,32 @@ const routes: Routes = [
   { path: 'af_detail/:id', component: AfCardComponent },
 ];
 
+@Injectable()
 export class MetadataPaginator extends MatPaginatorIntl {
-  constructor() {
+  constructor(private translate: TranslateService) {
     super();
-    this.nextPageLabel = 'Page suivante';
-    this.previousPageLabel = 'Page précédente';
-    this.itemsPerPageLabel = 'Éléments par page';
+    this.translate
+      .stream([
+        'MetaData.UI.Paginator.Next',
+        'MetaData.UI.Paginator.Previous',
+        'MetaData.UI.Paginator.ItemsPerPage',
+      ])
+      .subscribe((labels) => {
+        this.nextPageLabel = labels['MetaData.UI.Paginator.Next'];
+        this.previousPageLabel = labels['MetaData.UI.Paginator.Previous'];
+        this.itemsPerPageLabel = labels['MetaData.UI.Paginator.ItemsPerPage'];
+        this.changes.next();
+      });
     this.getRangeLabel = (page: number, pageSize: number, length: number) => {
+      const of = this.translate.instant('MetaData.UI.Paginator.Of');
       if (length == 0 || pageSize == 0) {
-        return `0 sur ${length}`;
+        return `0 ${of} ${length}`;
       }
       length = Math.max(length, 0);
       const startIndex = page * pageSize;
       const endIndex =
         startIndex < length ? Math.min(startIndex + pageSize, length) : startIndex + pageSize;
-      return `${startIndex + 1} - ${endIndex} sur ${length}`;
+      return `${startIndex + 1} - ${endIndex} ${of} ${length}`;
     };
   }
 }

@@ -9,6 +9,7 @@ import { ActorFormService } from '../services/actor-form.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { OrganismFormDialogComponent } from '../organisms/organism-form-dialog.component';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'pnx-metadata-actor',
@@ -92,7 +93,8 @@ export class ActorComponent implements OnInit {
     public dialog: MatDialog,
     private actorFormS: ActorFormService,
     public config: ConfigService,
-    public _cruvedStore: CruvedStoreService
+    public _cruvedStore: CruvedStoreService,
+    private _translate: TranslateService
   ) {}
 
   ngOnInit() {
@@ -164,7 +166,7 @@ export class ActorComponent implements OnInit {
   }
 
   remove() {
-    const message = `Êtes-vous certain de supprimer cet acteur ?`;
+    const message = this._translate.instant('MetaData.UI.ConfirmDeleteActor');
     const dialogRef = this.dialog.open(ConfirmationDialog, {
       width: '350px',
       position: { top: '5%' },
