@@ -43,7 +43,12 @@
           class="col-md-3"
           class="cardDate"
         >
-          <p>{{ notificationData.creation_date | date: 'EEEE d MMMM y h:mm' : '+0200' : 'fr' }}</p>
+          <p>
+            {{
+              notificationData.creation_date
+                | date: 'EEEE d MMMM y HH:mm' : undefined : translate.currentLang
+            }}
+          </p>
         </div>
       </div>
     </div>
