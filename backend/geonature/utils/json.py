@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from packaging import version
 
 from flask import g
@@ -36,25 +38,37 @@ def pagination_schema(schema):
         g.pop("pagination_schema", None)
 
 
-class MyJSONProvider(DefaultJSONProvider):
+def serialize_pagination(o):
+    if "pagination_schema" in g:
+        items = g.pagination_schema.dump(o.items, many=True)
+    else:
+        items = [item.as_dict() for item in o.items]
+    return {
+        "items": items,
+        "page": o.page,
+        "per_page": o.per_page,
+        "pages": o.pages,
+        "total": o.total,
+        "prev_num": o.prev_num,
+        "next_num": o.next_num,
+        "has_next": o.has_next,
+        "has_prev": o.has_prev,
+    }
+
+
+class ExtensibleJSONProvider(DefaultJSONProvider):
+    CONVERTERS: ClassVar = [
+        (Row, lambda o: o._asdict()),
+        (Pagination, serialize_pagination),
+    ]
+
     @staticmethod
     def default(o):
-        if isinstance(o, Row):
-            return o._asdict()
-        if isinstance(o, Pagination):
-            if "pagination_schema" in g:
-                items = g.pagination_schema.dump(o.items, many=True)
-            else:
-                items = [item.as_dict() for item in o.items]
-            return {
-                "items": items,
-                "page": o.page,
-                "per_page": o.per_page,
-                "pages": o.pages,
-                "total": o.total,
-                "prev_num": o.prev_num,
-                "next_num": o.next_num,
-                "has_next": o.has_next,
-                "has_prev": o.has_prev,
-            }
+        for typ, func in ExtensibleJSONProvider.CONVERTERS:
+            if isinstance(o, typ):
+                return func(o)
         return DefaultJSONProvider.default(o)
+
+
+def register_json_provider(typ, func):
+    ExtensibleJSONProvider.CONVERTERS.append((typ, func))
