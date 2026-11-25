@@ -256,7 +256,6 @@ class OccurenceHabitat(NomenclaturesMixin, db.Model):
         foreign_keys=[id_nomenclature_abundance],
     )
     id_nomenclature_sensitivity: Mapped[Optional[int]] = mapped_column(
-        "id_nomenclature_sensitvity",  # TODO fix db column typo
         Integer,
         ForeignKey(Nomenclature.id_nomenclature),
     )
