@@ -2,7 +2,9 @@ import codecs
 import csv
 import json
 import unicodedata
+from collections import defaultdict
 from io import BytesIO, StringIO, TextIOWrapper
+from itertools import groupby
 
 # url_quote was deprecated in werkzeug 3.0 https://stackoverflow.com/a/77222063/5807438
 from urllib.parse import quote as url_quote
@@ -380,7 +382,12 @@ def get_import_values(scope, imprt):
     """
     .. :quickref: Import;
 
-    Return all values present in imported file for nomenclated fields
+    Return all values present in imported file for nomenclated fields.
+
+    Each nomenclature type is returned only once, whatever the number of
+    nomenclated fields using it. The source values of all the fields sharing
+    the same nomenclature type are aggregated into a single entry, each value
+    being flagged as ``mandatory`` if it is used by at least one mandatory field.
     """
     # check that the user has read permission to this particular import instance:
     if not imprt.has_instance_permission(scope, action_code="C"):
@@ -391,43 +398,62 @@ def get_import_values(scope, imprt):
         select(BibFields)
         .where(BibFields.mnemonique != None, BibFields.destination == imprt.destination)
         .options(joinedload(BibFields.nomenclature_type))
-        .order_by(BibFields.id_field)
+        .order_by(BibFields.mnemonique)  # for groupby
     ).all()
     # Note: response format is validated with jsonschema in tests
     transient_table = imprt.destination.get_transient_table()
     response = {}
-    for field in nomenclated_fields:
-        if field.name_field not in imprt.fieldmapping:
-            # this nomenclated field is not mapped
+    # Fields sharing the same nomenclature type (mnemonique) are aggregated into
+    # a single entry, whatever the number of fields using it.
+    for key, fields in groupby(nomenclated_fields, key=lambda f: f.mnemonique):
+        values: dict[str, bool] = defaultdict(bool)
+        nomenclature_type = None
+        for field in fields:
+            # all the fields of the group share the same nomenclature type
+            if nomenclature_type is None:
+                nomenclature_type = field.nomenclature_type
+            if field.name_field not in imprt.fieldmapping:
+                # this nomenclated field is not mapped
+                continue
+            source = imprt.fieldmapping[field.name_field]
+            if (
+                source.get("column_src", None) not in imprt.columns
+                and source.get("constant_value", None) is None
+            ):
+                # the file do not contain this field expected by the mapping and there is no constant value
+                continue
+            # TODO: vérifier que l’on a pas trop de valeurs différentes ?
+            column = field.source_column
+            field_values = list(
+                db.session.execute(
+                    select(func.coalesce(transient_table.c[column], ""))
+                    .where(transient_table.c.id_import == imprt.id_import)
+                    .distinct(transient_table.c[column])
+                ).scalars()
+            )
+            # Track, for each source value, whether it is used by at least one
+            # mandatory field: the "no nomenclature" choice must only be proposed
+            # for values that are not used by any mandatory field.
+            for value in field_values:
+                values[value] |= field.mandatory
+        if not values:
+            # no field of this nomenclature type is actually usable
             continue
-        source = imprt.fieldmapping[field.name_field]
-        if (
-            source.get("column_src", None) not in imprt.columns
-            and source.get("constant_value", None) is None
-        ):
-            # the file do not contain this field expected by the mapping and there is no constant value
-            continue
-        # TODO: vérifier que l’on a pas trop de valeurs différentes ?
-        column = field.source_column
-        values = [
-            value
-            for value, in db.session.execute(
-                select(transient_table.c[column])
-                .where(transient_table.c.id_import == imprt.id_import)
-                .distinct(transient_table.c[column])
-            ).fetchall()
-        ]
         set_committed_value(
-            field.nomenclature_type,
+            nomenclature_type,
             "nomenclatures",
-            TNomenclatures.query.filter_by(nomenclature_type=field.nomenclature_type).order_by(
-                collate(TNomenclatures.cd_nomenclature, "fr_numeric")
+            TNomenclatures.query.filter_by(nomenclature_type=nomenclature_type).order_by(
+                # collate(TNomenclatures.cd_nomenclature, "fr_numeric")
+                collate(TNomenclatures.cd_nomenclature, "fr-x-icu")
             ),
         )
-        response[field.name_field] = {
-            "nomenclature_type": field.nomenclature_type.as_dict(),
-            "nomenclatures": [n.as_dict() for n in field.nomenclature_type.nomenclatures],
-            "values": values,
+        nomenclatures = [n.as_dict() for n in nomenclature_type.nomenclatures]
+        response[key] = {
+            "nomenclature_type": nomenclature_type.as_dict(),
+            "nomenclatures": nomenclatures,
+            "values": [
+                {"value": value, "mandatory": mandatory} for value, mandatory in values.items()
+            ],
         }
     return jsonify(response)
 

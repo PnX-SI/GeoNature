@@ -344,6 +344,16 @@ class TestMappings:
         mapping = db.session.get(MappingTemplate, r.json["id"])
         assert mapping.owners == [users["user"]]
 
+        # empty string as cd_nomenclature is allowed for not-mandatory nomenclatures
+        contentmapping = {
+            "NAT_OBJ_GEO": {
+                "ne sais pas": "",
+            },
+        }
+        r = self.client.post(url, data=contentmapping)
+        assert r.status_code == 200, r.json
+        assert r.json["values"] == contentmapping
+
     def test_update_mapping_label(self, users, mappings):
         mapping = mappings["associate"]
 
