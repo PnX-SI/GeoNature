@@ -14,7 +14,7 @@
       [active]="rla.isActive"
       [attr.data-qa]="'tabs-layout-tab-' + tab.path"
     >
-      {{ tab.label }}
+      {{ tab.label | translate }}
     </a>
   </nav>
   <mat-tab-nav-panel

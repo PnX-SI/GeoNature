@@ -1,4 +1,7 @@
 {
+  "Autocomplete": {
+    "NoItemFound": "No item found"
+  },
   "Home": "Home",
 
   "LanguageSelection": "Choose the interface language",
@@ -44,16 +47,23 @@
     "PDFExport": "Export a PDF",
     "DownloadData": "Download data",
     "Copy": "Copy",
-    "Clear": "Clear"
+    "Clear": "Clear",
+    "Send": "Send",
+    "Save": "Save"
   },
   "Messages": {
-    "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire"
+    "FillGeometryFirst": "Please add a point on the map before filling in the form"
   },
   "Errors": {
     "ErrorOccurs": "An error occurred",
     "DatesReversed": "The start date cannot be later than the end date",
     "AltitudeError": "The maximum altitude cannot be less than the minimum altitude",
-    "NotAllowed": "You do not have permission to perform this action"
+    "NotAllowed": "You do not have permission to perform this action",
+    "Title": "Error",
+    "Timeout": "The request did not complete in time",
+    "RequestColon": "Request:",
+    "Unknown": "An unknown error occurred.",
+    "ModuleAccess": "You do not have access rights to the module {{ module }}"
   },
 
   "Authentication": {
@@ -86,7 +96,8 @@
         "LowerCase": "The password must contain at least one lowercase letter.",
         "Digit": "The password must contain at least one digit.",
         "SpecialChar": "The password must contain at least one special character."
-      }
+      },
+      "LoginExists": "The provided username already exists."
     },
     "Messages": {
       "Recovery": {
@@ -101,7 +112,8 @@
       "HidePassword": "Hide password",
       "MailMandatory": "Email is mandatory.",
       "InvalidMail": "Please enter a valid email address.",
-      "HelpContact": "Connection issue? Contact us"
+      "HelpContact": "Connection issue? Contact us",
+      "AccountActivated": "Your account has been activated!"
     },
     "OtherAuthProviders": "Other login methods",
     "SignUp": {
@@ -126,6 +138,14 @@
     }
   },
   "MyAccount": {
+    "Edit": "Edit",
+    "ChangePassword": "Change password",
+    "ChangeEmail": "Change email address",
+    "ChangePasswordTooltip": "Change the password",
+    "PasswordFormInvalid": "The form is not valid",
+    "PasswordConfirmationPlaceholder": "Confirmation",
+    "NewPasswordPlaceholder": "New",
+    "CurrentPasswordLabel": "Current password",
     "MyAccount": "My account",
     "MyObserverSheet": "My observer sheet",
     "ObserverSheetTooltip": "Access your observer sheet",
@@ -141,6 +161,7 @@
     "RequestEmailChangeTooltip": "Request email change",
     "RedirectionInProgress": "Redirection in progress...",
     "Messages": {
+      "UnknownError": "Unknown error",
       "AutoAccountEmailConfirmation": "An email has just been sent to you to activate your account",
       "AdminAccountEmailConfirmation": "Your account creation request has been received and will be evaluated by an administrator",
       "PasswordAndLoginRecovery": "An email has just been sent to you to recover your login and/or renew your password",
@@ -148,8 +169,25 @@
       "FieldRequired": "This field is required",
       "InvalidEmailFormat": "Invalid email format",
       "EmailChangeSuccess": "Your email address has been successfully validated.",
-      "EmailChangeError": "An error occurred"
-    }
+      "EmailChangeError": "An error occurred",
+      "ConfirmationError": "Confirmation error",
+      "EmailLoadError": "Error while retrieving the email",
+      "EmailValidated": "Email successfully validated"
+    },
+    "MyInformation": "My information",
+    "LastName": "Last name",
+    "FirstName": "First name",
+    "Email": "Email address",
+    "PasswordChangeTitle": "Change password",
+    "Remarks": "Remarks",
+    "RemarksPlaceholder": "Additional information...",
+    "EditTooltip": "Edit this information",
+    "CancelTooltip": "Cancel changes",
+    "SaveTooltip": "Save changes",
+    "CurrentPassword": "Current password",
+    "NewPassword": "New password",
+    "PasswordConfirmation": "Password confirmation",
+    "Change": "Change"
   },
 
   "Observer": "Observer",
@@ -179,13 +217,17 @@
   "AcquisitionFramework": "Acquisition Framework",
   "AcquisitionFrameworks": "Acquisition Frameworks",
   "Taxon": "Taxon",
-  "Taxons": "Taxons",
+  "Taxons": "Taxa",
   "Species": "Species",
   "Individual": {
     "Name": "Individual name",
     "Raw": "Individual(s)",
-    "Select": "Sélectionner an individual",
-    "SelectPlural": "Sélect individuals"
+    "Select": "Select an individual",
+    "SelectPlural": "Select individuals",
+    "Add": "Add an individual",
+    "CreateTitle": "Create an individual",
+    "Create": "Create the individual",
+    "Comments": "Comments"
   },
   "SelectModules": "Select one or more modules",
   "Habitat": "Habitat",
@@ -268,15 +310,27 @@
   "DownloadOverflow": "The number of items is too large to be downloaded, please refine your search or contact your administrator",
   "DynamicForm": {
     "Errors": {
-      "CheckBoxError": "Please select at least one option"
-    }
+      "CheckBoxError": "Please select at least one option",
+      "InvalidUuid": "The field must contain a valid UUID."
+    },
+    "TypeToSearch": "Type to search",
+    "NoItemFound": "No item found",
+    "Loading": "Loading...",
+    "NoneOption": "-- None --"
   },
   "Toolbar": {
     "Language": {
-      "FrenchTooltip": "Switch interface language to french",
-      "EnglishTooltip": "Switch interface language to english",
-      "ChineseTooltip": "Switch interface language to chinese"
-    }
+      "FrenchTooltip": "Switch interface language to French",
+      "EnglishTooltip": "Switch interface language to English",
+      "ChineseTooltip": "Switch interface language to Chinese"
+    },
+    "OpenMenu": "Open the main menu",
+    "OpenProfile": "Open my profile menu",
+    "AccountSettings": "Open my account settings",
+    "ObserverSheet": "Open my observer sheet",
+    "Notifications": "Open notifications",
+    "MoreOptions": "More options",
+    "PublicAccess": "Public access"
   },
   "Map": {
     "Actions": {
@@ -286,7 +340,8 @@
       "AddPolygon": "Locate the observation (polygon)"
     },
     "Errors": {
-      "LocationError": "Location not found"
+      "LocationError": "Location not found",
+      "UnsupportedGeometry": "The geometry type \"{{ type }}\" is not supported."
     },
     "Messages": {
       "ZoomWarning": "Inappropriate scale, please zoom in further to point the survey",
@@ -296,6 +351,24 @@
     "LayersControl": {
       "BaseLayersLabel": "Base maps",
       "OverlaysLabel": "Additional layers"
+    },
+    "Places": {
+      "Save": "Save a place",
+      "DrawFirst": "Please draw a geometry on the map first.",
+      "Added": "Place added.",
+      "Name": "Place name",
+      "List": "List of places",
+      "MyPlaces": "My places",
+      "NoneSelected": "No place selected",
+      "ConfirmDelete": "Are you sure you want to delete this place?",
+      "Delete": "Delete the place",
+      "SaveTitle": "My places"
+    },
+    "Gps": {
+      "Title": "GPS coordinates",
+      "DecimalDegrees": "Decimal degrees (WGS84)",
+      "TextFormat": "OR text format (WGS84)",
+      "Example": "Example: 47.619, -3.425"
     }
   },
   "MapList": {
@@ -501,11 +574,31 @@
       "ShowingResults": "Showing results",
       "Of": "of",
       "PreviousPage": "Previous page",
-      "NextPage": "Next page"
+      "NextPage": "Next page",
+      "ExactMatchExists": "An organism with this name already exists: use it or enter another name"
     },
     "Statistics": {
       "OccurrencesSynthese": "Taxon(s) occurrence(s)",
       "OccurrencesOcchab": "Habitat(s) occurrence(s)"
+    },
+    "UI": {
+      "SeeDataset": "See the dataset sheet",
+      "DatasetEmpty": "This dataset has no data in the Synthesis",
+      "ShowInSynthese": "Show the data in the Synthesis",
+      "EditDataset": "Edit the dataset",
+      "NoEditDataset": "You are not allowed to edit this dataset",
+      "SelectPage": "Select a page",
+      "IconDataset": "Dataset icon",
+      "IconData": "Data icon",
+      "IconTaxon": "Taxon icon",
+      "ConfirmDeleteDataset": "Are you sure you want to delete this dataset?",
+      "Paginator": {
+        "Next": "Next page",
+        "Previous": "Previous page",
+        "ItemsPerPage": "Items per page",
+        "Of": "of"
+      },
+      "ConfirmDeleteActor": "Are you sure you want to delete this actor?"
     }
   },
   "Filters": {
@@ -519,12 +612,27 @@
   "TaxonSearch": {
     "Messages": {
       "NoTaxonFound": "No taxon found for this search"
-    }
+    },
+    "KingdomColon": "Kingdom:",
+    "GroupColon": "Group:",
+    "FilterHelp": "Filter the suggested taxa by kingdom and INPN group",
+    "ClearAll": "Remove all names",
+    "AddTag": "Add a name",
+    "TypeToSearch": "Start typing a name...",
+    "GroupPlaceholder": "Taxonomic groups"
   },
   "Geo": {
     "Municipality": "Municipality",
     "Municipalities": "Municipality(ies)",
-    "Territories": "Territories"
+    "Territories": "Territories",
+    "Areas": {
+      "ClearAll": "Remove all geographic areas",
+      "AddTag": "Add a geographic area",
+      "TypeToSearch": "Start typing an area",
+      "NotFound": "No match for “{{ term }}”",
+      "LoadingFor": "Loading areas for “{{ term }}”",
+      "LoadingShort": "Loading “{{ term }}”"
+    }
   },
   "Synthese": {
     "LatestObservations": "Latest observations",
@@ -544,10 +652,17 @@
       "Copied": "Copied to clipboard!",
       "DeleteSuccess": "Observation deleted successfully",
       "Pinned": "Pinned successfully",
-      "Unpinned": "Unpinned successfully"
+      "Unpinned": "Unpinned successfully",
+      "MissingGeom": "Some observations could not be displayed on the map because their aggregation grid cell is not available",
+      "LastObs": "The last {{ limit }} observations of the synthesis",
+      "NoMesh": "The selected observation is not in any grid cell - switch to 'point' mode to locate it",
+      "MapLimit": "For performance reasons, the number of displayed observations is limited to {{ nb }}"
     },
     "Errors": {
-      "PeriodCompleteness": "The 'start period' and 'end period' fields must be filled if you want to search by period"
+      "PeriodCompleteness": "The 'start period' and 'end period' fields must be filled if you want to search by period",
+      "DefaultFilterType": "Default filters: nomenclature type not found for the key {{ key }}",
+      "DefaultFilterList": "Default filters: the default filter value for {{ key }} must be a list of codes",
+      "DefaultFilterNomenclature": "Default filters: no nomenclature found for <type.cd_nomenclature> = {{ type }}.{{ code }}"
     },
 
     "Commented": "commented on",
@@ -584,7 +699,19 @@
       "AdvancedFieldsSelected": "Advanced field(s) selected",
       "RedListCategory": "Red list category",
       "ProtectionStatus": "Protection status",
-      "TaxrefAttributes": "TaxRef attributes"
+      "TaxrefAttributes": "TaxRef attributes",
+      "ValidPositionTooltip": "Is the location within the known range of the taxon?",
+      "ValidAltitudeTooltip": "Is the altitude of the observation within the known altitude range of the taxon?",
+      "ValidPhenologyTooltip": "Are the date and altitude of the observation consistent with the known phenology of the taxon?",
+      "RemoveTaxon": "Remove “{{ name }}” from the search filters",
+      "TaxaCount": "taxa",
+      "AddPeriod": "Add a period",
+      "DateMin": "Start date",
+      "DateMax": "End date",
+      "PeriodStart": "Period start",
+      "PeriodEnd": "Period end",
+      "ObserversTooltip": "To search for several observers, separate them with commas",
+      "SelectionColon": "Selection:"
     },
     "FicheTaxon": {
       "Messages": {
@@ -601,6 +728,204 @@
         "default": "Default display",
         "area-aggregation": "Density of observations"
       }
+    },
+    "Loading": "Loading data (this may take a while)…",
+    "AdvancedForm": {
+      "TaxrefAttributesTitle": "TaxRef attributes",
+      "Title": "Advanced taxonomic filters",
+      "TaxonomicRanks": "Taxonomic ranks",
+      "SearchRank": "Search a taxonomic rank (scientific name - above genus)",
+      "SearchedTaxa": "Searched taxon(s):",
+      "TaxonomicTree": "Taxonomic tree",
+      "TreeHelp": "Select one or more taxa from the taxonomic hierarchy",
+      "ResetSelection": "Reset selection",
+      "Statuses": "Statuses",
+      "RedLists": "Red lists",
+      "TaxhubAttributes": "TaxHub attributes",
+      "Group2": "INPN group 2",
+      "Group3": "INPN group 3",
+      "ValidateAndClose": "Apply and close"
+    },
+    "List": {
+      "OpenInModule": "View the observation in the data entry module",
+      "TaxonSheet": "Display the taxon sheet",
+      "DatasetSheet": "Display the dataset sheet"
+    },
+    "Download": {
+      "LoadingAlt": "Loading...",
+      "Title": "Download",
+      "LimitReached": "Display limit reached!",
+      "Warning": "Warning!",
+      "TooManyObs": "Your query returns too many observations to display them on the map.",
+      "OnlyLast": "After closing this window you can view <b>only</b> the last {{ nb }} observations matching your query.",
+      "ExportLimit": "You can still export the data, up to <b>{{ nb }}</b> observations, with the links below",
+      "Observations": "Download observations",
+      "Format": "{{ format }} format",
+      "Taxa": "Download taxa",
+      "Statuses": "Download statuses",
+      "Metadata": "Download metadata",
+      "StatusesButton": "Statuses",
+      "MetadataButton": "Metadata"
+    },
+    "Popup": {
+      "ObservedOn": "Observed on:",
+      "By": "By:",
+      "Undefined": "Undefined",
+      "Link": "Link to the observation"
+    },
+    "Sheets": {
+      "Indicators": {
+        "Observations": "observation(s)",
+        "Observers": "observer(s)",
+        "Municipalities": "municipality(ies)",
+        "AltitudeRange": "Altitude range",
+        "ObservationRange": "Observation range",
+        "ObservedTaxa": "observed taxon(s)",
+        "ValidObservations": "valid observation(s)*",
+        "FirstObservation": "First observation*",
+        "LastObservation": "Last observation*",
+        "ValidAltitudeRange": "Altitude range*"
+      },
+      "Tabs": {
+        "MediaObserver": "Media",
+        "Observations": "Observations",
+        "Taxonomy": "Taxonomy",
+        "Observers": "Observers",
+        "Media": "Media",
+        "Profile": "Profile",
+        "Taxa": "Taxa"
+      },
+      "ObservationRangeLabel": "Observation range:",
+      "ObservationYear": "Observation year(s):",
+      "NoMedia": "No media",
+      "Statuses": "Statuses",
+      "Oldest": "Oldest",
+      "Newest": "Most recent",
+      "ObservationCount": "Number of observation(s)",
+      "MediaCount": "Number of media",
+      "DatasetCount": "Number of dataset(s)"
+    },
+    "DynamicFilters": {
+      "has_pin": "Is pinned",
+      "has_comment": "Has comments",
+      "has_alert": "Is reported",
+      "has_medias": "Has media",
+      "id_nomenclature_geo_object_nature": "Geographic object nature",
+      "id_nomenclature_behaviour": "Behaviour",
+      "precision": "Pointing accuracy",
+      "grp_method": "Grouping method",
+      "place_name": "Place name",
+      "id_nomenclature_grp_typ": "Grouping type",
+      "id_nomenclature_observation_status": "Observation status",
+      "id_nomenclature_obs_technique": "Observation technique",
+      "id_nomenclature_bio_condition": "Biological condition",
+      "id_nomenclature_bio_status": "Biological status",
+      "id_nomenclature_biogeo_status": "Biogeographic status",
+      "id_nomenclature_naturalness": "Naturalness",
+      "id_nomenclature_determination_method": "Determination method",
+      "id_nomenclature_exist_proof": "Proof of existence",
+      "id_nomenclature_diffusion_level": "Diffusion level",
+      "id_nomenclature_source_status": "Source status",
+      "id_nomenclature_blurring": "Blurring",
+      "id_nomenclature_life_stage": "Life stage",
+      "id_nomenclature_sex": "Sex",
+      "id_nomenclature_obj_count": "Counted object",
+      "id_nomenclature_type_count": "Count type",
+      "id_nomenclature_valid_status": "Validation status",
+      "id_nomenclature_sensitivity": "Sensitivity",
+      "id_nomenclature_info_geo_type": "Geographic information type",
+      "digital_proof": "Digital proof",
+      "reference_biblio": "Bibliographic reference",
+      "non_digital_proof": "Non-digital proof",
+      "id_digitiser": "Entered by",
+      "comment_context": "Comment (survey)",
+      "comment_description": "Comment (taxon)",
+      "determiner": "Determiner",
+      "unique_id_sinp": "Observation UUID (unique_id_sinp)",
+      "id_synthese": "ID (id_synthese)",
+      "id_import": "Import ID",
+      "id_source": "Data source",
+      "id_module": "Source module of the data"
+    },
+    "InfoObs": {
+      "NoProfileToast": "No profile",
+      "Report": "Report",
+      "CountMin": "Minimum count",
+      "CountMax": "Maximum count",
+      "CommentSurvey": "Survey comment",
+      "CommentOccurrence": "Occurrence comment",
+      "Determiner": "Determiner",
+      "ProofSample": "Proof sample",
+      "UniqueIdSinp": "SINP unique identifier",
+      "AdditionalFields": "Additional fields:",
+      "SourceModule": "Source module",
+      "Media": "Media",
+      "ZoningType": "Zoning type",
+      "Zones": "Areas",
+      "ValidationHistory": "Validation history of the record",
+      "ValidationDate": "Validation date",
+      "TaxonProfile": "Taxon profile",
+      "TaxonGeneralInfo": "General information about the taxon",
+      "ValidCount": "Number of valid records",
+      "ValidAltitudeMin": "Minimum valid altitude",
+      "ValidAltitudeMax": "Maximum valid altitude",
+      "FirstValid": "First valid observation",
+      "LastValid": "Last valid observation",
+      "Consistency": "Record consistency",
+      "InValidArea": "Within the valid observation area",
+      "PhenologyConsistency": "Phenological consistency",
+      "InValidAltitude": "Within the valid altitude range",
+      "ValidRange": "Range of valid observations",
+      "NoProfile": "No profile for this taxon",
+      "Classification": "Classification",
+      "NoneF": "None",
+      "LocalAttributes": "Local taxonomic attribute(s)",
+      "NoneM": "None",
+      "ViewDownload": "View / Download",
+      "Tabs": {
+        "Metadata": "Metadata",
+        "Taxonomy": "Taxonomy",
+        "Media": "Media",
+        "Zoning": "Zoning",
+        "Validation": "Validation",
+        "Discussion": "Discussion",
+        "Details": "Occurrence details"
+      },
+      "Taxonomy": {
+        "TaxonomicGroup": "Taxonomic group",
+        "Order": "Order",
+        "Family": "Family",
+        "LbNom": "lb nom",
+        "CdNom": "cd nom",
+        "CdRef": "cd ref",
+        "ValidName": "Valid name",
+        "CitedName": "Cited name",
+        "Rank": "Taxonomic rank"
+      },
+      "AutoValidation": "Automatic assignment",
+      "Mail": {
+        "NoMedia": "No media",
+        "Title": "Title:",
+        "Link": "Link to the media:",
+        "Description": "Description:",
+        "Author": "Author:"
+      }
+    },
+    "Alert": {
+      "Description": "Report description:",
+      "Detail": "Describe the report here:",
+      "Back": "Back",
+      "Delete": "Delete this report",
+      "Handled": "Report taken into account!",
+      "Saved": "Report saved!"
+    },
+    "Discussion": {
+      "CommentColon": "Comment:",
+      "Placeholder": "Your comment....",
+      "Required": "Please enter a comment",
+      "ChangedStatus": "changed the status to",
+      "DeletedOn": "deleted the comment of {{ date }}",
+      "Saved": "Comment saved!"
     }
   },
   "Media": {
@@ -615,12 +940,34 @@
       "Link": "Display the media",
       "Diaporama": "Display the media",
       "Next": "View the next media",
-      "Previous": "View the previous media"
+      "Previous": "View the previous media",
+      "Cancel": "Cancel adding the media"
     },
     "Messages": {
-      "loading": "Loading media"
+      "loading": "Loading media",
+      "PleaseValidate": "Please validate the media with the validation button",
+      "FileRequired": "Please complete the form and provide a file",
+      "UrlRequired": "Please complete the form and provide a valid URL",
+      "RequestError": "Request error:",
+      "Incomplete": "Please complete the form.",
+      "Valid": "The media is valid",
+      "FileTooBig": "The file size ({{ size }} MB) exceeds the maximum allowed size ({{ max }} MB)"
     },
-    "MediaType": "Media type"
+    "MediaType": "Media type",
+    "Form": {
+      "file": "Choose a file",
+      "displayDetails": "Advanced",
+      "displayDetailsHelp": "Show more options for the form",
+      "id_nomenclature_media_type": "Media type",
+      "bFile": "Media import",
+      "Upload": "Upload a file",
+      "Url": "Enter a URL",
+      "title_fr": "Title",
+      "author": "Author"
+    },
+    "Thumbnail": "Thumbnail",
+    "TitleColon": "Title:",
+    "ByAuthor": "by {{ author }}"
   },
   "Import": {
     "Destination": "Destination",
@@ -674,7 +1021,9 @@
         "ConfirmMappingDeletion": "Delete the model",
         "DefineUniqueValue": "Set a unique value",
         "SelectASourceFileColumn": "Select a file column"
-      }
+      },
+      "IsFilled": "is filled in",
+      "AreFilled": "are filled in"
     },
     "ContentMapping": {
       "Title": "Nomenclature correspondence",
@@ -692,7 +1041,8 @@
       "Questions": {
         "SaveMappingMessage?": "Do you want to save your correspondences in a model to reuse them during a future import?",
         "CreateOrUpdateMappingModel?": "The correspondence model has been modified; do you want to update the existing model or create a new model?"
-      }
+      },
+      "DefaultValueColon": "Default value:"
     },
     "ObserverMapping": {
       "Title": "Observer mapping",
@@ -703,6 +1053,10 @@
       "Messages": {
         "MappingNotAllowed": "The mapping of observers is not allowed for this import destination.",
         "NoObserverMapping": "No field linked to observers has been mapped (or the column in the file is empty)."
+      },
+      "Actions": {
+        "EmptyMapping": "Clear",
+        "ResetMapping": "Reset"
       }
     },
     "Errors": {
@@ -717,7 +1071,146 @@
     },
     "Messages": {
       "DeleteSuccessfully": "Import deleted",
-      "SkipContentMapping": "No nomenclature present in the provided data, proceeding to the 'Data Import' step."
+      "SkipContentMapping": "No nomenclature present in the provided data, proceeding to the 'Data Import' step.",
+      "RedirectedToLastStep": "You have been redirected to the last validated step.",
+      "DataImported": "Data imported!",
+      "PreparingData": "Preparing data",
+      "LoadingFields": "Loading fields..."
+    },
+    "Process": {
+      "Steps": {
+        "Upload": "File upload",
+        "Decode": "File configuration",
+        "FieldMapping": "Field mapping",
+        "ContentMapping": "Nomenclature mapping",
+        "ObserverMapping": "Observer mapping",
+        "Import": "Data import"
+      },
+      "Decode": {
+        "Encoding": "Encoding:",
+        "AutoDetected": "(auto-detected)",
+        "SelectEncoding": "Select an encoding",
+        "Format": "Format:",
+        "SelectFormat": "Select a format",
+        "Separator": "Separator:",
+        "Srid": "SRID of the geographic data:",
+        "SelectSrid": "Select a SRID"
+      },
+      "Check": {
+        "Start": "Start the check",
+        "Error": "Error during the check, please verify your file",
+        "InProgress": "Data checks in progress",
+        "Intro": "Before importing your data, their conformity must be checked"
+      },
+      "Summary": {
+        "Title": "Summary before import",
+        "Reports": "Reports",
+        "ImportReport": "Import report",
+        "Area": "Geographic area",
+        "Preview": "Preview of the valid observations ready to be imported",
+        "Errors": "{{ n }} error(s)",
+        "Warnings": "{{ n }} warning(s)",
+        "ExportInvalid": "Export your {{ n }} invalid observations",
+        "NoValid": "No valid {{ entity }} was found"
+      },
+      "Run": {
+        "InProgress": "Data import in progress",
+        "InProgressEllipsis": "Data import in progress...",
+        "Done": "Import completed",
+        "BackToList": "Back to the import list",
+        "ImportValid": "Import your {{ n }} valid entities",
+        "Imported": "Your {{ n }} observations have been imported",
+        "Notification": "The file is being imported into the synthesis... A notification email will be sent to you when processing ends."
+      },
+      "Ok": "OK",
+      "Footer": {
+        "CancelDelete": "Cancel and delete the import",
+        "SaveQuit": "Save and quit"
+      },
+      "Mapping": {
+        "SaveTitle": "Saving the model",
+        "NoneFound": "No predefined field mapping was found.",
+        "EditName": "Edit the import model name",
+        "CancelEditName": "Cancel editing the import model name",
+        "NameHint": "Model name",
+        "DefaultNomenclature": "Nomenclature to use for empty cells (N/A, null)",
+        "Required": "Please fill in the field \"{{ field }}\""
+      },
+      "List": {
+        "Title": "Import list",
+        "InError": "import failed",
+        "Running": "import in progress",
+        "Checking": "checks in progress",
+        "Stats": "Stats",
+        "Empty": "You have not made any import yet",
+        "ImportId": "Import ID",
+        "End": "Import end",
+        "DownloadInvalid": "Download invalid data",
+        "New": "New import"
+      }
+    },
+    "Modal": {
+      "EditTitle": "Edit",
+      "DeleteTitle": "Deletion",
+      "AreYouSure": "Are you sure you want to continue?",
+      "ConfirmAction": "Are you sure you want to perform this action?",
+      "FieldMappingChanged": "The field mapping has been modified. The previous field mapping will be deleted.",
+      "FileReplaced": "The existing file will be deleted! To replace the imported data, complete the import again.",
+      "ContentMappingChanged": "The nomenclature mapping has been modified. The previous nomenclature mapping will be deleted.",
+      "DataAlreadyImported": "Data has already been imported. If you continue, it will be deleted.",
+      "EditBody": "Edit import no. {{ id }}?",
+      "EditDoneWarning": "Warning: you are about to edit a completed import. Any change will delete the imported data until you complete the import again.",
+      "DeleteBody": "Delete this import started on {{ date }}?",
+      "DeleteDataWarning": "Warning: this will also delete the imported data."
+    },
+    "Report": {
+      "Description": "Import description",
+      "File": "File:",
+      "FileName": "File name:",
+      "SubmissionDate": "Import submission date:",
+      "Author": "Author:",
+      "Authors": "Author(s):",
+      "Srid": "SRID:",
+      "ImportedRows": "Number of imported rows:",
+      "Rows": "Number of rows:",
+      "Pdf": "PDF report",
+      "Mappings": "Mappings",
+      "TargetField": "Target field",
+      "SourceField": "Source field",
+      "ConstantValue": "Constant value",
+      "Export": "Export",
+      "SourceValue": "Source value",
+      "Nomenclature": "Nomenclature",
+      "InvalidData": "Invalid data",
+      "ErrorType": "Error type",
+      "Field": "Field",
+      "ErrorDescription": "Error description",
+      "ErrorCount": "Number of error(s)",
+      "ErrorRows": "Rows in error",
+      "WarningType": "Warning type",
+      "WarningDescription": "Warning description",
+      "WarningCount": "Number of warning(s)",
+      "WarningRows": "Rows with warnings",
+      "ConcernedRows": "Rows concerned",
+      "ExportInvalid": "Export your {{ n }} invalid rows",
+      "ImportedData": "Imported data",
+      "ImportedExtent": "Geographic extent of the imported data",
+      "ErrorReport": "Error report",
+      "Errors": "Errors",
+      "Warnings": "Warnings",
+      "Title": "Import report:",
+      "FieldsCount": "Fields ({{ n }})",
+      "NomenclaturesCount": "Nomenclatures ({{ n }} type(s))",
+      "ShowIn": "Show in {{ dest }}",
+      "SubmissionErrors": "The submission contains <b>{{ n }}</b> error(s)",
+      "SubmissionWarnings": "The submission contains <b>{{ n }}</b> warning(s)",
+      "SeeMore": "See more",
+      "SeeLess": "See less",
+      "Status": {
+        "unfinished": "IN PROGRESS",
+        "inerror": "FAILED",
+        "importdone": "COMPLETED"
+      }
     }
   },
   "Releve": {
@@ -731,10 +1224,59 @@
       "SendFailed": "Failed to send to: {{ names }}"
     },
     "Errors": {
-      "NoObserverSelected": "Sélectionnez au moins un observateur",
-      "SubjectRequired": "Sujet requis",
-      "ContentRequired": "Contenu requis",
-      "ContentToShort": "Contenu trop court"
-    }
+      "NoObserverSelected": "Select at least one observer",
+      "SubjectRequired": "Subject required",
+      "ContentRequired": "Content required",
+      "ContentToShort": "Content too short"
+    },
+    "Title": "Send an email",
+    "Subject": "Subject",
+    "Content": "Content"
+  },
+
+  "HomePage": {
+    "LastObservations": "Last 100 observations",
+    "ExploreData": "Explore data",
+    "LastUpdate": "Last update",
+    "Discussions": "Discussions",
+    "Validations": "Validations",
+    "MyDiscussionsOnly": "My discussions only",
+    "SeeDiscussion": "See the discussion thread of synthese id: {{ id }}",
+    "SeeValidation": "See the validation details of observation: {{ id }}",
+    "CommentDate": "Comment date",
+    "Author": "Author",
+    "Content": "Content",
+    "Validator": "Validator",
+    "ValidationStatus": "Validation status",
+    "ValidationMessage": "Validation message",
+    "CitedName": "Cited name",
+    "ObservationDate": "Observation date"
+  },
+
+  "Sidenav": {
+    "MadeWith": "Made with",
+    "Version": "version",
+    "ModulesVersion": "GeoNature modules version:",
+    "ReferentialsVersion": "Reference data version:",
+    "OpenSource": "Open source software developed by a",
+    "Community": "community of organisations"
+  },
+
+  "PageTitle": {
+    "Synthese": "Synthesis",
+    "Metadata": "Metadata",
+    "User": "User",
+    "Notifications": "Notifications"
+  },
+  "Notifications": {
+    "RulesTitle": "Notification rules",
+    "RulesLead": "Manage your notification rules by type of action",
+    "RestoreDefaults": "Restore the default notification rules",
+    "ManageRules": "Manage your notification rules",
+    "DeleteAll": "Delete all your notifications"
+  },
+  "Download": {
+    "InProgress": "Download in progress",
+    "Done": "Export downloaded successfully! Please wait..."
   }
 }

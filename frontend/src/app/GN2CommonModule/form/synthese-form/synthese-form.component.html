@@ -67,7 +67,7 @@
         </select>
       </div>
       <small
-        matTooltip="La localisation est-elle dans l'aire de répartition connue du taxon ?"
+        [matTooltip]="'Synthese.Form.ValidPositionTooltip' | translate"
         matTooltipClass="validation-tooltip"
       >
         {{ 'Synthese.Form.ValidPosition' | translate }}
@@ -85,7 +85,7 @@
         </select>
       </div>
       <small
-        matTooltip="L'altitude de l'observation est-elle dans la plage d'altitude connue du taxon ?"
+        [matTooltip]="'Synthese.Form.ValidAltitudeTooltip' | translate"
         matTooltipClass="validation-tooltip"
       >
         {{ 'Synthese.Form.ValidAltitude' | translate }}
@@ -103,7 +103,7 @@
         </select>
       </div>
       <small
-        matTooltip="La date et l'altitude de l'observation sont-elle conforme à la phénologie connue du taxon ?"
+        [matTooltip]="'Synthese.Form.ValidPhenologyTooltip' | translate"
         matTooltipClass="validation-tooltip"
       >
         {{ 'Synthese.Form.ValidPhenology' | translate }}
@@ -151,7 +151,7 @@
           <i
             (click)="formService.removeTaxon(i, formService.selectedtaxonFromComponent)"
             class="fa fa-times clickable"
-            matTooltip="Retirer « {{ taxon.nom_valide }} » des filtres de recherche"
+            [matTooltip]="'Synthese.Form.RemoveTaxon' | translate: { name: taxon.nom_valide }"
           ></i>
         </li>
       </ul>
@@ -182,11 +182,15 @@
           {{
             formService.selectedCdRefFromTree.length + formService.selectedTaxonFromRankInput.length
           }}
-          taxons
+          {{ 'Synthese.Form.TaxaCount' | translate }}
 
           <i
             class="fa fa-info-circle clickable"
-            [matTooltip]="'Sélection : ' + formService.getSelectedTaxonsSummary()"
+            [matTooltip]="
+              ('Synthese.Form.SelectionColon' | translate) +
+              ' ' +
+              formService.getSelectedTaxonsSummary()
+            "
             matTooltipPosition="above"
           ></i>
         </li>
@@ -199,7 +203,11 @@
 
           <i
             class="fa fa-info-circle clickable"
-            [matTooltip]="'Sélection : ' + formService.selectedRedLists.join(', ')"
+            [matTooltip]="
+              ('Synthese.Form.SelectionColon' | translate) +
+              ' ' +
+              formService.selectedRedLists.join(', ')
+            "
             matTooltipPosition="above"
           ></i>
         </li>
@@ -212,7 +220,11 @@
 
           <i
             class="fa fa-info-circle clickable"
-            [matTooltip]="'Sélection : ' + formService.selectedStatus.join(', ')"
+            [matTooltip]="
+              ('Synthese.Form.SelectionColon' | translate) +
+              ' ' +
+              formService.selectedStatus.join(', ')
+            "
             matTooltipPosition="above"
           ></i>
         </li>
@@ -225,7 +237,11 @@
 
           <i
             class="fa fa-info-circle clickable"
-            [matTooltip]="'Sélection : ' + formService.selectedTaxRefAttributs.join(', ')"
+            [matTooltip]="
+              ('Synthese.Form.SelectionColon' | translate) +
+              ' ' +
+              formService.selectedTaxRefAttributs.join(', ')
+            "
             matTooltipPosition="above"
           ></i>
         </li>
@@ -237,14 +253,14 @@
     <legend>{{ 'When' | translate }}</legend>
     <div class="row row-sm">
       <pnx-date
-        label="Date min"
+        [label]="'Synthese.Form.DateMin' | translate"
         [parentFormControl]="formService.searchForm.controls.date_min"
         data-qa="synthese-form-date-min"
       ></pnx-date>
     </div>
     <div class="row row-sm">
       <pnx-date
-        label="Date max"
+        [label]="'Synthese.Form.DateMax' | translate"
         [parentFormControl]="formService.searchForm.controls.date_max"
         data-qa="synthese-form-date-max"
       ></pnx-date>
@@ -254,7 +270,7 @@
       (click)="isCollapsePeriod = !isCollapsePeriod"
       [attr.aria-expanded]="!isCollapsePeriod"
       class="btn btn-sm btn-outline-shadow period"
-      matTooltip="Ajouter une période"
+      [matTooltip]="'Synthese.Form.AddPeriod' | translate"
     >
       <i
         class="fa fa-cog"
@@ -266,13 +282,13 @@
         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
           <pnx-period
             class="form-sm"
-            label="Periode début"
+            [label]="'Synthese.Form.PeriodStart' | translate"
             [parentFormControl]="formService.searchForm.controls.period_start"
           ></pnx-period>
         </div>
         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
           <pnx-period
-            label="Periode fin"
+            [label]="'Synthese.Form.PeriodEnd' | translate"
             [parentFormControl]="formService.searchForm.controls.period_end"
           ></pnx-period>
         </div>
@@ -319,7 +335,7 @@
     <ng-template #observersTxtBlock>
       <i
         class="fa fa-question-circle"
-        matTooltip="Pour rechercher plusieurs observateurs, séparez-les par des virgules"
+        [matTooltip]="'Synthese.Form.ObserversTooltip' | translate"
       ></i>
       <pnx-observers-text
         [label]="'Observer' | translate"

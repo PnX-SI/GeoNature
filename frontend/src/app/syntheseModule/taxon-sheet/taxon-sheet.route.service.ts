@@ -24,31 +24,31 @@ export function getTaxonSheetRoute(cd_nom: number): [string] {
 
 export const ALL_TAXON_SHEET_ADVANCED_INFOS_ROUTES: Array<ChildRouteDescription> = [
   {
-    label: 'Observations',
+    label: 'Synthese.Sheets.Tabs.Observations',
     path: 'observations',
     configEnabledField: 'ENABLE_TAB_OBSERVATIONS',
     component: ObservationsComponent,
   },
   {
-    label: 'Taxonomie',
+    label: 'Synthese.Sheets.Tabs.Taxonomy',
     path: 'taxonomy',
     configEnabledField: 'ENABLE_TAB_TAXONOMY',
     component: TabTaxonomyComponent,
   },
   {
-    label: 'Observateurs',
+    label: 'Synthese.Sheets.Tabs.Observers',
     path: 'observers',
     configEnabledField: 'ENABLE_TAB_OBSERVERS',
     component: TabObserversComponent,
   },
   {
-    label: 'Médias',
+    label: 'Synthese.Sheets.Tabs.Media',
     path: 'media',
     configEnabledField: 'ENABLE_TAB_MEDIA',
     component: TabMediaComponent,
   },
   {
-    label: 'Profil',
+    label: 'Synthese.Sheets.Tabs.Profile',
     path: 'profile',
     configEnabledField: 'ENABLE_TAB_PROFILE',
     component: TabProfileComponent,

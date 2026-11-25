@@ -100,10 +100,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
         });
         this._ms.map.fitBounds(tempFeatureGroup.getBounds());
       } else {
-        this._commonService.regularToaster(
-          'warning',
-          "L'observation selectionnée n'est présente dans aucune maille - passez en mode 'point' pour la localiser"
-        );
+        this._commonService.translateToaster('warning', 'Synthese.Messages.NoMesh');
       }
     });
 

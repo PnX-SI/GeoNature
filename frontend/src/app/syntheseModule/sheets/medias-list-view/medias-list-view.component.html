@@ -2,7 +2,7 @@
   class="MediaContainer MediaContainer--empty"
   *ngIf="medias.length === 0"
 >
-  <p class="no-media">Aucun média</p>
+  <p class="no-media">{{ 'Synthese.Sheets.NoMedia' | translate }}</p>
 </div>
 <div
   class="MediaContainer"
@@ -19,7 +19,7 @@
           <img
             *ngIf="ms.typeMedia(media) === 'Photo'"
             [src]="ms.href(media, 100)"
-            alt="Miniature"
+            [alt]="'Media.Thumbnail' | translate"
             [ngClass]="
               media.id_media == selectedMedia.id_media
                 ? 'Media Media--thumbnail Media--selected'

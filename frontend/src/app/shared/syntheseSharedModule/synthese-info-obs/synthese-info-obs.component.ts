@@ -12,6 +12,7 @@ import { ModuleService } from '@geonature/services/module.service';
 import { ConfigService } from '@geonature/services/config.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
+import { TranslateService } from '@ngx-translate/core';
 import { Taxon } from '@geonature_common/form/taxonomy/taxonomy.component';
 import { HttpParams } from '@angular/common/http';
 import { SyntheseCriteriaService } from '@geonature/syntheseModule/services/criteria.service';
@@ -77,13 +78,13 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
 
   // List of tabs
   private tabs: Array<any> = [
-    { label: "Détail de l'occurrence", path: 'details' },
-    { label: 'Métadonnées', path: 'metadata' },
-    { label: 'Taxonomie', path: 'taxonomy' },
-    { label: 'Médias', path: 'media' },
-    { label: 'Zonage', path: 'zonage' },
-    { label: 'Validation', path: 'validation' },
-    { label: 'Discussion', path: 'discussion' },
+    { label: 'Synthese.InfoObs.Tabs.Details', path: 'details' },
+    { label: 'Synthese.InfoObs.Tabs.Metadata', path: 'metadata' },
+    { label: 'Synthese.InfoObs.Tabs.Taxonomy', path: 'taxonomy' },
+    { label: 'Synthese.InfoObs.Tabs.Media', path: 'media' },
+    { label: 'Synthese.InfoObs.Tabs.Zoning', path: 'zonage' },
+    { label: 'Synthese.InfoObs.Tabs.Validation', path: 'validation' },
+    { label: 'Synthese.InfoObs.Tabs.Discussion', path: 'discussion' },
   ];
 
   // Condition to make a tab visible
@@ -121,7 +122,8 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     private _route: ActivatedRoute,
     private _location: Location,
     public criteriaService: SyntheseCriteriaService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private _translate: TranslateService
   ) {}
 
   ngOnInit() {
@@ -303,20 +305,21 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         .join(', ');
 
       let contentMedias = '';
+      const t = (key) => this._translate.instant(`Synthese.InfoObs.Mail.${key}`);
       if (!this.selectedObs.medias) {
-        contentMedias = 'Aucun media';
+        contentMedias = t('NoMedia');
       } else {
         if (!this.selectedObs.medias.length) {
-          contentMedias = 'Aucun media';
+          contentMedias = t('NoMedia');
         }
         this.selectedObs.medias.map((media) => {
-          contentMedias += '\n\tTitre : ' + media.title_fr;
-          contentMedias += '\n\tLien vers le media : ' + this.mediaService.href(media);
+          contentMedias += `\n\t${t('Title')} ` + media.title_fr;
+          contentMedias += `\n\t${t('Link')} ` + this.mediaService.href(media);
           if (media.description_fr) {
-            contentMedias += '\n\tDescription : ' + media.description_fr;
+            contentMedias += `\n\t${t('Description')} ` + media.description_fr;
           }
           if (media.author) {
-            contentMedias += '\n\tAuteur : ' + media.author;
+            contentMedias += `\n\t${t('Author')} ` + media.author;
           }
           contentMedias += '\n';
         });
@@ -361,7 +364,9 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         }
         // format validator
         if (this.validationHistory[row].typeValidation === 'True') {
-          this.validationHistory[row].validator = 'Attribution automatique';
+          this.validationHistory[row].validator = this._translate.instant(
+            'Synthese.InfoObs.AutoValidation'
+          );
         }
       }
     });
@@ -374,7 +379,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
       },
       (err) => {
         if (err.status === 404) {
-          this._commonService.translateToaster('warning', 'Aucun profile');
+          this._commonService.translateToaster('warning', 'Synthese.InfoObs.NoProfileToast');
         } else if (err.statusText === 'Unknown Error') {
           // show error message if no connexion
           this._commonService.translateToaster(
