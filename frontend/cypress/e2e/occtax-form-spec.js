@@ -6,7 +6,7 @@ const taxaSearch = 'canis lupus';
 
 function filterMapList(testFunction) {
   cy.intercept(Cypress.env('apiEndpoint') + 'occtax/OCCTAX/releves?**', testFunction);
-  cy.get('[data-qa="pnx-occtax-filter"]').click();
+  cy.get('[data-qa="pnx-occtax-filter"]').should('exist');
   cy.get('[data-qa="taxonomy-form-input"]').clear().type(taxaSearch);
   cy.get('ngb-typeahead-window:visible').find('button.dropdown-item').as('results');
   cy.get('@results').first().click();

@@ -1,28 +1,53 @@
 #search-btn {
   height: 35px;
   font-size: 15px;
-  margin-top: 20px;
-  margin-left: 3px;
+  margin-left: auto;
 }
 
 #filter {
-  padding: 15px;
-  padding-top: 50px;
   background-color: white;
 }
 
-.actions {
-  height: 35px;
-  margin-left: 5px;
-  margin-top: 21px;
-  padding: 8px;
+.occtax-filters-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 5px;
+  padding-right: 15px;
+  height: 100%;
 }
 
-#refresh-filter {
-  color: red;
+.filters-input-container {
+  overflow: auto;
+  height: calc(100% - 100px);
 }
+
+fieldset {
+  padding: 0.25em;
+  border: 1px solid var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
+  margin: 0.25em;
+  border-radius: 3px;
+}
+
+legend {
+  width: auto;
+  font-size: small;
+}
+
+.filter-actions {
+  display: flex;
+  position: sticky;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin: 0.25em;
+  padding: 0;
+  bottom: 0;
+  margin-top: auto;
+  background-color: #ffffff;
+}
+
 #collapse-settings {
-  padding: 5px 15px;
+  padding: 5px 0;
 }
 
 :host ::ng-deep #button-input {
