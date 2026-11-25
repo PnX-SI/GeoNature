@@ -13,7 +13,7 @@
     >
       <div style="width: 200px">
         <pnx-nomenclature
-          label="Sexe"
+          [label]="'Sex' | translate"
           [parentFormControl]="filtersForm.get('id_nomenclature_sex')"
           codeNomenclatureType="SEXE"
           keyValue="id_nomenclature"
@@ -58,7 +58,7 @@
         class="btn btn-sm btn-link"
         (click)="openModal(content)"
       >
-        + Ajouter un individu
+        + {{ 'Individual.Add' | translate }}
       </button>
     </ng-template>
   </ng-select>
@@ -68,7 +68,7 @@
       [attr.aria-expanded]="!isCollapseFilters"
       mat-mini-fab
       color="primary"
-      matTooltip="Filtres avancés"
+      [matTooltip]="'Filters.Actions.Advanced' | translate"
       class="mr-2"
     >
       <mat-icon>filter_alt</mat-icon>

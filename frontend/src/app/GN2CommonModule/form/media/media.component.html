@@ -19,8 +19,11 @@
     *ngIf="!bValidSizeMax"
     class="error"
   >
-    La taille du fichier ({{ round(mediaForm.value.file.size / 1e6, 1) }} Mo) est supérieure à la
-    taille maximale autorisée ({{ round(sizeMax / 1e3, 1) }} Mo)
+    {{
+      'Media.Messages.FileTooBig'
+        | translate
+          : { size: round(mediaForm.value.file.size / 1e6, 1), max: round(sizeMax / 1e3, 1) }
+    }}
   </p>
 
   <p

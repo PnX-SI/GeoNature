@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { DataFormService } from '../data-form.service';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 import { CommonService } from '../../service/common.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'pnx-datalist',
@@ -39,7 +40,8 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
 
   constructor(
     private _dfs: DataFormService,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    private _translate: TranslateService
   ) {
     super();
   }
@@ -69,7 +71,7 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
     if (this.nullDefault && !this.required) {
       let obj = {};
       obj[this.keyValue] = null;
-      obj[this.keyLabel] = '-- Aucun --';
+      obj[this.keyLabel] = this._translate.instant('DynamicForm.NoneOption');
       values.unshift(obj);
     }
     values = values

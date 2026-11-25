@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h5 class="modal-title">Création d'un individu</h5>
+  <h5 class="modal-title">{{ 'Individual.CreateTitle' | translate }}</h5>
   <button
     type="button"
     class="close"
@@ -16,7 +16,7 @@
     id="bodyModal"
     style="padding-top: 30px"
   >
-    <small>Nom de l'individu</small>
+    <small>{{ 'Individual.Name' | translate }}</small>
     <input
       class="form-control form-control-sm"
       type="text"
@@ -24,12 +24,12 @@
       [formControl]="form.get('individual_name')"
     />
     <pnx-nomenclature
-      label="Sexe"
+      [label]="'Sex' | translate"
       [parentFormControl]="form.get('id_nomenclature_sex')"
       codeNomenclatureType="SEXE"
       keyValue="id_nomenclature"
     ></pnx-nomenclature>
-    <small>Commentaires</small>
+    <small>{{ 'Individual.Comments' | translate }}</small>
     <textarea
       class="form-control form-control-sm"
       [formControl]="form.get('comment')"
@@ -67,7 +67,7 @@
       mat-raised-button
       (click)="cancelCreate()"
     >
-      Annuler
+      {{ 'Actions.Cancel' | translate }}
     </button>
     <button
       id="createButton"
@@ -77,7 +77,7 @@
       (click)="createIndividual()"
       [disabled]="!form.valid"
     >
-      Créer un individu
+      {{ 'Individual.Create' | translate }}
     </button>
   </div>
 </div>

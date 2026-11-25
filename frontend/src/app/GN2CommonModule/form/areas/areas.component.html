@@ -13,15 +13,15 @@
   [typeahead]="areas_input$"
   [loading]="loading"
   [formControl]="parentFormControl"
-  clearAllText="Supprimer toutes les zones géographiques"
-  addTagText="Ajouter une zone géographique"
+  [clearAllText]="'Geo.Areas.ClearAll' | translate"
+  [addTagText]="'Geo.Areas.AddTag' | translate"
   (change)="onSelectionChange.emit($event)"
 >
   <ng-template ng-typetosearch-tmp>
     <div class="ng-option disabled Option">
       <span class="bg-info text-light p-2 rounded Option__hint">
         <mat-icon>help_outline</mat-icon>
-        <span>Commencer à saisir une zone</span>
+        <span>{{ 'Geo.Areas.TypeToSearch' | translate }}</span>
       </span>
     </div>
   </ng-template>
@@ -33,11 +33,11 @@
     <div class="ng-option disabled Option">
       <span
         class="bg-warning p-2 rounded Option__hint"
-        matTooltip="Aucune correspondance pour «&nbsp;{{ searchTerm }}&nbsp;»"
+        [matTooltip]="'Geo.Areas.NotFound' | translate: { term: searchTerm }"
         matTooltipPosition="after"
       >
         <mat-icon>warning_amber</mat-icon>
-        <span>Aucune correspondance pour «&nbsp;{{ searchTerm }}&nbsp;»</span>
+        <span>{{ 'Geo.Areas.NotFound' | translate: { term: searchTerm } }}</span>
       </span>
     </div>
   </ng-template>
@@ -48,12 +48,12 @@
   >
     <div
       class="ng-option disabled Option"
-      matTooltip="Chargements des zones pour «&nbsp;{{ searchTerm }}&nbsp;»"
+      [matTooltip]="'Geo.Areas.LoadingFor' | translate: { term: searchTerm }"
       matTooltipPosition="after"
     >
       <span class="bg-info p-2 rounded Option__hint">
         <mat-icon>autorenew</mat-icon>
-        <span>Chargements pour «&nbsp;{{ searchTerm }}&nbsp;»</span>
+        <span>{{ 'Geo.Areas.LoadingShort' | translate: { term: searchTerm } }}</span>
       </span>
     </div>
   </ng-template>
