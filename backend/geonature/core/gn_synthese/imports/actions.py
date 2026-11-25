@@ -13,6 +13,7 @@ from geonature.core.gn_synthese.models import (
 from geonature.core.imports.actions import (
     ImportActions,
     ImportStatisticsLabels,
+    import_hook,
 )
 from geonature.core.imports.checks.dataframe import (
     check_counts,
@@ -37,19 +38,15 @@ from geonature.core.imports.checks.sql import (
     check_nomenclature_blurring,
     check_nomenclature_exist_proof,
     check_nomenclature_source_status,
-    check_orphan_rows,
     convert_geom_columns,
     do_nomenclatures_mapping,
     generate_altitudes,
     generate_missing_uuid,
-    init_rows_validity,
     set_geom_point,
 )
 from geonature.core.imports.models import BibFields, Entity, EntityField, TImports
 from geonature.core.imports.utils import (
     compute_bounding_box,
-    load_transient_data_in_dataframe,
-    update_transient_data_from_dataframe,
     get_constant_value_from_mapping,
 )
 from geonature.utils.env import db
@@ -75,11 +72,17 @@ class SyntheseImportActions(ImportActions):
         pass
 
     @staticmethod
-    def check_transient_data(task, logger, imprt: TImports):
-        entity = db.session.execute(
+    def _get_entity(imprt: TImports) -> Entity:
+        return db.session.execute(
             select(Entity).where(Entity.destination == imprt.destination)
         ).scalar_one()  # Observation
 
+    @staticmethod
+    def _get_fields(imprt: TImports):
+        """
+        Return ``fields`` (all the fields of the destination) and ``selected_fields`` (the
+        fields selected by the mapping), both keyed by ``name_field``.
+        """
         entity_bib_fields = db.session.scalars(
             sa.select(BibFields)
             .where(BibFields.destination == imprt.destination)
@@ -95,106 +98,107 @@ class SyntheseImportActions(ImportActions):
             if source_field.get("column_src", None) in imprt.columns
             or source_field.get("constant_value", None) is not None
         }
-        init_rows_validity(imprt)
-        task.update_state(state="PROGRESS", meta={"progress": 0.05})
-        check_orphan_rows(imprt)
-        task.update_state(state="PROGRESS", meta={"progress": 0.1})
+        return fields, selected_fields
 
-        batch_size = current_app.config["IMPORT"]["DATAFRAME_BATCH_SIZE"]
-        batch_count = ceil(imprt.source_count / batch_size)
-
-        def update_batch_progress(batch, step):
-            start = 0.1
-            end = 0.4
-            step_count = 8
-            progress = start + ((batch + step / step_count) / batch_count) * (end - start)
-            task.update_state(state="PROGRESS", meta={"progress": progress})
-
-        source_cols = [
+    @staticmethod
+    def get_source_cols(imprt: TImports, entity: Entity) -> list:
+        # Load the source_column of the mandatory fields and of the non-nomenclature fields
+        # having a source_field. get_mapping_data would load None for the mandatory fields
+        # without source_field (such as nom_cite or observers).
+        _, selected_fields = SyntheseImportActions._get_fields(imprt)
+        return [
             field.source_column
             for field in selected_fields.values()
             if field.mandatory or (field.source_field is not None and field.mnemonique is None)
         ]
 
-        for batch in range(batch_count):
-            offset = batch * batch_size
-            updated_cols = set()
+    @staticmethod
+    @import_hook(progress=0.3)
+    def check_transient_data_df_batch(
+        task, logger, imprt: TImports, entity: Entity, df, update_progress
+    ) -> set:
+        fields, _ = SyntheseImportActions._get_fields(imprt)
+        updated_cols = set()
+        update_progress(1 / 8)  # dataframe loaded by the core
 
-            logger.info(f"[{batch + 1}/{batch_count}] Loading import data in dataframe…")
-            with start_sentry_child(op="check.df", description="load dataframe"):
-                df = load_transient_data_in_dataframe(
-                    imprt, entity, source_cols, offset=offset, limit=batch_size
-                )
-            update_batch_progress(batch, 1)
+        logger.info("Concat dates…")
+        with start_sentry_child(op="check.df", description="concat dates"):
+            updated_cols |= concat_dates(
+                df,
+                fields["datetime_min"].dest_field,
+                fields["datetime_max"].dest_field,
+                fields["date_min"].source_field,
+                fields["date_max"].source_field,
+                fields["hour_min"].source_field,
+                fields["hour_max"].source_field,
+            )
 
-            logger.info(f"[{batch + 1}/{batch_count}] Concat dates…")
-            with start_sentry_child(op="check.df", description="concat dates"):
-                updated_cols |= concat_dates(
-                    df,
-                    fields["datetime_min"].dest_field,
-                    fields["datetime_max"].dest_field,
-                    fields["date_min"].source_field,
-                    fields["date_max"].source_field,
-                    fields["hour_min"].source_field,
-                    fields["hour_max"].source_field,
-                )
-            update_batch_progress(batch, 2)
+        update_progress(2 / 8)
 
-            logger.info(f"[{batch + 1}/{batch_count}] Check required values…")
-            with start_sentry_child(op="check.df", description="check required values"):
-                updated_cols |= check_required_values(imprt, entity, df, fields)
-            update_batch_progress(batch, 3)
+        logger.info("Check required values…")
+        with start_sentry_child(op="check.df", description="check required values"):
+            updated_cols |= check_required_values(imprt, entity, df, fields)
 
-            logger.info(f"[{batch + 1}/{batch_count}] Check types…")
-            with start_sentry_child(op="check.df", description="check types"):
-                updated_cols |= check_types(imprt, entity, df, fields)
-            update_batch_progress(batch, 4)
+        update_progress(3 / 8)
 
-            logger.info(f"[{batch + 1}/{batch_count}] Check dataset rows")
-            with start_sentry_child(op="check.df", description="check datasets rows"):
-                updated_cols |= check_datasets(
-                    imprt,
-                    entity,
-                    df,
-                    uuid_field=fields["unique_dataset_id"],
-                    id_field=fields["id_dataset"],
-                    module_code="SYNTHESE",
-                )
-            update_batch_progress(batch, 5)
-            logger.info(f"[{batch + 1}/{batch_count}] Check geography…")
-            with start_sentry_child(op="check.df", description="set geography"):
-                updated_cols |= check_geometry(
-                    imprt,
-                    entity,
-                    df,
-                    file_srid=imprt.srid,
-                    geom_4326_field=fields["the_geom_4326"],
-                    geom_local_field=fields["the_geom_local"],
-                    wkt_field=fields["WKT"],
-                    latitude_field=fields["latitude"],
-                    longitude_field=fields["longitude"],
-                    codecommune_field=fields["codecommune"],
-                    codemaille_field=fields["codemaille"],
-                    codedepartement_field=fields["codedepartement"],
-                )
-            update_batch_progress(batch, 6)
+        logger.info("Check types…")
+        with start_sentry_child(op="check.df", description="check types"):
+            updated_cols |= check_types(imprt, entity, df, fields)
 
-            logger.info(f"[{batch + 1}/{batch_count}] Check counts…")
-            with start_sentry_child(op="check.df", description="check count"):
-                updated_cols |= check_counts(
-                    imprt,
-                    entity,
-                    df,
-                    fields["count_min"],
-                    fields["count_max"],
-                    default_count=current_app.config["IMPORT"]["DEFAULT_COUNT_VALUE"],
-                )
-            update_batch_progress(batch, 7)
+        update_progress(4 / 8)
 
-            logger.info(f"[{batch + 1}/{batch_count}] Updating import data from dataframe…")
-            with start_sentry_child(op="check.df", description="save dataframe"):
-                update_transient_data_from_dataframe(imprt, entity, updated_cols, df)
-            update_batch_progress(batch, 8)
+        logger.info("Check dataset rows")
+        with start_sentry_child(op="check.df", description="check datasets rows"):
+            updated_cols |= check_datasets(
+                imprt,
+                entity,
+                df,
+                uuid_field=fields["unique_dataset_id"],
+                id_field=fields["id_dataset"],
+                module_code="SYNTHESE",
+            )
+
+        update_progress(5 / 8)
+
+        logger.info("Check geography…")
+        with start_sentry_child(op="check.df", description="set geography"):
+            updated_cols |= check_geometry(
+                imprt,
+                entity,
+                df,
+                file_srid=imprt.srid,
+                geom_4326_field=fields["the_geom_4326"],
+                geom_local_field=fields["the_geom_local"],
+                wkt_field=fields["WKT"],
+                latitude_field=fields["latitude"],
+                longitude_field=fields["longitude"],
+                codecommune_field=fields["codecommune"],
+                codemaille_field=fields["codemaille"],
+                codedepartement_field=fields["codedepartement"],
+            )
+
+        update_progress(6 / 8)
+
+        logger.info("Check counts…")
+        with start_sentry_child(op="check.df", description="check count"):
+            updated_cols |= check_counts(
+                imprt,
+                entity,
+                df,
+                fields["count_min"],
+                fields["count_max"],
+                default_count=current_app.config["IMPORT"]["DEFAULT_COUNT_VALUE"],
+            )
+
+        update_progress(7 / 8)
+
+        return updated_cols
+
+    @staticmethod
+    @import_hook(progress=0.6)
+    def check_transient_data_post(task, logger, imprt: TImports, update_progress) -> None:
+        entity = SyntheseImportActions._get_entity(imprt)
+        fields, selected_fields = SyntheseImportActions._get_fields(imprt)
 
         # Checks in SQL
         convert_geom_columns(
