@@ -237,7 +237,7 @@ describe('Testing adding an observation in OccTax', { testIsolation: false }, ()
     cy.get('[data-qa="pnx-nomenclature-eta-bio-error"]').contains(
       " Veuillez indiquer l'état biologique "
     );
-    cy.get('[qa-test="Etat biologique"]').click();
+    cy.get('[qa-test="État biologique"]').click();
     cy.get('[data-qa="2"]').click();
     cy.get('[data-qa="occurrence-add-btn"]').should('be.enabled');
 

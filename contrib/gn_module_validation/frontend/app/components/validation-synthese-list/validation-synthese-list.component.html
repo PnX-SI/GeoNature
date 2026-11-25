@@ -309,7 +309,7 @@
       ,
       let-offset="offset"
     >
-      {{ selectedCount }} selected / {{ rowCount }} total
+      {{ 'Validation.UI.SelectedTotal' | translate: { selected: selectedCount, total: rowCount } }}
       <datatable-pager
         [pagerLeftArrowIcon]="'datatable-icon-left'"
         [pagerRightArrowIcon]="'datatable-icon-right'"
