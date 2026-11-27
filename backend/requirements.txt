@@ -320,7 +320,7 @@ pypn-ref-geo==1.6.0
     #   taxhub
 pypnnomenclature==1.7.0
     # via geonature (pyproject.toml)
-pypnusershub==3.3.2
+pypnusershub==3.3.3
     # via
     #   geonature (pyproject.toml)
     #   taxhub
