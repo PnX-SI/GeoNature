@@ -108,7 +108,7 @@
 ### ⚠️ Notes de version
 
 - Debian 11 n'est plus supporté. Vérifiez la version de votre serveur pour passer en Debian 12 ou 13.
-- Si ce n'est pas le cas, il faut mettre à jour Redis en version > 7.2 ([Voir documentation](https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/apt/))
+- Votre version de Redis doit être supérieur à 7.2 ([Voir documentation](https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/apt/))
 - SQLAlchemy mis à jour en version 2.0. Si vous utilisez des modules externes spécifiques, vérifiez qu'ils disposent d'une version compatible avec SQLAlchemy 2.0. C'est le cas pour les modules Dashboard, Monitoring et Export que vous devez donc mettre à jour en même temps que GeoNature.
 - Les paramètres de configuration globaux de GeoNature `IMPLEMENTED_MODULES` et `IMPLEMENTED_OBJECTS` de la section `ADDITIONAL_FIELDS` sont supprimés. Les modules et objets pouvant avoir des champs additionnels sont désormais gérés en base de données avec les champs `support_additional_fields` des tables `gn_commons.t_modules` et `gn_permissions.t_objects` (la migration Alembic gère automatiquement la rétro-compatibilité) (#4306)
 - La valeur par défaut du paramètre `HELP_CONTACT_URL` passe à `#`. Renseignez-le avec l'URL ou l'email de contact de votre structure (ou videz-le) (#4405)
