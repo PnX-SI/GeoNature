@@ -56,6 +56,7 @@
 - [Occtax] Modification possible des relevés saisis depuis Occtax-mobile avec des champs additionnels sur le JDD (#3201 par @TheoLechemia)
 - [Occtax] Correction de la traduction du libellé "Preuve non numérique" (#4342 par @cedricroy)
 - [Occtax] Correction du titre "Dénombrement s" (#4364 par @jbrieuclp)
+- [Occtax] Harmonisation et traduction du libellé "Observateur(s)" entre le formulaire et la fiche d'un relevé (par @jacquesfize)
 - [Métadonnées] Correction de la recherche avancée (#4334 par @jacquesfize)
 - [Métadonnées] Le bouton d'ajout de jeu de données n'est plus affiché dans la fiche d'un cadre d'acquisition que si ce dernier est ouvert (#4186 par @jacquesfize)
 - [Métadonnées] Correction d'une coquille dans le template PDF des cadres d'acquisition (#4415 par @jacquesfize)
@@ -65,6 +66,7 @@
 - [Import] Correction d'une erreur 500 lors des contrôles lorsqu'une entité n'est présente sur aucune ligne du fichier (ex. : import Occhab ne contenant que des habitats rattachés à des stations existantes) (#4472 par @jacquesfize)
 - [Accueil] Correction du tri et de la pagination du bloc des dernières discussions (#4333 par @jacquesfize)
 - [Authentification] Correction d'une erreur à la création de compte lorsque `ENABLE_USER_MANAGEMENT = false` (#4314 par @jacquesfize)
+- [Authentification] La récupération du mot de passe n'est plus possible que pour les comptes utilisateurs actifs (par @jacquesfize)
 - [Admin des permissions] Les zonages désactivés ne sont plus proposés dans le filtre géographique (#4402 par @IdrissaD)
 - [Validation] Correction de l'affichage de la toolbox d'édition des géométries sur la carte du module Validation (#3514 par @Pierre-Narcisi)
 - [Validation] La périodicité par défaut de la validation automatique (`AUTO_VALIDATION_CRONTAB`) correspond désormais à la documentation (`0 * * * *`) (#4355 par @cedricroy)
@@ -96,14 +98,17 @@
 - [Frontend] Passage de Node.js 20 à Node.js 24 (#4374 par @bouttier)
 - [Frontend] Amélioration et correction du composant `pnx-taxa` permettant de sélectionner plusieurs taxons (#4203 par @jpm-cbna)
 - [Frontend] Ajout d'une propriété `placeholder` au composant `pnx-observers` (#4174 par @CynthiaBorotPNV)
+- [Frontend] Ajout d'une option `preserveControls` au composant `pnx-dynamic-form-generator` pour ne supprimer que les contrôles obsolètes lors de la régénération du formulaire (#4514 par @jacquesfize)
 - [Installation] Utilisation de `uv` pour installer l'environnement Python du backend, remplacement des fichiers `setup.py` par des fichiers `pyproject.toml` et réduction des fichiers de requirements à un seul fichier `requirements.in` (#4320 par @jacquesfize)
 - [CI/CD] Suppression de Debian 11 de la CI et correction de l'envoi de la couverture de code vers Codecov (#4185 par @amandine-sahl)
 - [CI/CD] Le workflow de génération du dump du modèle de données ne commite et ne pousse le résultat que lors de la publication d'une release (#4564 par @jacquesfize)
+- [CI/CD] Dependabot : vérification hebdomadaire, regroupement des mises à jour mineures et correctives, et prise en charge des images Docker et des GitHub Actions (#4564 par @jacquesfize)
 - [Documentation] Correction de la syntaxe RST dans la section "Arborescence" de la documentation développeur (#4304 par @raphj) et correction de la compilation de la documentation (#4340 par @jacquesfize)
 
 ### ⚠️ Notes de version
 
 - Debian 11 n'est plus supporté. Vérifiez la version de votre serveur pour passer en Debian 12 ou 13.
+- Si ce n'est pas le cas, il faut mettre à jour Redis en version > 7.2 ([Voir documentation](https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/apt/))
 - SQLAlchemy mis à jour en version 2.0. Si vous utilisez des modules externes spécifiques, vérifiez qu'ils disposent d'une version compatible avec SQLAlchemy 2.0. C'est le cas pour les modules Dashboard, Monitoring et Export que vous devez donc mettre à jour en même temps que GeoNature.
 - Les paramètres de configuration globaux de GeoNature `IMPLEMENTED_MODULES` et `IMPLEMENTED_OBJECTS` de la section `ADDITIONAL_FIELDS` sont supprimés. Les modules et objets pouvant avoir des champs additionnels sont désormais gérés en base de données avec les champs `support_additional_fields` des tables `gn_commons.t_modules` et `gn_permissions.t_objects` (la migration Alembic gère automatiquement la rétro-compatibilité) (#4306)
 - La valeur par défaut du paramètre `HELP_CONTACT_URL` passe à `#`. Renseignez-le avec l'URL ou l'email de contact de votre structure (ou videz-le) (#4405)
